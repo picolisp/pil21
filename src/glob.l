@@ -1,4 +1,4 @@
-# 27feb20 Software Lab. Alexander Burger
+# 01mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -47,6 +47,7 @@
 (var $DbBlock i8* null)                # Block buffer
 (var $IniBlk i8* null)                 # Empty initial block
 (var $BlkPtr i8* null)                 # Block pointer
+(var $BlkEnd i8* null)                 # Block end pointer
 (var $BlkIndex i64 0)                  # Block index
 (var $BlkLink i64 0)                   # Next block
 (var $DbJnl i8* null)                  # Journal file

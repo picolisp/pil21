@@ -266,7 +266,7 @@
       (unless (== (pread (Db: fd) Buf Siz Pos) Siz)
          (dbRdErr) ) ) )
 
-(de void rdBlock ((i64 . N))
+(de i8* rdBlock ((i64 . N))
    (let (Db: (dbFile (val $DbFile))  Blk (val $DbBlock))
       (blkPeek
          (shl (set $BlkIndex N) (i64 (Db: sh)))
@@ -316,7 +316,7 @@
             (== 1 (fwrite (val $DbBlock) (Db: siz) 1 Log)) )  # Write block
          (err 0 0 ($ "Log write: %s") (strErrno)) ) ) )
 
-(local) (newBlock newId isLife cleanUp)
+(local) (newBlock newId isLife cleanUp _getBlock _putBlock)
 
 (de i64 newBlock ()
    (let (Db: (dbFile (val $DbFile))  P (b8 (* BLK 2)))
@@ -391,6 +391,33 @@
          (setAdr Free P)  # Append old 'free' list
          (blkPoke Pos P BLK) ) ) )
 
+(de i8 _getBlock ()
+   (let P (val $BlkPtr)
+      (when (== P (val $BlkEnd))
+         (let Link (val $BlkLink)
+            (and (=0 Link) (ret 0))
+            (setq P (rdBlock Link)) ) )
+      (prog1
+         (val P)
+         (set $BlkPtr (inc P)) ) ) )
+
+(de void _putBlock ((i8 . B))
+   (let P (val $BlkPtr)
+      (when (== P (val $BlkEnd))
+         (let Link (val $BlkLink)
+            (if (=0 Link)
+               (let (New (newBlock)  Cnt (i64 (val P)))  # Block count (link is zero)
+                  (setAdr (| New Cnt) (val $DbBlock))
+                  (wrBlock)  # Write new block
+                  (set $BlkIndex New)  # Set new block index
+                  (setAdr
+                     (if (== Cnt BLKTAG) Cnt (inc Cnt))
+                     (setq P (val $DbBlock)) )
+                  (setq P (ofs P BLK)) )
+               (wrBlock)  # Write current block
+               (setq P (rdBlock Link)) ) ) )  # Read next block
+      (set P B)
+      (set $BlkPtr (inc P)) ) )
 
 # (pool ['sym1 ['lst] ['sym2] ['sym3]]) -> T
 (de _pool (Exe)
