@@ -1,4 +1,4 @@
-# 01mar20 Software Lab. Alexander Burger
+# 02mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -149,6 +149,7 @@
    (NIL "hash" _hash)
    (NIL "rand" _rand)
    # Database
+   (NIL "rollback" _rollback)
    (NIL "pool" _pool)
    # Symbol functions
    (NIL "pre?" _preQ)

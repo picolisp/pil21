@@ -1,4 +1,4 @@
-# 27feb20 Software Lab. Alexander Burger
+# 02mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -170,6 +170,7 @@ print repl)
 (de NIL protErr (any any))
 (de i64 xCnt (any any))
 (de evCnt (any any))
+(de evLst (any))
 (de evSym (any))
 (de i1 equal (any any))
 (de i32 compare (any any))

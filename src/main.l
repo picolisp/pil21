@@ -1,4 +1,4 @@
-# 27feb20 Software Lab. Alexander Burger
+# 02mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -112,9 +112,9 @@
       (set $Protect 0) ) )
 
 # Error handling
-(local) (err stkErr argErr cntErr numErr symErr extErr atomErr pairErr lstErr
+(local) (err stkErr argErr cntErr numErr lstErr symErr extErr atomErr pairErr
 varErr protErr lockErr stkChk needCnt needNum needSym chkVar needVar xCnt evCnt
-evSym)
+evLst evSym)
 
 (de NIL err (Exe X (i8* . Fmt) (i8* . Arg))
    (set $Up (if (=0 Exe) $Nil Exe))
@@ -194,6 +194,9 @@ evSym)
 (de NIL numErr (Exe X)
    (err Exe X ($ "Number expected") null) )
 
+(de NIL lstErr (Exe X)
+   (err Exe X ($ "List expected") null) )
+
 (de NIL symErr (Exe X)
    (err Exe X ($ "Symbol expected") null) )
 
@@ -205,9 +208,6 @@ evSym)
 
 (de NIL pairErr (Exe X)
    (err Exe X ($ "Cons pair expected") null) )
-
-(de NIL lstErr (Exe X)
-   (err Exe X ($ "List expected") null) )
 
 (de NIL varErr (Exe X)
    (err Exe X ($ "Variable expected") null) )
@@ -257,6 +257,12 @@ evSym)
 
 (de evCnt (Exe X)
    (xCnt Exe (eval (car X))) )
+
+(de evLst (Exe)
+   (let X (eval (car Exe))
+      (unless (or (pair X) (nil? X))
+         (lstErr Exe X) )
+      X ) )
 
 (de evSym (Exe)
    (xSym (eval (car Exe))) )
@@ -563,7 +569,7 @@ evSym)
    (let P $Nil  # Init internal symbols
       (loop
          (let Nm (val (tail P))
-            (when (cnt? Nm)
+            (when (num? Nm)
                (intern P 0 Nm $Pico $Nil)
                (? (== P $LastSym)) ) )
          (setq P (ofs P 2)) ) )

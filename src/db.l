@@ -1,4 +1,4 @@
-# 01mar20 Software Lab. Alexander Burger
+# 02mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -419,13 +419,28 @@
       (set P B)
       (set $BlkPtr (inc P)) ) )
 
+# (rollback) -> flg
+(de _rollback (Exe)
+   (if (and (=0 (val $DBs)) (atom (val $Ext)))
+      $Nil
+      $T ) )
+
 # (pool ['sym1 ['lst] ['sym2] ['sym3]]) -> T
 (de _pool (Exe)
-   #! ...
-   (let N (i64 (val $MaxBlkSize))
-      (set $DbBlock (alloc (val $DbBlock) N))
-      (memset (set $IniBlk (alloc (val $IniBlk) N)) 0 N) )
-   #! ...
+   (let
+      (X (cdr Exe)
+         Sym1 (save (evSym X))
+         Lst (save (evLst (>>> X)))
+         Sym2 (save (evSym (>>> X)))
+         Sym3 (save (evSym (>>> X))) )
+      (set $Solo ZERO)  # Reset solo mode
+      (unless (=0 (val $DBs))
+         (_rollback ZERO)
+         )
+      (let N (i64 (val $MaxBlkSize))
+         (set $DbBlock (alloc (val $DbBlock) N))
+         (memset (set $IniBlk (alloc (val $IniBlk) N)) 0 N) )
+      )
    $T )
 
 

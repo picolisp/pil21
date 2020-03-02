@@ -1,4 +1,4 @@
-# 27feb20 Software Lab. Alexander Burger
+# 02mar20 Software Lab. Alexander Burger
 
 ## PicoLisp LLVM frontend ##
 (symbols 'llvm 'pico)
@@ -285,7 +285,7 @@ End *Safe)
    (cond
       ((pre? "_" Val)
          (prin
-            "i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @"
+            "  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @"
             @
             " to i8*), i32 2) to i64)" ) )
       ((pre? "$" Val)
