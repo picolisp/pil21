@@ -1,4 +1,4 @@
-# 27feb20 Software Lab. Alexander Burger
+# 02mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -301,6 +301,8 @@ pushOutFiles popInFiles popOutFiles)
    )
 
 (local) (getChar skipC comment skip testEsc anonymous rdAtom rdList read0)
+
+(de read0 (i1))
 
 (de i32 _getStdin ()
    (let In: (inFile (val $InFile))

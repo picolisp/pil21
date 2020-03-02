@@ -1,4 +1,4 @@
-# 27feb20 Software Lab. Alexander Burger
+# 02mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -6,11 +6,10 @@
    "vers.l" "defs.l" "glob.l" "dec.l" )
 
 # External declarations
-(local) (name numChar charNum consSym initInFile initOutFile)
+(local) (name numChar charNum initInFile initOutFile)
 
 (de T i32 numChar (i64*))
 (de T void charNum (i32 i64*))
-(de T consSym (any any))
 (de T i8* initInFile (i32 i8*))
 (de T i8* initOutFile (i32))
 

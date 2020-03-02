@@ -59,7 +59,7 @@
             0
             (numChar (push 0 (name Tail))) ) ) ) )  # Else get name
 
-(local) (pack xSym extNm)
+(local) (pack extNm)
 
 (de void pack (X (i64* . P))
    (when (pair X)
@@ -75,15 +75,6 @@
          (let (Q (push 0 (name (val (tail X))))  B NIL)  # [cnt name]
             (until (=0 (setq B (numByte Q)))
                (byteNum B P) ) ) ) ) )
-
-(de xSym (X)
-   (if (or (num? X) (pair X))
-      (let (P (push 4 ZERO NIL)  Q (link (ofs P 1)))  # [cnt name link]
-         (pack X P)
-         (prog1
-            (consStr (val Q))
-            (drop Q) ) )
-      X ) )
 
 # Build external symbol name
 (de extNm ((i32 . File) (i64 . Obj))
@@ -169,6 +160,7 @@
 ### Interning ###
 (local) (cmpLong intern isIntern findSym extern)
 
+# Compare long names
 (de i32 cmpLong (X Y)
    (loop
       (? (n0 (sub (val (dig X)) (val (dig Y))))
@@ -182,6 +174,48 @@
             (T (i32 +1)) ) )
       (? (cnt? Y) (i32 +1)) ) )
 
+# Is symbol interned?
+(de i1 isIntern (Sym Name Tree More)
+   (if (cnt? Name)  # Short name
+      (let X (car Tree)  # First tree
+         (loop
+            (when (atom X)  # Empty
+               # .. check More
+               (ret NO) )
+            (let Nm (name (val (tail (car X))))
+               (? (== Name Nm))
+               (setq X
+                  (if (> Name Nm)  # Symbol is smaller
+                     (cddr X)
+                     (cadr X) ) ) ) )
+         (cond
+            ((=0 Sym)  # No symbol given
+               (set $Ret (car X)) )  # Found one
+            ((<> Sym (car X))  # Different Symbol
+               (ret NO)  # .. check More
+               ) )
+         YES )
+      # Long name
+      (let X (cdr Tree)  # Second tree
+         (loop
+            (when (atom X)  # Empty
+               # .. check More
+               (ret NO) )
+            (let (Nm (name (val (tail (car X))))  I (cmpLong Nm Name))
+               (? (=0 I))
+               (setq X
+                  (if (lt0 I)  # Symbol is smaller
+                     (cddr X)
+                     (cadr X) ) ) ) )
+         (cond
+            ((=0 Sym)  # No symbol given
+               (set $Ret (car X)) )  # Found one
+            ((<> Sym (car X))  # Different Symbol
+               (ret NO)  # .. check More
+               ) )
+         YES ) ) )
+
+# Intern a symbol/name
 (de intern (Sym Val Name Tree More)
    (when (cnt? Name)  # Short name
       (let X (car Tree)  # First tree
@@ -270,46 +304,6 @@
                            (setq Sym (consSym Name Val)) )
                         (set X (cons Sym $Nil))
                         (ret Sym) ) ) ) ) ) ) ) )
-
-(de i1 isIntern (Sym Name Tree More)
-   (if (cnt? Name)  # Short name
-      (let X (car Tree)  # First tree
-         (loop
-            (when (atom X)  # Empty
-               # .. check More
-               (ret NO) )
-            (let Nm (name (val (tail (car X))))
-               (? (== Name Nm))
-               (setq X
-                  (if (> Name Nm)  # Symbol is smaller
-                     (cddr X)
-                     (cadr X) ) ) ) )
-         (cond
-            ((=0 Sym)  # No symbol given
-               (set $Ret (car X)) )  # Found one
-            ((<> Sym (car X))  # Different Symbol
-               (ret NO)  # .. check More
-               ) )
-         YES )
-      # Long name
-      (let X (cdr Tree)  # Second tree
-         (loop
-            (when (atom X)  # Empty
-               # .. check More
-               (ret NO) )
-            (let (Nm (name (val (tail (car X))))  I (cmpLong Nm Name))
-               (? (=0 I))
-               (setq X
-                  (if (lt0 I)  # Symbol is smaller
-                     (cddr X)
-                     (cadr X) ) ) ) )
-         (cond
-            ((=0 Sym)  # No symbol given
-               (set $Ret (car X)) )  # Found one
-            ((<> Sym (car X))  # Different Symbol
-               (ret NO)  # .. check More
-               ) )
-         YES ) ) )
 
 (de findSym (Name)
    (intern 0 $Nil Name

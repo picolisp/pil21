@@ -112,9 +112,11 @@
       (set $Protect 0) ) )
 
 # Error handling
-(local) (err stkErr argErr cntErr numErr lstErr symErr extErr atomErr pairErr
-varErr protErr lockErr stkChk needCnt needNum needSym chkVar needVar xCnt evCnt
-evLst evSym)
+(local) (pushOutFiles err stkErr argErr cntErr numErr lstErr symErr extErr
+atomErr pairErr varErr protErr lockErr stkChk needCnt needNum needSym chkVar
+needVar xCnt evCnt evLst xSym evSym)
+
+(de void pushOutFiles (i8*))
 
 (de NIL err (Exe X (i8* . Fmt) (i8* . Arg))
    (set $Up (if (=0 Exe) $Nil Exe))
@@ -262,6 +264,15 @@ evLst evSym)
    (let X (eval (car Exe))
       (unless (or (pair X) (nil? X))
          (lstErr Exe X) )
+      X ) )
+
+(de xSym (X)
+   (if (or (num? X) (pair X))
+      (let (P (push 4 ZERO NIL)  Q (link (ofs P 1)))  # [cnt name link]
+         (pack X P)
+         (prog1
+            (consStr (val Q))
+            (drop Q) ) )
       X ) )
 
 (de evSym (Exe)

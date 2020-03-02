@@ -152,8 +152,7 @@ ffiCall)
 (de T i32 toLowerCase (i32))
 
 ### Forward references
-(local) (evList mkStr subStr read0 pushOutFiles newline space outWord outString
-print repl)
+(local) (evList mkStr subStr newline space outWord outString print repl)
 
 # main.l
 (de NIL err (any any i8* i8*))
@@ -175,6 +174,10 @@ print repl)
 (de i1 equal (any any))
 (de i32 compare (any any))
 (de evList (any))
+# gc.l
+(de cons (any any))
+(de consSym (any any))
+(de consStr (any))
 # sym.l
 (de name (any))
 (de i64 bufSize (any))
@@ -188,8 +191,6 @@ print repl)
 (de xSym (any))
 (de i1 subStr (any any))
 # io.l
-(de read0 (i1))
-(de void pushOutFiles (i8*))
 (de void newline ())
 (de void space ())
 (de void outWord (i64))
@@ -232,6 +233,11 @@ print repl)
          (inc 'N)
          (>>> X) )
       N ) )
+
+(inline box64 (N)
+   (if (=0 (& N (hex "F000000000000000")))  # Fit in short number
+      (cnt N)
+      (boxNum N) ) )
 
 (inline eval (X)
    (cond
