@@ -176,44 +176,54 @@
 
 # Is symbol interned?
 (de i1 isIntern (Sym Name Tree More)
-   (if (cnt? Name)  # Short name
-      (let X (car Tree)  # First tree
-         (loop
-            (when (atom X)  # Empty
-               # .. check More
-               (ret NO) )
-            (let Nm (name (val (tail (car X))))
-               (? (== Name Nm))
-               (setq X
-                  (if (> Name Nm)  # Symbol is smaller
-                     (cddr X)
-                     (cadr X) ) ) ) )
-         (cond
-            ((=0 Sym)  # No symbol given
-               (set $Ret (car X)) )  # Found one
-            ((<> Sym (car X))  # Different Symbol
-               (ret NO)  # .. check More
-               ) )
-         YES )
-      # Long name
-      (let X (cdr Tree)  # Second tree
-         (loop
-            (when (atom X)  # Empty
-               # .. check More
-               (ret NO) )
-            (let (Nm (name (val (tail (car X))))  I (cmpLong Nm Name))
-               (? (=0 I))
-               (setq X
-                  (if (lt0 I)  # Symbol is smaller
-                     (cddr X)
-                     (cadr X) ) ) ) )
-         (cond
-            ((=0 Sym)  # No symbol given
-               (set $Ret (car X)) )  # Found one
-            ((<> Sym (car X))  # Different Symbol
-               (ret NO)  # .. check More
-               ) )
-         YES ) ) )
+   (let Curr 0
+      (if (cnt? Name)
+         (: 1  # Short name
+            (let X (car Tree)  # First tree
+               (loop
+                  (when (atom X)  # Empty
+                     (unless (pair More)
+                        (ret NO) )
+                     (unless (=0 Curr)  # Found in current
+                        (setq Curr (car More)) )  # Keep next namespace
+                     (setq X (val (++ More)))  # Get next tree
+                     (goto 1) )
+                  (let Nm (name (val (tail (car X))))
+                     (? (== Name Nm))
+                     (setq X
+                        (if (> Name Nm)  # Symbol is smaller
+                           (cddr X)
+                           (cadr X) ) ) ) )
+               (cond
+                  ((=0 Sym)  # No symbol given
+                     (set $Ret (car X)) )  # Found one
+                  ((<> Sym (car X))  # Different Symbol
+                     (setq X (val (setq Curr (++ More))))  # Try next namespace if any
+                     (goto 1) ) )
+               YES ) )
+         (: 2  # Long name
+            (let X (cdr Tree)  # Second tree
+               (loop
+                  (when (atom X)  # Empty
+                     (unless (pair More)
+                        (ret NO) )
+                     (unless (=0 Curr)  # Found in current
+                        (setq Curr (car More)) )  # Keep next namespace
+                     (setq X (val (++ More)))  # Get next tree
+                     (goto 2) )
+                  (let (Nm (name (val (tail (car X))))  I (cmpLong Nm Name))
+                     (? (=0 I))
+                     (setq X
+                        (if (lt0 I)  # Symbol is smaller
+                           (cddr X)
+                           (cadr X) ) ) ) )
+               (cond
+                  ((=0 Sym)  # No symbol given
+                     (set $Ret (car X)) )  # Found one
+                  ((<> Sym (car X))  # Different Symbol
+                     (setq X (val (setq Curr (++ More))))  # Try next namespace if any
+                     (goto 2) ) )
+               YES ) ) ) ) )
 
 # Intern a symbol/name
 (de intern (Sym Val Name Tree More)
