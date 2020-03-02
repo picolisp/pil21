@@ -158,7 +158,7 @@
       (pop R) ) )
 
 ### Interning ###
-(local) (cmpLong intern isIntern findSym extern)
+(local) (cmpLong isIntern isLstIntern intern requestSym extern)
 
 # Compare long names
 (de i32 cmpLong (X Y)
@@ -175,147 +175,124 @@
       (? (cnt? Y) (i32 +1)) ) )
 
 # Is symbol interned?
-(de i1 isIntern (Sym Name Tree More)
-   (let Curr 0
-      (if (cnt? Name)
-         (: 1  # Short name
-            (let X (car Tree)  # First tree
-               (loop
-                  (when (atom X)  # Empty
-                     (unless (pair More)
-                        (ret NO) )
-                     (unless (=0 Curr)  # Found in current
-                        (setq Curr (car More)) )  # Keep next namespace
-                     (setq X (val (++ More)))  # Get next tree
-                     (goto 1) )
-                  (let Nm (name (val (tail (car X))))
-                     (? (== Name Nm))
-                     (setq X
-                        (if (> Name Nm)  # Symbol is smaller
-                           (cddr X)
-                           (cadr X) ) ) ) )
-               (cond
-                  ((=0 Sym)  # No symbol given
-                     (set $Ret (car X)) )  # Found one
-                  ((<> Sym (car X))  # Different Symbol
-                     (setq X (val (setq Curr (++ More))))  # Try next namespace if any
-                     (goto 1) ) )
-               YES ) )
-         (: 2  # Long name
-            (let X (cdr Tree)  # Second tree
-               (loop
-                  (when (atom X)  # Empty
-                     (unless (pair More)
-                        (ret NO) )
-                     (unless (=0 Curr)  # Found in current
-                        (setq Curr (car More)) )  # Keep next namespace
-                     (setq X (val (++ More)))  # Get next tree
-                     (goto 2) )
-                  (let (Nm (name (val (tail (car X))))  I (cmpLong Nm Name))
-                     (? (=0 I))
-                     (setq X
-                        (if (lt0 I)  # Symbol is smaller
-                           (cddr X)
-                           (cadr X) ) ) ) )
-               (cond
-                  ((=0 Sym)  # No symbol given
-                     (set $Ret (car X)) )  # Found one
-                  ((<> Sym (car X))  # Different Symbol
-                     (setq X (val (setq Curr (++ More))))  # Try next namespace if any
-                     (goto 2) ) )
-               YES ) ) ) ) )
+(de i1 isIntern (Sym Name Tree)
+   (if (cnt? Name)  # Short name
+      (let X (car Tree)  # First tree
+         (loop
+            (? (atom X) NO)  # Empty
+            (let Nm (name (val (tail (car X))))
+               (? (== Name Nm) (== Sym (car X)))
+               (setq X
+                  (if (> Name Nm)  # Symbol is smaller
+                     (cddr X)
+                     (cadr X) ) ) ) ) )
+      # Long name
+      (let X (cdr Tree)  # Second tree
+         (loop
+            (? (atom X) NO)  # Empty
+            (let (Nm (name (val (tail (car X))))  I (cmpLong Nm Name))
+               (? (=0 I) (== Sym (car X)))
+               (setq X
+                  (if (lt0 I)  # Symbol is smaller
+                     (cddr X)
+                     (cadr X) ) ) ) ) ) ) )
+
+(de i1 isLstIntern (Sym Name Lst)
+   (loop
+      (? (atom Lst) NO)
+      (? (isIntern Sym Name (++ Lst)) YES) ) )
 
 # Intern a symbol/name
 (de intern (Sym Val Name Tree More)
-   (when (cnt? Name)  # Short name
+   (if (cnt? Name)  # Short name
       (let X (car Tree)  # First tree
-         (when (atom X)  # Empty
-            # .. check More
-            (when (=0 Sym)  # New symbol
-               (setq Sym (consSym Name Val)) )
-            (set Tree (cons Sym $Nil))
-            (ret Sym) )
-         (loop
-            (let (S (car X)  Nm (name (val (tail S))))
-               (cond
-                  ((== Name Nm) (ret S))  # Found symbol
-                  ((> Name Nm)  # Symbol is smaller
+         (if (pair X)  # No empty
+            (loop
+               (let (S (car X)  Nm (name (val (tail S))))
+                  (? (== Name Nm) S)  # Found symbol
+                  (if (> Name Nm)  # Symbol is smaller
                      (let Y (cdr X)  # Get link cell
-                        (when (atom Y)  # No link yet
-                           # .. check More
-                           (when (=0 Sym)  # New symbol
-                              (setq Sym (consSym Name Val)) )
-                           (set 2 X (cons $Nil (cons Sym $Nil)))
-                           (ret Sym) )
-                        (if (pair (setq Y (cdr (setq X Y))))
-                           (setq X Y)
-                           # .. check More
-                           (when (=0 Sym)  # New symbol
-                              (setq Sym (consSym Name Val)) )
-                           (set 2 X (cons Sym $Nil))
-                           (ret Sym) ) ) )
-                  (T  # Symbol is greater
+                        (? (atom Y)  # No link yet
+                           (unless (isLstIntern Sym Name More)
+                              (when (=0 Sym)  # New symbol
+                                 (setq Sym (consSym Name Val)) )
+                              (set 2 X (cons $Nil (cons Sym $Nil))) )
+                           Sym )
+                        (? (atom (setq Y (cdr (setq X Y))))
+                           (unless (isLstIntern Sym Name More)
+                              (when (=0 Sym)  # New symbol
+                                 (setq Sym (consSym Name Val)) )
+                              (set 2 X (cons Sym $Nil)) )
+                           Sym )
+                        (setq X Y) )
+                     # Symbol is greater
                      (let Y (cdr X)  # Get link cell
-                        (when (atom Y)  # No link yet
-                           # .. check More
-                           (when (=0 Sym)  # New symbol
-                              (setq Sym (consSym Name Val)) )
-                           (set 2 X (cons (cons Sym $Nil) $Nil))
-                           (ret Sym) )
-                        (if (pair (setq Y (car (setq X Y))))
-                           (setq X Y)
-                           # .. check More
-                           (when (=0 Sym)  # New symbol
-                              (setq Sym (consSym Name Val)) )
-                           (set X (cons Sym $Nil))
-                           (ret Sym) ) ) ) ) ) ) ) )
-   # Long name
-   (let X (cdr Tree)  # Second tree
-      (when (atom X)  # Empty
-         # .. check More
-         (when (=0 Sym)  # New symbol
-            (setq Sym (consSym Name Val)) )
-         (set 2 Tree (cons Sym $Nil))
-         (ret Sym) )
-      (loop
-         (let
-            (S (car X)
-               Nm (name (val (tail S)))
-               I (cmpLong Nm Name) )
-            (cond
-               ((=0 I) (ret S))  # Found symbol
-               ((lt0 I)  # Symbol is smaller
-                  (let Y (cdr X)  # Get link cell
-                     (when (atom Y)  # No link yet
-                        # .. check More
-                        (when (=0 Sym)  # New symbol
-                           (setq Sym (consSym Name Val)) )
-                        (set 2 X (cons $Nil (cons Sym $Nil)))
-                        (ret Sym) )
-                     (if (pair (setq Y (cdr (setq X Y))))
-                        (setq X Y)
-                        # .. check More
-                        (when (=0 Sym)  # New symbol
-                           (setq Sym (consSym Name Val)) )
-                        (set 2 X (cons Sym $Nil))
-                        (ret Sym) ) ) )
-               (T  # Symbol is greater
-                  (let Y (cdr X)  # Get link cell
-                     (when (atom Y)  # No link yet
-                        # .. check More
-                        (when (=0 Sym)  # New symbol
-                           (setq Sym (consSym Name Val)) )
-                        (set 2 X (cons (cons Sym $Nil) $Nil))
-                        (ret Sym) )
-                     (if (pair (setq Y (car (setq X Y))))
-                        (setq X Y)
-                        # .. check More
-                        (when (=0 Sym)  # New symbol
-                           (setq Sym (consSym Name Val)) )
-                        (set X (cons Sym $Nil))
-                        (ret Sym) ) ) ) ) ) ) ) )
+                        (? (atom Y)  # No link yet
+                           (unless (isLstIntern Sym Name More)
+                              (when (=0 Sym)  # New symbol
+                                 (setq Sym (consSym Name Val)) )
+                              (set 2 X (cons (cons Sym $Nil) $Nil)) )
+                           Sym )
+                        (? (atom (setq Y (car (setq X Y))))
+                           (unless (isLstIntern Sym Name More)
+                              (when (=0 Sym)  # New symbol
+                                 (setq Sym (consSym Name Val)) )
+                              (set X (cons Sym $Nil)) )
+                           Sym )
+                        (setq X Y) ) ) ) )
+            # Empty
+            (unless (isLstIntern Sym Name More)
+               (when (=0 Sym)  # New symbol
+                  (setq Sym (consSym Name Val)) )
+               (set Tree (cons Sym $Nil)) )
+            Sym ) )
+      # Long name
+      (let X (cdr Tree)  # Second tree
+         (if (pair X)  # No empty
+            (loop
+               (let
+                  (S (car X)
+                     Nm (name (val (tail S)))
+                     I (cmpLong Nm Name) )
+                  (? (=0 I) S)  # Found symbol
+                  (if (lt0 I)  # Symbol is smaller
+                     (let Y (cdr X)  # Get link cell
+                        (? (atom Y)  # No link yet
+                           (unless (isLstIntern Sym Name More)
+                              (when (=0 Sym)  # New symbol
+                                 (setq Sym (consSym Name Val)) )
+                              (set 2 X (cons $Nil (cons Sym $Nil))) )
+                           Sym )
+                        (? (atom (setq Y (cdr (setq X Y))))
+                           (unless (isLstIntern Sym Name More)
+                              (when (=0 Sym)  # New symbol
+                                 (setq Sym (consSym Name Val)) )
+                              (set 2 X (cons Sym $Nil)) )
+                           Sym )
+                        (setq X Y) )
+                     # Symbol is greater
+                     (let Y (cdr X)  # Get link cell
+                        (? (atom Y)  # No link yet
+                           (unless (isLstIntern Sym Name More)
+                              (when (=0 Sym)  # New symbol
+                                 (setq Sym (consSym Name Val)) )
+                              (set 2 X (cons (cons Sym $Nil) $Nil)) )
+                           Sym )
+                        (? (atom (setq Y (car (setq X Y))))
+                           (unless (isLstIntern Sym Name More)
+                              (when (=0 Sym)  # New symbol
+                                 (setq Sym (consSym Name Val)) )
+                              (set X (cons Sym $Nil)) )
+                           Sym )
+                        (setq X Y) ) ) ) )
+            # Empty
+            (unless (isLstIntern Sym Name More)
+               (when (=0 Sym)  # New symbol
+                  (setq Sym (consSym Name Val)) )
+               (set 2 Tree (cons Sym $Nil)) )
+            Sym ) ) ) )
 
-(de findSym (Name)
+(de requestSym (Name)
    (intern 0 $Nil Name
       (val (car (val $Intern)))
       (cdr (val $Intern)) ) )

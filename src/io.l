@@ -424,7 +424,7 @@ pushOutFiles popInFiles popOutFiles)
          (setq C (call $Get)) )
       (prog1
          (let (Nm (val Q)  Num (symToNum Nm 0 (char ".") 0))
-            (if (n0 Num) Num (findSym Nm)) )
+            (if (n0 Num) Num (requestSym Nm)) )
          (drop Q) ) ) )
 
 (de rdList ()
@@ -675,9 +675,9 @@ pushOutFiles popInFiles popOutFiles)
                   (call $Put (char "{"))
                   (prExt Nm)
                   (call $Put (char "}")) )
-               ((isIntern X Nm
-                     (val (car (val $Intern)))
-                     (cdr (val $Intern)) )
+               ((or
+                     (isIntern X Nm (val (car (val $Intern))))
+                     (isLstIntern X Nm (cdr (val $Intern))) )
                   (let (P (push 0 (i64 Nm))  B NIL)  # [cnt name]
                      (until (=0 (setq B (numByte P)))
                         (call $Put (i32 B)) ) ) )
