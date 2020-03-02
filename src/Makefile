@@ -1,4 +1,4 @@
-# 19feb20 Software Lab. Alexander Burger
+# 02mar20 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -10,7 +10,7 @@ BIN = ../bin
 LIB = ../lib
 
 INC = lib/llvm.l vers.l defs.l glob.l dec.l
-SRC = main.l gc.l big.l db.l sym.l io.l apply.l flow.l subr.l net.l
+SRC = main.l gc.l big.l sym.l io.l db.l apply.l flow.l subr.l net.l
 
 all: $(BIN)/picolisp $(LIB)/ext.so
 

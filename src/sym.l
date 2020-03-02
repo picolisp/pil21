@@ -1,11 +1,11 @@
-# 27feb20 Software Lab. Alexander Burger
+# 02mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
 (local) (name bufSize pathSize bufString pathString mkStr firstByte firstChar)
 
 (de name (Tail)
-   (setq Tail (any (& (i64 Tail) -9)))  # Clear 'extern' tag
+   (setq Tail (& Tail -9))  # Clear 'extern' tag
    (until (num? Tail)
       (>>> Tail) )
    Tail )
@@ -59,7 +59,7 @@
             0
             (numChar (push 0 (name Tail))) ) ) ) )  # Else get name
 
-(local) (pack xSym)
+(local) (pack xSym extNm)
 
 (de void pack (X (i64* . P))
    (when (pair X)
@@ -85,8 +85,89 @@
             (drop Q) ) )
       X ) )
 
+# Build external symbol name
+(de extNm ((i32 . File) (i64 . Obj))
+   (cnt
+      (|
+         (& Obj (hex "FFFFF"))  # Lowest 20 bits
+         (|
+            (shl (i64 (& File (hex "FF"))) 20)  # Lower 8 bits
+            (|
+               (shl
+                  (& (setq Obj (shr Obj 20)) (hex "FFF"))  # Middle 12 bits
+                  28 )
+               (|
+                  (shl (i64 (shr File 8)) 40)  # Upper 8 bits
+                  (shl (shr Obj 12) 48) ) ) ) ) ) )  # Highest 10 bits
+
+(local) (objFile objId packAO packOct packExtNm chopExtNm)
+
+# Get file number from external symbol name
+(de i32 objFile (Name)
+   (|
+      (& (i32 (setq Name (shr Name 24))) (hex "FF"))  # Low 8 bits
+      (& (i32 (shr Name 12)) (hex "FF00")) ) )  # High 8 bits
+
+# Get object ID from external symbol name
+(de i64 objId (Name)
+   (|
+      (|
+         (& (setq Name (shr Name 4)) (hex "FFFFF"))  # Lowest 20 bits
+         (& (setq Name (shr Name 8)) (hex "FFF00000")) )  # Middle 12 bits
+      (& (shr Name 8) (hex "3FF00000000")) ) )  # Highest 10 bits
+
+# Pack external symbol name
+(de void packAO ((i32 . File) (i64* . P))
+   (when (> File 15)
+      (packAO (shr File 4) P) )  # Divide by 16
+   (byteNum (+ (& (i8 File) 15) (char "@")) P) )  # Make ASCII letter
+
+(de void packOct ((i64 . Obj) (i64* . P))
+   (when (> Obj 7)
+      (packOct (shr Obj 3) P) )  # Divide by 8
+   (byteNum (+ (& (i8 Obj) 7) (char "0")) P) )  # Make ASCII digit
+
+(de packExtNm (Name)
+   (let (P (push 4 ZERO NIL)  Q (link (ofs P 1)))  # [cnt name link]
+      (let File (objFile Name)
+         (unless (=0 File)
+            (packAO File P) ) )
+      (packOct (objId Name) P)
+      (prog1
+         (consSym (val Q) 0)
+         (drop Q) ) ) )
+
+# Chop external symbol name
+(de chopExtNm (Name)
+   (let (R (link (push $Nil NIL))  N (objId Name))
+      (loop
+         (let A (+ (& N 7) (char "0"))  # Make ASCII digit
+            (unless (=0 (setq N (shr N 3)))
+               (setq A
+                  (|
+                     (shl A 8)
+                     (+ (& N 7) (char "0")) ) )  # Second octal digit
+               (unless (=0 (setq N (shr N 3)))
+                  (setq A
+                     (|
+                        (shl A 8)
+                        (+ (& N 7) (char "0")) ) ) ) )  # Third octal digit
+            (set R
+               (cons (consSym (cnt A) 0) (val R)) ) )
+         (? (=0 (setq N (shr N 3)))) )
+      (unless (=0 (setq N (objFile Name)))
+         (let F (i32 0)
+            (loop
+               (setq F
+                  (| F (+ (& N 15) (char "@"))) )  # Make ASCII letter
+               (? (=0 (setq N (shr N 4))))
+               (setq F (shl F 8)) )
+            (set R
+               (cons (consSym (cnt (i64 F)) 0) (val R)) ) ) )
+      (pop R) ) )
+
 ### Interning ###
-(local) (cmpLong intern isIntern findSym)
+(local) (cmpLong intern isIntern findSym extern)
 
 (de i32 cmpLong (X Y)
    (loop
@@ -234,6 +315,78 @@
    (intern 0 $Nil Name
       (val (car (val $Intern)))
       (cdr (val $Intern)) ) )
+
+# Intern an external symbol
+(de extern (Name)
+   (let (X (val $Extern)  C 0  Sym NIL)
+      (loop
+         (inc 'C)  # Next level
+         (setq Sym (car X))  # Next symbol
+         (let Nm (& (name (val (tail Sym))) (hex "3FFFFFFFFFFFFFF7"))  # Mask status and extern bits
+            (? (== Nm Name))  # Found
+            (if (> Name Nm)  # Symbol is smaller
+               (let Y (cdr X)  # Get link cell
+                  (? (atom Y)  # No link yet
+                     (set 2 X
+                        (cons $Nil (cons (setq Sym (consExt Name)) $Nil)) ) )
+                  (? (atom (setq Y (cdr (setq X Y))))
+                     (set 2 X
+                        (cons (setq Sym (consExt Name)) $Nil) ) )
+                  (setq X Y) )
+               (let Y (cdr X)  # Get link cell
+                  (? (atom Y)  # No link yet
+                     (set 2 X
+                        (cons (cons (setq Sym (consExt Name)) $Nil) $Nil) ) )
+                  (? (atom (setq Y (cdr (setq X Y))))
+                     (set X
+                        (cons (setq Sym (consExt Name)) $Nil) ) )
+                  (setq X Y) ) ) ) )
+      (setq C (shr C 1))  # Half depth
+      (when (> (shl 1 C) (val $ExtCnt))  # 2 ** (C/2)
+         (setq X (val $Extern))
+         (let N (val $ExtSkip)  # Levels to skip
+            (if (> (inc 'N) C)  # Beyond half depth
+               (set $ExtSkip 0)  # Don't skip
+               (set $ExtSkip N)
+               (loop  # Skip
+                  (setq X
+                     (if
+                        (>
+                           Name
+                           (&
+                              (name (val (tail (++ X))))
+                              (hex "3FFFFFFFFFFFFFF7") ) )
+                        (cdr X)
+                        (car X) ) )
+                  (? (=0 (dec 'C))) ) ) )
+         (loop  # Pivot
+            (let
+               (Nm
+                  (&
+                     (name (val (tail (car X))))
+                     (hex "3FFFFFFFFFFFFFF7") )
+                  Y (cdr X) )
+            (? (== Nm Name))  # Done
+            (if (> Name Nm)  # Symbol is smaller
+               (let Z (cdr Y)  # Get right node
+                  (? (atom (cdr Z)))
+                  (xchg Z X)  # Pivot left
+                  (setq Z (cdr Z)  X (cdr Z))
+                  (set  # Rotate pointers
+                     2 Z (val Z)
+                     Z (val Y)
+                     Y (cdr Y)
+                     2 Y X) )
+               (let Z (car Y)  # Get left node
+                  (? (atom (cdr Z)))
+                  (xchg Z X)  # Pivot right
+                  (setq Z (cdr Z)  X (val Z))
+                  (set  # Rotate pointers
+                     Z (cdr Z)
+                     2 Z (cdr Y)
+                     2 Y (val Y)
+                     Y X) ) ) ) ) )
+      Sym ) )
 
 ### Matching ###
 (local) (preStr subStr)

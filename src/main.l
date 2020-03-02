@@ -267,7 +267,7 @@ evLst evSym)
 (de evSym (Exe)
    (xSym (eval (car Exe))) )
 
-(load "gc.l" "big.l" "db.l" "sym.l")
+(load "gc.l" "big.l" "sym.l")
 
 # Comparisons
 (local) (equal compare)
@@ -336,7 +336,7 @@ evLst evSym)
                (? (and (== X A) (== Y B))
                   (i32 0) ) ) ) ) ) )
 
-(load "io.l" "apply.l" "flow.l" "subr.l" "net.l")
+(load "io.l" "db.l" "apply.l" "flow.l" "subr.l" "net.l")
 
 # Evaluation
 (local) (undefined evExpr sharedLib evList)

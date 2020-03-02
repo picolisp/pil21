@@ -175,8 +175,6 @@ print repl)
 (de i1 equal (any any))
 (de i32 compare (any any))
 (de evList (any))
-# db.l
-(de dbTouch (any))
 # sym.l
 (de name (any))
 (de i64 bufSize (any))
@@ -198,6 +196,8 @@ print repl)
 (de void outString (i8*))
 (de void print (any))
 (de repl (any i32 any))
+# db.l
+(de dbTouch (any))
 
 ### Primitives
 (local) (caar cadr cdar cddr int cnt sign sym length eval run)
@@ -245,4 +245,4 @@ print repl)
          (eval (car Bnd2)) )
       (when (pair (car Bnd2))
          (evList (car Bnd2)) )
-     (setq Bnd2 (cdr Bnd2)) ) )
+     (>>> Bnd2) ) )

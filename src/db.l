@@ -13,81 +13,7 @@
 (de NIL dbWrErr ()
    (err 0 0 ($ "DB write: %s") (strErrno)) )
 
-# Intern an external symbol
-(local) extern
-
-(de extern (Name)
-   (let (X (val $Extern)  C 0  Sym NIL)
-      (loop
-         (inc 'C)  # Next level
-         (setq Sym (car X))  # Next symbol
-         (let Nm (& (name (val (tail Sym))) (hex "3FFFFFFFFFFFFFF7"))  # Mask status and extern bits
-            (? (== Nm Name))  # Found
-            (if (> Name Nm)  # Symbol is smaller
-               (let Y (cdr X)  # Get link cell
-                  (? (atom Y)  # No link yet
-                     (set 2 X
-                        (cons $Nil (cons (setq Sym (consExt Name)) $Nil)) ) )
-                  (? (atom (setq Y (cdr (setq X Y))))
-                     (set 2 X
-                        (cons (setq Sym (consExt Name)) $Nil) ) )
-                  (setq X Y) )
-               (let Y (cdr X)  # Get link cell
-                  (? (atom Y)  # No link yet
-                     (set 2 X
-                        (cons (cons (setq Sym (consExt Name)) $Nil) $Nil) ) )
-                  (? (atom (setq Y (cdr (setq X Y))))
-                     (set X
-                        (cons (setq Sym (consExt Name)) $Nil) ) )
-                  (setq X Y) ) ) ) )
-      (setq C (shr C 1))  # Half depth
-      (when (> (shl 1 C) (val $ExtCnt))  # 2 ** (C/2)
-         (setq X (val $Extern))
-         (let N (val $ExtSkip)  # Levels to skip
-            (if (> (inc 'N) C)  # Beyond half depth
-               (set $ExtSkip 0)  # Don't skip
-               (set $ExtSkip N)
-               (loop  # Skip
-                  (setq X
-                     (if
-                        (>
-                           Name
-                           (&
-                              (name (val (tail (++ X))))
-                              (hex "3FFFFFFFFFFFFFF7") ) )
-                        (cdr X)
-                        (car X) ) )
-                  (? (=0 (dec 'C))) ) ) )
-         (loop  # Pivot
-            (let
-               (Nm
-                  (&
-                     (name (val (tail (car X))))
-                     (hex "3FFFFFFFFFFFFFF7") )
-                  Y (cdr X) )
-            (? (== Nm Name))  # Done
-            (if (> Name Nm)  # Symbol is smaller
-               (let Z (cdr Y)  # Get right node
-                  (? (atom (cdr Z)))
-                  (xchg Z X)  # Pivot left
-                  (setq Z (cdr Z)  X (cdr Z))
-                  (set  # Rotate pointers
-                     2 Z (val Z)
-                     Z (val Y)
-                     Y (cdr Y)
-                     2 Y X) )
-               (let Z (car Y)  # Get left node
-                  (? (atom (cdr Z)))
-                  (xchg Z X)  # Pivot right
-                  (setq Z (cdr Z)  X (val Z))
-                  (set  # Rotate pointers
-                     Z (cdr Z)
-                     2 Z (cdr Y)
-                     2 Y (val Y)
-                     Y X) ) ) ) ) )
-      Sym ) )
-
-(local) (getAdr setAdr extNm objFile objId packAO packOct packExtNm chopExtNm)
+(local) (getAdr setAdr)
 
 # 6 bytes in little endian format
 # Get block address from buffer
@@ -120,85 +46,6 @@
    (set 4 P (i8 (setq N (shr N 8))))
    (set 5 P (i8 (setq N (shr N 8))))
    (set 6 P (i8 (shr N 8))) )
-
-# Build external symbol name
-(de extNm ((i32 . File) (i64 . Obj))
-   (cnt
-      (|
-         (& Obj (hex "FFFFF"))  # Lowest 20 bits
-         (|
-            (shl (i64 (& File (hex "FF"))) 20)  # Lower 8 bits
-            (|
-               (shl
-                  (& (setq Obj (shr Obj 20)) (hex "FFF"))  # Middle 12 bits
-                  28 )
-               (|
-                  (shl (i64 (shr File 8)) 40)  # Upper 8 bits
-                  (shl (shr Obj 12) 48) ) ) ) ) ) )  # Highest 10 bits
-
-# Get file number from external symbol name
-(de i32 objFile (Name)
-   (|
-      (& (i32 (setq Name (shr Name 24))) (hex "FF"))  # Low 8 bits
-      (& (i32 (shr Name 12)) (hex "FF00")) ) )  # High 8 bits
-
-# Get object ID from external symbol name
-(de i64 objId (Name)
-   (|
-      (|
-         (& (setq Name (shr Name 4)) (hex "FFFFF"))  # Lowest 20 bits
-         (& (setq Name (shr Name 8)) (hex "FFF00000")) )  # Middle 12 bits
-      (& (shr Name 8) (hex "3FF00000000")) ) )  # Highest 10 bits
-
-# Pack external symbol name
-(de void packAO ((i32 . File) (i64* . P))
-   (when (> File 15)
-      (packAO (shr File 4) P) )  # Divide by 16
-   (byteNum (+ (& (i8 File) 15) (char "@")) P) )  # Make ASCII letter
-
-(de void packOct ((i64 . Obj) (i64* . P))
-   (when (> Obj 7)
-      (packOct (shr Obj 3) P) )  # Divide by 8
-   (byteNum (+ (& (i8 Obj) 7) (char "0")) P) )  # Make ASCII digit
-
-(de packExtNm (Name)
-   (let (P (push 4 ZERO NIL)  Q (link (ofs P 1)))  # [cnt name link]
-      (let File (objFile Name)
-         (unless (=0 File)
-            (packAO File P) ) )
-      (packOct (objId Name) P)
-      (prog1
-         (consSym (val Q) 0)
-         (drop Q) ) ) )
-
-# Chop external symbol name
-(de chopExtNm (Name)
-   (let (R (link (push $Nil NIL))  N (objId Name))
-      (loop
-         (let A (+ (& N 7) (char "0"))  # Make ASCII digit
-            (unless (=0 (setq N (shr N 3)))
-               (setq A
-                  (|
-                     (shl A 8)
-                     (+ (& N 7) (char "0")) ) )  # Second octal digit
-               (unless (=0 (setq N (shr N 3)))
-                  (setq A
-                     (|
-                        (shl A 8)
-                        (+ (& N 7) (char "0")) ) ) ) )  # Third octal digit
-            (set R
-               (cons (consSym (cnt A) 0) (val R)) ) )
-         (? (=0 (setq N (shr N 3)))) )
-      (unless (=0 (setq N (objFile Name)))
-         (let F (i32 0)
-            (loop
-               (setq F
-                  (| F (+ (& N 15) (char "@"))) )  # Make ASCII letter
-               (? (=0 (setq N (shr N 4))))
-               (setq F (shl F 8)) )
-            (set R
-               (cons (consSym (cnt (i64 F)) 0) (val R)) ) ) )
-      (pop R) ) )
 
 # Locking
 (local) (rdLockDb wrLockDb unLockDb tryLock lockJnl unLockJnl)
@@ -423,7 +270,51 @@
 (de _rollback (Exe)
    (if (and (=0 (val $DBs)) (atom (val $Ext)))
       $Nil
-      $T ) )
+   (let (Tos 0  P (val $Extern))  # Iterate external symbol tree
+      (loop
+         (loop
+            (let X (cdr P)  # Get subtrees
+               (let Y (cdr X)  # Right subtree
+                  (? (atom Y))
+                  (let Z P  # Go right
+                     (setq P Y)  # Invert tree
+                     (set 2 X Tos)
+                     (setq Tos Z) ) ) ) )
+         (loop
+            (let (S (val P)  Tail (val (tail S)))  # Get external symbol
+               (unless (num? Tail)  # Any properties
+                  (setq Tail (& Tail -9))  # Clear 'extern' tag
+                  (loop
+                     (? (num? (>>> Tail))) )  # Find name
+                  (setq Tail (| Tail 8)) )  # Set 'extern' tag
+               (set (tail S) (shr (shl Tail 2) 2))  # Strip status bits
+               (set S $Nil) )  # Clear value
+            (let (X (cdr P)  Y (car X))  # Left subtree
+               (? (pair Y)
+                  (let Z P  # Go left
+                     (setq P Y)  # Invert tree
+                     (set X Tos)
+                     (setq Tos (| Z 8)) ) ) )  # First visit
+            (loop
+               (and (=0 Tos) (goto 1))
+               (? (=0 (& Tos 8))  # Second visit
+                  (let (X Tos  Y (cdr X))  # Nodes
+                     (setq Tos (cdr Y))  # TOS on up link
+                     (set 2 Y P)
+                     (setq P X) ) )
+               (setq Tos (& Tos -9))  # Clear visit bit
+               (let (X Tos  Y (cdr X))  # Nodes
+                  (setq Tos (car Y))
+                  (set Y P)
+                  (setq P X) ) ) ) ) )
+   (: 1
+      (let Z (val $Zap)  # Objects to delete
+         (when (pair Z)
+            (set Z $Nil) ) ) )  # Clear zap list
+   (unless (=0 (val $DBs))  # DB open
+      (unLockDb 0) )  # Unlock all
+   #! (unsync)
+   $T ) )
 
 # (pool ['sym1 ['lst] ['sym2] ['sym3]]) -> T
 (de _pool (Exe)

@@ -1,4 +1,4 @@
-# 27feb20 Software Lab. Alexander Burger
+# 02mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -107,12 +107,12 @@
          (loop
             (let S (val P)  # Get external symbol
                (unless (=0 (& (val S) 1))  # Not marked
-                  (let N (val (tail S))
-                     (unless (num? N)  # Has properties
-                        (setq N (& N -10))  # Clear 'extern' tag and mark bit
-                        (until (num? (setq N (cdr N)))  # Skip property
-                           (setq N (& N -2)) ) )  # Clear mark bit
-                     (add N N)  # Get carry
+                  (let Tail (val (tail S))
+                     (unless (num? Tail)  # Has properties
+                        (setq Tail (& Tail -10))  # Clear 'extern' tag and mark bit
+                        (until (num? (>>> Tail))  # Skip property
+                           (setq Tail (& Tail -2)) ) )  # Clear mark bit
+                     (add Tail Tail)  # Get carry
                      (when @@  # Dirty or deleted
                         (mark S) ) ) ) )
             (let (X (cdr P)  Y (car X))  # Left subtree
