@@ -1,4 +1,4 @@
-# 27feb20 Software Lab. Alexander Burger
+# 03mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1111,7 +1111,7 @@
             (and
                (sym? Y)
                (sym? (val (tail Y)))  # External
-               (dbTouch Y) )
+               (dbTouch Exe Y) )
             (if (atom X)
                (let N (val Y)
                   (if (nil? N)
@@ -1135,7 +1135,7 @@
             (and
                (sym? Y)
                (sym? (val (tail Y)))  # External
-               (dbTouch Y) )
+               (dbTouch Exe Y) )
             (if (atom X)
                (let N (val Y)
                   (if (nil? N)

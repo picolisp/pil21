@@ -1,4 +1,4 @@
-# 02mar20 Software Lab. Alexander Burger
+# 03mar20 Software Lab. Alexander Burger
 
 ## PicoLisp LLVM frontend ##
 (symbols 'llvm 'pico)
@@ -117,22 +117,23 @@ End *Safe)
                      (and (sym? (cdr X)) (val (cdr X))) )
                   (cddr L) )
                'i64 )
-            (if
-               (fully
-                  '((X)
-                     (cond
-                        ((=T (cdr X)))
-                        ((num? (cdr X))
-                           (memq Typ '(i8 i32 i64 any)) )
-                        (T
-                           (== (type Typ) (type (val (cdr X)))) ) ) )
-                  (cddr L) )
-               (set
-                  (car L)  # Var
+            (cond
+               ((== void Typ) void)
+               ((fully
+                     '((X)
+                        (cond
+                           ((=T (cdr X)))
+                           ((num? (cdr X))
+                              (memq Typ '(i8 i32 i64 any)) )
+                           (T
+                              (== (type Typ) (type (val (cdr X)))) ) ) )
+                     (cddr L) )
                   (set
-                     (cdr L)  # Ssa
-                     (def (pack "%" (inc '*Ssa)) Typ) ) )
-               void ) ) ) ) )
+                     (car L)  # Var
+                     (set
+                        (cdr L)  # Ssa
+                        (def (pack "%" (inc '*Ssa)) Typ) ) ) )
+               (T void) ) ) ) ) )
 
 (de +lbl ()
    (inc '*Lbl) )

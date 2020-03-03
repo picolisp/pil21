@@ -1,4 +1,4 @@
-# 02mar20 Software Lab. Alexander Burger
+# 03mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -158,7 +158,7 @@
       (pop R) ) )
 
 ### Interning ###
-(local) (cmpLong isIntern isLstIntern intern requestSym extern)
+(local) (cmpLong isIntern isLstIntern intern requestSym extern delNode unintern)
 
 # Compare long names
 (de i32 cmpLong (X Y)
@@ -368,6 +368,68 @@
                      2 Y (val Y)
                      Y X) ) ) ) ) )
       Sym ) )
+
+(de void delNode (X P)
+   (let Y (cdr X)  # Subtrees
+      (cond
+         ((atom (car Y))  # No left branch
+            (set P (cdr Y)) )  # Use right branch
+         ((atom (cdr Y))  # No right branch
+            (set P (car Y)) )  # Use left branch
+         ((atom (car (setq P (cdr (>>> Y)))))  # Y on right branch, P on sub-branches
+            (set  # No left sub-branch
+               X (car Y)  # Insert right sub-branch
+               2 (cdr X) (cdr P) ) )
+         (T
+            (setq P (car P))  # Left sub-branch
+            (loop
+               (let Z (cdr P)  # More left branches
+                  (? (atom (car Z))
+                     (set
+                        X (car P)  # Insert left sub-branch
+                        (cdr Y) (cdr Z) ) )
+                  (setq Y P  P (car Z)) ) ) ) ) ) )  # Go down left
+
+(de void unintern (Sym Name P)
+   (if (cnt? Name)  # Short name
+      (loop  # First tree
+         (let X (car P)  # Next node
+            (? (atom X))  # Empty
+            (let (S (car X)  Nm (name (val (tail S))))
+               (? (== Name Nm)
+                  (when (== S Sym)  # Correct symbol
+                     (delNode X P) ) )
+               (? (atom (>>> X)))
+               (setq P
+                  (if (> Name Nm) (ofs X 1) X) ) ) ) )
+      # Long name
+      (setq P (ofs P 1))  # Second tree
+      (loop
+         (let X (car P)  # Next node
+            (? (atom X))  # Empty
+            (let
+               (S (car X)
+                  Nm (name (val (tail S)))
+                  I (cmpLong Nm Name) )
+               (? (=0 I)
+                  (when (== S Sym)  # Correct symbol
+                     (delNode X P) ) )
+               (? (atom (>>> X)))
+               (setq P
+                  (if (lt0 I) (ofs X 1) X) ) ) ) ) ) )
+
+
+# (zap 'sym) -> sym
+(de _zap (Exe)
+   (let
+      (X (cdr Exe)
+         Sym (needSym Exe (eval (car X)))
+         Tail (val (tail Sym)) )
+      (if (sym? Tail)  # External
+         (dbZap Sym)
+         (unintern Sym (name Tail) (car (val $Intern))) )
+      Sym ) )
+
 
 ### Matching ###
 (local) (preStr subStr)

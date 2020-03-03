@@ -1,4 +1,4 @@
-# 02mar20 Software Lab. Alexander Burger
+# 03mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -198,7 +198,8 @@ ffiCall)
 (de void print (any))
 (de repl (any i32 any))
 # db.l
-(de dbTouch (any))
+(de dbTouch (any any))
+(de dbZap (any))
 
 ### Primitives
 (local) (caar cadr cdar cddr int cnt sign sym length eval run)

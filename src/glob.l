@@ -1,4 +1,4 @@
-# 02mar20 Software Lab. Alexander Burger
+# 03mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -152,6 +152,7 @@
    (NIL "rollback" _rollback)
    (NIL "pool" _pool)
    # Symbol functions
+   (NIL "zap" _zap)
    (NIL "pre?" _preQ)
    (NIL "sub?" _subQ)
    (NIL "low?" _lowQ)
