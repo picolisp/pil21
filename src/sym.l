@@ -427,7 +427,7 @@
          Tail (val (tail Sym)) )
       (if (sym? Tail)  # External
          (dbZap Sym)
-         (unintern Sym (name Tail) (car (val $Intern))) )
+         (unintern Sym (name Tail) (val (car (val $Intern)))) )
       Sym ) )
 
 
