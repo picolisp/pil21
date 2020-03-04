@@ -1,4 +1,4 @@
-# 03mar20 Software Lab. Alexander Burger
+# 04mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -200,7 +200,7 @@
 (de i1 isLstIntern (Sym Name Lst)
    (loop
       (? (atom Lst) NO)
-      (? (isIntern Sym Name (++ Lst)) YES) ) )
+      (? (isIntern Sym Name (val (++ Lst))) YES) ) )
 
 # Intern a symbol/name
 (de intern (Sym Val Name Tree More)
@@ -418,12 +418,32 @@
                (setq P
                   (if (lt0 I) (ofs X 1) X) ) ) ) ) ) )
 
+# (name 'sym) -> sym
+(de _name (Exe)
+   (let
+      (Sym (needSym Exe (eval (cadr Exe)))
+         Tail (val (tail Sym))
+         Name (name Tail) )
+      (if (sym? Tail)  # External
+         (packExtNm Name)
+         (consSym Name 0) ) ) )
+
+# (nsp 'sym) -> sym
+(de _nsp (Exe)
+   (let
+      (Sym (needSym Exe (eval (cadr Exe)))
+         Name (name (val (tail Sym)))
+         Lst (val $Intern) )  # Search namespaces
+      (loop
+         (? (atom Lst) $Nil)
+         (let Ns (++ Lst)
+            (? (isIntern Sym Name (val Ns)) Ns) ) ) ) )
+
 
 # (zap 'sym) -> sym
 (de _zap (Exe)
    (let
-      (X (cdr Exe)
-         Sym (needSym Exe (eval (car X)))
+      (Sym (needSym Exe (eval (cadr Exe)))
          Tail (val (tail Sym)) )
       (if (sym? Tail)  # External
          (dbZap Sym)

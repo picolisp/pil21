@@ -1,4 +1,4 @@
-# 03mar20 Software Lab. Alexander Burger
+# 04mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -148,10 +148,9 @@
    (NIL "seed" _seed)
    (NIL "hash" _hash)
    (NIL "rand" _rand)
-   # Database
-   (NIL "rollback" _rollback)
-   (NIL "pool" _pool)
    # Symbol functions
+   (NIL "name" _name)
+   (NIL "nsp" _nsp)
    (NIL "zap" _zap)
    (NIL "pre?" _preQ)
    (NIL "sub?" _subQ)
@@ -172,6 +171,9 @@
    (NIL "println" _println)
    (NIL "flush" _flush)
    (NIL "load" _load)
+   # Database
+   (NIL "rollback" _rollback)
+   (NIL "pool" _pool)
    # Mapping
    (NIL "apply" _apply)
    (NIL "map" _map)
