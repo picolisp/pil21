@@ -151,6 +151,7 @@
    # Symbol functions
    (NIL "name" _name)
    (NIL "nsp" _nsp)
+   (NIL "sp?" _spQ)
    (NIL "zap" _zap)
    (NIL "pre?" _preQ)
    (NIL "sub?" _subQ)

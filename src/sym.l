@@ -2,7 +2,7 @@
 
 (symbols '(llvm))
 
-(local) (name bufSize pathSize bufString pathString mkStr firstByte firstChar)
+(local) (name bufSize pathSize bufString pathString)
 
 (de name (Tail)
    (setq Tail (& Tail -9))  # Clear 'extern' tag
@@ -24,13 +24,41 @@
    (bufSize Sym) )  #!
 
 (de i8* bufString (X (i8* . P))
-   (let (Q (push 0 (name (val (tail X)))))  # [cnt name]
+   (let Q (push 0 (name (val (tail X))))  # [cnt name]
       (prog1 P
          (until (=0 (set P (numByte Q)))
             (inc 'P) ) ) ) )
 
 (de i8* pathString (X (i8* . P))
    (bufString X P) )  #!
+
+(local) (mkChar mkStr firstByte firstChar isBlank)
+
+(de mkChar ((i32 . C))
+   (consStr
+      (cnt
+         (i64
+            (cond
+               ((>= 127 C) C)  # Single byte
+               ((== TOP C) (hex "FF"))  # Infinite
+               ((> (hex "800") C)  # Double-byte
+                  (|
+                     (| (hex "C0") (& (shr C 6) (hex "1F")))  # 10xxxxx 10xxxxxx
+                     (shl (| (hex "80") (& C (hex "3F"))) 8) ) )
+               ((> (hex "10000") C)  # Three bytes
+                  (|
+                     (|
+                        (| (hex "E0") (& (shr C 12) (hex "0F")))  # 1110xxxx 10xxxxxx 10xxxxxx
+                        (shl (| (hex "80") (& (shr C 6) (hex "3F"))) 8) )
+                     (shl (| (hex "80") (& C (hex "3F"))) 16) ) )
+               (T
+                  (|
+                     (|
+                        (|
+                           (| (hex "F0") (& (shr C 18) (hex "07")))  # 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+                           (shl (| (hex "80") (& (shr C 12) (hex "3F"))) 8) )
+                        (shl (| (hex "80") (& (shr C 6) (hex "3F"))) 16) )
+                     (shl (| (hex "80") (& C (hex "3F"))) 24) ) ) ) ) ) ) )
 
 (de mkStr ((i8* . Str))
    (if (=0 Str)
@@ -58,6 +86,15 @@
          (if (sym? Tail)  # External symbol
             0
             (numChar (push 0 (name Tail))) ) ) ) )  # Else get name
+
+(de i1 isBlank (X)
+   (if (or (num? X) (pair X))
+      NO
+      (let P (push 0 (name (val (tail X))))  # [cnt name]
+         (loop
+            (let B (numByte P)
+               (? (=0 B) YES)
+               (? (> B 32) NO) ) ) ) ) )
 
 (local) (pack extNm)
 
@@ -438,6 +475,12 @@
          (? (atom Lst) $Nil)
          (let Ns (++ Lst)
             (? (isIntern Sym Name (val Ns)) Ns) ) ) ) )
+
+# (sp? 'any) -> flg
+(de _spQ (Exe)
+   (if (isBlank (eval (cadr Exe)))
+      $T
+      $Nil ) )
 
 
 # (zap 'sym) -> sym
