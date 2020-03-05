@@ -1,4 +1,4 @@
-# 04mar20 Software Lab. Alexander Burger
+# 05mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -88,8 +88,9 @@
             (numChar (push 0 (name Tail))) ) ) ) )  # Else get name
 
 (de i1 isBlank (X)
-   (if (or (num? X) (pair X))
-      NO
+   (and
+      (not (num? X))
+      (sym? X)
       (let P (push 0 (name (val (tail X))))  # [cnt name]
          (loop
             (let B (numByte P)
@@ -482,6 +483,17 @@
       $T
       $Nil ) )
 
+# (pat? 'any) -> sym | NIL
+(de _patQ (Exe)
+   (let X (eval (cadr Exe))
+      (if
+         (and
+            (not (num? X))
+            (sym? X)
+            (== (firstChar X) (char "@")) )
+         X
+         $Nil ) ) )
+
 
 # (zap 'sym) -> sym
 (de _zap (Exe)
@@ -529,18 +541,24 @@
 # (low? 'any) -> sym | NIL
 (de _lowQ (Exe)
    (let X (eval (cadr Exe))
-      (cond
-         ((num? X) $Nil)
-         ((sym? X) (if (isLowc (firstChar X)) X $Nil))
-         (T $Nil) ) ) )
+      (if
+         (and
+            (not (num? X))
+            (sym? X)
+            (isLowc (firstChar X)) )
+         X
+         $Nil ) ) )
 
 # (upp? 'any) -> sym | NIL
 (de _uppQ (Exe)
    (let X (eval (cadr Exe))
-      (cond
-         ((num? (setq X (eval (cadr X)))) $Nil)
-         ((sym? X) (if (isUppc (firstChar X)) X $Nil))
-         (T $Nil) ) ) )
+      (if
+         (and
+            (not (num? X))
+            (sym? X)
+            (isUppc (firstChar X)) )
+         X
+         $Nil ) ) )
 
 # (lowc 'any) -> any
 (de _lowc (Exe)
