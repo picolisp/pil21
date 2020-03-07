@@ -138,7 +138,7 @@ atomErr pairErr varErr protErr lockErr)
                                     (car Tag) ) )
                               (unwind (Ca:))
                               (longjmp (Ca: (rst)) 1) )
-                           (>>> Tag) ) ) )
+                           (shift Tag) ) ) )
                   (setq Ca (Ca: link)) ) ) ) )
       (set $Chr (set $ExtN 0))
       (set $Break NO)
@@ -292,18 +292,18 @@ atomErr pairErr varErr protErr lockErr)
       (let Y X
          (loop
             (set Y (| (val Y) 1))  # Mark
-            (? (atom (>>> Y))  # No circularity found
+            (? (atom (shift Y))  # No circularity found
                (loop
                   (set X (& (val X) -2))  # Unmark
-                  (? (atom (>>> X))) )
+                  (? (atom (shift X))) )
                0 )
             (? (n0 (& (val Y) 1))  # Detected circularity
                (until (== X Y)  # Skip non-circular part
                   (set X (& (val X) -2))  # Unmark
-                  (>>> X) )
+                  (shift X) )
                (loop
                   (set X (& (val X) -2))  # Unmark
-                  (? (== Y (>>> X))) )
+                  (? (== Y (shift X))) )
                Y ) ) ) ) )
 
 (de funq (X)
@@ -403,9 +403,9 @@ atomErr pairErr varErr protErr lockErr)
             (loop
                (let N (compare (car X) (car Y))
                   (? (n0 N) N) )
-               (? (atom (>>> X))
+               (? (atom (shift X))
                   (compare X (cdr Y)) )
-               (? (atom (>>> Y))
+               (? (atom (shift Y))
                   (if (== Y $T) (i32 -1) (i32 +1)) )
                (? (and (== X A) (== Y B))
                   (i32 0) ) ) ) ) ) )
@@ -439,14 +439,14 @@ atomErr pairErr varErr protErr lockErr)
                      (let L (link (push T NIL))  # [lst LINK]
                         (set $Next
                            (set L (push (eval (car X)) $Nil)) )  # [arg1 next]
-                        (while (pair (>>> X))
+                        (while (pair (shift X))
                            (setq L  # [argN next]
                               (set 2 L (push (eval (car X)) $Nil)) ) ) ) )
                   (set $Bind P)
                   (loop
                      (xchg (val 3 P) P)  # Exchange symbol value
                      (? (== Q P))
-                     (>>> P) )
+                     (shift P) )
                   (prog1
                      (run (cdr Exe))  # Run body
                      (set $Next (val Next)  $Link (val $Bind)) ) )
@@ -457,13 +457,13 @@ atomErr pairErr varErr protErr lockErr)
                (loop
                   (xchg (val 3 P) P)  # Exchange symbol value
                   (? (== Q P))
-                  (>>> P) )
+                  (shift P) )
                (run (cdr Exe)) ) )  # Run body
          (let P (val $Link)
             (loop
                (set (val 3 P) (val P))  # Restore values
                (? (== Q P))
-               (>>> P) )
+               (shift P) )
             (drop P) )
          (set $Bind (val 4 Q)) ) ) )
 

@@ -1,4 +1,4 @@
-# 02mar20 Software Lab. Alexander Burger
+# 07mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -445,7 +445,7 @@ pushOutFiles popInFiles popOutFiles)
                (let Y (set (link P) (read0 NO))
                   (? (pair (setq Y (eval (val P))))
                      (while (pair (cdr Y))
-                        (>>> Y) )
+                        (shift Y) )
                      Y ) )
                (drop P) ) ) )
       (loop
@@ -477,7 +477,7 @@ pushOutFiles popInFiles popOutFiles)
                      (eval
                         (set 2 X (read0 NO)) ) )
                   (while (pair (cdr X))
-                     (>>> X) ) )
+                     (shift X) ) )
                (T
                   (setq X
                      (set 2 X (cons (read0 NO) $Nil)) ) ) ) ) )
@@ -694,7 +694,7 @@ pushOutFiles popInFiles popOutFiles)
          (call $Put (char "("))
          (loop
             (print (car X))
-            (? (== $Nil (>>> X)))
+            (? (== $Nil (shift X)))
             (? (atom X)
                (outString ($ " . "))
                (print X) )

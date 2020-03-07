@@ -1,4 +1,4 @@
-# 03mar20 Software Lab. Alexander Burger
+# 07mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -285,7 +285,7 @@
                (unless (num? Tail)  # Any properties
                   (setq Tail (& Tail -9))  # Clear 'extern' tag
                   (loop
-                     (? (num? (>>> Tail))) )  # Find name
+                     (? (num? (shift Tail))) )  # Find name
                   (setq Tail (| Tail 8)) )  # Set 'extern' tag
                (set (tail S) (shr (shl Tail 2) 2))  # Strip status bits
                (set S $Nil) )  # Clear value
@@ -321,9 +321,9 @@
    (let
       (X (cdr Exe)
          Sym1 (save (evSym X))
-         Lst (save (evLst (>>> X)))
-         Sym2 (save (evSym (>>> X)))
-         Sym3 (save (evSym (>>> X))) )
+         Lst (save (evLst (shift X)))
+         Sym2 (save (evSym (shift X)))
+         Sym3 (save (evSym (shift X))) )
       (set $Solo ZERO)  # Reset solo mode
       (unless (=0 (val $DBs))
          (_rollback ZERO)

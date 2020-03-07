@@ -1,4 +1,4 @@
-# 03mar20 Software Lab. Alexander Burger
+# 07mar20 Software Lab. Alexander Burger
 
 ## PicoLisp LLVM frontend ##
 (symbols 'llvm 'pico)
@@ -27,7 +27,7 @@ phi +phi br label +lbl +bind type func ptr pointee store A B C I L M N P Q V X Y
 Exe Prg Typ Sym Ret Args Ext Table Body Var Val Lst Lbl Flg Skip True False Beg
 End *Safe)
 
-(import any inc dec ++ #{>>>}#)
+(import any inc dec ++ #{shift}#)
 
 (de *Err
    (and *Dbg (symbols '(priv llvm pico))) )
@@ -150,7 +150,7 @@ End *Safe)
                      (== 'quote (caadr X))
                      (== Var (cdadr X)) )
                   (and
-                     (memq (car X) '(llvm~setq llvm~++ llvm~>>>))
+                     (memq (car X) '(llvm~setq llvm~++ llvm~shift))
                      (for (L (cdr X)  L  (cddr L))
                         (T (== Var (car L)) T) ) )
                   (and
@@ -951,7 +951,7 @@ End *Safe)
       (ssa (inc '*Ssa) "getelementptr i64, i64* %" (dec *Ssa) ", i32 1")
       (ssa (inc '*Ssa) "load i64, i64* %" (dec *Ssa))
       (set (car Args) (def (pack "%" *Ssa) 'any)) )
-   (llvm~>>>) )
+   (llvm~shift) )
 
 (asm ()
    (@

@@ -1,4 +1,4 @@
-# 02mar20 Software Lab. Alexander Burger
+# 07mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -61,7 +61,7 @@
             (let
                (Q (link (ofs P 1))
                   R (push 4 ZERO NIL)  # [cnt name link]
-                  N (if (pair (>>> X)) (evCnt Exe X) 24) )
+                  N (if (pair (shift X)) (evCnt Exe X) 24) )
                (link (ofs R 1))
                (when
                   (or

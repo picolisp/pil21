@@ -1,4 +1,4 @@
-# 03mar20 Software Lab. Alexander Burger
+# 07mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -232,7 +232,7 @@ ffiCall)
    (let N 0
       (while (pair X)
          (inc 'N)
-         (>>> X) )
+         (shift X) )
       N ) )
 
 (inline box64 (N)
@@ -252,4 +252,4 @@ ffiCall)
          (eval (car Bnd2)) )
       (when (pair (car Bnd2))
          (evList (car Bnd2)) )
-     (>>> Bnd2) ) )
+     (shift Bnd2) ) )

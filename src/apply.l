@@ -1,4 +1,4 @@
-# 27feb20 Software Lab. Alexander Burger
+# 07mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -36,7 +36,7 @@
          (setq X (evList E))
          (loop
             (set (car P) (cdr (val (car P))))
-            (? (atom (>>> P)) ) ) )
+            (? (atom (shift P)) ) ) )
       X ) )
 
 # (mapcar 'fun 'lst ..) -> lst
@@ -68,5 +68,5 @@
                   (setq P (cdr E)  Q Args)
                   (loop
                      (set (car P) (car (++ Q)))
-                     (? (atom (>>> P))) )
+                     (? (atom (shift P))) )
                   (setq X (set 2 X (cons (evList E) $Nil))) ) ) ) ) ) )

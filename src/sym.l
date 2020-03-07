@@ -1,4 +1,4 @@
-# 06mar20 Software Lab. Alexander Burger
+# 07mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -7,7 +7,7 @@
 (de name (Tail)
    (setq Tail (& Tail -9))  # Clear 'extern' tag
    (until (num? Tail)
-      (>>> Tail) )
+      (shift Tail) )
    Tail )
 
 (de i64 bufSize (Sym)
@@ -103,7 +103,7 @@
    (when (pair X)
       (loop
          (pack (car X) P)
-         (? (atom (>>> X))) ) )
+         (? (atom (shift X))) ) )
    (cond
       ((nil? X))
       ((num? X) (fmtNum X 0 0 0 P))
@@ -414,7 +414,7 @@
             (set P (cdr Y)) )  # Use right branch
          ((atom (cdr Y))  # No right branch
             (set P (car Y)) )  # Use left branch
-         ((atom (car (setq P (cdr (>>> Y)))))  # Y on right branch, P on sub-branches
+         ((atom (car (setq P (cdr (shift Y)))))  # Y on right branch, P on sub-branches
             (set  # No left sub-branch
                X (car Y)  # Insert right sub-branch
                2 (cdr X) (cdr P) ) )
@@ -437,7 +437,7 @@
                (? (== Name Nm)
                   (when (== S Sym)  # Correct symbol
                      (delNode X P) ) )
-               (? (atom (>>> X)))
+               (? (atom (shift X)))
                (setq P
                   (if (> Name Nm) (ofs X 1) X) ) ) ) )
       # Long name
@@ -452,7 +452,7 @@
                (? (=0 I)
                   (when (== S Sym)  # Correct symbol
                      (delNode X P) ) )
-               (? (atom (>>> X)))
+               (? (atom (shift X)))
                (setq P
                   (if (lt0 I) (ofs X 1) X) ) ) ) ) ) )
 
@@ -538,7 +538,7 @@
 
 # (sub? 'any1 'any2) -> any2 | NIL
 (de _subQ (Exe)
-   (let (X (cdr Exe)  P (save (evSym X))  Z (evSym (>>> X)))
+   (let (X (cdr Exe)  P (save (evSym X))  Z (evSym (shift X)))
       (if (subStr P Z)
          Z
          $Nil ) ) )

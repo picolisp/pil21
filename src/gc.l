@@ -1,4 +1,4 @@
-# 02mar20 Software Lab. Alexander Burger
+# 07mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -62,7 +62,7 @@
    (let P (val $Link)  # Stack(s)
       (until (=0 P)
          (mark (val P))  # Mark item
-         (>>> P) ) )
+         (shift P) ) )
    (let Ca (val $Catch)  # Catch frames
       (until (=0 Ca)
          (let Ca: (caFrame Ca)
@@ -82,7 +82,7 @@
                (let P (Crt: (env $Link any))
                   (until (=0 P)
                      (mark (val P))
-                     (>>> P) ) )
+                     (shift P) ) )
                (let Ca (Crt: (env $Catch))
                   (until (=0 Ca)
                      (let Ca: (caFrame Ca)
@@ -110,7 +110,7 @@
                   (let Tail (val (tail S))
                      (unless (num? Tail)  # Has properties
                         (setq Tail (& Tail -10))  # Clear 'extern' tag and mark bit
-                        (until (num? (>>> Tail))  # Skip property
+                        (until (num? (shift Tail))  # Skip property
                            (setq Tail (& Tail -2)) ) )  # Clear mark bit
                      (add Tail Tail)  # Get carry
                      (when @@  # Dirty or deleted
@@ -167,7 +167,7 @@
                         (setq P (car X))  # Use left branch
                         (set 2 X (| (cdr X) 1))
                         (goto 2) )
-                     (let Y (cdr (>>> X))  # X on right branch
+                     (let Y (cdr (shift X))  # X on right branch
                         (when (atom (car Y))  # No left sub-branches
                            (set
                               P (car X)  # Insert right sub-branch
