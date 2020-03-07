@@ -1,4 +1,4 @@
-# 05mar20 Software Lab. Alexander Burger
+# 07mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -154,6 +154,7 @@
    (NIL "sp?" _spQ)
    (NIL "pat?" _patQ)
    (NIL "fun?" _funQ)
+   (NIL "getd" _getd)
    (NIL "zap" _zap)
    (NIL "pre?" _preQ)
    (NIL "sub?" _subQ)

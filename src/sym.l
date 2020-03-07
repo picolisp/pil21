@@ -499,6 +499,15 @@
    (let X (funq (eval (cadr Exe)))
       (if (=0 X) $Nil X) ) )
 
+# (getd 'any) -> fun | NIL
+(de _getd (Exe)
+   (let (X (eval (cadr Exe))  V T)
+      (cond
+         ((or (num? X) (pair X)) $Nil)
+         ((n0 (funq (setq V (val X)))) V)
+         ((and (nil? V) (sharedLib X)) (val X))
+         (T $Nil) ) ) )
+
 
 # (zap 'sym) -> sym
 (de _zap (Exe)

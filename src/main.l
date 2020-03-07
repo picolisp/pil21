@@ -284,7 +284,7 @@ atomErr pairErr varErr protErr lockErr)
    (xSym (eval (car Exe))) )
 
 # Structure checks
-(local) (circ funq)
+(local) (circ funq sharedLib)
 
 (de circ (X)
    (if (atom X)
@@ -340,6 +340,31 @@ atomErr pairErr varErr protErr lockErr)
                         (? (or (nil? (car Z)) (== $T (car Z)))
                            0 ) )
                      (? (not (nil? Y)) 0) ) ) ) ) ) ) )
+
+(de i1 sharedLib (Sym)
+   (let (Nm (bufString Sym (b8 (bufSize Sym)))  P (strchr Nm (char ":")))
+      (and
+         (n0 P)
+         (<> P Nm)
+         (n0 (val 2 P))
+         (let N (if (=0 (val $Home)) 0 (strlen (val $Home)))
+            (set P 0)
+            (let (Len (strlen Nm)  Q (b8 (+ N Len (+ 4 3 1))))
+               (ifn (=0 (strchr Nm (char "/")))
+                  (strcpy Q Nm)
+                  (unless (=0 N)
+                     (memcpy Q (val $Home) N) )
+                  (strcpy (ofs Q N) ($ "lib/"))
+                  (strcpy (ofs Q (+ N 4)) Nm)
+                  (setq Len (+ Len N 4)) )
+               (strcpy (ofs Q Len) ($ ".so"))
+               (let H (dlOpen Q)
+                  (and
+                     (n0 H)
+                     (n0 (setq H (dlsym H (inc P))))
+                     (prog
+                        (set Sym (| (i64 H) 2))
+                        YES ) ) ) ) ) ) ) )
 
 (load "gc.l" "big.l" "sym.l")
 
@@ -413,7 +438,7 @@ atomErr pairErr varErr protErr lockErr)
 (load "io.l" "db.l" "apply.l" "flow.l" "subr.l" "net.l")
 
 # Evaluation
-(local) (undefined evExpr sharedLib evList)
+(local) (undefined evExpr evList)
 
 (de NIL undefined (Fun Exe)
    (err Exe Fun ($ "Undefined") null) )
@@ -466,31 +491,6 @@ atomErr pairErr varErr protErr lockErr)
                (shift P) )
             (drop P) )
          (set $Bind (val 4 Q)) ) ) )
-
-(de i1 sharedLib (Sym)
-   (let (Nm (bufString Sym (b8 (bufSize Sym)))  P (strchr Nm (char ":")))
-      (and
-         (n0 P)
-         (<> P Nm)
-         (n0 (val 2 P))
-         (let N (if (=0 (val $Home)) 0 (strlen (val $Home)))
-            (set P 0)
-            (let (Len (strlen Nm)  Q (b8 (+ N Len (+ 4 3 1))))
-               (ifn (=0 (strchr Nm (char "/")))
-                  (strcpy Q Nm)
-                  (unless (=0 N)
-                     (memcpy Q (val $Home) N) )
-                  (strcpy (ofs Q N) ($ "lib/"))
-                  (strcpy (ofs Q (+ N 4)) Nm)
-                  (setq Len (+ Len N 4)) )
-               (strcpy (ofs Q Len) ($ ".so"))
-               (let H (dlOpen Q)
-                  (and
-                     (n0 H)
-                     (n0 (setq H (dlsym H (inc P))))
-                     (prog
-                        (set Sym (| (i64 H) 2))
-                        YES ) ) ) ) ) ) ) )
 
 (de evList (Exe)
    (let Fun (car Exe)
