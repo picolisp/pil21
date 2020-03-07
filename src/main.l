@@ -1,4 +1,4 @@
-# 02mar20 Software Lab. Alexander Burger
+# 07mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -113,8 +113,7 @@
 
 # Error handling
 (local) (pushOutFiles err stkErr argErr cntErr numErr lstErr symErr extErr
-atomErr pairErr varErr protErr lockErr stkChk needCnt needNum needSym chkVar
-needVar xCnt evCnt evLst xSym evSym)
+atomErr pairErr varErr protErr lockErr)
 
 (de void pushOutFiles (i8*))
 
@@ -221,11 +220,15 @@ needVar xCnt evCnt evLst xSym evSym)
    (err 0 0 ($ "File lock: %s") (strErrno)) )
 
 # Stack check
+(local) stkChk
+
 (inline stkChk (Exe)
    (when (> (val $StkLimit) (stack))
       (stkErr Exe) ) )
 
 # Argument checks
+(local) (needCnt needNum needSym chkVar needVar)
+
 (inline needCnt (Exe X)
    (unless (cnt? X)
       (cntErr Exe X) )
@@ -253,6 +256,8 @@ needVar xCnt evCnt evLst xSym evSym)
    (chkVar Exe X)
    X )
 
+(local) (xCnt evCnt evLst xSym evSym)
+
 (de i64 xCnt (Exe X)
    (let N (int (needCnt Exe X))
       (if (sign? X) (- N) N) ) )
@@ -277,6 +282,64 @@ needVar xCnt evCnt evLst xSym evSym)
 
 (de evSym (Exe)
    (xSym (eval (car Exe))) )
+
+# Structure checks
+(local) (circ funq)
+
+(de circ (X)
+   (if (atom X)
+      0
+      (let Y X
+         (loop
+            (set Y (| (val Y) 1))  # Mark
+            (? (atom (>>> Y))  # No circularity found
+               (loop
+                  (set X (& (val X) -2))  # Unmark
+                  (? (atom (>>> X))) )
+               0 )
+            (? (n0 (& (val Y) 1))  # Detected circularity
+               (until (== X Y)  # Skip non-circular part
+                  (set X (& (val X) -2))  # Unmark
+                  (>>> X) )
+               (loop
+                  (set X (& (val X) -2))  # Unmark
+                  (? (== Y (>>> X))) )
+               Y ) ) ) ) )
+
+(de funq (X)
+   (cond
+      ((cnt? X) X)
+      ((or (big? X) (sym? X)) 0)
+      ((n0 (circ X)) 0)
+      (T
+         (let Y (cdr X)
+            (loop
+               (? (atom Y)
+                  (cond
+                     ((not (nil? Y)) 0)
+                     ((nil? (setq X (car X))) $T)
+                     ((n0 (circ (setq Y X))) 0)
+                     (T
+                        (loop
+                           (? (atom Y)
+                              (if (or (num? Y) (== Y $T))
+                                 0
+                                 X ) )
+                           (let Z (++ Y)
+                              (?
+                                 (or
+                                    (num? Z)
+                                    (pair Z)
+                                    (nil? Z)
+                                    (== $T Z) )
+                                 0 ) ) ) ) ) )
+               (let Z (++ Y)
+                  (if (pair Z)
+                     (if (num? (car Z))
+                        (? (pair Y) 0)
+                        (? (or (nil? (car Z)) (== $T (car Z)))
+                           0 ) )
+                     (? (not (nil? Y)) 0) ) ) ) ) ) ) )
 
 (load "gc.l" "big.l" "sym.l")
 

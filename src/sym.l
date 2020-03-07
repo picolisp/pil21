@@ -1,4 +1,4 @@
-# 05mar20 Software Lab. Alexander Burger
+# 06mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -493,6 +493,11 @@
             (== (firstChar X) (char "@")) )
          X
          $Nil ) ) )
+
+# (fun? 'any) -> any
+(de _funQ (Exe)
+   (let X (funq (eval (cadr Exe)))
+      (if (=0 X) $Nil X) ) )
 
 
 # (zap 'sym) -> sym
