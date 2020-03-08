@@ -155,6 +155,7 @@
    (NIL "pat?" _patQ)
    (NIL "fun?" _funQ)
    (NIL "getd" _getd)
+   (NIL "all" _all)
    (NIL "zap" _zap)
    (NIL "pre?" _preQ)
    (NIL "sub?" _subQ)

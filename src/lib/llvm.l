@@ -1,6 +1,6 @@
-# 07mar20 Software Lab. Alexander Burger
+# 08mar20 Software Lab. Alexander Burger
 
-## PicoLisp LLVM frontend ##
+### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
 
 (local) (priv void null i1 i1* i1** i8 i8* i8** i8*** i32 i32* i32** i64 i64*
@@ -17,9 +17,10 @@ show bt)
 (def 'YES (def "1" 'i1))
 (def 'ZERO (def "2" 'any))  # Short number '0'
 (def 'ONE (def "18" 'any))  # Short number '1'
+(def '-ZERO (def "10" 'any))  # Placeholder '-0'
 
 
-## Cross-compiler private ##
+### Cross-compiler private ###
 (symbols 'priv 'llvm 'pico)
 
 (local) (*Shared *Strings *Ssa *Lbl *Log *Curr *Exit *Bind *Phi *Ret log asm ssa
@@ -587,7 +588,7 @@ End *Safe)
                                                    (llvm~val Q) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) )
 
 
-## Cross compiler overridden ##
+### Cross compiler overridden ###
 (symbols '(priv pico llvm))
 
 (de llvm~de Lst
@@ -1058,7 +1059,6 @@ End *Safe)
                   '((X)
                      (cond
                         ((num? X) 'i64)
-                        ((=T X) 'any)
                         (X (val X)) ) )
                   Lst )
                (quit "No type") ) )
@@ -1070,7 +1070,6 @@ End *Safe)
          (let P (def (pack "%" *Ssa) (ptr Typ))
             (for (I . Y) Lst
                (when Y
-                  (and (=T Y) (setq Y 10))  # Placeholder (minus ZERO))
                   (if (=1 I)
                      (store Y P)
                      (if (== 'any Typ)
@@ -1301,7 +1300,7 @@ End *Safe)
    (llvm~ret) )
 
 
-## Composite ##
+### Composite ###
 (symbols '(llvm priv pico))
 
 (local) (link drop pop save)

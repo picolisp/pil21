@@ -1,4 +1,4 @@
-# 07mar20 Software Lab. Alexander Burger
+# 08mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -507,6 +507,78 @@
          ((n0 (funq (setq V (val X)))) V)
          ((and (nil? V) (sharedLib X)) (val X))
          (T $Nil) ) ) )
+
+### Namespaces ###
+(local) consTree
+
+# Build sorted list from tree
+(de consTree (P Lst)
+   (let (Q (link (push P NIL))  Tos (link (push -ZERO NIL)))
+      (loop
+         (loop
+            (let X (cdr P)  # Get subtrees
+               (let Y (cdr X)  # Right subtree
+                  (? (atom Y))
+                  (let Z P  # Go right
+                     (setq P Y)  # Invert tree
+                     (set 2 X (val Tos))
+                     (set Tos Z) ) ) ) )
+         (set Q P)  # Save tree
+         (loop
+            (setq Lst (cons (val P) Lst))  # Cons symbol
+            (let (X (cdr P)  Y (car X))  # Left subtree
+               (? (pair Y)
+                  (let Z P  # Go left
+                     (setq P Y)  # Invert tree
+                     (set X (val Tos))
+                     (set Tos (| Z 8))  # First visit
+                     (set Q P) ) ) )  # Save tree
+            (loop
+               (let X (val Tos)
+                  (when (== -ZERO X)
+                     (drop Q)
+                     (ret Lst) )
+                  (? (=0 (& X 8))  # Second visit
+                     (let Y (cdr X)  # Nodes
+                        (set Tos (cdr Y))  # TOS on up link
+                        (set 2 Y P)
+                        (setq P X)
+                        (set Q P) ) )  # Save tree
+                  (setq X (& X -9))  # Clear visit bit
+                  (let Y (cdr X)  # Nodes
+                     (set Tos (car Y))
+                     (set Y P)
+                     (setq P X)
+                     (set Q P) ) ) ) ) ) ) )  # Save tree
+
+# (all ['NIL | 'T | '0 | 'sym | '(NIL . flg) | '(T . flg) | '(0)]) -> lst
+(de _all (Exe)
+   (let X (eval (cadr Exe))
+      (cond
+         ((nil? X)  # Internal symbols
+            (let Y (val $Intern)
+               (loop
+                  (let Z (val (++ Y))
+                     (setq X
+                        (consTree (val Z) (consTree (val 2 Z) X)) ) )
+                  (? (atom Y) X) ) ) )
+         ((== $T X)  # Transient symbols
+            (consTree (val $Transient) (consTree (val 2 $Transient) $Nil)) )
+         ((num? X)  # External symbols
+            (consTree (val $Extern) $Nil) )
+         ((sym? X)  # Given namespace
+            (let Y (val X)
+               (consTree (val Y) (consTree (val 2 Y) $Nil)) ) )
+         ((nil? (car X))  # Direct internal tree
+            (let Y (val (car (val $Intern)))
+               (if (nil? (cdr X))
+                  (val Y)
+                  (val 2 Y) ) ) )
+         ((== $T (car X))  # Direct transient trees
+            (if (nil? (cdr X))
+               (val $Transient)
+               (val 2 $Transient) ) )
+         (T (val $Extern)) ) ) ) # Direct external tree
 
 
 # (zap 'sym) -> sym

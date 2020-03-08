@@ -1,4 +1,4 @@
-# 07mar20 Software Lab. Alexander Burger
+# 08mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -430,7 +430,7 @@ pushOutFiles popInFiles popOutFiles)
 (de rdList ()
    (call $Get)
    (let
-      (P (push T NIL)
+      (P (push -ZERO NIL)
          X
          (loop
             (let C (skip)
@@ -743,7 +743,7 @@ pushOutFiles popInFiles popOutFiles)
 (local) (repl loadAll)
 
 (de repl (Exe (i32 . Pr) X)
-   (let (Safe (link (push T NIL))  P (b8 (ioFrame T)))
+   (let (Safe (link (push -ZERO NIL))  P (b8 (ioFrame T)))
       (rdOpen Exe X P)
       (pushInFiles P)
       (setq X $Nil)

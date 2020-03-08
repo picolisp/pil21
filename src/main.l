@@ -1,4 +1,4 @@
-# 07mar20 Software Lab. Alexander Burger
+# 08mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -461,7 +461,7 @@ atomErr pairErr varErr protErr lockErr)
                (let Next (push (val $Next))
                   (if (atom X)
                      (set $Next $Nil)
-                     (let L (link (push T NIL))  # [lst LINK]
+                     (let L (link (push -ZERO NIL))  # [lst LINK]
                         (set $Next
                            (set L (push (eval (car X)) $Nil)) )  # [arg1 next]
                         (while (pair (shift X))

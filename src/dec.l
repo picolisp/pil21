@@ -151,7 +151,7 @@ ffiCall)
 (de T i32 toUpperCase (i32))
 (de T i32 toLowerCase (i32))
 
-### Forward references
+### Forward references ###
 (local) (evList mkStr subStr newline space outWord outString print repl)
 
 # main.l
@@ -201,7 +201,7 @@ ffiCall)
 (de dbTouch (any any))
 (de dbZap (any))
 
-### Primitives
+### Primitives ###
 (local) (caar cadr cdar cddr int cnt sign sym length eval run)
 
 (inline caar (X)

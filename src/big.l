@@ -1,4 +1,4 @@
-# 07mar20 Software Lab. Alexander Burger
+# 08mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1072,7 +1072,7 @@
          N
          (let
             (R (link (push (needNum Exe N) NIL))
-               Safe (link (push T NIL)) )
+               Safe (link (push -ZERO NIL)) )
             (while (pair X)
                (? (nil? (setq N (eval (++ X))))
                   (set R N) )
@@ -1089,7 +1089,7 @@
          (needNum Exe N)
          (if (atom X)  # Unary minus
             (neg N)
-            (let (R (link (push N NIL))  Safe (link (push T NIL)))
+            (let (R (link (push N NIL))  Safe (link (push -ZERO NIL)))
                (loop
                   (? (nil? (setq N (eval (++ X))))
                      (set R N) )
@@ -1155,7 +1155,7 @@
          (let
             (Sign (sign? (needNum Exe N))
                R (link (push (setq N (pos N)) NIL))
-               Safe (link (push T NIL)) )
+               Safe (link (push -ZERO NIL)) )
             (loop
                (? (atom X)
                   (let N (pop R)
@@ -1177,8 +1177,8 @@
          (let
             (Sign (sign? (needNum Exe N))
                R (link (push (setq N (pos N)) NIL))
-               Safe (link (push T NIL))
-               Safe2 (link (push T NIL)) )
+               Safe (link (push -ZERO NIL))
+               Safe2 (link (push -ZERO NIL)) )
             (loop
                (? (nil? (setq N (eval (++ X))))
                   (drop R)
@@ -1206,7 +1206,7 @@
          (let
             (Sign (sign? (needNum Exe N))
                R (link (push (setq N (pos N)) NIL))
-               Safe (link (push T NIL)) )
+               Safe (link (push -ZERO NIL)) )
             (loop
                (? (atom X)
                   (let N (pop R)
@@ -1230,7 +1230,7 @@
          (let
             (Sign (sign? (needNum Exe N))
                R (link (push (setq N (pos N)) NIL))
-               Safe (link (push T NIL)) )
+               Safe (link (push -ZERO NIL)) )
             (loop
                (? (atom X)
                   (let N (pop R)
