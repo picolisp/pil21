@@ -1,10 +1,10 @@
-# 08mar20 Software Lab. Alexander Burger
+# 09mar20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
 
 (local) (priv void null i1 i1* i1** i8 i8* i8** i8*** i32 i32* i32** i64 i64*
-i64** any YES NO ZERO ONE SymTab begin end $ ? short global var str const
+i64** any YES NO ZERO -ZERO ONE SymTab begin end $ ? short global var str const
 globals array table symTab inline define struct $Nil $Link drop)
 
 (import pico llvm symbols local T NIL @ @@ @@@ load setq prog */ >> char hex !
@@ -16,8 +16,8 @@ show bt)
 (def 'NO (def "0" 'i1))  # Booleans
 (def 'YES (def "1" 'i1))
 (def 'ZERO (def "2" 'any))  # Short number '0'
-(def 'ONE (def "18" 'any))  # Short number '1'
 (def '-ZERO (def "10" 'any))  # Placeholder '-0'
+(def 'ONE (def "18" 'any))  # Short number '1'
 
 
 ### Cross-compiler private ###

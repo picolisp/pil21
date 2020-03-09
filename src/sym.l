@@ -634,6 +634,19 @@
                      (val $Intern)
                      (set $Intern R) ) ) ) ) ) ) )
 
+# (intern 'sym ['flg]) -> sym
+(de _intern (Exe)
+   (let
+      (X (cdr Exe)
+         Sym (save (needSym Exe (eval (++ X))))
+         Name (name (val (tail Sym))) )
+      (if (== Name ZERO)
+         $Nil
+         (let (L (val $Intern)  F (nil? (eval (car X))))
+            (intern Sym 0 Name
+               (val (car L))
+               (if F (cdr L) $Nil) ) ) ) ) )
+
 
 # (zap 'sym) -> sym
 (de _zap (Exe)
