@@ -1,4 +1,4 @@
-# 27feb20 Software Lab. Alexander Burger
+# 08mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -12,20 +12,20 @@
 
 # (cons 'any ['any ..]) -> lst
 (de _cons (Exe)
-   (let (X (cdr Exe)  Y (cons (eval (++ X)) $Nil)  P (link (push Y NIL)))
+   (let (X (cdr Exe)  Y (cons (eval (++ X)) $Nil)  R (save Y))
       (while (pair (cdr X))
          (setq Y
             (set 2 Y (cons (eval (++ X)) $Nil)) ) )
       (set 2 Y (eval (car X)))
-      (pop P) ) )
+      R ) )
 
 # (list 'any ['any ..]) -> lst
 (de _list (Exe)
-   (let (X (cdr Exe)  Y (cons (eval (++ X)) $Nil)  P (link (push Y NIL)))
+   (let (X (cdr Exe)  Y (cons (eval (++ X)) $Nil)  R (save Y))
       (while (pair X)
          (setq Y
             (set 2 Y (cons (eval (++ X)) $Nil)) ) )
-      (pop P) ) )
+      R ) )
 
 # (= 'any ..) -> flg
 (de _equal (Exe)

@@ -1,6 +1,11 @@
-# 08mar20 Software Lab. Alexander Burger
+# 09mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
+
+(local) badSymNs
+
+(de NIL badSymNs (Exe Sym)
+   (err Exe Sym ($ "Bad symbol namespace") null) )
 
 (local) (name bufSize pathSize bufString pathString)
 
@@ -218,8 +223,10 @@
       (let X (car Tree)  # First tree
          (loop
             (? (atom X) NO)  # Empty
-            (let Nm (name (val (tail (car X))))
-               (? (== Name Nm) (== Sym (car X)))
+            (let (S (car X)  Nm (name (val (tail S))))
+               (? (== Name Nm)
+                  (set $Ret S)
+                  (or (=0 Sym) (== Sym S)) )
                (setq X
                   (if (> Name Nm)  # Symbol is smaller
                      (cddr X)
@@ -228,8 +235,13 @@
       (let X (cdr Tree)  # Second tree
          (loop
             (? (atom X) NO)  # Empty
-            (let (Nm (name (val (tail (car X))))  I (cmpLong Nm Name))
-               (? (=0 I) (== Sym (car X)))
+            (let
+               (S (car X)
+                  Nm (name (val (tail S)))
+                  I (cmpLong Nm Name) )
+               (? (=0 I)
+                  (set $Ret S)
+                  (or (=0 Sym) (== Sym S)) )
                (setq X
                   (if (lt0 I)  # Symbol is smaller
                      (cddr X)
@@ -251,39 +263,44 @@
                   (if (> Name Nm)  # Symbol is smaller
                      (let Y (cdr X)  # Get link cell
                         (? (atom Y)  # No link yet
-                           (unless (isLstIntern Sym Name More)
+                           (if (isLstIntern Sym Name More)
+                              (val $Ret)
                               (when (=0 Sym)  # New symbol
                                  (setq Sym (consSym Name Val)) )
-                              (set 2 X (cons $Nil (cons Sym $Nil))) )
-                           Sym )
+                              (set 2 X (cons $Nil (cons Sym $Nil)))
+                              Sym ) )
                         (? (atom (setq Y (cdr (setq X Y))))
-                           (unless (isLstIntern Sym Name More)
+                           (if (isLstIntern Sym Name More)
+                              (val $Ret)
                               (when (=0 Sym)  # New symbol
                                  (setq Sym (consSym Name Val)) )
-                              (set 2 X (cons Sym $Nil)) )
-                           Sym )
+                              (set 2 X (cons Sym $Nil))
+                              Sym ) )
                         (setq X Y) )
                      # Symbol is greater
                      (let Y (cdr X)  # Get link cell
                         (? (atom Y)  # No link yet
-                           (unless (isLstIntern Sym Name More)
+                           (if (isLstIntern Sym Name More)
+                              (val $Ret)
                               (when (=0 Sym)  # New symbol
                                  (setq Sym (consSym Name Val)) )
-                              (set 2 X (cons (cons Sym $Nil) $Nil)) )
-                           Sym )
+                              (set 2 X (cons (cons Sym $Nil) $Nil))
+                              Sym ) )
                         (? (atom (setq Y (car (setq X Y))))
-                           (unless (isLstIntern Sym Name More)
+                           (if (isLstIntern Sym Name More)
+                              (val $Ret)
                               (when (=0 Sym)  # New symbol
                                  (setq Sym (consSym Name Val)) )
-                              (set X (cons Sym $Nil)) )
-                           Sym )
+                              (set X (cons Sym $Nil))
+                              Sym ) )
                         (setq X Y) ) ) ) )
             # Empty
-            (unless (isLstIntern Sym Name More)
+            (if (isLstIntern Sym Name More)
+               (val $Ret)
                (when (=0 Sym)  # New symbol
                   (setq Sym (consSym Name Val)) )
-               (set Tree (cons Sym $Nil)) )
-            Sym ) )
+               (set Tree (cons Sym $Nil))
+               Sym ) ) )
       # Long name
       (let X (cdr Tree)  # Second tree
          (if (pair X)  # No empty
@@ -296,39 +313,44 @@
                   (if (lt0 I)  # Symbol is smaller
                      (let Y (cdr X)  # Get link cell
                         (? (atom Y)  # No link yet
-                           (unless (isLstIntern Sym Name More)
+                           (if (isLstIntern Sym Name More)
+                              (val $Ret)
                               (when (=0 Sym)  # New symbol
                                  (setq Sym (consSym Name Val)) )
-                              (set 2 X (cons $Nil (cons Sym $Nil))) )
-                           Sym )
+                              (set 2 X (cons $Nil (cons Sym $Nil)))
+                              Sym ) )
                         (? (atom (setq Y (cdr (setq X Y))))
-                           (unless (isLstIntern Sym Name More)
+                           (if (isLstIntern Sym Name More)
+                              (val $Ret)
                               (when (=0 Sym)  # New symbol
                                  (setq Sym (consSym Name Val)) )
-                              (set 2 X (cons Sym $Nil)) )
-                           Sym )
+                              (set 2 X (cons Sym $Nil))
+                              Sym ) )
                         (setq X Y) )
                      # Symbol is greater
                      (let Y (cdr X)  # Get link cell
                         (? (atom Y)  # No link yet
-                           (unless (isLstIntern Sym Name More)
+                           (if (isLstIntern Sym Name More)
+                              (val $Ret)
                               (when (=0 Sym)  # New symbol
                                  (setq Sym (consSym Name Val)) )
-                              (set 2 X (cons (cons Sym $Nil) $Nil)) )
-                           Sym )
+                              (set 2 X (cons (cons Sym $Nil) $Nil))
+                              Sym ) )
                         (? (atom (setq Y (car (setq X Y))))
-                           (unless (isLstIntern Sym Name More)
+                           (if (isLstIntern Sym Name More)
+                              (val $Ret)
                               (when (=0 Sym)  # New symbol
                                  (setq Sym (consSym Name Val)) )
-                              (set X (cons Sym $Nil)) )
-                           Sym )
+                              (set X (cons Sym $Nil))
+                              Sym ) )
                         (setq X Y) ) ) ) )
             # Empty
-            (unless (isLstIntern Sym Name More)
+            (if (isLstIntern Sym Name More)
+               (val $Ret)
                (when (=0 Sym)  # New symbol
                   (setq Sym (consSym Name Val)) )
-               (set 2 Tree (cons Sym $Nil)) )
-            Sym ) ) ) )
+               (set 2 Tree (cons Sym $Nil))
+               Sym ) ) ) ) )
 
 (de requestSym (Name)
    (intern 0 $Nil Name
@@ -579,6 +601,38 @@
                (val $Transient)
                (val 2 $Transient) ) )
          (T (val $Extern)) ) ) ) # Direct external tree
+
+# (symbols) -> lst
+# (symbols 'lst) -> lst
+# (symbols 'lst . prg) -> any
+# (symbols 'sym1 'sym2 ..) -> lst
+(de _symbols (Exe)
+   (let X (cdr Exe)
+      (if (atom X)  # No args
+         (val $Intern)
+         (let Y (eval (++ X))
+            (if (pair Y)  # List argument
+               (if (atom X)  # No 'prg'
+                  (prog1
+                     (val $Intern)
+                     (set $Intern Y) )
+                  (let Z (save (val $Intern))
+                     (set $Intern Y)
+                     (prog1
+                        (run X)  # Run 'prg'
+                        (set $Intern Z) ) ) )
+               (let V (val (needSym Exe Y))
+                  (cond
+                     ((nil? V) (set Y (cons $Nil $Nil)))  # New namespace
+                     ((atom V) (badSymNs Exe Y)) ) )  # Value must be a pair
+               (let R (setq Y (save (cons Y $Nil)))
+                  (while (pair X)
+                     (let Z (needSym Exe (eval (++ X)))
+                        (and (atom (val Z)) (badSymNs Exe Z))
+                        (setq Y (set 2 Y (cons Z $Nil))) ) )
+                  (prog1
+                     (val $Intern)
+                     (set $Intern R) ) ) ) ) ) ) )
 
 
 # (zap 'sym) -> sym

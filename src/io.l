@@ -1,4 +1,4 @@
-# 08mar20 Software Lab. Alexander Burger
+# 09mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -675,9 +675,7 @@ pushOutFiles popInFiles popOutFiles)
                   (call $Put (char "{"))
                   (prExt Nm)
                   (call $Put (char "}")) )
-               ((or
-                     (isIntern X Nm (val (car (val $Intern))))
-                     (isLstIntern X Nm (cdr (val $Intern))) )
+               ((isLstIntern X Nm (val $Intern))
                   (let (P (push 0 (i64 Nm))  B NIL)  # [cnt name]
                      (until (=0 (setq B (numByte P)))
                         (call $Put (i32 B)) ) ) )
