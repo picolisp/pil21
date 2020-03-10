@@ -1,4 +1,4 @@
-# 09mar20 Software Lab. Alexander Burger
+# 10mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -537,16 +537,16 @@ pushOutFiles popInFiles popOutFiles)
                         (setq
                            F (| (shl F 4) (- C (char "@")))
                            C (call $Get) ) )
-                     (let I 0  # Id
+                     (let N 0  # Id
                         (loop
                            (unless (and (>= C (char "0")) (>= (char "7") C))
                               (badInput) )
-                           (setq I
+                           (setq N
                               (|
-                                 (shl I 3)
+                                 (shl N 3)
                                  (i64 (- C (char "0"))) ) )
                            (? (== (setq C (call $Get)) (char "}"))) )
-                        (extern (extNm F I)) ) ) )
+                        (extern (extNm F N)) ) ) )
                (call $Get) ) )  # Skip "}"
          ((or (== C (char ")")) (== C (char "]")) (== C (char "~")))
             (badInput) )

@@ -1,4 +1,4 @@
-# 07mar20 Software Lab. Alexander Burger
+# 10mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -315,6 +315,42 @@
       (unLockDb 0) )  # Unlock all
    #! (unsync)
    $T ) )
+
+# (extern 'sym) -> sym | NIL
+(de _extern (Exe)
+   (let
+      (Sym (needSym Exe (eval (cadr Exe)))
+         Name (name (val (tail Sym))) )
+      (when (== Name ZERO)
+         (ret $Nil) )
+      (let
+         (P (push 0 Name)  # [cnt name]
+            C (numChar P)
+            F (i32 0) )
+         (when (== C (char "{"))
+            (setq C (numChar P)) )
+         (while (>= C (char "@"))
+            (when (> C (char "O"))  # A-O range
+               (ret $Nil) )
+            (setq
+               F (| (shl F 4) (- C (char "@")))
+               C (numChar P) ) )
+         (let N 0
+            (loop
+               (unless (and (>= C (char "0")) (>= (char "7") C))
+                  (ret $Nil) )
+               (setq N
+                  (|
+                     (shl N 3)
+                     (i64 (- C (char "0"))) ) )
+               (?
+                  (or
+                     (=0 (setq C (numChar P)))
+                     (== C (char "}")) ) ) )
+            (if (isLife (setq Sym (extern (extNm F N))))
+               Sym
+               $Nil ) ) ) ) )
+
 
 # (pool ['sym1 ['lst] ['sym2] ['sym3]]) -> T
 (de _pool (Exe)

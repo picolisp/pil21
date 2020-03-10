@@ -1,4 +1,4 @@
-# 09mar20 Software Lab. Alexander Burger
+# 10mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -646,6 +646,17 @@
             (intern Sym 0 Name
                (val (car L))
                (if F (cdr L) $Nil) ) ) ) ) )
+
+# (box? 'any) -> sym | NIL
+(de _boxQ (Exe)
+   (let X (eval (cadr Exe))
+      (if
+         (and
+            (not (num? X))
+            (sym? X)
+            (== ZERO (name (val (tail X)))) )
+         X
+         $Nil ) ) )
 
 
 # (zap 'sym) -> sym
