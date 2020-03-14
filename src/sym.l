@@ -1,4 +1,4 @@
-# 10mar20 Software Lab. Alexander Burger
+# 14mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -658,6 +658,18 @@
          X
          $Nil ) ) )
 
+# (str? 'any) -> sym | NIL
+(de _strQ (Exe)
+   (let X (eval (cadr Exe))
+      (if (or (num? X) (not (sym? X)))
+         $Nil
+         (let Tail (val (tail X))
+            (if
+               (or
+                  (sym? Tail)  # External
+                  (isLstIntern X (name Tail) (val $Intern)) )
+               $Nil
+               X ) ) ) ) )
 
 # (zap 'sym) -> sym
 (de _zap (Exe)
@@ -669,6 +681,24 @@
          (unintern Sym (name Tail) (val (car (val $Intern)))) )
       Sym ) )
 
+# (chop 'any) -> lst
+(de _chop (Exe)
+   (let X (eval (cadr Exe))
+      (if (or (pair X) (nil? X))
+         X
+         (let
+            (Tail (val (tail (xSym X)))
+               Name (save (name Tail)) )
+            (if (sym? Tail)  # External
+               (chopExtNm Name)
+               (let (P (push 0 Name)  C (numChar P))
+                  (if (=0 C)
+                     $Nil
+                     (let (Y (cons (mkChar C) $Nil)  R (save Y))
+                        (until (=0 (setq C (numChar P)))
+                           (setq Y
+                              (set 2 Y (cons (mkChar C) $Nil)) ) )
+                        R ) ) ) ) ) ) ) )
 
 ### Matching ###
 (local) (preStr subStr)

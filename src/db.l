@@ -1,4 +1,4 @@
-# 10mar20 Software Lab. Alexander Burger
+# 14mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -223,6 +223,16 @@
                   (ret YES) ) ) ) )
       NO ) )
 
+# (ext? 'any) -> sym | NIL
+(de _extQ (Exe)
+   (let X (eval (cadr Exe))
+      (if (or (num? X) (not (sym? X)))
+         $Nil
+         (let Tail (val (tail X))
+            (if (and (sym? Tail) (isLife X))
+               X
+               $Nil ) ) ) ) )
+
 (de void cleanUp ((i64 . N))
    (let (P (b8 BLK)  Db: (dbFile (val $DbFile)))
       (blkPeek 0 P BLK)  # Read 'free'
@@ -375,6 +385,16 @@
 
 (de dbTouch (Exe Sym)
    Sym )
+
+# (touch 'sym) -> sym
+(de _touch (Exe)
+   (let X (eval (cadr Exe))
+      (and
+         (not (num? X))
+         (sym? X)
+         (sym? (val (tail X)))
+         (dbTouch Exe X) )
+      X ) )
 
 (de dbZap (Sym)
    Sym )

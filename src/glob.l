@@ -1,4 +1,4 @@
-# 10mar20 Software Lab. Alexander Burger
+# 14mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -159,7 +159,9 @@
    (NIL "symbols" _symbols)
    (NIL "intern" _intern)
    (NIL "box?" _boxQ)
+   (NIL "str?" _strQ)
    (NIL "zap" _zap)
+   (NIL "chop" _chop)
    (NIL "pre?" _preQ)
    (NIL "sub?" _subQ)
    (NIL "low?" _lowQ)
@@ -180,9 +182,11 @@
    (NIL "flush" _flush)
    (NIL "load" _load)
    # Database
+   (NIL "ext?" _extQ)
    (NIL "rollback" _rollback)
    (NIL "extern" _extern)
    (NIL "pool" _pool)
+   (NIL "touch" _touch)
    # Mapping
    (NIL "apply" _apply)
    (NIL "map" _map)
