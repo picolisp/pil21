@@ -1,4 +1,4 @@
-# 08mar20 Software Lab. Alexander Burger
+# 15mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -110,7 +110,7 @@
 
 # Remove leading zeroes
 (de zapZero (N)
-   (let (P (push N)  X P  Y P  Z NIL)
+   (let (P (push N)  X P  Y P  Z T)
       (until (cnt? (setq Z (val (big N))))  # Last cell
          (unless (=0 (val (dig N)))  # Null digit?
             (setq X Y) )  # New null-tail
@@ -688,7 +688,7 @@
       (unless (=0 V2)
          (setq V2 (val (dig V2))) )
       (loop
-         (let (X (val U)  U1 0  U2 0  U3 NIL)
+         (let (X (val U)  U1 0  U2 0  U3 T)
             (let I M  # Index X -> 'u'
                (while (ge0 (dec 'I))
                   (setq X (val (big X))) ) )

@@ -1,4 +1,4 @@
-# 09mar20 Software Lab. Alexander Burger
+# 15mar20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -1313,10 +1313,14 @@ End *Safe)
       (set 2 P (val $Link))
       (set $Link P) ) )
 
-(pico~de drop (P)
+(pico~de drop (P . Prg)
    (log)
    (pico~let *Log NIL
-      (set $Link (cdr P)) ) )
+      (pico~if Prg
+         (prog1
+            (run @)
+            (set $Link (cdr P)) )
+         (set $Link (cdr P)) ) ) )
 
 (pico~de pop (P)
    (log)

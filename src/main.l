@@ -1,4 +1,4 @@
-# 08mar20 Software Lab. Alexander Burger
+# 15mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -275,9 +275,8 @@ atomErr pairErr varErr protErr lockErr)
    (if (or (num? X) (pair X))
       (let (P (push 4 ZERO NIL)  Q (link (ofs P 1)))  # [cnt name link]
          (pack X P)
-         (prog1
-            (consStr (val Q))
-            (drop Q) ) )
+         (drop Q
+            (consStr (val Q)) ) )
       X ) )
 
 (de evSym (Exe)

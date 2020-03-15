@@ -1,4 +1,4 @@
-# 07mar20 Software Lab. Alexander Burger
+# 15mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -83,9 +83,8 @@
                            ((<> C Last)
                               (? (=0 (dec 'N)))
                               (charNum (setq Last C) R) ) ) ) )
-                  (prog1
-                     (consSym (val (ofs R 1)) 0)
-                     (drop Q) ) ) ) ) ) ) )
+                  (drop Q
+                     (consSym (val (ofs R 1)) 0) ) ) ) ) ) ) )
 
 # File Descriptor
 (local) FD

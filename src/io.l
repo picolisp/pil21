@@ -1,4 +1,4 @@
-# 10mar20 Software Lab. Alexander Burger
+# 15mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -422,10 +422,9 @@ pushOutFiles popInFiles popOutFiles)
             (setq C (call $Get)) )
          (charNum C P)
          (setq C (call $Get)) )
-      (prog1
+      (drop Q
          (let (Nm (val Q)  Num (symToNum Nm 0 (char ".") 0))
-            (if (n0 Num) Num (requestSym Nm)) )
-         (drop Q) ) ) )
+            (if (n0 Num) Num (requestSym Nm)) ) ) ) )
 
 (de rdList ()
    (call $Get)
@@ -523,9 +522,8 @@ pushOutFiles popInFiles popOutFiles)
                      (? (== (setq C (call $Get)) (char "\"")))
                      (unless (testEsc C) (eofErr)) )
                   (call $Get)  # Skip "\""
-                  (prog1
-                     (intern 0 0 (val Q) $Transient $Nil)
-                     (drop Q) ) ) ) )
+                  (drop Q
+                     (intern 0 0 (val Q) $Transient $Nil) ) ) ) )
          ((== C (char "{"))
             (prog1
                (if (== (setq C (call $Get)) (char "}"))
@@ -676,12 +674,12 @@ pushOutFiles popInFiles popOutFiles)
                   (prExt Nm)
                   (call $Put (char "}")) )
                ((isLstIntern X Nm (val $Intern))
-                  (let (P (push 0 (i64 Nm))  B NIL)  # [cnt name]
+                  (let (P (push 0 (i64 Nm))  B T)  # [cnt name]
                      (until (=0 (setq B (numByte P)))
                         (call $Put (i32 B)) ) ) )
                (T  # Transient
                   (call $Put (char "\""))
-                  (let (P (push 0 (i64 Nm))  B NIL)  # [cnt name]
+                  (let (P (push 0 (i64 Nm))  B T)  # [cnt name]
                      (until (=0 (setq B (numByte P)))
                         (call $Put (i32 B)) ) )
                   (call $Put (char "\"")) ) ) ) )
@@ -719,7 +717,7 @@ pushOutFiles popInFiles popOutFiles)
 
 # (print 'any ..) -> any
 (de _print (Exe)
-   (let (X (cdr Exe)  Y NIL)
+   (let (X (cdr Exe)  Y T)
       (loop
          (print (setq Y (eval (++ X))))
          (? (atom X))

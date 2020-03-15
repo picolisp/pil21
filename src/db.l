@@ -1,4 +1,4 @@
-# 14mar20 Software Lab. Alexander Burger
+# 15mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -89,7 +89,7 @@
                (== E EACCES)  # Locked by another process
                (== E EAGAIN)  # Memory-mapped by another process
                (lockErr) ) )
-         (let Pid NIL
+         (let Pid T
             (while (lt0 (setq Pid (getLock (Db: fd) N Len)))
                (unless (== (xErrno) EINTR)
                   (lockErr) ) )
