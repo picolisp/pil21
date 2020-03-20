@@ -1,4 +1,4 @@
-# 15mar20 Software Lab. Alexander Burger
+# 20mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -801,15 +801,15 @@
             (if (sym? Tail)  # External symbol
                X
                (let
-                  (P (push 4 ZERO NIL)  # [cnt name link]
+                  (P (push 0 (name Tail) NIL)  # [cnt name link]
                      Q (link (ofs P 1))
-                     R (push 0 (name Tail) NIL)  # [cnt name link]
-                     C NIL )
+                     R (push 4 ZERO NIL)  # [cnt name link]
+                     C T )
                   (link (ofs R 1))
-                  (until (=0 (setq C (numChar R)))
-                     (charNum (toLowerCase C) P) )
+                  (until (=0 (setq C (numChar P)))
+                     (charNum (toLowerCase C) R) )
                   (drop Q
-                     (consStr (val Q)) ) ) ) ) ) ) )
+                     (consStr (val 2 R)) ) ) ) ) ) ) )
 
 # (uppc 'any) -> any
 (de _uppc (Exe)
@@ -820,19 +820,18 @@
             (if (sym? Tail)  # External symbol
                X
                (let
-                  (P (push 4 ZERO NIL)  # [cnt name link]
+                  (P (push 0 (name Tail) NIL)  # [cnt name link]
                      Q (link (ofs P 1))
-                     R (push 0 (name Tail) NIL)  # [cnt name link]
-                     C NIL )
+                     R (push 4 ZERO NIL)  # [cnt name link]
+                     C T )
                   (link (ofs R 1))
-                  (until (=0 (setq C (numChar R)))
-                     (cond
-                        ((== C (char "ß"))
-                           (charNum (char "S") P)
-                           (charNum (char "S") P) )
-                        (T (charNum (toUpperCase C) P)) ) )
+                  (until (=0 (setq C (numChar P)))
+                     (ifn (== C (char "ß"))
+                        (charNum (toUpperCase C) R)
+                        (charNum (char "S") R)
+                        (charNum (char "S") R) ) )
                   (drop Q
-                     (consStr (val Q)) ) ) ) ) ) ) )
+                     (consStr (val 2 R)) ) ) ) ) ) ) )
 
 # (fold 'any ['cnt]) -> sym
 (de _fold (Exe)
@@ -844,14 +843,14 @@
                Y
                (let
                   (N (if (atom X) 0 (evCnt Exe X))
-                     P (push 4 ZERO NIL)  # [cnt name link]
+                     P (push 0 (name Tail) NIL)  # [cnt name link]
                      Q (link (ofs P 1))
-                     R (push 0 (name Tail) NIL)  # [cnt name link]
-                     C NIL )
+                     R (push 4 ZERO NIL)  # [cnt name link]
+                     C T )
                   (link (ofs R 1))
-                  (until (=0 (setq C (numChar R)))
+                  (until (=0 (setq C (numChar P)))
                      (when (isLetterOrDigit C)
-                        (charNum (toLowerCase C) P)
+                        (charNum (toLowerCase C) R)
                         (? (=0 (dec 'N))) ) )
                   (drop Q
-                     (consStr (val Q)) ) ) ) ) ) ) )
+                     (consStr (val 2 R)) ) ) ) ) ) ) )
