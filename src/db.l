@@ -129,7 +129,7 @@
          (dbWrErr) )
       (let Jnl (val $DbJnl)
          (unless (=0 Jnl)
-            (putc_unlocked (if (== Siz (Db: siz)) 0 Siz) Jnl)
+            (putc_unlocked (if (== Siz (Db: siz)) BLKSIZE Siz) Jnl)
             (let P (b8 (+ BLK 2))  # Allocate buffer
                (set P (i8 (Db: db)))  # Store file number
                (set 2 P (i8 (shr (Db: db) 8)))

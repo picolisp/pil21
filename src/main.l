@@ -1,4 +1,4 @@
-# 15mar20 Software Lab. Alexander Burger
+# 20mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -447,48 +447,49 @@ atomErr pairErr varErr protErr lockErr)
    (let
       (X (cdr Lst)  # Arguments
          Y (car Exe)  # Parameters
-         Q (link (push (val $At) NIL $At (val $Bind) Lst)) )  # [[@] LINK @ Bind Exe]
+         P (push (val $At) NIL $At (val $Bind) Lst)  # [[@] LINK @ Bind Exe]
+         Q (link P) )
       (while (pair Y)
          (link
-            (push  # [val LINK sym]
-               (eval (++ X))  # Evaluate next argument
-               NIL
-               (++ Y) ) ) )  # Next parameter
+            (setq P
+               (push  # [val LINK sym]
+                  (eval (++ X))  # Evaluate next argument
+                  NIL
+                  (++ Y) ) ) ) )  # Next parameter
       (prog1
-         (let P (val $Link)
-            (if (== Y $At)  # VarArgs
-               (let Next (push (val $Next))
-                  (if (atom X)
-                     (set $Next $Nil)
-                     (let L (link (push -ZERO NIL))  # [lst LINK]
-                        (set $Next
-                           (set L (push (eval (car X)) $Nil)) )  # [arg1 next]
-                        (while (pair (shift X))
-                           (setq L  # [argN next]
-                              (set 2 L (push (eval (car X)) $Nil)) ) ) ) )
-                  (set $Bind P)
-                  (loop
-                     (xchg (val 3 P) P)  # Exchange symbol value
-                     (? (== Q P))
-                     (shift P) )
-                  (prog1
-                     (run (cdr Exe))  # Run body
-                     (set $Next (val Next)  $Link (val $Bind)) ) )
-               (unless (== Y $Nil)
-                  (link (push (val Y) NIL Y))  # Last parameter
-                  (set Y X) )  # Set to unevaluated argument(s)
-               (set $Bind (val $Link))
+         (if (== Y $At)  # VarArgs
+            (let Next (push (val $Next))
+               (if (atom X)
+                  (set $Next $Nil)
+                  (let L (link (push -ZERO NIL))  # [lst LINK]
+                     (set $Next
+                        (set L (push (eval (car X)) $Nil)) )  # [arg1 next]
+                     (while (pair (shift X))
+                        (setq L  # [argN next]
+                           (set 2 L (push (eval (car X)) $Nil)) ) ) ) )
+               (set $Bind P)
                (loop
                   (xchg (val 3 P) P)  # Exchange symbol value
                   (? (== Q P))
                   (shift P) )
-               (run (cdr Exe)) ) )  # Run body
-         (let P (val $Link)
+               (prog1
+                  (run (cdr Exe))  # Run body
+                  (set $Next (val Next)  $Link (val $Bind)) ) )
+            (unless (== Y $Nil)
+               (link (push (val Y) NIL Y))  # Last parameter
+               (set Y X) )  # Set to unevaluated argument(s)
+            (set $Bind (val $Link))
             (loop
-               (set (val 3 P) (val P))  # Restore values
+               (xchg (val 3 P) P)  # Exchange symbol value
                (? (== Q P))
                (shift P) )
-            (drop P) )
+            (run (cdr Exe)) )  # Run body
+         (setq P (val $Link))
+         (loop
+            (set (val 3 P) (val P))  # Restore values
+            (? (== Q P))
+            (shift P) )
+         (drop P)
          (set $Bind (val 4 Q)) ) ) )
 
 (de evList (Exe)

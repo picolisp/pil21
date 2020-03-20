@@ -1247,7 +1247,7 @@
                   R (remu (val R) N) ) ) ) ) ) )
 
 # (>> 'cnt 'num) -> num
-(de _shift (Exe)
+(de _shr (Exe)
    (let
       (X (cdr Exe)
          N (evCnt Exe X)

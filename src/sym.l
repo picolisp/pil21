@@ -728,6 +728,15 @@
       (drop Q
          (consStr (val Q)) ) ) )
 
+# (text 'any1 'any ..) -> sym
+(de _text (Exe)
+   (let (X (cdr Exe)  Y (evSym X))
+      (if (nil? Y)
+         Y
+         (let Name (save (name (val Tail Y)))
+            Name
+            ) ) ) )
+
 
 ### Matching ###
 (local) (preStr subStr)
