@@ -35,8 +35,8 @@
          Q (link P) )  # [[@] LINK @ Bind Exe]
       (link (setq P (push Obj NIL $This)))
       (while (pair Y)
-         (link
-            (setq P
+         (setq P
+            (link
                (push  # [val LINK sym]
                   (eval (++ X))  # Evaluate next argument
                   NIL

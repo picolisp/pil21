@@ -733,10 +733,32 @@
    (let (X (cdr Exe)  Y (evSym X))
       (if (nil? Y)
          Y
-         (let Name (save (name (val Tail Y)))
-            Name
-            ) ) ) )
-
+         (let
+            (P (push 0 (name (val (tail Y))) NIL)  # [cnt name link]
+               Q (link (ofs P 1))
+               R (push 4 ZERO NIL)  # [cnt name link]
+               L (link (ofs R 1))
+               N 0
+               C T )
+            (while (pair (shift X))
+               (setq L (link (push (eval (car X)) NIL)))
+               (inc 'N) )
+            (until (=0 (setq C (numByte P)))
+               (cond
+                  ((<> C (char "@")) (byteNum C R))
+                  ((== (setq C (numByte P)) (char "@"))
+                     (byteNum C R) )  # "@@"
+                  ((gt0 (setq C (- C (char "0"))))
+                     (when (> C 9)
+                        (setq C (- C 7)) )  # Adjust for letter
+                     (when (ge0 (setq C (- N (i64 C))))
+                        (let I L
+                           (loop
+                              (? (lt0 (dec 'C))
+                                 (pack (val I) R) )
+                              (shift I) ) ) ) ) ) )
+            (drop Q
+               (consStr (val 2 R)) ) ) ) ) )
 
 ### Matching ###
 (local) (preStr subStr)

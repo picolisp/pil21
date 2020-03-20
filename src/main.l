@@ -450,8 +450,8 @@ atomErr pairErr varErr protErr lockErr)
          P (push (val $At) NIL $At (val $Bind) Lst)  # [[@] LINK @ Bind Exe]
          Q (link P) )
       (while (pair Y)
-         (link
-            (setq P
+         (setq P
+            (link
                (push  # [val LINK sym]
                   (eval (++ X))  # Evaluate next argument
                   NIL
