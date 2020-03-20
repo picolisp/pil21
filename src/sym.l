@@ -783,14 +783,63 @@
 
 # (pre? 'any1 'any2) -> any2 | NIL
 (de _preQ (Exe)
-   $Nil )
+   (let (X (cdr Exe)  Y (save (evSym X))  Z (evSym (shift X)))
+      (cond
+         ((nil? Y) Z)
+         ((== ZERO (setq Y (name (val (tail Y)))))
+            Z )
+         (T
+            (let
+               (P (push 0 (name (val (tail Z))))
+                  B (numByte P) )
+               (cond
+                  ((=0 B) $Nil)
+                  ((preStr Y B P) Z)
+                  (T $Nil) ) ) ) ) ) )
 
 # (sub? 'any1 'any2) -> any2 | NIL
 (de _subQ (Exe)
-   (let (X (cdr Exe)  P (save (evSym X))  Z (evSym (shift X)))
-      (if (subStr P Z)
+   (let (X (cdr Exe)  Y (save (evSym X))  Z (evSym (shift X)))
+      (if (subStr Y Z)
          Z
          $Nil ) ) )
+
+# (val 'var) -> any
+(de _val (Exe)
+   (let V (needVar Exe (eval (cadr Exe)))
+      (and
+         (sym? V)
+         (sym? (val (tail V)))
+         (dbFetch Exe V) )
+      (val V) ) )
+
+# (set 'var 'any ..) -> any
+(de _set (Exe)
+   (let (X (cdr Exe)  Safe (link (push -ZERO NIL)))
+      (loop
+         (let Y (set Safe (needVar Exe (eval (++ X))))
+            (and
+               (sym? Y)
+               (sym? (val (tail Y)))
+               (dbTouch Exe Y) )
+            (let Z (eval (++ X))
+               (set Y Z)
+               (? (atom X)
+                  (drop Safe)
+                  Z ) ) ) ) ) )
+
+# (setq var 'any ..) -> any
+(de _setq (Exe)
+   $Nil )
+
+# (swap 'var 'any) -> any
+(de _swap (Exe)
+   $Nil )
+
+# (xchg 'var 'var ..) -> any
+(de _xchg (Exe)
+   $Nil )
+
 
 # (low? 'any) -> sym | NIL
 (de _lowQ (Exe)

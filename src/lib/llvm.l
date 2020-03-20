@@ -1,4 +1,4 @@
-# 15mar20 Software Lab. Alexander Burger
+# 20mar20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -26,7 +26,7 @@ show bt)
 (local) (*Shared *Strings *Ssa *Lbl *Log *Curr *Exit *Bind *Phi *Ret log asm ssa
 phi +phi br label +lbl +bind type func ptr pointee store A B C I L M N P Q V X Y
 Exe Prg Typ Sym Ret Args Ext Table Body Var Val Lst Lbl Flg Skip True False Beg
-End *Safe)
+End Safe *Safe)
 
 (import any inc dec ++ #{shift}#)
 

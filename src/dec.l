@@ -1,4 +1,4 @@
-# 07mar20 Software Lab. Alexander Burger
+# 20mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -198,6 +198,7 @@ ffiCall)
 (de void print (any))
 (de repl (any i32 any))
 # db.l
+(de dbFetch (any any))
 (de dbTouch (any any))
 (de dbZap (any))
 

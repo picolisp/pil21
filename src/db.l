@@ -1,4 +1,4 @@
-# 15mar20 Software Lab. Alexander Burger
+# 20mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -381,7 +381,10 @@
    $T )
 
 
-(local) (dbTouch dbZap)
+(local) (dbFetch dbTouch dbZap)
+
+(de dbFetch (Exe Sym)
+   Sym )
 
 (de dbTouch (Exe Sym)
    Sym )
