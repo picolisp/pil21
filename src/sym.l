@@ -867,6 +867,53 @@
                   (drop Safe)
                   Z ) ) ) ) ) )
 
+# (on var ..) -> T
+(de _on (Exe)
+   (let X (cdr Exe)
+      (loop
+         (set (needVar Exe (++ X)) $T)
+         (? (atom X) $T) ) ) )
+
+# (off var ..) -> NIL
+(de _off (Exe)
+   (let X (cdr Exe)
+      (loop
+         (set (needVar Exe (++ X)) $Nil)
+         (? (atom X) $Nil) ) ) )
+
+# (onOff var ..) -> flg
+(de _onOff (Exe)
+   (let X (cdr Exe)
+      (loop
+         (let
+            (Y (needVar Exe (++ X))
+               Z (if (nil? (val Y)) $T $Nil) )
+            (set Y Z)
+            (? (atom X) Z) ) ) ) )
+
+# (zero var ..) -> 0
+(de _zero (Exe)
+   (let X (cdr Exe)
+      (loop
+         (set (needVar Exe (++ X)) ZERO)
+         (? (atom X) ZERO) ) ) )
+
+# (one var ..) -> 1
+(de _one (Exe)
+   (let X (cdr Exe)
+      (loop
+         (set (needVar Exe (++ X)) ONE)
+         (? (atom X) ONE) ) ) )
+
+# (default sym 'any ..) -> any
+(de _default (Exe)
+   (let X (cdr Exe)
+      (loop
+         (let Y (needVar Exe (++ X))
+            (when (nil? (val Y))
+               (set Y (eval (car X))) )
+            (? (atom (shift X)) (val Y)) ) ) ) )
+
 
 # (low? 'any) -> sym | NIL
 (de _lowQ (Exe)

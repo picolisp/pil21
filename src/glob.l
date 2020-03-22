@@ -1,4 +1,4 @@
-# 20mar20 Software Lab. Alexander Burger
+# 22mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -172,7 +172,13 @@
    (NIL "setq" _setq)
    (NIL "swap" _swap)
    (NIL "xchg" _xchg)
-
+   (NIL "on" _on)
+   (NIL "off" _off)
+   (NIL "onOff" _onOff)
+   (NIL "zero" _zero)
+   (NIL "one" _one)
+   (NIL "default" _default)
+   #!
    (NIL "low?" _lowQ)
    (NIL "upp?" _uppQ)
    (NIL "lowc" _lowc)
