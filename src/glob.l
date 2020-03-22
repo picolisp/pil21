@@ -178,6 +178,11 @@
    (NIL "zero" _zero)
    (NIL "one" _one)
    (NIL "default" _default)
+   (NIL "push" _push)
+   (NIL "push1" _push1)
+   (NIL "push1q" _push1q)
+   (NIL "pop" _pop)
+   (NIL "++" _popq)
    #!
    (NIL "low?" _lowQ)
    (NIL "upp?" _uppQ)

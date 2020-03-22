@@ -914,6 +914,74 @@
                (set Y (eval (car X))) )
             (? (atom (shift X)) (val Y)) ) ) ) )
 
+# (push 'var 'any ..) -> any
+(de _push (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (needVar Exe (eval (++ X)))) )
+      (and
+         (sym? Y)
+         (sym? (val (tail Y)))
+         (dbTouch Exe Y) )
+      (loop
+         (let Z (eval (++ X))
+            (set Y (cons Z (val Y)))
+            (? (atom X) Z) ) ) ) )
+
+# (push1 'var 'any ..) -> any
+(de _push1 (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (needVar Exe (eval (++ X)))) )
+      (and
+         (sym? Y)
+         (sym? (val (tail Y)))
+         (dbTouch Exe Y) )
+      (loop
+         (let (Z (eval (++ X))  V (val Y)  L V)
+            (loop  # 'member'
+               (? (atom L) (set Y (cons Z V)))
+               (? (equal Z (++ L))) )
+            (? (atom X) Z) ) ) ) )
+
+# (push1q 'var 'any ..) -> any
+(de _push1q (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (needVar Exe (eval (++ X)))) )
+      (and
+         (sym? Y)
+         (sym? (val (tail Y)))
+         (dbTouch Exe Y) )
+      (loop
+         (let (Z (eval (++ X))  V (val Y)  L V)
+            (loop  # 'memq'
+               (? (atom L) (set Y (cons Z V)))
+               (? (== Z (++ L))) )
+            (? (atom X) Z) ) ) ) )
+
+# (pop 'var) -> any
+(de _pop (Exe)
+   (let X (needVar Exe (eval (cadr Exe)))
+      (and
+         (sym? X)
+         (sym? (val (tail X)))
+         (dbTouch Exe X) )
+      (let V (val X)
+         (if (atom V)
+            V
+            (set X (cdr V))
+            (car V) ) ) ) )
+
+# (++ var) -> any
+(de _popq (Exe)
+   (let (X (needVar Exe (cadr Exe))  V (val X))
+      (if (atom V)
+         V
+         (set X (cdr V))
+         (car V) ) ) )
+
+#!
 
 # (low? 'any) -> sym | NIL
 (de _lowQ (Exe)
