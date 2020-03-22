@@ -1,4 +1,4 @@
-# 20mar20 Software Lab. Alexander Burger
+# 22mar20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -996,7 +996,8 @@ End Safe *Safe)
          (ssa (inc '*Ssa) "inttoptr i64 " Y " to i64*")
          (ssa (inc '*Ssa) "load " "i64, i64* %" (dec *Ssa))
          (link (pack "store i64 %" *Ssa ", i64* %" (- *Ssa 3)))
-         (link (pack "store i64 %" (- *Ssa 2) ", i64* %" (dec *Ssa))) ) )
+         (link (pack "store i64 %" (- *Ssa 2) ", i64* %" (dec *Ssa)))
+         (def (pack "%" (- *Ssa 2)) 'any) ) )
    (llvm~xchg) )
 
 (asm (@Op @Typ)
