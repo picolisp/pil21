@@ -981,6 +981,71 @@
          (set X (cdr V))
          (car V) ) ) )
 
+# (cut 'cnt 'var) -> lst
+(de _cut (Exe)
+   (let (X (cdr Exe)  N (evCnt Exe X))
+      (if (le0 N)
+         $Nil
+         (let Y (needVar Exe (eval (cadr X)))
+            (and
+               (sym? Y)
+               (sym? (val (tail Y)))
+               (dbTouch Exe Y) )
+            (let
+               (V (save (val Y))
+                  Z (cons (++ V) $Nil)
+                  R (save Z) )
+               (while (and (pair V) (n0 (dec 'N)))
+                  (setq Z (set 2 Z (cons (++ V) $Nil))) )
+               (set Y V)  # Set new value
+               R ) ) ) ) )
+
+# (del 'any 'var ['flg]) -> lst
+(de _del (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         Var (save (needVar Exe (eval (++ X))))
+         Flg (nil? (eval (car X))) )
+      (and
+         (sym? Var)
+         (sym? (val (tail Var)))
+         (dbTouch Exe Var) )
+      (let V (val Var)
+         (loop
+            (? (atom V) V)
+            (let Z (++ V)
+               (? (not (equal Y Z))
+                  (let (P (cons Z $Nil)  R (save P))
+                     (loop
+                        (? (atom V))
+                        (if (equal Y (setq Z (++ V)))
+                           (? Flg)
+                           (setq P (set 2 P (cons Z $Nil))) ) )
+                     (set 2 P V  Var R) ) ) )
+            (set Var V)
+            (? Flg V) ) ) ) )
+
+# (queue 'var 'any) -> any
+(de _queue (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (needVar Exe (eval (++ X)))) )
+      (and
+         (sym? Y)
+         (sym? (val (tail Y)))
+         (dbTouch Exe Y) )
+      (let
+         (Z (eval (car X))
+            L (cons Z $Nil)
+            V (val Y) )
+         (if (atom V)
+            (set Y L)
+            (while (pair (cdr V))
+               (shift V) )
+            (set 2 V L) )
+         Z ) ) )
+
 #!
 
 # (low? 'any) -> sym | NIL

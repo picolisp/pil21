@@ -183,6 +183,9 @@
    (NIL "push1q" _push1q)
    (NIL "pop" _pop)
    (NIL "++" _popq)
+   (NIL "cut" _cut)
+   (NIL "del" _del)
+   (NIL "queue" _queue)
    #!
    (NIL "low?" _lowQ)
    (NIL "upp?" _uppQ)
