@@ -1,4 +1,4 @@
-# 15mar20 Software Lab. Alexander Burger
+# 23mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -688,13 +688,30 @@ pushOutFiles popInFiles popOutFiles)
          (print (cdr X)) )
       (T
          (call $Put (char "("))
-         (loop
-            (print (car X))
-            (? (== $Nil (shift X)))
-            (? (atom X)
-               (outString ($ " . "))
-               (print X) )
-            (space) )
+         (let P (circ X)
+            (if (=0 P)
+               (loop  # Non-circular
+                  (print (car X))
+                  (? (== $Nil (shift X)))
+                  (? (atom X)
+                     (outString ($ " . "))
+                     (print X) )
+                  (space) )
+               (let Flg (== P X)  # Fully circular
+                  (loop  # Non-circular part
+                     (print (car X))
+                     (space)
+                     (? (== P (shift X))) )
+                  (call $Put (char "."))
+                  (unless Flg
+                     (space)
+                     (call $Put (char "("))
+                     (loop  # Circular part
+                        (print (car X))
+                        (space)
+                        (? (== P (shift X))) )
+                     (call $Put (char "."))
+                     (call $Put (char ")")) ) ) ) )
          (call $Put (char ")")) ) ) )
 
 (de void prin (X)

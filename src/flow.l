@@ -1,4 +1,4 @@
-# 20mar20 Software Lab. Alexander Burger
+# 24mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -48,18 +48,16 @@
                   (set $Next $Nil)
                   (let L (link (push -ZERO NIL))  # [lst LINK]
                      (set $Next
-                        (set L (push (eval (car X)) $Nil)) )  # [arg1 next]
-                     (while (pair (shift X))
-                        (let Z (push (eval (car X)) $Nil NIL)  # [argN next]
-                           (set 2 L Z)
-                           (setq L Z) ) ) ) )
+                        (setq L
+                           (set L (push (eval (++ X)) $Nil)) ) )  # [arg1 next]
+                     (while (pair X)
+                        (setq L  # [argN next]
+                           (set 2 L (push (eval (++ X)) $Nil)) ) ) ) )
                (set $Bind P)
                (loop
-                  (let (S (val 3 P)  V (val S))  # Symbol, old value
-                     (set S (val P))  # Set new value
-                     (set P V)  # Save old value
-                     (? (== Q P))
-                     (shift P) ) )
+                  (xchg (val 3 P) P)  # Exchange symbol value
+                  (? (== Q P))
+                  (shift P) )
                (let (C (val $Cls)  K (val $Key))
                   (prog1
                      (run (cdr Exe))  # Run body

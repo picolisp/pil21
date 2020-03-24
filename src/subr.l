@@ -1,4 +1,4 @@
-# 08mar20 Software Lab. Alexander Burger
+# 24mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -37,12 +37,12 @@
 
 # (>= 'any ..) -> flg
 (de _ge (Exe)
-   (let (X (cdr Exe)  A (eval (++ X))  P (link (push A NIL)))
+   (let (X (cdr Exe)  A (eval (++ X))  Safe (link (push A NIL)))
       (while (pair X)
          (let B (eval (++ X))
             (when (lt0 (compare A B))
-               (drop P)
+               (drop Safe)
                (ret $Nil) )
-            (setq A (set P B)) ) )
-      (drop P)
+            (setq A (set Safe B)) ) )
+      (drop Safe)
       $T ) )

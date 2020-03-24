@@ -1,4 +1,4 @@
-# 22mar20 Software Lab. Alexander Burger
+# 24mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1045,6 +1045,63 @@
                (shift V) )
             (set 2 V L) )
          Z ) ) )
+
+# (fifo 'var ['any ..]) -> any
+(de _fifo (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (needVar Exe (eval (++ X)))) )
+      (and
+         (sym? Y)
+         (sym? (val (tail Y)))
+         (dbTouch Exe Y) )
+      (let V (val Y)
+         (if (atom X)
+            (if (atom V)
+               $Nil
+               (let Z (cdr V)
+                  (if (== V Z)  # Single cell
+                     (prog
+                        (set Y $Nil)  # Clear value
+                        (car V) )
+                     (set 2 V (cdr Z))
+                     (car Z) ) ) )
+            (let E (eval (++ X))
+               (if (pair V)
+                  (setq V (set 2 V (cons E (cdr V))))  # Concat into value
+                  (setq V (cons E -ZERO))  # Circular cell
+                  (set 2 V V) )
+               (while (pair X)
+                  (setq V (cons (eval (++ X)) (cdr V))) )
+               (set Y V)
+               E ) ) ) ) )
+
+(local) (idxPut idxGet idxDel)
+
+(de idxPut (Var Key)
+   Var )
+
+(de idxGet (Var Key)
+   Var )
+
+(de idxDel (Var Key)
+   Var )
+
+# (idx 'var 'any 'flg) -> lst
+# (idx 'var 'any) -> lst
+# (idx 'var) -> lst
+(de _idx (Exe)
+   (let
+      (X (cdr Exe)
+         Var (needVar Exe (eval (++ X))) )
+      (if (atom X)
+         (consTree (val Var) $Nil)  # Single arg
+         (save Var
+            (let Key (save (eval (++ X)))
+               (cond
+                  ((atom X) (idxGet Var Key))  # Two args
+                  ((nil? (eval (car X))) (idxDel Var Key))  # Delete
+                  (T (idxPut Var Key)) ) ) ) ) ) )
 
 #!
 

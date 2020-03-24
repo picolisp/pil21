@@ -1,4 +1,4 @@
-# 20mar20 Software Lab. Alexander Burger
+# 24mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -463,10 +463,11 @@ atomErr pairErr varErr protErr lockErr)
                   (set $Next $Nil)
                   (let L (link (push -ZERO NIL))  # [lst LINK]
                      (set $Next
-                        (set L (push (eval (car X)) $Nil)) )  # [arg1 next]
-                     (while (pair (shift X))
+                        (setq L
+                           (set L (push (eval (++ X)) $Nil)) ) )  # [arg1 next]
+                     (while (pair X)
                         (setq L  # [argN next]
-                           (set 2 L (push (eval (car X)) $Nil)) ) ) ) )
+                           (set 2 L (push (eval (++ X)) $Nil)) ) ) ) )
                (set $Bind P)
                (loop
                   (xchg (val 3 P) P)  # Exchange symbol value
@@ -556,7 +557,7 @@ atomErr pairErr varErr protErr lockErr)
                   (set Y (box64 (i64 P)))
                   P ) ) )
          Fun (eval (++ X))  # Eval function 'cnt2|sym2'
-         Args (link (push (eval (++ X)) NIL))
+         Args (save (eval (++ X)))
          L Args )  # [ret args]
       (while (pair X)
          (let Z (push (eval (++ X)) $Nil NIL)  # [argN next]
@@ -576,7 +577,7 @@ atomErr pairErr varErr protErr lockErr)
                         (set Fun (box64 (i64 P)))
                         P ) ) )
                Args ) )
-         (drop Args) ) ) )
+         Args ) ) )
 
 # (args) -> flg
 (de _args (Exe)
@@ -593,11 +594,11 @@ atomErr pairErr varErr protErr lockErr)
    (let X (val $Next)
       (if (atom X)
          X
-         (let (Y (cons (++ X) $Nil)  P (link (push Y NIL)))
+         (let (Y (cons (++ X) $Nil)  R (save Y))
             (while (pair X)
                (setq Y
                   (set 2 Y (cons (++ X) $Nil)) ) )
-            (pop P) ) ) ) )
+            R ) ) ) )
 
 # (version ['flg]) -> lst
 (de _version (Exe)

@@ -1,4 +1,4 @@
-# 22mar20 Software Lab. Alexander Burger
+# 23mar20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -1304,7 +1304,7 @@ End Safe *Safe)
 ### Composite ###
 (symbols '(llvm priv pico))
 
-(local) (link drop pop save)
+(local) (link drop pop save save2)
 
 (pico~de link (P)
    (log)
@@ -1319,7 +1319,8 @@ End Safe *Safe)
    (pico~let *Log NIL
       (pico~if Prg
          (prog1
-            (run @)
+            (pico~let *Log T
+               (run @) )
             (set $Link (cdr P)) )
          (set $Link (cdr P)) ) ) )
 
@@ -1330,12 +1331,32 @@ End Safe *Safe)
          (val P)
          (set $Link (cdr P)) ) ) )
 
-(pico~de save (X . @)
+(pico~de save (X . Prg)
    (log)
-   (pico~let (*Log NIL  P (push X NIL))
+   (pico~let (*Log NIL  Safe *Safe  P (push X NIL))
       (default *Safe P)
       (set 2 P (val $Link))
-      (pico~while (args)
-         (setq P (push (next) P)) )
-      (set $Link P) )
-   X )
+      (set $Link P)
+      (pico~if Prg
+         (prog1
+            (pico~let *Log T
+               (run @) )
+            (pico~when (pico~and @ (pico~not Safe))
+               (drop *Safe)
+               (off *Safe) ) )
+         X ) ) )
+
+(pico~de save2 (X Y . Prg)
+   (log)
+   (pico~let (*Log NIL  Safe *Safe  P (push X NIL))
+      (default *Safe P)
+      (set 2 P (val $Link))
+      (set $Link (push Y P))
+      (pico~if Prg
+         (prog1
+            (pico~let *Log T
+               (run @) )
+            (pico~when (pico~and @ (pico~not Safe))
+               (drop *Safe)
+               (off *Safe) ) )
+         Y ) ) )
