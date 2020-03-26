@@ -1,4 +1,4 @@
-# 24mar20 Software Lab. Alexander Burger
+# 25mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -373,7 +373,7 @@
                      (? (atom Y)  # No link yet
                         (set 2 X
                            (cons (cons (setq Sym (consExt Name)) $Nil) $Nil) ) )
-                     (? (atom (setq Y (cdr (setq X Y))))
+                     (? (atom (setq Y (car (setq X Y))))
                         (set X
                            (cons (setq Sym (consExt Name)) $Nil) ) ) ) )
                (setq X Y) ) ) )
@@ -1113,7 +1113,34 @@
                   (if (lt0 I) (cdr Y) (car Y)) ) ) ) ) ) )
 
 (de idxDel (Var Key)
-   Var )
+   (loop
+      (let X (val Var)
+         (? (atom X) $Nil)
+         (let Y (cdr X)  # Subtrees
+            (let I (compare (car X) Key)
+               (? (=0 I)  # Found key
+                  (cond
+                     ((atom (car Y))  # No left branch
+                        (set Var (cdr Y)) )  # Use right branch
+                     ((atom (cdr Y))  # No right branch
+                        (set Var (car Y)) )  # Use left branch
+                     (T
+                        (let Z (cdr (setq Y (cdr Y)))  # Sub-branches
+                           (if (atom (car Z))  # No left sub-branch
+                              (set   # Insert right sub-branch
+                                 X (car Y)
+                                 2 (cdr X) (cdr Z) )
+                              (let L (cdr (setq Z (car Z)))  # Left sub-branch
+                                 (loop
+                                    (? (atom (car L)))
+                                    (setq Y Z  Z (car L)  L (cdr Z)) )
+                                 (set
+                                    X (car Z)
+                                    (cdr Y) (cdr L) ) ) ) ) ) )
+                  X )
+               (? (atom Y) $Nil)  # No link cell
+               (setq Var Y)  # Default point to left subtree
+               (and (lt0 I) (setq Var (ofs Var 1))) ) ) ) ) )  # Point to right
 
 # (idx 'var 'any 'flg) -> lst
 # (idx 'var 'any) -> lst
