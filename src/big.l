@@ -1,4 +1,4 @@
-# 15mar20 Software Lab. Alexander Burger
+# 28mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -56,20 +56,20 @@
                (& (i32 (numByte P)) (hex "3F")) ) ) ) ) )
 
 (de void byteNum ((i8 . B) (i64* . P))
-   (let (Cnt (val P)  Name (val 2 P))
-      (unless (big? Name)  # Short name
+   (let (Cnt (val P)  Nm (val 2 P))
+      (unless (big? Nm)  # Short name
          # 0000.xxxxxxx.xxxxxxx.xxxxxxx.xxxxxxx.xxxxxxx.xxxxxxx.xxxxxxx0010
          #   60      52      44      36      28      20      12       4
          (when (> 60 Cnt)  # Digit not full
             (set 2 P
-               (| Name (shl (i64 B) Cnt)) )
+               (| Nm (shl (i64 B) Cnt)) )
             (set P (+ Cnt 8))
             (ret) )
          (set 3 P
             (set 2 P
                (boxNum  # Make big
                   (|  # Combine byte with digit
-                     (shr Name 4)  # De-normalize short number
+                     (shr Nm 4)  # De-normalize short number
                      (shl (i64 B) 56) ) ) ) )  # Adjust byte
          (set P 4)  # Start new digit
          (ret) )

@@ -1,4 +1,4 @@
-# 20mar20 Software Lab. Alexander Burger
+# 28mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -330,11 +330,11 @@
 (de _extern (Exe)
    (let
       (Sym (needSym Exe (eval (cadr Exe)))
-         Name (name (val (tail Sym))) )
-      (when (== Name ZERO)
+         Nm (name (val (tail Sym))) )
+      (when (== Nm ZERO)
          (ret $Nil) )
       (let
-         (P (push 0 Name)  # [cnt name]
+         (P (push 0 Nm)  # [cnt name]
             C (numChar P)
             F (i32 0) )
          (when (== C (char "{"))

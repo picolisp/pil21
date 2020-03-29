@@ -1,4 +1,4 @@
-# 25mar20 Software Lab. Alexander Burger
+# 29mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -80,8 +80,8 @@
 (de i8 firstByte (Tail)
    (if (sym? Tail)  # External symbol
       0
-      (let Name (name Tail)  # Else get name
-         (i8 (if (cnt? Name) (int Name) (dig Name))) ) ) )
+      (let Nm (name Tail)  # Else get name
+         (i8 (if (cnt? Nm) (int Nm) (dig Nm))) ) ) )
 
 (de i32 firstChar (Sym)
    (if (nil? Sym)
@@ -161,10 +161,10 @@
       ((nil? X))
       ((num? X) (fmtNum X 0 0 0 P))
       (T
-         (let (Tail (val (tail X))  Name (name Tail))
+         (let (Tail (val (tail X))  Nm (name Tail))
             (if (sym? Tail)
-               (packExtNm Name P)
-               (let (Q (push 0 Name)  B T)  # [cnt name]
+               (packExtNm Nm P)
+               (let (Q (push 0 Nm)  B T)  # [cnt name]
                   (until (=0 (setq B (numByte Q)))
                      (byteNum B P) ) ) ) ) ) ) )
 
@@ -478,24 +478,24 @@
    (let
       (Sym (needSym Exe (eval (cadr Exe)))
          Tail (val (tail Sym))
-         Name (name Tail) )
+         Nm (name Tail) )
       (if (sym? Tail)  # External
          (let (P (push 4 ZERO NIL)  Q (link (ofs P 1)))  # [cnt name link]
-            (packExtNm Name P)
+            (packExtNm Nm P)
             (drop Q
                (consSym (val Q) 0) ) )
-         (consSym Name 0) ) ) )
+         (consSym Nm 0) ) ) )
 
 # (nsp 'sym) -> sym
 (de _nsp (Exe)
    (let
       (Sym (needSym Exe (eval (cadr Exe)))
-         Name (name (val (tail Sym)))
+         Nm (name (val (tail Sym)))
          Lst (val $Intern) )  # Search namespaces
       (loop
          (? (atom Lst) $Nil)
          (let Ns (++ Lst)
-            (? (isIntern Sym Name (val Ns)) Ns) ) ) ) )
+            (? (isIntern Sym Nm (val Ns)) Ns) ) ) ) )
 
 # (sp? 'any) -> flg
 (de _spQ (Exe)
@@ -545,7 +545,7 @@
                      (set Tos Z) ) ) ) )
          (set Q P)  # Save tree
          (loop
-            (setq Lst (cons (val P) Lst))  # Cons symbol
+            (setq Lst (cons (car P) Lst))  # Cons symbol
             (let (X (cdr P)  Y (car X))  # Left subtree
                (? (pair Y)
                   (let Z P  # Go left
@@ -637,11 +637,11 @@
    (let
       (X (cdr Exe)
          Sym (save (needSym Exe (eval (++ X))))
-         Name (name (val (tail Sym))) )
-      (if (== Name ZERO)
+         Nm (name (val (tail Sym))) )
+      (if (== Nm ZERO)
          $Nil
          (let (L (val $Intern)  F (nil? (eval (car X))))
-            (intern Sym 0 Name
+            (intern Sym 0 Nm
                (val (car L))
                (if F (cdr L) $Nil) ) ) ) ) )
 
@@ -686,10 +686,10 @@
          X
          (let
             (Tail (val (tail (xSym X)))
-               Name (save (name Tail)) )
+               Nm (save (name Tail)) )
             (if (sym? Tail)  # External
-               (chopExtNm Name)
-               (let (P (push 0 Name)  C (numChar P))
+               (chopExtNm Nm)
+               (let (P (push 0 Nm)  C (numChar P))
                   (if (=0 C)
                      $Nil
                      (let (Y (cons (mkChar C) $Nil)  R (save Y))
@@ -1064,13 +1064,13 @@
                         (car V) )
                      (set 2 V (cdr Z))
                      (car Z) ) ) )
-            (let E (eval (++ X))
+            (let E (eval (car X))
                (if (pair V)
                   (setq V (set 2 V (cons E (cdr V))))  # Concat into value
                   (setq V (cons E -ZERO))  # Circular cell
                   (set 2 V V) )
-               (while (pair X)
-                  (setq V (cons (eval (++ X)) (cdr V))) )
+               (while (pair (shift X))
+                  (setq V (cons (eval (car X)) (cdr V))) )
                (set Y V)
                E ) ) ) ) )
 
@@ -1158,7 +1158,284 @@
                   ((nil? (eval (car X))) (idxDel Var Key))  # Delete
                   (T (idxPut Var Key)) ) ) ) ) ) )
 
-#!
+# (lup 'lst 'any) -> lst
+# (lup 'lst 'any 'any2) -> lst
+(de _lup (Exe)
+   (let (X (cdr Exe)  P (save (eval (++ X))))
+      (if (atom P)
+         P
+         (let Key (eval (++ X))
+            (if (atom X)
+               (loop
+                  (let Y (car P)
+                     (cond
+                        ((== $T Y) (setq P (cadr P)))
+                        ((atom Y) (setq P (cddr P)))
+                        (T
+                           (let I (compare (car Y) Key)
+                              (? (=0 I) (car P))
+                              (setq
+                                 P (cdr P)
+                                 P (if (lt0 I) (cdr P) (car P)) ) ) ) ) )
+                  (? (atom P) $Nil) )
+            (save Key)
+            (let
+               (Key2 (save (eval (car X)))
+                  Q (link (push P NIL))
+                  Tos (link (push -ZERO NIL))
+                  R $Nil )
+               (loop
+                  (loop
+                     (let Y (cdr (setq X (cdr P)))  # Right subtree
+                        (? (atom Y))
+                        (let Z (car P)
+                           (? (== $T Z))
+                           (? (and (pair Z) (gt0 (compare (car Z) Key2)))) )
+                        (let Z P  # Go right
+                           (setq P Y)  # Invert tree
+                           (set 2 X (val Tos))
+                           (set Tos Z) ) ) )
+                  (set Q P)  # Save tree
+                  (loop
+                     (when
+                        (and
+                           (pair (setq X (car P)))
+                           (ge0 (compare (car X) Key)) )
+                        (when (le0 (compare (car X) Key2))
+                           (setq R (cons X R)) )  # Cons symbol
+                        (let Y (car (setq X (cdr P)))  # Left subtree
+                           (? (pair Y)
+                              (let Z P  # Go left
+                                 (setq P Y)  # Invert tree
+                                 (set X (val Tos))
+                                 (set Tos (| Z 8))  # First visit
+                                 (set Q P) ) ) ) )  # Save tree
+                     (loop
+                        (when (== -ZERO (setq X (val Tos)))
+                           (ret R) )
+                        (? (=0 (& X 8))  # Second visit
+                           (let Y (cdr X)  # Nodes
+                              (set Tos (cdr Y))  # TOS on up link
+                              (set 2 Y P)
+                              (setq P X)
+                              (set Q P) ) )  # Save tree
+                        (setq X (& X -9))  # Clear visit bit
+                        (let Y (cdr X)  # Nodes
+                           (set Tos (car Y))
+                           (set Y P)
+                           (setq P X)
+                           (set Q P) ) ) ) ) ) ) ) ) ) )  # Save tree
+
+### Property access ###
+(local) (put putn get getn prop)
+
+(de void put (Sym Key Val)
+   (let Tail (val (tail Sym))
+      (unless (num? Tail)  # Property list
+         (let (L (any (& Tail -9))  X (car L))
+            (if (atom X)
+               (when (== X Key)
+                  (cond
+                     ((nil? Val)
+                        (shift L)  # Remove first property
+                        (set (tail Sym)
+                           (if (sym? Tail) (| L 8) L) ) )
+                     ((<> Val $T)  # Change to cell
+                        (set L (cons Val Key)) ) )
+                  (ret) )
+               (when (== (cdr X) Key)
+                  (cond
+                     ((nil? Val)
+                        (shift L)  # Remove first property
+                        (set (tail Sym)
+                           (if (sym? Tail) (| L 8) L) ) )
+                     ((== Val $T) (set L Key))  # Change to flag
+                     (T (set X Val)) )  # Set new value
+                  (ret) ) )
+            (while (pair (setq X (cdr L)))
+               (let Y (car X)
+                  (if (atom Y)
+                     (when (== Y Key)
+                        (if (nil? Val)
+                           (set 2 L (cdr X))  # Remove cell
+                           (unless (== $T Val)
+                              (set X (cons Val Key)) )
+                           (set 2 L (cdr X)) # Unlink cell
+                           (ifn (sym? Tail)
+                              (set 2 X Tail)
+                              (set 2 X (& Tail -9))
+                              (setq X (| X 8)) )
+                           (set (tail Sym) X) )
+                        (ret) )
+                     (when (== (cdr Y) Key)
+                        (if (nil? Val)
+                           (set 2 L (cdr X))  # Remove cell
+                           (if (== $T Val)
+                              (set X Key)  # Change to flag
+                              (set Y Val) )  # Set new value
+                           (set 2 L (cdr X)) # Unlink cell
+                           (ifn (sym? Tail)
+                              (set 2 X Tail)
+                              (set 2 X (& Tail -9))
+                              (setq X (| X 8)) )
+                           (set (tail Sym) X) )
+                        (ret) ) ) )
+                  (setq L X) ) ) )
+      (unless (nil? Val)  # Non-NIL value
+         (setq Val
+            (if (== $T Val) Key (cons Val Key)) )
+         (set (tail Sym)
+            (if (sym? Tail)
+               (| (cons Val (& Tail -9)) 8)
+               (cons Val Tail) ) ) ) ) )
+
+(de putn (Exe Lst Key)
+   )
+
+(de get (X Key)
+   X )
+
+(de getn (Exe X Key)
+   X )
+
+(de prop ()
+   )
+
+# (put 'sym1|lst ['sym2|cnt ..] 'any) -> any
+(de _put (Exe)
+   (let
+      (X (cdr Exe)
+         Y (eval (++ X))
+         Safe (link (push Y NIL))
+         Key (eval (++ X)) )
+      (loop
+         (let Z (cdr X)
+            (? (atom Z))
+            (setq
+               Y (set Safe (getn Exe Y Key))
+               Key (eval (car X))
+               X Z ) ) )
+      (when (num? Y)  # Need symbol or pair
+         (argErr Exe Y) )
+      (link (push Key NIL))
+      (let Val (eval (car X))
+         #!
+         (put Y Key Val)
+         (drop Safe)
+         Val ) ) )
+
+# (get 'sym1|lst ['sym2|cnt ..]) -> any
+(de _get (Exe)
+   Exe )
+
+# (prop 'sym1|lst ['sym2|cnt ..] 'sym) -> var
+(de _prop (Exe)
+   Exe )
+
+# (; 'sym1|lst [sym2|cnt ..]) -> any
+(de _semicol (Exe)
+   Exe )
+
+# (=: sym|0 [sym1|cnt ..] 'any) -> any
+(de _setCol (Exe)
+   Exe )
+
+# (: sym|0 [sym1|cnt ..]) -> any
+(de _col (Exe)
+   Exe )
+
+# (:: sym|0 [sym1|cnt .. sym2]) -> var
+(de _propCol (Exe)
+   Exe )
+
+# (putl 'sym1|lst1 ['sym2|cnt ..] 'lst) -> lst
+(de _putl (Exe)
+   Exe )
+
+# (getl 'sym1|lst1 ['sym2|cnt ..]) -> lst
+(de _getl (Exe)
+   (let
+      (X (cdr Exe)
+         Y (eval (car X))
+         Safe (link (push Y NIL)) )
+      (while (pair (shift X))
+         (when (num? Y)  # Need symbol or pair
+            (argErr Exe Y) )
+         (setq Y
+            (set Safe (getn Exe (eval (car X)) Y)) ) )
+      (setq X (val (tail (needSym Exe Y))))
+      (when (sym? X)
+         (dbFetch Exe Y)
+         (setq X (val (tail Y))) )
+      (drop Safe
+         (if (num? X)
+            $Nil
+            (setq X (& X -9))  # Clear 'extern' tag
+            (let R (setq Y (cons (car X) $Nil))
+               (link (push R NIL))
+               (while (pair (shift X))
+                  (setq Y
+                     (set 2 Y (cons (car X) $Nil)) ) )
+               R ) ) ) ) )
+
+(local) wipe
+
+(de void wipe (Exe X)
+   (let
+      (Tail (val (tail (needSym Exe X)))
+         Nm (name Tail) )
+      (if (sym? Tail)  # External symbol
+         (let N (add Nm Nm)  # Get carry
+            (unless @@  # Not dirty
+               (add N N)
+               (when @@  # and loaded
+                  (set X $Nil  (tail X) (| Nm 8)) ) ) )
+         (set X $Nil  (tail X) Nm) ) ) )  # Clear value and properties
+
+# (wipe 'sym|lst) -> sym|lst
+(de _wipe (Exe)
+   (let X (eval (cadr Exe))
+      (unless (nil? X)
+         (if (atom X)
+            (wipe Exe X)
+            (let Y X
+               (loop
+                  (wipe Exe (++ Y))
+                  (? (atom Y)) ) ) ) )
+      X ) )
+
+(local) meta
+
+(de meta (X Key)
+   (while (pair X)
+      (let Y (car X)
+         (when (and (not (num? Y)) (sym? Y))
+            (let Z (get Y Key)
+               (? (not (nil? Z)) Z) )
+            (stkChk 0)
+            (let Z (meta (car Y) Key)
+               (? (not (nil? Z)) Z) ) ) )
+      (shift X) )
+   $Nil )
+
+# (meta 'obj|typ 'sym ['sym2|cnt ..]) -> any
+(de _meta (Exe)
+   (let
+      (X (cdr Exe)
+         Y (eval (++ X))
+         Safe (link (push Y NIL)) )
+      (when (num? Y)  # Need symbol or pair
+         (argErr Exe Y) )
+      (when (sym? Y)
+         (when (sym? (val (tail Y)))
+            (dbFetch Exe Y) )
+         (setq Y (val Y)) )
+      (setq Y (meta (eval (car X)) Y))
+      (while (pair (shift X))
+         (set Safe Y)
+         (setq Y (get (eval (car X)) Y)) )
+      (drop Safe)
+      Y ) )
 
 # (low? 'any) -> sym | NIL
 (de _lowQ (Exe)

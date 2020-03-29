@@ -1,4 +1,4 @@
-# 23mar20 Software Lab. Alexander Burger
+# 27mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -188,6 +188,18 @@
    (NIL "queue" _queue)
    (NIL "fifo" _fifo)
    (NIL "idx" _idx)
+   (NIL "lup" _lup)
+   (NIL "put" _put)
+   (NIL "get" _get)
+   (NIL "prop" _prop)
+   (NIL ";" _semicol)
+   (NIL "=:" _setCol)
+   (NIL ":" _col)
+   (NIL "::" _propCol)
+   (NIL "putl" _putl)
+   (NIL "getl" _getl)
+   (NIL "wipe" _wipe)
+   (NIL "meta" _meta)
    #!
    (NIL "low?" _lowQ)
    (NIL "upp?" _uppQ)
