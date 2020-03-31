@@ -1,4 +1,4 @@
-# 29mar20 Software Lab. Alexander Burger
+# 31mar20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1234,7 +1234,7 @@
       (unless (num? Tail)  # Property list
          (let (L (any (& Tail -9))  X (car L))
             (if (atom X)
-               (when (== X Key)
+               (when (== Key X)
                   (cond
                      ((nil? Val)
                         (shift L)  # Remove first property
@@ -1243,7 +1243,7 @@
                      ((<> Val $T)  # Change to cell
                         (set L (cons Val Key)) ) )
                   (ret) )
-               (when (== (cdr X) Key)
+               (when (== Key (cdr X))
                   (cond
                      ((nil? Val)
                         (shift L)  # Remove first property
@@ -1255,25 +1255,25 @@
             (while (pair (setq X (cdr L)))
                (let Y (car X)
                   (if (atom Y)
-                     (when (== Y Key)
+                     (when (== Key Y)
                         (if (nil? Val)
                            (set 2 L (cdr X))  # Remove cell
                            (unless (== $T Val)
                               (set X (cons Val Key)) )
-                           (set 2 L (cdr X)) # Unlink cell
+                           (set 2 L (cdr X))  # Unlink cell
                            (ifn (sym? Tail)
                               (set 2 X Tail)
                               (set 2 X (& Tail -9))
                               (setq X (| X 8)) )
                            (set (tail Sym) X) )
                         (ret) )
-                     (when (== (cdr Y) Key)
+                     (when (== Key (cdr Y))
                         (if (nil? Val)
                            (set 2 L (cdr X))  # Remove cell
                            (if (== $T Val)
                               (set X Key)  # Change to flag
                               (set Y Val) )  # Set new value
-                           (set 2 L (cdr X)) # Unlink cell
+                           (set 2 L (cdr X))  # Unlink cell
                            (ifn (sym? Tail)
                               (set 2 X Tail)
                               (set 2 X (& Tail -9))
@@ -1289,16 +1289,56 @@
                (| (cons Val (& Tail -9)) 8)
                (cons Val Tail) ) ) ) ) )
 
-(de putn (Exe Lst Key)
-   )
+(de void putn (Exe Lst Key Val)
+   (if (num? Key)
+      (let Cnt (int Key)
+         (until (=0 (dec 'Cnt))
+            (when (atom (shift Lst))
+               (pairErr Exe Lst) ) )
+         (set Lst Val) )
+      (loop
+         (let X (car Lst)
+            (? (and (pair X) (== Key (car X)))  # asoq
+               (set 2 X Val) ) ) ) ) )
 
-(de get (X Key)
-   X )
+(de get (Sym Key)
+   (if (== Key ZERO)
+      (val Sym)
+      (let Tail (val (tail Sym))
+         (if (num? Tail)
+            $Nil
+            (let (L (any (& Tail -9))  X (car L))
+               (if (atom X)
+                  (and (== Key X) (ret $T))
+                  (and (== Key (cdr X)) (ret (car X))) )
+               (while (pair (setq X (cdr L)))
+                  (let Y (car X)
+                     (if (atom Y)
+                        (when (== Key Y)
+                           (set 2 L (cdr Y))  # Unlink cell
+                           (ifn (sym? Tail)
+                              (set 2 X Tail)
+                              (set 2 X (& Tail -9))
+                              (setq X (| X 8)) )
+                           (set (tail Sym) X)
+                           (ret $T) )
+                        (when (== Key (cdr Y))
+                           (set 2 L (cdr X))  # Unlink cell
+                           (ifn (sym? Tail)
+                              (set 2 X Tail  (tail Sym) X)
+                              (set
+                                 2 X (& Tail -9)
+                                 (tail Sym) (| X 8) )
+                              (ret (car Y)) ) ) )
+                     (setq L X) ) )
+               $Nil ) ) ) ) )
 
 (de getn (Exe X Key)
+   #!
    X )
 
 (de prop ()
+   #!
    )
 
 # (put 'sym1|lst ['sym2|cnt ..] 'any) -> any
@@ -1326,30 +1366,37 @@
 
 # (get 'sym1|lst ['sym2|cnt ..]) -> any
 (de _get (Exe)
+   #!
    Exe )
 
 # (prop 'sym1|lst ['sym2|cnt ..] 'sym) -> var
 (de _prop (Exe)
+   #!
    Exe )
 
 # (; 'sym1|lst [sym2|cnt ..]) -> any
 (de _semicol (Exe)
+   #!
    Exe )
 
 # (=: sym|0 [sym1|cnt ..] 'any) -> any
 (de _setCol (Exe)
+   #!
    Exe )
 
 # (: sym|0 [sym1|cnt ..]) -> any
 (de _col (Exe)
+   #!
    Exe )
 
 # (:: sym|0 [sym1|cnt .. sym2]) -> var
 (de _propCol (Exe)
+   #!
    Exe )
 
 # (putl 'sym1|lst1 ['sym2|cnt ..] 'lst) -> lst
 (de _putl (Exe)
+   #!
    Exe )
 
 # (getl 'sym1|lst1 ['sym2|cnt ..]) -> lst
