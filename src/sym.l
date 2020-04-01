@@ -1,4 +1,4 @@
-# 31mar20 Software Lab. Alexander Burger
+# 01apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1290,16 +1290,23 @@
                (cons Val Tail) ) ) ) ) )
 
 (de void putn (Exe Lst Key Val)
-   (if (num? Key)
-      (let Cnt (int Key)
-         (until (=0 (dec 'Cnt))
+   (nond
+      ((num? Key)
+         (loop  # asoq
+            (let X (car Lst)
+               (? (and (pair X) (== Key (car X)))
+                  (set 2 X Val) ) )
             (when (atom (shift Lst))
-               (pairErr Exe Lst) ) )
-         (set Lst Val) )
-      (loop
-         (let X (car Lst)
-            (? (and (pair X) (== Key (car X)))  # asoq
-               (set 2 X Val) ) ) ) ) )
+               (argErr Exe Key) ) ) )
+      ((== ZERO Key)
+         (let Cnt (int Key)  # index
+            (until (=0 (dec 'Cnt))
+               (when (atom (shift Lst))
+                  (argErr Exe Key) ) ) )
+         (if (sign? Key)
+            (set 2 Lst Val)
+            (set Lst Val) ) )
+      (NIL (argErr Exe Key)) ) )
 
 (de get (Sym Key)
    (if (== Key ZERO)
@@ -1315,7 +1322,7 @@
                   (let Y (car X)
                      (if (atom Y)
                         (when (== Key Y)
-                           (set 2 L (cdr Y))  # Unlink cell
+                           (set 2 L (cdr X))  # Unlink cell
                            (ifn (sym? Tail)
                               (set 2 X Tail)
                               (set 2 X (& Tail -9))
@@ -1334,8 +1341,28 @@
                $Nil ) ) ) ) )
 
 (de getn (Exe X Key)
-   #!
-   X )
+   (when (num? X)  # Need symbol or pair
+      (argErr Exe X) )
+   (if (pair X)
+      (nond
+         ((num? Key)
+            (loop  # asoq
+               (let Y (car X)
+                  (? (and (pair Y) (== Key (car Y)))
+                     (cdr Y) ) )
+               (? (atom (shift X))) ) )
+         ((== ZERO Key)
+            (let Cnt (int Key)  # nth
+               (until (=0 (dec 'Cnt))
+                  (shift X) )
+               (if (sign? Key)
+                  (cdr X)
+                  (car X) ) ) )
+         (NIL $Nil) )
+      (when (sym? (val (tail X)))
+         (dbFetch Exe X) )
+      (tailcall
+         (get X Key) ) ) )
 
 (de prop ()
    #!

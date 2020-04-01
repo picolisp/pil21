@@ -1,11 +1,11 @@
-# 23mar20 Software Lab. Alexander Burger
+# 01apr20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
 
 (local) (priv void null i1 i1* i1** i8 i8* i8** i8*** i32 i32* i32** i64 i64*
 i64** any YES NO ZERO -ZERO ONE SymTab begin end $ ? short global var str const
-globals array table symTab inline define struct $Nil $Link drop)
+globals array table symTab inline tailcall define struct $Nil $Link drop)
 
 (import pico llvm symbols local T NIL @ @@ @@@ load setq prog */ >> char hex !
 show bt)
@@ -23,15 +23,17 @@ show bt)
 ### Cross-compiler private ###
 (symbols 'priv 'llvm 'pico)
 
-(local) (*Shared *Strings *Ssa *Lbl *Log *Curr *Exit *Bind *Phi *Ret log asm ssa
-phi +phi br label +lbl +bind type func ptr pointee store A B C I L M N P Q V X Y
-Exe Prg Typ Sym Ret Args Ext Table Body Var Val Lst Lbl Flg Skip True False Beg
-End Safe *Safe)
+(local) (*Shared *Strings *Ssa *Lbl *Log *Curr *Exit *Bind *Phi *Call *Ret log
+asm ssa phi +phi br label +lbl +bind type func ptr pointee store A B C I L M N P
+Q V X Y Exe Prg Typ Sym Ret Args Ext Table Body Var Val Lst Lbl Flg Skip True
+False Beg End Safe *Safe)
 
 (import any inc dec ++ #{shift}#)
 
 (de *Err
    (and *Dbg (symbols '(priv llvm pico))) )
+
+(de *Call . "call")
 
 
 # Generate LLVM-IR
@@ -459,6 +461,10 @@ End Safe *Safe)
          'phi
          L ) ) )
 
+(de tailcall Prg
+   (let *Call "tail call"
+      (run Prg) ) )
+
 (de define (Ext Ret Sym Args Body)
    (and Body (prinl))
    (setq *Ssa -1)
@@ -502,7 +508,7 @@ End Safe *Safe)
                (link '(log))
                (let L
                   (list
-                     "call " (lit *Ret) " @" (lit Sym)
+                     '*Call " " (lit *Ret) " @" (lit Sym)
                      "(" '(glue ", " A) ")" )
                   (link
                      (if (== void *Ret)
