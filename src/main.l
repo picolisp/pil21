@@ -1,4 +1,4 @@
-# 24mar20 Software Lab. Alexander Burger
+# 02apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -113,7 +113,7 @@
 
 # Error handling
 (local) (pushOutFiles err stkErr argErr cntErr numErr lstErr symErr extErr
-atomErr pairErr varErr protErr lockErr)
+atomErr pairErr varErr itemErr protErr lockErr)
 
 (de void pushOutFiles (i8*))
 
@@ -212,6 +212,9 @@ atomErr pairErr varErr protErr lockErr)
 
 (de NIL varErr (Exe X)
    (err Exe X ($ "Variable expected") null) )
+
+(de NIL itemErr (Exe X)
+   (err Exe X ($ "Item not found") null) )
 
 (de NIL protErr (Exe X)
    (err Exe X ($ "Protected symbol") null) )

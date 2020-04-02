@@ -1,4 +1,4 @@
-# 01apr20 Software Lab. Alexander Burger
+# 02apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1297,12 +1297,12 @@
                (? (and (pair X) (== Key (car X)))
                   (set 2 X Val) ) )
             (when (atom (shift Lst))
-               (argErr Exe Key) ) ) )
+               (itemErr Exe Key) ) ) )
       ((== ZERO Key)
          (let Cnt (int Key)  # index
             (until (=0 (dec 'Cnt))
                (when (atom (shift Lst))
-                  (argErr Exe Key) ) ) )
+                  (itemErr Exe Key) ) ) )
          (if (sign? Key)
             (set 2 Lst Val)
             (set Lst Val) ) )
@@ -1364,9 +1364,39 @@
       (tailcall
          (get X Key) ) ) )
 
-(de prop ()
-   #!
-   )
+(de prop (Sym Key)
+   (let Tail (val (tail Sym))
+      (unless (num? Tail)
+         (let (L (any (& Tail -9))  X (car L))
+            (if (atom X)
+               (and (== Key X) (ret Key))
+               (and (== Key (cdr X)) (ret X)) )
+            (while (pair (setq X (cdr L)))
+               (let Y (car X)
+                  (if (atom Y)
+                     (when (== Key Y)
+                        (set 2 L (cdr X))  # Unlink cell
+                        (ifn (sym? Tail)
+                           (set 2 X Tail)
+                           (set 2 X (& Tail -9))
+                           (setq X (| X 8)) )
+                        (set (tail Sym) X)
+                        (ret Key) )
+                     (when (== Key (cdr Y))
+                        (set 2 L (cdr X))  # Unlink cell
+                        (ifn (sym? Tail)
+                           (set 2 X Tail  (tail Sym) X)
+                           (set
+                              2 X (& Tail -9)
+                              (tail Sym) (| X 8) )
+                           (ret Y) ) ) )
+                  (setq L X) ) ) ) )
+      (let R (cons $Nil Key)
+         (set (tail Sym)
+            (if (sym? Tail)
+               (| (cons R (& Tail -9)) 8)
+               (cons R Tail) ) )
+         R ) ) )
 
 # (put 'sym1|lst ['sym2|cnt ..] 'any) -> any
 (de _put (Exe)
@@ -1386,8 +1416,15 @@
          (argErr Exe Y) )
       (link (push Key NIL))
       (let Val (eval (car X))
-         #!
-         (put Y Key Val)
+         (if (pair Y)
+            (putn Exe Y Key Val)
+            (when (sym? (val (tail Y)))
+               (if (nil? Val)
+                  (dbFetch Exe X)
+                  (dbTouch Exe Y) ) )
+            (if (== ZERO Key)
+               (set (chkVar Exe Y) Val)
+               (put Y Key Val) ) )
          (drop Safe)
          Val ) ) )
 
