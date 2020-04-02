@@ -1312,8 +1312,7 @@
    (if (== Key ZERO)
       (val Sym)
       (let Tail (val (tail Sym))
-         (if (num? Tail)
-            $Nil
+         (unless (num? Tail)
             (let (L (any (& Tail -9))  X (car L))
                (if (atom X)
                   (and (== Key X) (ret $T))
@@ -1332,13 +1331,13 @@
                         (when (== Key (cdr Y))
                            (set 2 L (cdr X))  # Unlink cell
                            (ifn (sym? Tail)
-                              (set 2 X Tail  (tail Sym) X)
-                              (set
-                                 2 X (& Tail -9)
-                                 (tail Sym) (| X 8) )
-                              (ret (car Y)) ) ) )
-                     (setq L X) ) )
-               $Nil ) ) ) ) )
+                              (set 2 X Tail)
+                              (set 2 X (& Tail -9))
+                              (setq X (| X 8)) )
+                           (set (tail Sym) X)
+                           (ret (car Y)) ) )
+                     (setq L X) ) ) ) )
+         $Nil ) ) )
 
 (de getn (Exe X Key)
    (when (num? X)  # Need symbol or pair
@@ -1385,12 +1384,12 @@
                      (when (== Key (cdr Y))
                         (set 2 L (cdr X))  # Unlink cell
                         (ifn (sym? Tail)
-                           (set 2 X Tail  (tail Sym) X)
-                           (set
-                              2 X (& Tail -9)
-                              (tail Sym) (| X 8) )
-                           (ret Y) ) ) )
-                  (setq L X) ) ) ) )
+                           (set 2 X Tail)
+                           (set 2 X (& Tail -9))
+                           (setq X (| X 8)) )
+                        (set (tail Sym) X)
+                        (ret Y) ) ) )
+               (setq L X) ) ) )
       (let R (cons $Nil Key)
          (set (tail Sym)
             (if (sym? Tail)
@@ -1420,7 +1419,7 @@
             (putn Exe Y Key Val)
             (when (sym? (val (tail Y)))
                (if (nil? Val)
-                  (dbFetch Exe X)
+                  (dbFetch Exe X)  # Volatile property
                   (dbTouch Exe Y) ) )
             (if (== ZERO Key)
                (set (chkVar Exe Y) Val)
@@ -1430,18 +1429,47 @@
 
 # (get 'sym1|lst ['sym2|cnt ..]) -> any
 (de _get (Exe)
-   #!
-   Exe )
+   (let (X (cdr Exe)  Y (eval (++ X)))
+      (when (pair X)
+         (let Safe (link (push Y NIL))
+            (loop
+               (setq Y (getn Exe Y (eval (++ X))))
+               (? (atom X))
+               (set Safe Y) )
+            (drop Safe) ) )
+      Y ) )
 
 # (prop 'sym1|lst ['sym2|cnt ..] 'sym) -> var
 (de _prop (Exe)
-   #!
-   Exe )
+   (let
+      (X (cdr Exe)
+         Y (eval (++ X))
+         Safe (link (push Y NIL))
+         Key (eval (car X)) )
+      (while (pair (shift X))
+         (setq
+            Y (set Safe (getn Exe Y Key))
+            Key (eval (car X)) ) )
+      (needSym Exe Y)
+      (link (push Key NIL))
+      (when (sym? (val (tail Y)))
+         (if (nil? Val)
+            (dbFetch Exe X)  # Volatile property
+            (dbTouch Exe Y) ) )
+      (drop Safe
+         (prop Y Key) ) ) )
 
 # (; 'sym1|lst [sym2|cnt ..]) -> any
 (de _semicol (Exe)
-   #!
-   Exe )
+   (let (X (cdr Exe)  Y (eval (++ X)))
+      (when (pair X)
+         (let Safe (link (push Y NIL))
+            (loop
+               (setq Y (getn Exe Y (++ X)))
+               (? (atom X))
+               (set Safe Y) )
+            (drop Safe) ) )
+      Y ) )
 
 # (=: sym|0 [sym1|cnt ..] 'any) -> any
 (de _setCol (Exe)
@@ -1470,10 +1498,8 @@
          Y (eval (car X))
          Safe (link (push Y NIL)) )
       (while (pair (shift X))
-         (when (num? Y)  # Need symbol or pair
-            (argErr Exe Y) )
          (setq Y
-            (set Safe (getn Exe (eval (car X)) Y)) ) )
+            (set Safe (getn Exe Y (eval (car X)))) ) )
       (setq X (val (tail (needSym Exe Y))))
       (when (sym? X)
          (dbFetch Exe Y)
