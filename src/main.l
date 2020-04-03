@@ -1,4 +1,4 @@
-# 02apr20 Software Lab. Alexander Burger
+# 03apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -230,7 +230,7 @@ atomErr pairErr varErr itemErr protErr lockErr)
       (stkErr Exe) ) )
 
 # Argument checks
-(local) (needCnt needNum needSym chkVar needVar)
+(local) (needCnt needNum needSym needVar chkVar needChkVar)
 
 (inline needCnt (Exe X)
    (unless (cnt? X)
@@ -247,6 +247,11 @@ atomErr pairErr varErr itemErr protErr lockErr)
       (symErr Exe X) )
    X )
 
+(inline needVar (Exe X)
+   (when (num? X)
+      (varErr Exe X) )
+   X )
+
 (inline chkVar (Exe X)
    (and
       (>= X $Nil)
@@ -254,7 +259,7 @@ atomErr pairErr varErr itemErr protErr lockErr)
       (protErr Exe X) )
    X )
 
-(inline needVar (Exe X)
+(inline needChkVar (Exe X)
    (and (num? X) (varErr Exe X))
    (chkVar Exe X)
    X )
@@ -349,7 +354,7 @@ atomErr pairErr varErr itemErr protErr lockErr)
          (n0 P)
          (<> P Nm)
          (n0 (val 2 P))
-         (let N (if (=0 (val $Home)) 0 (strlen (val $Home)))
+         (let N (val $HomeLen)
             (set P 0)
             (let (Len (strlen Nm)  Q (b8 (+ N Len (+ 4 3 1))))
                (ifn (=0 (strchr Nm (char "/")))
@@ -637,7 +642,7 @@ atomErr pairErr varErr itemErr protErr lockErr)
                      (== Q (+ P 1))
                      (== (val P) (char ".")) ) )
                (let (N (+ (- Q P) 1)  H (malloc (+ N 1)))
-                  (set $Home H)
+                  (set $Home H  $HomeLen N)
                   (memcpy H P N)
                   (set (ofs H N) 0) ) ) ) ) )
    # Initialize globals

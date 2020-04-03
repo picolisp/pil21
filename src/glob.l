@@ -1,10 +1,11 @@
-# 27mar20 Software Lab. Alexander Burger
+# 03apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
 (var $AV0 i8* null)                    # Command name
 (var $AV i8** null)                    # Command line argument vector
 (var $Home i8* null)                   # Home directory
+(var $HomeLen i64 0)                   # Home directory
 (var $Heaps 0)                         # Heap list
 (var $Avail 0)                         # Avail list
 (var $Extern 0)                        # External symbol tree
@@ -207,6 +208,7 @@
    (NIL "uppc" _uppc)
    (NIL "fold" _fold)
    # Input/Output
+   (NIL "path" _path)
    (NIL "read" _read)
    (NIL "in" _in)
    (NIL "out" _out)
@@ -233,6 +235,7 @@
    (NIL "dm" _dm)
    (NIL "and" _and)
    (NIL "if" _if)
+   (NIL "with" _with)
    (NIL "catch" _catch)
    (NIL "throw" _throw)
    (NIL "finally" _finally)

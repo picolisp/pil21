@@ -1,4 +1,4 @@
-# 23mar20 Software Lab. Alexander Burger
+# 03apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -219,6 +219,11 @@ pushOutFiles popInFiles popOutFiles)
       (when (=0 (isatty 0))
          (ret -1) )
       (bye 0) ) )
+
+# (path 'any) -> sym
+(de _path (Exe)
+   (let (X (cdr Exe)  Y (evSym X))
+      (mkStr (pathString Y (b8 (pathSize Y)))) ) )
 
 (local) (hasData waitFd)
 

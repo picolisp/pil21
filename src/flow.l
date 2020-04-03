@@ -1,4 +1,4 @@
-# 24mar20 Software Lab. Alexander Burger
+# 03apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -110,6 +110,19 @@
             (run (cdr X))
             (set $At A)
             (eval (car X)) ) ) ) )
+
+# (with 'var . prg) -> any
+(de _with (Exe)
+   (let (X (cdr Exe)  Y (needVar Exe (eval (++ X))))
+      (if (nil? Y)
+         Y
+         (let P (link (push (val $This) NIL $This (val $Bind)))  # [[This] LINK This Bind]
+            (set $Bind P)
+            (set $This Y)
+            (prog1
+               (run X)
+               (set $This (val P)  $Bind (val 4 P))
+               (drop P) ) ) ) ) )
 
 # (catch 'any . prg) -> any
 (de _catch (Exe)

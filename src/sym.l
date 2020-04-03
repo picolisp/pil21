@@ -1,4 +1,4 @@
-# 02apr20 Software Lab. Alexander Burger
+# 03apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -26,7 +26,19 @@
       N ) )
 
 (de i64 pathSize (Sym)
-   (bufSize Sym) )  #!
+   (let
+      (Len (bufSize Sym)
+         Nm (name (val (tail Sym)))
+         N (if (cnt? Nm) (int Nm) (dig Nm))
+         B (i8 N) )
+      (if
+         (or
+            (== B (char "@"))
+            (and
+               (== B (char "+"))
+               (== (i8 (shr N 8)) (char "@")) ) )
+         (+ (val $HomeLen) (dec Len))
+         Len ) ) )
 
 (de i8* bufString (X (i8* . P))
    (let Q (push 0 (name (val (tail X))))  # [cnt name]
@@ -35,7 +47,23 @@
             (inc 'P) ) ) ) )
 
 (de i8* pathString (X (i8* . P))
-   (bufString X P) )  #!
+   (let
+      (Q (push 0 (name (val (tail X))))  # [cnt name]
+         B (numByte Q) )
+      (prog1 P
+         (when (== B (char "+"))
+            (set P B)
+            (inc 'P)
+            (setq B (numByte Q)) )
+         (if (== B (char "@"))
+            (let N (val $HomeLen)
+               (unless (=0 N)
+                  (memcpy P (val $Home) N)
+                  (setq P (ofs P N)) ) )
+            (set P B)
+            (inc 'P) )
+         (until (=0 (set P (numByte Q)))
+            (inc 'P) ) ) ) )
 
 (local) (mkChar mkStr firstByte firstChar isBlank)
 
@@ -77,11 +105,9 @@
          (drop Q
             (consStr (val Q)) ) ) ) )
 
-(de i8 firstByte (Tail)
-   (if (sym? Tail)  # External symbol
-      0
-      (let Nm (name Tail)  # Else get name
-         (i8 (if (cnt? Nm) (int Nm) (dig Nm))) ) ) )
+(de i8 firstByte (Sym)
+   (let Nm (name (val (tail Sym)))
+      (i8 (if (cnt? Nm) (int Nm) (dig Nm))) ) )
 
 (de i32 firstChar (Sym)
    (if (nil? Sym)
@@ -815,7 +841,7 @@
 (de _set (Exe)
    (let (X (cdr Exe)  Safe (link (push -ZERO NIL)))
       (loop
-         (let Y (set Safe (needVar Exe (eval (++ X))))
+         (let Y (set Safe (needChkVar Exe (eval (++ X))))
             (and
                (sym? Y)
                (sym? (val (tail Y)))
@@ -830,14 +856,14 @@
 (de _setq (Exe)
    (let X (cdr Exe)
       (loop
-         (let Y (set (needVar Exe (++ X)) (eval (++ X)))
+         (let Y (set (needChkVar Exe (++ X)) (eval (++ X)))
             (? (atom X) Y) ) ) ) )
 
 # (swap 'var 'any) -> any
 (de _swap (Exe)
    (let
       (X (cdr Exe)
-         Y (save (needVar Exe (eval (++ X)))) )
+         Y (save (needChkVar Exe (eval (++ X)))) )
       (and
          (sym? Y)
          (sym? (val (tail Y)))
@@ -850,12 +876,12 @@
 (de _xchg (Exe)
    (let (X (cdr Exe)  Safe (link (push -ZERO NIL)))
       (loop
-         (let Y (set Safe (needVar Exe (eval (++ X))))
+         (let Y (set Safe (needChkVar Exe (eval (++ X))))
             (and
                (sym? Y)
                (sym? (val (tail Y)))
                (dbTouch Exe Y) )
-            (let Z (needVar Exe (eval (++ X)))
+            (let Z (needChkVar Exe (eval (++ X)))
                (and
                   (sym? Z)
                   (sym? (val (tail Z)))
@@ -869,14 +895,14 @@
 (de _on (Exe)
    (let X (cdr Exe)
       (loop
-         (set (needVar Exe (++ X)) $T)
+         (set (needChkVar Exe (++ X)) $T)
          (? (atom X) $T) ) ) )
 
 # (off var ..) -> NIL
 (de _off (Exe)
    (let X (cdr Exe)
       (loop
-         (set (needVar Exe (++ X)) $Nil)
+         (set (needChkVar Exe (++ X)) $Nil)
          (? (atom X) $Nil) ) ) )
 
 # (onOff var ..) -> flg
@@ -884,7 +910,7 @@
    (let X (cdr Exe)
       (loop
          (let
-            (Y (needVar Exe (++ X))
+            (Y (needChkVar Exe (++ X))
                Z (if (nil? (val Y)) $T $Nil) )
             (set Y Z)
             (? (atom X) Z) ) ) ) )
@@ -893,21 +919,21 @@
 (de _zero (Exe)
    (let X (cdr Exe)
       (loop
-         (set (needVar Exe (++ X)) ZERO)
+         (set (needChkVar Exe (++ X)) ZERO)
          (? (atom X) ZERO) ) ) )
 
 # (one var ..) -> 1
 (de _one (Exe)
    (let X (cdr Exe)
       (loop
-         (set (needVar Exe (++ X)) ONE)
+         (set (needChkVar Exe (++ X)) ONE)
          (? (atom X) ONE) ) ) )
 
 # (default sym 'any ..) -> any
 (de _default (Exe)
    (let X (cdr Exe)
       (loop
-         (let Y (needVar Exe (++ X))
+         (let Y (needChkVar Exe (++ X))
             (when (nil? (val Y))
                (set Y (eval (car X))) )
             (? (atom (shift X)) (val Y)) ) ) ) )
@@ -916,7 +942,7 @@
 (de _push (Exe)
    (let
       (X (cdr Exe)
-         Y (save (needVar Exe (eval (++ X)))) )
+         Y (save (needChkVar Exe (eval (++ X)))) )
       (and
          (sym? Y)
          (sym? (val (tail Y)))
@@ -930,7 +956,7 @@
 (de _push1 (Exe)
    (let
       (X (cdr Exe)
-         Y (save (needVar Exe (eval (++ X)))) )
+         Y (save (needChkVar Exe (eval (++ X)))) )
       (and
          (sym? Y)
          (sym? (val (tail Y)))
@@ -946,7 +972,7 @@
 (de _push1q (Exe)
    (let
       (X (cdr Exe)
-         Y (save (needVar Exe (eval (++ X)))) )
+         Y (save (needChkVar Exe (eval (++ X)))) )
       (and
          (sym? Y)
          (sym? (val (tail Y)))
@@ -960,7 +986,7 @@
 
 # (pop 'var) -> any
 (de _pop (Exe)
-   (let X (needVar Exe (eval (cadr Exe)))
+   (let X (needChkVar Exe (eval (cadr Exe)))
       (and
          (sym? X)
          (sym? (val (tail X)))
@@ -973,7 +999,7 @@
 
 # (++ var) -> any
 (de _popq (Exe)
-   (let (X (needVar Exe (cadr Exe))  V (val X))
+   (let (X (needChkVar Exe (cadr Exe))  V (val X))
       (if (atom V)
          V
          (set X (cdr V))
@@ -984,7 +1010,7 @@
    (let (X (cdr Exe)  N (evCnt Exe X))
       (if (le0 N)
          $Nil
-         (let Y (needVar Exe (eval (cadr X)))
+         (let Y (needChkVar Exe (eval (cadr X)))
             (and
                (sym? Y)
                (sym? (val (tail Y)))
@@ -1003,7 +1029,7 @@
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
-         Var (save (needVar Exe (eval (++ X))))
+         Var (save (needChkVar Exe (eval (++ X))))
          Flg (nil? (eval (car X))) )
       (and
          (sym? Var)
@@ -1028,7 +1054,7 @@
 (de _queue (Exe)
    (let
       (X (cdr Exe)
-         Y (save (needVar Exe (eval (++ X)))) )
+         Y (save (needChkVar Exe (eval (++ X)))) )
       (and
          (sym? Y)
          (sym? (val (tail Y)))
@@ -1048,7 +1074,7 @@
 (de _fifo (Exe)
    (let
       (X (cdr Exe)
-         Y (save (needVar Exe (eval (++ X)))) )
+         Y (save (needChkVar Exe (eval (++ X)))) )
       (and
          (sym? Y)
          (sym? (val (tail Y)))
@@ -1148,7 +1174,7 @@
 (de _idx (Exe)
    (let
       (X (cdr Exe)
-         Var (needVar Exe (eval (++ X))) )
+         Var (needChkVar Exe (eval (++ X))) )
       (if (atom X)
          (consTree (val Var) $Nil)  # Single arg
          (save Var
@@ -1403,14 +1429,11 @@
       (X (cdr Exe)
          Y (eval (++ X))
          Safe (link (push Y NIL))
-         Key (eval (++ X)) )
+         Key T )
       (loop
-         (let Z (cdr X)
-            (? (atom Z))
-            (setq
-               Y (set Safe (getn Exe Y Key))
-               Key (eval (car X))
-               X Z ) ) )
+         (setq Key (eval (++ X)))
+         (? (atom (cdr X)))
+         (setq Y (set Safe (getn Exe Y Key))) )
       (when (num? Y)  # Need symbol or pair
          (argErr Exe Y) )
       (link (push Key NIL))
@@ -1419,7 +1442,7 @@
             (putn Exe Y Key Val)
             (when (sym? (val (tail Y)))
                (if (nil? Val)
-                  (dbFetch Exe X)  # Volatile property
+                  (dbFetch Exe Y)  # Volatile property
                   (dbTouch Exe Y) ) )
             (if (== ZERO Key)
                (set (chkVar Exe Y) Val)
@@ -1445,16 +1468,16 @@
       (X (cdr Exe)
          Y (eval (++ X))
          Safe (link (push Y NIL))
-         Key (eval (car X)) )
-      (while (pair (shift X))
-         (setq
-            Y (set Safe (getn Exe Y Key))
-            Key (eval (car X)) ) )
+         Key T )
+      (loop
+         (setq Key (eval (++ X)))
+         (? (atom X))
+         (setq Y (set Safe (getn Exe Y Key))) )
       (needSym Exe Y)
       (link (push Key NIL))
       (when (sym? (val (tail Y)))
          (if (nil? Val)
-            (dbFetch Exe X)  # Volatile property
+            (dbFetch Exe Y)  # Volatile property
             (dbTouch Exe Y) ) )
       (drop Safe
          (prop Y Key) ) ) )
@@ -1473,23 +1496,75 @@
 
 # (=: sym|0 [sym1|cnt ..] 'any) -> any
 (de _setCol (Exe)
-   #!
-   Exe )
+   (let (X (cdr Exe)  Y (val $This)  Key T)
+      (loop
+         (setq Key (++ X))
+         (? (atom (cdr X)))
+         (setq Y (getn Exe Y Key)) )
+      (when (num? Y)  # Need symbol or pair
+         (argErr Exe Y) )
+      (let Val (eval (car X))
+         (if (pair Y)
+            (putn Exe Y Key Val)
+            (when (sym? (val (tail Y)))
+               (if (nil? Val)
+                  (dbFetch Exe Y)  # Volatile property
+                  (dbTouch Exe Y) ) )
+            (if (== ZERO Key)
+               (set (chkVar Exe Y) Val)
+               (put Y Key Val) ) )
+         Val ) ) )
 
 # (: sym|0 [sym1|cnt ..]) -> any
 (de _col (Exe)
-   #!
-   Exe )
+   (let (X (cdr Exe)  Y (val $This))
+      (loop
+         (setq Y (getn Exe Y (++ X)))
+         (? (atom X) Y) ) ) )
 
 # (:: sym|0 [sym1|cnt .. sym2]) -> var
 (de _propCol (Exe)
-   #!
-   Exe )
+   (let (X (cdr Exe)  Y (val $This)  Key T)
+      (loop
+         (setq Key (++ X))
+         (? (atom X))
+         (setq Y (getn Exe Y Key)) )
+      (needSym Exe Y)
+      (when (sym? (val (tail Y)))
+         (if (nil? Val)
+            (dbFetch Exe Y)  # Volatile property
+            (dbTouch Exe Y) ) )
+      (prop Y Key) ) )
 
 # (putl 'sym1|lst1 ['sym2|cnt ..] 'lst) -> lst
 (de _putl (Exe)
-   #!
-   Exe )
+   (let
+      (X (cdr Exe)
+         Y (eval (++ X))
+         Safe (link (push Y NIL))
+         Z T )
+      (loop
+         (setq Z (eval (++ X)))
+         (? (atom X))
+         (setq Y (set Safe (getn Exe Y Z))) )
+      (let (R (link (push Z NIL))  Tail (val (tail Sym)))
+         (when (sym? (setq X Tail))
+            (dbTouch Exe Y)
+            (setq X (& (val (tail Y)) -9)) )
+         (until (num? X)  # Skip old properties
+            (shift X) )
+         (while (pair Z)  # New property list
+            (let P (++ Z)
+               (if (atom P)
+                  (setq X (cons P X))
+                  (unless (nil? (car P))
+                     (when (== $T (car P))
+                        (setq P (cdr P)) )
+                     (setq X (cons P X)) ) ) ) )
+         (set (tail Y)
+            (if (sym? Tail) (| X 8) X) )
+         (drop Safe
+            (val R) ) ) ) )
 
 # (getl 'sym1|lst1 ['sym2|cnt ..]) -> lst
 (de _getl (Exe)
@@ -1500,14 +1575,12 @@
       (while (pair (shift X))
          (setq Y
             (set Safe (getn Exe Y (eval (car X)))) ) )
-      (setq X (val (tail (needSym Exe Y))))
-      (when (sym? X)
+      (when (sym? (setq X (val (tail (needSym Exe Y)))))
          (dbFetch Exe Y)
-         (setq X (val (tail Y))) )
+         (setq X (& (val (tail Y)) -9)) )
       (drop Safe
          (if (num? X)
             $Nil
-            (setq X (& X -9))  # Clear 'extern' tag
             (let R (setq Y (cons (car X) $Nil))
                (link (push R NIL))
                (while (pair (shift X))
