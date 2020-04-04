@@ -1,4 +1,4 @@
-# 03apr20 Software Lab. Alexander Burger
+# 04apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -376,38 +376,78 @@ atomErr pairErr varErr itemErr protErr lockErr)
 (load "gc.l" "big.l" "sym.l")
 
 # Comparisons
-(local) (equal compare)
+(local) (equalBig equal compare)
+
+(inline equalBig (X Y)
+   (loop
+      (? (<> (val (dig X)) (val (dig Y))) NO)
+      (?
+         (==
+            (setq X (val (big X)))
+            (setq Y (val (big Y))) )
+         YES )
+      (? (cnt? X) NO)
+      (? (cnt? Y) NO) ) )
 
 (de i1 equal (X Y)
-   (: 1
-      (cond
-         ((== X Y) YES)
-         ((cnt? X) NO)
-         ((big? X)
-            (if (cnt? Y)
-               NO
-               (when (sign? X)
-                  (unless (sign? Y)
-                     (ret NO) )
-                  (setq X (pos X)  Y (pos Y)) )
+   (cond
+      ((== X Y) YES)
+      ((cnt? X) NO)
+      ((big? X)
+         (if (cnt? Y)
+            NO
+            (when (sign? X)
+               (unless (sign? Y)
+                  (ret NO) )
+               (setq X (pos X)  Y (pos Y)) )
+            (equalBig X Y) ) )
+      ((sym? X)
+         (cond
+            ((num? Y) NO)
+            ((pair Y) NO)
+            ((== ZERO
+                  (setq X (name (val (tail X)))) )
+               NO )
+            ((== ZERO
+                  (setq Y (name (val (tail Y)))) )
+               NO )
+            ((== X Y) YES)
+            ((cnt? X) NO)
+            ((cnt? Y) NO)
+            (T (equalBig X Y)) ) )
+      ((atom Y) NO)
+      (T
+         (stkChk 0)
+         (let (A X  B Y)
+            (prog1
                (loop
-                  (? (<> (val (dig X)) (val (dig Y))) NO)
-                  (?
-                     (==
-                        (setq X (val (big X)))
-                        (setq Y (val (big Y))) )
-                     YES )
-                  (? (cnt? X) NO)
-                  (? (cnt? Y) NO) ) ) )
-         ((sym? X)
-            (cond
-               ((num? Y) NO)
-               ((pair Y) NO)
-               ((== ZERO (setq X (name (val (tail X))))) NO)
-               ((== ZERO (setq Y (name (val (tail Y))))) NO)
-               (T (goto 1)) ) )
-         ((atom Y) NO)
-         (T NO) ) ) )
+                  (? (not (equal (car X) (& (car Y) -2)))
+                     NO)
+                  (? (atom (cdr X))
+                     (equal (cdr X) (cdr Y)) )
+                  (? (atom (cdr Y)) NO)
+                  (set X (| (val X) 1))  # Mark
+                  (shift X)
+                  (shift Y)
+                  (? (n0 (& (val X) 1))  # Detected circularity
+                     (prog1
+                        (loop
+                           (? (== A X)
+                              (if (== B Y)
+                                 (loop
+                                    (shift A)
+                                    (? (== (shift B) Y) (== A X))
+                                    (? (== A X) YES) )
+                                 NO ) )
+                           (? (== B Y) NO)
+                           (set A (& (val A) -2))  # Unmark
+                           (shift A)
+                           (shift B) )
+                        (set A (& (val A) -2))  # Unmark
+                        (shift A) ) ) )
+               (until (== A X)
+                  (set A (& (val A) -2))  # Unmark
+                  (shift A) ) ) ) ) ) )
 
 (de i32 compare (X Y)
    (cond
@@ -426,11 +466,15 @@ atomErr pairErr varErr itemErr protErr lockErr)
             ((or (pair Y) (== Y $T))
                (i32 -1) )
             (T
-               (let (A (name (val (tail X)))  B (name (val (tail X))))
+               (let
+                  (A (name (val (tail X)))
+                     B (name (val (tail X))) )
+                  #!
                   (i32 0) ) ) ) )
       ((atom Y)
          (if (== Y $T) (i32 -1) (i32 +1)) )
       (T
+         (stkChk 0)
          (let (A X  B Y)
             (loop
                (let N (compare (car X) (car Y))
