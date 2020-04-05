@@ -1,4 +1,4 @@
-# 03apr20 Software Lab. Alexander Burger
+# 05apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -25,8 +25,7 @@
 (de NIL selectErr (Exe)
    (err Exe 0 ($ "Select error: %s") (strErrno)) )
 
-(local) (closeOnExec initInFile initOutFile closeInFile closeOutFile pushInFiles
-pushOutFiles popInFiles popOutFiles)
+(local) (closeOnExec initInFile initOutFile closeInFile closeOutFile)
 
 (de void closeOnExec (Exe (i32 . Fd))
    (when (lt0 (fcntlCloExec Fd))
@@ -49,8 +48,9 @@ pushOutFiles popInFiles popOutFiles)
       (P (ofs (val $InFiles) Fd)
          V (set P (alloc (val P) (inFile T)))
          In: (inFile V) )
+      (In: ix (In: cnt 0))
       (In: fd Fd)
-      (In: ix (In: cnt (In: next 0)))
+      (In: next 0)
       (In: line (In: src 1))
       (In: name Nm)
       V ) )
@@ -95,66 +95,18 @@ pushOutFiles popInFiles popOutFiles)
             (free V)
             (set P null) ) ) ) )
 
-(de void pushInFiles ((i8* . P))
-   (let (Io: (ioFrame P)  In: (inFile (val $InFile)))
-      (unless (=0 (In:))
-         (In: next (val $Chr)) )
-      (set $Chr
-         (if (=0 (set $InFile (val (ofs (val $InFiles) (Io: fd)))))
-            -1
-            (In: next) ) )
-      (Io: fun (val (i8** $Get)))
-      (set $Get (fun (i32) _getStdin))
-      (Io: link (val $InFrames))
-      (set $InFrames (Io:)) ) )
+(local) (slow slowNb rdBytes rdBytesNb wrBytes flush flushAll stdinByte)
 
-(de void pushOutFiles ((i8* . P))
-   (let Io: (ioFrame P)
-      (set $OutFile (val (ofs (val $OutFiles) (Io: fd))))
-      (Io: fun (val (i8** $Put)))
-      (set $Put (fun (void i32) _putStdout))
-      (Io: link (val $OutFrames))
-      (set $OutFrames (Io:)) ) )
-
-(de void popInFiles ()
-   (let Io: (ioFrame (val $InFrames))
-      (nond
-         ((=0 (Io: pid))
-            (close (Io: fd))
-            (closeInFile (Io: fd))
-            #! ...
-            )
-         ((=0 (val $InFile))
-            ((inFile (val $InFile)) next (val $Chr)) ) )
-      (set (i8** $Get) (Io: fun))
-      (setq Io: (ioFrame (set $InFrames (Io: link))))
-      (set $Chr
-         (if
-            (=0
-               (set $InFile
-                  (val
-                     (if (=0 (Io:))
-                        (val $InFiles)  # Stdin
-                        (ofs (val $InFiles) (Io: fd)) ) ) ) )
-            -1
-            ((inFile (val $InFile)) next) ) ) ) )
-
-(de void popOutFiles ()
-   )
-
-(local) (slow slowNb wrBytes flush flushAll stdinByte)
-
-(de i32 slow ((i8* . In))
+(de i64 slow ((i8* . In))
    (let In: (inFile In)
       (In: ix (In: cnt 0))
       (loop
          (let N (read (In: fd) (In: (buf)) BUFSIZ)
             (? (ge0 N) (In: cnt N)) )
          (? (<> (xErrno) EINTR) 0)
-         (unless (=0 (val $Signal))
-            (sighandler 0) ) ) ) )
+         (sigChk 0) ) ) )
 
-(de i32 slowNb ((i8* . In))
+(de i64 slowNb ((i8* . In))
    (let In: (inFile In)
       (In: ix (In: cnt 0))
       (loop
@@ -169,10 +121,17 @@ pushOutFiles popInFiles popOutFiles)
          (let E (xErrno)
             (? (== E EAGAIN) -1)
             (? (<> E EINTR) 0) )
-         (unless (=0 (val $Signal))
-            (sighandler 0) ) ) ) )
+         (sigChk 0) ) ) )
 
-(de i1 wrBytes ((i32 . Fd) (i8* . P) (i32 . Cnt))
+(de i32 rdBytes ((i32 . Fd) (i8* . P) (i64 . Cnt))
+   #!
+   )
+
+(de i32 rdBytesNb ((i32 . Fd) (i8* . P) (i64 . Cnt))
+   #!
+   )
+
+(de i1 wrBytes ((i32 . Fd) (i8* . P) (i64 . Cnt))
    (loop
       (let N (write Fd P Cnt)
          (if (lt0 N)
@@ -184,8 +143,7 @@ pushOutFiles popInFiles popOutFiles)
                   (when (== Fd 2)  # Stderr
                      (bye 2) )
                   (writeErr ($ "bytes write: %s")) )
-               (unless (=0 (val $Signal))
-                  (sighandler 0) ) )
+               (sigChk 0) )
             (? (=0 (setq Cnt (- Cnt N))) YES)
             (setq P (ofs P N)) ) ) ) )
 
@@ -220,6 +178,75 @@ pushOutFiles popInFiles popOutFiles)
          (ret -1) )
       (bye 0) ) )
 
+(local) (waitFile pushInFiles pushOutFiles popInFiles popOutFiles)
+
+# Wait for pipe process if necessary
+(de void waitFile ((i32 . Pid))
+   (when (> Pid 1)
+      (let Res (b32 1)
+         (while (lt0 (waitpid Pid Res 0))
+            (unless (== (xErrno) EINTR)
+               (closeErr) )
+            (sigChk 0) )
+         (set $At2 (cnt (i64 (val Res)))) ) ) )
+
+(de void pushInFiles ((i8* . P))
+   (let (Io: (ioFrame P)  In: (inFile (val $InFile)))
+      (unless (=0 (In:))
+         (In: next (val $Chr)) )
+      (set $Chr
+         (if (=0 (set $InFile (val (ofs (val $InFiles) (Io: fd)))))
+            -1
+            (In: next) ) )
+      (Io: fun (val (i8** $Get)))
+      (set $Get (fun (i32) _getStdin))
+      (Io: link (val $InFrames))
+      (set $InFrames (Io:)) ) )
+
+(de void pushOutFiles ((i8* . P))
+   (let Io: (ioFrame P)
+      (set $OutFile (val (ofs (val $OutFiles) (Io: fd))))
+      (Io: fun (val (i8** $Put)))
+      (set $Put (fun (void i32) _putStdout))
+      (Io: link (val $OutFrames))
+      (set $OutFrames (Io:)) ) )
+
+(de void popInFiles ()
+   (let Io: (ioFrame (val $InFrames))
+      (nond
+         ((=0 (Io: pid))
+            (close (Io: fd))
+            (closeInFile (Io: fd))
+            (waitFile (Io: pid)) )
+         ((=0 (val $InFile))
+            ((inFile (val $InFile)) next (val $Chr)) ) )
+      (set (i8** $Get) (Io: fun))
+      (setq Io: (ioFrame (set $InFrames (Io: link))))
+      (set $Chr
+         (if
+            (=0
+               (set $InFile
+                  (val
+                     (if (=0 (Io:))
+                        (val $InFiles)  # Stdin
+                        (ofs (val $InFiles) (Io: fd)) ) ) ) )
+            -1
+            ((inFile (val $InFile)) next) ) ) ) )
+
+(de void popOutFiles ()
+   (flush (val $OutFile))
+   (let Io: (ioFrame (val $OutFrames))
+      (unless (=0 (Io: pid))
+         (close (Io: fd))
+         (closeOutFile (Io: fd))
+         (waitFile (Io: pid)) )
+      (set (i8** $Put) (Io: fun))
+      (set $OutFile
+         (val
+            (if (=0 (Io:))
+               (val $OutFiles)  # Stdout
+               (ofs (val $OutFiles) (Io: fd)) ) ) ) ) )
+
 # (path 'any) -> sym
 (de _path (Exe)
    (let (X (cdr Exe)  Y (evSym X))
@@ -251,20 +278,17 @@ pushOutFiles popInFiles popOutFiles)
                   (inc 'I) ) )
             #! ...
             (while (lt0 (xPoll Poll I M))
-               (nond
-                  ((== (xErrno) EINTR)
-                     (set $Run $Nil)
-                     (selectErr Exe) )
-                  ((=0 (val $Signal))
-                     (sighandler Exe) ) ) )
+               (unless (== (xErrno) EINTR)
+                  (set $Run $Nil)
+                  (selectErr Exe) )
+               (sigChk Exe) )
             #! ...
             (let (T2 (getTime)  D (- T2 Tim))
                (setq Tim T2)
                #! ...
                (when (lt0 (setq Ms (- Ms D)))
                   (setq Ms 0) ) )
-            (unless (=0 (val $Signal))
-               (sighandler Exe) )
+            (sigChk Exe)
             (? (or (=0 Ms) (lt0 Fd) (n0 (readyIn Poll))))
             (stack Stk) ) )
       (set $At (pop P)  $Task Task)
@@ -287,8 +311,7 @@ pushOutFiles popInFiles popOutFiles)
                (while (lt0 (Io: fd (if Flg (openAppend Nm) (openRdonly Nm))))
                   (unless (== (xErrno) EINTR)
                      (openErr Exe X) )
-                  (unless (=0 (val $Signal))
-                     (sighandler Exe) ) )
+                  (sigChk Exe) )
                (Io: pid 1)
                (initInFile (Io: fd) (strdup Nm)) )
             (closeOnExec Exe (Io: fd)) )
@@ -663,8 +686,7 @@ pushOutFiles popInFiles popOutFiles)
 (local) (print prin prin1)
 
 (de void print (X)
-   (unless (=0 (val $Signal))
-      (sighandler Exe) )
+   (sigChk 0)
    (cond
       ((cnt? X) (outNum X))
       ((big? X) (fmtNum X -1 0 0 null))

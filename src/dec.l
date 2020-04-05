@@ -1,4 +1,4 @@
-# 20mar20 Software Lab. Alexander Burger
+# 05apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -6,18 +6,18 @@
 
 # I/O
 (struct inFile
+   (ix 8 i64)           # Buffer index
+   (cnt 8 i64)          # Buffer byte count
    (fd 4 i32)           # File descriptor
-   (ix 4 i32)           # Buffer index
-   (cnt 4 i32)          # Buffer byte count
    (next 4 i32)         # Saved next character
    (name 8 i8*)         # Current file name
-   (line 8 i64)         # Current line number
-   (src 8 i64)          # Source start line
+   (line 4 i32)         # Current line number
+   (src 4 i32)          # Source start line
    (buf BUFSIZ i8) )    # Buffer
 
 (struct outFile
+   (ix 8 i64)           # Buffer index
    (fd 4 i32)           # File descriptor
-   (ix 4 i32)           # Buffer index
    (buf BUFSIZ i8)      # Buffer
    (tty 1 i1) )         # TTY flag
 
@@ -78,17 +78,17 @@
 # System
 (local) (malloc realloc free getpid isatty read write pread pwrite fread fwrite
 putc_unlocked fflush fileno strlen strcpy strdup strcmp strchr strrchr dlsym
-dlerror close setjmp longjmp kill exit)
+dlerror close waitpid setjmp longjmp kill exit)
 
 (de T i8* malloc (i64))
 (de T i8* realloc (i8* i64))
 (de T void free (i8*))
 (de T i32 getpid ())
 (de T i32 isatty (i32))
-(de T i32 read (i32 i8* i32))
-(de T i32 write (i32 i8* i32))
-(de T i32 pread (i32 i8* i32 i64))
-(de T i32 pwrite (i32 i8* i32 i64))
+(de T i64 read (i32 i8* i64))
+(de T i64 write (i32 i8* i64))
+(de T i64 pread (i32 i8* i64 i64))
+(de T i64 pwrite (i32 i8* i64 i64))
 (de T i32 fread (i8* i32 i32 i8*))
 (de T i32 fwrite (i8* i32 i32 i8*))
 (de T i32 putc_unlocked (i32 i8*))
@@ -103,6 +103,7 @@ dlerror close setjmp longjmp kill exit)
 (de T i8* dlsym (i8* i8*))
 (de T i8* dlerror ())
 (de T i32 close (i32))
+(de T i32 waitpid (i32 i32* i32))
 (de T i32 setjmp (i8*))
 (de T NIL longjmp (i8* i32))
 (de T i32 kill (i32 i32))
@@ -144,7 +145,7 @@ ffiCall)
 (de T i8* ffiPrep (i8* i8* i64))
 (de T i64 ffiCall (i8* i64))
 
-# Case mappings
+# Case mappings lib.c
 (de T i1 isLowc (i32))
 (de T i1 isUppc (i32))
 (de T i1 isLetterOrDigit (i32))

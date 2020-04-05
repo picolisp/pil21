@@ -1,4 +1,4 @@
-# 28mar20 Software Lab. Alexander Burger
+# 05apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -110,7 +110,7 @@
 
 (de void blkPeek ((i64 . Pos) (i8* . Buf) (i32 . Siz))
    (let Db: (dbFile (val $DbFile))
-      (unless (== (pread (Db: fd) Buf Siz Pos) Siz)
+      (unless (== Siz (i32 (pread (Db: fd) Buf (i64 Siz) Pos)))
          (dbRdErr) ) ) )
 
 (de i8* rdBlock ((i64 . N))
@@ -125,7 +125,7 @@
 
 (de void blkPoke ((i64 . Pos) (i8* . Buf) (i32 . Siz))
    (let Db: (dbFile (val $DbFile))
-      (unless (== (pwrite (Db: fd) Buf Siz Pos) Siz)
+      (unless (== Siz (i32 (pwrite (Db: fd) Buf (i64 Siz) Pos)))
          (dbWrErr) )
       (let Jnl (val $DbJnl)
          (unless (=0 Jnl)

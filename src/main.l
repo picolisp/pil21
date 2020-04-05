@@ -1,4 +1,4 @@
-# 04apr20 Software Lab. Alexander Burger
+# 05apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -153,7 +153,7 @@ atomErr pairErr varErr itemErr protErr lockErr)
                (call $Put (char "["))
                (outString (In: name))
                (call $Put (char ":"))
-               (outWord (In: src))
+               (outWord (i64 (In: src)))
                (call $Put (char "]"))
                (space) ) )
          (unless (=0 Exe)
@@ -222,12 +222,16 @@ atomErr pairErr varErr itemErr protErr lockErr)
 (de NIL lockErr ()
    (err 0 0 ($ "File lock: %s") (strErrno)) )
 
-# Stack check
-(local) stkChk
+# Runtime checks
+(local) (stkChk sigChk)
 
 (inline stkChk (Exe)
    (when (> (val $StkLimit) (stack))
       (stkErr Exe) ) )
+
+(inline sigChk (Exe)
+   (unless (=0 (val $Signal))
+      (sighandler Exe) ) )
 
 # Argument checks
 (local) (needCnt needNum needSym needVar chkVar needChkVar)
@@ -467,10 +471,48 @@ atomErr pairErr varErr itemErr protErr lockErr)
                (i32 -1) )
             (T
                (let
-                  (A (name (val (tail X)))
-                     B (name (val (tail X))) )
-                  #!
-                  (i32 0) ) ) ) )
+                  (NmX (name (val (tail X)))
+                     NmY (name (val (tail Y))) )
+                  (cond
+                     ((== ZERO NmX)
+                        (nond
+                           ((== ZERO NmY) (i32 -1))
+                           ((== X Y) (i32 0))
+                           ((> X Y) (i32 +1))
+                           (NIL (i32 -1)) ) )
+                     ((== ZERO NmY) (i32 +1))
+                     (T
+                        (loop
+                           (let
+                              (A
+                                 (if (cnt? NmX)
+                                    (prog1
+                                       (& (int NmX) (hex "3FFFFFFFFFFFFFF"))  # Mask status bits
+                                       (setq NmX 0) )
+                                    (prog1
+                                       (val (dig NmX))  # Next digit
+                                       (setq NmX (val (big NmX))) ) )
+                                 B
+                                 (if (cnt? NmY)
+                                    (prog1
+                                       (& (int NmY) (hex "3FFFFFFFFFFFFFF"))  # Mask status bits
+                                       (setq NmY 0) )
+                                    (prog1
+                                       (val (dig NmY))  # Next digit
+                                       (setq NmY (val (big NmY))) ) ) )
+                              (loop
+                                 (let D (- (& A 255) (& B 255))
+                                    (unless (=0 D)
+                                       (ret (if (gt0 D) (i32 +1) (i32 -1))) ) )
+                                 (? (=0 (setq A (shr A 8)))
+                                    (unless (=0 (setq B (shr B 8)))
+                                       (ret (i32 -1)) )
+                                    (when (=0 NmX)
+                                       (ret (i32 (if (=0 NmY) 0 -1))) )
+                                    (when (=0 NmY)
+                                       (ret (i32 +1)) ) )
+                                 (when (=0 (setq B (shr B 8)))
+                                    (ret (i32 +1)) ) ) ) ) ) ) ) ) ) )
       ((atom Y)
          (if (== Y $T) (i32 -1) (i32 +1)) )
       (T
@@ -484,7 +526,8 @@ atomErr pairErr varErr itemErr protErr lockErr)
                (? (atom (shift Y))
                   (if (== Y $T) (i32 -1) (i32 +1)) )
                (? (and (== X A) (== Y B))
-                  (i32 0) ) ) ) ) ) )
+                  (i32 0) )
+               (sigChk 0) ) ) ) ) )
 
 (load "io.l" "db.l" "apply.l" "flow.l" "subr.l" "net.l")
 
@@ -551,8 +594,7 @@ atomErr pairErr varErr itemErr protErr lockErr)
          ((num? Fun) Exe)  # Number: Return list
          ((sym? Fun)  # Symbol: Find function
             (loop
-               (unless (=0 (val $Signal))
-                  (sighandler Exe) )
+               (sigChk Exe)
                (let V (val Fun)  # Get VAL
                   (? (num? V) (subr V Exe))
                   (? (pair V) (evExpr V Exe))
@@ -565,8 +607,7 @@ atomErr pairErr varErr itemErr protErr lockErr)
             (stkChk Exe)
             (let F (save (evList Fun))  # Save computed function
                (loop
-                  (unless (=0 (val $Signal))
-                     (sighandler Exe) )
+                  (sigChk Exe)
                   (? (num? F) (subr F Exe))
                   (? (pair F) (evExpr F Exe))
                   (let V (val F)
