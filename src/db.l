@@ -1,4 +1,4 @@
-# 05apr20 Software Lab. Alexander Burger
+# 06apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -360,7 +360,6 @@
             (if (isLife (setq Sym (extern (extNm F N))))
                Sym
                $Nil ) ) ) ) )
-
 
 # (pool ['sym1 ['lst] ['sym2] ['sym3]]) -> T
 (de _pool (Exe)

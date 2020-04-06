@@ -1,4 +1,4 @@
-# 03apr20 Software Lab. Alexander Burger
+# 06apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -227,18 +227,18 @@
 (local) (cmpLong isIntern isLstIntern intern requestSym extern delNode unintern)
 
 # Compare long names
-(de i32 cmpLong (X Y)
+(de i64 cmpLong (X Y)
    (loop
       (? (n0 (sub (val (dig X)) (val (dig Y))))
-         (if @@ (i32 -1) (i32 +1)) )
+         (if @@ -1 +1) )
       (setq X (val (big X))  Y (val (big Y)))
       (? (cnt? X)
          (cond
-            ((big? Y) (i32 -1))
-            ((== Y X) (i32 0))
-            ((> Y X) (i32 -1))
-            (T (i32 +1)) ) )
-      (? (cnt? Y) (i32 +1)) ) )
+            ((big? Y) -1)
+            ((== Y X) 0)
+            ((> Y X) -1)
+            (T +1) ) )
+      (? (cnt? Y) +1) ) )
 
 # Is symbol interned?
 (de i1 isIntern (Sym Name Tree)
