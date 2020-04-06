@@ -1,4 +1,4 @@
-# 05apr20 Software Lab. Alexander Burger
+# 06apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -123,13 +123,35 @@
             (? (<> E EINTR) 0) )
          (sigChk 0) ) ) )
 
-(de i32 rdBytes ((i32 . Fd) (i8* . P) (i64 . Cnt))
-   #!
-   )
+(de i1 rdBytes ((i32 . Fd) (i8* . P) (i64 . Cnt))
+   (loop
+      (loop
+         (let N (read Fd P Cnt)
+            (? (gt0 N)
+               (setq P (ofs P N)  Cnt (- Cnt N)) )
+            (when (or (=0 N) (<> (xErrno) EINTR))
+               (ret NO) )
+            (sigChk 0) ) )
+      (? (=0 Cnt) YES) ) )
 
-(de i32 rdBytesNb ((i32 . Fd) (i8* . P) (i64 . Cnt))
-   #!
-   )
+(de i64 rdBytesNb ((i32 . Fd) (i8* . P) (i64 . Cnt))
+   (loop
+      (let (Flg (nonBlocking Fd)  N (read Fd P Cnt))
+         (fcntlSetFl Fd Flg)
+         (when (gt0 N)
+            (loop
+               (when (=0 (setq Cnt (- Cnt N)))
+                  (ret 1) )
+               (setq P (ofs P N))
+               (while (le0 (setq N (read Fd P Cnt)))
+                  (when (or (=0 N) (<> (xErrno) EINTR))
+                     (ret 0) )
+                  (sigChk 0) ) ) )
+         (? (=0 N) 0) )
+      (let E (xErrno)
+         (? (== E EAGAIN) -1)
+         (? (<> E EINTR) 0) )
+      (sigChk 0) ) )
 
 (de i1 wrBytes ((i32 . Fd) (i8* . P) (i64 . Cnt))
    (loop

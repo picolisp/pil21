@@ -1,4 +1,4 @@
-# 28mar20 Software Lab. Alexander Burger
+# 06apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -813,15 +813,15 @@
 ### Comparisons ###
 (local) (cmpu cmpNum)
 
-(de i32 cmpu (A B)
+(de i64 cmpu (A B)
    (if (cnt? A)
       (cond
-         ((or (big? B) (> B A)) (i32 -1))
-         ((== B A) (i32 0))
-         (T (i32 +1)) )
+         ((or (big? B) (> B A)) -1)
+         ((== B A) 0)
+         (T +1) )
       # A is big
       (if (cnt? B)
-         (i32 +1)
+         +1
          # Both are big
          (let (X 0  Y 0)
             (prog1
@@ -832,9 +832,9 @@
                            (setq
                               C (val (dig A))
                               D (val (dig B)) )
-                           (? (> D C) (i32 -1))
-                           (? (> C D) (i32 +1))
-                           (? (=0 X) (i32 0))
+                           (? (> D C) -1)
+                           (? (> C D) +1)
+                           (? (=0 X) 0)
                            (let Z (val (big X))
                               (set (big X) A)  # Restore A
                               (setq A X  X Z) )
@@ -843,10 +843,10 @@
                               (setq B Y  Y Z) ) ) )
                      (? (cnt? C)  # End of A
                         (cond
-                           ((or (big? D) (> D C)) (i32 -1))
-                           ((== D C) (i32 0))
-                           (T (i32 +1)) ) )
-                     (? (cnt? D) (i32 +1))  # End of B
+                           ((or (big? D) (> D C)) -1)
+                           ((== D C) 0)
+                           (T +1) ) )
+                     (? (cnt? D) +1)  # End of B
                      (set (big A) X)  # Reverse A
                      (setq X A  A C)
                      (set (big B) Y)  # Reverse B
@@ -859,13 +859,13 @@
                      (set (big Y) B)  # Restore B
                      (setq B Y  Y Z) ) ) ) ) ) ) )
 
-(de i32 cmpNum (A B)
+(de i64 cmpNum (A B)
    (ifn (sign? A)
       (ifn (sign? B)
          (cmpu A B)
-         (i32 +1) )
+         +1 )
       (ifn (sign? B)
-         (i32 -1)
+         -1
          (cmpu (pos B) (pos A)) ) ) )
 
 ### Formatting ###

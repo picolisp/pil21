@@ -1,4 +1,4 @@
-# 05apr20 Software Lab. Alexander Burger
+# 06apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -453,22 +453,22 @@ atomErr pairErr varErr itemErr protErr lockErr)
                   (set A (& (val A) -2))  # Unmark
                   (shift A) ) ) ) ) ) )
 
-(de i32 compare (X Y)
+(de i64 compare (X Y)
    (cond
-      ((== X Y) (i32 0))
-      ((nil? X) (i32 -1))
-      ((== X $T) (i32 +1))
+      ((== X Y) 0)
+      ((nil? X) -1)
+      ((== X $T) +1)
       ((num? X)
          (cond
             ((num? Y) (cmpNum X Y))
-            ((nil? Y) (i32 +1))
-            (T (i32 -1)) ) )
+            ((nil? Y) +1)
+            (T -1) ) )
       ((sym? X)
          (cond
             ((or (num? Y) (nil? Y))
-               (i32 +1) )
+               +1 )
             ((or (pair Y) (== Y $T))
-               (i32 -1) )
+               -1 )
             (T
                (let
                   (NmX (name (val (tail X)))
@@ -476,11 +476,11 @@ atomErr pairErr varErr itemErr protErr lockErr)
                   (cond
                      ((== ZERO NmX)
                         (nond
-                           ((== ZERO NmY) (i32 -1))
-                           ((== X Y) (i32 0))
-                           ((> X Y) (i32 +1))
-                           (NIL (i32 -1)) ) )
-                     ((== ZERO NmY) (i32 +1))
+                           ((== ZERO NmY) -1)
+                           ((== X Y) 0)
+                           ((> X Y) +1)
+                           (NIL -1) ) )
+                     ((== ZERO NmY) +1)
                      (T
                         (loop
                            (let
@@ -503,18 +503,17 @@ atomErr pairErr varErr itemErr protErr lockErr)
                               (loop
                                  (let D (- (& A 255) (& B 255))
                                     (unless (=0 D)
-                                       (ret (if (gt0 D) (i32 +1) (i32 -1))) ) )
+                                       (ret (if (gt0 D) +1 -1)) ) )
                                  (? (=0 (setq A (shr A 8)))
                                     (unless (=0 (setq B (shr B 8)))
-                                       (ret (i32 -1)) )
+                                       (ret -1) )
                                     (when (=0 NmX)
-                                       (ret (i32 (if (=0 NmY) 0 -1))) )
+                                       (ret (if (=0 NmY) 0 -1)) )
                                     (when (=0 NmY)
-                                       (ret (i32 +1)) ) )
+                                       (ret +1) ) )
                                  (when (=0 (setq B (shr B 8)))
-                                    (ret (i32 +1)) ) ) ) ) ) ) ) ) ) )
-      ((atom Y)
-         (if (== Y $T) (i32 -1) (i32 +1)) )
+                                    (ret +1) ) ) ) ) ) ) ) ) ) )
+      ((atom Y) (if (== Y $T) -1 +1))
       (T
          (stkChk 0)
          (let (A X  B Y)
@@ -524,9 +523,8 @@ atomErr pairErr varErr itemErr protErr lockErr)
                (? (atom (shift X))
                   (compare X (cdr Y)) )
                (? (atom (shift Y))
-                  (if (== Y $T) (i32 -1) (i32 +1)) )
-               (? (and (== X A) (== Y B))
-                  (i32 0) )
+                  (if (== Y $T) -1 +1) )
+               (? (and (== X A) (== Y B)) 0)
                (sigChk 0) ) ) ) ) )
 
 (load "io.l" "db.l" "apply.l" "flow.l" "subr.l" "net.l")

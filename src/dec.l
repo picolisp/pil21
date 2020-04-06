@@ -1,4 +1,4 @@
-# 05apr20 Software Lab. Alexander Burger
+# 06apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -173,7 +173,7 @@ ffiCall)
 (de evLst (any))
 (de evSym (any))
 (de i1 equal (any any))
-(de i32 compare (any any))
+(de i64 compare (any any))
 (de evList (any))
 # gc.l
 (de cons (any any))
