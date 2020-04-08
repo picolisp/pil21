@@ -722,7 +722,6 @@ False Beg End Safe *Safe)
 
 (asm ()
    ((X)
-      (setq llvm~@ X)
       (ssa (inc '*Ssa) "icmp eq i1 " X ", 0")
       (def (pack "%" *Ssa) 'i1) )
    (llvm~not) )

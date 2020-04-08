@@ -56,10 +56,9 @@
             (inc 'P)
             (setq B (numByte Q)) )
          (if (== B (char "@"))
-            (let N (val $HomeLen)
-               (unless (=0 N)
-                  (memcpy P (val $Home) N)
-                  (setq P (ofs P N)) ) )
+            (unless (=0 (val $HomeLen))
+               (memcpy P (val $Home) @)
+               (setq P (ofs P @)) )
             (set P B)
             (inc 'P) )
          (until (=0 (set P (numByte Q)))
@@ -98,24 +97,23 @@
       $Nil
       (let (P (push 4 ZERO NIL)  Q (link (ofs P 1)))  # [cnt name link]
          (loop
-            (let B (val Str)
-               (? (=0 B))
-               (byteNum B P) )
+            (? (=0 (val Str)))
+            (byteNum @ P)
             (inc 'Str) )
          (drop Q
             (consStr (val Q)) ) ) ) )
 
 (de i8 firstByte (Sym)
-   (let Nm (name (val (tail Sym)))
-      (i8 (if (cnt? Nm) (int Nm) (dig Nm))) ) )
+   (i8
+      (if (cnt? (name (val (tail Sym))))
+         (int @)
+         (dig @) ) ) )
 
 (de i32 firstChar (Sym)
-   (if (nil? Sym)
-      0
-      (let Tail (val (tail Sym))
-         (if (sym? Tail)  # External symbol
-            0
-            (numChar (push 0 (name Tail))) ) ) ) )  # Else get name
+   (cond
+      ((nil? Sym) 0)
+      ((sym? (val (tail Sym))) 0)  # External symbol
+      (T (numChar (push 0 (name @)))) ) )  # Else get name
 
 (de i1 isBlank (X)
    (and
@@ -123,9 +121,8 @@
       (sym? X)
       (let P (push 0 (name (val (tail X))))  # [cnt name]
          (loop
-            (let B (numByte P)
-               (? (=0 B) YES)
-               (? (> B 32) NO) ) ) ) ) )
+            (? (=0 (numByte P)) YES)
+            (? (> @ 32) NO) ) ) ) )
 
 # Build external symbol name
 (local) extNm
@@ -172,9 +169,8 @@
    (byteNum (+ (& (i8 Obj) 7) (char "0")) P) )  # Make ASCII digit
 
 (de void packExtNm (Name (i64* . P))
-   (let File (objFile Name)
-      (unless (=0 File)
-         (packAO File P) ) )
+   (unless (=0 (objFile Name))
+      (packAO @ P) )
    (packOct (objId Name) P) )
 
 # General pack
@@ -190,9 +186,9 @@
          (let (Tail (val (tail X))  Nm (name Tail))
             (if (sym? Tail)
                (packExtNm Nm P)
-               (let (Q (push 0 Nm)  B T)  # [cnt name]
-                  (until (=0 (setq B (numByte Q)))
-                     (byteNum B P) ) ) ) ) ) ) )
+               (let Q (push 0 Nm)  # [cnt name]
+                  (until (=0 (numByte Q))
+                     (byteNum @ P) ) ) ) ) ) ) )
 
 # Chop external symbol name
 (de chopExtNm (Name)
@@ -536,8 +532,9 @@
 
 # (fun? 'any) -> any
 (de _funQ (Exe)
-   (let X (funq (eval (cadr Exe)))
-      (if (=0 X) $Nil X) ) )
+   (if (=0 (funq (eval (cadr Exe))))
+      $Nil
+      @ ) )
 
 # (getd 'any) -> fun | NIL
 (de _getd (Exe)
@@ -557,21 +554,20 @@
       (loop
          (loop
             (let X (cdr P)  # Get subtrees
-               (let Y (cdr X)  # Right subtree
-                  (? (atom Y))
-                  (let Z P  # Go right
-                     (setq P Y)  # Invert tree
-                     (set 2 X (val Tos))
-                     (set Tos Z) ) ) ) )
+               (? (atom (cdr X)))  # Right subtree
+               (let Y P  # Go right
+                  (setq P @)  # Invert tree
+                  (set 2 X (val Tos))
+                  (set Tos Y) ) ) )
          (set Q P)  # Save tree
          (loop
             (setq Lst (cons (car P) Lst))  # Cons symbol
-            (let (X (cdr P)  Y (car X))  # Left subtree
-               (? (pair Y)
-                  (let Z P  # Go left
-                     (setq P Y)  # Invert tree
+            (let X (cdr P)
+               (? (pair (car X))  # Left subtree
+                  (let Y P  # Go left
+                     (setq P @)  # Invert tree
                      (set X (val Tos))
-                     (set Tos (| Z 8))  # First visit
+                     (set Tos (| Y 8))  # First visit
                      (set Q P) ) ) )  # Save tree
             (loop
                (let X (val Tos)
@@ -691,12 +687,10 @@
 
 # (zap 'sym) -> sym
 (de _zap (Exe)
-   (let
-      (Sym (needSym Exe (eval (cadr Exe)))
-         Tail (val (tail Sym)) )
-      (if (sym? Tail)  # External
+   (let Sym (needSym Exe (eval (cadr Exe)))
+      (if (sym? (val (tail Sym)))  # External
          (dbZap Sym)
-         (unintern Sym (name Tail) (val (car (val $Intern)))) )
+         (unintern Sym (name @) (val (car (val $Intern)))) )
       Sym ) )
 
 # (chop 'any) -> lst
@@ -807,12 +801,10 @@
          ((== ZERO (setq Y (name (val (tail Y)))))
             Z )
          (T
-            (let
-               (P (push 0 (name (val (tail Z))))
-                  B (numByte P) )
+            (let P (push 0 (name (val (tail Z))))
                (cond
-                  ((=0 B) $Nil)
-                  ((preStr Y B P) Z)
+                  ((=0 (numByte P)) $Nil)
+                  ((preStr Y @ P) Z)
                   (T $Nil) ) ) ) ) ) )
 
 # (sub? 'any1 'any2) -> any2 | NIL
@@ -985,19 +977,18 @@
          (sym? X)
          (sym? (val (tail X)))
          (dbTouch Exe X) )
-      (let V (val X)
-         (if (atom V)
-            V
-            (set X (cdr V))
-            (car V) ) ) ) )
+      (if (atom (val X))
+         @
+         (set X (cdr @))
+         (car @) ) ) )
 
 # (++ var) -> any
 (de _popq (Exe)
-   (let (X (needChkVar Exe (cadr Exe))  V (val X))
-      (if (atom V)
-         V
-         (set X (cdr V))
-         (car V) ) ) )
+   (let X (needChkVar Exe (cadr Exe))
+      (if (atom (val X))
+         @
+         (set X (cdr @))
+         (car @) ) ) )
 
 # (cut 'cnt 'var) -> lst
 (de _cut (Exe)
@@ -1077,13 +1068,12 @@
          (if (atom X)
             (if (atom V)
                $Nil
-               (let Z (cdr V)
-                  (if (== V Z)  # Single cell
-                     (prog
-                        (set Y $Nil)  # Clear value
-                        (car V) )
-                     (set 2 V (cdr Z))
-                     (car Z) ) ) )
+               (if (== (cdr V) V)  # Single cell
+                  (prog
+                     (set Y $Nil)  # Clear value
+                     (car V) )
+                  (set 2 V (cdr @))
+                  (car @) ) )
             (let E (eval (car X))
                (if (pair V)
                   (setq V (set 2 V (cons E (cdr V))))  # Concat into value
@@ -1100,25 +1090,24 @@
    (let X (val Var)
       (if (pair X)
          (loop
-            (let I (compare (car X) Key)
-               (? (=0 I) X)  # Found key
-               (let Y (cdr X)  # Get link cell
-                  (cond
-                     ((lt0 I)  # Entry is smaller
-                        (? (atom Y)  # No link yet
-                           (set 2 X (cons $Nil (cons Key $Nil)))
-                           $Nil )
-                        (? (atom (setq Y (cdr (setq X Y))))
-                           (set 2 X (cons Key $Nil))
-                           $Nil ) )
-                     (T  # Entry is greater
-                        (? (atom Y)  # No link yet
-                           (set 2 X (cons (cons Key $Nil) $Nil))
-                           $Nil )
-                        (? (atom (setq Y (car (setq X Y))))
-                           (set X (cons Key $Nil))
-                           $Nil ) ) )
-                  (setq X Y) ) ) )
+            (? (=0 (compare (car X) Key)) X)  # Found key
+            (let Y (cdr X)  # Get link cell
+               (cond
+                  ((lt0 @)  # Entry is smaller
+                     (? (atom Y)  # No link yet
+                        (set 2 X (cons $Nil (cons Key $Nil)))
+                        $Nil )
+                     (? (atom (setq Y (cdr (setq X Y))))
+                        (set 2 X (cons Key $Nil))
+                        $Nil ) )
+                  (T  # Entry is greater
+                     (? (atom Y)  # No link yet
+                        (set 2 X (cons (cons Key $Nil) $Nil))
+                        $Nil )
+                     (? (atom (setq Y (car (setq X Y))))
+                        (set X (cons Key $Nil))
+                        $Nil ) ) )
+               (setq X Y) ) )
          (set Var (cons Key $Nil))
          $Nil ) ) )
 
@@ -1126,11 +1115,10 @@
    (let X (val Var)
       (loop
          (? (atom X) $Nil)
-         (let I (compare (car X) Key)
-            (? (=0 I) X)  # Found key
-            (let Y (cdr X)  # Get link cell
-               (setq X
-                  (if (lt0 I) (cdr Y) (car Y)) ) ) ) ) ) )
+         (? (=0 (compare (car X) Key)) X)  # Found key
+         (let Y (cdr X)  # Get link cell
+            (setq X
+               (if (lt0 @) (cdr Y) (car Y)) ) ) ) ) )
 
 (de idxDel (Var Key)
    (loop
@@ -1192,59 +1180,57 @@
                         ((== $T Y) (setq P (cadr P)))
                         ((atom Y) (setq P (cddr P)))
                         (T
-                           (let I (compare (car Y) Key)
-                              (? (=0 I) (car P))
-                              (setq
-                                 P (cdr P)
-                                 P (if (lt0 I) (cdr P) (car P)) ) ) ) ) )
+                           (? (=0 (compare (car Y) Key)) (car P))
+                           (setq
+                              P (cdr P)
+                              P (if (lt0 @) (cdr P) (car P)) ) ) ) )
                   (? (atom P) $Nil) )
-            (save Key)
-            (let
-               (Key2 (save (eval (car X)))
-                  Q (link (push P NIL))
-                  Tos (link (push -ZERO NIL))
-                  R $Nil )
-               (loop
+               (save Key)
+               (let
+                  (Key2 (save (eval (car X)))
+                     Q (link (push P NIL))
+                     Tos (link (push -ZERO NIL))
+                     R $Nil )
                   (loop
-                     (let Y (cdr (setq X (cdr P)))  # Right subtree
-                        (? (atom Y))
-                        (let Z (car P)
-                           (? (== $T Z))
-                           (? (and (pair Z) (gt0 (compare (car Z) Key2)))) )
-                        (let Z P  # Go right
-                           (setq P Y)  # Invert tree
-                           (set 2 X (val Tos))
-                           (set Tos Z) ) ) )
-                  (set Q P)  # Save tree
-                  (loop
-                     (when
-                        (and
-                           (pair (setq X (car P)))
-                           (ge0 (compare (car X) Key)) )
-                        (when (le0 (compare (car X) Key2))
-                           (setq R (cons X R)) )  # Cons symbol
-                        (let Y (car (setq X (cdr P)))  # Left subtree
-                           (? (pair Y)
+                     (loop
+                        (let Y (cdr (setq X (cdr P)))  # Right subtree
+                           (? (atom Y))
+                           (let Z (car P)
+                              (? (== $T Z))
+                              (? (and (pair Z) (gt0 (compare (car Z) Key2)))) )
+                           (let Z P  # Go right
+                              (setq P Y)  # Invert tree
+                              (set 2 X (val Tos))
+                              (set Tos Z) ) ) )
+                     (set Q P)  # Save tree
+                     (loop
+                        (when
+                           (and
+                              (pair (setq X (car P)))
+                              (ge0 (compare (car X) Key)) )
+                           (when (le0 (compare (car X) Key2))
+                              (setq R (cons X R)) )  # Cons symbol
+                           (? (pair (car (setq X (cdr P))))  # Left subtree
                               (let Z P  # Go left
-                                 (setq P Y)  # Invert tree
+                                 (setq P @)  # Invert tree
                                  (set X (val Tos))
                                  (set Tos (| Z 8))  # First visit
-                                 (set Q P) ) ) ) )  # Save tree
-                     (loop
-                        (when (== -ZERO (setq X (val Tos)))
-                           (ret R) )
-                        (? (=0 (& X 8))  # Second visit
+                                 (set Q P) ) ) )  # Save tree
+                        (loop
+                           (when (== -ZERO (setq X (val Tos)))
+                              (ret R) )
+                           (? (=0 (& X 8))  # Second visit
+                              (let Y (cdr X)  # Nodes
+                                 (set Tos (cdr Y))  # TOS on up link
+                                 (set 2 Y P)
+                                 (setq P X)
+                                 (set Q P) ) )  # Save tree
+                           (setq X (& X -9))  # Clear visit bit
                            (let Y (cdr X)  # Nodes
-                              (set Tos (cdr Y))  # TOS on up link
-                              (set 2 Y P)
+                              (set Tos (car Y))
+                              (set Y P)
                               (setq P X)
-                              (set Q P) ) )  # Save tree
-                        (setq X (& X -9))  # Clear visit bit
-                        (let Y (cdr X)  # Nodes
-                           (set Tos (car Y))
-                           (set Y P)
-                           (setq P X)
-                           (set Q P) ) ) ) ) ) ) ) ) ) )  # Save tree
+                              (set Q P) ) ) ) ) ) ) ) ) ) )  # Save tree
 
 ### Property access ###
 (local) (put putn get getn prop)
@@ -1614,11 +1600,9 @@
    (while (pair X)
       (let Y (car X)
          (when (and (not (num? Y)) (sym? Y))
-            (let Z (get Y Key)
-               (? (not (nil? Z)) Z) )
+            (? (not (nil? (get Y Key))) @)
             (stkChk 0)
-            (let Z (meta (car Y) Key)
-               (? (not (nil? Z)) Z) ) ) )
+            (? (not (nil? (meta (car Y) Key))) @) ) )
       (shift X) )
    $Nil )
 
