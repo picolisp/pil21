@@ -1,4 +1,4 @@
-# 06apr20 Software Lab. Alexander Burger
+# 07apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -69,11 +69,11 @@
 
 (struct child
    (buf 8 i8*)          # Buffer pointer
+   (ofs 8 i64)          # Buffer offset
+   (cnt 8 i64)          # Buffer byte count
    (pid 4 i32)          # Process ID
    (hear 4 i32)         # Hear pipe
-   (tell 4 i32)         # Tell pipe
-   (ofs 4 i32)          # Buffer offset
-   (cnt 4 i32) )        # Buffer byte count
+   (tell 4 i32) )       # Tell pipe
 
 # System
 (local) (malloc realloc free getpid isatty read write pread pwrite fread fwrite

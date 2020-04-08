@@ -1,4 +1,4 @@
-# 06apr20 Software Lab. Alexander Burger
+# 08apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -95,7 +95,7 @@
             (free V)
             (set P null) ) ) ) )
 
-(local) (slow slowNb rdBytes rdBytesNb wrBytes flush flushAll stdinByte)
+(local) (slow slowNb rdBytes rdBytesNb wrBytes clsChild wrChild flush flushAll)
 
 (de i64 slow ((i8* . In))
    (let In: (inFile In)
@@ -169,6 +169,36 @@
             (? (=0 (setq Cnt (- Cnt N))) YES)
             (setq P (ofs P N)) ) ) ) )
 
+(de void clsChild ((i8* . Cld))
+   (let Cld: (child Cld)
+      (when (== (Cld: pid) (val $Talking))
+         (set $Talking 0) )
+      (Cld: pid 0)
+      (close (Cld: hear))
+      (free (Cld: buf)) ) )
+
+(de void wrChild ((i8* . Cld)  (i8* . P) (i64 . Cnt))
+   (let (Cld: (child Cld)  C (Cld: cnt))
+      (when (=0 C)
+         (loop
+            (let N (write (Cld: tell) P Cnt)
+               (if (lt0 N)
+                  (let E (xErrno)
+                     (? (== E EAGAIN))
+                     (when (or (== E EPIPE) (== E ECONNRESET))
+                        (clsChild Cld)
+                        (ret) )
+                     (unless (== E EINTR)
+                        (writeErr ($ "child write: %s")) ) )
+                  (when (=0 (setq Cnt (- Cnt N)))
+                     (ret) )
+                  (setq P (ofs P N)) ) ) ) )
+      (setq N (+ C Cnt 8))  # New buffer size
+      (let Q (ofs (Cld: buf (alloc (Cld: buf) N)) C)
+         (set (i64* Q) Cnt)
+         (memcpy (ofs Q 8) P Cnt)
+         (Cld: cnt N) ) ) )
+
 (de i1 flush ((i8* . Out))
    (if (=0 Out)
       YES
@@ -183,6 +213,8 @@
       (while (> N I)
          (flush (val (ofs A I)))
          (inc 'I) ) ) )
+
+(local) (stdinByte getBinary binRead)
 
 (de i32 stdinByte ()
    (let In: (inFile (val (val $InFiles)))  # Stdin
@@ -199,6 +231,14 @@
       (when (=0 (isatty 0))
          (ret -1) )
       (bye 0) ) )
+
+(de getBinary ()
+   #!
+   )
+
+(de binRead ()
+   #!
+   )
 
 (local) (waitFile pushInFiles pushOutFiles popInFiles popOutFiles)
 
