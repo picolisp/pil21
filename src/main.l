@@ -1,4 +1,4 @@
-# 06apr20 Software Lab. Alexander Burger
+# 08apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -372,9 +372,9 @@ atomErr pairErr varErr itemErr protErr lockErr)
                (let H (dlOpen Q)
                   (and
                      (n0 H)
-                     (n0 (setq H (dlsym H (inc P))))
+                     (n0 (dlsym H (inc P)))
                      (prog
-                        (set Sym (| (i64 H) 2))
+                        (set Sym (| (i64 @) 2))
                         YES ) ) ) ) ) ) ) )
 
 (load "gc.l" "big.l" "sym.l")
@@ -465,10 +465,8 @@ atomErr pairErr varErr itemErr protErr lockErr)
             (T -1) ) )
       ((sym? X)
          (cond
-            ((or (num? Y) (nil? Y))
-               +1 )
-            ((or (pair Y) (== Y $T))
-               -1 )
+            ((or (num? Y) (nil? Y)) +1)
+            ((or (pair Y) (== Y $T)) -1)
             (T
                (let
                   (NmX (name (val (tail X)))
@@ -501,9 +499,8 @@ atomErr pairErr varErr itemErr protErr lockErr)
                                        (val (dig NmY))  # Next digit
                                        (setq NmY (val (big NmY))) ) ) )
                               (loop
-                                 (let D (- (& A 255) (& B 255))
-                                    (unless (=0 D)
-                                       (ret (if (gt0 D) +1 -1)) ) )
+                                 (unless (=0 (- (& A 255) (& B 255)))
+                                    (ret (if (gt0 @) +1 -1)) )
                                  (? (=0 (setq A (shr A 8)))
                                     (unless (=0 (setq B (shr B 8)))
                                        (ret -1) )
@@ -518,8 +515,7 @@ atomErr pairErr varErr itemErr protErr lockErr)
          (stkChk 0)
          (let (A X  B Y)
             (loop
-               (let N (compare (car X) (car Y))
-                  (? (n0 N) N) )
+               (? (n0 (compare (car X) (car Y))) @)
                (? (atom (shift X))
                   (compare X (cdr Y)) )
                (? (atom (shift Y))

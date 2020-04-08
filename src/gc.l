@@ -1,4 +1,4 @@
-# 23mar20 Software Lab. Alexander Burger
+# 08apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -284,9 +284,9 @@
          (setq P (val $Avail)) )
       (set $Avail (car P))
       (set P Name)
-      (prog1
-         (sym P)
-         (set @ (if (=0 Val) @ Val)) ) ) )
+      (let S (sym P)
+         (set S (if (=0 Val) S Val))
+         S ) ) )
 
 (de consStr (Name)
    (if (== Name ZERO)

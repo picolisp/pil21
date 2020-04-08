@@ -514,7 +514,7 @@
          (setq C (call $Get)) )
       (drop Q
          (let (Nm (val Q)  Num (symToNum Nm 0 (char ".") 0))
-            (if (n0 Num) Num (requestSym Nm)) ) ) ) )
+            (if (n0 Num) @ (requestSym Nm)) ) ) ) )
 
 (de rdList ()
    (call $Get)
@@ -742,7 +742,7 @@
 # Output string
 (de void outString ((i8* . S))
    (while (n0 (val S))
-      (call $Put (i32 (val S)))
+      (call $Put (i32 @))
       (inc 'S) ) )
 
 (local) (print prin prin1)

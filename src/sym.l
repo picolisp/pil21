@@ -1,4 +1,4 @@
-# 06apr20 Software Lab. Alexander Burger
+# 08apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -258,15 +258,12 @@
       (let X (cdr Tree)  # Second tree
          (loop
             (? (atom X) NO)  # Empty
-            (let
-               (S (car X)
-                  Nm (name (val (tail S)))
-                  I (cmpLong Nm Name) )
-               (? (=0 I)
+            (let (S (car X)  Nm (name (val (tail S))))
+               (? (=0 (cmpLong Nm Name))
                   (set $Ret S)
                   (or (=0 Sym) (== Sym S)) )
                (setq X
-                  (if (lt0 I)  # Symbol is smaller
+                  (if (lt0 @)  # Symbol is smaller
                      (cddr X)
                      (cadr X) ) ) ) ) ) ) )
 
@@ -327,14 +324,11 @@
       (let X (cdr Tree)  # Second tree
          (if (pair X)  # Not empty
             (loop
-               (let
-                  (S (car X)
-                     Nm (name (val (tail S)))
-                     I (cmpLong Nm Name) )
-                  (? (=0 I) S)  # Found symbol
+               (let (S (car X)  Nm (name (val (tail S))))
+                  (? (=0 (cmpLong Nm Name)) S)  # Found symbol
                   (let Y (cdr X)  # Get link cell
                      (cond
-                        ((lt0 I)  # Symbol is smaller
+                        ((lt0 @)  # Symbol is smaller
                            (? (atom Y)  # No link yet
                               (if (isLstIntern Sym Name More)
                                  (val $Ret)

@@ -1,14 +1,14 @@
-# 01apr20 Software Lab. Alexander Burger
+# 08apr20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
 
-(local) (priv void null i1 i1* i1** i8 i8* i8** i8*** i32 i32* i32** i64 i64*
-i64** any YES NO ZERO -ZERO ONE SymTab begin end $ ? short global var str const
-globals array table symTab inline tailcall define struct $Nil $Link drop)
+(local) (@ @@ @@@ priv void null i1 i1* i1** i8 i8* i8** i8*** i32 i32* i32**
+i64 i64* i64** any YES NO ZERO -ZERO ONE SymTab begin end $ ? short global var
+str const globals array table symTab inline tailcall define struct $Nil $Link
+drop)
 
-(import pico llvm symbols local T NIL @ @@ @@@ load setq prog */ >> char hex !
-show bt)
+(import pico llvm symbols local T NIL load setq prog */ >> char hex ! show bt)
 
 (def 'void 'void)
 (def 'null 'null)
@@ -37,7 +37,7 @@ False Beg End Safe *Safe)
 
 
 # Generate LLVM-IR
-(de begin (Name Flg . @)
+(de begin (Name Flg . pico~@)
    (off *Strings)
    (prinl "source_filename = \"" Name ".l\"")
    (prinl)
@@ -61,7 +61,7 @@ False Beg End Safe *Safe)
 (de log ()
    (when *Log
       (let L (chop (symbols '(llvm pico priv) (sym (up 2))))
-         (and (nth L 65) (con @ "..."))
+         (and (nth L 65) (con pico~@ "..."))
          (link (cons NIL L)) ) ) )
 
 (de asm Lst
@@ -71,10 +71,10 @@ False Beg End Safe *Safe)
             (mapc set (car Lst) (cdr L))
             (cons (caadr Lst)
                '(log)
-               (let (@@ '@@  @@@ '@@@)
+               (let (@ '@  @@ '@@  @@@ '@@@)
                   (fill (cdadr Lst)) ) ) ) ) ) )
 
-(de ssa (N . @)
+(de ssa (N . pico~@)
    (link
       (cons
          (pack "%" N)
@@ -83,9 +83,9 @@ False Beg End Safe *Safe)
 (de phi (Lbl Var)
    (let? Val (val Var)
       (if (asoq Lbl *Phi)
-         (let L @
+         (let L pico~@
             (if (asoq Var L)
-               (conc @ (list (cons *Curr Val)))
+               (conc pico~@ (list (cons *Curr Val)))
                (con L
                   (cons
                      (list Var NIL (cons *Curr Val))
@@ -171,7 +171,7 @@ False Beg End Safe *Safe)
    (cond
       ((== 'any Typ) 'i64)
       ((== null Typ) 'i8*)
-      ((pair Typ) (func @))
+      ((pair Typ) (func pico~@))
       (T Typ) ) )
 
 (de func (Lst)
@@ -222,7 +222,7 @@ False Beg End Safe *Safe)
 
 (de $ (Str)
    (if (assoc Str *Strings)
-      (cadr @)
+      (cadr pico~@)
       (let
          (Sym (pack "@$" (inc (length *Strings)))
             Arr (pack "[" (inc (size Str)) " x i8]")
@@ -249,7 +249,7 @@ False Beg End Safe *Safe)
       "global " (type Typ) )
    (cond
       (*Shared)
-      ((pre? "_" Val) (prin " @" @))
+      ((pre? "_" Val) (prin " @" pico~@))
       ((pre? "$" Val)
          (if (; Val offset)
             (prin
@@ -258,14 +258,14 @@ False Beg End Safe *Safe)
                " x i64]* @"
                (; Val table)
                " to i8*), i32 "
-               @
+               pico~@
                ") to i64)" )
             (prin " ptrtoint ("
                (if (== 'any Typ) 'i64 Typ)
-               "* @" @ " to "
+               "* @" pico~@ " to "
                (if (== 'any Typ) 'i64 Typ)
                ")" ) ) )
-      (Val (prin " " @)) )
+      (Val (prin " " pico~@)) )
    (prinl)
    (def Sym (def (pack "@" Sym) (ptr Typ))) )
 
@@ -290,7 +290,7 @@ False Beg End Safe *Safe)
       ((pre? "_" Val)
          (prin
             "  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @"
-            @
+            pico~@
             " to i8*), i32 2) to i64)" ) )
       ((pre? "$" Val)
          (if (; Val offset)
@@ -300,7 +300,7 @@ False Beg End Safe *Safe)
                " x i64]* @"
                (; Val table)
                " to i8*), i32 "
-               @
+               pico~@
                ") to i64)" )
             (prin Val) ) )
       (T
@@ -367,7 +367,7 @@ False Beg End Safe *Safe)
                         (if (sub? "*" Typ) "ptrtoint" "sext")
                         " (" (cadr Lst) " " (caddr Lst) " to i64)") )
                   (NIL
-                     (prin "  i64 ptrtoint (" (func @) " @" (caddr Lst) " to i64)") ) )
+                     (prin "  i64 ptrtoint (" (func pico~@) " @" (caddr Lst) " to i64)") ) )
                (prinl (unless (== Lst (last Args)) ",")) ) ) ) )
    (unless *Shared
       (prinl "], align 8") ) )
@@ -398,7 +398,7 @@ False Beg End Safe *Safe)
          (unless *Shared
             (let Name
                (when (str? (cadr Lst))
-                  (prinl "  ; # [" I "] " @)
+                  (prinl "  ; # [" I "] " pico~@)
                   (let L (chop (cadr Lst))
                      (make
                         (when (nth L 8)  # Max 15 ASCII characters
@@ -472,7 +472,7 @@ False Beg End Safe *Safe)
    (with Sym
       (setq *Ret
          (if Ret
-            (type @)
+            (type Ret)
             (=: noreturn T)
             void ) )
       (cond
@@ -499,7 +499,7 @@ False Beg End Safe *Safe)
          (Ext (prinl ")"))
          (Body (prinl ") {")) )
       (def This
-         (list '@
+         (list 'pico~@
             (make
                (link 'let 'A
                   (list 'mapcar
@@ -526,7 +526,7 @@ False Beg End Safe *Safe)
             (make
                (label *Lbl)
                (let? R (run Body)
-                  (and *Safe (drop @))
+                  (and *Safe (drop *Safe))
                   (if (== void *Ret)
                      (link "ret void")
                      (link (pack "ret " *Ret " " R)) ) ) )
@@ -571,14 +571,14 @@ False Beg End Safe *Safe)
                                  (asoq (car Args) '@L)
                                  (and
                                     (pair (car Args))
-                                    (asoq (car @) '@L) ) )
+                                    (asoq (car pico~@) '@L) ) )
                               (quit "Bad struct item" (car Args)) )
                            (NIL
-                              (let P (llvm~ofs '@P (cadr @))
-                                 (let Q ((ptr (caddr @)) P)
+                              (let P (llvm~ofs '@P (cadr pico~@))
+                                 (let Q ((ptr (caddr pico~@)) P)
                                     (if (atom (car Args))
                                        (if (cadr Args)
-                                          (llvm~set Q (eval @ 1 '(*Log)))
+                                          (llvm~set Q (eval pico~@ 1 '(*Log)))
                                           (llvm~val Q) )
                                        (ifn (cdar Args)
                                           P
@@ -590,7 +590,7 @@ False Beg End Safe *Safe)
                                              P
                                              (let Q ((ptr (caddar Args)) P)
                                                 (if (cadr Args)
-                                                   (llvm~set Q (eval @ 1 '(*Log)))
+                                                   (llvm~set Q (eval pico~@ 1 '(*Log)))
                                                    (llvm~val Q) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) )
 
 
@@ -708,6 +708,7 @@ False Beg End Safe *Safe)
 # Type checks
 (asm (@Tag @Pred)
    ((X)
+      (setq llvm~@ X)
       (ssa (inc '*Ssa) "and i64 " X ", " @Tag)
       (ssa (inc '*Ssa) "icmp " @Pred " i64 %" (dec *Ssa) ", 0")
       (def (pack "%" *Ssa) 'i1) )
@@ -721,12 +722,14 @@ False Beg End Safe *Safe)
 
 (asm ()
    ((X)
+      (setq llvm~@ X)
       (ssa (inc '*Ssa) "icmp eq i1 " X ", 0")
       (def (pack "%" *Ssa) 'i1) )
    (llvm~not) )
 
 (asm ()
    ((X)
+      (setq llvm~@ X)
       (ssa (inc '*Ssa) "icmp eq i64 " X ", " $Nil)
       (def (pack "%" *Ssa) 'i1) )
    (llvm~nil?) )
@@ -734,6 +737,7 @@ False Beg End Safe *Safe)
 # Comparisons
 (asm (@Pred)
    ((X Y)
+      (setq llvm~@ X)
       (ssa (inc '*Ssa) "icmp " @Pred " "
          (type (val (if (sym? X) X Y)))
          " " X ", " Y )
@@ -743,6 +747,7 @@ False Beg End Safe *Safe)
 
 (asm (@Pred1 @Pred2)
    ((X Y)
+      (setq llvm~@ X)
       (let V (type (val (if (sym? X) X Y)))
          (ssa (inc '*Ssa) "icmp "
             (if (== 'i32 V) @Pred1 @Pred2)
@@ -755,6 +760,7 @@ False Beg End Safe *Safe)
 
 (asm (@Pred)
    ((X)
+      (setq llvm~@ X)
       (ssa (inc '*Ssa) "icmp " @Pred " "
          (type (val X)) " " X ", "
          (if (sub? "*" (val X)) null 0) )
@@ -764,6 +770,7 @@ False Beg End Safe *Safe)
 
 (asm (@Pred)
    ((X)
+      (setq llvm~@ X)
       (ssa (inc '*Ssa) "icmp " @Pred
          " " (type (val X)) " " X ", 0" )
       (def (pack "%" *Ssa) 'i1) )
@@ -816,7 +823,7 @@ False Beg End Safe *Safe)
          (ssa (inc '*Ssa) "extractvalue {i64, i1} %" (dec *Ssa) ", 1")
          (ssa (inc '*Ssa) "or i1 %" (- *Ssa 5) ", %" (dec *Ssa))
          (ssa (inc '*Ssa) "extractvalue {i64, i1} %" (- *Ssa 3) ", 0") )
-      (setq @@ (def (pack "%" (dec *Ssa)) 'i1))
+      (setq llvm~@@ (def (pack "%" (dec *Ssa)) 'i1))
       (def (pack "%" *Ssa) 'i64) )
    (llvm~add "add")
    (llvm~sub "sub") )
@@ -863,7 +870,7 @@ False Beg End Safe *Safe)
       (ssa (inc '*Ssa) "mul i128 " X ", %" (dec *Ssa))
       (ssa (inc '*Ssa) "lshr i128 %" (dec *Ssa) ", 64")
       (ssa (inc '*Ssa) "trunc i128 %" (dec *Ssa) " to i64")
-      (setq @@@ (def (pack "%" *Ssa) 'i64))
+      (setq llvm~@@@ (def (pack "%" *Ssa) 'i64))
       (ssa (inc '*Ssa) "trunc i128 %" (- *Ssa 3) " to i64")
       (def (pack "%" *Ssa) 'i64) )
    (llvm~mul) )
@@ -879,7 +886,7 @@ False Beg End Safe *Safe)
          (setq Z (pack "%" *Ssa)) )
       (ssa (inc '*Ssa) "urem i128 %" Y ", " Z)
       (ssa (inc '*Ssa) "trunc i128 %" (dec *Ssa) " to i64")
-      (setq @@@ (def (pack "%" *Ssa) 'i64))
+      (setq llvm~@@@ (def (pack "%" *Ssa) 'i64))
       (ssa (inc '*Ssa) "udiv i128 %" Y ", " Z)
       (ssa (inc '*Ssa) "trunc i128 %" (dec *Ssa) " to i64")
       (def (pack "%" *Ssa) 'i64) )
@@ -1118,7 +1125,7 @@ False Beg End Safe *Safe)
 (asm ()
    (Prg
       (prog1
-         (eval (++ Prg))
+         (setq llvm~@ (eval (++ Prg)))
          (run Prg) ) )
    (llvm~prog1) )
 
@@ -1126,7 +1133,7 @@ False Beg End Safe *Safe)
    (Prg
       (prog2
          (eval (++ Prg))
-         (eval (++ Prg))
+         (setq llvm~@ (eval (++ Prg)))
          (run Prg) ) )
    (llvm~prog2) )
 
@@ -1139,9 +1146,10 @@ False Beg End Safe *Safe)
             (phi End Var)
             (br End) )
          (label Skip)
-         (when (set Var (run Prg))
-            (phi End Var)
-            (br End) )
+         (use llvm~@
+            (when (set Var (run Prg))
+               (phi End Var)
+               (br End) ) )
          (label End) ) )
    (llvm~if Body Skip)
    (llvm~ifn Skip Body) )
@@ -1151,7 +1159,8 @@ False Beg End Safe *Safe)
       (let (Flg (eval (++ Prg))  Body (+lbl)  End (+lbl))
          (br Flg @Lbl1 @Lbl2)
          (label Body)
-         (and (run Prg) (br End))
+         (use llvm~@
+            (and (run Prg) (br End)) )
          (label End) )
       T )
    (llvm~when Body End)
@@ -1162,18 +1171,20 @@ False Beg End Safe *Safe)
       (let (Var (box)  End (+lbl)  Flg)
          (for Prg Lst
             (if (== @Flg (car Prg))
-               (when (set Var (run (cdr Prg)))
-                  (phi End Var)
-                  (br End) )
+               (use llvm~@
+                  (when (set Var (run (cdr Prg)))
+                     (phi End Var)
+                     (br End) ) )
                (setq Flg (eval (++ Prg)))
                (let Skip (+lbl)
                   (if Prg
                      (let Body (+lbl)
                         (br Flg @Lbl1 @Lbl2)
                         (label Body)
-                        (when (set Var (run Prg))
-                           (phi End Var)
-                           (br End) ) )
+                        (use llvm~@
+                           (when (set Var (run Prg))
+                              (phi End Var)
+                              (br End) ) ) )
                      (br Flg @Lbl3 @Lbl4) )
                   (label Skip) ) ) )
          (if (== @Flg (car (last Lst)))
@@ -1203,7 +1214,7 @@ False Beg End Safe *Safe)
                            (link
                               (pack
                                  "  " (type (val X)) " " Y
-                                 ", label %$" (+phi @ ) ) ) ) ) ) )
+                                 ", label %$" (+phi @) ) ) ) ) ) )
                Lst )
             (link "]")
             (for Prg Lst
@@ -1222,11 +1233,12 @@ False Beg End Safe *Safe)
             (let True (+lbl)
                (br Flg True False)
                (label True)
-               (let? X (run Prg)
-                  (when (cdr *Exit)
-                     (set @ X)
-                     (phi (car *Exit) @) )
-                  (br (car *Exit)) ) )
+               (use llvm~@
+                  (let? X (run Prg)
+                     (when (cdr *Exit)
+                        (set @ X)
+                        (phi (car *Exit) @) )
+                     (br (car *Exit)) ) ) )
             (when (cdr *Exit)
                (set @ 0)
                (phi (car *Exit) @) )
@@ -1243,7 +1255,8 @@ False Beg End Safe *Safe)
          (let (Flg (eval (++ Prg))  Body (+lbl)  *Exit (cons (+lbl)))
             (br Flg @Lbl1 @Lbl2)
             (label Body)
-            (and (run Prg) (br Beg))
+            (use llvm~@
+               (and (run Prg) (br Beg)) )
             (label (car *Exit)) ) )
       T )
    (llvm~while Body (car *Exit))
@@ -1299,7 +1312,7 @@ False Beg End Safe *Safe)
 
 (asm ()
    ((X)
-      (and *Safe (drop @))
+      (and *Safe (drop *Safe))
       (if (== void *Ret)
          (link "ret void")
          (link (pack "ret " *Ret " " X)) )
@@ -1326,7 +1339,7 @@ False Beg End Safe *Safe)
       (pico~if Prg
          (prog1
             (pico~let *Log T
-               (run @) )
+               (run pico~@) )
             (set $Link (cdr P)) )
          (set $Link (cdr P)) ) ) )
 
@@ -1346,8 +1359,8 @@ False Beg End Safe *Safe)
       (pico~if Prg
          (prog1
             (pico~let *Log T
-               (run @) )
-            (pico~when (pico~and @ (pico~not Safe))
+               (run pico~@) )
+            (pico~when (pico~and pico~@ (pico~not Safe))
                (drop *Safe)
                (off *Safe) ) )
          X ) ) )
@@ -1361,8 +1374,8 @@ False Beg End Safe *Safe)
       (pico~if Prg
          (prog1
             (pico~let *Log T
-               (run @) )
-            (pico~when (pico~and @ (pico~not Safe))
+               (run pico~@) )
+            (pico~when (pico~and pico~@ (pico~not Safe))
                (drop *Safe)
                (off *Safe) ) )
          Y ) ) )
