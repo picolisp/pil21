@@ -1,4 +1,4 @@
-# 06apr20 Software Lab. Alexander Burger
+# 08apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -83,12 +83,11 @@
                ((=0 N) (set $Solo $T))  # Set solo mode
                ((== $T (val $Solo)) (set $Solo $Nil)) )  # Clear solo mode
             (ret 0) )
-         (let E (xErrno)
-            (or
-               (== E EINTR)  # Interrupted
-               (== E EACCES)  # Locked by another process
-               (== E EAGAIN)  # Memory-mapped by another process
-               (lockErr) ) )
+         (or
+            (== (xErrno) EINTR)  # Interrupted
+            (== @ EACCES)  # Locked by another process
+            (== @ EAGAIN)  # Memory-mapped by another process
+            (lockErr) )
          (let Pid T
             (while (lt0 (setq Pid (getLock (Db: fd) N Len)))
                (unless (== (xErrno) EINTR)
@@ -201,26 +200,25 @@
 (de i1 isLife (Sym)
    (let (Nm (name (val (tail Sym)))  N (objId Nm))
       (unless (=0 N)
-         (let F (objFile Nm)
-            (cond
-               ((> (val $DBs) F)
-                  (setq Nm (add Nm Nm))
-                  (and @@ (ret YES))  # Dirty
-                  (add Nm Nm)
-                  (and @@ (ret YES))  # Loaded
-                  (let
-                     (Db:
-                        (dbFile
-                           (set $DbFile  # Set current file
-                              (ofs (val $DbFiles) (* N (dbFile T))) ) )
-                        P (b8 (* BLK 2)) )
-                     (blkPeek BLK P BLK)  # Read 'next'
-                     (when (> (getAdr P) N)
-                        (blkPeek (shl N (i64 (Db: sh))) P BLK)  # Read link field
-                        (when (== 1 (& (val P) BLKTAG))  # ID-Block
-                           (ret YES) ) ) ) )
-               ((pair (val $Ext))
-                  (ret YES) ) ) ) )
+         (cond
+            ((> (val $DBs) (objFile Nm))
+               (setq Nm (add Nm Nm))
+               (and @@ (ret YES))  # Dirty
+               (add Nm Nm)
+               (and @@ (ret YES))  # Loaded
+               (let
+                  (Db:
+                     (dbFile
+                        (set $DbFile  # Set current file
+                           (ofs (val $DbFiles) (* N (dbFile T))) ) )
+                     P (b8 (* BLK 2)) )
+                  (blkPeek BLK P BLK)  # Read 'next'
+                  (when (> (getAdr P) N)
+                     (blkPeek (shl N (i64 (Db: sh))) P BLK)  # Read link field
+                     (when (== 1 (& (val P) BLKTAG))  # ID-Block
+                        (ret YES) ) ) ) )
+            ((pair (val $Ext))
+               (ret YES) ) ) )
       NO ) )
 
 # (ext? 'any) -> sym | NIL
@@ -228,10 +226,9 @@
    (let X (eval (cadr Exe))
       (if (or (num? X) (not (sym? X)))
          $Nil
-         (let Tail (val (tail X))
-            (if (and (sym? Tail) (isLife X))
-               X
-               $Nil ) ) ) ) )
+         (if (and (sym? (val (tail X))) (isLife X))
+            X
+            $Nil ) ) ) )
 
 (de void cleanUp ((i64 . N))
    (let (P (b8 BLK)  Db: (dbFile (val $DbFile)))
@@ -251,9 +248,8 @@
 (de i8 _getBlock ()
    (let P (val $BlkPtr)
       (when (== P (val $BlkEnd))
-         (let Link (val $BlkLink)
-            (and (=0 Link) (ret 0))
-            (setq P (rdBlock Link)) ) )
+         (and (=0 (val $BlkLink)) (ret 0))
+         (setq P (rdBlock @)) )
       (prog1
          (val P)
          (set $BlkPtr (inc P)) ) ) )
@@ -284,12 +280,11 @@
       (loop
          (loop
             (let X (cdr P)  # Get subtrees
-               (let Y (cdr X)  # Right subtree
-                  (? (atom Y))
-                  (let Z P  # Go right
-                     (setq P Y)  # Invert tree
-                     (set 2 X Tos)
-                     (setq Tos Z) ) ) ) )
+               (? (atom (cdr X)))  # Right subtree
+               (let Y P  # Go right
+                  (setq P @)  # Invert tree
+                  (set 2 X Tos)
+                  (setq Tos Y) ) ) )
          (loop
             (let (S (val P)  Tail (val (tail S)))  # Get external symbol
                (unless (num? Tail)  # Any properties
@@ -299,12 +294,12 @@
                   (setq Tail (| Tail 8)) )  # Set 'extern' tag
                (set (tail S) (shr (shl Tail 2) 2))  # Strip status bits
                (set S $Nil) )  # Clear value
-            (let (X (cdr P)  Y (car X))  # Left subtree
-               (? (pair Y)
-                  (let Z P  # Go left
-                     (setq P Y)  # Invert tree
+            (let X (cdr P)
+               (? (pair (car X))  # Left subtree
+                  (let Y P  # Go left
+                     (setq P @)  # Invert tree
                      (set X Tos)
-                     (setq Tos (| Z 8)) ) ) )  # First visit
+                     (setq Tos (| Y 8)) ) ) )  # First visit
             (loop
                (and (=0 Tos) (goto 1))
                (? (=0 (& Tos 8))  # Second visit
@@ -318,9 +313,8 @@
                   (set Y P)
                   (setq P X) ) ) ) ) )
    (: 1
-      (let Z (val $Zap)  # Objects to delete
-         (when (pair Z)
-            (set Z $Nil) ) ) )  # Clear zap list
+      (when (pair (val $Zap))  # Objects to delete
+         (set @ $Nil) ) )  # Clear zap list
    (unless (=0 (val $DBs))  # DB open
       (unLockDb 0) )  # Unlock all
    #! (unsync)

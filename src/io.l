@@ -101,8 +101,8 @@
    (let In: (inFile In)
       (In: ix (In: cnt 0))
       (loop
-         (let N (read (In: fd) (In: (buf)) BUFSIZ)
-            (? (ge0 N) (In: cnt N)) )
+         (? (ge0 (read (In: fd) (In: (buf)) BUFSIZ))
+            (In: cnt @) )
          (? (<> (xErrno) EINTR) 0)
          (sigChk 0) ) ) )
 
@@ -118,20 +118,18 @@
             (? (=0 N)
                (In: ix (In: cnt -1))
                0 ) )
-         (let E (xErrno)
-            (? (== E EAGAIN) -1)
-            (? (<> E EINTR) 0) )
+         (? (== (xErrno) EAGAIN) -1)
+         (? (<> @ EINTR) 0)
          (sigChk 0) ) ) )
 
 (de i1 rdBytes ((i32 . Fd) (i8* . P) (i64 . Cnt))
    (loop
       (loop
-         (let N (read Fd P Cnt)
-            (? (gt0 N)
-               (setq P (ofs P N)  Cnt (- Cnt N)) )
-            (when (or (=0 N) (<> (xErrno) EINTR))
-               (ret NO) )
-            (sigChk 0) ) )
+         (? (gt0 (read Fd P Cnt))
+            (setq P (ofs P @)  Cnt (- Cnt @)) )
+         (when (or (=0 @) (<> (xErrno) EINTR))
+            (ret NO) )
+         (sigChk 0) )
       (? (=0 Cnt) YES) ) )
 
 (de i64 rdBytesNb ((i32 . Fd) (i8* . P) (i64 . Cnt))
@@ -148,9 +146,8 @@
                      (ret 0) )
                   (sigChk 0) ) ) )
          (? (=0 N) 0) )
-      (let E (xErrno)
-         (? (== E EAGAIN) -1)
-         (? (<> E EINTR) 0) )
+      (? (== (xErrno) EAGAIN) -1)
+      (? (<> @ EINTR) 0)
       (sigChk 0) ) )
 
 (de i1 wrBytes ((i32 . Fd) (i8* . P) (i64 . Cnt))
@@ -202,11 +199,11 @@
 (de i1 flush ((i8* . Out))
    (if (=0 Out)
       YES
-      (let (Out: (outFile Out)  N (Out: ix))
-         (if (=0 N)
+      (let Out: (outFile Out)
+         (if (=0 (Out: ix))
             YES
             (Out: ix 0)
-            (wrBytes (Out: fd) (Out: (buf)) N) ) ) ) )
+            (wrBytes (Out: fd) (Out: (buf)) @) ) ) ) )
 
 (de void flushAll ()
    (let (A (val $OutFiles)  N (val $OutFDs)  I (i32 0))
@@ -422,10 +419,9 @@
                         (if (nil? S)
                            ZERO
                            (name S) ) ) ) )
-               (let B (numByte $Line)  # Extract next byte
-                  (if (=0 B)
-                     (char "\n")
-                     (i32 B) ) ) ) ) ) ) )
+               (if (=0 (numByte $Line))  # Extract next byte
+                  (char "\n")
+                  (i32 @) ) ) ) ) ) )
 
 (de i32 getChar ((i32 . C))
    (cond
@@ -513,8 +509,10 @@
          (charNum C P)
          (setq C (call $Get)) )
       (drop Q
-         (let (Nm (val Q)  Num (symToNum Nm 0 (char ".") 0))
-            (if (n0 Num) @ (requestSym Nm)) ) ) ) )
+         (let Nm (val Q)
+            (if (n0 (symToNum Nm 0 (char ".") 0))
+               @
+               (requestSym Nm) ) ) ) ) )
 
 (de rdList ()
    (call $Get)
@@ -734,10 +732,9 @@
 
 # Output external symbol name
 (de void prExt (Nm)
-   (let F (objFile Nm)
-      (unless (=0 F)
-         (outAo F) )
-      (outOct (objId Nm)) ) )
+   (unless (=0 (objFile Nm))
+      (outAo @) )
+   (outOct (objId Nm)) )
 
 # Output string
 (de void outString ((i8* . S))
@@ -910,8 +907,7 @@
    (let X (cdr Exe)
       (loop
          (let Y
-            (let Z (eval (++ X))
-               (if (== $T Z)
-                  (loadAll Exe)
-                  (repl Exe (char ">") Z) ) )
+            (if (== (eval (++ X)) $T)
+               (loadAll Exe)
+               (repl Exe (char ">") @) )
             (? (atom X) Y) ) ) ) )

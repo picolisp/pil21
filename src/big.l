@@ -1,4 +1,4 @@
-# 06apr20 Software Lab. Alexander Burger
+# 08apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -193,11 +193,10 @@
       (let (X N  Lo (mul 10 (val (dig X)))  Hi @@@)
          (loop
             (set (dig X) Lo)
-            (let Y (val (big X))
-               (? (cnt? Y)
-                  (set (big X)
-                     (box64 (+ Hi (* 10 (int Y)))) ) )
-               (setq X Y) )
+            (? (cnt? (val (big X)))
+               (set (big X)
+                  (box64 (+ Hi (* 10 (int @)))) ) )
+            (setq X @)
             (setq
                Lo (add (mul 10 (val (dig X))) Hi)
                Hi (+ @@@ @@) ) )
@@ -594,20 +593,18 @@
                      Hi (+ @@@ @@) )
                   (loop
                      (set (dig Q) Lo)
-                     (let Y (val (big Q))
-                        (setq Q
-                           (if (cnt? Y)
-                              (set (big Q) (boxNum 0))
-                              Y ) ) )
+                     (setq Q
+                        (if (cnt? (val (big Q)))
+                           (set (big Q) (boxNum 0))
+                           @ ) )
                      (? (cnt? (setq X (val (big X)))))
                      (mulAddHiLo (val (dig X)) (val (dig B)) Q) )
                   (mulAddHiLo (int X) (val (dig B)) Q)
                   (set (dig Q) Lo)
                   (unless (=0 Hi)
-                     (let Y (val (big Q))
-                        (if (cnt? Y)
-                           (set (big Q) (boxNum Hi))
-                           (set (big Y) Hi) ) ) ) )
+                     (if (cnt? (val (big Q)))
+                        (set (big Q) (boxNum Hi))
+                        (set (big @) Hi) ) ) )
                (setq P (val (big P)))
                (? (cnt? (setq B (val (big B))))) )
             (setq B (int B))
@@ -619,20 +616,18 @@
                   Hi (+ @@@ @@) )
                (loop
                   (set (dig P) Lo)
-                  (let Y (val (big P))
-                     (setq P
-                        (if (cnt? Y)
-                           (set (big P) (boxNum 0))
-                           Y ) ) )
+                  (setq P
+                     (if (cnt? (val (big P)))
+                        (set (big P) (boxNum 0))
+                        @ ) )
                   (? (cnt? (setq A (val (big A)))))
                   (mulAddHiLo (val (dig A)) B P) )
                (mulAddHiLo (int A) B P)
                (set (dig P) Lo)
                (unless (=0 Hi)
-                  (let Y (val (big P))
-                     (if (cnt? Y)
-                        (set (big P) (boxNum Hi))
-                        (set (big Y) Hi) ) ) ) )
+                  (if (cnt? (val (big P)))
+                     (set (big P) (boxNum Hi))
+                     (set (big @) Hi) ) ) )
             (zapZero (pop R)) ) ) ) )
 
 # Divide big number (Knuth Vol.2, p.257)
@@ -1113,10 +1108,9 @@
                (sym? (val (tail Y)))  # External
                (dbTouch Exe Y) )
             (if (atom X)
-               (let N (val Y)
-                  (if (nil? N)
-                     N
-                     (set Y (incs (needNum Exe N))) ) )
+               (if (nil? (val Y))
+                  @
+                  (set Y (incs (needNum Exe @))) )
                (let (D (save (eval (car X)))  N (val Y))
                   (cond
                      ((nil? N) N)
@@ -1137,10 +1131,9 @@
                (sym? (val (tail Y)))  # External
                (dbTouch Exe Y) )
             (if (atom X)
-               (let N (val Y)
-                  (if (nil? N)
-                     N
-                     (set Y (decs (needNum Exe N))) ) )
+               (if (nil? (val Y))
+                  @
+                  (set Y (decs (needNum Exe @))) )
                (let (D (save (eval (car X)))  N (val Y))
                   (cond
                      ((nil? N) N)
@@ -1313,10 +1306,9 @@
 
 # (abs 'num) -> num
 (de _abs (Exe)
-   (let N (eval (cadr Exe))
-      (if (nil? N)
-         N
-         (pos (needNum Exe N)) ) ) )
+   (if (nil? (eval (cadr Exe)))
+      @
+      (pos (needNum Exe @)) ) )
 
 ### Bit operations ###
 # (bit? 'num ..) -> num | NIL

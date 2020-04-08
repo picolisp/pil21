@@ -1,4 +1,4 @@
-# 15mar20 Software Lab. Alexander Burger
+# 08apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -49,11 +49,11 @@
 
 # (ext:Snx 'any ['cnt]) -> sym
 (de Snx (Exe)
-   (let (X (cdr Exe)  S (evSym X))
-      (if (nil? S)
-         S
+   (let X (cdr Exe)
+      (if (nil? (evSym X))
+         @
          (let
-            (P (push 0 (name (val (tail S))) NIL)  # [cnt name link]
+            (P (push 0 (name (val (tail @))) NIL)  # [cnt name link]
                C (numChar P) )
             (while (> SNXBASE C)
                (when (=0 (setq C (numChar P)))
@@ -93,9 +93,8 @@
 (de FD (Exe)
    (prog1
       (eval (cadr Exe))
-      (let Fd (i32 (xCnt Exe @))
-         (when (ge0 Fd)
-            (initInFile Fd null)
-            (initOutFile Fd) ) ) ) )
+      (when (ge0 (i32 (xCnt Exe @)))
+         (initInFile @ null)
+         (initOutFile @) ) ) )
 
 (end)

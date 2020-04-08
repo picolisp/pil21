@@ -53,10 +53,9 @@
 (local) (alloc heapAlloc)
 
 (de i8* alloc ((i8* . Ptr) (i64 . Siz))
-   (let P (realloc Ptr Siz)  # Reallocate pointer
-      (when (=0 P)
-         (giveup ($ "No memory")) )
-      P ) )
+   (when (=0 (realloc Ptr Siz)@)   # Reallocate pointer
+      (giveup ($ "No memory")) )
+   @ )
 
 (de void heapAlloc ()
    (let H (any (alloc null (* 8 (inc HEAP))))
@@ -76,12 +75,11 @@
 (local) (sig sighandler)
 
 (de void sig ((i32 . N))
-   (let I (val $TtyPid)
-      (ifn (=0 I)
-         (kill I N)
-         (set $Signal (+ (val $Signal) 1))
-         (let P (ofs $Signal (xSignal N))
-            (set P (+ (val P) 1)) ) ) ) )
+   (ifn (=0 (val $TtyPid))
+      (kill @ N)
+      (set $Signal (+ (val $Signal) 1))
+      (let P (ofs $Signal (xSignal N))
+         (set P (+ (val P) 1)) ) ) )
 
 (de void sighandler (Exe)
    (when (=0 (val $Protect))
@@ -336,14 +334,13 @@ atomErr pairErr varErr itemErr protErr lockErr)
                               (if (or (num? Y) (== Y $T))
                                  0
                                  X ) )
-                           (let Z (++ Y)
-                              (?
-                                 (or
-                                    (num? Z)
-                                    (pair Z)
-                                    (nil? Z)
-                                    (== $T Z) )
-                                 0 ) ) ) ) ) )
+                           (?
+                              (or
+                                 (num? (++ Y))
+                                 (pair @)
+                                 (nil? @)
+                                 (== @ $T) )
+                              0 ) ) ) ) )
                (let Z (++ Y)
                   (if (pair Z)
                      (if (num? (car Z))
@@ -369,13 +366,12 @@ atomErr pairErr varErr itemErr protErr lockErr)
                   (strcpy (ofs Q (+ N 4)) Nm)
                   (setq Len (+ Len N 4)) )
                (strcpy (ofs Q Len) ($ ".so"))
-               (let H (dlOpen Q)
-                  (and
-                     (n0 H)
-                     (n0 (dlsym H (inc P)))
-                     (prog
-                        (set Sym (| (i64 @) 2))
-                        YES ) ) ) ) ) ) ) )
+               (and
+                  (n0 (dlOpen Q))
+                  (n0 (dlsym @ (inc P)))
+                  (prog
+                     (set Sym (| (i64 @) 2))
+                     YES ) ) ) ) ) ) )
 
 (load "gc.l" "big.l" "sym.l")
 
@@ -730,10 +726,9 @@ atomErr pairErr varErr itemErr protErr lockErr)
    (heapAlloc)
    (let P $Nil  # Init internal symbols
       (loop
-         (let Nm (val (tail P))
-            (when (num? Nm)
-               (intern P 0 Nm $Pico $Nil)
-               (? (== P $LastSym)) ) )
+         (when (num? (val (tail P)))
+            (intern P 0 @ $Pico $Nil)
+            (? (== P $LastSym)) )
          (setq P (ofs P 2)) ) )
    (set
       (tail $Db1) DB1  # Name of external root symbol '{1}'

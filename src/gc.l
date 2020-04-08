@@ -115,10 +115,10 @@
                      (add Tail Tail)  # Get carry
                      (when @@  # Dirty or deleted
                         (mark S) ) ) ) )
-            (let (X (cdr P)  Y (car X))  # Left subtree
-               (? (pair Y)
+            (let X (cdr P)  # Left subtree
+               (? (pair (car X))
                   (let Z P  # Go left
-                     (setq P Y)  # Invert tree
+                     (setq P @)  # Invert tree
                      (set X Tos)
                      (setq Tos (| Z 8)) ) ) )  # First visit
             (loop
@@ -143,10 +143,10 @@
       (: 2
          (loop
             (loop
-               (let (X (cdr P)  Y (cdr X))  # Right subtree
-                  (? (atom Y))
+               (let X (cdr P)  # Right subtree
+                  (? (atom (cdr X)))
                   (let Z P  # Go right
-                     (setq P Y)  # Invert tree
+                     (setq P @)  # Invert tree
                      (set 2 X Tos)
                      (setq Tos Z) ) ) )
             (loop
@@ -175,17 +175,16 @@
                            (goto 3) )
                         (setq Y (car Y))  # Left sub-branch
                         (loop
-                           (let Z (cdr Y)
-                              (? (atom Z)  # No more left branches
-                                 (set  # Insert left sub-branch
-                                    P (car Y)
-                                    (cdr X) (cdr Z) ) )
-                              (setq X Y  Y (car Z)) ) ) ) ) )  # Go down left
+                           (? (atom (cdr Y))  # No more left branches
+                              (set  # Insert left sub-branch
+                                 P (car Y)
+                                 (cdr X) (cdr @) ) )
+                           (setq X Y  Y (car @)) ) ) ) )  # Go down left
                (: 3
-                  (let (X (cdr P)  Y (car X))  # Left subtree
-                     (? (pair Y)
+                  (let X (cdr P)  # Left subtree
+                     (? (pair (car X))
                         (let Z P  # Go left
-                           (setq P Y)  # Invert tree
+                           (setq P @)  # Invert tree
                            (set X Tos)
                            (setq Tos (| Z 8)) ) ) ) )  # First visit
                (: 4
@@ -310,7 +309,7 @@
 (de consNum (Dig Big)
    (let P (val $Avail)
       (when (=0 P)
-         (let A (save Big)
+         (save Big
             (gc) )
          (setq P (val $Avail)) )
       (set $Avail (car P))

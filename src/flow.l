@@ -1,4 +1,4 @@
-# 03apr20 Software Lab. Alexander Burger
+# 08apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -280,8 +280,7 @@
 
 # (bye ['cnt])
 (de _bye (Exe)
-   (let N (eval (cadr Exe))
-      (bye
-         (if (nil? N)
-            0
-            (i32 (int N)) ) ) ) )
+   (bye
+      (if (nil? (eval (cadr Exe)))
+         0
+         (i32 (int @)) ) ) )
