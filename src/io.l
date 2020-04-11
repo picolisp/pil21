@@ -271,19 +271,19 @@
                         (loop
                            (loop
                               (when (lt0 (call $GetBin))
-                                 (: 9
+                                 (: 1
                                     (drop Q)
                                     (ret 0) ) )
                               (byteNum (i8 @) P)
                               (? (=0 (dec 'Cnt))) )
                            (when (lt0 (setq Cnt (call $GetBin)))
-                              (goto 9) )
+                              (goto 1) )
                            (? (<> Cnt 255)) )
                         (when (=0 Cnt)
                            (goto 2) ) )
                      (loop
                         (when (lt0 (call $GetBin))
-                           (goto 9) )
+                           (goto 1) )
                         (byteNum (i8 @) P)
                         (? (=0 (dec 'Cnt))) )
                      (: 2
@@ -297,17 +297,17 @@
                         (loop
                            (loop
                               (when (lt0 (call $GetBin))
-                                 (goto 9) )
+                                 (goto 1) )
                               (byteSym (i8 @) P)
                               (? (=0 (dec 'Cnt))) )
                            (when (lt0 (setq Cnt (call $GetBin)))
-                              (goto 9) )
+                              (goto 1) )
                            (? (<> Cnt 255)) )
                         (when (=0 Cnt)
                            (goto 3) ) )
                      (loop
                         (when (lt0 (call $GetBin))
-                           (goto 9) )
+                           (goto 1) )
                         (byteSym (i8 @) P)
                         (? (=0 (dec 'Cnt))) )
                      (: 3
@@ -950,13 +950,39 @@
    (let X (save (eval (cadr Exe)))
       (cond
          ((=0 (val $InFile)) $Nil)
-         ((sym? X)
-            (save X
-               (set
-                  $GetBin (fun (i32) getBinary)
-                  $Extn (val $ExtN) )
-               (if (=0 (binRead)) X @) ) )
-         (T $T) ) ) )
+         ((num? X)
+            (let
+               (P (push 3 NIL ZERO NIL)  # [cnt last name link]
+                  Q (link (ofs P 2))
+                  Cnt (int X) )
+               (cond
+                  ((=0 Cnt) $Nil)
+                  ((sign? X)  # Little endian
+                     (loop
+                        (when (lt0 (getBinary))
+                           (: 1 (ret $Nil)) )
+                        (byteNum (i8 @) P)
+                        (? (=0 (dec 'Cnt))) )
+                     (if (cnt? (val Q))
+                        (twice @)
+                        (zapZero @) ) )
+                  (T
+                     (loop
+                        (when (lt0 (getBinary))
+                           (goto 1) )
+                        (set Q
+                           (addu
+                              (cnt (i64 @))
+                              (set Q (mulu (val Q) (hex "1002"))) ) )  # Multiply number by 256
+                        (? (=0 (dec 'Cnt))) )
+                     (if (cnt? (val Q))
+                        @
+                        (zapZero @) ) ) ) ) )
+         (T
+            (set
+               $GetBin (fun (i32) getBinary)
+               $Extn (val $ExtN) )
+            (if (=0 (binRead)) X @) ) ) ) )
 
 (local) (repl loadAll)
 
