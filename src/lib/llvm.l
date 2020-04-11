@@ -1,4 +1,4 @@
-# 08apr20 Software Lab. Alexander Burger
+# 11apr20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -614,9 +614,9 @@ False Beg End Safe *Safe)
    ((X)
       (if (num? X)
          (def (format X) 'i8)
-         (let V (val X)
+         (let V (type (val X))
             (casq V
-               ((i32 i64) (ssa (inc '*Ssa) "trunc " V " " X " to i8"))
+               ((i32 i64 any) (ssa (inc '*Ssa) "trunc " V " " X " to i8"))
                (T (quit "Bad type" V)) ) )
          (def (pack "%" *Ssa) 'i8) ) )
    (llvm~i8) )
@@ -625,10 +625,10 @@ False Beg End Safe *Safe)
    ((X)
       (if (num? X)
          (def (format X) 'i32)
-         (let V (val X)
+         (let V (type (val X))
             (casq V
                ((i1 i8) (ssa (inc '*Ssa) "zext " V " " X " to i32"))
-               (i64 (ssa (inc '*Ssa) "trunc " V " " X " to i32"))
+               ((i64 any) (ssa (inc '*Ssa) "trunc " V " " X " to i32"))
                (T (quit "Bad type" V)) ) )
          (def (pack "%" *Ssa) 'i32) ) )
    (llvm~i32) )
@@ -653,7 +653,7 @@ False Beg End Safe *Safe)
          (cond
             ((pair V)
                (ssa (inc '*Ssa) "bitcast " (func V) "* " X " to " '@Typ) )
-            ((memq V '(any i64))
+            ((memq V '(i64 any))
                (ssa (inc '*Ssa) "inttoptr i64 " X " to " '@Typ) )
             ((== 'null V)
                (ssa (inc '*Ssa) "inttoptr i64 0 to " '@Typ) )
@@ -692,7 +692,7 @@ False Beg End Safe *Safe)
    ((X)
       (let V (val X)
          (casq V
-            ((any i64)
+            ((i64 any)
                (ssa (inc '*Ssa) "add i64 " X ", " @Tag)
                (def (pack "%" *Ssa) 'any) )
             ((i1* i8* i32* i64*)

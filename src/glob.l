@@ -1,4 +1,4 @@
-# 03apr20 Software Lab. Alexander Burger
+# 11apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -20,8 +20,8 @@
 (var $InFiles i8** null)               # Input files
 (var $OutFDs i32 0)                    # Number of ourput files
 (var $OutFiles i8** null)              # Output files
-(var $PutBin (void any) null)          # Binary output function
-(var $GetBin (any) null)               # Binary input function
+(var $PutBin (void i8) null)           # Binary output function
+(var $GetBin (i32) null)               # Binary input function
 (var $SeedL i64 0)                     # Random seed low
 (var $SeedH i64 0)                     # Random seed high
 (var $TickU i64 0)                     # Ticks in user time
@@ -37,6 +37,7 @@
 (var $Children i64 0)                  # Number of children
 (var $Child i8* null)                  # Child array
 (var $ExtN i32 0)                      # External symbol offset
+(var $Extn i32 0)
 (var $Break i1 NO)                     # Breakpoint
 (var $GcCount i64 CELLS)               # Collector count
 
@@ -219,6 +220,9 @@
    (NIL "printsp" _printsp)
    (NIL "println" _println)
    (NIL "flush" _flush)
+   (NIL "rewind" _rewind)
+   (NIL "ext" _ext)
+   (NIL "rd" _rd)
    (NIL "load" _load)
    # Database
    (NIL "ext?" _extQ)

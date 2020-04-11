@@ -1,4 +1,4 @@
-# 08apr20 Software Lab. Alexander Burger
+# 11apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -43,25 +43,25 @@
 (de i8* bufString (X (i8* . P))
    (let Q (push 0 (name (val (tail X))))  # [cnt name]
       (prog1 P
-         (until (=0 (set P (numByte Q)))
+         (until (=0 (set P (symByte Q)))
             (inc 'P) ) ) ) )
 
 (de i8* pathString (X (i8* . P))
    (let
       (Q (push 0 (name (val (tail X))))  # [cnt name]
-         B (numByte Q) )
+         B (symByte Q) )
       (prog1 P
          (when (== B (char "+"))
             (set P B)
             (inc 'P)
-            (setq B (numByte Q)) )
+            (setq B (symByte Q)) )
          (if (== B (char "@"))
             (unless (=0 (val $HomeLen))
                (memcpy P (val $Home) @)
                (setq P (ofs P @)) )
             (set P B)
             (inc 'P) )
-         (until (=0 (set P (numByte Q)))
+         (until (=0 (set P (symByte Q)))
             (inc 'P) ) ) ) )
 
 (local) (mkChar mkStr firstByte firstChar isBlank)
@@ -95,10 +95,10 @@
 (de mkStr ((i8* . Str))
    (if (=0 Str)
       $Nil
-      (let (P (push 4 ZERO NIL)  Q (link (ofs P 1)))  # [cnt name link]
+      (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
          (loop
             (? (=0 (val Str)))
-            (byteNum @ P)
+            (byteSym @ P)
             (inc 'Str) )
          (drop Q
             (consStr (val Q)) ) ) ) )
@@ -113,7 +113,7 @@
    (cond
       ((nil? Sym) 0)
       ((sym? (val (tail Sym))) 0)  # External symbol
-      (T (numChar (push 0 (name @)))) ) )  # Else get name
+      (T (symChar (push 0 (name @)))) ) )  # Else get name
 
 (de i1 isBlank (X)
    (and
@@ -121,7 +121,7 @@
       (sym? X)
       (let P (push 0 (name (val (tail X))))  # [cnt name]
          (loop
-            (? (=0 (numByte P)) YES)
+            (? (=0 (symByte P)) YES)
             (? (> @ 32) NO) ) ) ) )
 
 # Build external symbol name
@@ -161,12 +161,12 @@
 (de void packAO ((i32 . File) (i64* . P))
    (when (> File 15)
       (packAO (shr File 4) P) )  # Divide by 16
-   (byteNum (+ (& (i8 File) 15) (char "@")) P) )  # Make ASCII letter
+   (byteSym (+ (& (i8 File) 15) (char "@")) P) )  # Make ASCII letter
 
 (de void packOct ((i64 . Obj) (i64* . P))
    (when (> Obj 7)
       (packOct (shr Obj 3) P) )  # Divide by 8
-   (byteNum (+ (& (i8 Obj) 7) (char "0")) P) )  # Make ASCII digit
+   (byteSym (+ (& (i8 Obj) 7) (char "0")) P) )  # Make ASCII digit
 
 (de void packExtNm (Name (i64* . P))
    (unless (=0 (objFile Name))
@@ -187,8 +187,8 @@
             (if (sym? Tail)
                (packExtNm Nm P)
                (let Q (push 0 Nm)  # [cnt name]
-                  (until (=0 (numByte Q))
-                     (byteNum @ P) ) ) ) ) ) ) )
+                  (until (=0 (symByte Q))
+                     (byteSym @ P) ) ) ) ) ) ) )
 
 # Chop external symbol name
 (de chopExtNm (Name)
@@ -216,7 +216,7 @@
                (? (=0 (setq N (shr N 4))))
                (setq F (shl F 8)) )
             (set R
-               (cons (consSym (cnt (i64 F)) 0) (val R)) ) ) )
+               (cons (consStr (cnt (i64 F))) (val R)) ) ) )
       (pop R) ) )
 
 ### Interning ###
@@ -496,11 +496,11 @@
          Tail (val (tail Sym))
          Nm (name Tail) )
       (if (sym? Tail)  # External
-         (let (P (push 4 ZERO NIL)  Q (link (ofs P 1)))  # [cnt name link]
+         (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
             (packExtNm Nm P)
             (drop Q
-               (consSym (val Q) 0) ) )
-         (consSym Nm 0) ) ) )
+               (consStr (val Q)) ) )
+         (consStr Nm) ) ) )
 
 # (nsp 'sym) -> sym
 (de _nsp (Exe)
@@ -703,11 +703,11 @@
                Nm (save (name Tail)) )
             (if (sym? Tail)  # External
                (chopExtNm Nm)
-               (let (P (push 0 Nm)  C (numChar P))
+               (let (P (push 0 Nm)  C (symChar P))
                   (if (=0 C)
                      $Nil
                      (let (Y (cons (mkChar C) $Nil)  R (save Y))
-                        (until (=0 (setq C (numChar P)))
+                        (until (=0 (setq C (symChar P)))
                            (setq Y
                               (set 2 Y (cons (mkChar C) $Nil)) ) )
                         R ) ) ) ) ) ) ) )
@@ -716,8 +716,8 @@
 (de _pack (Exe)
    (let
       (X (cdr Exe)
-         P (push 4 ZERO NIL)  # [cnt name link]
-         Q (link (ofs P 1))
+         P (push 4 NIL ZERO NIL)  # [cnt last name link]
+         Q (link (ofs P 2))
          Safe (link (push -ZERO NIL)) )
       (while (pair X)
          (pack (set Safe (eval (++ X))) P) )
@@ -730,8 +730,8 @@
       (X (cdr Exe)
          Y (save (eval (++ X)))  # 'any'
          Z (save (eval (++ X)))  # 'lst'
-         P (push 4 ZERO NIL)  # [cnt name link]
-         Q (link (ofs P 1)) )
+         P (push 4 NIL ZERO NIL)  # [cnt last name link]
+         Q (link (ofs P 2)) )
       (when (pair Z)
          (loop
             (pack (++ Z) P)
@@ -748,18 +748,18 @@
          (let
             (P (push 0 (name (val (tail Y))) NIL)  # [cnt name link]
                Q (link (ofs P 1))
-               R (push 4 ZERO NIL)  # [cnt name link]
-               L (link (ofs R 1))
+               R (push 4 NIL ZERO NIL)  # [cnt last name link]
+               L (link (ofs R 2))
                N 0
                C T )
             (while (pair (shift X))
                (setq L (link (push (eval (car X)) NIL)))
                (inc 'N) )
-            (until (=0 (setq C (numByte P)))
+            (until (=0 (setq C (symByte P)))
                (cond
-                  ((<> C (char "@")) (byteNum C R))
-                  ((== (setq C (numByte P)) (char "@"))
-                     (byteNum C R) )  # "@@"
+                  ((<> C (char "@")) (byteSym C R))
+                  ((== (setq C (symByte P)) (char "@"))
+                     (byteSym C R) )  # "@@"
                   ((gt0 (setq C (- C (char "0"))))
                      (when (> C 9)
                         (setq C (- C 7)) )  # Adjust for letter
@@ -770,17 +770,17 @@
                                  (pack (val I) R) )
                               (shift I) ) ) ) ) ) )
             (drop Q
-               (consStr (val 2 R)) ) ) ) ) )
+               (consStr (val 3 R)) ) ) ) ) )
 
 ### Matching ###
 (local) (preStr subStr)
 
 (de i1 preStr (Nm (i8 . B) (i64* . P))
-   (let (Q (push 0 (i64 Nm))  C (numByte Q))
+   (let (Q (push 0 (i64 Nm))  C (symByte Q))
       (loop
          (? (<> B C) NO)
-         (? (=0 (setq C (numByte Q))) YES)
-         (? (=0 (setq B (numByte P))) NO) ) ) )
+         (? (=0 (setq C (symByte Q))) YES)
+         (? (=0 (setq B (symByte P))) NO) ) ) )
 
 (de i1 subStr (X Y)
    (or
@@ -788,7 +788,7 @@
       (== ZERO (setq X (name (val (tail X)))))
       (let (P (push 0 (name (val (tail Y))))  B T)
          (loop
-            (? (=0 (setq B (numByte P))) NO)
+            (? (=0 (setq B (symByte P))) NO)
             (let (Cnt (val P)  Nm (val 2 P))
                (? (preStr X B P) YES)
                (set P Cnt  2 P Nm) ) ) ) ) )
@@ -803,7 +803,7 @@
          (T
             (let P (push 0 (name (val (tail Z))))
                (cond
-                  ((=0 (numByte P)) $Nil)
+                  ((=0 (symByte P)) $Nil)
                   ((preStr Y @ P) Z)
                   (T $Nil) ) ) ) ) ) )
 
@@ -1658,13 +1658,13 @@
                (let
                   (P (push 0 (name Tail) NIL)  # [cnt name link]
                      Q (link (ofs P 1))
-                     R (push 4 ZERO NIL)  # [cnt name link]
+                     R (push 4 NIL ZERO NIL)  # [cnt last name link]
                      C T )
-                  (link (ofs R 1))
-                  (until (=0 (setq C (numChar P)))
-                     (charNum (toLowerCase C) R) )
+                  (link (ofs R 2))
+                  (until (=0 (setq C (symChar P)))
+                     (charSym (toLowerCase C) R) )
                   (drop Q
-                     (consStr (val 2 R)) ) ) ) ) ) ) )
+                     (consStr (val 3 R)) ) ) ) ) ) ) )
 
 # (uppc 'any) -> any
 (de _uppc (Exe)
@@ -1677,16 +1677,16 @@
                (let
                   (P (push 0 (name Tail) NIL)  # [cnt name link]
                      Q (link (ofs P 1))
-                     R (push 4 ZERO NIL)  # [cnt name link]
+                     R (push 4 NIL ZERO NIL)  # [cnt last name link]
                      C T )
-                  (link (ofs R 1))
-                  (until (=0 (setq C (numChar P)))
+                  (link (ofs R 2))
+                  (until (=0 (setq C (symChar P)))
                      (ifn (== C (char "ß"))
-                        (charNum (toUpperCase C) R)
-                        (charNum (char "S") R)
-                        (charNum (char "S") R) ) )
+                        (charSym (toUpperCase C) R)
+                        (charSym (char "S") R)
+                        (charSym (char "S") R) ) )
                   (drop Q
-                     (consStr (val 2 R)) ) ) ) ) ) ) )
+                     (consStr (val 3 R)) ) ) ) ) ) ) )
 
 # (fold 'any ['cnt]) -> sym
 (de _fold (Exe)
@@ -1700,12 +1700,12 @@
                   (N (if (atom X) 0 (evCnt Exe X))
                      P (push 0 (name Tail) NIL)  # [cnt name link]
                      Q (link (ofs P 1))
-                     R (push 4 ZERO NIL)  # [cnt name link]
+                     R (push 4 NIL ZERO NIL)  # [cnt last name link]
                      C T )
-                  (link (ofs R 1))
-                  (until (=0 (setq C (numChar P)))
+                  (link (ofs R 2))
+                  (until (=0 (setq C (symChar P)))
                      (when (isLetterOrDigit C)
-                        (charNum (toLowerCase C) R)
+                        (charSym (toLowerCase C) R)
                         (? (=0 (dec 'N))) ) )
                   (drop Q
-                     (consStr (val 2 R)) ) ) ) ) ) ) )
+                     (consStr (val 3 R)) ) ) ) ) ) ) )

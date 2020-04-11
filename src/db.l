@@ -1,4 +1,4 @@
-# 08apr20 Software Lab. Alexander Burger
+# 10apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -162,7 +162,7 @@
             (== 1 (fwrite (val $DbBlock) (Db: siz) 1 Log)) )  # Write block
          (err 0 0 ($ "Log write: %s") (strErrno)) ) ) )
 
-(local) (newBlock newId isLife cleanUp _getBlock _putBlock)
+(local) (newBlock newId isLife cleanUp getBlock putBlock)
 
 (de i64 newBlock ()
    (let (Db: (dbFile (val $DbFile))  P (b8 (* BLK 2)))
@@ -245,16 +245,15 @@
          (setAdr Free P)  # Append old 'free' list
          (blkPoke Pos P BLK) ) ) )
 
-(de i8 _getBlock ()
+(de i32 getBlock ()
    (let P (val $BlkPtr)
       (when (== P (val $BlkEnd))
          (and (=0 (val $BlkLink)) (ret 0))
          (setq P (rdBlock @)) )
-      (prog1
-         (val P)
-         (set $BlkPtr (inc P)) ) ) )
+      (set $BlkPtr (inc P))
+      (i32 (val P)) ) )
 
-(de void _putBlock ((i8 . B))
+(de void putBlock ((i8 . B))
    (let P (val $BlkPtr)
       (when (== P (val $BlkEnd))
          (let Link (val $BlkLink)
@@ -329,16 +328,16 @@
          (ret $Nil) )
       (let
          (P (push 0 Nm)  # [cnt name]
-            C (numChar P)
+            C (symChar P)
             F (i32 0) )
          (when (== C (char "{"))
-            (setq C (numChar P)) )
+            (setq C (symChar P)) )
          (while (>= C (char "@"))
             (when (> C (char "O"))  # A-O range
                (ret $Nil) )
             (setq
                F (| (shl F 4) (- C (char "@")))
-               C (numChar P) ) )
+               C (symChar P) ) )
          (let N 0
             (loop
                (unless (and (>= C (char "0")) (>= (char "7") C))
@@ -349,7 +348,7 @@
                      (i64 (- C (char "0"))) ) )
                (?
                   (or
-                     (=0 (setq C (numChar P)))
+                     (=0 (setq C (symChar P)))
                      (== C (char "}")) ) ) )
             (if (isLife (setq Sym (extern (extNm F N))))
                Sym

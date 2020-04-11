@@ -1,4 +1,4 @@
-# 08apr20 Software Lab. Alexander Burger
+# 11apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -16,9 +16,9 @@
    (err Exe 0 ($ "Div/0") null) )
 
 ### Bignum byte access ###
-(local) (numByte numChar byteNum charNum)
+(local) (symByte symChar byteNum byteSym charSym)
 
-(de i8 numByte ((i64* . P))
+(de i8 symByte ((i64* . P))  # [cnt name]
    (let C (val P)  # Get cnt
       (when (=0 C)  # New round
          (let Nm (val 2 P)
@@ -33,8 +33,8 @@
       (set P (shr C 8))
       (i8 C) ) )
 
-(de i32 numChar ((i64* . P))
-   (let C (i32 (numByte P))
+(de i32 symChar ((i64* . P))  # [cnt name]
+   (let C (i32 (symByte P))
       (cond
          ((>= 127 C) C)  # Single byte
          ((== C (hex "FF")) (i32 TOP))  # Infinite
@@ -49,61 +49,92 @@
                               (& C (hex "0F"))
                               (|
                                  (shl (& C (hex "7")) 6)
-                                 (& (i32 (numByte P)) (hex "3F")) ) )
+                                 (& (i32 (symByte P)) (hex "3F")) ) )
                            6 )
-                        (& (i32 (numByte P)) (hex "3F")) ) )
+                        (& (i32 (symByte P)) (hex "3F")) ) )
                   6 )
-               (& (i32 (numByte P)) (hex "3F")) ) ) ) ) )
+               (& (i32 (symByte P)) (hex "3F")) ) ) ) ) )
 
-(de void byteNum ((i8 . B) (i64* . P))
-   (let (Cnt (val P)  Nm (val 2 P))
-      (unless (big? Nm)  # Short name
+(de void byteNum ((i8 . B) (i64* . P))  # [cnt last name link]
+   (let (Cnt (val P)  Nm (val 3 P))
+      (if (cnt? Nm)
+         # xxxxx.xxxxxxx.xxxxxxx.xxxxxxx.xxxxxxx.xxxxxxx.xxxxxxx.xxxxxxS010
+         #    59      51      43      35      27      19      11       3
+         (cond
+            ((== Cnt 67)  # Short full
+               (set 3 P
+                  (set 2 P
+                     (consNum (shr Nm 3) (cnt (i64 B))) ) )
+               (set P 12) )  # Next digit in bignum
+            ((and (== Cnt 59) (>= B 32))  # Fit into 5 bits
+               (set 3 P
+                  (set 2 P
+                     (boxNum
+                        (| (shr Nm 3) (shl (i64 B) 56)) ) ) )
+               (set P 4) )  # Start next digit in bignum
+            (T
+               (set
+                  3 P (| Nm (shl (i64 B) Cnt))
+                  P (+ Cnt 8) ) ) )
+         (let (Q (val 2 P)  N (val (big Q)))
+            (cond
+               ((== Cnt 68)  # Last short full
+                  (set 2 P
+                     (set (big Q)
+                        (consNum (shr N 4) (cnt (i64 B))) ) )
+                  (set P 12) )  # Next digit in bignum
+               ((and (== Cnt 60) (>= B 16))  # Fit into 4 bits
+                  (set 2 P
+                     (set (big Q)
+                        (boxNum
+                           (| (shr N 4) (shl (i64 B) 56)) ) ) )
+                  (set P 4) )  # Start next digit in bignum
+               (T
+                  (set
+                     (big Q) (| N (shl (i64 B) Cnt))
+                     P (+ Cnt 8) ) ) ) ) ) ) )
+
+(de void byteSym ((i8 . B) (i64* . P))  # [cnt last name link]
+   (let (Cnt (val P)  Nm (val 3 P))
+      (if (cnt? Nm)
          # 0000.xxxxxxx.xxxxxxx.xxxxxxx.xxxxxxx.xxxxxxx.xxxxxxx.xxxxxxx0010
          #   60      52      44      36      28      20      12       4
-         (when (> 60 Cnt)  # Digit not full
-            (set 2 P
-               (| Nm (shl (i64 B) Cnt)) )
-            (set P (+ Cnt 8))
-            (ret) )
-         (set 3 P
-            (set 2 P
-               (boxNum  # Make big
-                  (|  # Combine byte with digit
-                     (shr Nm 4)  # De-normalize short number
-                     (shl (i64 B) 56) ) ) ) )  # Adjust byte
-         (set P 4)  # Start new digit
-         (ret) )
-      (let (Q (val 3 P)  N (val (big Q)))
-         (when (> 60 Cnt)  # Digit not full
+         (if (> 60 Cnt)  # Digit not full
             (set
-               (big Q)
-               (| N (shl (i64 B) Cnt)) )
-            (set P (+ Cnt 8))
-            (ret) )
-         (set 3 P
-            (set (big Q)
-               (boxNum  # Make big
-                  (|  # Combine byte with digit
-                     (shr N 4)  # De-normalize short number
-                     (shl (i64 B) 56) ) ) ) )  # Adjust byte
-         (set P 4) ) ) )  # Start new digit
+               3 P (| Nm (shl (i64 B) Cnt))
+               P (+ Cnt 8) )
+            (set 3 P
+               (set 2 P
+                  (boxNum  # Make big
+                     (| (shr Nm 4) (shl (i64 B) 56)) ) ) )
+            (set P 4) )  # Start new digit
+         (let (Q (val 2 P)  N (val (big Q)))
+            (if (> 60 Cnt)  # Digit not full
+               (set
+                  (big Q) (| N (shl (i64 B) Cnt))
+                  P (+ Cnt 8) )
+               (set 2 P
+                  (set (big Q)
+                     (boxNum  # Make big
+                        (| (shr N 4) (shl (i64 B) 56)) ) ) )
+               (set P 4) ) ) ) ) )  # Start new digit
 
-(de void charNum ((i32 . C) (i64* . P))
+(de void charSym ((i32 . C) (i64* . P))  # [cnt last name link]
    (cond
-      ((>= 127 C) (byteNum (i8 C) P))  # Single byte
-      ((== TOP C) (byteNum (hex "FF") P))  # Infinite
+      ((>= 127 C) (byteSym (i8 C) P))  # Single byte
+      ((== TOP C) (byteSym (hex "FF") P))  # Infinite
       (T
          (cond
             ((> (hex "800") C)  # Double-byte
-               (byteNum (i8 (| (hex "C0") (& (shr C 6) (hex "1F")))) P) )  # 10xxxxx 10xxxxxx
+               (byteSym (i8 (| (hex "C0") (& (shr C 6) (hex "1F")))) P) )  # 10xxxxx 10xxxxxx
             ((> (hex "10000") C)  # Three bytes
-               (byteNum (i8 (| (hex "E0") (& (shr C 12) (hex "0F")))) P)  # 1110xxxx 10xxxxxx 10xxxxxx
-               (byteNum (i8 (| (hex "80") (& (shr C 6) (hex "3F")))) P) )
+               (byteSym (i8 (| (hex "E0") (& (shr C 12) (hex "0F")))) P)  # 1110xxxx 10xxxxxx 10xxxxxx
+               (byteSym (i8 (| (hex "80") (& (shr C 6) (hex "3F")))) P) )
             (T
-               (byteNum (i8 (| (hex "F0") (& (shr C 18) (hex "07")))) P)  # 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
-               (byteNum (i8 (| (hex "80") (& (shr C 12) (hex "3F")))) P)
-               (byteNum (i8 (| (hex "80") (& (shr C 6) (hex "3F")))) P) ) )
-         (byteNum (i8 (| (hex "80") (& C (hex "3F")))) P) ) ) )
+               (byteSym (i8 (| (hex "F0") (& (shr C 18) (hex "07")))) P)  # 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+               (byteSym (i8 (| (hex "80") (& (shr C 12) (hex "3F")))) P)
+               (byteSym (i8 (| (hex "80") (& (shr C 6) (hex "3F")))) P) ) )
+         (byteSym (i8 (| (hex "80") (& C (hex "3F")))) P) ) ) )
 
 ### Destructive primitives ###
 (local) (zapZero twiceBig twice half tenfold)
@@ -874,7 +905,7 @@
          Sign NO
          Frac NO
          B NIL )
-      (while (>= (char " ") (setq B (numByte P)))  # Skip white space
+      (while (>= (char " ") (setq B (symByte P)))  # Skip white space
          (when (=0 B)  # None
             (ret 0) ) )
       (cond
@@ -883,18 +914,18 @@
          ((== B (char "-"))
             (setq Sign YES)
             (: 1
-               (when (=0 (setq B (numByte P)))
+               (when (=0 (setq B (symByte P)))
                   (ret 0) ) ) ) )
       (when (>= (setq B (- B (char "0"))) 10)
          (ret 0) )
       (set (link Num) (cnt (i64 B)))
-      (until (=0 (setq B (numByte P)))
+      (until (=0 (setq B (symByte P)))
          (? (and Frac (=0 Scl))
             (when (>= (setq B (- B (char "0"))) 10)
                (goto 9) )
             (when (>= B 5)  # Round
                (set Num (addu (val Num) ONE)) )
-            (until (=0 (setq B (numByte P)))
+            (until (=0 (setq B (symByte P)))
                (and (> B (char "9")) (goto 9)) ) )
          (cond
             ((== B Sep)
@@ -920,12 +951,12 @@
    (when (> N 9)
       (setq Scl (fmtWord (/ N 10) Scl Sep Ign P))
       (cond
-         ((=0 Scl) (byteNum Sep P))
+         ((=0 Scl) (byteSym Sep P))
          ((and (n0 Ign) (gt0 Scl) (=0 (% Scl 3)))
-            (byteNum Ign P) ) )
+            (byteSym Ign P) ) )
       (dec 'Scl)
       (setq N (% N 10)) )
-   (byteNum (+ (i8 N) (char "0")) P)
+   (byteSym (+ (i8 N) (char "0")) P)
    Scl )
 
 # Format number to output, length, or symbol
@@ -982,30 +1013,30 @@
          (cond
             ((ge0 Scl)  # Build symbol
                (when Sign
-                  (byteNum (char "-") P) )
+                  (byteSym (char "-") P) )
                (let N (* (shr (- TopA Acc) 3) 18)  # Calculate length~1
                   (let D (val TopA)
                      (until (=0 (setq D (/ D 10)))
                         (inc 'N) ) )
                   (when (lt0 (setq Scl (- N Scl)))
-                     (byteNum (char "0") P)
-                     (byteNum Sep P)
+                     (byteSym (char "0") P)
+                     (byteSym Sep P)
                      (while (> -1 Scl)
                         (inc 'Scl)
-                        (byteNum (char "0") P) ) ) )
+                        (byteSym (char "0") P) ) ) )
                (setq Scl (fmtWord (val TopA) Scl Sep Ign P))  # Pack highest word
                (while (>= (dec 'TopA) Acc)
                   (let (N (val TopA)  D 100000000000000000)
                      (loop
                         (cond
-                           ((=0 Scl) (byteNum Sep P))
+                           ((=0 Scl) (byteSym Sep P))
                            ((and (n0 Ign) (gt0 Scl) (=0 (% Scl 3)))
-                              (byteNum Ign P) ) )
+                              (byteSym Ign P) ) )
                         (dec 'Scl)
-                        (byteNum (+ (i8 (/ N D)) (char "0")) P)
+                        (byteSym (+ (i8 (/ N D)) (char "0")) P)
                         (setq N (% N D))
                         (? (== 1 (setq D (/ D 10)))) )
-                     (byteNum (+ (i8 N) (char "0")) P) ) )
+                     (byteSym (+ (i8 N) (char "0")) P) ) )
                0 )
             ((== Scl -1)  # Direct print
                (when Sign
@@ -1044,15 +1075,15 @@
             (setq Ign (firstByte (needSym Exe (eval (++ X))))) ) )
       (cond
          ((num? A)
-            (let (P (push 4 ZERO NIL)  Q (link (ofs P 1)))  # [cnt name link]
+            (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
                (fmtNum A Scl Sep Ign P)
-               (consSym (val Q) 0) ) )
+               (consStr (val Q)) ) )
          ((=0
                (setq Y
                   (symToNum
                      (if (sym? A)
                         (name (val (tail A)))
-                        (let (P (push 4 ZERO NIL)  Q (link (ofs P 1)))  # [cnt name link]
+                        (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
                            (pack A P)
                            (val Q) ) )
                      Scl Sep Ign ) ) )

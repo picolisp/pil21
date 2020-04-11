@@ -1,4 +1,4 @@
-# 08apr20 Software Lab. Alexander Burger
+# 11apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -215,27 +215,120 @@
 
 (de i32 stdinByte ()
    (let In: (inFile (val (val $InFiles)))  # Stdin
-      (and
-         (n0 (In:))
-         (or
-            (> (In: cnt) (In: ix))
-            (and (ge0 (In: ix)) (n0 (slow (In:)))) )
-         (ret
+      (unless (=0 (In:))
+         (when
+            (or
+               (<> (In: ix) (In: cnt))
+               (and (ge0 @) (n0 (slow (In:)))) )
             (let I (In: ix)
-               (prog1
-                  (i32 (val (ofs (In: (buf)) I)))
-                  (In: ix (+ I 1)) ) ) ) )
-      (when (=0 (isatty 0))
-         (ret -1) )
-      (bye 0) ) )
+               (In: ix (+ I 1))
+               (ret (i32 (val (ofs (In: (buf)) I)))) ) ) )
+      (unless (=0 (isatty 0))
+         (bye 0) )
+      -1 ) )
 
-(de getBinary ()
-   #!
-   )
+(de i32 getBinary ()
+   (let (In: (inFile (val $InFile))  I (In: ix))
+      (when (== I (In: cnt))
+         (and (lt0 I) (ret -1))  # Closed
+         (and (=0 (slow (In:))) (ret -1))  # EOF
+         (setq I 0) )
+      (In: ix (+ I 1))
+      (i32 (val (ofs (In: (buf)) I))) ) )
 
+# Read binary PLIO expression
 (de binRead ()
-   #!
-   )
+   (let B (call $GetBin)
+      (cond
+         ((lt0 B) 0)  # EOF
+         ((== B NIX) $Nil)  # NIL
+         ((=0 (& B -4))  # Pair
+            (if (<> BEG B)
+               (any (i64 B))  # DOT or END
+               (let X (binRead)
+                  (if (=0 X)
+                     0
+                     (let (Y (cons X $Nil)  R (save Y))
+                        (loop
+                           (? (=0 (setq X (binRead))) 0)
+                           (? (== X END) R)
+                           (? (== X DOT)
+                              (if (=0 (setq X (binRead)))
+                                 0
+                                 (set 2 Y (if (== X END) R X))
+                                 R ) )
+                           (setq Y (set 2 Y (cons X $Nil))) ) ) ) ) ) )
+         (T
+            (let
+               (P (i64* (push NIL NIL ZERO NIL))  # [cnt last name link]
+                  Q (link (ofs P 2))
+                  Cnt (shr B 2)
+                  Tag (& B 3) )
+               (cond
+                  ((== Tag NUMBER)
+                     (set P 3)  # 'cnt' for signed number
+                     (when (== Cnt 63)  # More than one chunk
+                        (loop
+                           (loop
+                              (when (lt0 (call $GetBin))
+                                 (: 9
+                                    (drop Q)
+                                    (ret 0) ) )
+                              (byteNum (i8 @) P)
+                              (? (=0 (dec 'Cnt))) )
+                           (when (lt0 (setq Cnt (call $GetBin)))
+                              (goto 9) )
+                           (? (<> Cnt 255)) )
+                        (when (=0 Cnt)
+                           (goto 2) ) )
+                     (loop
+                        (when (lt0 (call $GetBin))
+                           (goto 9) )
+                        (byteNum (i8 @) P)
+                        (? (=0 (dec 'Cnt))) )
+                     (: 2
+                        (drop Q
+                           (if (cnt? (val Q))
+                              @
+                              (| (half @) (shl (& @ 1) 3)) ) ) ) )
+                  (T  # Symbol
+                     (set P 4)  # 'cnt' for symbol name
+                     (when (== Cnt 63)  # More than one chunk
+                        (loop
+                           (loop
+                              (when (lt0 (call $GetBin))
+                                 (goto 9) )
+                              (byteSym (i8 @) P)
+                              (? (=0 (dec 'Cnt))) )
+                           (when (lt0 (setq Cnt (call $GetBin)))
+                              (goto 9) )
+                           (? (<> Cnt 255)) )
+                        (when (=0 Cnt)
+                           (goto 3) ) )
+                     (loop
+                        (when (lt0 (call $GetBin))
+                           (goto 9) )
+                        (byteSym (i8 @) P)
+                        (? (=0 (dec 'Cnt))) )
+                     (: 3
+                        (drop Q
+                           (let Nm (val Q)
+                              (case Tag
+                                 (TRANSIENT (consStr Nm))
+                                 (INTERN (requestSym Nm))
+                                 (T  # External
+                                    (unless (=0 (val $Extn))
+                                       (let N
+                                          (shl
+                                             (& (i64 (+ @ (objFile Nm))) (hex "FFFF"))
+                                             24 )  # Mask overflow
+                                          (setq Nm
+                                             (|
+                                                (& Nm (hex "FFF00FFF00FFFFFF"))  # Mask object ID
+                                                (&
+                                                   (| N (shl N 12))
+                                                   (hex "000FF000FF000000") ) ) ) ) )  # Mask file number
+                                    (extern Nm) ) ) ) ) ) ) ) ) ) ) ) )
 
 (local) (waitFile pushInFiles pushOutFiles popInFiles popOutFiles)
 
@@ -419,7 +512,7 @@
                         (if (nil? S)
                            ZERO
                            (name S) ) ) ) )
-               (if (=0 (numByte $Line))  # Extract next byte
+               (if (=0 (symByte $Line))  # Extract next byte
                   (char "\n")
                   (i32 @) ) ) ) ) ) )
 
@@ -500,13 +593,13 @@
    $Nil )
 
 (de rdAtom ((i32 . C))
-   (let (P (push 4 ZERO NIL)  Q (link (ofs P 1)))  # [cnt name link]
-      (charNum C P)
+   (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
+      (charSym C P)
       (setq C (val $Chr))
       (while (and (gt0 C) (=0 (strchr $Delim C)))
          (when (== C (char "\\"))
             (setq C (call $Get)) )
-         (charNum C P)
+         (charSym C P)
          (setq C (call $Get)) )
       (drop Q
          (let Nm (val Q)
@@ -604,9 +697,9 @@
             (if (== (setq C (call $Get)) (char "\""))
                (prog (call $Get) $Nil)  # Empty string
                (unless (testEsc C) (eofErr))
-               (let (P (push 4 ZERO NIL)  Q (link (ofs P 1)))  # [cnt name link]
+               (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
                   (loop
-                     (charNum (val $Chr) P)
+                     (charSym (val $Chr) P)
                      (? (== (setq C (call $Get)) (char "\"")))
                      (unless (testEsc C) (eofErr)) )
                   (call $Get)  # Skip "\""
@@ -761,12 +854,12 @@
                   (call $Put (char "}")) )
                ((isLstIntern X Nm (val $Intern))
                   (let (P (push 0 (i64 Nm))  B T)  # [cnt name]
-                     (until (=0 (setq B (numByte P)))
+                     (until (=0 (setq B (symByte P)))
                         (call $Put (i32 B)) ) ) )
                (T  # Transient
                   (call $Put (char "\""))
                   (let (P (push 0 (i64 Nm))  B T)  # [cnt name]
-                     (until (=0 (setq B (numByte P)))
+                     (until (=0 (setq B (symByte P)))
                         (call $Put (i32 B)) ) )
                   (call $Put (char "\"")) ) ) ) )
       ((and (== (car X) $Quote) (<> X (cdr X)))
@@ -838,6 +931,32 @@
 # (flush) -> flg
 (de _flush (Exe)
    $Nil )
+
+# (rewind) -> flg
+(de _rewind (Exe)
+   $Nil )
+
+# (ext 'cnt . prg) -> any
+(de _ext (Exe)
+   (let (X (cdr Exe)  N (evCnt Exe X)  Old (val $ExtN))
+      (set $ExtN (i32 N))
+      (prog1
+         (run (cdr X))
+         (set $ExtN Old) ) ) )
+
+# (rd ['sym]) -> any
+# (rd 'cnt) -> num | NIL
+(de _rd (Exe)
+   (let X (save (eval (cadr Exe)))
+      (cond
+         ((=0 (val $InFile)) $Nil)
+         ((sym? X)
+            (save X
+               (set
+                  $GetBin (fun (i32) getBinary)
+                  $Extn (val $ExtN) )
+               (if (=0 (binRead)) X @) ) )
+         (T $T) ) ) )
 
 (local) (repl loadAll)
 
