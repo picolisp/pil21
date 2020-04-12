@@ -1,4 +1,4 @@
-// 24feb20 Software Lab. Alexander Burger
+// 12apr20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -20,8 +20,16 @@ int32_t openRdonly(char *nm) {
    return (int32_t)open(nm, O_RDONLY);
 }
 
-int32_t openAppend(char *nm) {
+int32_t openWronly(char *nm) {
+   return (int32_t)open(nm, O_CREAT | O_TRUNC | O_WRONLY, 0666);
+}
+
+int32_t openRdWr(char *nm) {
    return (int32_t)open(nm, O_APPEND|O_CREAT|O_RDWR, 0666);
+}
+
+int32_t openWrAppend(char *nm) {
+   return (int32_t)open(nm, O_APPEND|O_CREAT|O_WRONLY, 0666);
 }
 
 int32_t fcntlCloExec(int32_t fd) {

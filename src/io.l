@@ -1,4 +1,4 @@
-# 11apr20 Software Lab. Alexander Burger
+# 12apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -344,8 +344,10 @@
 
 # Binary print expression
 (de void binPrint (X)
-   #!
-   0 )
+   (cond
+      ((cnt? X) (tailcall (prCnt X)))
+      (T
+         0 ) ) )
 
 (de void pr (X)
    (set $PutBin (fun (void i32) _putStdout))
@@ -414,10 +416,11 @@
          (closeOutFile (Io: fd))
          (waitFile (Io: pid)) )
       (set (i8** $Put) (Io: fun))
+      (setq Io: (ioFrame (set $OutFrames (Io: link))))
       (set $OutFile
          (val
             (if (=0 (Io:))
-               (val $OutFiles)  # Stdout
+               (ofs (val $OutFiles) 2)  # Stdout
                (ofs (val $OutFiles) (Io: fd)) ) ) ) ) )
 
 # (path 'any) -> sym
@@ -481,7 +484,7 @@
             (let (Nm (pathString X (b8 (pathSize X)))  Flg (== (val Nm) (char "+")))
                (when Flg
                   (setq Nm (ofs Nm 1)) )
-               (while (lt0 (Io: fd (if Flg (openAppend Nm) (openRdonly Nm))))
+               (while (lt0 (Io: fd (if Flg (openRdWr Nm) (openRdonly Nm))))
                   (unless (== (xErrno) EINTR)
                      (openErr Exe X) )
                   (sigChk Exe) )
@@ -493,13 +496,33 @@
          ) ) )
 
 (de void wrOpen (Exe X (i8* . Out))
-   )
+   (let Io: (ioFrame P)
+      (cond
+         ((nil? X)
+            (Io: fd 1)  # Stdout
+            (Io: pid 0) )
+         #! ((num? X)
+         #!    )
+         ((sym? X)
+            (let (Nm (pathString X (b8 (pathSize X)))  Flg (== (val Nm) (char "+")))
+               (when Flg
+                  (setq Nm (ofs Nm 1)) )
+               (while (lt0 (Io: fd (if Flg (openWrAppend Nm) (openWronly Nm))))
+                  (unless (== (xErrno) EINTR)
+                     (openErr Exe X) )
+                  (sigChk Exe) )
+               (Io: pid 1)
+               (initOutFile (Io: fd)) )
+            (closeOnExec Exe (Io: fd)) )
+         #! (T
+         #!    )
+         ) ) )
 
 (de void erOpen (Exe X (i8* . Err))
-   )
+   0 )
 
 (de void ctOpen (Exe X (i8* . Ctl))
-   )
+   0 )
 
 (local) (getChar skipC comment skip testEsc anonymous rdAtom rdList read0)
 
@@ -793,7 +816,12 @@
 
 # (out 'any . prg) -> any
 (de _out (Exe)
-   $Nil )
+   (let (X (cdr Exe)  P (b8 (ioFrame T)))
+      (wrOpen Exe (eval (++ X)) P)
+      (pushOutFiles P)
+      (prog1
+         (run X)
+         (popOutFiles) ) ) )
 
 (de void _putStdout ((i32 . C))
    (let Out: (outFile (val $OutFile))
@@ -1004,6 +1032,19 @@
                $GetBin (fun (i32) getBinary)
                $Extn (val $ExtN) )
             (if (=0 (binRead)) X @) ) ) ) )
+
+# (pr 'any ..) -> any
+(de _pr (Exe)
+   (let X (cdr Exe)
+      (loop
+         (let Y (eval (++ X))
+            (set $Extn (val $ExtN))  # Set external symbol offset
+            (pr Y)  # Print binary
+            (? (atom X) Y) ) ) ) )
+
+# (wr 'cnt ..) -> cnt
+(de _wr (Exe)
+   $Nil )
 
 (local) (repl loadAll)
 

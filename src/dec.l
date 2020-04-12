@@ -1,4 +1,4 @@
-# 07apr20 Software Lab. Alexander Burger
+# 12apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -110,10 +110,10 @@ dlerror close waitpid setjmp longjmp kill exit)
 (de T NIL exit (i32))
 
 # Glue lib.c
-(local) (JmpBufSize stderrMsg xprintf strErrno openRdonly openAppend
-fcntlCloExec fcntlSetFl nonBlocking pollIn pollOut xPoll readyIn readyOut rdLock
-wrLock unLock getLock xSignal xErrno getTime catchQuit throwQuit dlOpen ffiPrep
-ffiCall)
+(local) (JmpBufSize stderrMsg xprintf strErrno openRdonly openWronly openRdWr
+openWrAppend fcntlCloExec fcntlSetFl nonBlocking pollIn pollOut xPoll readyIn
+readyOut rdLock wrLock unLock getLock xSignal xErrno getTime catchQuit throwQuit
+dlOpen ffiPrep ffiCall)
 
 (var JmpBufSize i64 NIL)
 
@@ -121,7 +121,9 @@ ffiCall)
 (de T i32 xprintf (i8* i32 i8* i8*))
 (de T i8* strErrno ())
 (de T i32 openRdonly (i8*))
-(de T i32 openAppend (i8*))
+(de T i32 openWronly (i8*))
+(de T i32 openRdWr (i8*))
+(de T i32 openWrAppend (i8*))
 (de T i32 fcntlCloExec (i32))
 (de T i32 fcntlSetFl (i32 i32))
 (de T i32 nonBlocking (i32))

@@ -1,4 +1,4 @@
-# 11apr20 Software Lab. Alexander Burger
+# 12apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -223,6 +223,8 @@
    (NIL "rewind" _rewind)
    (NIL "ext" _ext)
    (NIL "rd" _rd)
+   (NIL "pr" _pr)
+   (NIL "wr" _wr)
    (NIL "load" _load)
    # Database
    (NIL "ext?" _extQ)
