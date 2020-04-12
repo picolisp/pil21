@@ -1,14 +1,14 @@
-# 28mar20 Software Lab. Alexander Burger
+# 12apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
 # (car 'var) -> any
 (de _car (Exe)
-   (car (eval (cadr Exe))) )
+   (car (needVar Exe (eval (cadr Exe)))) )
 
 # (cdr 'lst) -> any
 (de _cdr (Exe)
-   (cdr (eval (cadr Exe))) )
+   (cdr (needLst Exe (eval (cadr Exe)))) )
 
 # (cons 'any ['any ..]) -> lst
 (de _cons (Exe)

@@ -330,6 +330,27 @@
                                                    (hex "000FF000FF000000") ) ) ) ) )  # Mask file number
                                     (extern Nm) ) ) ) ) ) ) ) ) ) ) ) )
 
+(local) (prByte prCnt binPrint pr)
+
+# Binary print next byte from a number
+(de void prByte ()
+   #!
+   0 )
+
+# Binary print short number
+(de void prCnt ()
+   #!
+   0 )
+
+# Binary print expression
+(de void binPrint (X)
+   #!
+   0 )
+
+(de void pr (X)
+   (set $PutBin (fun (void i32) _putStdout))
+   (tailcall (binPrint X)) )
+
 (local) (waitFile pushInFiles pushOutFiles popInFiles popOutFiles)
 
 # Wait for pipe process if necessary

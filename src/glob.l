@@ -20,7 +20,7 @@
 (var $InFiles i8** null)               # Input files
 (var $OutFDs i32 0)                    # Number of ourput files
 (var $OutFiles i8** null)              # Output files
-(var $PutBin (void i8) null)           # Binary output function
+(var $PutBin (void i32) null)          # Binary output function
 (var $GetBin (i32) null)               # Binary input function
 (var $SeedL i64 0)                     # Random seed low
 (var $SeedH i64 0)                     # Random seed high

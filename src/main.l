@@ -1,4 +1,4 @@
-# 10apr20 Software Lab. Alexander Burger
+# 12apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -232,7 +232,7 @@ atomErr pairErr varErr itemErr protErr lockErr)
       (sighandler Exe) ) )
 
 # Argument checks
-(local) (needCnt needNum needSym needVar chkVar needChkVar)
+(local) (needCnt needNum needLst needSym needVar chkVar needChkVar)
 
 (inline needCnt (Exe X)
    (unless (cnt? X)
@@ -242,6 +242,11 @@ atomErr pairErr varErr itemErr protErr lockErr)
 (inline needNum (Exe X)
    (unless (num? X)
       (numErr Exe X) )
+   X )
+
+(inline needLst (Exe X)
+   (unless (or (pair X) (nil? X))
+      (lstErr Exe X) )
    X )
 
 (inline needSym (Exe X)
