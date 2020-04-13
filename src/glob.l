@@ -1,4 +1,4 @@
-# 12apr20 Software Lab. Alexander Burger
+# 13apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -20,7 +20,7 @@
 (var $InFiles i8** null)               # Input files
 (var $OutFDs i32 0)                    # Number of ourput files
 (var $OutFiles i8** null)              # Output files
-(var $PutBin (void i32) null)          # Binary output function
+(var $PutBin (void i8) null)           # Binary output function
 (var $GetBin (i32) null)               # Binary input function
 (var $SeedL i64 0)                     # Random seed low
 (var $SeedH i64 0)                     # Random seed high
@@ -334,7 +334,7 @@
    ($ErrFrames i8* null)         # Error frames
    ($CtlFrames i8* null)         # Control frames
    ($Chr i32 0)                  # Single-char look ahead
-   ($Put (void i32) _putStdout)  # Character output function
+   ($Put (void i8) _putStdout)   # Character output function
    ($Get (i32) _getStdin)        # Character input function
    ($InFile i8* null)            # Input file
    ($OutFile i8* null)           # Output file

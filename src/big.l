@@ -1,4 +1,4 @@
-# 11apr20 Software Lab. Alexander Burger
+# 13apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -900,7 +900,7 @@
 # Make number from symbol
 (de symToNum (Name (i64 . Scl) (i8 . Sep) (i8 . Ign))
    (let
-      (P (push 0 (i64 Name))  # [cnt name]
+      (P (push 0 Name)  # [cnt name]
          Num (push ZERO NIL)  # Result
          Sign NO
          Frac NO
@@ -1045,10 +1045,10 @@
                (while (>= (dec 'TopA) Acc)
                   (let (N (val TopA)  D 100000000000000000)
                      (loop
-                        (call $Put (+ (i32 (/ N D)) (char "0")))  # Output next digit
+                        (call $Put (+ (i8 (/ N D)) (char "0")))  # Output next digit
                         (setq N (% N D))
                         (? (== 1 (setq D (/ D 10)))) )
-                     (call $Put (+ (i32 N) (char "0"))) ) )  # Output last digit
+                     (call $Put (+ (i8 N) (char "0"))) ) )  # Output last digit
                0 )
             (T  # Calculate length
                (let (N (* (shr (- TopA Acc) 3) 18)  D (val Acc))

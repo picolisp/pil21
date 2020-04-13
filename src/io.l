@@ -1,4 +1,4 @@
-# 12apr20 Software Lab. Alexander Burger
+# 13apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -317,10 +317,10 @@
                                  (TRANSIENT (consStr Nm))
                                  (INTERN (requestSym Nm))
                                  (T  # External
-                                    (unless (=0 (val $Extn))
+                                   (unless (=0 (val $Extn))
                                        (let N
                                           (shl
-                                             (& (i64 (+ @ (objFile Nm))) (hex "FFFF"))
+                                             (& (i64 (+ (objFile Nm) @)) (hex "FFFF"))
                                              24 )  # Mask overflow
                                           (setq Nm
                                              (|
@@ -330,27 +330,148 @@
                                                    (hex "000FF000FF000000") ) ) ) ) )  # Mask file number
                                     (extern Nm) ) ) ) ) ) ) ) ) ) ) ) )
 
-(local) (prByte prCnt binPrint pr)
-
-# Binary print next byte from a number
-(de void prByte ()
-   #!
-   0 )
+(local) (prByte prCnt binPrint pr putTell prTell)
 
 # Binary print short number
-(de void prCnt ()
-   #!
-   0 )
+(de void prCnt ((i8 . Tag) Num)
+   (let N Num
+      (until (=0 (setq N (shr N 8)))
+         (setq Tag (+ Tag 4)) ) )
+   (call $PutBin Tag)
+   (loop
+      (call $PutBin (i8 Num))
+      (? (=0 (setq Num (shr Num 8)))) ) )
 
 # Binary print expression
 (de void binPrint (X)
    (cond
-      ((cnt? X) (tailcall (prCnt X)))
-      (T
-         0 ) ) )
+      ((cnt? X)
+         (tailcall (prCnt (+ NUMBER 4) (shr X 3))) )
+      ((big? X)
+         (let (Y (pos X)  Z Y  N 8)
+            (loop
+               (let C (val (dig Z))
+                  (? (cnt? (setq Z (val (big Z))))
+                     (setq
+                        Z (int Z)  # Normalize short
+                        C (add C C)  # Get most significant bit of last digit
+                        Z (add Z Z @@) )
+                     )
+                  (setq N (+ N 8)) ) )
+            (unless (=0 Z)  # Significant bits in short number
+               (loop
+                  (inc 'N)
+                  (? (=0 (setq Z (shr Z 8)))) ) )
+            (let (M (- N 63)  D (val (dig Y)))
+               (when (ge0 M)
+                  (setq N 63) )
+               (setq Y (val (big Y)))
+               (setq X (shr X X 4))  # Sign into highest bit
+               (add X X)  # Keep in carry
+               (setq D (add D D @@))
+               (call $PutBin (i8 (shl N 2)))  # Output tag byte
+               (let (S @@  C 8)
+                  (loop
+                     (loop
+                        (call $PutBin (i8 D))  # Output next byte
+                        (ifn (=0 (dec 'C))
+                           (setq D (shr D 8))
+                           (setq C 8)
+                           (if (cnt? Y)
+                              (setq D (shr Y 4))
+                              (setq
+                                 D (val (dig Y))
+                                 Y (val (big Y)) ) )
+                           (setq
+                              D (add D D S)
+                              S @@ ) )
+                        (? (=0 (dec 'N))) )
+                     (? (lt0 M))
+                     (? (=0 M) (call $PutBin 0))  # Output final zero
+                     (when (ge0 (setq M (- (setq N M) 255)))
+                        (setq N 255) )
+                     (call $PutBin (i8 N)) ) ) ) ) )  # Output next chunk size
+      ((nil? X) (call $PutBin NIX))
+      ((sym? X)
+         (let (Tail (val (tail X))  Nm (name Tail))
+            (cond
+               ((sym? Tail)  # External symbol
+                  (unless (=0 (val $Extn))
+                     (let N
+                        (shl
+                           (& (i64 (- (objFile Nm) @)) (hex "FFFF"))
+                           24 )  # Mask overflow
+                        (setq Nm
+                           (|
+                              (& Nm (hex "FFF00FFF00FFFFFF"))  # Mask object ID
+                              (&
+                                 (| N (shl N 12))
+                                 (hex "000FF000FF000000") ) ) ) ) )  # Mask file number
+                  (tailcall
+                     (prCnt (+ EXTERN 4) (shr (shl Nm 2) 6)) ) )  # Strip status bits
+               ((== Nm ZERO) (call $PutBin NIX))
+               (T
+                  (let Tag
+                     (if (isLstIntern X Nm (val $Intern))
+                        (i8 INTERN)
+                        (i8 TRANSIENT) )
+                     (if (cnt? Nm)
+                        (prCnt (+ Tag 4) (shr Nm 4))
+                        (let (Y Nm  N 8)
+                           (while (big? (setq Y (val (big Y))))
+                              (setq N (+ N 8)) )
+                           (setq Y (shr Y 4))
+                           (until (=0 Y)
+                              (inc 'N)
+                              (setq Y (shr Y 8)) )
+                           (let (P (push 0 Nm)  M (- N 63)  C 8)  # [cnt name]
+                              (when (ge0 M)
+                                 (setq N 63) )
+                              (call $PutBin (+ Tag (i8 (shl N 2))))
+                              (loop
+                                 (loop
+                                    (call $PutBin (symByte P))
+                                    (? (=0 (dec 'N))) )
+                                 (? (lt0 M))
+                                 (? (=0 M) (call $PutBin 0))
+                                 (when (ge0 (setq M (- (setq N M) 255)))
+                                    (setq N 255) )
+                                 (call $PutBin (i8 N)) ) ) ) ) ) ) ) ) )
+      (T  # Pair
+         (call $PutBin BEG)
+         (let P (circ X)
+            (if (=0 P)
+               (loop  # Non-circular
+                  (binPrint (car X))
+                  (? (== $Nil (shift X))
+                     (call $PutBin END) )
+                  (? (atom X)
+                     (call $PutBin DOT)
+                     (binPrint X) ) )
+               (let Flg (== P X)  # Fully circular
+                  (loop  # Non-circular part
+                     (binPrint (car X))
+                     (? (== P (shift X))) )
+                  (call $PutBin DOT)
+                  (unless Flg
+                     (call $PutBin BEG)
+                     (loop  # Circular part
+                        (binPrint (car X))
+                        (? (== P (shift X))) )
+                     (call $PutBin DOT) )
+                  (call $PutBin END) ) ) ) ) ) )
 
 (de void pr (X)
-   (set $PutBin (fun (void i32) _putStdout))
+   (set $PutBin (fun (void i8) _putStdout))
+   (tailcall (binPrint X)) )
+
+(de void putTell ((i8 . C))
+   0 )
+
+(de void prTell (X)
+   (set
+      $PutBin (fun (void i8) putTell)
+      $Extn 0 )
    (tailcall (binPrint X)) )
 
 (local) (waitFile pushInFiles pushOutFiles popInFiles popOutFiles)
@@ -382,7 +503,7 @@
    (let Io: (ioFrame P)
       (set $OutFile (val (ofs (val $OutFiles) (Io: fd))))
       (Io: fun (val (i8** $Put)))
-      (set $Put (fun (void i32) _putStdout))
+      (set $Put (fun (void i8) _putStdout))
       (Io: link (val $OutFrames))
       (set $OutFrames (Io:)) ) )
 
@@ -823,16 +944,16 @@
          (run X)
          (popOutFiles) ) ) )
 
-(de void _putStdout ((i32 . C))
+(de void _putStdout ((i8 . B))
    (let Out: (outFile (val $OutFile))
       (unless (=0 (Out:))
          (let I (Out: ix)
             (when (== I BUFSIZ)
                (Out: ix (setq I 0))
                (wrBytes (Out: fd) (Out: (buf)) BUFSIZ) )
-            (set (ofs (Out: (buf)) I) (i8 C))
+            (set (ofs (Out: (buf)) I) B)
             (Out: ix (inc 'I))
-            (when (and (== C (char "\n")) (Out: tty))
+            (when (and (== B (char "\n")) (Out: tty))
                (Out: ix 0)
                (wrBytes (Out: fd) (Out: (buf)) I) ) ) ) ) )
 
@@ -851,7 +972,7 @@
    (when (> N 9)
       (outWord (/ N 10))
       (setq N (% N 10)) )
-   (call $Put (+ (i32 N) (char "0"))) )
+   (call $Put (+ (i8 N) (char "0"))) )
 
 (de void outNum (X)
    (when (sign? X)
@@ -863,14 +984,14 @@
    (when (> N 7)
       (outOct (shr N 3))
       (setq N (& N 7)) )
-   (call $Put (+ (i32 N) (char "0"))) )
+   (call $Put (+ (i8 N) (char "0"))) )
 
 # Output A-O encoding
 (de void outAo ((i32 . N))
    (when (> N 15)
       (outAo (shr N 4))
       (setq N (& N 15)) )
-   (call $Put (+ N (char "@"))) )
+   (call $Put (+ (i8 N) (char "@"))) )
 
 # Output external symbol name
 (de void prExt (Nm)
@@ -881,7 +1002,7 @@
 # Output string
 (de void outString ((i8* . S))
    (while (n0 (val S))
-      (call $Put (i32 @))
+      (call $Put @)
       (inc 'S) ) )
 
 (local) (print prin prin1)
@@ -902,14 +1023,14 @@
                   (prExt Nm)
                   (call $Put (char "}")) )
                ((isLstIntern X Nm (val $Intern))
-                  (let (P (push 0 (i64 Nm))  B T)  # [cnt name]
-                     (until (=0 (setq B (symByte P)))
-                        (call $Put (i32 B)) ) ) )
+                  (let P (push 0 Nm)  # [cnt name]
+                     (until (=0 (symByte P))
+                        (call $Put @) ) ) )
                (T  # Transient
                   (call $Put (char "\""))
-                  (let (P (push 0 (i64 Nm))  B T)  # [cnt name]
-                     (until (=0 (setq B (symByte P)))
-                        (call $Put (i32 B)) ) )
+                  (let P (push 0 Nm)  # [cnt name]
+                     (until (=0 (symByte P))
+                        (call $Put @) ) )
                   (call $Put (char "\"")) ) ) ) )
       ((and (== (car X) $Quote) (<> X (cdr X)))
          (call $Put (char "'"))
@@ -1048,7 +1169,7 @@
 
 (local) (repl loadAll)
 
-(de repl (Exe (i32 . Pr) X)
+(de repl (Exe (i8 . Pr) X)
    (let (Safe (link (push -ZERO NIL))  P (b8 (ioFrame T)))
       (rdOpen Exe X P)
       (pushInFiles P)

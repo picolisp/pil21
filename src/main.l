@@ -1,4 +1,4 @@
-# 12apr20 Software Lab. Alexander Burger
+# 13apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -176,7 +176,7 @@ atomErr pairErr varErr itemErr protErr lockErr)
             $Link 0
             $Protect 0
             $Task $Nil )
-         (set $Put (fun (void i32) _putStdout))
+         (set $Put (fun (void i8) _putStdout))
          (set $Get (fun (i32) _getStdin))
          (throwQuit) ) ) )
 

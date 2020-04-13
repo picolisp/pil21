@@ -1,4 +1,4 @@
-# 12apr20 Software Lab. Alexander Burger
+# 13apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -199,7 +199,7 @@ dlOpen ffiPrep ffiCall)
 (de void outWord (i64))
 (de void outString (i8*))
 (de void print (any))
-(de repl (any i32 any))
+(de repl (any i8 any))
 # db.l
 (de dbFetch (any any))
 (de dbTouch (any any))
