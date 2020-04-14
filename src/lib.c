@@ -1,8 +1,10 @@
-// 12apr20 Software Lab. Alexander Burger
+// 14apr20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
 // I/O
+int64_t PipeBuf = PIPE_BUF;
+
 int64_t stderrMsg(char *s, int64_t n) {
    fprintf(stderr, "%s %lX\n", s, (unsigned long)n);
    return n;

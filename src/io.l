@@ -1,4 +1,4 @@
-# 13apr20 Software Lab. Alexander Burger
+# 14apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -465,8 +465,11 @@
    (set $PutBin (fun (void i8) _putStdout))
    (tailcall (binPrint X)) )
 
-(de void putTell ((i8 . C))
-   0 )
+(de void putTell ((i8 . B))
+   (let P (val $Ptr)
+      (set P B)
+      (when (== (set $Ptr (inc P)) (val $End))
+         (err 0 0 ($ "Tell PIPE_BUF") null) ) ) )
 
 (de void prTell (X)
    (set

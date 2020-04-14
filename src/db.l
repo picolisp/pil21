@@ -1,4 +1,4 @@
-# 10apr20 Software Lab. Alexander Burger
+# 14apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -120,7 +120,7 @@
          (Db: siz) )
       (set
          $BlkLink (& (getAdr Blk) BLKMASK)
-         $BlkPtr (ofs Blk BLK) ) ) )
+         $Ptr (ofs Blk BLK) ) ) )
 
 (de void blkPoke ((i64 . Pos) (i8* . Buf) (i32 . Siz))
    (let Db: (dbFile (val $DbFile))
@@ -246,16 +246,16 @@
          (blkPoke Pos P BLK) ) ) )
 
 (de i32 getBlock ()
-   (let P (val $BlkPtr)
-      (when (== P (val $BlkEnd))
+   (let P (val $Ptr)
+      (when (== P (val $End))
          (and (=0 (val $BlkLink)) (ret 0))
          (setq P (rdBlock @)) )
-      (set $BlkPtr (inc P))
+      (set $Ptr (inc P))
       (i32 (val P)) ) )
 
 (de void putBlock ((i8 . B))
-   (let P (val $BlkPtr)
-      (when (== P (val $BlkEnd))
+   (let P (val $Ptr)
+      (when (== P (val $End))
          (let Link (val $BlkLink)
             (if (=0 Link)
                (let (New (newBlock)  Cnt (i64 (val P)))  # Block count (link is zero)
@@ -269,7 +269,7 @@
                (wrBlock)  # Write current block
                (setq P (rdBlock Link)) ) ) )  # Read next block
       (set P B)
-      (set $BlkPtr (inc P)) ) )
+      (set $Ptr (inc P)) ) )
 
 # (rollback) -> flg
 (de _rollback (Exe)
