@@ -76,14 +76,17 @@
    (tell 4 i32) )       # Tell pipe
 
 # System
-(local) (malloc realloc free getpid isatty read write pread pwrite fread fwrite
-putc_unlocked fflush fileno strlen strcpy strdup strcmp strchr strrchr dlsym
-dlerror close waitpid setjmp longjmp kill exit)
+(local) (malloc realloc free fork getpid setpgid execvp isatty read write pread
+pwrite fread fwrite putc_unlocked fflush fileno pipe strlen strcpy strdup strcmp
+strchr strrchr dlsym dlerror dup2 close signal waitpid setjmp longjmp kill exit)
 
 (de T i8* malloc (i64))
 (de T i8* realloc (i8* i64))
 (de T void free (i8*))
+(de T i32 fork ())
 (de T i32 getpid ())
+(de T i32 setpgid (i32 i32))
+(de T i32 execvp (i8* i8**))
 (de T i32 isatty (i32))
 (de T i64 read (i32 i8* i64))
 (de T i64 write (i32 i8* i64))
@@ -94,6 +97,7 @@ dlerror close waitpid setjmp longjmp kill exit)
 (de T i32 putc_unlocked (i32 i8*))
 (de T i32 fflush (i8*))
 (de T i32 fileno (i8*))
+(de T i32 pipe (i32*))
 (de T i64 strlen (i8*))
 (de T i8* strcpy (i8* i8*))
 (de T i8* strdup (i8*))
@@ -102,7 +106,9 @@ dlerror close waitpid setjmp longjmp kill exit)
 (de T i8* strrchr (i8* i32))
 (de T i8* dlsym (i8* i8*))
 (de T i8* dlerror ())
+(de T i32 dup2 (i32 i32))
 (de T i32 close (i32))
+(de T i8* signal (i32 i8*))
 (de T i32 waitpid (i32 i32* i32))
 (de T i32 setjmp (i8*))
 (de T NIL longjmp (i8* i32))
@@ -110,15 +116,21 @@ dlerror close waitpid setjmp longjmp kill exit)
 (de T NIL exit (i32))
 
 # Glue lib.c
-(local) (PipeBuf JmpBufSize stderrMsg xprintf strErrno openRdonly openWronly
-openRdWr openWrAppend fcntlCloExec fcntlSetFl nonBlocking pollIn pollOut xPoll
-readyIn readyOut rdLock wrLock unLock getLock xSignal xErrno getTime catchQuit
-throwQuit dlOpen ffiPrep ffiCall)
+(local) (PipeBuf Sig SigDfl SigIgn SigUnblock JmpBufSize stderrNum stderrMsg
+xprintf strErrno openRdonly openWronly openRdWr openWrAppend fcntlCloExec
+fcntlSetFl nonBlocking pollIn pollOut xPoll readyIn readyOut rdLock wrLock
+unLock getLock xSignal xErrno getTime catchQuit throwQuit dlOpen ffiPrep
+ffiCall)
 
 (var PipeBuf i64 NIL)
+(var Sig i32 NIL)
+(var SigDfl i8* NIL)
+(var SigIgn i8* NIL)
+(var SigUnblock i32 NIL)
 (var JmpBufSize i64 NIL)
 
-(de T i64 stderrMsg (i8* i64))
+(de T i64 stderrNum (i8* i64))
+(de T i8* stderrMsg (i8* i8*))
 (de T i32 xprintf (i8* i32 i8* i8*))
 (de T i8* strErrno ())
 (de T i32 openRdonly (i8*))

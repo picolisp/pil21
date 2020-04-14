@@ -1,4 +1,4 @@
-# 13apr20 Software Lab. Alexander Burger
+# 14apr20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -1063,6 +1063,7 @@ False Beg End Safe *Safe)
       (ssa (inc '*Ssa) "alloca " '@Typ ", i64 " N)
       (def (pack "%" *Ssa) '@Ptr) )
    (llvm~b8 i8 i8*)
+   (llvm~b8* i8* i8**)
    (llvm~b32 i32 i32*)
    (llvm~b64 i64 i64*) )
 

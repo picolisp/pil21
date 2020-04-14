@@ -1,4 +1,4 @@
-# 13apr20 Software Lab. Alexander Burger
+# 14apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -35,26 +35,30 @@
       ) )
 
 # Exit
-(local) (finish giveup bye)
+(local) (finish giveup bye execErr)
 
 (de NIL finish ((i32 . N))
    #(setCooked)
    (exit N) )
 
-(de NIL giveup ((i8* . Msg))
-   (stderrMsg Msg 0)
+(de NIL giveup ((i8* . Fmt) (i8* . Msg))
+   (stderrMsg Fmt Msg)
    (finish 1) )
 
 (de NIL bye ((i32 . N))
    (unwind null)
    (finish N) )
 
+(de NIL execErr ((i8* . Cmd))
+   (stderrMsg ($ "%s: Can't exec\n") Cmd)
+   (exit 127) )
+
 # Memory
 (local) (alloc heapAlloc)
 
 (de i8* alloc ((i8* . Ptr) (i64 . Siz))
    (when (=0 (realloc Ptr Siz)@)   # Reallocate pointer
-      (giveup ($ "No memory")) )
+      (giveup ($ "No memory") null) )
    @ )
 
 (de void heapAlloc ()
@@ -111,7 +115,7 @@
 
 # Error handling
 (local) (pushOutFiles err stkErr argErr cntErr numErr lstErr symErr extErr
-atomErr pairErr varErr itemErr protErr lockErr)
+atomErr pairErr varErr itemErr protErr lockErr forkErr)
 
 (de void pushOutFiles (i8*))
 
@@ -219,6 +223,9 @@ atomErr pairErr varErr itemErr protErr lockErr)
 
 (de NIL lockErr ()
    (err 0 0 ($ "File lock: %s") (strErrno)) )
+
+(de NIL forkErr (Exe)
+   (err Exe 0 ($ "Can't fork") null) )
 
 # Runtime checks
 (local) (stkChk sigChk)

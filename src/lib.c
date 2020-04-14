@@ -5,9 +5,14 @@
 // I/O
 int64_t PipeBuf = PIPE_BUF;
 
-int64_t stderrMsg(char *s, int64_t n) {
-   fprintf(stderr, "%s %lX\n", s, (unsigned long)n);
+int64_t stderrNum(char *fmt, int64_t n) {
+   fprintf(stderr, fmt, (unsigned long)n);
    return n;
+}
+
+char *stderrMsg(char *fmt, char *s) {
+   fprintf(stderr, fmt, s);
+   return s;
 }
 
 void xprintf(char *buf, int32_t siz, char *fmt, char *arg) {
@@ -135,6 +140,15 @@ int32_t xSignal(int32_t n) {
    }
    return 0;
 }
+
+int32_t Sig[] = {
+   SIGHUP, SIGINT, SIGUSR1, SIGUSR2, SIGPIPE, SIGALRM, SIGTERM, SIGCHLD,
+   SIGCONT, SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU, SIGIO
+};
+
+sighandler_t SigDfl = SIG_DFL;
+sighandler_t SigIgn = SIG_IGN;
+int SigUnblock = SIG_UNBLOCK;
 
 // Sync src/defs.l 'ENOENT'
 int32_t xErrno(void) {
