@@ -1,9 +1,10 @@
-// 19feb20 Software Lab. Alexander Burger
+// 15apr20 Software Lab. Alexander Burger
 
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <limits.h>
 #include <stdio.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -11,6 +12,8 @@
 #include <signal.h>
 #include <setjmp.h>
 #include <sys/time.h>
+
+typedef void (*sighandler_t)(int);
 
 // Lisp data access
 #define cnt(x) (x & 2)

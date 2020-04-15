@@ -1,8 +1,8 @@
-# 02mar20 Software Lab. Alexander Burger
+# 15apr20 Software Lab. Alexander Burger
 
 .SILENT:
 
-ASM = gcc
+ASM = clang
 MAIN = -rdynamic -lc -lm -ldl -lffi
 SHARED = -shared
 
