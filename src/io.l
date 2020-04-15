@@ -1,4 +1,4 @@
-# 14apr20 Software Lab. Alexander Burger
+# 15apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1067,6 +1067,108 @@
       (prog1
          (run X)
          (popOutFiles) ) ) )
+
+(local) forkLisp
+
+(de i32 forkLisp (Exe)
+   (flushAll)
+   (when (=0 $Spkr)  # Not listening for children yet
+      (when (lt0 (pipe $SpMiPipe))  # Open speaker/microphone pipe
+         (pipeErr Exe) )
+      (closeOnExec Exe (set $Spkr (val $SpMiPipe)))
+      (closeOnExec Exe (val 2 $SpMiPipe)) )
+   (let (Hear (b32 2)  Tell (b32 2))
+      (when (or (lt0 (pipe Hear)) (lt0 (pipe Tell)))
+         (pipeErr Exe) )
+      (closeOnExec Exe (val Hear))
+      (closeOnExec Exe (val 2 Hear))
+      (closeOnExec Exe (val Tell))
+      (closeOnExec Exe (val 2 Tell))
+      (let (I 0  N (val $Children))
+         (let Cld (val $Child)
+            (while (> N I)  # Find a free child slot
+               (? (=0 ((child Cld) pid)))
+               (inc 'I)
+               (setq Cld (ofs Cld (child T))) ) )
+         (cond
+            ((lt0 (fork)) (forkErr Exe))
+            ((=0 @)
+               (set
+                  $Slot I  # Set child index
+                  $Spkr 0  # No children yet
+                  $Mic (val 2 $SpMiPipe) )  # Set microphone to write end
+               (close (val 2 Hear))  # Close write end of 'hear'
+               (close (val Tell))  # Close read end of 'tell'
+               (close (val $SpMiPipe))  # Close read end
+               (unless (=0 (val $Hear))
+                  (close @)
+                  (closeInFile @)
+                  (closeOutFile @) )
+               (initInFile (set $Hear (val Hear)) null)
+               (unless (=0 (val $Tell))  # Telling
+                  (close @) )
+               (set $Tell (val 2 Tell))  # Write end of 'tell'
+               (let Cld (val $Child)
+                  (while (ge0 (dec 'N))  # Close children
+                     (let Cld: (child Cld)
+                        (unless (=0 (Cld: pid))
+                           (free (Cld: buf))
+                           (close (Cld: hear))
+                           (close (Cld: tell)) ) )
+                     (setq Cld (ofs Cld (child T))) ) )
+               (set $Children 0)  # No children
+               (free (val $Child))
+               (set $Child null)
+               (let In (val $InFrames)
+                  (until (=0 In)
+                     (let In: (ioFrame In)
+                        (In: pid 0)
+                        (setq In (In: link)) ) ) )
+               (let Out (val $OutFrames)
+                  (until (=0 Out)
+                     (let Out: (ioFrame Out)
+                        (Out: pid 0)
+                        (setq Out (Out: link)) ) ) )
+               (let Ca (val $Catch)  # Clear 'finally' expressions in Catch frames
+                  (until (=0 Ca)
+                     (let Ca: (caFrame Ca)
+                        (Ca: fin 0)
+                        (setq Ca (Ca: link)) ) ) )
+               (free (val $Termio))  # Give up terminal control
+               (set $Termio null)
+               (set
+                  $PRepl (val $Repl)  # Set parent REPL flag
+                  $PPid (val $Pid) )  # Set parent process ID
+               (set $Pid (cnt (i64 (getpid))))  # Set new process ID
+               (run (val $Fork))  # Run '*Fork'
+               (set $Fork $Nil)
+               0 )
+            (T
+               (let Pid @
+                  (when (== I N)  # Children table full
+                     (set $Children (setq N (+ N 8)))  # Eight more slots
+                     (let P
+                        (set $Child
+                           (alloc (val $Child) (* N (child T))) )
+                        (let (J I  Cld (ofs P (* I (child T))))
+                           (loop
+                              ((child Cld) pid 0)  # Clear 'pid'
+                              (? (== N (inc 'J)))
+                              (setq Cld (ofs Cld (child T))) ) ) ) )
+                  (close (val Hear))  # Close read end of 'hear'
+                  (close (val 2 Tell))  # Close write end of 'tell'
+                  (let Cld: (child (ofs (val $Child) (* I (child T))))  # Free 'child' entry
+                     (Cld: buf null)  # No buffer yet
+                     (Cld: ofs (Cld: cnt 0))  # Init buffer offset and count
+                     (Cld: pid Pid)  # Set 'pid'
+                     (Cld: hear (val Tell))  # Read end of 'tell'
+                     (nonBlocking (Cld: tell (val 2 Hear))) )  # Write end of 'hear'
+                  Pid ) ) ) ) ) )
+
+# (pipe exe) -> cnt
+# (pipe exe . prg) -> any
+(de _pipe (Exe)
+   $Nil )
 
 (de void _putStdout ((i8 . B))
    (let Out: (outFile (val $OutFile))

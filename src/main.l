@@ -1,4 +1,4 @@
-# 14apr20 Software Lab. Alexander Burger
+# 15apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -305,7 +305,7 @@ atomErr pairErr varErr itemErr protErr lockErr forkErr)
    (xSym (eval (car Exe))) )
 
 # Structure checks
-(local) (circ funq sharedLib)
+(local) (circ funq)
 
 (de circ (X)
    (if (atom X)
@@ -360,6 +360,9 @@ atomErr pairErr varErr itemErr protErr lockErr forkErr)
                         (? (or (nil? (car Z)) (== $T (car Z)))
                            0 ) )
                      (? (not (nil? Y)) 0) ) ) ) ) ) ) )
+
+# Try to load dynamic library
+(local) sharedLib
 
 (de i1 sharedLib (Sym)
    (let (Nm (bufString Sym (b8 (bufSize Sym)))  P (strchr Nm (char ":")))
