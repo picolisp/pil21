@@ -1,4 +1,4 @@
-# 15apr20 Software Lab. Alexander Burger
+# 16apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1080,10 +1080,10 @@
    (let (Hear (b32 2)  Tell (b32 2))
       (when (or (lt0 (pipe Hear)) (lt0 (pipe Tell)))
          (pipeErr Exe) )
-      (closeOnExec Exe (val Hear))
-      (closeOnExec Exe (val 2 Hear))
-      (closeOnExec Exe (val Tell))
-      (closeOnExec Exe (val 2 Tell))
+      (closeOnExec Exe (val Hear))  # Read end of 'hear'
+      (closeOnExec Exe (val 2 Hear))  # Write end
+      (closeOnExec Exe (val Tell))  # Read end of 'tell'
+      (closeOnExec Exe (val 2 Tell))  # Write end
       (let (I 0  N (val $Children))
          (let Cld (val $Child)
             (while (> N I)  # Find a free child slot
@@ -1104,7 +1104,7 @@
                   (close @)
                   (closeInFile @)
                   (closeOutFile @) )
-               (initInFile (set $Hear (val Hear)) null)
+               (initInFile (set $Hear (val Hear)) null)  # Read end of 'hear'
                (unless (=0 (val $Tell))  # Telling
                   (close @) )
                (set $Tell (val 2 Tell))  # Write end of 'tell'
@@ -1119,12 +1119,12 @@
                (set $Children 0)  # No children
                (free (val $Child))
                (set $Child null)
-               (let In (val $InFrames)
+               (let In (val $InFrames)  # Clear pids in InFrames
                   (until (=0 In)
                      (let In: (ioFrame In)
                         (In: pid 0)
                         (setq In (In: link)) ) ) )
-               (let Out (val $OutFrames)
+               (let Out (val $OutFrames)  # Clear pids in OutFrames
                   (until (=0 Out)
                      (let Out: (ioFrame Out)
                         (Out: pid 0)
@@ -1132,7 +1132,7 @@
                (let Ca (val $Catch)  # Clear 'finally' expressions in Catch frames
                   (until (=0 Ca)
                      (let Ca: (caFrame Ca)
-                        (Ca: fin 0)
+                        (Ca: fin ZERO)
                         (setq Ca (Ca: link)) ) ) )
                (free (val $Termio))  # Give up terminal control
                (set $Termio null)
@@ -1150,10 +1150,10 @@
                      (let P
                         (set $Child
                            (alloc (val $Child) (* N (child T))) )
-                        (let (J I  Cld (ofs P (* I (child T))))
+                        (let Cld (ofs P (* I (child T)))
                            (loop
                               ((child Cld) pid 0)  # Clear 'pid'
-                              (? (== N (inc 'J)))
+                              (? (== I (dec 'N)))
                               (setq Cld (ofs Cld (child T))) ) ) ) )
                   (close (val Hear))  # Close read end of 'hear'
                   (close (val 2 Tell))  # Close write end of 'tell'
