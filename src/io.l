@@ -566,7 +566,7 @@
       (set $OutFile
          (val
             (if (=0 (Io:))
-               (ofs (val $OutFiles) 2)  # Stdout
+               (ofs (val $OutFiles) 1)  # Stdout
                (ofs (val $OutFiles) (Io: fd)) ) ) ) ) )
 
 # (path 'any) -> sym
@@ -683,17 +683,16 @@
                   (set (inc 'A) null) )
                (cond
                   ((lt0 (fork)) (forkErr Exe))
-                  ((=0 @)
+                  ((=0 @)  # In child
                      (setpgid 0 0)  # Set process group
                      (close (val Pfd))  # Close read pipe
-                     (let F (val 2 Pfd)  # Write pipe
-                        (unless (== F 1)  # STDOUT_FILENO
-                           (dup2 F 1)    # Dup to STDOUT_FILENO
-                           (close F) ) )
-                     (signal (val SIGPIPE Sig) (val SigDfl))
+                     (unless (== (val 2 Pfd) 1)
+                        (dup2 @ 1)  # Dup write pipe to STDOUT_FILENO
+                        (close @) )
+                     (signal (val SIGPIPE Sig) (val SigDfl))  # Default SIGPIPE
                      (execvp (val Av) Av)  # Execute program
                      (execErr (val Av)) )  # Error if failed
-                  (T
+                  (T  # In parent
                      (setpgid (Io: pid @) 0)  # Set process group
                      (close (val 2 Pfd))  # Close write pipe
                      (initInFile (Io: fd (val Pfd)) null) ) ) ) ) ) ) )
@@ -748,16 +747,15 @@
                   (set (inc 'A) null) )
                (cond
                   ((lt0 (fork)) (forkErr Exe))
-                  ((=0 @)
+                  ((=0 @)  # In child
                      (setpgid 0 0)  # Set process group
                      (close (val 2 Pfd))  # Close write pipe
-                     (let F (val Pfd)  # Read pipe
-                        (unless (=0 F)  # STDIN_FILENO
-                           (dup2 F 0)    # Dup to STDIN_FILENO
-                           (close F) ) )
+                     (unless (=0 (val Pfd))  # STDIN_FILENO
+                        (dup2 @ 0)  # Dup read pipe to STDIN_FILENO
+                        (close @) )
                      (execvp (val Av) Av)  # Execute program
                      (execErr (val Av)) )  # Error if failed
-                  (T
+                  (T  # In parent
                      (setpgid (Io: pid @) 0)  # Set process group
                      (close (val Pfd))  # Close read pipe
                      (initOutFile (Io: fd (val 2 Pfd)) null) ) ) ) ) ) ) )
@@ -1052,18 +1050,18 @@
 
 # (in 'any . prg) -> any
 (de _in (Exe)
-   (let (X (cdr Exe)  P (b8 (ioFrame T)))
-      (rdOpen Exe (eval (++ X)) P)
-      (pushInFiles P)
+   (let (X (cdr Exe)  In (b8 (ioFrame T)))
+      (rdOpen Exe (eval (++ X)) In)
+      (pushInFiles In)
       (prog1
          (run X)
          (popInFiles) ) ) )
 
 # (out 'any . prg) -> any
 (de _out (Exe)
-   (let (X (cdr Exe)  P (b8 (ioFrame T)))
-      (wrOpen Exe (eval (++ X)) P)
-      (pushOutFiles P)
+   (let (X (cdr Exe)  Out (b8 (ioFrame T)))
+      (wrOpen Exe (eval (++ X)) Out)
+      (pushOutFiles Out)
       (prog1
          (run X)
          (popOutFiles) ) ) )
@@ -1092,7 +1090,7 @@
                (setq Cld (ofs Cld (child T))) ) )
          (cond
             ((lt0 (fork)) (forkErr Exe))
-            ((=0 @)
+            ((=0 @)  # In child
                (set
                   $Slot I  # Set child index
                   $Spkr 0  # No children yet
@@ -1143,7 +1141,7 @@
                (run (val $Fork))  # Run '*Fork'
                (set $Fork $Nil)
                0 )
-            (T
+            (T  # In parent
                (let Pid @
                   (when (== I N)  # Children table full
                      (set $Children (setq N (+ N 8)))  # Eight more slots
@@ -1168,7 +1166,48 @@
 # (pipe exe) -> cnt
 # (pipe exe . prg) -> any
 (de _pipe (Exe)
-   $Nil )
+   (let
+      (X (cdr Exe)
+         E (++ X)
+         Pfd (b32 2)
+         Io: (ioFrame (b8 (ioFrame T))) )
+      (when (lt0 (if (pair X) (pipe Pfd) (socketPair Pfd)))
+         (pipeErr Exe) )
+      (closeOnExec Exe (val Pfd))  # pfd[0]
+      (when (< (val 2 Pfd) 2)  # pfd[1]
+         (pipeErr Exe) )
+      (closeOnExec Exe @)
+      (cond
+         ((=0 (Io: pid (forkLisp Exe)))  # In child
+            (close (val Pfd))  # Close read end
+            (let F (val 2 Pfd)  # Write end
+               (if (pair X)  # 'prg'
+                  (setpgid 0 0)  # Set process group
+                  (dup2 F 0) )  # Dup write pipe to STDIN_FILENO
+               (dup2 F 1)  # Dup write pipe to STDOUT_FILENO
+               (close F) )
+            (signal (val SIGPIPE Sig) (val SigDfl))  # Default SIGPIPE
+            (Io: fd 1)  # fd = stdout
+            (pushOutFiles (Io:))
+            ((outFile (val $OutFile)) tty NO)  # Clear 'tty'
+            (set $Led (set $Run $Nil))  # Switch off all tasks and line editor
+            (when (pair E)  # Evaluate 'exe'
+               (evList E) )
+            (bye 0) )
+         (T  # In parent
+            (close (val 2 Pfd))  # Close write end
+            (let F (Io: fd (val Pfd))
+               (initInFile F null)  # Set 'fd' to read end
+               (cond
+                  ((atom X)  # No 'prg'
+                     (initOutFile F null)
+                     (cnt (i64 F)) )
+                  (T
+                     (setpgid (Io: pid) 0)  # Set process group
+                     (pushInFiles (Io:))
+                     (prog1
+                        (run X)
+                        (popInFiles) ) ) ) ) ) ) ) )
 
 (de void _putStdout ((i8 . B))
    (let Out: (outFile (val $OutFile))

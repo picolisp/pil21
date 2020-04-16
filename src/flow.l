@@ -1,4 +1,4 @@
-# 08apr20 Software Lab. Alexander Burger
+# 16apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -283,4 +283,4 @@
    (bye
       (if (nil? (eval (cadr Exe)))
          0
-         (i32 (int @)) ) ) )
+         (i32 (xCnt Exe @)) ) ) )

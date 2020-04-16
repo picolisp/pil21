@@ -1,4 +1,4 @@
-# 15apr20 Software Lab. Alexander Burger
+# 16apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -46,7 +46,11 @@
    (finish 1) )
 
 (de NIL bye ((i32 . N))
-   (unwind null)
+   (unless (val $InBye)
+      (set $InBye YES)
+      (unwind null)
+      (run (val $Bye)) )
+   (flushAll)
    (finish N) )
 
 (de NIL execErr ((i8* . Cmd))
@@ -76,7 +80,7 @@
          (set $Avail A) ) ) )
 
 # Signals
-(local) (sig sighandler)
+(local) (sig sigChld sighandler)
 
 (de void sig ((i32 . N))
    (ifn (=0 (val $TtyPid))
@@ -84,6 +88,9 @@
       (set $Signal (+ (val $Signal) 1))
       (let P (ofs $Signal (xSignal N))
          (set P (+ (val P) 1)) ) ) )
+
+(de void sigChld ((i32 . N))
+   (waitNohang) )
 
 (de void sighandler (Exe)
    (when (=0 (val $Protect))
@@ -751,6 +758,7 @@ atomErr pairErr varErr itemErr protErr lockErr forkErr)
    (initOutFile 2)  # Standard error
    (set $OutFile (initOutFile 1))  # Standard output
    (set $InFile (initInFile 0 null))  # Standard input
+   (signal (val SIGCHLD Sig) (fun sigChld))
    (when (=0 (catchQuit))
       (loadAll 0)  # Load arguments
       )

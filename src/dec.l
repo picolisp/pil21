@@ -1,4 +1,4 @@
-# 14apr20 Software Lab. Alexander Burger
+# 16apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -117,10 +117,10 @@ strchr strrchr dlsym dlerror dup2 close signal waitpid setjmp longjmp kill exit)
 
 # Glue lib.c
 (local) (PipeBuf Sig SigDfl SigIgn SigUnblock JmpBufSize stderrNum stderrMsg
-xprintf strErrno openRdonly openWronly openRdWr openWrAppend fcntlCloExec
-fcntlSetFl nonBlocking pollIn pollOut xPoll readyIn readyOut rdLock wrLock
-unLock getLock xSignal xErrno getTime catchQuit throwQuit dlOpen ffiPrep
-ffiCall)
+xprintf strErrno openRdonly openWronly openRdWr openWrAppend socketPair
+fcntlCloExec fcntlSetFl nonBlocking pollIn pollOut xPoll readyIn readyOut rdLock
+wrLock unLock getLock xSignal waitNohang xErrno getTime catchQuit throwQuit
+dlOpen ffiPrep ffiCall)
 
 (var PipeBuf i64 NIL)
 (var Sig i32 NIL)
@@ -137,6 +137,7 @@ ffiCall)
 (de T i32 openWronly (i8*))
 (de T i32 openRdWr (i8*))
 (de T i32 openWrAppend (i8*))
+(de T i32 socketPair (i32*))
 (de T i32 fcntlCloExec (i32))
 (de T i32 fcntlSetFl (i32 i32))
 (de T i32 nonBlocking (i32))
@@ -150,6 +151,7 @@ ffiCall)
 (de T i32 unLock (i32 i64 i64))
 (de T i32 getLock (i32 i64 i64))
 (de T i32 xSignal (i32))
+(de T void waitNohang ())
 (de T i32 xErrno ())
 (de T i64 getTime ())
 (de T i32 catchQuit ())
@@ -207,6 +209,7 @@ ffiCall)
 (de xSym (any))
 (de i1 subStr (any any))
 # io.l
+(de void flushAll ())
 (de void newline ())
 (de void space ())
 (de void outWord (i64))

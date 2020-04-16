@@ -1,4 +1,4 @@
-// 14apr20 Software Lab. Alexander Burger
+// 16apr20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -37,6 +37,10 @@ int32_t openRdWr(char *nm) {
 
 int32_t openWrAppend(char *nm) {
    return (int32_t)open(nm, O_APPEND|O_CREAT|O_WRONLY, 0666);
+}
+
+int32_t socketPair(int *sv) {
+   return (int32_t)socketpair(AF_UNIX, SOCK_STREAM, 0, sv);
 }
 
 int32_t fcntlCloExec(int32_t fd) {
@@ -149,6 +153,17 @@ int32_t Sig[] = {
 sighandler_t SigDfl = SIG_DFL;
 sighandler_t SigIgn = SIG_IGN;
 int SigUnblock = SIG_UNBLOCK;
+
+void waitNohang(void) {
+   int e, stat;
+   pid_t pid;
+
+   e = errno;
+   while ((pid = waitpid(0, &stat, WNOHANG)) > 0)
+      if (WIFSIGNALED(stat))
+         fprintf(stderr, "%d SIG-%d\n", (int)pid, WTERMSIG(stat));
+   errno = e;
+}
 
 // Sync src/defs.l 'ENOENT'
 int32_t xErrno(void) {

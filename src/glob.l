@@ -1,4 +1,4 @@
-# 15apr20 Software Lab. Alexander Burger
+# 16apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -356,12 +356,17 @@
    ($M (short (pico~cadr *Version)))
    ($D (short (pico~caddr *Version))) )
 
+# Bytes
+(array $Month i8
+   31 31 28 31 30 31 30 31 31 30 31 30 31 )
+
 # Booleans
+(var $Tio i1 0)                  # Terminal I/O
 (var $Repl i1 0)                 # REPL flag
 (var $PRepl i1 0)                # Parent REPL
 (var $Jam i1 0)                  # Error jam
-
-# Bytes
+(var $InBye i1 0)                # Exit status
+(var $Sync i1 0)                 # Family IPC synchronization
 
 # Strings
 (str $Delim " \t\n\r\"'(),[]`~{}")
