@@ -1,4 +1,4 @@
-# 16apr20 Software Lab. Alexander Burger
+# 17apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -189,7 +189,7 @@ atomErr pairErr varErr itemErr protErr lockErr forkErr)
             $Task $Nil )
          (set $Put (fun (void i8) _putStdout))
          (set $Get (fun (i32) _getStdin))
-         (throwQuit) ) ) )
+         (longjmp QuitRst 1) ) ) )
 
 (de NIL stkErr (Exe)
    (set $StkLimit null)
@@ -759,7 +759,7 @@ atomErr pairErr varErr itemErr protErr lockErr forkErr)
    (set $OutFile (initOutFile 1))  # Standard output
    (set $InFile (initInFile 0 null))  # Standard input
    (signal (val SIGCHLD Sig) (fun sigChld))
-   (when (=0 (catchQuit))
+   (when (=0 (setjmp QuitRst))
       (loadAll 0)  # Load arguments
       )
    (loop

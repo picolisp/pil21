@@ -1,4 +1,4 @@
-// 16apr20 Software Lab. Alexander Burger
+// 17apr20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -191,14 +191,6 @@ int64_t getTime(void) {
 // Catch and Throw
 int64_t JmpBufSize = sizeof(jmp_buf);
 jmp_buf QuitRst;
-
-int32_t catchQuit(void) {
-   return (int32_t)setjmp(QuitRst);
-}
-
-void throwQuit(void) {
-   longjmp(QuitRst, 1);
-}
 
 // Lisp data access
 int64_t car(int64_t x) {

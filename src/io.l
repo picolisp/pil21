@@ -1,4 +1,4 @@
-# 16apr20 Software Lab. Alexander Burger
+# 17apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -767,7 +767,7 @@
 (de void ctOpen (Exe X (i8* . P))
    0 )
 
-(local) (getChar skipC comment skip testEsc anonymous rdAtom rdList read0)
+(local) (getChar skipc comment skip testEsc anonymous rdAtom rdList read0)
 
 (de read0 (i1))
 
@@ -820,61 +820,88 @@
                   (| (shl A 6) (& (call $Get) (hex "3F"))) ) )
             (| (shl B 6) (& (call $Get) (hex "3F"))) ) ) ) )
 
-(de i32 skipC ((i32 . C))
-   0 )
+# Skip White Space and Comments
+(de i32 skipc ((i32 . C))
+   (let Chr (val $Chr)
+      (loop
+         (while (>= 32 Chr)  # White space
+            (when (lt0 (setq Chr (call $Get)))
+               (ret Chr) ) )
+         (unless (== Chr C)
+            (ret Chr) )
+         (until (== (setq Chr (call $Get)) (char "\n"))
+            (when (lt0 Chr)
+               (ret Chr) ) )
+         (setq Chr (call $Get)) ) ) )
 
-(de i32 comment ()
-   (call $Get) )
+(de void comment ()
+   (let Chr (call $Get)
+      (if (== Chr (char "{"))
+         (let N 0
+            (loop
+               (? (lt0 (setq Chr (call $Get))))
+               (if
+                  (and
+                     (== Chr (char "#"))
+                     (== (setq Chr (call $Get)) (char "{")) )
+                  (inc 'N)
+                  (?
+                     (and
+                        (== Chr (char "}"))
+                        (== (setq Chr (call $Get)) (char "#"))
+                        (lt0 (dec 'N)) ) ) ) ) )
+         (until (== Chr (char "\n"))
+            (? (lt0 Chr))
+            (setq Chr (call $Get)) ) )
+      (call $Get) ) )
 
 (de i32 skip ()
-   (let C (val $Chr)
-      (loop
-         (when (lt0 C)
-            (ret C) )
-         (loop
-            (? (> C (char " ")))
-            (when (lt0 (setq C (call $Get)))
-               (ret C) ) )
-         (when (<> C (char "#"))
-            (ret C) )
-         (setq C (comment)) ) ) )
-
-(de i1 testEsc ((i32 . C))
    (loop
-      (? (lt0 C) NO)
-      (? (== C (char "\^"))  # Control character
-         (setq C (call $Get))
-         (when (== C (char "@"))
+      (let Chr (val $Chr)
+         (when (lt0 Chr)
+            (ret Chr) )
+         (while (>= (char " ") Chr)
+            (when (lt0 (setq Chr (call $Get)))
+               (ret Chr) ) )
+         (unless (== Chr (char "#"))
+            (ret Chr) )
+         (comment) ) ) )
+
+(de i1 testEsc ((i32 . Chr))
+   (loop
+      (? (lt0 Chr) NO)
+      (? (== Chr (char "\^"))  # Control character
+         (when (== (setq Chr (call $Get)) (char "@"))
             (badInput) )
          (set $Chr
-            (if (== C (char "?"))
+            (if (== Chr (char "?"))
                127
-               (& C (hex "1F")) ) )
+               (& Chr (hex "1F")) ) )
          YES )
-      (? (<> C (char "\\"))  # No Backslash
-         (set $Chr (getChar C))
+      (? (<> Chr (char "\\"))  # No Backslash
+         (set $Chr (getChar Chr))
          YES )
-      (? (<> 10 (setq C (call $Get)))  # Backslash: Skip '\'
-         (case C
+      (? (<> 10 (setq Chr (call $Get)))  # Backslash: Skip '\'
+         (case Chr
             ((char "n") (set $Chr (char "\n")))
             ((char "r") (set $Chr (char "\r")))
             ((char "t") (set $Chr (char "\t")))
             (T
-               (when (and (>= C (char "0")) (>= (char "9") C))
-                  (setq C (- C (char "0")))
+               (when (and (>= Chr (char "0")) (>= (char "9") Chr))
+                  (setq Chr (- Chr (char "0")))
                   (until (== (call $Get) (char "\\"))
                      (unless
                         (and
                            (>= (val $Chr) (char "0"))
                            (>= (char "9") (val $Chr)) )
                         (badInput) )
-                     (setq C
-                        (+ (* C 10) (- (val $Chr) (char "0"))) ) ) )
-               (set $Chr C) ) )
+                     (setq Chr
+                        (+ (* Chr 10) (- (val $Chr) (char "0"))) ) ) )
+               (set $Chr Chr) ) )
          YES )
       (loop
-         (? (== (setq C (call $Get)) (char " ")))
-         (? (== C (char "\t"))) ) ) )
+         (? (== (setq Chr (call $Get)) (char " ")))
+         (? (== Chr (char "\t"))) ) ) )
 
 (de anonymous ()
    $Nil )
@@ -1173,10 +1200,10 @@
          Io: (ioFrame (b8 (ioFrame T))) )
       (when (lt0 (if (pair X) (pipe Pfd) (socketPair Pfd)))
          (pipeErr Exe) )
-      (closeOnExec Exe (val Pfd))  # pfd[0]
+      #! (closeOnExec Exe (val Pfd))  # pfd[0]
       (when (< (val 2 Pfd) 2)  # pfd[1]
          (pipeErr Exe) )
-      (closeOnExec Exe @)
+      #! (closeOnExec Exe @)
       (cond
          ((=0 (Io: pid (forkLisp Exe)))  # In child
             (close (val Pfd))  # Close read end

@@ -1,4 +1,4 @@
-# 16apr20 Software Lab. Alexander Burger
+# 17apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -116,11 +116,11 @@ strchr strrchr dlsym dlerror dup2 close signal waitpid setjmp longjmp kill exit)
 (de T NIL exit (i32))
 
 # Glue lib.c
-(local) (PipeBuf Sig SigDfl SigIgn SigUnblock JmpBufSize stderrNum stderrMsg
-xprintf strErrno openRdonly openWronly openRdWr openWrAppend socketPair
-fcntlCloExec fcntlSetFl nonBlocking pollIn pollOut xPoll readyIn readyOut rdLock
-wrLock unLock getLock xSignal waitNohang xErrno getTime catchQuit throwQuit
-dlOpen ffiPrep ffiCall)
+(local) (PipeBuf Sig SigDfl SigIgn SigUnblock JmpBufSize QuitRst stderrNum
+stderrMsg xprintf strErrno openRdonly openWronly openRdWr openWrAppend
+socketPair fcntlCloExec fcntlSetFl nonBlocking pollIn pollOut xPoll readyIn
+readyOut rdLock wrLock unLock getLock xSignal waitNohang xErrno getTime dlOpen
+ffiPrep ffiCall)
 
 (var PipeBuf i64 NIL)
 (var Sig i32 NIL)
@@ -128,6 +128,7 @@ dlOpen ffiPrep ffiCall)
 (var SigIgn i8* NIL)
 (var SigUnblock i32 NIL)
 (var JmpBufSize i64 NIL)
+(var QuitRst i8 NIL)
 
 (de T i64 stderrNum (i8* i64))
 (de T i8* stderrMsg (i8* i8*))
@@ -154,8 +155,6 @@ dlOpen ffiPrep ffiCall)
 (de T void waitNohang ())
 (de T i32 xErrno ())
 (de T i64 getTime ())
-(de T i32 catchQuit ())
-(de T NIL throwQuit ())
 
 # Native lib.c
 (de T i8* dlOpen (i8*))
