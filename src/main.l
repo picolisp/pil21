@@ -9,27 +9,29 @@
 (local) unwind
 
 (de void unwind ((i8* . Catch))
-   (let (Ca (val $Catch)  P (val $Bind))
+   (let (Ca (val $Catch)  Bnd (val $Bind))
       (until (=0 Ca)
          (let Ca: (caFrame Ca)
-            (until (or (=0 P) (== P (Ca: (env $Bind any))))
+            (until (or (=0 Bnd) (== Bnd (Ca: (env $Bind any))))
                (loop
-                  (set (val P) (val 2 P))  # Restore values
-                  (? (== $At (val P)))
-                  (setq P (val 3 P)) )
-               (setq P (val 3 P)) )
+                  (let Sym (val 3 Bnd)
+                     (set Sym (val Bnd))  # Restore values
+                     (? (== $At Sym))
+                     (shift Bnd) ) )
+               (setq Bnd (val 4 Bnd)) )
             # ...
             (memcpy (env) (Ca: (env)) (env T))
             (eval (Ca: fin))  # Evaluate 'finally' expression
             (set $Catch (Ca: link))
             (and (== Ca Catch) (ret))
             (setq Ca (Ca: link)) ) )
-      (until (=0 P)
+      (until (=0 Bnd)
          (loop
-            (set (val P) (val 2 P))  # Restore values
-            (? (== $At (val P)))
-            (setq P (val 3 P)) )
-         (setq P (val 3 P)) )
+            (let Sym (val 3 Bnd)
+               (set Sym (val Bnd))  # Restore values
+               (? (== $At Sym))
+               (shift Bnd) ) )
+         (setq Bnd (val 4 Bnd)) )
       (set $Bind 0)
       # ...
       ) )

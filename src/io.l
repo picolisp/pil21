@@ -672,8 +672,6 @@
                   Cmd (xSym (++ X)) )
                (when (lt0 (pipe Pfd))
                   (pipeErr Exe) )
-               (closeOnExec Exe (val Pfd))
-               (closeOnExec Exe (val 2 Pfd))
                (set Av (pathString Cmd (b8 (pathSize Cmd))))
                (let A Av
                   (while (pair X)
@@ -695,7 +693,9 @@
                   (T  # In parent
                      (setpgid (Io: pid @) 0)  # Set process group
                      (close (val 2 Pfd))  # Close write pipe
-                     (initInFile (Io: fd (val Pfd)) null) ) ) ) ) ) ) )
+                     (let F (Io: fd (val Pfd))
+                        (initInFile F null)
+                        (closeOnExec Exe F) ) ) ) ) ) ) ) )
 
 (de void wrOpen (Exe X (i8* . P))
    (let Io: (ioFrame P)
@@ -736,8 +736,6 @@
                   Cmd (xSym (++ X)) )
                (when (lt0 (pipe Pfd))
                   (pipeErr Exe) )
-               (closeOnExec Exe (val Pfd))
-               (closeOnExec Exe (val 2 Pfd))
                (set Av (pathString Cmd (b8 (pathSize Cmd))))
                (let A Av
                   (while (pair X)
@@ -758,7 +756,9 @@
                   (T  # In parent
                      (setpgid (Io: pid @) 0)  # Set process group
                      (close (val Pfd))  # Close read pipe
-                     (initOutFile (Io: fd (val 2 Pfd)) null) ) ) ) ) ) ) )
+                     (let F (Io: fd (val 2 Pfd))
+                        (initOutFile F null)
+                        (closeOnExec Exe F) ) ) ) ) ) ) ) )
 
 
 (de void erOpen (Exe X (i8* . P))
@@ -1200,10 +1200,8 @@
          Io: (ioFrame (b8 (ioFrame T))) )
       (when (lt0 (if (pair X) (pipe Pfd) (socketPair Pfd)))
          (pipeErr Exe) )
-      #! (closeOnExec Exe (val Pfd))  # pfd[0]
       (when (< (val 2 Pfd) 2)  # pfd[1]
          (pipeErr Exe) )
-      #! (closeOnExec Exe @)
       (cond
          ((=0 (Io: pid (forkLisp Exe)))  # In child
             (close (val Pfd))  # Close read end
@@ -1223,8 +1221,9 @@
             (bye 0) )
          (T  # In parent
             (close (val 2 Pfd))  # Close write end
-            (let F (Io: fd (val Pfd))
-               (initInFile F null)  # Set 'fd' to read end
+            (let F (Io: fd (val Pfd))  # Set 'fd' to read end
+               (initInFile F null)
+               (closeOnExec Exe F)
                (cond
                   ((atom X)  # No 'prg'
                      (initOutFile F null)
