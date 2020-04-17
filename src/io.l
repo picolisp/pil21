@@ -903,23 +903,46 @@
          (? (== (setq Chr (call $Get)) (char " ")))
          (? (== Chr (char "\t"))) ) ) )
 
-(de anonymous ()
-   $Nil )
+(de anonymous (Nm)
+   (let P (push 0 Nm)  # [cnt name]
+      (unless (== (symByte P) (char "$"))  # Starting with '$'
+         (ret 0) )
+      (let B (- (symByte P) (char "0"))
+         (unless (and (ge0 B) (>= 7 B))  # Octal Digit
+            (ret 0) )
+         (let N (i64 B)
+            (loop
+               (? (=0 (symByte P))
+                  (sym (shl N 4)) )  # Make symbol pointer
+               (? (lt0 (- @ (char "0"))) 0)
+               (? (<= @ 7) 0)
+               (setq N (| (i64 @) (shl N 3))) ) ) ) ) )
 
-(de rdAtom ((i32 . C))
-   (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
-      (charSym C P)
-      (setq C (val $Chr))
-      (while (and (gt0 C) (=0 (strchr $Delim C)))
-         (when (== C (char "\\"))
-            (setq C (call $Get)) )
-         (charSym C P)
-         (setq C (call $Get)) )
-      (drop Q
-         (let Nm (val Q)
-            (if (n0 (symToNum Nm 0 (char ".") 0))
-               @
-               (requestSym Nm) ) ) ) ) )
+(de rdAtom ((i32 . Chr))
+   (let
+      (Nsp (save (val $Intern))  # Current symbol namespace
+         R (push 4 NIL ZERO NIL) )  # [cnt last name link]
+      (charSym Chr R)  # Pack first char
+      (setq Chr (val $Chr))
+      (while (ge0 Chr)
+         (if (== Chr (char "~"))  # Namespace
+            (let S (requestSym (val 3 R))  # Find or create symbol
+               (unless (pair (val S))
+                  (symNsErr 0 S) )
+               (set $Intern (set $Cell S))  # Switch symbol namespace
+               (set R 4  3 R ZERO) )  # Build new name
+            (? (n0 (strchr $Delim Chr)))
+            (when (== Chr (char "\\"))
+               (setq Chr (call $Get)) )
+            (charSym Chr R) )
+         (setq Chr (call $Get)) )
+      (prog1
+         (let Nm (val 3 R)
+            (cond
+               ((n0 (symToNum Nm (int (val $Scl)) (char ".") 0)) @)
+               ((n0 (anonymous Nm)) @)
+               (T (requestSym Nm)) ) )
+         (set $Intern Nsp) ) ) )
 
 (de rdList ()
    (call $Get)

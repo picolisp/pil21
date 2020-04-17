@@ -124,7 +124,7 @@
 
 # Error handling
 (local) (pushOutFiles err stkErr argErr cntErr numErr lstErr symErr extErr
-atomErr pairErr varErr itemErr protErr lockErr forkErr)
+atomErr pairErr varErr itemErr protErr lockErr forkErr symNsErr)
 
 (de void pushOutFiles (i8*))
 
@@ -235,6 +235,9 @@ atomErr pairErr varErr itemErr protErr lockErr forkErr)
 
 (de NIL forkErr (Exe)
    (err Exe 0 ($ "Can't fork") null) )
+
+(de NIL symNsErr (Exe X)
+   (err Exe X ($ "Bad symbol namespace") null) )
 
 # Runtime checks
 (local) (stkChk sigChk)

@@ -1,4 +1,4 @@
-# 16apr20 Software Lab. Alexander Burger
+# 17apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -241,6 +241,7 @@
    # Control flow
    (NIL "de" _de)
    (NIL "dm" _dm)
+   (NIL "box" _box)
    (NIL "and" _and)
    (NIL "if" _if)
    (NIL "with" _with)
@@ -349,6 +350,11 @@
    ($Task $Nil)                  # Task list
    ($Protect 0)                  # Signal protection
    ($Trace 0) )                  # Trace level
+
+# Temporary cell
+(array $Cell any
+   $Nil
+   $Nil )
 
 # Version number
 (table $Version

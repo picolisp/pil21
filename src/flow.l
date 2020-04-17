@@ -1,4 +1,4 @@
-# 16apr20 Software Lab. Alexander Burger
+# 17apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -92,6 +92,10 @@
 # (meth 'obj ['any ..]) -> any
 (de _meth (Exe)
    Exe )
+
+# (box 'any) -> sym
+(de _box (Exe)
+   (consSym ZERO (eval (cadr Exe))) )
 
 # (and 'any ..) -> any
 (de _and (Exe)

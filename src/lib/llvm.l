@@ -1,4 +1,4 @@
-# 16apr20 Software Lab. Alexander Burger
+# 17apr20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -759,7 +759,7 @@ False Beg End Safe *Safe)
       (setq llvm~@ X)
       (let V (type (val (if (sym? X) X Y)))
          (ssa (inc '*Ssa) "icmp "
-            (if (== 'i32 V) @Pred1 @Pred2)
+            (if (memq V '(i8 i32)) @Pred1 @Pred2)
             " " V " " X ", " Y ) )
       (def (pack "%" *Ssa) 'i1) )
    (llvm~> "sgt" "ugt")
