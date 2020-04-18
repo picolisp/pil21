@@ -1,4 +1,4 @@
-# 16apr20 Software Lab. Alexander Burger
+# 18apr20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -642,7 +642,7 @@ False Beg End Safe *Safe)
             (casq V
                ((i1 i8) (ssa (inc '*Ssa) "zext " V " " X " to i64"))
                (i32 (ssa (inc '*Ssa) "sext " V " " X " to i64"))
-               ((i1* i8* i32* i64*)
+               ((i1* i8* i8** i32* i32** i64* i64**)
                   (ssa (inc '*Ssa) "ptrtoint " V " " X " to i64") )
                (T (quit "Bad type" V)) )
             (def (pack "%" *Ssa) 'i64) ) ) )

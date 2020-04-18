@@ -650,6 +650,38 @@ atomErr pairErr varErr itemErr protErr lockErr forkErr symNsErr)
             Y
             $Nil ) ) ) )
 
+# (argv [var ..] [. sym]) -> lst|sym
+(de _argv (Exe)
+   (let (X (cdr Exe)  A (val $AV)  P (val A))
+      (and
+         (n0 P)
+         (== (val P) (char "-"))
+         (=0 (val 2 P))  # Single-dash argument
+         (inc 'A) )  # Skip "-"
+      (if (nil? X)  # No args
+         (if (=0 (setq P (val A)))
+            $Nil
+            (let (Y (cons (mkStr P) $Nil)  R (save Y))
+               (until (=0 (setq P (val (inc 'A))))
+                  (setq Y (set 2 Y (cons (mkStr P) $Nil))) )
+               R ) )
+         (loop
+            (? (atom X)
+               (set (needChkVar Exe X)
+                  (if (=0 (setq P (val A)))
+                     $Nil
+                     (let (Y (cons (mkStr P) $Nil)  R (save Y))
+                        (until (=0 (setq P (val (inc 'A))))
+                           (setq Y (set 2 Y (cons (mkStr P) $Nil))) )
+                        R ) ) ) )
+            (let Y
+               (if (=0 (setq P (val A)))
+                  $Nil
+                  (inc 'A)
+                  (mkStr P) )
+               (set (needChkVar Exe (++ X)) Y)
+               (? (nil? X) Y) ) ) ) ) )
+
 # Native calls
 (local) natRet
 

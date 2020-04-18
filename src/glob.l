@@ -262,6 +262,7 @@
    (NIL "udp" _udp)
    # System functions
    (NIL "sys" _sys)
+   (NIL "argv" _argv)
    (NIL "native" _native)
    (NIL "args" _args)
    (NIL "next" _next)
