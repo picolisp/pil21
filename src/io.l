@@ -760,7 +760,6 @@
                         (initOutFile F null)
                         (closeOnExec Exe F) ) ) ) ) ) ) ) )
 
-
 (de void erOpen (Exe X (i8* . P))
    0 )
 
@@ -802,6 +801,9 @@
                (if (=0 (symByte $Line))  # Extract next byte
                   (char "\n")
                   (i32 @) ) ) ) ) ) )
+
+(de i32 getParse ()
+   )
 
 (de i32 getChar ((i32 . C))
    (cond
@@ -1000,12 +1002,12 @@
       (pop P) ) )
 
 (de read0 ((i1 . Top))
-   (and
-      Top
-      (n0 (val $InFile))
-      (let In: (inFile @)
-         (In: src (In: line)) ) )
    (let C (skip)
+      (and
+         Top
+         (n0 (val $InFile))
+         (let In: (inFile @)
+            (In: src (In: line)) ) )
       (cond
          ((lt0 C)
             (unless Top (eofErr))
@@ -1026,8 +1028,15 @@
          ((== C (char "'"))
             (call $Get)
             (cons $Quote (read0 Top)) )
-         #((== C (char ","))
-         #   )
+         ((== C (char ","))
+            (call $Get)
+            (let X (read0 Top)
+               (if (== $T (val $Uni))
+                  X
+                  (save X
+                     (if (pair (idxPut $Uni X))
+                        (car @)
+                        X ) ) ) ) )
          ((== C (char "`"))
             (call $Get)
             (let E (save (read0 Top))
