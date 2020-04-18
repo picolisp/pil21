@@ -1000,13 +1000,16 @@
       (pop P) ) )
 
 (de read0 ((i1 . Top))
+   (and
+      Top
+      (n0 (val $InFile))
+      (let In: (inFile @)
+         (In: src (In: line)) ) )
    (let C (skip)
       (cond
          ((lt0 C)
             (unless Top (eofErr))
             $Nil )
-         #((and Top ..)
-         #   .. )
          ((== C (char "("))
             (prog1
                (rdList)

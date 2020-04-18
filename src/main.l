@@ -1,4 +1,4 @@
-# 17apr20 Software Lab. Alexander Burger
+# 18apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -633,6 +633,22 @@ atomErr pairErr varErr itemErr protErr lockErr forkErr symNsErr)
                            (subr (val F) Exe)
                            (undefined F Exe) ) )
                      (setq F V) ) ) ) ) ) ) )
+
+# (sys 'any ['any]) -> sym
+(de _sys (Exe)
+   (let
+      (X (cdr Exe)
+         Y (evSym X)
+         S (bufString Y (b8 (bufSize Y))) )
+      (if (atom (shift X))
+         (mkStr (getenv S))
+         (if
+            (=0
+               (setenv S
+                  (bufString (setq Y (evSym X)) (b8 (bufSize Y)))
+                  1 ) )
+            Y
+            $Nil ) ) ) )
 
 # Native calls
 (local) natRet

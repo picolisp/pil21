@@ -1,4 +1,4 @@
-# 17apr20 Software Lab. Alexander Burger
+# 18apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -261,6 +261,7 @@
    # Networking
    (NIL "udp" _udp)
    # System functions
+   (NIL "sys" _sys)
    (NIL "native" _native)
    (NIL "args" _args)
    (NIL "next" _next)

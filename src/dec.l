@@ -1,4 +1,4 @@
-# 17apr20 Software Lab. Alexander Burger
+# 18apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -76,14 +76,17 @@
    (tell 4 i32) )       # Tell pipe
 
 # System
-(local) (malloc realloc free fork getpid setpgid execvp isatty read write pread
-pwrite fread fwrite putc_unlocked fflush fileno pipe strlen strcpy strdup strcmp
-strchr strrchr dlsym dlerror dup2 close signal waitpid setjmp longjmp kill exit)
+(local) (malloc realloc free fork getenv setenv getpid setpgid execvp isatty
+read write pread pwrite fread fwrite putc_unlocked fflush fileno pipe strlen
+strcpy strdup strcmp strchr strrchr dlsym dlerror dup2 close signal waitpid
+setjmp longjmp kill exit)
 
 (de T i8* malloc (i64))
 (de T i8* realloc (i8* i64))
 (de T void free (i8*))
 (de T i32 fork ())
+(de T i8* getenv (i8*))
+(de T i32 setenv (i8* i8* i32))
 (de T i32 getpid ())
 (de T i32 setpgid (i32 i32))
 (de T i32 execvp (i8* i8**))
