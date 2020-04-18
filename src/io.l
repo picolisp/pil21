@@ -1,4 +1,4 @@
-# 17apr20 Software Lab. Alexander Burger
+# 18apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -908,14 +908,13 @@
       (unless (== (symByte P) (char "$"))  # Starting with '$'
          (ret 0) )
       (let B (- (symByte P) (char "0"))
-         (unless (and (ge0 B) (>= 7 B))  # Octal Digit
+         (unless (>= 7 B)  # Octal Digit
             (ret 0) )
          (let N (i64 B)
             (loop
                (? (=0 (symByte P))
                   (sym (shl N 4)) )  # Make symbol pointer
-               (? (lt0 (- @ (char "0"))) 0)
-               (? (<= @ 7) 0)
+               (? (> (- @ (char "0")) 7) 0)
                (setq N (| (i64 @) (shl N 3))) ) ) ) ) )
 
 (de rdAtom ((i32 . Chr))
