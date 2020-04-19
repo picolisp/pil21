@@ -1,4 +1,4 @@
-// 16apr20 Software Lab. Alexander Burger
+// 18apr20 Software Lab. Alexander Burger
 
 #include <stdint.h>
 #include <string.h>
@@ -11,6 +11,7 @@
 #include <poll.h>
 #include <signal.h>
 #include <setjmp.h>
+#include <termios.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/time.h>

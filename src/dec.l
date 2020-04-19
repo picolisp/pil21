@@ -1,4 +1,4 @@
-# 18apr20 Software Lab. Alexander Burger
+# 19apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -75,11 +75,11 @@
    (hear 4 i32)         # Hear pipe
    (tell 4 i32) )       # Tell pipe
 
-# System
+# libc
 (local) (malloc realloc free fork getenv setenv getpid setpgid execvp isatty
-read write pread pwrite fread fwrite putc_unlocked fflush fileno pipe strlen
-strcpy strdup strcmp strchr strrchr dlsym dlerror dup2 close signal waitpid
-setjmp longjmp kill exit)
+tcgetattr read write pread pwrite fread fwrite putc_unlocked fflush fileno pipe
+strlen strcpy strdup strcmp strchr strrchr dlsym dlerror dup2 close signal
+waitpid setjmp longjmp getTime kill exit)
 
 (de T i8* malloc (i64))
 (de T i8* realloc (i8* i64))
@@ -91,6 +91,7 @@ setjmp longjmp kill exit)
 (de T i32 setpgid (i32 i32))
 (de T i32 execvp (i8* i8**))
 (de T i32 isatty (i32))
+(de T i32 tcgetattr (i32 i8*))
 (de T i64 read (i32 i8* i64))
 (de T i64 write (i32 i8* i64))
 (de T i64 pread (i32 i8* i64 i64))
@@ -119,19 +120,12 @@ setjmp longjmp kill exit)
 (de T NIL exit (i32))
 
 # Glue lib.c
-(local) (PipeBuf Sig SigDfl SigIgn SigUnblock JmpBufSize QuitRst stderrNum
-stderrMsg xprintf strErrno openRdonly openWronly openRdWr openWrAppend
-socketPair fcntlCloExec fcntlSetFl nonBlocking pollIn pollOut xPoll readyIn
-readyOut rdLock wrLock unLock getLock xSignal waitNohang xErrno getTime dlOpen
-ffiPrep ffiCall)
+(local) (PipeBuf)
 
 (var PipeBuf i64 NIL)
-(var Sig i32 NIL)
-(var SigDfl i8* NIL)
-(var SigIgn i8* NIL)
-(var SigUnblock i32 NIL)
-(var JmpBufSize i64 NIL)
-(var QuitRst i8 NIL)
+
+(local) (stderrNum stderrMsg xprintf strErrno openRdonly openWronly openRdWr
+openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking)
 
 (de T i64 stderrNum (i8* i64))
 (de T i8* stderrMsg (i8* i8*))
@@ -145,26 +139,68 @@ ffiPrep ffiCall)
 (de T i32 fcntlCloExec (i32))
 (de T i32 fcntlSetFl (i32 i32))
 (de T i32 nonBlocking (i32))
+
+# Terminal
+(local) (Tio OrgTermio Termio setRaw setCooked)
+
+(var Tio i1 NIL)
+(var OrgTermio i8 NIL)
+(var Termio i8* null)
+
+(de T void stopTerm ())
+(de T void setRaw ())
+(de T void setCooked ())
+
+# System
+(de T i64 getTime ())
+
+# Polling
+(local) (pollIn pollOut xPoll readyIn readyOut)
+
 (de T void pollIn (i32 i64*))
 (de T void pollOut (i32 i64*))
 (de T i32 xPoll (i64* i64 i64))
-(de T i32 readyIn (i64*))
-(de T i32 readyOut (i64*))
+(de T i1 readyIn (i64* i32))
+(de T i1 readyOut (i64* i32))
+
+# Locking
+(local) (rdLock wrLock unLock getLock)
+
 (de T i32 rdLock (i32 i64 i64))
 (de T i32 wrLock (i32 i64 i64 i32))
 (de T i32 unLock (i32 i64 i64))
 (de T i32 getLock (i32 i64 i64))
+
+# Signals
+(local) (Sig SigDfl SigIgn SigUnblock xSignal waitNohang)
+
+(var Sig i32 NIL)
+(var SigDfl i8* NIL)
+(var SigIgn i8* NIL)
+(var SigUnblock i32 NIL)
+
 (de T i32 xSignal (i32))
 (de T void waitNohang ())
+
+(local) xErrno
 (de T i32 xErrno ())
-(de T i64 getTime ())
+
+# Catch and Throw
+(local) (JmpBufSize QuitRst)
+
+(var JmpBufSize i64 NIL)
+(var QuitRst i8 NIL)
 
 # Native lib.c
+(local) (dlOpen ffiPrep ffiCall)
+
 (de T i8* dlOpen (i8*))
 (de T i8* ffiPrep (i8* i8* i64))
 (de T i64 ffiCall (i8* i64))
 
 # Case mappings lib.c
+(local) (isLowc isUppc isLetterOrDigit toUpperCase toLowerCase)
+
 (de T i1 isLowc (i32))
 (de T i1 isUppc (i32))
 (de T i1 isLetterOrDigit (i32))

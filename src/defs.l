@@ -1,4 +1,4 @@
-# 27feb20 Software Lab. Alexander Burger
+# 19apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -6,12 +6,13 @@
 (local) (HEAP CELLS STACK TOP BUFSIZ DB1)
 
 (setq
-   HEAP (*/ 1024 1024 8)   # Heap size (number of pointers)
-   CELLS (/ HEAP 2)        # Number of cells in a heap (65536)
-   STACK (- (* 64 1024))   # Default coroutine stack size (64 kB, downwards)
-   TOP (hex "110000")      # Character top
-   BUFSIZ 4096             # I/O buffer size
-   DB1 (hex "1A") )        # Name of '{1}'
+   HEAP (*/ 1024 1024 8)      # Heap size (number of pointers)
+   CELLS (/ HEAP 2)           # Number of cells in a heap (65536)
+   STACK (- (* 64 1024))      # Default coroutine stack size (64 kB, downwards)
+   TOP (hex "110000")         # Character top
+   BUFSIZ 4096                # I/O buffer size
+   DB1 (hex "1A")             # Name of '{1}'
+   292MY (dec (** 2 63)) )    # 292 million years
 
 # PLIO Tokens
 (local) (NIX BEG DOT END NUMBER INTERN TRANSIENT EXTERN)

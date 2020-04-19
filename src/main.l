@@ -1,4 +1,4 @@
-# 18apr20 Software Lab. Alexander Burger
+# 19apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -81,8 +81,17 @@
             (? (== P H)) )
          (set $Avail A) ) ) )
 
+# (raw ['flg]) -> flg
+(de _raw (Exe)
+   (let X (cdr Exe)
+      (cond
+         ((atom X)
+            (if (=0 (val Termio)) $Nil $T) )
+         ((nil? (eval (car X))) (setCooked) @)
+         (T (setRaw) @) ) ) )
+
 # Signals
-(local) (sig sigChld sighandler)
+(local) (sig sigTerm sigChld sighandler)
 
 (de void sig ((i32 . N))
    (ifn (=0 (val $TtyPid))
@@ -90,6 +99,10 @@
       (set $Signal (+ (val $Signal) 1))
       (let P (ofs $Signal (xSignal N))
          (set P (+ (val P) 1)) ) ) )
+
+(de void sigTerm ((i32 . N))
+   #!
+   )
 
 (de void sigChld ((i32 . N))
    (waitNohang) )
@@ -811,6 +824,7 @@ atomErr pairErr varErr itemErr protErr lockErr forkErr symNsErr)
    (initOutFile 2)  # Standard error
    (set $OutFile (initOutFile 1))  # Standard output
    (set $InFile (initInFile 0 null))  # Standard input
+   (set Tio (=0 (tcgetattr 0 OrgTermio)))  # Save terminal I/O
    (signal (val SIGCHLD Sig) (fun sigChld))
    (when (=0 (setjmp QuitRst))
       (loadAll 0)  # Load arguments

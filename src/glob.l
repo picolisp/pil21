@@ -1,4 +1,4 @@
-# 18apr20 Software Lab. Alexander Burger
+# 19apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -15,7 +15,6 @@
 (var $StkSize i32 STACK)               # Coroutine stack segment size
 (var $StkLimit i8* null)               # Stack limit: StackN-Size+4096
 (var $Ret 0)                           # Secondary return value
-(var $Termio i8* null)                 # Raw mode terminal I/O
 (var $TtyPid i32 0)                    # Terminal process ID
 (var $InFDs i32 0)                     # Number of input files
 (var $InFiles i8** null)               # Input files
@@ -212,6 +211,8 @@
    # Input/Output
    (NIL "path" _path)
    (NIL "read" _read)
+   (NIL "key" _key)
+   (NIL "char" _char)
    (NIL "in" _in)
    (NIL "out" _out)
    (NIL "pipe" _pipe)
@@ -261,6 +262,7 @@
    # Networking
    (NIL "udp" _udp)
    # System functions
+   (NIL "raw" _raw)
    (NIL "sys" _sys)
    (NIL "argv" _argv)
    (NIL "native" _native)
@@ -369,7 +371,6 @@
    31 31 28 31 30 31 30 31 31 30 31 30 31 )
 
 # Booleans
-(var $Tio i1 0)                  # Terminal I/O
 (var $Repl i1 0)                 # REPL flag
 (var $PRepl i1 0)                # Parent REPL
 (var $Jam i1 0)                  # Error jam

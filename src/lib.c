@@ -1,4 +1,4 @@
-// 17apr20 Software Lab. Alexander Burger
+// 19apr20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -58,6 +58,52 @@ int32_t nonBlocking(int32_t fd) {
    return (int32_t)flg;
 }
 
+// Terminal
+int Tio;
+struct termios OrgTermio, *Termio;
+
+static void tcSet(struct termios *p) {
+   if (Termio)
+      while (tcsetattr(STDIN_FILENO, TCSADRAIN, p)  &&  errno == EINTR);
+}
+
+void stopTerm(void) {
+   sigset_t mask;
+
+   tcSet(&OrgTermio);
+   sigemptyset(&mask);
+   sigaddset(&mask, SIGTSTP);
+   sigprocmask(SIG_UNBLOCK, &mask, NULL);
+   signal(SIGTSTP, SIG_DFL),  raise(SIGTSTP);
+   tcSet(Termio);
+}
+
+void setRaw(void) {
+   if (Tio && !Termio) {
+      *(Termio = malloc(sizeof(struct termios))) = OrgTermio;
+      Termio->c_iflag = 0;
+      Termio->c_oflag = OPOST+ONLCR;
+      Termio->c_lflag = ISIG;
+      Termio->c_cc[VMIN] = 1;
+      Termio->c_cc[VTIME] = 0;
+      tcSet(Termio);
+   }
+}
+
+void setCooked(void) {
+   tcSet(&OrgTermio);
+   free(Termio),  Termio = NULL;
+}
+
+// System
+int64_t getTime(void) {
+   struct timeval tim;
+
+   if (gettimeofday(&tim, NULL))
+      return 0;
+   return (int64_t)tim.tv_sec * 1000 + ((int64_t)tim.tv_usec + 500) / 1000;
+}
+
 // Polling
 void pollIn(int32_t fd, struct pollfd *p) {
    p->fd = fd;
@@ -73,12 +119,16 @@ int32_t xPoll(struct pollfd *fds, int64_t nfds, int64_t timeout) {
    return (int32_t)poll(fds, (nfds_t)nfds, (int)timeout);
 }
 
-int32_t readyIn(struct pollfd *p) {
-   return (int32_t)p->revents & POLLIN;
+int readyIn(struct pollfd *p, int32_t fd) {
+   while (p->fd != fd)
+      ++fd;
+   return (p->revents & POLLIN) != 0;
 }
 
-int32_t readyOut(struct pollfd *p) {
-   return (int32_t)p->revents & POLLOUT;
+int readyOut(struct pollfd *p, int32_t fd) {
+   while (p->fd != fd)
+      ++fd;
+   return (p->revents & POLLOUT) != 0;
 }
 
 // Locking
@@ -124,6 +174,16 @@ int32_t getLock(int32_t fd, off_t n, off_t len) {
    return fl.l_type == F_UNLCK? 0 : fl.l_pid;
 }
 
+// Signals
+int32_t Sig[] = {
+   SIGHUP, SIGINT, SIGUSR1, SIGUSR2, SIGPIPE, SIGALRM, SIGTERM, SIGCHLD,
+   SIGCONT, SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU, SIGIO
+};
+
+sighandler_t SigDfl = SIG_DFL;
+sighandler_t SigIgn = SIG_IGN;
+int SigUnblock = SIG_UNBLOCK;
+
 // Sync src/defs.l 'SIGHUP' and src/glob.l '$Signal'
 int32_t xSignal(int32_t n) {
    switch (n) {
@@ -144,15 +204,6 @@ int32_t xSignal(int32_t n) {
    }
    return 0;
 }
-
-int32_t Sig[] = {
-   SIGHUP, SIGINT, SIGUSR1, SIGUSR2, SIGPIPE, SIGALRM, SIGTERM, SIGCHLD,
-   SIGCONT, SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU, SIGIO
-};
-
-sighandler_t SigDfl = SIG_DFL;
-sighandler_t SigIgn = SIG_IGN;
-int SigUnblock = SIG_UNBLOCK;
 
 void waitNohang(void) {
    int e, stat;
@@ -179,20 +230,11 @@ int32_t xErrno(void) {
    return 0;
 }
 
-// System
-int64_t getTime(void) {
-   struct timeval tim;
-
-   if (gettimeofday(&tim, NULL))
-      return 0;
-   return (int64_t)tim.tv_sec * 1000 + ((int64_t)tim.tv_usec + 500) / 1000;
-}
-
 // Catch and Throw
 int64_t JmpBufSize = sizeof(jmp_buf);
 jmp_buf QuitRst;
 
-// Lisp data access
+// Lisp data access from C
 int64_t car(int64_t x) {
    return *(int64_t*)x;
 }

@@ -1,4 +1,4 @@
-# 18apr20 Software Lab. Alexander Burger
+# 19apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -591,15 +591,14 @@
          (let
             (Stk (stack)
                Poll (b64 (+ (length (val $Run)) (val $Children) 3))
-               I 0
-               M Ms )
+               Nfds 0 )
             (when (ge0 Fd)
                (if (hasData Fd)
-                  (setq M 0)
+                  (setq Ms 0)
                   (pollIn Fd Poll)  # First 'pollfd' struct
-                  (inc 'I) ) )
+                  (inc 'Nfds) ) )
             #! ...
-            (while (lt0 (xPoll Poll I M))
+            (while (lt0 (xPoll Poll Nfds Ms))
                (unless (== (xErrno) EINTR)
                   (set $Run $Nil)
                   (selectErr Exe) )
@@ -608,10 +607,13 @@
             (let (T2 (getTime)  D (- T2 Tim))
                (setq Tim T2)
                #! ...
-               (when (lt0 (setq Ms (- Ms D)))
+               (when
+                  (and
+                     (gt0 Ms)
+                     (lt0 (setq Ms (- Ms D))) )
                   (setq Ms 0) ) )
             (sigChk Exe)
-            (? (or (=0 Ms) (lt0 Fd) (n0 (readyIn Poll))))
+            (? (or (=0 Ms) (lt0 Fd) (readyIn Poll Fd)))
             (stack Stk) ) )
       (set $At (pop P)  $Task Task)
       Ms ) )
@@ -788,7 +790,7 @@
                            (In: line (+ (In: line) 1)) )
                         (In: ix (+ I 1)) ) ) ) )
             ((atom (val $Led))  # No line editor
-               (waitFd 0 0 -1)
+               (waitFd 0 0 292MY)
                (stdinByte) )
             (T
                (when (=0 (val 2 $Line))  # First call
@@ -1087,13 +1089,14 @@
 (local) (read1 token)
 
 (de read1 ((i32 . End))
-   (when (=0 (val $Chr))
+  (when (=0 (val $Chr))
       (call $Get) )
    (if (== End (val $Chr))
       $Nil
       (read0 YES) ) )
 
 (de token (X (i32 . C))
+   #!
    )
 
 # (read ['sym1 ['sym2]]) -> any
@@ -1108,6 +1111,60 @@
             (== (val $Chr) (char "\n"))
             (== (val $InFile) (val (val $InFiles)))  # Stdin
             (set $Chr 0) ) ) ) )
+
+# (key ['cnt]) -> sym
+(de _key (Exe)
+   (let X (eval (cadr Exe))
+      (flushAll)
+      (setRaw)
+      (if
+         (=0
+            (waitFd Exe 0
+               (if (nil? X)
+                  292MY
+                  (* (xCnt Exe X) 1000) ) ) )
+         $Nil
+         (let C (stdinByte)
+            (mkChar
+               (cond
+                  ((>= 127 C) C)  # Single byte
+                  ((== C (hex "FF")) (i32 TOP))  # Infinite
+                  (T
+                     (let B
+                        (if (=0 (& C (hex "20")))  # Two bytes
+                           (& C (hex "1F"))  # First byte 110xxxxx
+                           (let A
+                              (if (=0 (& C (hex "10")))  # Three bytes
+                                 (& C (hex "0F"))  # First byte 1110xxxx
+                                 (|  # Four bytes
+                                    (shl (& C 7) 6)  # First byte 11110xxx
+                                    (& (stdinByte) (hex "3F")) ) )  # 10xxxxxx
+                              (| (shl A 6) (& (stdinByte) (hex "3F"))) ) )
+                        (| (shl B 6) (& (stdinByte) (hex "3F"))) ) ) ) ) ) ) ) )
+
+# (char) -> sym
+# (char 'cnt) -> sym
+# (char T) -> sym
+# (char 'sym) -> cnt
+(de _char (Exe)
+   (let X (cdr Exe)
+      (cond
+         ((atom X)
+            (let Chr (val $Chr)
+               (when (=0 Chr)
+                  (setq Chr (call $Get)) )
+               (prog1
+                  (if (lt0 Chr)
+                     $Nil
+                     (mkChar (getChar Chr)) )
+                  (call $Get) ) ) )
+         ((cnt? (eval (car X)))
+            (if (=0 (int @))
+               $Nil
+               (mkChar (i32 @)) ) )
+         ((== @ $T) (mkChar TOP))
+         ((sym? @) (cnt (i64 (firstChar @))))
+         (T (atomErr Exe @)) ) ) )
 
 # (in 'any . prg) -> any
 (de _in (Exe)
@@ -1193,8 +1250,8 @@
                      (let Ca: (caFrame Ca)
                         (Ca: fin ZERO)
                         (setq Ca (Ca: link)) ) ) )
-               (free (val $Termio))  # Give up terminal control
-               (set $Termio null)
+               (free (val Termio))  # Give up terminal control
+               (set Termio null)
                (set
                   $PRepl (val $Repl)  # Set parent REPL flag
                   $PPid (val $Pid) )  # Set parent process ID
