@@ -1,4 +1,4 @@
-# 19apr20 Software Lab. Alexander Burger
+# 20apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1552,7 +1552,8 @@
 (local) (repl loadAll)
 
 (de repl (Exe (i8 . Pr) X)
-   (let (Safe (link (push -ZERO NIL))  P (b8 (ioFrame T)))
+   (save -ZERO)
+   (let P (b8 (ioFrame T))
       (rdOpen Exe X P)
       (pushInFiles P)
       (setq X $Nil)
@@ -1577,7 +1578,7 @@
                         (? (> (val $Chr) (char " ")))
                         (call $Get) ) ) ) )
             (? (nil? Y))
-            (set Safe Y)
+            (safe Y)
             (if
                (or
                   (<> (val $InFile) (val (val $InFiles)))
@@ -1586,7 +1587,7 @@
                (setq X (eval Y))
                (flushAll)
                (let A (val $At)
-                  (set Safe A)
+                  (safe A)
                   (setq X (set $At (eval Y)))
                   (set $At3 (val $At2))
                   (set $At2 A) )
@@ -1595,7 +1596,6 @@
                (print X)
                (newline) ) ) )
       (popInFiles)
-      (drop Safe)
       X ) )
 
 (de loadAll (Exe)

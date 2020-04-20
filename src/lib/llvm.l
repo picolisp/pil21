@@ -1333,7 +1333,7 @@ False Beg End Safe *Safe)
 ### Composite ###
 (symbols '(llvm priv pico))
 
-(local) (link drop pop save save2)
+(local) (link drop pop save save2 safe)
 
 (pico~de link (P)
    (log)
@@ -1389,3 +1389,8 @@ False Beg End Safe *Safe)
                (drop *Safe)
                (off *Safe) ) )
          Y ) ) )
+
+(pico~de safe (V)
+   (log)
+   (pico~let *Log NIL
+      (store V *Safe) ) )

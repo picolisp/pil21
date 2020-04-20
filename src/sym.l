@@ -1,4 +1,4 @@
-# 11apr20 Software Lab. Alexander Burger
+# 20apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -714,15 +714,14 @@
 
 # (pack 'any ..) -> sym
 (de _pack (Exe)
+   (save -ZERO)
    (let
       (X (cdr Exe)
          P (push 4 NIL ZERO NIL)  # [cnt last name link]
-         Q (link (ofs P 2))
-         Safe (link (push -ZERO NIL)) )
+         Q (link (ofs P 2)) )
       (while (pair X)
-         (pack (set Safe (eval (++ X))) P) )
-      (drop Q
-         (consStr (val Q)) ) ) )
+         (pack (safe (eval (++ X))) P) )
+      (consStr (val Q)) ) )
 
 # (glue 'any 'lst) -> sym
 (de _glue (Exe)
@@ -825,18 +824,17 @@
 
 # (set 'var 'any ..) -> any
 (de _set (Exe)
-   (let (X (cdr Exe)  Safe (link (push -ZERO NIL)))
+   (save -ZERO)
+   (let X (cdr Exe)
       (loop
-         (let Y (set Safe (needChkVar Exe (eval (++ X))))
+         (let Y (safe (needChkVar Exe (eval (++ X))))
             (and
                (sym? Y)
                (sym? (val (tail Y)))
                (dbTouch Exe Y) )
             (let Z (eval (++ X))
                (set Y Z)
-               (? (atom X)
-                  (drop Safe)
-                  Z ) ) ) ) ) )
+               (? (atom X) Z) ) ) ) ) )
 
 # (setq var 'any ..) -> any
 (de _setq (Exe)
@@ -860,9 +858,10 @@
 
 # (xchg 'var 'var ..) -> any
 (de _xchg (Exe)
-   (let (X (cdr Exe)  Safe (link (push -ZERO NIL)))
+   (save -ZERO)
+   (let X (cdr Exe)
       (loop
-         (let Y (set Safe (needChkVar Exe (eval (++ X))))
+         (let Y (safe (needChkVar Exe (eval (++ X))))
             (and
                (sym? Y)
                (sym? (val (tail Y)))
@@ -873,9 +872,7 @@
                   (sym? (val (tail Z)))
                   (dbTouch Exe Z) )
                (setq Z (xchg Y Z))
-               (? (atom X)
-                  (drop Safe)
-                  Z ) ) ) ) ) )
+               (? (atom X) Z) ) ) ) ) )
 
 # (on var ..) -> T
 (de _on (Exe)
@@ -1407,13 +1404,12 @@
 (de _put (Exe)
    (let
       (X (cdr Exe)
-         Y (eval (++ X))
-         Safe (link (push Y NIL))
+         Y (save (eval (++ X)))
          Key T )
       (loop
          (setq Key (eval (++ X)))
          (? (atom (cdr X)))
-         (setq Y (set Safe (getn Exe Y Key))) )
+         (setq Y (safe (getn Exe Y Key))) )
       (when (num? Y)  # Need symbol or pair
          (argErr Exe Y) )
       (link (push Key NIL))
@@ -1427,51 +1423,46 @@
             (if (== ZERO Key)
                (set (chkVar Exe Y) Val)
                (put Y Key Val) ) )
-         (drop Safe)
          Val ) ) )
 
 # (get 'sym1|lst ['sym2|cnt ..]) -> any
 (de _get (Exe)
    (let (X (cdr Exe)  Y (eval (++ X)))
       (when (pair X)
-         (let Safe (link (push Y NIL))
+         (save Y
             (loop
                (setq Y (getn Exe Y (eval (++ X))))
                (? (atom X))
-               (set Safe Y) )
-            (drop Safe) ) )
+               (safe Y) ) ) )
       Y ) )
 
 # (prop 'sym1|lst ['sym2|cnt ..] 'sym) -> var
 (de _prop (Exe)
    (let
       (X (cdr Exe)
-         Y (eval (++ X))
-         Safe (link (push Y NIL))
+         Y (save (eval (++ X)))
          Key T )
       (loop
          (setq Key (eval (++ X)))
          (? (atom X))
-         (setq Y (set Safe (getn Exe Y Key))) )
+         (setq Y (safe (getn Exe Y Key))) )
       (needSym Exe Y)
       (link (push Key NIL))
       (when (sym? (val (tail Y)))
          (if (nil? Val)
             (dbFetch Exe Y)  # Volatile property
             (dbTouch Exe Y) ) )
-      (drop Safe
-         (prop Y Key) ) ) )
+      (prop Y Key) ) )
 
 # (; 'sym1|lst [sym2|cnt ..]) -> any
 (de _semicol (Exe)
    (let (X (cdr Exe)  Y (eval (++ X)))
       (when (pair X)
-         (let Safe (link (push Y NIL))
+         (save Y
             (loop
                (setq Y (getn Exe Y (++ X)))
                (? (atom X))
-               (set Safe Y) )
-            (drop Safe) ) )
+               (safe Y) ) ) )
       Y ) )
 
 # (=: sym|0 [sym1|cnt ..] 'any) -> any
@@ -1520,13 +1511,12 @@
 (de _putl (Exe)
    (let
       (X (cdr Exe)
-         Y (eval (++ X))
-         Safe (link (push Y NIL))
+         Y (save (eval (++ X)))
          Z T )
       (loop
          (setq Z (eval (++ X)))
          (? (atom X))
-         (setq Y (set Safe (getn Exe Y Z))) )
+         (setq Y (safe (getn Exe Y Z))) )
       (let (R (link (push Z NIL))  Tail (val (tail Sym)))
          (when (sym? (setq X Tail))
             (dbTouch Exe Y)
@@ -1543,30 +1533,25 @@
                      (setq X (cons P X)) ) ) ) )
          (set (tail Y)
             (if (sym? Tail) (| X 8) X) )
-         (drop Safe
-            (val R) ) ) ) )
+         (val R) ) ) )
 
 # (getl 'sym1|lst1 ['sym2|cnt ..]) -> lst
 (de _getl (Exe)
-   (let
-      (X (cdr Exe)
-         Y (eval (car X))
-         Safe (link (push Y NIL)) )
+   (let (X (cdr Exe)  Y (save (eval (car X))))
       (while (pair (shift X))
          (setq Y
-            (set Safe (getn Exe Y (eval (car X)))) ) )
+            (safe (getn Exe Y (eval (car X)))) ) )
       (when (sym? (setq X (val (tail (needSym Exe Y)))))
          (dbFetch Exe Y)
          (setq X (& (val (tail Y)) -9)) )
-      (drop Safe
-         (if (num? X)
-            $Nil
-            (let R (setq Y (cons (car X) $Nil))
-               (link (push R NIL))
-               (while (pair (shift X))
-                  (setq Y
-                     (set 2 Y (cons (car X) $Nil)) ) )
-               R ) ) ) ) )
+      (if (num? X)
+         $Nil
+         (let R (setq Y (cons (car X) $Nil))
+            (link (push R NIL))
+            (while (pair (shift X))
+               (setq Y
+                  (set 2 Y (cons (car X) $Nil)) ) )
+            R ) ) ) )
 
 (local) wipe
 
@@ -1608,10 +1593,7 @@
 
 # (meta 'obj|typ 'sym ['sym2|cnt ..]) -> any
 (de _meta (Exe)
-   (let
-      (X (cdr Exe)
-         Y (eval (++ X))
-         Safe (link (push Y NIL)) )
+   (let (X (cdr Exe)  Y (save (eval (++ X))))
       (when (num? Y)  # Need symbol or pair
          (argErr Exe Y) )
       (when (sym? Y)
@@ -1620,9 +1602,8 @@
          (setq Y (val Y)) )
       (setq Y (meta (eval (car X)) Y))
       (while (pair (shift X))
-         (set Safe Y)
+         (safe Y)
          (setq Y (get (eval (car X)) Y)) )
-      (drop Safe)
       Y ) )
 
 # (low? 'any) -> sym | NIL

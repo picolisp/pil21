@@ -1,4 +1,4 @@
-# 13apr20 Software Lab. Alexander Burger
+# 20apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1093,19 +1093,16 @@
 ### Arithmetics ###
 # (+ 'num ..) -> num
 (de _add (Exe)
-   (let (X (cdr Exe)  N (eval (++ X)))
-      (if (nil? N)
-         N
-         (let
-            (R (link (push (needNum Exe N) NIL))
-               Safe (link (push -ZERO NIL)) )
-            (while (pair X)
-               (? (nil? (setq N (eval (++ X))))
-                  (set R N) )
-               (set
-                  Safe (needNum Exe N)
-                  R (adds (val R) N) ) )
-            (pop R) ) ) ) )
+   (let X (cdr Exe)
+      (if (nil? (eval (car X)))
+         @
+         (save -ZERO
+            (let R (link (push (needNum Exe @) NIL))
+               (loop
+                  (? (atom (shift X)) (val R))
+                  (? (nil? (eval (car X))) @)
+                  (safe (needNum Exe @))
+                  (set R (adds (val R) @)) ) ) ) ) ) )
 
 # (- 'num ..) -> num
 (de _sub (Exe)
@@ -1115,160 +1112,150 @@
          (needNum Exe N)
          (if (atom X)  # Unary minus
             (neg N)
-            (let (R (link (push N NIL))  Safe (link (push -ZERO NIL)))
-               (loop
-                  (? (nil? (setq N (eval (++ X))))
-                     (set R N) )
-                  (set
-                     Safe (needNum Exe N)
-                     R (subs (val R) N) )
-                  (? (atom X)) )
-               (pop R) ) ) ) ) )
+            (save -ZERO
+               (let R (link (push N NIL))
+                  (loop
+                     (? (nil? (eval (++ X))) @)
+                     (safe (needNum Exe @))
+                     (set R (subs (val R) @))
+                     (? (atom X) (val R)) ) ) ) ) ) ) )
 
 # (inc 'num) -> num
 # (inc 'var ['num]) -> num
 (de _inc (Exe)
-   (let (X (cdr Exe)  Y (save (eval (++ X))))
+   (let X (cdr Exe)
       (cond
-         ((nil? Y) Y)
-         ((num? Y) (incs Y))
+         ((nil? (eval (car X))) @)
+         ((num? @) (incs @))
          (T
-            (chkVar Exe Y)  # Symbol or cell
-            (and
-               (sym? Y)
-               (sym? (val (tail Y)))  # External
-               (dbTouch Exe Y) )
-            (if (atom X)
-               (if (nil? (val Y))
-                  @
-                  (set Y (incs (needNum Exe @))) )
-               (let (D (save (eval (car X)))  N (val Y))
-                  (cond
-                     ((nil? N) N)
-                     ((nil? D) D)
-                     (T (set Y (adds (needNum Exe N) (needNum Exe D)))) ) ) ) ) ) ) )
+            (let Y (save (chkVar Exe @))  # Symbol or cell
+               (and
+                  (sym? Y)
+                  (sym? (val (tail Y)))  # External
+                  (dbTouch Exe Y) )
+               (if (atom (shift X))
+                  (if (nil? (val Y))
+                     @
+                     (set Y (incs (needNum Exe @))) )
+                  (let (D (save (eval (car X)))  N (val Y))
+                     (cond
+                        ((nil? N) N)
+                        ((nil? D) D)
+                        (T (set Y (adds (needNum Exe N) (needNum Exe D)))) ) ) ) ) ) ) ) )
 
 # (dec 'num) -> num
 # (dec 'var ['num]) -> num
 (de _dec (Exe)
-   (let (X (cdr Exe)  Y (save (eval (++ X))))
+   (let X (cdr Exe)
       (cond
-         ((nil? Y) Y)
-         ((num? Y) (decs Y))
+         ((nil? (eval (car X))) @)
+         ((num? @) (decs @))
          (T
-            (chkVar Exe Y)  # Symbol or cell
-            (and
-               (sym? Y)
-               (sym? (val (tail Y)))  # External
-               (dbTouch Exe Y) )
-            (if (atom X)
-               (if (nil? (val Y))
-                  @
-                  (set Y (decs (needNum Exe @))) )
-               (let (D (save (eval (car X)))  N (val Y))
-                  (cond
-                     ((nil? N) N)
-                     ((nil? D) D)
-                     (T (set Y (subs (needNum Exe N) (needNum Exe D)))) ) ) ) ) ) ) )
+            (let Y (save (chkVar Exe @))  # Symbol or cell
+               (and
+                  (sym? Y)
+                  (sym? (val (tail Y)))  # External
+                  (dbTouch Exe Y) )
+               (if (atom (shift X))
+                  (if (nil? (val Y))
+                     @
+                     (set Y (decs (needNum Exe @))) )
+                  (let (D (save (eval (car X)))  N (val Y))
+                     (cond
+                        ((nil? N) N)
+                        ((nil? D) D)
+                        (T (set Y (subs (needNum Exe N) (needNum Exe D)))) ) ) ) ) ) ) ) )
 
 # (* 'num ..) -> num
 (de _mul (Exe)
-   (let (X (cdr Exe)  N (eval (++ X)))
-      (if (nil? N)
-         N
-         (let
-            (Sign (sign? (needNum Exe N))
-               R (link (push (setq N (pos N)) NIL))
-               Safe (link (push -ZERO NIL)) )
-            (loop
-               (? (atom X)
-                  (let N (pop R)
-                     (if Sign (neg N) N) ) )
-               (? (nil? (setq N (eval (++ X))))
-                  (drop R)
-                  N )
-               (when (sign? (needNum Exe N))
-                  (setq Sign (not Sign)  N (pos N)) )
-               (set
-                  Safe N
-                  R (mulu (val R) N) ) ) ) ) ) )
+   (let X (cdr Exe)
+      (if (nil? (eval (car X)))
+         @
+         (save -ZERO
+            (let
+               (Sign (sign? (needNum Exe @))
+                  R (link (push (pos @) NIL)) )
+               (loop
+                  (? (atom (shift X))
+                     (let N (val R)
+                        (if Sign (neg N) N) ) )
+                  (let N (eval (car X))
+                     (? (nil? N) N)
+                     (when (sign? (needNum Exe N))
+                        (setq Sign (not Sign)  N (pos N)) )
+                     (safe N)
+                     (set R (mulu (val R) N)) ) ) ) ) ) ) )
 
 # (*/ 'num1 ['num2 ..] 'num3) -> num
 (de _mulDiv (Exe)
-   (let (X (cdr Exe)  N (eval (++ X)))
-      (if (nil? N)
-         N
-         (let
-            (Sign (sign? (needNum Exe N))
-               R (link (push (setq N (pos N)) NIL))
-               Safe (link (push -ZERO NIL))
-               Safe2 (link (push -ZERO NIL)) )
-            (loop
-               (? (nil? (setq N (eval (++ X))))
-                  (drop R)
-                  N )
-               (when (sign? (needNum Exe N))
-                  (setq Sign (not Sign)  N (pos N)) )
-               (set Safe N)
-               (? (atom X)
-                  (when (== N ZERO)
-                     (divErr Exe) )
-                  (setq N
-                     (divu  # Divide by last arg
-                        (set R
-                           (addu (val R) (set Safe2 (shru N))) )  # Round
-                        N ) )
-                  (drop R)
-                  (if Sign (neg N) N) )
-               (set R (mulu (val R) N)) ) ) ) ) )
+   (let X (cdr Exe)
+      (if (nil? (eval (car X)))
+         @
+         (save -ZERO
+            (let
+               (Sign (sign? (needNum Exe @))
+                  R (link (push (pos @) NIL)) )
+               (shift X)
+               (loop
+                  (let N (eval (car X))
+                     (? (nil? N) N)
+                     (when (sign? (needNum Exe N))
+                        (setq Sign (not Sign)  N (pos N)) )
+                     (safe N)
+                     (? (atom (shift X))
+                        (when (== N ZERO)
+                           (divErr Exe) )
+                        (let Half (save (shru N))
+                           (setq N
+                              (divu  # Divide by last arg
+                                 (set R (addu (val R) Half))  # Round
+                                 N ) ) )
+                        (if Sign (neg N) N) )
+                     (set R (mulu (val R) N)) ) ) ) ) ) ) )
 
 # (/ 'num ..) -> num
 (de _div (Exe)
-   (let (X (cdr Exe)  N (eval (++ X)))
-      (if (nil? N)
-         N
-         (let
-            (Sign (sign? (needNum Exe N))
-               R (link (push (setq N (pos N)) NIL))
-               Safe (link (push -ZERO NIL)) )
-            (loop
-               (? (atom X)
-                  (let N (pop R)
-                     (if Sign (neg N) N) ) )
-               (? (nil? (setq N (eval (++ X))))
-                  (drop R)
-                  N )
-               (when (== N ZERO)
-                  (divErr Exe) )
-               (when (sign? (needNum Exe N))
-                  (setq Sign (not Sign)  N (pos N)) )
-               (set
-                  Safe N
-                  R (divu (val R) N) ) ) ) ) ) )
+   (let X (cdr Exe)
+      (if (nil? (eval (car X)))
+         @
+         (save -ZERO
+            (let
+               (Sign (sign? (needNum Exe @))
+                  R (link (push (pos @) NIL)) )
+               (loop
+                  (? (atom (shift X))
+                     (let N (val R)
+                        (if Sign (neg N) N) ) )
+                  (let N (eval (car X))
+                     (? (nil? N) N)
+                     (when (== N ZERO)
+                        (divErr Exe) )
+                     (when (sign? (needNum Exe N))
+                        (setq Sign (not Sign)  N (pos N)) )
+                     (safe N)
+                     (set R (divu (val R) N)) ) ) ) ) ) ) )
 
 # (% 'num ..) -> num
 (de _rem (Exe)
-   (let (X (cdr Exe)  N (eval (++ X)))
-      (if (nil? N)
-         N
-         (let
-            (Sign (sign? (needNum Exe N))
-               R (link (push (setq N (pos N)) NIL))
-               Safe (link (push -ZERO NIL)) )
-            (loop
-               (? (atom X)
-                  (let N (pop R)
-                     (if Sign (neg N) N) ) )
-               (? (nil? (setq N (eval (++ X))))
-                  (drop R)
-                  N )
-               (when (== N ZERO)
-                  (divErr Exe) )
-               (when (sign? (needNum Exe N))
-                  (setq N (pos N)) )
-               (set
-                  Safe N
-                  R (remu (val R) N) ) ) ) ) ) )
+   (let X (cdr Exe)
+      (if (nil? (eval (car X)))
+         @
+         (save -ZERO
+            (let
+               (Sign (sign? (needNum Exe @))
+                  R (link (push (pos @) NIL)) )
+               (loop
+                  (? (atom (shift X))
+                     (let N (val R)
+                        (if Sign (neg N) N) ) )
+                  (let N (eval (car X))
+                     (? (nil? N) N)
+                     (when (== N ZERO)
+                        (divErr Exe) )
+                     (set R
+                        (remu
+                           (val R)
+                           (safe (pos (needNum Exe N))) ) ) ) ) ) ) ) ) )
 
 # (>> 'cnt 'num) -> num
 (de _shr (Exe)
@@ -1282,9 +1269,8 @@
             (nil? Y)
             (== ZERO (needNum Exe Y)) )
          Y
-         (let
-            (Sign (sign? Y)
-               R (link (push (setq Y (pos Y)) NIL)) )
+         (let Sign (sign? Y)
+            (setq Y (save (pos Y)))
             (cond
                ((gt0 N)
                   (while (and (big? Y) (>= N 64))  # Large shift count
@@ -1292,48 +1278,53 @@
                         (goto 9) )
                      (when (=0 (setq N (- N 64)))
                         (goto 9) ) )
-                  (setq Y (set R (shru Y)))  # Non-destructive
+                  (setq Y (safe (shru Y)))  # Non-destructive
                   (until (=0 (dec 'N))
                      (setq Y (half Y)) ) )  # Shift right (destructive)
                (T
                   (while (>= -64 N)
-                     (setq Y (set R (consNum 0 Y)))
+                     (setq Y (safe (consNum 0 Y)))
                      (when (=0 (setq N (+ N 64)))
                         (goto 9) ) )
-                  (setq Y (set R (shlu Y)))  # Non-destructive
+                  (setq Y (safe (shlu Y)))  # Non-destructive
                   (until (=0 (inc 'N))
-                     (setq Y (set R (twice Y))) ) ) )  # Shift left (destructive)
+                     (setq Y (safe (twice Y))) ) ) )  # Shift left (destructive)
             (: 9
-               (drop R)
                (if Sign (neg Y) Y) ) ) ) ) )
 
 # (lt0 'any) -> num | NIL
 (de _lt0 (Exe)
-   (let N (eval (cadr Exe))
-      (if (and (num? N) (sign? N))
-         N
-         $Nil ) ) )
+   (if (and (num? (eval (cadr Exe))) (sign? @))
+      @
+      $Nil ) )
 
 # (le0 'any) -> num | NIL
 (de _le0 (Exe)
-   (let N (eval (cadr Exe))
-      (if (and (num? N) (or (== N ZERO) (sign? N)))
-         N
-         $Nil ) ) )
+   (if
+      (and
+         (num? (eval (cadr Exe)))
+         (or (== @ ZERO) (sign? @)) )
+      @
+      $Nil ) )
 
 # (ge0 'any) -> num | NIL
 (de _ge0 (Exe)
-   (let N (eval (cadr Exe))
-      (if (and (num? N) (not (sign? N)))
-         N
-         $Nil ) ) )
+   (if
+      (and
+         (num? (eval (cadr Exe)))
+         (not (sign? @)) )
+      @
+      $Nil ) )
 
 # (gt0 'any) -> num | NIL
 (de _gt0 (Exe)
-   (let N (eval (cadr Exe))
-      (if (and (num? N) (<> N ZERO) (not (sign? N)))
-         N
-         $Nil ) ) )
+   (if
+      (and
+         (num? (eval (cadr Exe)))
+         (<> @ ZERO)
+         (not (sign? @)) )
+      @
+      $Nil ) )
 
 # (abs 'num) -> num
 (de _abs (Exe)
@@ -1366,51 +1357,54 @@
 
 # (& 'num ..) -> num
 (de _bitAnd (Exe)
-   (let (X (cdr Exe)  A (eval (++ X)))
-      (if (nil? A)
-         A
-         (let R (link (push (pos (needNum Exe A)) NIL))
-            (while (pair X)
-               (let B (eval (++ X))
-                  (? (nil? B) (set R B))
-                  (set R (andu (val R) (pos (needNum Exe B)))) ) )
-            (pop R) ) ) ) )
+   (let X (cdr Exe)
+      (if (nil? (eval (car X)))
+         @
+         (save -ZERO
+            (let R (link (push (pos (needNum Exe @)) NIL))
+               (loop
+                  (? (atom (shift X)) (val R))
+                  (? (nil? (eval (car X))) @)
+                  (safe (needNum Exe @))
+                  (set R (andu (val R) (pos @))) ) ) ) ) ) )
 
 # (| 'num ..) -> num
 (de _bitOr (Exe)
-   (let (X (cdr Exe)  A (eval (++ X)))
-      (if (nil? A)
-         A
-         (let R (link (push (pos (needNum Exe A)) NIL))
-            (while (pair X)
-               (let B (eval (++ X))
-                  (? (nil? B) (set R B))
-                  (set R (oru (val R) (pos (needNum Exe B)))) ) )
-            (pop R) ) ) ) )
+   (let X (cdr Exe)
+      (if (nil? (eval (car X)))
+         @
+         (save -ZERO
+            (let R (link (push (pos (needNum Exe @)) NIL))
+               (loop
+                  (? (atom (shift X)) (val R))
+                  (? (nil? (eval (car X))) @)
+                  (safe (needNum Exe @))
+                  (set R (oru (val R) (pos @))) ) ) ) ) ) )
 
 # (x| 'num ..) -> num
 (de _bitXor (Exe)
-   (let (X (cdr Exe)  A (eval (++ X)))
-      (if (nil? A)
-         A
-         (let R (link (push (pos (needNum Exe A)) NIL))
-            (while (pair X)
-               (let B (eval (++ X))
-                  (? (nil? B) (set R B))
-                  (set R (xoru (val R) (pos (needNum Exe B)))) ) )
-            (pop R) ) ) ) )
+   (let X (cdr Exe)
+      (if (nil? (eval (car X)))
+         @
+         (save -ZERO
+            (let R (link (push (pos (needNum Exe @)) NIL))
+               (loop
+                  (? (atom (shift X)) (val R))
+                  (? (nil? (eval (car X))) @)
+                  (safe (needNum Exe @))
+                  (set R (xoru (val R) (pos @))) ) ) ) ) ) )
 
 # (sqrt 'num ['flg|num]) -> num
 (de _sqrt (Exe)
-   (let (X (cdr Exe)  Y (eval (++ X)))
-      (if (nil? Y)
-         Y
-         (when (sign? (needNum Exe Y))
-            (argErr Exe Y) )
-         (let (P (link (push Y NIL))  Z (eval (++ X)))
+   (let X (cdr Exe)
+      (if (nil? (eval (car X)))
+         @
+         (when (sign? (needNum Exe @))
+            (argErr Exe @) )
+         (let (Y (save @)  Z (eval (cadr X)))
             (link (push Z NIL))
             (when (num? Z)
-               (setq Y (set P (mulu Y Z))) )
+               (setq Y (safe (mulu Y Z))) )
             (prog1
                (if (cnt? Y)
                   (let (M (hex "400000000000000")  R 0)
@@ -1443,14 +1437,13 @@
                            (when (ge0 (cmpu Y N))
                               (setq Y (subu Y N))
                               (set R (addu N M)) ) )
-                           (set R (half (val R)))
-                           (setq M (half M))
-                           (? (== ZERO (setq M (half M)))) )
+                        (set R (half (val R)))
+                        (setq M (half M))
+                        (? (== ZERO (setq M (half M)))) )
                      (setq R (val R))
                      (if (or (nil? Z) (ge0 (cmpu R Y)))
                         R
-                        (addu R ONE) ) ) )  # Round
-               (drop P) ) ) ) ) )
+                        (addu R ONE) ) ) ) ) ) ) ) )  # Round
 
 
 ### Random generator ###
@@ -1459,8 +1452,7 @@
 (de initSeed (X)
    (let C 0
       (while (pair X)
-         (setq C (+ C (initSeed (car X))))
-         (shift X) )
+         (setq C (+ C (initSeed (++ X)))) )
       (unless (nil? X)
          (unless (num? X)
             (setq X (name (val (tail X)))) )

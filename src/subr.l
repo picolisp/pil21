@@ -45,16 +45,13 @@
 
 # (>= 'any ..) -> flg
 (de _ge (Exe)
-   (let (X (cdr Exe)  Y (eval (car X))  Safe (link (push Y NIL)))
+   (let (X (cdr Exe)  Y (save (eval (car X))))
       (while (pair (shift X))
          (let Z (eval (car X))
             (when (lt0 (compare Y Z))
-               (drop Safe)
                (ret $Nil) )
-            (setq Y (set Safe Z)) ) )
-      (drop Safe)
+            (setq Y (safe Z)) ) )
       $T ) )
-
 
 # (num? 'any) -> num | NIL
 (de _numQ (Exe)
