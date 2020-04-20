@@ -29,28 +29,33 @@
 
 # (== 'any ..) -> flg
 (de _eq (Exe)
-   (let (X (cdr Exe)  A (save (eval (car X))))
+   (let (X (cdr Exe)  Y (save (eval (car X))))
       (while (pair (shift X))
-         (unless (== A (eval (car X)))
+         (unless (== Y (eval (car X)))
             (ret $Nil) ) )
       $T ) )
 
 # (= 'any ..) -> flg
 (de _equal (Exe)
-   (let (X (cdr Exe)  A (save (eval (car X))))
+   (let (X (cdr Exe)  Y (save (eval (car X))))
       (while (pair (shift X))
-         (unless (equal A (eval (car X)))
+         (unless (equal Y (eval (car X)))
             (ret $Nil) ) )
       $T ) )
 
 # (>= 'any ..) -> flg
 (de _ge (Exe)
-   (let (X (cdr Exe)  A (eval (car X))  Safe (link (push A NIL)))
+   (let (X (cdr Exe)  Y (eval (car X))  Safe (link (push Y NIL)))
       (while (pair (shift X))
-         (let B (eval (car X))
-            (when (lt0 (compare A B))
+         (let Z (eval (car X))
+            (when (lt0 (compare Y Z))
                (drop Safe)
                (ret $Nil) )
-            (setq A (set Safe B)) ) )
+            (setq Y (set Safe Z)) ) )
       (drop Safe)
       $T ) )
+
+
+# (num? 'any) -> num | NIL
+(de _numQ (Exe)
+   (if (num? (eval (cadr Exe))) @ $Nil) )

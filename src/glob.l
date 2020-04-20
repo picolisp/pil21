@@ -248,6 +248,8 @@
    (NIL "if" _if)
    (NIL "when" _when)
    (NIL "unless" _unless)
+   (NIL "cond" _cond)
+   (NIL "nond" _nond)
    (NIL "with" _with)
    (NIL "catch" _catch)
    (NIL "throw" _throw)
@@ -263,6 +265,7 @@
    (NIL "==" _eq)
    (NIL "=" _equal)
    (NIL ">=" _ge)
+   (NIL "num?" _numQ)
    # Networking
    (NIL "udp" _udp)
    # System functions

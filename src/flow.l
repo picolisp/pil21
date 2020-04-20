@@ -140,6 +140,24 @@
          (set $At @)
          $Nil ) ) )
 
+# (cond ('any1 . prg1) ('any2 . prg2) ..) -> any
+(de _cond (X)
+   (loop
+      (? (atom (shift X)) $Nil)
+      (let Y (car X)
+         (? (not (nil? (eval (car Y))))
+            (set $At @)
+            (run (cdr Y)) ) ) ) )
+
+# (nond ('any1 . prg1) ('any2 . prg2) ..) -> any
+(de _nond (X)
+   (loop
+      (? (atom (shift X)) $Nil)
+      (let Y (car X)
+         (? (nil? (eval (car Y)))
+            (run (cdr Y)) ) )
+      (set $At @) ) )
+
 # (with 'var . prg) -> any
 (de _with (Exe)
    (let (X (cdr Exe)  Y (needVar Exe (eval (++ X))))
