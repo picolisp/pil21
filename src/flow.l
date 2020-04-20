@@ -1,4 +1,4 @@
-# 17apr20 Software Lab. Alexander Burger
+# 20apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -101,19 +101,44 @@
 (de _and (Exe)
    (let X (cdr Exe)
       (loop
-         (let A (eval (++ X))
-            (? (nil? A) A)
-            (set $At A)
-            (? (atom X) A) ) ) ) )
+         (let Y (eval (++ X))
+            (? (nil? Y) Y)
+            (set $At Y)
+            (? (atom X) Y) ) ) ) )
+
+# (or 'any ..) -> any
+(de _or (Exe)
+   (let X (cdr Exe)
+      (loop
+         (let Y (eval (++ X))
+            (? (not (nil? Y))
+               (set $At Y)
+               Y )
+            (? (atom X) Y) ) ) ) )
 
 # (if 'any1 any2 . prg) -> any
 (de _if (Exe)
    (let X (cdr Exe)
-      (let A (eval (++ X))
-         (if (nil? A)
-            (run (cdr X))
-            (set $At A)
-            (eval (car X)) ) ) ) )
+      (if (nil? (eval (++ X)))
+         (run (cdr X))
+         (set $At @)
+         (eval (car X)) ) ) )
+
+# (when 'any . prg) -> any
+(de _when (Exe)
+   (let X (cdr Exe)
+      (if (nil? (eval (++ X)))
+         @
+         (set $At @)
+         (run X) ) ) )
+
+# (unless 'any . prg) -> any
+(de _unless (Exe)
+   (let X (cdr Exe)
+      (if (nil? (eval (++ X)))
+         (run X)
+         (set $At @)
+         $Nil ) ) )
 
 # (with 'var . prg) -> any
 (de _with (Exe)

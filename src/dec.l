@@ -1,4 +1,4 @@
-# 19apr20 Software Lab. Alexander Burger
+# 20apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -287,27 +287,31 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking)
    (any (| X 8)) )
 
 (inline length (X)
-   (let N 0
-      (while (pair X)
-         (inc 'N)
-         (shift X) )
-      N ) )
+   (use @
+      (let N 0
+         (while (pair X)
+            (inc 'N)
+            (shift X) )
+         N ) ) )
 
 (inline box64 (N)
-   (if (=0 (& N (hex "F000000000000000")))  # Fit in short number
-      (cnt N)
-      (boxNum N) ) )
+   (use @
+      (if (=0 (& N (hex "F000000000000000")))  # Fit in short number
+         (cnt N)
+         (boxNum N) ) ) )
 
 (inline eval (X)
-   (cond
-      ((num? X) X)
-      ((sym? X) (car X))
-      (T (evList X)) ) )
+   (use @
+      (cond
+         ((num? X) X)
+         ((sym? X) (car X))
+         (T (evList X)) ) ) )
 
 (inline run (Bnd2)
-   (loop
-      (? (atom (cdr Bnd2))
-         (eval (car Bnd2)) )
-      (when (pair (car Bnd2))
-         (evList (car Bnd2)) )
-     (shift Bnd2) ) )
+   (use @
+      (loop
+         (? (atom (cdr Bnd2))
+            (eval (car Bnd2)) )
+         (when (pair (car Bnd2))
+            (evList (car Bnd2)) )
+         (shift Bnd2) ) ) )

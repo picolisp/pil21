@@ -1,4 +1,4 @@
-# 19apr20 Software Lab. Alexander Burger
+# 20apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -244,7 +244,10 @@
    (NIL "dm" _dm)
    (NIL "box" _box)
    (NIL "and" _and)
+   (NIL "or" _or)
    (NIL "if" _if)
+   (NIL "when" _when)
+   (NIL "unless" _unless)
    (NIL "with" _with)
    (NIL "catch" _catch)
    (NIL "throw" _throw)
@@ -257,6 +260,7 @@
    (NIL "cdr" _cdr)
    (NIL "cons" _cons)
    (NIL "list" _list)
+   (NIL "==" _eq)
    (NIL "=" _equal)
    (NIL ">=" _ge)
    # Networking

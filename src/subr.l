@@ -1,4 +1,4 @@
-# 12apr20 Software Lab. Alexander Burger
+# 20apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -26,6 +26,14 @@
          (setq Y
             (set 2 Y (cons (eval (car X)) $Nil)) ) )
       R ) )
+
+# (== 'any ..) -> flg
+(de _eq (Exe)
+   (let (X (cdr Exe)  A (save (eval (car X))))
+      (while (pair (shift X))
+         (unless (== A (eval (car X)))
+            (ret $Nil) ) )
+      $T ) )
 
 # (= 'any ..) -> flg
 (de _equal (Exe)

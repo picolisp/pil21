@@ -1,4 +1,4 @@
-# 19apr20 Software Lab. Alexander Burger
+# 20apr20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -8,7 +8,7 @@ i64 i64* i64** any YES NO ZERO -ZERO ONE SymTab begin end $ ? short global var
 str const globals array table symTab inline tailcall define struct $Nil $Link
 drop)
 
-(import pico llvm symbols local T NIL load setq prog */ ** >> char hex bt)
+(import pico llvm symbols local T NIL load use setq prog */ ** >> char hex)
 
 (def 'void 'void)
 (def 'null 'null)
