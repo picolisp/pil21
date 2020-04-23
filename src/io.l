@@ -1,4 +1,4 @@
-# 20apr20 Software Lab. Alexander Burger
+# 23apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -20,7 +20,7 @@
    (let S (b8 2)
       (set S (i8 (val $Chr)))
       (set 2 S 0)
-      (err 0 0 ($ "Bad input '%c'") S) ) )
+      (err 0 0 ($ "Bad input '%s'") S) ) )
 
 (de NIL badFd (Exe Fd)
    (err Exe Fd ($ "Bad FD") null) )
@@ -950,7 +950,7 @@
 (de rdList ()
    (call $Get)
    (let
-      (P (push -ZERO NIL)
+      (P (push NIL NIL)
          X
          (loop
             (let C (skip)
@@ -960,14 +960,17 @@
                (when (== C (char "]"))  # Empty list
                   (ret $Nil) )
                (? (<> C (char "~"))  # Read macro
-                  (set (link P) (cons (read0 NO) $Nil)) )
+                  (prog1
+                     (set P (cons (read0 NO) $Nil))
+                     (link P) ) )
                (call $Get)
-               (let Y (set (link P) (read0 NO))
-                  (? (pair (setq Y (eval (val P))))
+               (let Y (set P (read0 NO))
+                  (link P)
+                  (? (pair (setq Y (eval Y)))
                      (while (pair (cdr Y))
                         (shift Y) )
-                     Y ) )
-               (drop P) ) ) )
+                     Y )
+                  (drop P) ) ) ) )
       (loop
          (let C (skip)
             (? (== C (char ")"))

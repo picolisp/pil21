@@ -1,4 +1,4 @@
-# 20apr20 Software Lab. Alexander Burger
+# 23apr20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -195,7 +195,7 @@ False Beg End Safe *Safe)
 
 (de store (X P Ofs)
    (nond
-      ((== 'any (val P))
+      ((memq (val P) '(i64 any))
          (when (num? X)
             (setq X (def (format X) (pointee (val P)))) )
          (ifn Ofs
@@ -1085,7 +1085,7 @@ False Beg End Safe *Safe)
                         ((num? X) 'i64)
                         (X (val X)) ) )
                   Lst )
-               (quit "No type") ) )
+               'any ) )
          (ssa (inc '*Ssa) "alloca "
             (type Typ) ", i64 " (length Lst)
             (and (cdr Lst) ", align 16") )

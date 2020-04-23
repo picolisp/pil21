@@ -1,4 +1,4 @@
-# 14apr20 Software Lab. Alexander Burger
+# 23apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -275,49 +275,49 @@
 (de _rollback (Exe)
    (if (and (=0 (val $DBs)) (atom (val $Ext)))
       $Nil
-   (let (Tos 0  P (val $Extern))  # Iterate external symbol tree
-      (loop
+      (let (Tos 0  P (val $Extern))  # Iterate external symbol tree
          (loop
-            (let X (cdr P)  # Get subtrees
-               (? (atom (cdr X)))  # Right subtree
-               (let Y P  # Go right
-                  (setq P @)  # Invert tree
-                  (set 2 X Tos)
-                  (setq Tos Y) ) ) )
-         (loop
-            (let (S (val P)  Tail (val (tail S)))  # Get external symbol
-               (unless (num? Tail)  # Any properties
-                  (setq Tail (& Tail -9))  # Clear 'extern' tag
-                  (loop
-                     (? (num? (shift Tail))) )  # Find name
-                  (setq Tail (| Tail 8)) )  # Set 'extern' tag
-               (set (tail S) (shr (shl Tail 2) 2))  # Strip status bits
-               (set S $Nil) )  # Clear value
-            (let X (cdr P)
-               (? (pair (car X))  # Left subtree
-                  (let Y P  # Go left
-                     (setq P @)  # Invert tree
-                     (set X Tos)
-                     (setq Tos (| Y 8)) ) ) )  # First visit
             (loop
-               (and (=0 Tos) (goto 1))
-               (? (=0 (& Tos 8))  # Second visit
+               (let X (cdr P)  # Get subtrees
+                  (? (atom (cdr X)))  # Right subtree
+                  (let Y P  # Go right
+                     (setq P @)  # Invert tree
+                     (set 2 X Tos)
+                     (setq Tos Y) ) ) )
+            (loop
+               (let (S (val P)  Tail (val (tail S)))  # Get external symbol
+                  (unless (num? Tail)  # Any properties
+                     (setq Tail (& Tail -9))  # Clear 'extern' tag
+                     (loop
+                        (? (num? (shift Tail))) )  # Find name
+                     (setq Tail (| Tail 8)) )  # Set 'extern' tag
+                  (set (tail S) (shr (shl Tail 2) 2))  # Strip status bits
+                  (set S $Nil) )  # Clear value
+               (let X (cdr P)
+                  (? (pair (car X))  # Left subtree
+                     (let Y P  # Go left
+                        (setq P @)  # Invert tree
+                        (set X Tos)
+                        (setq Tos (| Y 8)) ) ) )  # First visit
+               (loop
+                  (and (=0 Tos) (goto 1))
+                  (? (=0 (& Tos 8))  # Second visit
+                     (let (X Tos  Y (cdr X))  # Nodes
+                        (setq Tos (cdr Y))  # TOS on up link
+                        (set 2 Y P)
+                        (setq P X) ) )
+                  (setq Tos (& Tos -9))  # Clear visit bit
                   (let (X Tos  Y (cdr X))  # Nodes
-                     (setq Tos (cdr Y))  # TOS on up link
-                     (set 2 Y P)
-                     (setq P X) ) )
-               (setq Tos (& Tos -9))  # Clear visit bit
-               (let (X Tos  Y (cdr X))  # Nodes
-                  (setq Tos (car Y))
-                  (set Y P)
-                  (setq P X) ) ) ) ) )
-   (: 1
-      (when (pair (val $Zap))  # Objects to delete
-         (set @ $Nil) ) )  # Clear zap list
-   (unless (=0 (val $DBs))  # DB open
-      (unLockDb 0) )  # Unlock all
-   #! (unsync)
-   $T ) )
+                     (setq Tos (car Y))
+                     (set Y P)
+                     (setq P X) ) ) ) ) )
+      (: 1
+         (when (pair (val $Zap))  # Objects to delete
+            (set @ $Nil) ) )  # Clear zap list
+      (unless (=0 (val $DBs))  # DB open
+         (unLockDb 0) )  # Unlock all
+      #! (unsync)
+      $T ) )
 
 # (extern 'sym) -> sym | NIL
 (de _extern (Exe)

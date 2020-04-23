@@ -1,4 +1,4 @@
-# 20apr20 Software Lab. Alexander Burger
+# 21apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -251,6 +251,7 @@
    (NIL "cond" _cond)
    (NIL "nond" _nond)
    (NIL "with" _with)
+   (NIL "let" _let)
    (NIL "catch" _catch)
    (NIL "throw" _throw)
    (NIL "finally" _finally)
