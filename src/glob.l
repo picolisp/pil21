@@ -1,4 +1,4 @@
-# 21apr20 Software Lab. Alexander Burger
+# 24apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -238,13 +238,20 @@
    # Mapping
    (NIL "apply" _apply)
    (NIL "map" _map)
+   (NIL "mapc" _mapc)
+   (NIL "maplist" _maplist)
    (NIL "mapcar" _mapcar)
+   (NIL "mapcon" _mapcon)
+   (NIL "mapcan" _mapcan)
+   (NIL "filter" _filter)
+   (NIL "extract" _extract)
    # Control flow
    (NIL "de" _de)
    (NIL "dm" _dm)
    (NIL "box" _box)
    (NIL "and" _and)
    (NIL "or" _or)
+   (NIL "not" _not)
    (NIL "if" _if)
    (NIL "when" _when)
    (NIL "unless" _unless)
@@ -265,6 +272,7 @@
    (NIL "list" _list)
    (NIL "==" _eq)
    (NIL "=" _equal)
+   (NIL ">" _gt)
    (NIL ">=" _ge)
    (NIL "num?" _numQ)
    # Networking

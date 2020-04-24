@@ -1,4 +1,4 @@
-# 20apr20 Software Lab. Alexander Burger
+# 24apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -30,28 +30,34 @@
 # (== 'any ..) -> flg
 (de _eq (Exe)
    (let (X (cdr Exe)  Y (save (eval (car X))))
-      (while (pair (shift X))
-         (unless (== Y (eval (car X)))
-            (ret $Nil) ) )
-      $T ) )
+      (loop
+         (? (atom (shift X)) $T)
+         (? (<> Y (eval (car X))) $Nil) ) ) )
 
 # (= 'any ..) -> flg
 (de _equal (Exe)
    (let (X (cdr Exe)  Y (save (eval (car X))))
-      (while (pair (shift X))
-         (unless (equal Y (eval (car X)))
-            (ret $Nil) ) )
-      $T ) )
+      (loop
+         (? (atom (shift X)) $T)
+         (? (not (equal Y (eval (car X)))) $Nil) ) ) )
+
+# (> 'any ..) -> flg
+(de _gt (Exe)
+   (let (X (cdr Exe)  Y (save (eval (car X))))
+      (loop
+         (? (atom (shift X)) $T)
+         (let Z (eval (car X))
+            (? (le0 (compare Y Z)) $Nil)
+            (setq Y (safe Z)) ) ) ) )
 
 # (>= 'any ..) -> flg
 (de _ge (Exe)
    (let (X (cdr Exe)  Y (save (eval (car X))))
-      (while (pair (shift X))
+      (loop
+         (? (atom (shift X)) $T)
          (let Z (eval (car X))
-            (when (lt0 (compare Y Z))
-               (ret $Nil) )
-            (setq Y (safe Z)) ) )
-      $T ) )
+            (? (lt0 (compare Y Z)) $Nil)
+            (setq Y (safe Z)) ) ) ) )
 
 # (num? 'any) -> num | NIL
 (de _numQ (Exe)

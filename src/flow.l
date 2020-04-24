@@ -1,4 +1,4 @@
-# 23apr20 Software Lab. Alexander Burger
+# 24apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -113,6 +113,13 @@
                (set $At Y)
                Y )
             (? (atom X) Y) ) ) ) )
+
+# (not 'any) -> flg
+(de _not (Exe)
+   (if (nil? (eval (cadr Exe)))
+      $T
+      (set $At @)
+      $Nil ) )
 
 # (if 'any1 any2 . prg) -> any
 (de _if (Exe)
