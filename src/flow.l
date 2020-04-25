@@ -1,4 +1,4 @@
-# 24apr20 Software Lab. Alexander Burger
+# 25apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -121,6 +121,37 @@
       (set $At @)
       $Nil ) )
 
+# (nil . prg) -> NIL
+(de _nil (Exe)
+   (run (cdr Exe))
+   $Nil )
+
+# (t . prg) -> T
+(de _t (Exe)
+   (run (cdr Exe))
+   $T )
+
+# (prog . prg) -> any
+(de _prog (Exe)
+   (run (cdr Exe)) )
+
+# (prog1 'any1 . prg) -> any1
+(de _prog1 (Exe)
+   (let X (cdr Exe)
+      (prog1
+         (eval (++ X))
+         (set $At @)
+         (run X) ) ) )
+
+# (prog2 'any1 'any2 . prg) -> any2
+(de _prog2 (Exe)
+   (let X (cdr Exe)
+      (prog2
+         (eval (++ X))
+         (eval (++ X))
+         (set $At @)
+         (run X) ) ) )
+
 # (if 'any1 any2 . prg) -> any
 (de _if (Exe)
    (let X (cdr Exe)
@@ -128,6 +159,28 @@
          (run (cdr X))
          (set $At @)
          (eval (car X)) ) ) )
+
+# (ifn 'any1 any2 . prg) -> any
+(de _ifn (Exe)
+   (let X (cdr Exe)
+      (ifn (nil? (eval (++ X)))
+         (run (cdr X))
+         (set $At @)
+         (eval (car X)) ) ) )
+
+# (if2 'any1 'any2 any3 any4 any5 . prg) -> any
+(de _if2 (Exe)
+   (let X (cdr Exe)
+      (if (nil? (eval (++ X)))
+         (if (nil? (eval (++ X)))
+            (run (cdr (cddr X)))
+            (set $At @)
+            (eval (car (cddr X))) )
+         (set $At @)
+         (if (nil? (eval (++ X)))
+            (eval (cadr X))
+            (set $At @)
+            (eval (car X)) ) ) ) )
 
 # (when 'any . prg) -> any
 (de _when (Exe)
@@ -146,22 +199,50 @@
          $Nil ) ) )
 
 # (cond ('any1 . prg1) ('any2 . prg2) ..) -> any
-(de _cond (X)
-   (loop
-      (? (atom (shift X)) $Nil)
-      (let Y (car X)
-         (? (not (nil? (eval (car Y))))
-            (set $At @)
-            (run (cdr Y)) ) ) ) )
+(de _cond (Exe)
+   (let X Exe
+      (loop
+         (? (atom (shift X)) $Nil)
+         (let Y (car X)
+            (? (not (nil? (eval (car Y))))
+               (set $At @)
+               (run (cdr Y)) ) ) ) ) )
 
 # (nond ('any1 . prg1) ('any2 . prg2) ..) -> any
-(de _nond (X)
-   (loop
-      (? (atom (shift X)) $Nil)
-      (let Y (car X)
-         (? (nil? (eval (car Y)))
-            (run (cdr Y)) ) )
-      (set $At @) ) )
+(de _nond (Exe)
+   (let X Exe
+      (loop
+         (? (atom (shift X)) $Nil)
+         (let Y (car X)
+            (? (nil? (eval (car Y)))
+               (run (cdr Y)) ) )
+         (set $At @) ) ) )
+
+# (case 'any (any1 . prg1) (any2 . prg2) ..) -> any
+(de _case (Exe)
+   (let (X (cdr Exe)  A (set $At (eval (car X))))
+      (while (pair (shift X))
+         (let (Y (car X)  Z (car Y))
+            (? (or (== Z $T) (equal Z A))
+               (run (cdr Y)) )
+            (while (pair Z)
+               (when (equal (car Z) A)
+                  (ret (run (cdr Y))) )
+               (shift Z) ) ) )
+      $Nil ) )
+
+# (casq 'any (any1 . prg1) (any2 . prg2) ..) -> any
+(de _casq (Exe)
+   (let (X (cdr Exe)  A (set $At (eval (car X))))
+      (while (pair (shift X))
+         (let (Y (car X)  Z (car Y))
+            (? (or (== Z $T) (== Z A))
+               (run (cdr Y)) )
+            (while (pair Z)
+               (when (== (car Z) A)
+                  (ret (run (cdr Y))) )
+               (shift Z) ) ) )
+      $Nil ) )
 
 # (with 'var . prg) -> any
 (de _with (Exe)

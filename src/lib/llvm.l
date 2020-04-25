@@ -1,4 +1,4 @@
-# 23apr20 Software Lab. Alexander Burger
+# 25apr20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -1149,18 +1149,19 @@ False Beg End Safe *Safe)
 
 (asm (@Lbl1 @Lbl2)
    (Prg
-      (let (Flg (eval (++ Prg))  Var (box)  Body (+lbl)  Skip (+lbl)  End (+lbl))
-         (br Flg @Lbl1 @Lbl2)
-         (label Body)
-         (when (set Var (eval (++ Prg)))
-            (phi End Var)
-            (br End) )
-         (label Skip)
-         (use llvm~@
-            (when (set Var (run Prg))
+      (use llvm~@
+         (let (Flg (eval (++ Prg))  Var (box)  Body (+lbl)  Skip (+lbl)  End (+lbl))
+            (br Flg @Lbl1 @Lbl2)
+            (label Body)
+            (when (set Var (eval (++ Prg)))
                (phi End Var)
-               (br End) ) )
-         (label End) ) )
+               (br End) )
+            (label Skip)
+            (use llvm~@
+               (when (set Var (run Prg))
+                  (phi End Var)
+                  (br End) ) )
+            (label End) ) ) )
    (llvm~if Body Skip)
    (llvm~ifn Skip Body) )
 
@@ -1178,32 +1179,33 @@ False Beg End Safe *Safe)
 
 (asm (@Flg @Lbl1 @Lbl2 @Lbl3 @Lbl4 @Lbl5 @Lbl6)
    (Lst
-      (let (Var (box)  End (+lbl)  Flg)
-         (for Prg Lst
-            (if (== @Flg (car Prg))
-               (use llvm~@
-                  (when (set Var (run (cdr Prg)))
-                     (phi End Var)
-                     (br End) ) )
-               (setq Flg (eval (++ Prg)))
-               (let Skip (+lbl)
-                  (if Prg
-                     (let Body (+lbl)
-                        (br Flg @Lbl1 @Lbl2)
-                        (label Body)
-                        (use llvm~@
-                           (when (set Var (run Prg))
-                              (phi End Var)
-                              (br End) ) ) )
-                     (br Flg @Lbl3 @Lbl4) )
-                  (label Skip) ) ) )
-         (if (== @Flg (car (last Lst)))
-            (label End)
-            (set Var 0)
-            (phi End Var)
-            (br End)
-            (label End)
-            T ) ) )
+      (use llvm~@
+         (let (Var (box)  End (+lbl)  Flg)
+            (for Prg Lst
+               (if (== @Flg (car Prg))
+                  (use llvm~@
+                     (when (set Var (run (cdr Prg)))
+                        (phi End Var)
+                        (br End) ) )
+                  (setq Flg (eval (++ Prg)))
+                  (let Skip (+lbl)
+                     (if Prg
+                        (let Body (+lbl)
+                           (br Flg @Lbl1 @Lbl2)
+                           (label Body)
+                           (use llvm~@
+                              (when (set Var (run Prg))
+                                 (phi End Var)
+                                 (br End) ) ) )
+                        (br Flg @Lbl3 @Lbl4) )
+                     (label Skip) ) ) )
+            (if (== @Flg (car (last Lst)))
+               (label End)
+               (set Var 0)
+               (phi End Var)
+               (br End)
+               (label End)
+               T ) ) ) )
    (llvm~cond T Body Skip End Skip Body End)
    (llvm~nond NIL Skip Body Skip End End Body) )
 

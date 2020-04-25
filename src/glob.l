@@ -1,4 +1,4 @@
-# 24apr20 Software Lab. Alexander Burger
+# 25apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -252,11 +252,20 @@
    (NIL "and" _and)
    (NIL "or" _or)
    (NIL "not" _not)
+   (NIL "nil" _nil)
+   (NIL "t" _t)
+   (NIL "prog" _prog)
+   (NIL "prog1" _prog1)
+   (NIL "prog2" _prog2)
    (NIL "if" _if)
+   (NIL "ifn" _ifn)
+   (NIL "if2" _if2)
    (NIL "when" _when)
    (NIL "unless" _unless)
    (NIL "cond" _cond)
    (NIL "nond" _nond)
+   (NIL "case" _case)
+   (NIL "casq" _casq)
    (NIL "with" _with)
    (NIL "let" _let)
    (NIL "catch" _catch)

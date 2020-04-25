@@ -1,4 +1,4 @@
-# 23apr20 Software Lab. Alexander Burger
+# 25apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1480,7 +1480,7 @@
    (prog1 (_print Exe) (space)) )
 
 # (println 'any ..) -> any
-(de _println (X)
+(de _println (Exe)
    (prog1 (_print Exe) (newline)) )
 
 # (flush) -> flg
