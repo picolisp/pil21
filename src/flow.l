@@ -272,6 +272,21 @@
       (set $At @)
       R ) )
 
+# (at '(cnt1 . cnt2|NIL) . prg) -> any
+(de _at (Exe)
+   (let
+      (X (cdr Exe)
+         Y (needPair Exe (eval (car X)))
+         Z (cdr Y) )
+      (cond
+         ((nil? Z) @)
+         ((< (+ (car Y) (hex "10")) Z)  # Increment
+            (set Y @)
+            $Nil )
+         (T
+            (set Y ZERO)
+            (run (cdr X)) ) ) ) )
+
 # (with 'var . prg) -> any
 (de _with (Exe)
    (let (X (cdr Exe)  Y (needVar Exe (eval (++ X))))

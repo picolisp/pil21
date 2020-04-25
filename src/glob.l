@@ -269,6 +269,7 @@
    (NIL "state" _state)
    (NIL "while" _while)
    (NIL "until" _until)
+   (NIL "at" _at)
    (NIL "with" _with)
    (NIL "let" _let)
    (NIL "catch" _catch)

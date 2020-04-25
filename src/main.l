@@ -1,4 +1,4 @@
-# 23apr20 Software Lab. Alexander Burger
+# 25apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -134,8 +134,8 @@
       (set $Protect 0) ) )
 
 # Error handling
-(local) (pushOutFiles err stkErr argErr cntErr numErr lstErr symErr extErr
-atomErr pairErr varErr itemErr protErr lockErr forkErr symNsErr)
+(local) (pushOutFiles err stkErr argErr cntErr numErr symErr extErr atomErr
+pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
 
 (de void pushOutFiles (i8*))
 
@@ -217,9 +217,6 @@ atomErr pairErr varErr itemErr protErr lockErr forkErr symNsErr)
 (de NIL numErr (Exe X)
    (err Exe X ($ "Number expected") null) )
 
-(de NIL lstErr (Exe X)
-   (err Exe X ($ "List expected") null) )
-
 (de NIL symErr (Exe X)
    (err Exe X ($ "Symbol expected") null) )
 
@@ -231,6 +228,9 @@ atomErr pairErr varErr itemErr protErr lockErr forkErr symNsErr)
 
 (de NIL pairErr (Exe X)
    (err Exe X ($ "Cons pair expected") null) )
+
+(de NIL lstErr (Exe X)
+   (err Exe X ($ "List expected") null) )
 
 (de NIL varErr (Exe X)
    (err Exe X ($ "Variable expected") null) )
@@ -262,7 +262,7 @@ atomErr pairErr varErr itemErr protErr lockErr forkErr symNsErr)
       (sighandler Exe) ) )
 
 # Argument checks
-(local) (needCnt needNum needLst needSym needVar chkVar needChkVar)
+(local) (needCnt needNum needSym needPair needLst needVar chkVar needChkVar)
 
 (inline needCnt (Exe X)
    (unless (cnt? X)
@@ -274,14 +274,19 @@ atomErr pairErr varErr itemErr protErr lockErr forkErr symNsErr)
       (numErr Exe X) )
    X )
 
-(inline needLst (Exe X)
-   (unless (or (pair X) (nil? X))
-      (lstErr Exe X) )
-   X )
-
 (inline needSym (Exe X)
    (when (or (num? X) (pair X))
       (symErr Exe X) )
+   X )
+
+(inline needPair (Exe X)
+   (when (atom X)
+      (pairErr Exe X) )
+   X )
+
+(inline needLst (Exe X)
+   (unless (or (pair X) (nil? X))
+      (lstErr Exe X) )
    X )
 
 (inline needVar (Exe X)
