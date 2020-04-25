@@ -1,4 +1,4 @@
-# 20apr20 Software Lab. Alexander Burger
+# 25apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -945,10 +945,9 @@
          (sym? (val (tail Y)))
          (dbTouch Exe Y) )
       (loop
-         (let (Z (eval (++ X))  V (val Y)  L V)
-            (loop  # 'member'
-               (? (atom L) (set Y (cons Z V)))
-               (? (equal Z (++ L))) )
+         (let (Z (eval (++ X))  V (val Y))
+            (unless (member Z V)
+               (set Y (cons Z V)) )
             (? (atom X) Z) ) ) ) )
 
 # (push1q 'var 'any ..) -> any
@@ -961,10 +960,9 @@
          (sym? (val (tail Y)))
          (dbTouch Exe Y) )
       (loop
-         (let (Z (eval (++ X))  V (val Y)  L V)
-            (loop  # 'memq'
-               (? (atom L) (set Y (cons Z V)))
-               (? (== Z (++ L))) )
+         (let (Z (eval (++ X))  V (val Y))
+            (unless (memq Z V)
+               (set Y (cons Z V)) )
             (? (atom X) Z) ) ) ) )
 
 # (pop 'var) -> any

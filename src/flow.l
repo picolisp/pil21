@@ -221,28 +221,56 @@
 # (case 'any (any1 . prg1) (any2 . prg2) ..) -> any
 (de _case (Exe)
    (let (X (cdr Exe)  A (set $At (eval (car X))))
-      (while (pair (shift X))
+      (loop
+         (? (atom (shift X)) $Nil)
          (let (Y (car X)  Z (car Y))
-            (? (or (== Z $T) (equal Z A))
-               (run (cdr Y)) )
-            (while (pair Z)
-               (when (equal (car Z) A)
-                  (ret (run (cdr Y))) )
-               (shift Z) ) ) )
-      $Nil ) )
+            (?
+               (or
+                  (== Z $T)
+                  (if (atom Z) (equal Z A) (member A Z)) )
+               (run (cdr Y)) ) ) ) ) )
 
 # (casq 'any (any1 . prg1) (any2 . prg2) ..) -> any
 (de _casq (Exe)
    (let (X (cdr Exe)  A (set $At (eval (car X))))
-      (while (pair (shift X))
+      (loop
+         (? (atom (shift X)) $Nil)
          (let (Y (car X)  Z (car Y))
-            (? (or (== Z $T) (== Z A))
-               (run (cdr Y)) )
-            (while (pair Z)
-               (when (== (car Z) A)
-                  (ret (run (cdr Y))) )
-               (shift Z) ) ) )
-      $Nil ) )
+            (? (or (== Z $T) (== Z A) (memq A Z))
+               (run (cdr Y)) ) ) ) ) )
+
+# (state 'var (sym|lst exe [. prg]) ..) -> any
+(de _state (Exe)
+   (let
+      (X (cdr Exe)
+         Var (save (needChkVar Exe (eval (car X)))) )
+      (loop
+         (? (atom (shift X)) $Nil)
+         (let (Y (car X)  Z (car Y))
+            (when
+               (or
+                  (== Z $T)
+                  (let V (val Var)
+                     (or (== Z V) (memq V Z)) ) )
+               (? (not (nil? (eval (car (shift Y)))))
+                  (set Var (set $At @))
+                  (run (cdr Y)) ) ) ) ) ) )
+
+# (while 'any . prg) -> any
+(de _while (Exe)
+   (let (X (cdr Exe)  E (++ X)  R (save $Nil))
+      (until (nil? (eval E))
+         (set $At @)
+         (setq R (safe (run X))) )
+      R ) )
+
+# (until 'any . prg) -> any
+(de _until (Exe)
+   (let (X (cdr Exe)  E (++ X)  R (save $Nil))
+      (while (nil? (eval E))
+         (setq R (safe (run X))) )
+      (set $At @)
+      R ) )
 
 # (with 'var . prg) -> any
 (de _with (Exe)

@@ -286,6 +286,18 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking)
 (inline sym (X)
    (any (| X 8)) )
 
+(inline memq (X L)
+   (loop
+      (? (atom L) NO)
+      (? (== X (car L)) YES)
+      (shift L) ) )
+
+(inline member (X L)
+   (loop
+      (? (atom L) NO)
+      (? (equal X (car L)) YES)
+      (shift L) ) )
+
 (inline length (X)
    (use @
       (let N 0
