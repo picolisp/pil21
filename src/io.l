@@ -1,4 +1,4 @@
-# 25apr20 Software Lab. Alexander Burger
+# 26apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1165,7 +1165,7 @@
             (if (=0 (int @))
                $Nil
                (mkChar (i32 @)) ) )
-         ((== @ $T) (mkChar TOP))
+         ((t? @) (mkChar TOP))
          ((sym? @) (cnt (i64 (firstChar @))))
          (T (atomErr Exe @)) ) ) )
 
@@ -1620,7 +1620,7 @@
    (let X (cdr Exe)
       (loop
          (let Y
-            (if (== (eval (++ X)) $T)
+            (if (t? (eval (++ X)))
                (loadAll Exe)
                (repl Exe (char ">") @) )
             (? (atom X) Y) ) ) ) )

@@ -1,4 +1,4 @@
-# 20apr20 Software Lab. Alexander Burger
+# 26apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1495,7 +1495,7 @@
       (cond
          ((nil? Y)
             (| (& (shr N (- 32 3)) -8) 2) )  # Get higher 32 bits
-         ((== Y $T)
+         ((t? Y)
             (add N N)
             (if @@ Y $Nil) )
          (T

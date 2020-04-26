@@ -1,11 +1,11 @@
-# 25apr20 Software Lab. Alexander Burger
+# 26apr20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
 
 (local) (@ @@ @@@ priv void null i1 i1* i1** i8 i8* i8** i8*** i32 i32* i32**
 i64 i64* i64** any YES NO ZERO -ZERO ONE SymTab begin end $ ? short global var
-str const globals array table symTab inline tailcall define struct $Nil $Link
+str const globals array table symTab inline tailcall define struct $Nil $T $Link
 drop)
 
 (import pico llvm symbols local T NIL load use setq prog */ ** >> char hex)
@@ -736,12 +736,13 @@ False Beg End Safe *Safe)
       (def (pack "%" *Ssa) 'i1) )
    (llvm~not) )
 
-(asm ()
+(asm (@Sym)
    ((X)
       (setq llvm~@ X)
-      (ssa (inc '*Ssa) "icmp eq i64 " X ", " $Nil)
+      (ssa (inc '*Ssa) "icmp eq i64 " X ", " @Sym)
       (def (pack "%" *Ssa) 'i1) )
-   (llvm~nil?) )
+   (llvm~nil? $Nil)
+   (llvm~t? $T) )
 
 # Comparisons
 (asm (@Pred)
@@ -1157,10 +1158,9 @@ False Beg End Safe *Safe)
                (phi End Var)
                (br End) )
             (label Skip)
-            (use llvm~@
-               (when (set Var (run Prg))
-                  (phi End Var)
-                  (br End) ) )
+            (when (set Var (run Prg))
+               (phi End Var)
+               (br End) )
             (label End) ) ) )
    (llvm~if Body Skip)
    (llvm~ifn Skip Body) )
@@ -1179,62 +1179,62 @@ False Beg End Safe *Safe)
 
 (asm (@Flg @Lbl1 @Lbl2 @Lbl3 @Lbl4 @Lbl5 @Lbl6)
    (Lst
-      (use llvm~@
-         (let (Var (box)  End (+lbl)  Flg)
-            (for Prg Lst
-               (if (== @Flg (car Prg))
-                  (use llvm~@
-                     (when (set Var (run (cdr Prg)))
-                        (phi End Var)
-                        (br End) ) )
-                  (setq Flg (eval (++ Prg)))
-                  (let Skip (+lbl)
-                     (if Prg
-                        (let Body (+lbl)
-                           (br Flg @Lbl1 @Lbl2)
-                           (label Body)
-                           (use llvm~@
-                              (when (set Var (run Prg))
-                                 (phi End Var)
-                                 (br End) ) ) )
-                        (br Flg @Lbl3 @Lbl4) )
-                     (label Skip) ) ) )
-            (if (== @Flg (car (last Lst)))
-               (label End)
-               (set Var 0)
-               (phi End Var)
-               (br End)
-               (label End)
-               T ) ) ) )
+      (let (Var (box)  End (+lbl)  Flg)
+         (for Prg Lst
+            (if (== @Flg (car Prg))
+               (use llvm~@
+                  (when (set Var (run (cdr Prg)))
+                     (phi End Var)
+                     (br End) ) )
+               (setq Flg (eval (++ Prg)))
+               (let Skip (+lbl)
+                  (if Prg
+                     (let Body (+lbl)
+                        (br Flg @Lbl1 @Lbl2)
+                        (label Body)
+                        (use llvm~@
+                           (when (set Var (run Prg))
+                              (phi End Var)
+                              (br End) ) ) )
+                     (br Flg @Lbl3 @Lbl4) )
+                  (label Skip) ) ) )
+         (if (== @Flg (car (last Lst)))
+            (label End)
+            (set Var 0)
+            (phi End Var)
+            (br End)
+            (label End)
+            T ) ) )
    (llvm~cond T Body Skip End Skip Body End)
    (llvm~nond NIL Skip Body Skip End End Body) )
 
 (asm ()
    (Lst
-      (let (Var (box)  True (+lbl)  End (if (asoq T Lst) (+lbl) True)  X (eval (++ Lst)))
-         (link
-            (pack
-               "switch " (type (val X)) " " X
-               ", label %$" (+phi True) " [" ) )
-         (let Lbl
-            (extract
-               '((Prg)
-                  (unless (=T (car Prg))
-                     (let Y (eval (car Prg))
-                        (prog1
-                           (+lbl)
-                           (link
-                              (pack
-                                 "  " (type (val X)) " " Y
-                                 ", label %$" (+phi @) ) ) ) ) ) )
-               Lst )
-            (link "]")
-            (for Prg Lst
-               (label (if (=T (++ Prg)) True (++ Lbl)))
-               (when (set Var (if Prg (run @) 0))
-                  (phi End Var)
-                  (br End) ) ) )
-         (label End) ) )
+      (use llvm~@
+         (let (Var (box)  True (+lbl)  End (if (asoq T Lst) (+lbl) True)  X (eval (++ Lst)))
+            (link
+               (pack
+                  "switch " (type (val X)) " " X
+                  ", label %$" (+phi True) " [" ) )
+            (let Lbl
+               (extract
+                  '((Prg)
+                     (unless (=T (car Prg))
+                        (let Y (eval (car Prg))
+                           (prog1
+                              (+lbl)
+                              (link
+                                 (pack
+                                    "  " (type (val X)) " " Y
+                                    ", label %$" (+phi @) ) ) ) ) ) )
+                  Lst )
+               (link "]")
+               (for Prg Lst
+                  (label (if (=T (++ Prg)) True (++ Lbl)))
+                  (when (set Var (if Prg (run @) 0))
+                     (phi End Var)
+                     (br End) ) ) )
+            (label End) ) ) )
    (llvm~case) )
 
 (asm ()

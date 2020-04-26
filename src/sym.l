@@ -1,4 +1,4 @@
-# 25apr20 Software Lab. Alexander Burger
+# 26apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1250,7 +1250,7 @@
                         (shift L)  # Remove first property
                         (set (tail Sym)
                            (if (sym? Tail) (| L 8) L) ) )
-                     ((== Val $T) (set L Key))  # Change to flag
+                     ((t? Val) (set L Key))  # Change to flag
                      (T (set X Val)) )  # Set new value
                   (ret) ) )
             (while (pair (setq X (cdr L)))

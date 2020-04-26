@@ -1,4 +1,4 @@
-# 25apr20 Software Lab. Alexander Burger
+# 26apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -25,11 +25,9 @@
             (and (== Ca Catch) (ret))
             (setq Ca (Ca: link)) ) )
       (until (=0 Bnd)
-         (loop
-            (let Sym (val 2 Bnd)
-               (set Sym (val Bnd))  # Restore values
-               (? (== $At Sym))
-               (setq Bnd (val 3 Bnd)) ) ) )
+         (let Sym (val 2 Bnd)
+            (set Sym (val Bnd))  # Restore values
+            (setq Bnd (val 3 Bnd)) ) )
       (set $Bind 0)
       # ...
       ) )
@@ -371,7 +369,7 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                      (T
                         (loop
                            (? (atom Y)
-                              (if (or (num? Y) (== Y $T))
+                              (if (or (num? Y) (t? Y))
                                  0
                                  X ) )
                            (?
@@ -379,7 +377,7 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                                  (num? (++ Y))
                                  (pair @)
                                  (nil? @)
-                                 (== @ $T) )
+                                 (t? @) )
                               0 ) ) ) ) )
                (let Z (++ Y)
                   (if (pair Z)
@@ -496,7 +494,7 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
    (cond
       ((== X Y) 0)
       ((nil? X) -1)
-      ((== X $T) +1)
+      ((t? X) +1)
       ((num? X)
          (cond
             ((num? Y) (cmpNum X Y))
@@ -505,7 +503,7 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
       ((sym? X)
          (cond
             ((or (num? Y) (nil? Y)) +1)
-            ((or (pair Y) (== Y $T)) -1)
+            ((or (pair Y) (t? Y)) -1)
             (T
                (let
                   (NmX (name (val (tail X)))
@@ -549,7 +547,7 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                                        (ret +1) ) )
                                  (when (=0 (setq B (shr B 8)))
                                     (ret +1) ) ) ) ) ) ) ) ) ) )
-      ((atom Y) (if (== Y $T) -1 +1))
+      ((atom Y) (if (t? Y) -1 +1))
       (T
          (stkChk 0)
          (let (A X  B Y)
@@ -558,7 +556,7 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                (? (atom (shift X))
                   (compare X (cdr Y)) )
                (? (atom (shift Y))
-                  (if (== Y $T) -1 +1) )
+                  (if (t? Y) -1 +1) )
                (? (and (== X A) (== Y B)) 0)
                (sigChk 0) ) ) ) ) )
 

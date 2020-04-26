@@ -1,4 +1,4 @@
-# 25apr20 Software Lab. Alexander Burger
+# 26apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -270,6 +270,9 @@
    (NIL "while" _while)
    (NIL "until" _until)
    (NIL "at" _at)
+   (NIL "do" _do)
+   (NIL "loop" _loop)
+   (NIL "for" _for)
    (NIL "with" _with)
    (NIL "let" _let)
    (NIL "catch" _catch)

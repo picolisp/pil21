@@ -1,4 +1,4 @@
-# 25apr20 Software Lab. Alexander Burger
+# 26apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -226,7 +226,7 @@
          (let (Y (car X)  Z (car Y))
             (?
                (or
-                  (== Z $T)
+                  (t? Z)
                   (if (atom Z) (equal Z A) (member A Z)) )
                (run (cdr Y)) ) ) ) ) )
 
@@ -236,7 +236,7 @@
       (loop
          (? (atom (shift X)) $Nil)
          (let (Y (car X)  Z (car Y))
-            (? (or (== Z $T) (== Z A) (memq A Z))
+            (? (or (t? Z) (== Z A) (memq A Z))
                (run (cdr Y)) ) ) ) ) )
 
 # (state 'var (sym|lst exe [. prg]) ..) -> any
@@ -249,7 +249,7 @@
          (let (Y (car X)  Z (car Y))
             (when
                (or
-                  (== Z $T)
+                  (t? Z)
                   (let V (val Var)
                      (or (== Z V) (memq V Z)) ) )
                (? (not (nil? (eval (car (shift Y)))))
@@ -286,6 +286,113 @@
          (T
             (set Y ZERO)
             (run (cdr X)) ) ) ) )
+
+(local) (loop1 loop2)
+
+(de loop1 (X)
+   (loop
+      (let E (car X)
+         (unless (num? E)
+            (setq E
+               (cond
+                  ((sym? E) (val E))
+                  ((nil? (car E))
+                     (? (nil? (eval (car (shift E))))
+                        (run (cdr E)) )
+                     (set $At @)
+                     $Nil )
+                  ((t? (car E))
+                     (? (not (nil? (eval (car (shift E)))))
+                        (set $At @)
+                        (run (cdr E)) )
+                     @ )  # NIL
+                  (T (evList E)) ) ) )
+         (? (atom (shift X)) (| E 1)) ) ) )
+
+(de loop2 (Y)
+   (loop
+      (let X Y
+         (loop
+            (let E (car X)
+               (when (pair E)
+                  (cond
+                     ((nil? (car E))
+                        (when (nil? (eval (car (shift E))))
+                           (ret (run (cdr E))) )
+                        (set $At @) )
+                     ((t? (car E))
+                        (unless (nil? (eval (car (shift E))))
+                           (set $At @)
+                           (ret (run (cdr E))) ) )
+                     (T (evList E)) ) ) )
+            (? (atom (shift X))) ) ) ) )
+
+# (do 'flg|cnt ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any
+(de _do (Exe)
+   (let (X (cdr Exe)  Y (eval (++ X)))
+      (cond
+         ((nil? Y) Y)
+         ((cnt? Y)
+            (let N (int Y)
+               (if (or (sign? Y) (=0 N))
+                  $Nil
+                  (loop
+                     (let R (loop1 X)
+                        (? (=0 (& R 1)) R)
+                        (? (=0 (dec 'N)) (& R -2)) ) ) ) ) )
+         (T (loop2 X)) ) ) )  # Non-NIL 'flg'
+
+# (loop ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any
+(de _loop (Exe)
+   (tailcall
+      (loop2 (cdr Exe)) ) )
+
+# (for sym 'cnt ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any
+# (for sym|(sym2 . sym) 'lst ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any
+# (for (sym|(sym2 . sym) 'any1 'any2 [. prg]) ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any
+(de _for (Exe)
+   (let
+      (X (cdr Exe)
+         Y (++ X)
+         V (save (eval (++ X)))
+         P (set $Bind (push NIL NIL (val $Bind)))  # [[sym] sym LINK]
+         R $Nil )
+      (cond
+         ((atom Y)  # (for sym 'cnt|lst ..)
+            (set P (val Y)  2 P Y)
+            (if (num? V)  # (for sym 'cnt ..)
+               (unless (sign? V)
+                  (set Y ZERO)
+                  (loop
+                     (? (> (+ (val Y) (hex "10")) V)  # Increment
+                        (setq R (& R -2)) )
+                     (set Y @)
+                     (? (=0 (& (setq R (loop1 X)) 1))) ) )
+               (loop  # (for sym 'lst ..)
+                  (? (atom V) (setq R (& R -2)))
+                  (set Y (++ V))
+                  (? (=0 (& (setq R (loop1 X)) 1))) ) ) )
+         ((atom (cdr Y))  # (for (sym2 . sym) 'lst ..)
+            (let
+               (Z @
+                  Q (set $Bind (push (val Z) Z (val $Bind))) )  # [[sym] sym LINK]
+               (set P (val (setq Y (car Y)))  2 P Y)
+               (set Y ZERO)
+               (loop
+                  (? (atom V) (setq R (& R -2)))
+                  (set
+                     Y (+ (val Y) (hex "10"))
+                     Z (++ V) )
+                  (? (=0 (& (setq R (loop1 X)) 1))) )
+               (set Z (val Q)) ) )
+         ((atom (car Y))  # (for (sym ..) ..)
+            #!
+            )
+         (T  # (for ((sym2 . sym) ..) ..)
+            $T  #!
+            ) )
+      (set Y (val P)  $Bind (val 3 P))
+      R ) )
 
 # (with 'var . prg) -> any
 (de _with (Exe)
