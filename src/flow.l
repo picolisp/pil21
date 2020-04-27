@@ -1,4 +1,4 @@
-# 26apr20 Software Lab. Alexander Burger
+# 27apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -354,43 +354,71 @@
    (let
       (X (cdr Exe)
          Y (++ X)
-         V (save (eval (++ X)))
          P (set $Bind (push NIL NIL (val $Bind)))  # [[sym] sym LINK]
          R $Nil )
       (cond
          ((atom Y)  # (for sym 'cnt|lst ..)
             (set P (val Y)  2 P Y)
-            (if (num? V)  # (for sym 'cnt ..)
-               (unless (sign? V)
-                  (set Y ZERO)
-                  (loop
-                     (? (> (+ (val Y) (hex "10")) V)  # Increment
-                        (setq R (& R -2)) )
-                     (set Y @)
-                     (? (=0 (& (setq R (loop1 X)) 1))) ) )
-               (loop  # (for sym 'lst ..)
-                  (? (atom V) (setq R (& R -2)))
-                  (set Y (++ V))
-                  (? (=0 (& (setq R (loop1 X)) 1))) ) ) )
+            (let V (eval (++ X))
+               (if (num? V)  # (for sym 'cnt ..)
+                  (unless (sign? V)
+                     (set Y ZERO)
+                     (loop
+                        (? (> (+ (val Y) (hex "10")) V)  # Increment
+                           (setq R (& R -2)) )
+                        (set Y @)
+                        (? (=0 (& (setq R (loop1 X)) 1))) ) )
+                  (save V
+                     (loop  # (for sym 'lst ..)
+                        (? (atom V) (setq R (& R -2)))
+                        (set Y (++ V))
+                        (? (=0 (& (setq R (loop1 X)) 1))) ) ) ) ) )
          ((atom (cdr Y))  # (for (sym2 . sym) 'lst ..)
-            (let
-               (Z @
-                  Q (set $Bind (push (val Z) Z (val $Bind))) )  # [[sym] sym LINK]
+            (let Sym2 @
                (set P (val (setq Y (car Y)))  2 P Y)
-               (set Y ZERO)
-               (loop
-                  (? (atom V) (setq R (& R -2)))
-                  (set
-                     Y (+ (val Y) (hex "10"))
-                     Z (++ V) )
-                  (? (=0 (& (setq R (loop1 X)) 1))) )
-               (set Z (val Q)) ) )
+               (let
+                  (Q (set $Bind (push (val Sym2) Sym2 (val $Bind)))  # [[sym] sym LINK]
+                     V (save (eval (++ X))) )
+                  (set Y ONE)
+                  (loop
+                     (? (atom V) (setq R (& R -2)))
+                     (set Sym2 (++ V))
+                     (? (=0 (& (setq R (loop1 X)) 1)))
+                     (set Y (+ (val Y) (hex "10"))) )
+                  (set Sym2 (val Q)) ) ) )
          ((atom (car Y))  # (for (sym ..) ..)
-            #!
-            )
+            (let Z (cdr Y)
+               (set
+                  P (val (setq Y @))
+                  2 P Y
+                  Y (eval (++ Z)) )
+               (save R
+                  (loop  # (any2 . prg)
+                     (? (nil? (eval (car Z)))
+                        (setq R (& R -2)) )
+                     (set $At @)
+                     (? (=0 (& (setq R (loop1 X)) 1)))
+                     (safe R)
+                     (when (pair (cdr Z))
+                        (set Y (run @)) ) ) ) ) )
          (T  # (for ((sym2 . sym) ..) ..)
-            $T  #!
-            ) )
+            (let (Sym2 (cdr @)  Z (cdr Y))
+               (set P (val (setq Y (car @)))  2 P Y)
+               (save R
+                  (let Q (set $Bind (push (val Sym2) Sym2 (val $Bind)))  # [[sym] sym LINK]
+                     (set
+                        Sym2 (save (eval (++ Z)))
+                        Y ONE )
+                     (loop
+                        (? (nil? (eval (car Z)))
+                           (setq R (& R -2)) )
+                        (set $At @)
+                        (? (=0 (& (setq R (loop1 X)) 1)))
+                        (safe R)
+                        (when (pair (cdr Z))
+                           (set Sym2 (run @)) )
+                        (set Y (+ (val Y) (hex "10"))) )
+                     (set Sym2 (val Q)) ) ) ) ) )
       (set Y (val P)  $Bind (val 3 P))
       R ) )
 

@@ -1,4 +1,4 @@
-# 26apr20 Software Lab. Alexander Burger
+# 27apr20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -454,7 +454,7 @@ False Beg End Safe *Safe)
                   '(@Args
                      (log)
                      (let *Log NIL
-                        (use *Bind
+                        (let *Bind NIL
                            (for Var '@Args
                               (+bind '@Body Var) )
                            . @Body ) ) ) ) ) )

@@ -1,4 +1,4 @@
-# 24apr20 Software Lab. Alexander Burger
+# 27apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -34,12 +34,46 @@
          (? (atom (shift X)) $T)
          (? (<> Y (eval (car X))) $Nil) ) ) )
 
+# (n== 'any ..) -> flg
+(de _neq (Exe)
+   (let (X (cdr Exe)  Y (save (eval (car X))))
+      (loop
+         (? (atom (shift X)) $Nil)
+         (? (<> Y (eval (car X))) $T) ) ) )
+
 # (= 'any ..) -> flg
 (de _equal (Exe)
    (let (X (cdr Exe)  Y (save (eval (car X))))
       (loop
          (? (atom (shift X)) $T)
          (? (not (equal Y (eval (car X)))) $Nil) ) ) )
+
+# (<> 'any ..) -> flg
+(de _nequal (Exe)
+   (let (X (cdr Exe)  Y (save (eval (car X))))
+      (loop
+         (? (atom (shift X)) $Nil)
+         (? (not (equal Y (eval (car X)))) $T) ) ) )
+
+# (=0 'any) -> 0 | NIL
+(de _eq0 (Exe)
+   (if (== (eval (cadr Exe)) ZERO) @ $Nil) )
+
+# (=1 'any) -> 1 | NIL
+(de _eq1 (Exe)
+   (if (== (eval (cadr Exe)) ONE) @ $Nil) )
+
+# (=T 'any) -> flg
+(de _eqT (Exe)
+   (if (== (eval (cadr Exe)) $T) @ $Nil) )
+
+# (n0 'any) -> flg
+(de _neq0 (Exe)
+   (if (== (eval (cadr Exe)) ZERO) $Nil $T) )
+
+# (nT 'any) -> flg
+(de _neqT (Exe)
+   (if (== (eval (cadr Exe)) $T) $Nil $T) )
 
 # (> 'any ..) -> flg
 (de _gt (Exe)

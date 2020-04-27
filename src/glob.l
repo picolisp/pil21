@@ -1,4 +1,4 @@
-# 26apr20 Software Lab. Alexander Burger
+# 27apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -287,7 +287,14 @@
    (NIL "cons" _cons)
    (NIL "list" _list)
    (NIL "==" _eq)
+   (NIL "n==" _neq)
    (NIL "=" _equal)
+   (NIL "<>" _nequal)
+   (NIL "=0" _eq0)
+   (NIL "=1" _eq1)
+   (NIL "=T" _eqT)
+   (NIL "n0" _neq0)
+   (NIL "nT" _neqT)
    (NIL ">" _gt)
    (NIL ">=" _ge)
    (NIL "num?" _numQ)

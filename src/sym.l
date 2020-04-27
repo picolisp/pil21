@@ -1,4 +1,4 @@
-# 26apr20 Software Lab. Alexander Burger
+# 27apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1447,7 +1447,7 @@
       (needSym Exe Y)
       (link (push Key NIL))
       (when (sym? (val (tail Y)))
-         (if (nil? Val)
+         (if (nil? Key)
             (dbFetch Exe Y)  # Volatile property
             (dbTouch Exe Y) ) )
       (prop Y Key) ) )
@@ -1500,7 +1500,7 @@
          (setq Y (getn Exe Y Key)) )
       (needSym Exe Y)
       (when (sym? (val (tail Y)))
-         (if (nil? Val)
+         (if (nil? Key)
             (dbFetch Exe Y)  # Volatile property
             (dbTouch Exe Y) ) )
       (prop Y Key) ) )

@@ -1,4 +1,4 @@
-# 25apr20 Software Lab. Alexander Burger
+# 27apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -319,9 +319,9 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking)
          ((sym? X) (car X))
          (T (evList X)) ) ) )
 
-(inline run (Bnd2)
+(inline run (Bnd)
    (use @
       (loop
-         (let X (++ Bnd2)
-            (? (atom Bnd2) (eval X))
+         (let X (++ Bnd)
+            (? (atom Bnd) (eval X))
             (and (pair X) (evList X)) ) ) ) )
