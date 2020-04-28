@@ -1,4 +1,4 @@
-# 26apr20 Software Lab. Alexander Burger
+# 28apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1390,7 +1390,7 @@
       (call $Put @)
       (inc 'S) ) )
 
-(local) (print prin prin1)
+(local) (print prin)
 
 (de void print (X)
    (sigChk 0)
@@ -1408,19 +1408,23 @@
                   (prExt Nm)
                   (call $Put (char "}")) )
                ((isLstIntern X Nm (val $Intern))
+                  #! Recurse on other namespace
                   (let P (push 0 Nm)  # [cnt name]
+                     #! Handle special characters
                      (until (=0 (symByte P))
                         (call $Put @) ) ) )
                (T  # Transient
                   (call $Put (char "\""))
                   (let P (push 0 Nm)  # [cnt name]
                      (until (=0 (symByte P))
+                        #! Handle special characters
                         (call $Put @) ) )
                   (call $Put (char "\"")) ) ) ) )
       ((and (== (car X) $Quote) (<> X (cdr X)))
          (call $Put (char "'"))
          (print (cdr X)) )
       (T
+         (stkChk 0)
          (call $Put (char "("))
          (let P (circ X)
             (if (=0 P)
@@ -1449,31 +1453,59 @@
          (call $Put (char ")")) ) ) )
 
 (de void prin (X)
-   $Nil )
-
-(de void prin1 (X)
-   $Nil )
+   (unless (nil? X)
+      (sigChk 0)
+      (cond
+         ((cnt? X) (outNum X))
+         ((big? X) (fmtNum X -1 0 0 null))
+         ((sym? X)
+            (let Nm (name (val (tail X)))
+               (unless (== Nm ZERO)
+                  (ifn (sym? (val (tail X)))  # No external
+                     (let P (push 0 Nm)  # [cnt name]
+                        (until (=0 (symByte P))
+                           (call $Put @) ) )
+                     (call $Put (char "{"))
+                     (prExt Nm)
+                     (call $Put (char "}")) ) ) ) )
+         (T
+            (stkChk 0)
+            (loop
+               (prin (car X))
+               (? (== $Nil (shift X)))
+               (? (atom X) (prin X)) ) ) ) ) )
 
 # (prin 'any ..) -> any
 (de _prin (Exe)
-   $Nil )
+   (let X (cdr Exe)
+      (loop
+         (let Y (eval (++ X))
+            (prin Y)
+            (? (atom X) Y) ) ) ) )
 
 # (prinl 'any ..) -> any
 (de _prinl (Exe)
-   $Nil )
+   (prog1 (_prin Exe) (newline)) )
 
 # (space ['cnt]) -> cnt
 (de _space (Exe)
-   $Nil )
+   (let X (eval (cadr Exe))
+      (ifn (nil? X)
+         (let N (xCnt Exe X)
+            (while (ge0 (dec 'N))
+               (space) )
+            X )
+         (space)
+         ONE ) ) )
 
 # (print 'any ..) -> any
 (de _print (Exe)
-   (let (X (cdr Exe)  Y T)
+   (let X (cdr Exe)
       (loop
-         (print (setq Y (eval (++ X))))
-         (? (atom X))
-         (space) )
-      Y ) )
+         (let Y (eval (++ X))
+            (print Y)
+            (? (atom X) Y)
+            (space) ) ) ) )
 
 # (printsp 'any ..) -> any
 (de _printsp (Exe)
