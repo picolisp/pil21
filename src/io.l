@@ -109,7 +109,7 @@
       (loop
          (? (ge0 (read (In: fd) (In: (buf)) BUFSIZ))
             (In: cnt @) )
-         (? (<> (xErrno) EINTR) 0)
+         (? (<> (gErrno) EINTR) 0)
          (sigChk 0) ) ) )
 
 (de i64 slowNb ((i8* . In))
@@ -124,7 +124,7 @@
             (? (=0 N)
                (In: ix (In: cnt -1))
                0 ) )
-         (? (== (xErrno) EAGAIN) -1)
+         (? (== (gErrno) EAGAIN) -1)
          (? (<> @ EINTR) 0)
          (sigChk 0) ) ) )
 
@@ -133,7 +133,7 @@
       (loop
          (? (gt0 (read Fd P Cnt))
             (setq P (ofs P @)  Cnt (- Cnt @)) )
-         (when (or (=0 @) (<> (xErrno) EINTR))
+         (when (or (=0 @) (<> (gErrno) EINTR))
             (ret NO) )
          (sigChk 0) )
       (? (=0 Cnt) YES) ) )
@@ -148,11 +148,11 @@
                   (ret 1) )
                (setq P (ofs P N))
                (while (le0 (setq N (read Fd P Cnt)))
-                  (when (or (=0 N) (<> (xErrno) EINTR))
+                  (when (or (=0 N) (<> (gErrno) EINTR))
                      (ret 0) )
                   (sigChk 0) ) ) )
          (? (=0 N) 0) )
-      (? (== (xErrno) EAGAIN) -1)
+      (? (== (gErrno) EAGAIN) -1)
       (? (<> @ EINTR) 0)
       (sigChk 0) ) )
 
@@ -160,7 +160,7 @@
    (loop
       (let N (write Fd P Cnt)
          (if (lt0 N)
-            (let E (xErrno)
+            (let E (gErrno)
                (? (== E EBADF) NO)
                (? (== E EPIPE) NO)
                (? (== E ECONNRESET) NO)
@@ -186,7 +186,7 @@
          (loop
             (let N (write (Cld: tell) P Cnt)
                (if (lt0 N)
-                  (let E (xErrno)
+                  (let E (gErrno)
                      (? (== E EAGAIN))
                      (when (or (== E EPIPE) (== E ECONNRESET))
                         (clsChild Cld)
@@ -506,7 +506,7 @@
    (when (> Pid 1)
       (let Res (b32 1)
          (while (lt0 (waitpid Pid Res 0))
-            (unless (== (xErrno) EINTR)
+            (unless (== (gErrno) EINTR)
                (closeErr) )
             (sigChk 0) )
          (set $At2 (cnt (i64 (val Res)))) ) ) )
@@ -598,8 +598,8 @@
                   (pollIn Fd Poll)  # First 'pollfd' struct
                   (inc 'Nfds) ) )
             #! ...
-            (while (lt0 (xPoll Poll Nfds Ms))
-               (unless (== (xErrno) EINTR)
+            (while (lt0 (gPoll Poll Nfds Ms))
+               (unless (== (gErrno) EINTR)
                   (set $Run $Nil)
                   (selectErr Exe) )
                (sigChk Exe) )
@@ -661,7 +661,7 @@
                (when Flg
                   (setq Nm (ofs Nm 1)) )
                (while (lt0 (Io: fd (if Flg (openRdWr Nm) (openRdonly Nm))))
-                  (unless (== (xErrno) EINTR)
+                  (unless (== (gErrno) EINTR)
                      (openErr Exe X) )
                   (sigChk Exe) )
                (Io: pid 1)
@@ -725,7 +725,7 @@
                (when Flg
                   (setq Nm (ofs Nm 1)) )
                (while (lt0 (Io: fd (if Flg (openWrAppend Nm) (openWronly Nm))))
-                  (unless (== (xErrno) EINTR)
+                  (unless (== (gErrno) EINTR)
                      (openErr Exe X) )
                   (sigChk Exe) )
                (Io: pid 1)

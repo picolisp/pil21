@@ -1,4 +1,4 @@
-// 19apr20 Software Lab. Alexander Burger
+// 28apr20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -15,7 +15,7 @@ char *stderrMsg(char *fmt, char *s) {
    return s;
 }
 
-void xprintf(char *buf, int32_t siz, char *fmt, char *arg) {
+void gPrintf(char *buf, int32_t siz, char *fmt, char *arg) {
    snprintf(buf, siz, fmt, arg);
 }
 
@@ -115,7 +115,7 @@ void pollOut(int32_t fd, struct pollfd *p) {
    p->events = POLLOUT;
 }
 
-int32_t xPoll(struct pollfd *fds, int64_t nfds, int64_t timeout) {
+int32_t gPoll(struct pollfd *fds, int64_t nfds, int64_t timeout) {
    return (int32_t)poll(fds, (nfds_t)nfds, (int)timeout);
 }
 
@@ -185,7 +185,7 @@ sighandler_t SigIgn = SIG_IGN;
 int SigUnblock = SIG_UNBLOCK;
 
 // Sync src/defs.l 'SIGHUP' and src/glob.l '$Signal'
-int32_t xSignal(int32_t n) {
+int32_t gSignal(int32_t n) {
    switch (n) {
    case SIGHUP:  return 1;
    case SIGINT:  return 2;
@@ -217,7 +217,7 @@ void waitNohang(void) {
 }
 
 // Sync src/defs.l 'ENOENT'
-int32_t xErrno(void) {
+int32_t gErrno(void) {
    switch (errno) {
    case ENOENT:     return 1;
    case EINTR:      return 2;

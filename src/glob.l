@@ -1,4 +1,4 @@
-# 27apr20 Software Lab. Alexander Burger
+# 28apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -61,7 +61,7 @@
    0 )  # name
 
 # Signals
-(array $Signal i32  # Sync src/lib.c 'xErrno'
+(array $Signal i32  # Sync src/lib.c 'gErrno'
    0    # Count
    0    # SIGHUP
    0    # SIGINT
@@ -246,6 +246,8 @@
    (NIL "filter" _filter)
    (NIL "extract" _extract)
    # Control flow
+   (NIL "eval" _eval)
+   (NIL "run" _run)
    (NIL "de" _de)
    (NIL "dm" _dm)
    (NIL "box" _box)

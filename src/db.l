@@ -1,4 +1,4 @@
-# 23apr20 Software Lab. Alexander Burger
+# 28apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -53,13 +53,13 @@
 (de void rdLockDb ()
    (unless (== $T (val $Solo))  # Not already locked whole DB
       (while (lt0 (rdLock ((dbFile (val $DbFiles)) fd) 0 1))  # Descriptor of first file
-         (unless (== (xErrno) EINTR)
+         (unless (== (gErrno) EINTR)
             (lockErr) ) ) ) )
 
 (de void wrLockDb ()
    (unless (== $T (val $Solo))  # Not already locked whole DB
       (while (lt0 (wrLock ((dbFile (val $DbFiles)) fd) 0 1 YES))  # Descriptor of first file
-         (unless (== (xErrno) EINTR)
+         (unless (== (gErrno) EINTR)
             (lockErr) ) ) ) )
 
 (de void unLockDb ((i64 . Len))
@@ -84,20 +84,20 @@
                ((== $T (val $Solo)) (set $Solo $Nil)) )  # Clear solo mode
             (ret 0) )
          (or
-            (== (xErrno) EINTR)  # Interrupted
+            (== (gErrno) EINTR)  # Interrupted
             (== @ EACCES)  # Locked by another process
             (== @ EAGAIN)  # Memory-mapped by another process
             (lockErr) )
          (let Pid T
             (while (lt0 (setq Pid (getLock (Db: fd) N Len)))
-               (unless (== (xErrno) EINTR)
+               (unless (== (gErrno) EINTR)
                   (lockErr) ) )
             (when (gt0 Pid)
                (ret Pid) ) ) ) ) )
 
 (de void lockJnl ()
    (while (lt0 (wrLock (fileno (val $DbJnl)) 0 0 YES))
-      (unless (== (xErrno) EINTR)
+      (unless (== (gErrno) EINTR)
          (lockErr) ) ) )
 
 (de void unLockJnl ()

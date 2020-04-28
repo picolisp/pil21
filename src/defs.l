@@ -1,4 +1,4 @@
-# 19apr20 Software Lab. Alexander Burger
+# 28apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -41,7 +41,7 @@
 
 (setq UDPMAX 4096)  # UDP buffer size
 
-## Sync src/lib.c 'xSignal' and src/glob.l '$Signal'
+## Sync src/lib.c 'gSignal' and src/glob.l '$Signal'
 (local) (SIGHUP SIGINT SIGUSR1 SIGUSR2 SIGPIPE SIGALRM SIGTERM SIGCHLD SIGCONT
 SIGSTOP SIGTSTP SIGTTIN SIGTTOU SIGIO)
 
@@ -61,7 +61,7 @@ SIGSTOP SIGTSTP SIGTTIN SIGTTOU SIGIO)
    SIGTTOU  13
    SIGIO    14 )
 
-## Sync src/lib.c 'xErrno'
+## Sync src/lib.c 'gErrno'
 (local) (ENOENT EINTR EBADF EAGAIN EACCES EPIPE ECONNRESET)
 
 (setq

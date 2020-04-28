@@ -1,4 +1,4 @@
-# 26apr20 Software Lab. Alexander Burger
+# 28apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -93,7 +93,7 @@
    (ifn (=0 (val $TtyPid))
       (kill @ N)
       (set $Signal (+ (val $Signal) 1))
-      (let P (ofs $Signal (xSignal N))
+      (let P (ofs $Signal (gSignal N))
          (set P (+ (val P) 1)) ) ) )
 
 (de void sigTerm ((i32 . N))
@@ -142,7 +142,7 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
    (unless (=0 X)
       (link (push X NIL)) )  # Save
    (let Msg (b8 240)
-      (xprintf Msg 240 Fmt Arg)
+      (gPrintf Msg 240 Fmt Arg)
       (unless (=0 (val Msg))
          (set $Msg (mkStr Msg))
          (let Ca (val $Catch)
@@ -310,7 +310,7 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
    (let N (int (needCnt Exe X))
       (if (sign? X) (- N) N) ) )
 
-(de evCnt (Exe X)
+(de i64 evCnt (Exe X)
    (xCnt Exe (eval (car X))) )
 
 (de evLst (Exe)

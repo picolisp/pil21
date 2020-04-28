@@ -1,4 +1,4 @@
-# 27apr20 Software Lab. Alexander Burger
+# 28apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -79,7 +79,7 @@
 (local) (malloc realloc free fork getenv setenv getpid setpgid execvp isatty
 tcgetattr read write pread pwrite fread fwrite putc_unlocked fflush fileno pipe
 strlen strcpy strdup strcmp strchr strrchr dlsym dlerror dup2 close signal
-waitpid setjmp longjmp getTime kill exit)
+waitpid setjmp longjmp kill exit)
 
 (de T i8* malloc (i64))
 (de T i8* realloc (i8* i64))
@@ -124,12 +124,12 @@ waitpid setjmp longjmp getTime kill exit)
 
 (var PipeBuf i64 NIL)
 
-(local) (stderrNum stderrMsg xprintf strErrno openRdonly openWronly openRdWr
+(local) (stderrNum stderrMsg gPrintf strErrno openRdonly openWronly openRdWr
 openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking)
 
 (de T i64 stderrNum (i8* i64))
 (de T i8* stderrMsg (i8* i8*))
-(de T i32 xprintf (i8* i32 i8* i8*))
+(de T i32 gPrintf (i8* i32 i8* i8*))
 (de T i8* strErrno ())
 (de T i32 openRdonly (i8*))
 (de T i32 openWronly (i8*))
@@ -152,14 +152,16 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking)
 (de T void setCooked ())
 
 # System
+(local) getTime
+
 (de T i64 getTime ())
 
 # Polling
-(local) (pollIn pollOut xPoll readyIn readyOut)
+(local) (pollIn pollOut gPoll readyIn readyOut)
 
 (de T void pollIn (i32 i64*))
 (de T void pollOut (i32 i64*))
-(de T i32 xPoll (i64* i64 i64))
+(de T i32 gPoll (i64* i64 i64))
 (de T i1 readyIn (i64* i32))
 (de T i1 readyOut (i64* i32))
 
@@ -172,18 +174,18 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking)
 (de T i32 getLock (i32 i64 i64))
 
 # Signals
-(local) (Sig SigDfl SigIgn SigUnblock xSignal waitNohang)
+(local) (Sig SigDfl SigIgn SigUnblock gSignal waitNohang)
 
 (var Sig i32 NIL)
 (var SigDfl i8* NIL)
 (var SigIgn i8* NIL)
 (var SigUnblock i32 NIL)
 
-(de T i32 xSignal (i32))
+(de T i32 gSignal (i32))
 (de T void waitNohang ())
 
-(local) xErrno
-(de T i32 xErrno ())
+(local) gErrno
+(de T i32 gErrno ())
 
 # Catch and Throw
 (local) (JmpBufSize QuitRst)
@@ -208,9 +210,11 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking)
 (de T i32 toLowerCase (i32))
 
 ### Forward references ###
-(local) (evList mkStr subStr newline space outWord outString print repl)
 
 # main.l
+(local) (err stkErr argErr cntErr numErr symErr extErr atomErr pairErr lstErr
+varErr protErr xCnt evCnt evLst evSym equal compare evList)
+
 (de NIL err (any any i8* i8*))
 (de NIL stkErr (any))
 (de NIL argErr (any any))
@@ -224,17 +228,24 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking)
 (de NIL varErr (any any))
 (de NIL protErr (any any))
 (de i64 xCnt (any any))
-(de evCnt (any any))
+(de i64 evCnt (any any))
 (de evLst (any))
 (de evSym (any))
 (de i1 equal (any any))
 (de i64 compare (any any))
 (de evList (any))
+
 # gc.l
+(local) (cons consSym consStr)
+
 (de cons (any any))
 (de consSym (any any))
 (de consStr (any))
+
 # sym.l
+(local) (name bufSize pathSize bufString pathString mkStr firstByte firstChar
+pack xSym subStr)
+
 (de name (any))
 (de i64 bufSize (any))
 (de i64 pathSize (any))
@@ -246,7 +257,10 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking)
 (de void pack (any i64*))
 (de xSym (any))
 (de i1 subStr (any any))
+
 # io.l
+(local) (flushAll newline space outWord outString print repl)
+
 (de void flushAll ())
 (de void newline ())
 (de void space ())
@@ -254,7 +268,10 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking)
 (de void outString (i8*))
 (de void print (any))
 (de repl (any i8 any))
+
 # db.l
+(local) (dbFetch dbTouch dbZap)
+
 (de dbFetch (any any))
 (de dbTouch (any any))
 (de dbZap (any))
@@ -287,16 +304,18 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking)
    (any (| X 8)) )
 
 (inline memq (X L)
-   (loop
-      (? (atom L) NO)
-      (? (== X (car L)) YES)
-      (shift L) ) )
+   (use @
+      (loop
+         (? (atom L) NO)
+         (? (== X (car L)) YES)
+         (shift L) ) ) )
 
 (inline member (X L)
-   (loop
-      (? (atom L) NO)
-      (? (equal X (car L)) YES)
-      (shift L) ) )
+   (use @
+      (loop
+         (? (atom L) NO)
+         (? (equal X (car L)) YES)
+         (shift L) ) ) )
 
 (inline length (X)
    (use @
@@ -316,12 +335,12 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking)
    (use @
       (cond
          ((num? X) X)
-         ((sym? X) (car X))
+         ((sym? X) (val X))
          (T (evList X)) ) ) )
 
-(inline run (Bnd)
+(inline run (Prg)
    (use @
       (loop
-         (let X (++ Bnd)
-            (? (atom Bnd) (eval X))
+         (let X (++ Prg)
+            (? (atom Prg) (eval X))
             (and (pair X) (evList X)) ) ) ) )

@@ -1,4 +1,4 @@
-# 27apr20 Software Lab. Alexander Burger
+# 28apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -11,6 +11,52 @@
 # (quote . any) -> any
 (de _quote (Exe)
    (cdr Exe) )
+
+# (eval 'any ['cnt ['lst]]) -> any
+(de _eval (Exe)
+   (let (X (cdr Exe)  E (eval (car X)))
+      (cond
+         ((num? E) E)
+         ((sym? E) (val E))
+         ((atom (shift X)) (evList E))
+         (T
+            (save E
+               (let N (needCnt Exe (eval (car X)))
+                  (unless (or (sign? N) (=0 (setq N (int N))))
+                     (let Bnd (val $Bind)
+                        (loop
+                           (? (=0 Bnd))
+                           (?
+                              (and
+                                 (== $At (val 2 Bnd))
+                                 (prog
+                                    (set $At (val Bnd))
+                                    (=0 (dec 'N)) ) ) )
+                           (setq Bnd (val 3 Bnd)) ) ) ) )
+               (evList E) ) ) ) ) )
+
+# (run 'any ['cnt ['lst]]) -> any
+(de _run (Exe)
+   (let (X (cdr Exe)  E (eval (car X)))
+      (cond
+         ((num? E) E)
+         ((sym? E) (val E))
+         ((atom (shift X)) (run E))
+         (T
+            (save E
+               (let N (needCnt Exe (eval (car X)))
+                  (unless (or (sign? N) (=0 (setq N (int N))))
+                     (let Bnd (val $Bind)
+                        (loop
+                           (? (=0 Bnd))
+                           (?
+                              (and
+                                 (== $At (val 2 Bnd))
+                                 (prog
+                                    (set $At (val Bnd))
+                                    (=0 (dec 'N)) ) ) )
+                           (setq Bnd (val 3 Bnd)) ) ) ) )
+               (run E) ) ) ) ) )
 
 # (de sym . any) -> sym
 (de _de (Exe)
