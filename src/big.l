@@ -1,4 +1,4 @@
-# 26apr20 Software Lab. Alexander Burger
+# 29apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -553,20 +553,20 @@
             (ifn @@
                (zapZero (pop R))
                # 2-complement
-               (let Q P
+               (let Q (val R)
                   (loop  # Invert
                      (set (dig Q) (x| (val (dig Q)) -1))
                      (? (cnt? (setq N (val (big Q)))))
                      (setq Q N) )
-                  (set (dig Q) (x| N -16)) )
-               (let Q P
+                  (set (big Q) (x| N -16)) )
+               (let Q (val R)
                   (loop  # Increment
                      (set (dig Q) (add (val (dig Q)) 1))
                      (unless @@
                         (goto 9) )
                      (? (cnt? (setq N (val (big Q)))))
                      (setq Q N) )
-                  (set (dig Q) (+ N (hex "10"))) )
+                  (set (big Q) (+ N (hex "10"))) )
                (: 9
                   (sign (zapZero (pop R))) ) ) ) ) ) )
 
