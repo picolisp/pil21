@@ -1,4 +1,4 @@
-# 28apr20 Software Lab. Alexander Burger
+# 29apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -210,6 +210,7 @@
    (NIL "fold" _fold)
    # Input/Output
    (NIL "path" _path)
+   (NIL "wait" _wait)
    (NIL "read" _read)
    (NIL "key" _key)
    (NIL "char" _char)

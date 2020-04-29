@@ -1,4 +1,4 @@
-# 28apr20 Software Lab. Alexander Burger
+# 29apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -618,6 +618,25 @@
       (set $At (pop P)  $Task Task)
       Ms ) )
 
+# (wait 'cnt|NIL . prg) -> any
+# (wait 'cnt|NIL T 'fd) -> fd|NIL
+(de _wait (Exe)
+   (let
+      (X (cdr Exe)
+         N
+         (if (nil? (eval (++ X)))
+            292MY
+            (xCnt Exe @) ) )
+      (if (t? (car X))
+         (let Fd (evCnt Exe (cdr X))  # Wait for file descriptor
+            (if (=0 (waitFd Exe (i32 Fd) N))
+               $Nil
+               (cnt Fd) ) )
+         (loop
+            (? (not (nil? (run X))) @)  # 'prg'
+            (? (=0 (waitFd Exe -1 N)) (run X))  # Timeout
+            (setq N @) ) ) ) )
+
 (local) (currFd rdOpen wrOpen erOpen ctOpen)
 
 (de i32 currFd (Exe)
@@ -1117,33 +1136,32 @@
 
 # (key ['cnt]) -> sym
 (de _key (Exe)
-   (let X (eval (cadr Exe))
-      (flushAll)
-      (setRaw)
-      (if
-         (=0
-            (waitFd Exe 0
-               (if (nil? X)
-                  292MY
-                  (* (xCnt Exe X) 1000) ) ) )
-         $Nil
-         (let C (stdinByte)
-            (mkChar
-               (cond
-                  ((>= 127 C) C)  # Single byte
-                  ((== C (hex "FF")) (i32 TOP))  # Infinite
-                  (T
-                     (let B
-                        (if (=0 (& C (hex "20")))  # Two bytes
-                           (& C (hex "1F"))  # First byte 110xxxxx
-                           (let A
-                              (if (=0 (& C (hex "10")))  # Three bytes
-                                 (& C (hex "0F"))  # First byte 1110xxxx
-                                 (|  # Four bytes
-                                    (shl (& C 7) 6)  # First byte 11110xxx
-                                    (& (stdinByte) (hex "3F")) ) )  # 10xxxxxx
-                              (| (shl A 6) (& (stdinByte) (hex "3F"))) ) )
-                        (| (shl B 6) (& (stdinByte) (hex "3F"))) ) ) ) ) ) ) ) )
+   (flushAll)
+   (setRaw)
+   (if
+      (=0
+         (waitFd Exe 0
+            (if (nil? (eval (cadr Exe)))
+               292MY
+               (xCnt Exe @) ) ) )
+      $Nil
+      (let C (stdinByte)
+         (mkChar
+            (cond
+               ((>= 127 C) C)  # Single byte
+               ((== C (hex "FF")) (i32 TOP))  # Infinite
+               (T
+                  (let B
+                     (if (=0 (& C (hex "20")))  # Two bytes
+                        (& C (hex "1F"))  # First byte 110xxxxx
+                        (let A
+                           (if (=0 (& C (hex "10")))  # Three bytes
+                              (& C (hex "0F"))  # First byte 1110xxxx
+                              (|  # Four bytes
+                                 (shl (& C 7) 6)  # First byte 11110xxx
+                                 (& (stdinByte) (hex "3F")) ) )  # 10xxxxxx
+                           (| (shl A 6) (& (stdinByte) (hex "3F"))) ) )
+                     (| (shl B 6) (& (stdinByte) (hex "3F"))) ) ) ) ) ) ) )
 
 # (char) -> sym
 # (char 'cnt) -> sym
@@ -1517,7 +1535,7 @@
 
 # (flush) -> flg
 (de _flush (Exe)
-   $Nil )
+   (if (flush (val $OutFile)) $T $Nil) )
 
 # (rewind) -> flg
 (de _rewind (Exe)
