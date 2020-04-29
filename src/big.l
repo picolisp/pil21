@@ -542,8 +542,8 @@
                         N (sub A (val (dig B)) C)
                         C @@
                         P (set (big P) (boxNum N)) )
-                     (? (cnt? (setq B (val (big B)))))
-                     (setq A 0) )
+                     (setq A 0)
+                     (? (cnt? (setq B (val (big B))))) )
                   (setq B (int B)) )
                (setq
                   N (sub (val (dig A)) (val (dig B)) C)
