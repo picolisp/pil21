@@ -1,4 +1,4 @@
-# 22apr20 Software Lab. Alexander Burger
+# 29apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -48,8 +48,8 @@
          (let C CELLS
             (loop
                (set 2 P (| (cdr P) 1))  # Set mark bit
-               (? (=0 (dec 'C)))
-               (setq P (ofs P 2)) ) )  # Next cell
+               (setq P (ofs P 2))  # Next cell
+               (? (=0 (dec 'C))) ) )
          (setq P (val P))  # Next heap
          (? (=0 P)) ) )
    # Mark
@@ -66,7 +66,7 @@
    (let P (val $Bind)  # Bind frames
       (until (=0 P)
          (mark (val P))  # Mark saved value
-         (set P (val 3 P)) ) )
+         (setq P (val 3 P)) ) )
    (let Ca (val $Catch)  # Catch frames
       (until (=0 Ca)
          (let Ca: (caFrame Ca)
@@ -253,14 +253,14 @@
 
 # (gc ['cnt [cnt2]]) -> cnt | NIL
 (de _gc (Exe)
-   (let (X (cdr Exe)  Y (eval (++ X)))  # MiBs
+   (let (X (cdr Exe)  Y (eval (car X)))  # MiBs
       (set $At $Nil  $At2 $Nil)
       (if (nil? Y)
          (gc)
          (set $GcCount (shl (xCnt Exe Y) 16))  # Multiply with CELLS
          (gc)
          (set $GcCount
-            (if (atom X)
+            (if (atom (shift X))
                CELLS
                (shl (evCnt Exe X) 16) ) ) )  # New default
       Y ) )

@@ -247,7 +247,7 @@
          (A (val (dig N))
             X (boxNum (shl A 1))
             Y (val (big N))
-            R (link (push X NIL)) )
+            R (save X) )
          (while (big? Y)
             (let B (val (dig Y))
                (setq X
@@ -257,7 +257,7 @@
          (set (big X)
             (box64
                (| (shl (shr Y 4) 1) (shl 0 A 1)) ) )
-         (pop R) ) ) )
+         R ) ) )
 
 # Divide (unsigned) number by 2
 (de shru (N)
@@ -268,7 +268,7 @@
             (let
                (B (val (dig X))
                   Y (boxNum (| (shr B 0 1) A))
-                  R (link (push Y NIL)) )
+                  R (save Y) )
                (loop
                   (setq A B  N X)
                   (? (cnt? (setq X (val (big X)))))
@@ -289,7 +289,7 @@
                      (prog1
                         (boxNum A)
                         (set (big @) (cnt X)) ) ) )
-               (pop R) )
+               R )
             (setq
                X (int X)
                A (| (shr X 0 1) A) )
@@ -315,7 +315,7 @@
             (P
                (boxNum
                   (& (val (dig A)) (val (dig B))) )
-               R (link (push P NIL)) )
+               R (save P) )
             (loop
                (setq A (val (big A))  B (val (big B)))
                (? (cnt? A)
@@ -329,7 +329,7 @@
                   (set (big P)
                      (boxNum
                         (& (val (dig A)) (val (dig B))) ) ) ) )
-            (zapZero (pop R)) ) ) ) )
+            (zapZero R) ) ) ) )
 
 # Bitwise OR of two (unsigned) numbers
 (de oru (A B)
@@ -349,7 +349,7 @@
             (P
                (boxNum
                   (| (val (dig A)) (val (dig B))) )
-               R (link (push P NIL)) )
+               R (save P) )
             (loop
                (setq A (val (big A))  B (val (big B)))
                (? (cnt? A)
@@ -368,7 +368,7 @@
                   (set (big P)
                      (boxNum
                         (| (val (dig A)) (val (dig B))) ) ) ) )
-            (pop R) ) ) ) )
+            R ) ) ) )
 
 # Bitwise XOR of two (unsigned) numbers
 (de xoru (A B)
@@ -390,7 +390,7 @@
             (P
                (boxNum
                   (x| (val (dig A)) (val (dig B))) )
-               R (link (push P NIL)) )
+               R (save P) )
             (loop
                (setq A (val (big A))  B (val (big B)))
                (? (cnt? A)
@@ -409,7 +409,7 @@
                   (set (big P)
                      (boxNum
                         (x| (val (dig A)) (val (dig B))) ) ) ) )
-            (zapZero (pop R)) ) ) ) )
+            (zapZero R) ) ) ) )
 
 # Add two (unsigned) numbers
 (de addu (A B)
@@ -425,7 +425,7 @@
                (setq B (add (int B) (val (dig A))))
                (ifn @@
                   (consNum B N)  # No carry
-                  (let R (link (push (setq B (consNum B N)) NIL))  # Else build new head
+                  (let R (save (setq B (consNum B N)))  # Else build new head
                      (loop
                         (? (cnt? N)
                            (setq N (add N (hex "10")))  # Add carry
@@ -440,13 +440,13 @@
                            (? (not @@)  # No carry
                               (set (big B) (consNum D N)) )
                            (setq B (set (big B) (consNum D N))) ) )
-                     (pop R) ) ) ) ) )
+                     R ) ) ) ) )
       (T  # Both are big
          (let
             (N (add (val (dig A)) (val (dig B)))
                C @@
                P (boxNum N)
-               R (link (push P NIL)) )
+               R (save P) )
             (loop
                (setq A (val (big A))  B (val (big B)))
                (? (cnt? A)
@@ -473,7 +473,7 @@
                   N (add (val (dig A)) (val (dig B)) C)
                   C @@
                   P (set (big P) (boxNum N)) ) )
-            (pop R) ) ) ) )
+            R ) ) ) )
 
 # Subtract short from big number
 (de sub1 (B N)
@@ -491,7 +491,7 @@
             (sign (cnt (- N)))  # Lowest digit
             (zapZero (consNum N B)) ) )
       (NIL
-         (let (P (boxNum N B)  R (link (push P NIL)))
+         (let (P (boxNum N B)  R (save P))
             (loop
                (setq
                   N (sub (val (dig B)) 1)  # Subtract borrow
@@ -501,7 +501,7 @@
                (setq P (set (big P) (consNum N B)))
                (? (cnt? B)
                   (set (big P) (sub B (hex "10"))) ) )  # Subtract borrow
-            (zapZero (pop R)) ) ) ) )
+            (zapZero R) ) ) ) )
 
 # Subtract two (unsigned) numbers
 (de subu (A B)
@@ -520,7 +520,7 @@
             (N (sub (val (dig A)) (val (dig B)))
                C @@
                P (boxNum N)
-               R (link (push P NIL)) )
+               R (save P) )
             (loop
                (setq A (val (big A))  B (val (big B)))
                (? (cnt? B)
@@ -532,7 +532,7 @@
                         A (val (big A))
                         P (set (big P) (consNum N A)) )
                      (unless C
-                        (ret (zapZero (pop R))) )
+                        (ret (zapZero R)) )
                      (setq B 0) )
                   (setq A (int A)) )
                (? (cnt? A)
@@ -551,15 +551,15 @@
                   P (set (big P) (boxNum N)) ) )
             (set (big P) (cnt (sub A B C)))  # Subtract final shorts with borrow
             (ifn @@
-               (zapZero (pop R))
+               (zapZero R)
                # 2-complement
-               (let Q (val R)
+               (let Q R
                   (loop  # Invert
                      (set (dig Q) (x| (val (dig Q)) -1))
                      (? (cnt? (setq N (val (big Q)))))
                      (setq Q N) )
                   (set (big Q) (x| N -16)) )
-               (let Q (val R)
+               (let Q R
                   (loop  # Increment
                      (set (dig Q) (add (val (dig Q)) 1))
                      (unless @@
@@ -568,7 +568,7 @@
                      (setq Q N) )
                   (set (big Q) (+ N (hex "10"))) )
                (: 9
-                  (sign (zapZero (pop R))) ) ) ) ) ) )
+                  (sign (zapZero R)) ) ) ) ) ) )
 
 # Multiply two (unsigned) numbers
 (inline (Lo Hi) mulAddHiLo (X Y P)
@@ -593,7 +593,7 @@
                   (Lo (mul A (val (dig B)))
                      Hi @@@
                      P (boxNum Lo)
-                     R (link (push P NIL)) )
+                     R (save P) )
                   (while (big? (setq B (val (big B))))
                      (setq
                         Lo (add (mul A (val (dig B))) Hi)
@@ -606,13 +606,13 @@
                      (if (and (=0 Hi) (=0 (& Lo (hex "F000000000000000"))))  # Fit in short number
                         (cnt Lo)
                         (consNum Lo (cnt Hi)) ) )
-                  (pop R) ) ) ) )
+                  R ) ) ) )
       ((cnt? B)  # A is big
          (setq B (int B))
          (xchg 'A 'B)
          (goto 1) )
       (T  # Both are big
-         (let (P (boxNum 0)  R (link (push P NIL)))
+         (let (P (boxNum 0)  R (save P))
             (loop
                (let
                   (X A
@@ -659,12 +659,12 @@
                   (if (cnt? (val (big P)))
                      (set (big P) (boxNum Hi))
                      (set (big @) Hi) ) ) )
-            (zapZero (pop R)) ) ) ) )
+            (zapZero R) ) ) ) )
 
 # Divide big number (Knuth Vol.2, p.257)
 (de div1 (A B (i1 . Rem))
    (let
-      (R (link (push ZERO NIL))  # Quotient
+      (R (save ZERO)  # Quotient
          P (boxNum (val (dig A)))
          U (link (push P NIL))  # Dividend 'u'
          V (link (push B NIL))  # Divisor 'v'
@@ -700,7 +700,6 @@
             (dec 'M)
             (inc 'N) )
          (when (lt0 M)
-            (drop R)
             (ret
                (if Rem
                   (zapZero (val U))
@@ -774,15 +773,14 @@
                                     (add (val (dig X)) (val (dig Y)) C) )
                                  (setq C @@) )
                               (set (dig X) (+ (val (dig X)) C)) ) ) ) ) ) ) )
-         (set R (consNum Q (val R)))
+         (safe (setq R (consNum Q R)))
          (? (lt0 (dec 'M))) )
       (ifn Rem
-         (zapZero (pop R))
+         (zapZero R)
          (setq A (zapZero (val U)))
          (until (=0 D)
             (setq A (half A))  # Shift right (destructive)
             (dec 'D) )
-         (drop R)
          A ) ) )
 
 # Divide two (unsigned) numbers

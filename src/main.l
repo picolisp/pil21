@@ -1,4 +1,4 @@
-# 28apr20 Software Lab. Alexander Burger
+# 29apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -68,13 +68,10 @@
       (set
          (ofs H HEAP) (val $Heaps)
          $Heaps H )
-      (let (P (ofs H (- HEAP 2))  A (val $Avail))
+      (let (P (ofs H HEAP)  A (val $Avail))
          (loop
-            (set P A)  # Link avail
-            (setq
-               A P
-               P (ofs P -2) )  # Back one cell
-            (? (== P H)) )
+            (set (setq P (ofs P -2)) A)  # Link avail
+            (? (== (setq A P) H)) )
          (set $Avail A) ) ) )
 
 # (raw ['flg]) -> flg
