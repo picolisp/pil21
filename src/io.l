@@ -1,4 +1,4 @@
-# 29apr20 Software Lab. Alexander Burger
+# 30apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -944,6 +944,7 @@
    (let
       (Nsp (save (val $Intern))  # Current symbol namespace
          R (push 4 NIL ZERO NIL) )  # [cnt last name link]
+      (link (ofs R 2))
       (charSym Chr R)  # Pack first char
       (setq Chr (val $Chr))
       (while (ge0 Chr)
@@ -1605,7 +1606,6 @@
 (local) (repl loadAll)
 
 (de repl (Exe (i8 . Pr) X)
-   (save -ZERO)
    (let P (b8 (ioFrame T))
       (rdOpen Exe X P)
       (pushInFiles P)
@@ -1631,23 +1631,22 @@
                         (? (> (val $Chr) (char " ")))
                         (call $Get) ) ) ) )
             (? (nil? Y))
-            (safe Y)
-            (if
-               (or
-                  (<> (val $InFile) (val (val $InFiles)))
-                  (n0 (val $Chr))
-                  (=0 Pr) )
-               (setq X (eval Y))
-               (flushAll)
-               (let A (val $At)
-                  (safe A)
-                  (setq X (set $At (eval Y)))
-                  (set $At3 (val $At2))
-                  (set $At2 A) )
-               (outString ($ "-> "))
-               (flushAll)
-               (print X)
-               (newline) ) ) )
+            (save Y
+               (if
+                  (or
+                     (<> (val $InFile) (val (val $InFiles)))
+                     (n0 (val $Chr))
+                     (=0 Pr) )
+                  (setq X (eval Y))
+                  (flushAll)
+                  (let A (save (val $At))
+                     (setq X (set $At (eval Y)))
+                     (set $At3 (val $At2))
+                     (set $At2 A) )
+                  (outString ($ "-> "))
+                  (flushAll)
+                  (print X)
+                  (newline) ) ) ) )
       (popInFiles)
       X ) )
 

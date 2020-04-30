@@ -582,6 +582,7 @@
 
 (de mulu (A B)
    (cond
+      ((== A ZERO) A)
       ((cnt? A)
          (setq A (int A))
          (if (cnt? B)
@@ -608,6 +609,7 @@
                         (cnt Lo)
                         (consNum Lo (cnt Hi)) ) )
                   R ) ) ) )
+      ((== B ZERO) B)
       ((cnt? B)  # A is big
          (setq B (int B))
          (xchg 'A 'B)
@@ -803,15 +805,15 @@
 
 # Increment a (signed) number
 (de incs (A)
-   (ifn (sign? A)
-      (addu A ONE)
-      (neg (subu (pos A) ONE)) ) )
+   (if (sign? A)
+      (neg (subu (pos A) ONE))
+      (addu A ONE) ) )
 
 # Decrement a (signed) number
 (de decs (A)
-   (ifn (sign? A)
-      (subu A ONE)
-      (neg (addu (pos A) ONE)) ) )
+   (if (sign? A)
+      (neg (addu (pos A) ONE))
+      (subu A ONE) ) )
 
 # Add two (signed) numbers
 (de adds (A B)
@@ -1400,8 +1402,7 @@
          @
          (when (sign? (needNum Exe @))
             (argErr Exe @) )
-         (let (Y (save @)  Z (eval (cadr X)))
-            (link (push Z NIL))
+         (let (Y (save @)  Z (save (eval (cadr X))))
             (when (num? Z)
                (setq Y (safe (mulu Y Z))) )
             (prog1
@@ -1432,13 +1433,15 @@
                         (twiceBig M)
                         (twiceBig M) )
                      (loop
-                        (let N (addu (val R) M)
+                        (let N (set C* (addu (val R) M))
                            (when (ge0 (cmpu Y N))
-                              (setq Y (subu Y N))
+                              (setq Y (safe (subu Y N)))
                               (set R (addu N M)) ) )
                         (set R (half (val R)))
-                        (setq M (half M))
-                        (? (== ZERO (setq M (half M)))) )
+                        (?
+                           (==
+                              ZERO
+                              (setq M (set M* (half (half M)))) ) ) )
                      (setq R (val R))
                      (if (or (nil? Z) (ge0 (cmpu R Y)))
                         R
