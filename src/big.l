@@ -1,4 +1,4 @@
-# 29apr20 Software Lab. Alexander Burger
+# 30apr20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -461,8 +461,9 @@
                         N (add (int B) (val (dig A)) C)
                         C @@ )
                      (loop
-                        (set (big P)
-                           (consNum N (setq A (val (big A)))) )
+                        (setq P
+                           (set (big P)
+                              (consNum N (setq A (val (big A)))) ) )
                         (? (not C))
                         (? (cnt? A)
                            (set (big P) (box64 (+ (int A) C))) )
