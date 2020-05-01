@@ -1,4 +1,4 @@
-# 30apr20 Software Lab. Alexander Burger
+# 01may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1428,7 +1428,7 @@
                            (set (big C) (boxNum (val (dig Y)))) )
                         (setq M (set M* (consNum 0 M))) )
                      (set (big C) Y)
-                     (setq Y (val C*))
+                     (setq Y (safe (val C*)))
                      (while (le0 (cmpu M Y))
                         (twiceBig M)
                         (twiceBig M) )
