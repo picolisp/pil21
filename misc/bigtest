@@ -1,0 +1,103 @@
+#!bin/picolisp lib.l
+# 18may16abu
+# misc/bigtest <seed>
+
+(load "@lib/misc.l")
+
+(seed (car (argv)))
+
+#  Random patterns:
+#  cnt
+#     xxx0000000000000000000000000xxxx0000000000000000000000000xxx
+#        (| 7 (>> -28 15) (>> -57 7))
+#
+#     xxx1111111111111111111111111xxxx1111111111111111111111111xxx
+#        1FFFFFF0FFFFFF8
+#
+#
+#  dig
+#     xxx000000000000000000000000000xxxx000000000000000000000000000xxx
+#        (| 7 (>> -30 15) (>> -61 7))
+#
+#     xxx111111111111111111111111111xxxx111111111111111111111111111xxx
+#        1FFFFFFC3FFFFFF8
+
+(de rnd ()
+   (let Big (| (rand 0 7) (>> -28 (rand 0 15)) (>> -57 (rand 0 7)))
+      (when (rand T)
+         (setq Big (| Big `(hex "1FFFFFF0FFFFFF8"))) )
+      (do (rand 0 2)
+         (let Dig (| (rand 0 7) (>> -30 (rand 0 15)) (>> -61 (rand 0 7)))
+            (when (rand T)
+               (setq Dig (| Dig `(hex "1FFFFFFC3FFFFFF8"))) )
+            (setq Big (| Dig (>> -64 Big))) ) )
+      (if (rand T) Big (- Big)) ) )
+
+
+(de test1 (S N1)
+   (let (N (read)  X (eval (list S N1)))
+      (unless (= N X)
+         (prinl "^J" N ": (" S " " N1 ") -> " X)
+         (bye) ) ) )
+
+(de test2 (S N1 N2)
+   (let (N (read)  X (eval (list S N1 N2)))
+      (unless (= N X)
+         (prinl "^J" N ": (" S " " N1 " " N2 ") -> " X)
+         (bye) ) ) )
+
+(de cmp2 (S N1 N2)
+   (let (N (n0 (read))  X (eval (list S N1 N2)))
+      (unless (== N X)
+         (prinl "^J" N ": (" S " " N1 " " N2 ") -> " X)
+         (bye) ) ) )
+
+
+(sys "BC_LINE_LENGTH" "200")
+
+(pipe
+   (out '("bc")
+      (do 10000000
+         (setq N1 (rnd))
+         (while (=0 (setq N2 (rnd))))
+         (prinl N1)
+         (prinl N2)
+         (prinl N1 " + " N2)
+         (prinl N1 " + 1")
+         (prinl N1 " + 1")
+         (prinl N1 " - " N2)
+         (prinl N1 " - 1")
+         (prinl N1 " - 1")
+         (prinl N1 " * " N2)
+         (prinl N1 " * 2")
+         (prinl N1 " % " N2)
+         (prinl N1 " / " N2)
+         (prinl N1 " / 2")
+         (prinl N1 " >= " N2)
+         (prinl N1 " > " N2)
+         (prinl "sqrt(" (abs N1) ")")
+         (at (0 . 1000) (wait 100)) ) )
+   (do 100
+      (do 100000
+         (setq
+            N1 (read)
+            N2 (read) )
+         (test2 '+ N1 N2)
+         (test2 '+ N1 1)
+         (test1 'inc N1)
+         (test2 '- N1 N2)
+         (test2 '- N1 1)
+         (test1 'dec N1)
+         (test2 '* N1 N2)
+         (test2 '* N1 2)
+         (test2 '% N1 N2)
+         (test2 '/ N1 N2)
+         (test2 '/ N1 2)
+         (cmp2 '>= N1 N2)
+         (cmp2 '> N1 N2)
+         (test1 'sqrt (abs N1)) )
+      (prin ".")
+      (flush) )
+   (prinl) )
+
+(bye)
