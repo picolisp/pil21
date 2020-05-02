@@ -1,0 +1,22 @@
+# 02may20 Software Lab. Alexander Burger
+
+   Differences to Pil64
+   ====================
+
++ PicoLisp Source instead of PilAsm
++ No pre-installed PicoLisp required for bootstrapping
++ '*Run' not limited to 1024 FDs / 500 children
++ Shared libraries have ".so" extension
++ 'with' accepts 'var' instead of 'sym'
++ Map functions accept atomic arguments
+
+- '====' is removed
+- '(arg)' call is removed
+- Second argument to 'name' (i.e. renaming) is removed
+- Lambda-binding environment offset for 'eval' and 'run' only for '@'
+- 'native'
+   — only functions with fixed number of arguments
+   — no 'T' result spec (skipped call)
+
+% Main coroutine has a tag 'T'
+% 'journal' format: Default size '0' instead of '64'
