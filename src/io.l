@@ -1640,7 +1640,11 @@
 
 # (wr 'cnt ..) -> cnt
 (de _wr (Exe)
-   $Nil )
+   (let X (cdr Exe)
+      (loop
+         (let N (eval (++ X))
+            (_putStdout (i8 (int N)))
+            (? (atom X) N) ) ) ) )
 
 (local) (repl loadAll)
 
