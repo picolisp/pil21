@@ -2,11 +2,6 @@
 
 (symbols '(llvm))
 
-(local) badSymNs
-
-(de NIL badSymNs (Exe Sym)
-   (err Exe Sym ($ "Bad symbol namespace") null) )
-
 (local) (name bufSize pathSize bufString pathString)
 
 (de name (Tail)
@@ -618,11 +613,11 @@
                (let V (val (needSym Exe Y))
                   (cond
                      ((nil? V) (set Y (cons $Nil $Nil)))  # New namespace
-                     ((atom V) (badSymNs Exe Y)) ) )  # Value must be a pair
+                     ((atom V) (symNsErr Exe Y)) ) )  # Value must be a pair
                (let R (setq Y (save (cons Y $Nil)))
                   (while (pair X)
                      (let Z (needSym Exe (eval (++ X)))
-                        (and (atom (val Z)) (badSymNs Exe Z))
+                        (and (atom (val Z)) (symNsErr Exe Z))
                         (setq Y (set 2 Y (cons Z $Nil))) ) )
                   (prog1
                      (val $Intern)

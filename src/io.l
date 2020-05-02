@@ -942,7 +942,7 @@
 
 (de rdAtom ((i32 . Chr))
    (let
-      (Nsp (save (val $Intern))  # Current symbol namespace
+      (Lst (save (val $Intern))  # Current symbol namespaces
          R (push 4 NIL ZERO NIL) )  # [cnt last name link]
       (link (ofs R 2))
       (charSym Chr R)  # Pack first char
@@ -952,7 +952,7 @@
             (let S (requestSym (val 3 R))  # Find or create symbol
                (unless (pair (val S))
                   (symNsErr 0 S) )
-               (set $Intern (set $Cell S))  # Switch symbol namespace
+               (set (set $Intern (any $Cell)) S)  # Switch symbol namespace
                (set R 4  3 R ZERO) )  # Build new name
             (? (n0 (strchr $Delim Chr)))
             (when (== Chr (char "\\"))
@@ -965,7 +965,7 @@
                ((n0 (symToNum Nm (int (val $Scl)) (char ".") 0)) @)
                ((n0 (anonymous Nm)) @)
                (T (requestSym Nm)) ) )
-         (set $Intern Nsp) ) ) )
+         (set $Intern Lst) ) ) )
 
 (de rdList ()
    (stkChk 0)
@@ -1438,13 +1438,24 @@
                (T
                   (let (Lst (val $Intern)  F NO)  # Search namespaces
                      (loop
-                        (? (atom Lst)
-                           # Transient
+                        (? (atom Lst) # Transient
                            (call $Put (char "\""))
-                           (let P (push 0 Nm)  # [cnt name]
-                              (until (=0 (symByte P))
-                                 #! Handle special characters
-                                 (call $Put @) ) )
+                           (let (P (push 0 Nm)  B (symByte P))  # [cnt name]
+                              (loop
+                                 (cond
+                                    ((or
+                                          (== B (char "\\"))
+                                          (== B (char "\^"))
+                                          (== B (char "\"")) )
+                                       (call $Put (char "\\")) )
+                                    ((== B 127)  # DEL
+                                       (call $Put (char "\^"))  # Print ^?
+                                       (setq B (char "?")) )
+                                    ((> 32 B)  # White space
+                                       (call $Put (char "\^"))  # Escape with caret
+                                       (setq B (| B 64)) ) )
+                                 (call $Put B)
+                                 (? (=0 (setq B (symByte P))) ) ) )
                            (call $Put (char "\"")) )
                         (let Nsp (car Lst)
                            (unless (=0 (isIntern Nm (val Nsp)))
@@ -1452,10 +1463,20 @@
                                  (when F  # Found in other namespace
                                     (outName Nsp)
                                     (call $Put (char "~")) )
-                                 (let P (push 0 Nm)  # [cnt name]
-                                    #! Handle special characters
-                                    (until (=0 (symByte P))
-                                       (call $Put @) ) ) )
+                                 (ifn (== Nm (hex "2E2"))  # Dot
+                                    (let (P (push 0 Nm)  B (symByte P))  # [cnt name]
+                                       (when (== B (char "#"))
+                                          (call $Put (char "\\")) )  # Escape leading hash
+                                       (loop
+                                          (when
+                                             (or
+                                                (== B (char "\\"))
+                                                (n0 (strchr $Delim (i32 B))) )
+                                             (call $Put (char "\\")) )  # Escape backslash and delimiters
+                                          (call $Put B)
+                                          (? (=0 (setq B (symByte P))) ) ) )
+                                    (call $Put (char "\\"))
+                                    (call $Put (char ".")) ) )
                               (setq F YES) ) )
                         (shift Lst) ) ) ) ) ) )
       ((and (== (car X) $Quote) (<> X (cdr X)))
@@ -1491,8 +1512,8 @@
          (call $Put (char ")")) ) ) )
 
 (de void prin (X)
+   (sigChk 0)
    (unless (nil? X)
-      (sigChk 0)
       (cond
          ((cnt? X) (outNum X))
          ((big? X) (fmtNum X -1 0 0 null))
@@ -1557,6 +1578,7 @@
 
 # (rewind) -> flg
 (de _rewind (Exe)
+   #!
    $Nil )
 
 # (ext 'cnt . prg) -> any
