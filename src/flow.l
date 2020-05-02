@@ -1,12 +1,57 @@
-# 28apr20 Software Lab. Alexander Burger
+# 02may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
-(local) redefine
+(local) (redefMsg putSrc redefine)
 
-(de redefine (Exe S X)
-   (set S X)
-   )
+(de void redefMsg (Sym Sym2)
+   (let (Out (val $OutFile)  Put (val (i8** $Put)))
+      (set
+         $OutFile (val (ofs (val $OutFiles) 2))  # Stderr
+         $Put (fun (void i8) _putStdout) )
+      (outString ($ "# "))
+      (print Sym)
+      (unless (=0 Sym2)
+         (space)
+         (print @) )
+      (outString ($ " redefined\n"))
+      (set (i8** $Put) Put  $OutFile Out) ) )
+
+(de void putSrc (Sym Key)
+   (unless
+      (or
+         (nil? (val $Dbg))
+         (sym? (val (tail Sym))) )
+      (let In: (inFile (val $InFile))
+         (unless (or (=0 (In:)) (=0 (In: name)))
+            (let
+               (Dbg (get Sym $Dbg)
+                  Src
+                  (cons
+                     (cnt (i64 (In: src)))
+                     (mkStr (In: name)) ) )
+               (cond
+                  ((=0 Key)
+                     (if (nil? Dbg)
+                        (put Sym $Dbg (cons Src $Nil))  # Put initial '*Dbg' properties
+                        (set Dbg Src) ) )  # Set first '*Dbg' property
+                  ((nil? Dbg)
+                     (put Sym $Dbg (cons $Nil (cons Src $Nil))) )
+                  (T
+                     (let X Dbg
+                        (loop
+                           (? (atom (shift X))
+                              (set 2 Dbg (cons (cons Key Src) (cdr Dbg))) )
+                           (? (== (caar X) Key)
+                              (set 2 (car X) Src) ) ) ) ) ) ) ) ) ) )
+
+(de void redefine (Exe Sym Val)
+   (needChkVar Exe Sym)
+   (let V (val Sym)
+      (unless (or (nil? V) (== V Sym) (equal V Val))
+         (redefMsg Sym 0) ) )
+   (set Sym Val)
+   (putSrc Sym 0) )
 
 # (quote . any) -> any
 (de _quote (Exe)
