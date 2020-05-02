@@ -942,7 +942,7 @@
 
 (de rdAtom ((i32 . Chr))
    (let
-      (Lst (save (val $Intern))  # Current symbol namespaces
+      (Int (save (val $Intern))  # Current symbol namespaces
          R (push 4 NIL ZERO NIL) )  # [cnt last name link]
       (link (ofs R 2))
       (charSym Chr R)  # Pack first char
@@ -965,7 +965,7 @@
                ((n0 (symToNum Nm (int (val $Scl)) (char ".") 0)) @)
                ((n0 (anonymous Nm)) @)
                (T (requestSym Nm)) ) )
-         (set $Intern Lst) ) ) )
+         (set $Intern Int) ) ) )
 
 (de rdList ()
    (stkChk 0)
@@ -1649,7 +1649,7 @@
 (local) (repl loadAll)
 
 (de repl (Exe (i8 . Pr) X)
-   (let P (b8 (ioFrame T))
+   (let (Int (save (val $Intern))  P (b8 (ioFrame T)))
       (rdOpen Exe X P)
       (pushInFiles P)
       (setq X $Nil)
@@ -1691,6 +1691,7 @@
                   (print X)
                   (newline) ) ) ) )
       (popInFiles)
+      (set $Intern Int)
       X ) )
 
 (de loadAll (Exe)
