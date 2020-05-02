@@ -1,4 +1,4 @@
-# 30apr20 Software Lab. Alexander Burger
+# 02may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -418,7 +418,7 @@
                ((== Nm ZERO) (call $PutBin NIX))
                (T
                   (let Tag
-                     (if (isLstIntern X Nm (val $Intern))
+                     (if (== X (isLstIntern Nm (val $Intern)))
                         (i8 INTERN)
                         (i8 TRANSIENT) )
                      (if (cnt? Nm)
@@ -787,7 +787,7 @@
 (de void ctOpen (Exe X (i8* . P))
    0 )
 
-(local) (getChar skipc comment skip testEsc anonymous rdAtom rdList read0)
+(local) (read0 getChar skipc comment skip testEsc anonymous rdAtom rdList)
 
 (de read0 (i1))
 
@@ -968,6 +968,7 @@
          (set $Intern Nsp) ) ) )
 
 (de rdList ()
+   (stkChk 0)
    (call $Get)
    (let
       (P (push NIL NIL)
@@ -1369,7 +1370,7 @@
 (de void space ()
    (call $Put (char " ")) )
 
-(local) (outWord outNum outOct outAo prExt outString)
+(local) (outWord outNum outOct outAo prExt outString prName outName)
 
 # Output decimal number
 (de void outWord ((i64 . N))
@@ -1409,6 +1410,14 @@
       (call $Put @)
       (inc 'S) ) )
 
+(de void prName (Name)
+   (let P (push 0 Name)  # [cnt name]
+      (until (=0 (symByte P))
+         (call $Put @) ) ) )
+
+(de void outName (Sym)
+   (prName (name (val (tail Sym)))) )
+
 (local) (print prin)
 
 (de void print (X)
@@ -1426,19 +1435,29 @@
                   (call $Put (char "{"))
                   (prExt Nm)
                   (call $Put (char "}")) )
-               ((isLstIntern X Nm (val $Intern))
-                  #! Recurse on other namespace
-                  (let P (push 0 Nm)  # [cnt name]
-                     #! Handle special characters
-                     (until (=0 (symByte P))
-                        (call $Put @) ) ) )
-               (T  # Transient
-                  (call $Put (char "\""))
-                  (let P (push 0 Nm)  # [cnt name]
-                     (until (=0 (symByte P))
-                        #! Handle special characters
-                        (call $Put @) ) )
-                  (call $Put (char "\"")) ) ) ) )
+               (T
+                  (let (Lst (val $Intern)  F NO)  # Search namespaces
+                     (loop
+                        (? (atom Lst)
+                           # Transient
+                           (call $Put (char "\""))
+                           (let P (push 0 Nm)  # [cnt name]
+                              (until (=0 (symByte P))
+                                 #! Handle special characters
+                                 (call $Put @) ) )
+                           (call $Put (char "\"")) )
+                        (let Nsp (car Lst)
+                           (unless (=0 (isIntern Nm (val Nsp)))
+                              (? (== @ Sym)  # Internal
+                                 (when F  # Found in other namespace
+                                    (outName Nsp)
+                                    (call $Put (char "~")) )
+                                 (let P (push 0 Nm)  # [cnt name]
+                                    #! Handle special characters
+                                    (until (=0 (symByte P))
+                                       (call $Put @) ) ) )
+                              (setq F YES) ) )
+                        (shift Lst) ) ) ) ) ) )
       ((and (== (car X) $Quote) (<> X (cdr X)))
          (call $Put (char "'"))
          (print (cdr X)) )
@@ -1481,9 +1500,7 @@
             (let Nm (name (val (tail X)))
                (unless (== Nm ZERO)
                   (ifn (sym? (val (tail X)))  # No external
-                     (let P (push 0 Nm)  # [cnt name]
-                        (until (=0 (symByte P))
-                           (call $Put @) ) )
+                     (prName Nm)
                      (call $Put (char "{"))
                      (prExt Nm)
                      (call $Put (char "}")) ) ) ) )

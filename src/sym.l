@@ -1,4 +1,4 @@
-# 27apr20 Software Lab. Alexander Burger
+# 02may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -237,15 +237,13 @@
       (? (cnt? Y) +1) ) )
 
 # Is symbol interned?
-(de i1 isIntern (Sym Name Tree)
+(de isIntern (Name Tree)
    (if (cnt? Name)  # Short name
       (let X (car Tree)  # First tree
          (loop
-            (? (atom X) NO)  # Empty
+            (? (atom X) 0)  # Empty
             (let (S (car X)  Nm (name (val (tail S))))
-               (? (== Name Nm)
-                  (set $Ret S)
-                  (or (=0 Sym) (== Sym S)) )
+               (? (== Name Nm) S)
                (setq X
                   (if (> Name Nm)  # Symbol is smaller
                      (cddr X)
@@ -253,20 +251,55 @@
       # Long name
       (let X (cdr Tree)  # Second tree
          (loop
-            (? (atom X) NO)  # Empty
+            (? (atom X) 0)  # Empty
             (let (S (car X)  Nm (name (val (tail S))))
-               (? (=0 (cmpLong Nm Name))
-                  (set $Ret S)
-                  (or (=0 Sym) (== Sym S)) )
+               (? (=0 (cmpLong Nm Name)) S)
                (setq X
                   (if (lt0 @)  # Symbol is smaller
                      (cddr X)
                      (cadr X) ) ) ) ) ) ) )
 
-(de i1 isLstIntern (Sym Name Lst)
+(de isLstIntern (Name Lst)
    (loop
-      (? (atom Lst) NO)
-      (? (isIntern Sym Name (val (++ Lst))) YES) ) )
+      (? (atom Lst) 0)
+      (? (n0 (isIntern Name (val (car Lst)))) @)
+      (shift Lst) ) )
+
+(inline intern1 (Sym Val Name Node More)
+   (let Found (isLstIntern Name More)
+      (if (and (n0 Found) (or (=0 Sym) (== Found Sym)))
+         Found
+         (when (=0 Sym)  # New symbol
+            (setq Sym (consSym Name Val)) )
+         (set Node (cons Sym $Nil))
+         Sym ) ) )
+
+(inline intern2 (Sym Val Name Node More)
+   (let Found (isLstIntern Name More)
+      (if (and (n0 Found) (or (=0 Sym) (== Found Sym)))
+         Found
+         (when (=0 Sym)  # New symbol
+            (setq Sym (consSym Name Val)) )
+         (set 2 Node (cons Sym $Nil))
+         Sym ) ) )
+
+(inline internRight (Sym Val Name Node More)
+   (let Found (isLstIntern Name More)
+      (if (and (n0 Found) (or (=0 Sym) (== Found Sym)))
+         Found
+         (when (=0 Sym)  # New symbol
+            (setq Sym (consSym Name Val)) )
+         (set 2 Node (cons $Nil (cons Sym $Nil)))
+         Sym ) ) )
+
+(inline internLeft (Sym Val Name Node More)
+   (let Found (isLstIntern Name More)
+      (if (and (n0 Found) (or (=0 Sym) (== Found Sym)))
+         Found
+         (when (=0 Sym)  # New symbol
+            (setq Sym (consSym Name Val)) )
+         (set 2 Node (cons (cons Sym $Nil) $Nil))
+         Sym ) ) )
 
 # Intern a symbol/name
 (de intern (Sym Val Name Tree More)
@@ -279,43 +312,16 @@
                   (let Y (cdr X)  # Get link cell
                      (cond
                         ((> Name Nm)  # Symbol is smaller
-                           (? (atom Y)  # No link yet
-                              (if (isLstIntern Sym Name More)
-                                 (val $Ret)
-                                 (when (=0 Sym)  # New symbol
-                                    (setq Sym (consSym Name Val)) )
-                                 (set 2 X (cons $Nil (cons Sym $Nil)))
-                                 Sym ) )
+                           (? (atom Y) (internRight Sym Val Name X More))  # No link yet
                            (? (atom (setq Y (cdr (setq X Y))))
-                              (if (isLstIntern Sym Name More)
-                                 (val $Ret)
-                                 (when (=0 Sym)  # New symbol
-                                    (setq Sym (consSym Name Val)) )
-                                 (set 2 X (cons Sym $Nil))
-                                 Sym ) ) )
+                              (intern2 Sym Val Name X More) ) )
                         (T  # Symbol is greater
-                           (? (atom Y)  # No link yet
-                              (if (isLstIntern Sym Name More)
-                                 (val $Ret)
-                                 (when (=0 Sym)  # New symbol
-                                    (setq Sym (consSym Name Val)) )
-                                 (set 2 X (cons (cons Sym $Nil) $Nil))
-                                 Sym ) )
+                           (? (atom Y) (internLeft Sym Val Name X More))  # No link yet
                            (? (atom (setq Y (car (setq X Y))))
-                              (if (isLstIntern Sym Name More)
-                                 (val $Ret)
-                                 (when (=0 Sym)  # New symbol
-                                    (setq Sym (consSym Name Val)) )
-                                 (set X (cons Sym $Nil))
-                                 Sym ) ) ) )
+                              (intern1 Sym Val Name X More) ) ) )
                      (setq X Y) ) ) )
             # Empty
-            (if (isLstIntern Sym Name More)
-               (val $Ret)
-               (when (=0 Sym)  # New symbol
-                  (setq Sym (consSym Name Val)) )
-               (set Tree (cons Sym $Nil))
-               Sym ) ) )
+            (intern1 Sym Val Name Tree More) ) )
       # Long name
       (let X (cdr Tree)  # Second tree
          (if (pair X)  # Not empty
@@ -325,43 +331,16 @@
                   (let Y (cdr X)  # Get link cell
                      (cond
                         ((lt0 @)  # Symbol is smaller
-                           (? (atom Y)  # No link yet
-                              (if (isLstIntern Sym Name More)
-                                 (val $Ret)
-                                 (when (=0 Sym)  # New symbol
-                                    (setq Sym (consSym Name Val)) )
-                                 (set 2 X (cons $Nil (cons Sym $Nil)))
-                                 Sym ) )
+                           (? (atom Y) (internRight Sym Val Name X More))  # No link yet
                            (? (atom (setq Y (cdr (setq X Y))))
-                              (if (isLstIntern Sym Name More)
-                                 (val $Ret)
-                                 (when (=0 Sym)  # New symbol
-                                    (setq Sym (consSym Name Val)) )
-                                 (set 2 X (cons Sym $Nil))
-                                 Sym ) ) )
+                              (intern2 Sym Val Name X More) ) )
                         (T  # Symbol is greater
-                           (? (atom Y)  # No link yet
-                              (if (isLstIntern Sym Name More)
-                                 (val $Ret)
-                                 (when (=0 Sym)  # New symbol
-                                    (setq Sym (consSym Name Val)) )
-                                 (set 2 X (cons (cons Sym $Nil) $Nil))
-                                 Sym ) )
+                           (? (atom Y) (internLeft Sym Val Name X More))  # No link yet
                            (? (atom (setq Y (car (setq X Y))))
-                              (if (isLstIntern Sym Name More)
-                                 (val $Ret)
-                                 (when (=0 Sym)  # New symbol
-                                    (setq Sym (consSym Name Val)) )
-                                 (set X (cons Sym $Nil))
-                                 Sym ) ) ) )
+                              (intern1 Sym Val Name X More) ) ) )
                      (setq X Y) ) ) )
             # Empty
-            (if (isLstIntern Sym Name More)
-               (val $Ret)
-               (when (=0 Sym)  # New symbol
-                  (setq Sym (consSym Name Val)) )
-               (set 2 Tree (cons Sym $Nil))
-               Sym ) ) ) ) )
+            (intern2 Sym Val Name Tree More) ) ) ) )
 
 (de requestSym (Name)
    (intern 0 $Nil Name
@@ -510,8 +489,9 @@
          Lst (val $Intern) )  # Search namespaces
       (loop
          (? (atom Lst) $Nil)
-         (let Ns (++ Lst)
-            (? (isIntern Sym Nm (val Ns)) Ns) ) ) ) )
+         (let Nsp (car Lst)
+            (? (== Sym (isIntern Nm (val Nsp))) Nsp) )
+         (shift Lst) ) ) )
 
 # (sp? 'any) -> flg
 (de _spQ (Exe)
@@ -681,7 +661,7 @@
             (if
                (or
                   (sym? Tail)  # External
-                  (isLstIntern X (name Tail) (val $Intern)) )
+                  (== X (isLstIntern (name Tail) (val $Intern))) )
                $Nil
                X ) ) ) ) )
 
