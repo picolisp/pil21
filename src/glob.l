@@ -1,4 +1,4 @@
-# 29apr20 Software Lab. Alexander Burger
+# 04may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -249,6 +249,7 @@
    # Control flow
    (NIL "eval" _eval)
    (NIL "run" _run)
+   (NIL "def" _def)
    (NIL "de" _de)
    (NIL "dm" _dm)
    (NIL "box" _box)
@@ -306,6 +307,8 @@
    # System functions
    (NIL "raw" _raw)
    (NIL "sys" _sys)
+   (NIL "pwd" _pwd)
+   (NIL "cd" _cd)
    (NIL "argv" _argv)
    (NIL "native" _native)
    (NIL "args" _args)
@@ -387,6 +390,7 @@
    ($Get (i32) _getStdin)        # Character input function
    ($InFile i8* null)            # Input file
    ($OutFile i8* null)           # Output file
+   ($Parser i64* null)           # String parser
    ($Intern $Pico1)              # Current namespaces of internal symbols
    ($Next $Nil)                  # Next vararg
    ($Cls 0)                      # Method class

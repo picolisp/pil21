@@ -1,4 +1,4 @@
-# 02may20 Software Lab. Alexander Burger
+# 04may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -102,7 +102,7 @@
    (i8
       (if (cnt? (name (val (tail Sym))))
          (int @)
-         (dig @) ) ) )
+         (val (dig @)) ) ) )
 
 (de i32 firstChar (Sym)
    (cond
@@ -1390,7 +1390,7 @@
          (if (pair Y)
             (putn Exe Y Key Val)
             (when (sym? (val (tail Y)))
-               (if (nil? Val)
+               (if (nil? Key)
                   (dbFetch Exe Y)  # Volatile property
                   (dbTouch Exe Y) ) )
             (if (== ZERO Key)
@@ -1451,7 +1451,7 @@
          (if (pair Y)
             (putn Exe Y Key Val)
             (when (sym? (val (tail Y)))
-               (if (nil? Val)
+               (if (nil? Key)
                   (dbFetch Exe Y)  # Volatile property
                   (dbTouch Exe Y) ) )
             (if (== ZERO Key)

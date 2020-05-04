@@ -1,4 +1,4 @@
-# 02may20 Software Lab. Alexander Burger
+# 04may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -102,6 +102,34 @@
                                     (=0 (dec 'N)) ) ) )
                            (setq Bnd (val 3 Bnd)) ) ) ) )
                (run E) ) ) ) ) )
+
+# (def 'sym 'any) -> sym
+# (def 'sym 'sym 'any) -> sym
+(de _def (Exe)
+   (let
+      (X (cdr Exe)
+         Sym (save (needSym Exe (eval (++ X))))
+         Y (save (eval (++ X))) )
+      (if (pair X)
+         (let Val (save (eval (car X)))
+            (when (sym? (val (tail Sym)))
+               (if (nil? Y)
+                  (dbFetch Exe Sym)  # Volatile property
+                  (dbTouch Exe Sym) ) )
+            (let V (get Sym Y)
+               (unless (or (nil? V) (equal V Val))
+                  (redefMsg Sym Y) ) )
+            (put Sym Y Val)
+            (putSrc Sym Y) )
+         (chkVar Exe Sym)
+         (when (sym? (val (tail Sym)))
+            (dbTouch Exe Sym) )
+         (let V (val Sym)
+            (unless (or (nil? V) (== V Sym) (equal V Y))
+               (redefMsg Sym 0) ) )
+         (set Sym Y)
+         (putSrc Sym 0) )
+      Sym ) )
 
 # (de sym . any) -> sym
 (de _de (Exe)

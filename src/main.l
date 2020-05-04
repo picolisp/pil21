@@ -1,4 +1,4 @@
-# 29apr20 Software Lab. Alexander Burger
+# 04may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -660,6 +660,24 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                   1 ) )
             Y
             $Nil ) ) ) )
+
+# (pwd) -> sym
+(de _pwd (Exe)
+   (let P (getcwd null 0)
+      (if (=0 P)
+         $Nil
+         (prog1 (mkStr P) (free P)) ) ) )
+
+# (cd 'any) -> sym
+(de _cd (Exe)
+   (let (X (evSym (cdr Exe))  P (getcwd null 0))
+      (if (=0 P)
+         $Nil
+         (prog1
+            (if (lt0 (chdir (pathString X (b8 (pathSize X)))))
+               $Nil
+               (mkStr P) )
+            (free P) ) ) ) )
 
 # (argv [var ..] [. sym]) -> lst|sym
 (de _argv (Exe)

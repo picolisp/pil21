@@ -1,4 +1,4 @@
-# 01may20 Software Lab. Alexander Burger
+# 04may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -25,7 +25,7 @@
             (cond
                ((== Nm ZERO) (ret (i8 0)))  # Done
                ((cnt? Nm)  # Short
-                  (setq C (shr Nm 4))
+                  (setq C (int Nm))
                   (set 2 P ZERO) )
                (T  # Big: Next digit
                   (setq C (set P (val (dig Nm))))
@@ -81,13 +81,13 @@
                ((== Cnt 68)  # Last short full
                   (set 2 P
                      (set (big Q)
-                        (consNum (shr N 4) (cnt (i64 B))) ) )
+                        (consNum (int N) (cnt (i64 B))) ) )
                   (set P 12) )  # Next digit in bignum
                ((and (== Cnt 60) (>= B 16))  # Fit into 4 bits
                   (set 2 P
                      (set (big Q)
                         (boxNum
-                           (| (shr N 4) (shl (i64 B) 56)) ) ) )
+                           (| (int N) (shl (i64 B) 56)) ) ) )
                   (set P 4) )  # Start next digit in bignum
                (T
                   (set
@@ -106,7 +106,7 @@
             (set 3 P
                (set 2 P
                   (boxNum  # Make big
-                     (| (shr Nm 4) (shl (i64 B) 56)) ) ) )
+                     (| (int Nm) (shl (i64 B) 56)) ) ) )
             (set P 4) )  # Start new digit
          (let (Q (val 2 P)  N (val (big Q)))
             (if (> 60 Cnt)  # Digit not full
@@ -116,7 +116,7 @@
                (set 2 P
                   (set (big Q)
                      (boxNum  # Make big
-                        (| (shr N 4) (shl (i64 B) 56)) ) ) )
+                        (| (int N) (shl (i64 B) 56)) ) ) )
                (set P 4) ) ) ) ) )  # Start new digit
 
 (de void charSym ((i32 . C) (i64* . P))  # [cnt last name link]
@@ -172,7 +172,7 @@
             (setq A B  Y (val (big Y))) ) )
       (set (big X)
          (box64
-            (| (shl (shr Y 4) 1) (shl 0 A 1)) ) ) )
+            (| (shl (int Y) 1) (shl 0 A 1)) ) ) )
    N )
 
 (de twice (N)
@@ -256,7 +256,7 @@
                (setq A B  Y (val (big Y))) ) )
          (set (big X)
             (box64
-               (| (shl (shr Y 4) 1) (shl 0 A 1)) ) )
+               (| (shl (int Y) 1) (shl 0 A 1)) ) )
          R ) ) )
 
 # Divide (unsigned) number by 2

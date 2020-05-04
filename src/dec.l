@@ -1,4 +1,4 @@
-# 28apr20 Software Lab. Alexander Burger
+# 04may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -87,6 +87,8 @@ waitpid setjmp longjmp kill exit)
 (de T i32 fork ())
 (de T i8* getenv (i8*))
 (de T i32 setenv (i8* i8* i32))
+(de T i8* getcwd (i8* i64))
+(de T i32 chdir (i8*))
 (de T i32 getpid ())
 (de T i32 setpgid (i32 i32))
 (de T i32 execvp (i8* i8**))

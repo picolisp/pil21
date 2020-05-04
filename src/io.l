@@ -1,4 +1,4 @@
-# 02may20 Software Lab. Alexander Burger
+# 04may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -384,7 +384,7 @@
                            (setq D (shr D 8))
                            (setq C 8)
                            (if (cnt? Y)
-                              (setq D (shr Y 4))
+                              (setq D (int Y))
                               (setq
                                  D (val (dig Y))
                                  Y (val (big Y)) ) )
@@ -422,11 +422,11 @@
                         (i8 INTERN)
                         (i8 TRANSIENT) )
                      (if (cnt? Nm)
-                        (prCnt (+ Tag 4) (shr Nm 4))
+                        (prCnt (+ Tag 4) (int Nm))
                         (let (Y Nm  N 8)
                            (while (big? (setq Y (val (big Y))))
                               (setq N (+ N 8)) )
-                           (setq Y (shr Y 4))
+                           (setq Y (int Y))
                            (until (=0 Y)
                               (inc 'N)
                               (setq Y (shr Y 8)) )
@@ -823,9 +823,6 @@
                   (char "\n")
                   (i32 @) ) ) ) ) ) )
 
-(de i32 getParse ()
-   )
-
 (de i32 getChar ((i32 . C))
    (cond
       ((>= 127 C) C)  # Single byte
@@ -1113,15 +1110,25 @@
 (local) (read1 token)
 
 (de read1 ((i32 . End))
-  (when (=0 (val $Chr))
+   (when (=0 (val $Chr))
       (call $Get) )
    (if (== End (val $Chr))
       $Nil
       (read0 YES) ) )
 
-(de token (X (i32 . C))
-   #!
-   )
+(de token (Set (i32 . C))
+   (let C (val $Chr)
+      (when (=0 C)
+         (setq C (call $Get)) )
+      (cond
+         ((lt0 (skipc C)) 0)  # Skip white space and comments
+         ((== (setq C @) (char "\""))
+            (setq C (call $Get))
+            #!
+            $T )
+         (T
+            #!
+            $Nil ) ) ) )
 
 # (read ['sym1 ['sym2]]) -> any
 (de _read (Exe)
@@ -1646,53 +1653,103 @@
             (_putStdout (i8 (int N)))
             (? (atom X) N) ) ) ) )
 
+(local) (getParse parse)
+
+(de i32 getParse ()
+   (let P (val $Parser)
+      (set $Chr
+         (if (=0 (i32 (symByte P)))
+            (let C (val 3 P)
+               (set 3 P (shr C 8))
+               (if (=0 C) -1 (i32 (i8 C))) )
+            @ ) ) ) )
+
+(de parse (Str (i1 . Skip) Set)
+   (let
+      (Pars (val $Parser)
+         In: (inFile (val $InFile))
+         Io: (ioFrame (b8 (ioFrame T))) )
+      (set $Parser
+         (push  # [cnt name termination]
+            0
+            (save (name (val (tail Str))))
+            (if (=0 Set) (hex "5D0A") 0) ) )  # '\n', ']', EOF
+      (unless (=0 (In:))
+         (In: next (val $Chr))
+         (set $InFile null) )  # No InFile
+      (set $Chr 0)
+      (Io: fun (val (i8** $Get)))
+      (set $Get (fun (i32) getParse))
+      (Io: pid 0)
+      (Io: fd 0)  # Stdin (dummy)
+      (Io: link (val $InFrames))
+      (set $InFrames (Io:))
+      (when Skip
+         (getParse) )
+      (prog1
+         (cond
+            ((=0 Set) (rdList))
+            ((=0 (token Set 0)) $Nil)
+            (T
+               (let (R (save (cons @ $Nil))  P R)
+                  (until (=0 (token Set 0))
+                     (setq P (set 2 P (cons @ $Nil))) )
+                  R ) ) )
+         (popInFiles)
+         (set $Parser Pars) ) ) )
+
 (local) (repl loadAll)
 
 (de repl (Exe (i8 . Pr) X)
-   (let (Int (save (val $Intern))  P (b8 (ioFrame T)))
-      (rdOpen Exe X P)
-      (pushInFiles P)
-      (setq X $Nil)
-      (loop
-         (let Y
-            (ifn (== (val $InFile) (val (val $InFiles)))
-               (read1 0)
-               (prog2
-                  (when (and (n0 Pr) (=0 (val $Chr)))
-                     (call $Put Pr)
-                     (space)
-                     (flushAll) )
-                  (read1
-                     (if (=0 (isatty 0))
-                        (i32 0)
-                        (char "\n") ) )
-                  (while (gt0 (val $Chr))
-                     (? (== (val $Chr) (char "\n"))
-                        (set $Chr 0) )
-                     (if (== (val $Chr) (char "#"))
-                        (comment)
-                        (? (> (val $Chr) (char " ")))
-                        (call $Get) ) ) ) )
-            (? (nil? Y))
-            (save Y
-               (if
-                  (or
-                     (<> (val $InFile) (val (val $InFiles)))
-                     (n0 (val $Chr))
-                     (=0 Pr) )
-                  (setq X (eval Y))
-                  (flushAll)
-                  (let A (save (val $At))
-                     (setq X (set $At (eval Y)))
-                     (set $At3 (val $At2))
-                     (set $At2 A) )
-                  (outString ($ "-> "))
-                  (flushAll)
-                  (print X)
-                  (newline) ) ) ) )
-      (popInFiles)
-      (set $Intern Int)
-      X ) )
+   (when (num? X)
+      (argErr Exe X) )
+   (if (and (sym? X) (== (firstByte X) (char "-")))
+      (let E (save (parse X YES 0))
+         (evList E) )
+      (let (Int (save (val $Intern))  P (b8 (ioFrame T)))
+         (rdOpen Exe X P)
+         (pushInFiles P)
+         (setq X $Nil)
+         (loop
+            (let Y
+               (ifn (== (val $InFile) (val (val $InFiles)))
+                  (read1 0)
+                  (prog2
+                     (when (and (n0 Pr) (=0 (val $Chr)))
+                        (call $Put Pr)
+                        (space)
+                        (flushAll) )
+                     (read1
+                        (if (=0 (isatty 0))
+                           (i32 0)
+                           (char "\n") ) )
+                     (while (gt0 (val $Chr))
+                        (? (== (val $Chr) (char "\n"))
+                           (set $Chr 0) )
+                        (if (== (val $Chr) (char "#"))
+                           (comment)
+                           (? (> (val $Chr) (char " ")))
+                           (call $Get) ) ) ) )
+               (? (nil? Y))
+               (save Y
+                  (if
+                     (or
+                        (<> (val $InFile) (val (val $InFiles)))
+                        (n0 (val $Chr))
+                        (=0 Pr) )
+                     (setq X (eval Y))
+                     (flushAll)
+                     (let A (save (val $At))
+                        (setq X (set $At (eval Y)))
+                        (set $At3 (val $At2))
+                        (set $At2 A) )
+                     (outString ($ "-> "))
+                     (flushAll)
+                     (print X)
+                     (newline) ) ) ) )
+         (popInFiles)
+         (set $Intern Int)
+         X ) ) )
 
 (de loadAll (Exe)
    (let (X $Nil  P (val $AV))
