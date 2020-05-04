@@ -288,6 +288,10 @@
    # List processing
    (NIL "car" _car)
    (NIL "cdr" _cdr)
+   (NIL "caar" _caar)
+   (NIL "cadr" _cadr)
+   (NIL "cdar" _cdar)
+   (NIL "cddr" _cddr)
    (NIL "cons" _cons)
    (NIL "list" _list)
    (NIL "==" _eq)
