@@ -583,6 +583,27 @@
                      (? (== Q (setq P (val 3 P)) ) ) )
                   (set $Bind P) ) ) ) ) ) )
 
+# (job 'lst . prg) -> any
+(de _job (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         P (val $Bind)
+         Q P )
+      (while (pair Y)
+         (let (Z (++ Y)  S (car Z))
+            (set
+               $Bind (setq P (push (val S) S P Z))  # [[sym] sym LINK (sym . val)]
+               S (cdr Z) ) ) )
+      (prog1
+         (run X)
+         (until (== Q P)
+            (let S (val 2 P)
+               (set 2 (val 4 P) (val S))
+               (set S (val P)) )  # Restore values
+            (setq P (val 3 P)) )
+         (set $Bind P) ) ) )
+
 (local) setDestruct
 
 (de void setDestruct (Pat Val)

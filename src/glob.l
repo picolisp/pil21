@@ -279,6 +279,7 @@
    (NIL "for" _for)
    (NIL "with" _with)
    (NIL "bind" _bind)
+   (NIL "job" _job)
    (NIL "let" _let)
    (NIL "catch" _catch)
    (NIL "throw" _throw)
