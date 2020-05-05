@@ -1,4 +1,4 @@
-# 04may20 Software Lab. Alexander Burger
+# 05may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -551,6 +551,37 @@
             (prog1
                (run X)
                (set $This (val P)  $Bind (val 3 P)) ) ) ) ) )
+
+# (bind 'sym|lst . prg) -> any
+(de _bind (Exe)
+   (let (X (cdr Exe)  Y (eval (++ X)))
+      (cond
+         ((num? Y) (argErr Exe Y))
+         ((nil? Y) (run X))
+         ((sym? Y)  # Single symbol
+            (let P (set $Bind (push (val Y) Y (val $Bind)))  # [[sym] sym LINK]
+               (prog1
+                  (run X)
+                  (set Y (val P)  $Bind (val 3 P)) ) ) )
+         (T
+            (let (P (val $Bind)  Q P)
+               (loop
+                  (let Z (++ Y)
+                     (when (num? Z)
+                        (argErr Exe Y) )
+                     (if (sym? Z)
+                        (set $Bind (setq P (push (val Z) Z P)))
+                        (let S (car Z)
+                           (set
+                              $Bind (setq P (push (val S) S P))
+                              S (cdr Z) ) ) ) )
+                  (? (atom Y)) )
+               (prog1
+                  (run X)
+                  (loop
+                     (set (val 2 P) (val P))  # Restore values
+                     (? (== Q (setq P (val 3 P)) ) ) )
+                  (set $Bind P) ) ) ) ) ) )
 
 (local) setDestruct
 
