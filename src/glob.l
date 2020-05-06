@@ -1,4 +1,4 @@
-# 05may20 Software Lab. Alexander Burger
+# 06may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -281,6 +281,8 @@
    (NIL "bind" _bind)
    (NIL "job" _job)
    (NIL "let" _let)
+   (NIL "let?" _letQ)
+   (NIL "use" _use)
    (NIL "catch" _catch)
    (NIL "throw" _throw)
    (NIL "finally" _finally)

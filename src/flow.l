@@ -1,4 +1,4 @@
-# 05may20 Software Lab. Alexander Burger
+# 06may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -622,57 +622,88 @@
 # (let sym 'any . prg) -> any
 # (let (sym|lst 'any ..) . prg) -> any
 (de _let (Exe)
-   (shift Exe)
-   (let X (++ Exe)
-      (if (atom X)
-         (let P (set $Bind (push (val X) X (val $Bind)))  # [[sym] sym LINK]
-            (set X (eval (++ Exe)))
+   (let (X (cdr Exe)  Y (++ X))
+      (if (atom Y)
+         (let P (set $Bind (push (val Y) Y (val $Bind)))  # [[sym] sym LINK]
+            (set Y (eval (++ X)))
             (prog1
-               (run Exe)
-               (set X (val P)  $Bind (val 3 P)) ) )
+               (run X)
+               (set Y (val P)  $Bind (val 3 P)) ) )
          (let (P (val $Bind)  Q P)
             (loop
-               (let Y (car X)
-                  (if (atom Y)  # Single symbol
+               (let Z (car Y)
+                  (if (atom Z)  # Single symbol
                      (set
-                        $Bind (setq P (push (val Y) Y P))
-                        Y (eval (car (shift X))) )
+                        $Bind (setq P (push (val Z) Z P))
+                        Z (eval (car (shift Y))) )
                      (let Tos 0  # List structure
                         (loop
                            (loop
-                              (? (atom (car Y)))  # Left?
-                              (let Z Y  # Go left
-                                 (setq Y @)  # Invert tree
-                                 (set Z Tos)
-                                 (setq Tos Z) ) )
-                           (let S (car Y)
+                              (? (atom (car Z)))  # Left?
+                              (let U Z  # Go left
+                                 (setq Z @)  # Invert tree
+                                 (set U Tos)
+                                 (setq Tos U) ) )
+                           (let S (car Z)
                               (unless (nil? S)  # Skip NIL
                                  (set $Bind (setq P (push (val S) S P))) ) )
                            (loop
-                              (? (pair (cdr Y))  # Right subtree
-                                 (let Z Y  # Go right
-                                    (setq Y @)  # Invert tree
-                                    (set 2 Z Tos)
-                                    (setq Tos (| Z 8)) ) )
+                              (? (pair (cdr Z))  # Right subtree
+                                 (let U Z  # Go right
+                                    (setq Z @)  # Invert tree
+                                    (set 2 U Tos)
+                                    (setq Tos (| U 8)) ) )
                               (let S @
                                  (unless (nil? S)  # Dotted structure symbol
                                     (set $Bind (setq P (push (val S) S P))) ) )
                               (loop
                                  (and (=0 Tos) (goto 1))
                                  (? (=0 (& Tos 8))  # Second visit
-                                    (let Z Tos
-                                       (setq Tos (car Z))  # TOS on up link
-                                       (set Z Y)
-                                       (setq Y Z) ) )
-                                 (let Z (& Tos -9)  # Set second visit
-                                    (setq Tos (cdr Z))
-                                    (set 2 Z Y)
-                                    (setq Y Z) ) ) ) ) )
+                                    (let U Tos
+                                       (setq Tos (car U))  # TOS on up link
+                                       (set U Z)
+                                       (setq Z U) ) )
+                                 (let U (& Tos -9)  # Set second visit
+                                    (setq Tos (cdr U))
+                                    (set 2 U Z)
+                                    (setq Z U) ) ) ) ) )
                      (: 1
-                        (setDestruct (++ X) (eval (car X))) ) ) )
-               (? (atom (shift X))) )
+                        (setDestruct (++ Y) (eval (car Y))) ) ) )
+               (? (atom (shift Y))) )
             (prog1
-               (run Exe)
+               (run X)
+               (loop
+                  (set (val 2 P) (val P))  # Restore values
+                  (? (== Q (setq P (val 3 P)) ) ) )
+               (set $Bind P) ) ) ) ) )
+
+# (let? sym 'any . prg) -> any
+(de _letQ (Exe)
+   (let (X (cdr Exe)  Y (++ X))
+      (if (nil? (eval (car X)))
+         @
+         (let P (set $Bind (push (val Y) Y (val $Bind)))  # [[sym] sym LINK]
+            (set Y @)
+            (prog1
+               (run (cdr X))
+               (set Y (val P)  $Bind (val 3 P)) ) ) ) ) )
+
+# (use sym . prg) -> any
+# (use (sym ..) . prg) -> any
+(de _use (Exe)
+   (let (X (cdr Exe)  Y (++ X))
+      (if (atom Y)
+         (let P (set $Bind (push (val Y) Y (val $Bind)))  # [[sym] sym LINK]
+            (prog1
+               (run X)
+               (set Y (val P)  $Bind (val 3 P)) ) )
+         (let (P (val $Bind)  Q P)
+            (loop
+               (let Z (car Y)
+                  (set $Bind (setq P (push (val Z) Z P))) )
+               (? (atom (shift Y))) )
+            (prog1
+               (run X)
                (loop
                   (set (val 2 P) (val P))  # Restore values
                   (? (== Q (setq P (val 3 P)) ) ) )
