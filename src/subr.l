@@ -1,4 +1,4 @@
-# 04may20 Software Lab. Alexander Burger
+# 06may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -186,3 +186,49 @@
 # (num? 'any) -> num | NIL
 (de _numQ (Exe)
    (if (num? (eval (cadr Exe))) @ $Nil) )
+
+(local) fill
+
+(de fill (X Y)
+   (cond
+      ((num? X) 0)
+      ((sym? X)
+         (let V (val X)
+            (cond
+               ((== X V) 0)  # Auto-quoting
+               ((nil? Y)
+                  (cond
+                     ((== X $At) 0)
+                     ((== (firstByte X) (char "@")) V)
+                     (T 0) ) )
+               ((memq X Y) V)
+               (T 0) ) ) )
+      (T
+         (stkChk 0)
+         (let Z (++ X)
+            (if (== Z $Up)  # Expand expression
+               (let V (eval (++ X))
+                  (if (atom V)
+                     (if (=0 (fill X Y)) X @)
+                     (save V
+                        (while (pair (cdr V))
+                           (setq V @) )
+                        (set 2 V
+                           (if (=0 (fill X Y)) X @) )
+                        V ) ) )
+               (let V (fill Z Y)
+                  (cond
+                     ((n0 V)
+                        (save V
+                           (cons V
+                              (if (=0 (fill X Y)) X @) ) ) )
+                     ((n0 (fill X Y))
+                        (cons Z @) )
+                     (T 0) ) ) ) ) ) ) )
+
+# (fill 'any ['sym|lst]) -> any
+(de _fill (Exe)
+   (let (X (cdr Exe)  Y (save (eval (++ X))))
+      (if (=0 (fill Y (save (eval (car X)))))
+         Y
+         @ ) ) )

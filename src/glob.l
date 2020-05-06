@@ -334,6 +334,7 @@
    (NIL ">" _gt)
    (NIL ">=" _ge)
    (NIL "num?" _numQ)
+   (NIL "fill" _fill)
    # Networking
    (NIL "udp" _udp)
    # System functions
