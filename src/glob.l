@@ -238,6 +238,7 @@
    (NIL "touch" _touch)
    # Mapping
    (NIL "apply" _apply)
+   (NIL "pass" _pass)
    (NIL "map" _map)
    (NIL "mapc" _mapc)
    (NIL "maplist" _maplist)
