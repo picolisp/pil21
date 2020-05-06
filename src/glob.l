@@ -334,6 +334,10 @@
    (NIL "nT" _neqT)
    (NIL ">" _gt)
    (NIL ">=" _ge)
+   (NIL "atom" _atom)
+   (NIL "pair" _pair)
+   (NIL "circ?" _circQ)
+   (NIL "lst?" _lstQ)
    (NIL "num?" _numQ)
    (NIL "fill" _fill)
    # Networking

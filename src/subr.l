@@ -183,6 +183,24 @@
             (? (lt0 (compare Y Z)) $Nil)
             (setq Y (safe Z)) ) ) ) )
 
+# (atom 'any) -> flg
+(de _atom (Exe)
+   (if (atom (eval (cadr Exe))) $T $Nil) )
+
+# (pair 'any) -> any
+(de _pair (Exe)
+   (if (pair (eval (cadr Exe))) @ $Nil) )
+
+# (circ? 'any) -> any
+(de _circQ (Exe)
+   (if (=0 (circ (eval (cadr Exe)))) $Nil @) )
+
+# (lst? 'any) -> flg
+(de _lstQ (Exe)
+   (if (or (pair (eval (cadr Exe))) (nil? @))
+      $T
+      $Nil ) )
+
 # (num? 'any) -> num | NIL
 (de _numQ (Exe)
    (if (num? (eval (cadr Exe))) @ $Nil) )
