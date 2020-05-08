@@ -1,4 +1,4 @@
-# 27apr20 Software Lab. Alexander Burger
+# 08may20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -1150,18 +1150,19 @@ False Beg End Safe *Safe)
 
 (asm (@Lbl1 @Lbl2)
    (Prg
-      (use llvm~@
-         (let (Flg (eval (++ Prg))  Var (box)  Body (+lbl)  Skip (+lbl)  End (+lbl))
-            (br Flg @Lbl1 @Lbl2)
-            (label Body)
+      (let (Flg (eval (++ Prg))  Var (box)  Body (+lbl)  Skip (+lbl)  End (+lbl))
+         (br Flg @Lbl1 @Lbl2)
+         (label Body)
+         (use llvm~@
             (when (set Var (eval (++ Prg)))
                (phi End Var)
                (br End) )
-            (label Skip)
+            (label Skip) )
+         (use llvm~@
             (when (set Var (run Prg))
                (phi End Var)
-               (br End) )
-            (label End) ) ) )
+               (br End) ) )
+         (label End) ) )
    (llvm~if Body Skip)
    (llvm~ifn Skip Body) )
 

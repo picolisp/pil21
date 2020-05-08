@@ -1530,13 +1530,11 @@
          ((cnt? X) (outNum X))
          ((big? X) (fmtNum X -1 0 0 null))
          ((sym? X)
-            (unless (sym? (val (tail X)))
-               (let Nm (name @)
-                  (unless (== Nm ZERO)
-                     (prName Nm)
-                     (call $Put (char "{"))
-                     (prExt Nm)
-                     (call $Put (char "}")) ) ) ) )
+            (ifn (sym? (val (tail X)))
+               (prName (name @))
+               (call $Put (char "{"))
+               (prExt (name (& @ -9)))
+               (call $Put (char "}")) ) )
          (T
             (stkChk 0)
             (loop
