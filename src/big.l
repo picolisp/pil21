@@ -1,4 +1,4 @@
-# 04may20 Software Lab. Alexander Burger
+# 07may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1079,17 +1079,20 @@
             (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
                (fmtNum A Scl Sep Ign P)
                (consStr (val Q)) ) )
-         ((=0
-               (setq Y
+         ((sym? A)
+            (cond
+               ((sym? (val (tail A))) $Nil)
+               ((=0 (symToNum (name @) Scl Sep Ign)) $Nil)
+               (T @) ) )
+         (T
+            (if (=0
                   (symToNum
-                     (if (sym? A)
-                        (name (val (tail A)))
-                        (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
-                           (pack A P)
-                           (val Q) ) )
-                     Scl Sep Ign ) ) )
-            $Nil )
-         (T Y) ) ) )
+                     (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
+                        (pack A P)
+                        (val Q) )
+                     Scl Sep Ign ) )
+               $Nil
+               @ ) ) ) ) )
 
 ### Arithmetics ###
 # (+ 'num ..) -> num
@@ -1457,7 +1460,7 @@
          (setq C (+ C (initSeed (++ X)))) )
       (unless (nil? X)
          (unless (num? X)
-            (setq X (name (val (tail X)))) )
+            (setq X (name (& (val (tail X)) -9))) )
          (setq C
             (+ C
                (if (cnt? X)

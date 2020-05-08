@@ -1,4 +1,4 @@
-# 04may20 Software Lab. Alexander Burger
+# 08may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -129,8 +129,8 @@
       (set $Protect 0) ) )
 
 # Error handling
-(local) (pushOutFiles err stkErr argErr cntErr numErr symErr extErr atomErr
-pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
+(local) (pushOutFiles err stkErr argErr cntErr numErr symErr extErr nameErr
+atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
 
 (de void pushOutFiles (i8*))
 
@@ -218,6 +218,9 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
 (de NIL extErr (Exe X)
    (err Exe X ($ "External symbol expected") null) )
 
+(de NIL nameErr (Exe X)
+   (err Exe X ($ "Name expected") null) )
+
 (de NIL atomErr (Exe X)
    (err Exe X ($ "Atom expected") null) )
 
@@ -301,7 +304,7 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
    (chkVar Exe X)
    X )
 
-(local) (xCnt evCnt evLst xSym evSym)
+(local) (xCnt evCnt evLst xSym evSym xName)
 
 (de i64 xCnt (Exe X)
    (let N (int (needCnt Exe X))
@@ -326,6 +329,11 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
 
 (de evSym (Exe)
    (xSym (eval (car Exe))) )
+
+(de xName (Exe Sym)
+   (when (sym? (val (tail Sym)))
+      (nameErr Exe Sym) )
+   (name @) )
 
 # Structure checks
 (local) (circ funq)
@@ -388,20 +396,23 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
 (local) sharedLib
 
 (de i1 sharedLib (Sym)
-   (let (Nm (bufString Sym (b8 (bufSize Sym)))  P (strchr Nm (char ":")))
+   (let
+      (Nm (xName 0 Sym)
+         S (bufString Nm (b8 (bufSize Nm)))
+         P (strchr S (char ":")) )
       (and
          (n0 P)
-         (<> P Nm)
+         (<> P S)
          (n0 (val 2 P))
          (let N (val $HomeLen)
             (set P 0)
-            (let (Len (strlen Nm)  Q (b8 (+ N Len (+ 4 3 1))))
-               (ifn (=0 (strchr Nm (char "/")))
-                  (strcpy Q Nm)
+            (let (Len (strlen S)  Q (b8 (+ N Len (+ 4 3 1))))
+               (ifn (=0 (strchr S (char "/")))
+                  (strcpy Q S)
                   (unless (=0 N)
                      (memcpy Q (val $Home) N) )
                   (strcpy (ofs Q N) ($ "lib/"))
-                  (strcpy (ofs Q (+ N 4)) Nm)
+                  (strcpy (ofs Q (+ N 4)) S)
                   (setq Len (+ Len N 4)) )
                (strcpy (ofs Q Len) ($ ".so"))
                (and
@@ -443,12 +454,10 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
          (cond
             ((num? Y) NO)
             ((pair Y) NO)
-            ((== ZERO
-                  (setq X (name (val (tail X)))) )
-               NO )
-            ((== ZERO
-                  (setq Y (name (val (tail Y)))) )
-               NO )
+            ((sym? (val (tail X))) NO)
+            ((== ZERO (setq X (name @))) NO)
+            ((sym? (val (tail Y))) NO)
+            ((== ZERO (setq Y (name @))) NO)
             ((== X Y) YES)
             ((cnt? X) NO)
             ((cnt? Y) NO)
@@ -503,8 +512,8 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
             ((or (pair Y) (t? Y)) -1)
             (T
                (let
-                  (NmX (name (val (tail X)))
-                     NmY (name (val (tail Y))) )
+                  (NmX (name (& (val (tail X)) -9))
+                     NmY (name (& (val (tail Y)) -9)) )
                   (cond
                      ((== ZERO NmX)
                         (nond
@@ -649,17 +658,18 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
 (de _sys (Exe)
    (let
       (X (cdr Exe)
-         Y (evSym X)
-         S (bufString Y (b8 (bufSize Y))) )
+         Nm (xName Exe (evSym X))
+         S (bufString Nm (b8 (bufSize Nm))) )
       (if (atom (shift X))
          (mkStr (getenv S))
-         (if
-            (=0
-               (setenv S
-                  (bufString (setq Y (evSym X)) (b8 (bufSize Y)))
-                  1 ) )
-            Y
-            $Nil ) ) ) )
+         (let (Y (evSym X)  Nm2 (xName Exe Y))
+            (if
+               (=0
+                  (setenv S
+                     (bufString Nm2 (b8 (bufSize Nm2)))
+                     1 ) )
+               Y
+               $Nil ) ) ) ) )
 
 # (pwd) -> sym
 (de _pwd (Exe)
@@ -670,11 +680,13 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
 
 # (cd 'any) -> sym
 (de _cd (Exe)
-   (let (X (evSym (cdr Exe))  P (getcwd null 0))
+   (let
+      (Nm (xName Exe (evSym (cdr Exe)))
+         P (getcwd null 0) )
       (if (=0 P)
          $Nil
          (prog1
-            (if (lt0 (chdir (pathString X (b8 (pathSize X)))))
+            (if (lt0 (chdir (pathString Nm (b8 (pathSize Nm)))))
                $Nil
                (mkStr P) )
             (free P) ) ) ) )
@@ -731,40 +743,38 @@ pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
             ((cnt? Y) (i8* (int Y)))
             ((big? Y) (i8* (val (dig Y))))
             (T
-               (let P
-                  (dlOpen
-                     (if
-                        (==
-                           (| 2 (>> -4 (char "@")))  # "@"
-                           (name (val (tail Y))) )
-                        null
-                        (pathString Y (b8 (pathSize Y))) ) )
-                  (when (=0 P)
+               (let Nm (xName Exe Y)
+                  (when
+                     (=0
+                        (dlOpen
+                           (if (== Nm (| 2 (>> -4 (char "@"))))
+                              null
+                              (pathString Nm (b8 (pathSize Nm))) ) ) )
                      (err Exe Y ($ "[DLL] %s") (dlerror)) )
-                  (set Y (box64 (i64 P)))
-                  P ) ) )
+                  (set Y (box64 (i64 @)))
+                  @ ) ) )
          Fun (eval (++ X))  # Eval function 'cnt2|sym2'
-         Args (save (eval (++ X)))
+         Args (save (cons (eval (++ X)) $Nil))
          L Args )  # [ret args]
       (while (pair X)
          (let Z (push (eval (++ X)) $Nil NIL)  # [argN next]
             (set 2 L Z)
             (setq L Z) ) )
-      (prog1
-         (natRet
-            (car Args)
-            (ffiCall
-               (cond
-                  ((cnt? Fun) (i8* (int Fun)))
-                  ((big? Fun) (i8* (val (dig Fun))))
-                  (T
-                     (let P (ffiPrep Lib (bufString Fun (b8 (bufSize Fun))) Args)
-                        (when (=0 P)
-                           (err Exe 0 ($ "Bad ffi") null) )
-                        (set Fun (box64 (i64 P)))
-                        P ) ) )
-               Args ) )
-         Args ) ) )
+      (natRet
+         (car Args)
+         (ffiCall
+            (cond
+               ((cnt? Fun) (i8* (int Fun)))
+               ((big? Fun) (i8* (val (dig Fun))))
+               (T
+                  (let Nm (xName Exe Fun)
+                     (when
+                        (=0
+                           (ffiPrep Lib (bufString Nm (b8 (bufSize Nm))) Args) )
+                        (err Exe 0 ($ "Bad ffi") null) )
+                     (set Fun (box64 (i64 @)))
+                     @ ) ) )
+            Args ) ) ) )
 
 # (args) -> flg
 (de _args (Exe)

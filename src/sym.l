@@ -1,29 +1,22 @@
-# 04may20 Software Lab. Alexander Burger
+# 08may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
-(local) (name bufSize pathSize bufString pathString)
+(local) (bufSize pathSize bufString pathString)
 
-(de name (Tail)
-   (setq Tail (& Tail -9))  # Clear 'extern' tag
-   (until (num? Tail)
-      (shift Tail) )
-   Tail )
-
-(de i64 bufSize (Sym)
-   (let (X (name (val (tail Sym)))  N 1)
-      (while (big? X)
-         (setq N (+ N 8)  X (val (big X))) )
-      (setq X (int X))
-      (until (=0 X)
+(de i64 bufSize (Nm)
+   (let N 1
+      (while (big? Nm)
+         (setq N (+ N 8)  Nm (val (big Nm))) )
+      (setq Nm (int Nm))
+      (until (=0 Nm)
          (inc 'N)
-         (setq X (shr X 8)) )
+         (setq Nm (shr Nm 8)) )
       N ) )
 
-(de i64 pathSize (Sym)
+(de i64 pathSize (Nm)
    (let
-      (Len (bufSize Sym)
-         Nm (name (val (tail Sym)))
+      (Len (bufSize Nm)
          N (if (cnt? Nm) (int Nm) (dig Nm))
          B (i8 N) )
       (if
@@ -35,16 +28,14 @@
          (+ (val $HomeLen) (dec Len))
          Len ) ) )
 
-(de i8* bufString (X (i8* . P))
-   (let Q (push 0 (name (val (tail X))))  # [cnt name]
+(de i8* bufString (Nm (i8* . P))
+   (let Q (push 0 Nm)  # [cnt name]
       (prog1 P
          (until (=0 (set P (symByte Q)))
             (inc 'P) ) ) ) )
 
-(de i8* pathString (X (i8* . P))
-   (let
-      (Q (push 0 (name (val (tail X))))  # [cnt name]
-         B (symByte Q) )
+(de i8* pathString (Nm (i8* . P))
+   (let (Q (push 0 Nm)  B (symByte Q))  # [cnt name]
       (prog1 P
          (when (== B (char "+"))
             (set P B)
@@ -100,9 +91,10 @@
 
 (de i8 firstByte (Sym)
    (i8
-      (if (cnt? (name (val (tail Sym))))
-         (int @)
-         (val (dig @)) ) ) )
+      (cond
+         ((sym? (val (tail Sym))) 0)
+         ((cnt? (name @)) (int @))
+         (T (val (dig @))) ) ) )
 
 (de i32 firstChar (Sym)
    (cond
@@ -111,13 +103,16 @@
       (T (symChar (push 0 (name @)))) ) )  # Else get name
 
 (de i1 isBlank (X)
-   (and
-      (not (num? X))
-      (sym? X)
-      (let P (push 0 (name (val (tail X))))  # [cnt name]
-         (loop
-            (? (=0 (symByte P)) YES)
-            (? (> @ 32) NO) ) ) ) )
+   (or
+      (nil? X)
+      (and
+         (not (num? X))
+         (sym? X)
+         (not (sym? (val (tail X))))
+         (let P (push 0 (name @))  # [cnt name]
+            (loop
+               (? (=0 (symByte P)) YES)
+               (? (> @ 32) NO) ) ) ) ) )
 
 # Build external symbol name
 (local) extNm
@@ -171,19 +166,21 @@
 # General pack
 (de void pack (X (i64* . P))
    (when (pair X)
+      (stkChk 0)
       (loop
          (pack (++ X) P)
          (? (atom X)) ) )
    (cond
       ((nil? X))
       ((num? X) (fmtNum X 0 0 0 P))
+      ((sym? (val (tail X)))
+         (byteSym (char "{") P)
+         (packExtNm (& (name @) -9) P)
+         (byteSym (char "}") P) )
       (T
-         (let (Tail (val (tail X))  Nm (name Tail))
-            (if (sym? Tail)
-               (packExtNm Nm P)
-               (let Q (push 0 Nm)  # [cnt name]
-                  (until (=0 (symByte Q))
-                     (byteSym @ P) ) ) ) ) ) ) )
+         (let Q (push 0 (name @))  # [cnt name]
+            (until (=0 (symByte Q))
+               (byteSym @ P) ) ) ) ) )
 
 # Chop external symbol name
 (de chopExtNm (Name)
@@ -348,7 +345,10 @@
       (loop
          (inc 'C)  # Next level
          (setq Sym (car X))  # Next symbol
-         (let Nm (& (name (val (tail Sym))) (hex "3FFFFFFFFFFFFFF7"))  # Mask status and extern bits
+         (let Nm
+            (&
+               (name (& (val (tail Sym)) -9))
+               (hex "3FFFFFFFFFFFFFF7") )  # Mask status and extern bits
             (? (== Nm Name))  # Found
             (let Y (cdr X)  # Get link cell
                (cond
@@ -380,7 +380,7 @@
                         (>
                            Name
                            (&
-                              (name (val (tail (++ X))))
+                              (name (& (val (tail (++ X))) -9))
                               (hex "3FFFFFFFFFFFFFF7") ) )
                         (cdr X)
                         (car X) ) )
@@ -389,7 +389,7 @@
             (let
                (Nm
                   (&
-                     (name (val (tail (car X))))
+                     (name (& (val (tail (car X))) -9))
                      (hex "3FFFFFFFFFFFFFF7") )
                   Y (cdr X) )
                (? (== Nm Name))  # Done
@@ -465,28 +465,25 @@
 
 # (name 'sym) -> sym
 (de _name (Exe)
-   (let
-      (Sym (needSym Exe (eval (cadr Exe)))
-         Tail (val (tail Sym))
-         Nm (name Tail) )
+   (let Tail (val (tail (needSym Exe (eval (cadr Exe)))))
       (if (sym? Tail)  # External
          (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
-            (packExtNm Nm P)
+            (packExtNm (& (name Tail) -9) P)
             (drop Q
                (consStr (val Q)) ) )
-         (consStr Nm) ) ) )
+         (consStr (name Tail)) ) ) )
 
 # (nsp 'sym) -> sym
 (de _nsp (Exe)
-   (let
-      (Sym (needSym Exe (eval (cadr Exe)))
-         Nm (name (val (tail Sym)))
-         Lst (val $Intern) )  # Search namespaces
-      (loop
-         (? (atom Lst) $Nil)
-         (let Nsp (car Lst)
-            (? (== Sym (isIntern Nm (val Nsp))) Nsp) )
-         (shift Lst) ) ) )
+   (let Sym (needSym Exe (eval (cadr Exe)))
+      (if (sym? (val (tail Sym)))
+         $Nil
+         (let (Nm (name @)  Lst (val $Intern))  # Search namespaces
+            (loop
+               (? (atom Lst) $Nil)
+               (let Nsp (car Lst)
+                  (? (== Sym (isIntern Nm (val Nsp))) Nsp) )
+               (shift Lst) ) ) ) ) )
 
 # (sp? 'any) -> flg
 (de _spQ (Exe)
@@ -627,14 +624,15 @@
 (de _intern (Exe)
    (let
       (X (cdr Exe)
-         Sym (save (needSym Exe (eval (++ X))))
-         Nm (name (val (tail Sym))) )
-      (if (== Nm ZERO)
-         $Nil
-         (let (L (val $Intern)  F (nil? (eval (car X))))
-            (intern Sym 0 Nm
-               (val (car L))
-               (if F (cdr L) $Nil) ) ) ) ) )
+         Sym (save (needSym Exe (eval (++ X)))) )
+      (cond
+         ((sym? (val (tail Sym))) $Nil)
+         ((== (name @) ZERO) $Nil)
+         (T
+            (let (Nm @  L (val $Intern)  F (nil? (eval (car X))))
+               (intern Sym 0 Nm
+                  (val (car L))
+                  (if F (cdr L) $Nil) ) ) ) ) ) )
 
 # (box? 'any) -> sym | NIL
 (de _boxQ (Exe)
@@ -643,22 +641,21 @@
          (and
             (not (num? X))
             (sym? X)
-            (== ZERO (name (val (tail X)))) )
+            (not (sym? (val (tail X))))
+            (== ZERO (name @)) )
          X
          $Nil ) ) )
 
 # (str? 'any) -> sym | NIL
 (de _strQ (Exe)
    (let X (eval (cadr Exe))
-      (if (or (num? X) (not (sym? X)))
-         $Nil
-         (let Tail (val (tail X))
-            (if
-               (or
-                  (sym? Tail)  # External
-                  (== X (isLstIntern (name Tail) (val $Intern))) )
-               $Nil
-               X ) ) ) ) )
+      (cond
+         ((or (num? X) (pair X)) $Nil)
+         ((or
+               (sym? (val (tail X)))  # External
+               (== X (isLstIntern (name @) (val $Intern))) )
+            $Nil )
+         (T X) ) ) )
 
 # (zap 'sym) -> sym
 (de _zap (Exe)
@@ -673,19 +670,18 @@
    (let X (eval (cadr Exe))
       (if (or (pair X) (nil? X))
          X
-         (let
-            (Tail (val (tail (xSym X)))
-               Nm (save (name Tail)) )
-            (if (sym? Tail)  # External
-               (chopExtNm Nm)
-               (let (P (push 0 Nm)  C (symChar P))
-                  (if (=0 C)
-                     $Nil
-                     (let (Y (cons (mkChar C) $Nil)  R (save Y))
-                        (until (=0 (setq C (symChar P)))
-                           (setq Y
-                              (set 2 Y (cons (mkChar C) $Nil)) ) )
-                        R ) ) ) ) ) ) ) )
+         (save X
+            (let Tail (val (tail (xSym X)))
+               (if (sym? Tail)  # External
+                  (chopExtNm (name (& Tail -9)))
+                  (let (P (push 0 (name Tail))  C (symChar P))
+                     (if (=0 C)
+                        $Nil
+                        (let (Y (cons (mkChar C) $Nil)  R (save Y))
+                           (until (=0 (setq C (symChar P)))
+                              (setq Y
+                                 (set 2 Y (cons (mkChar C) $Nil)) ) )
+                           R ) ) ) ) ) ) ) ) )
 
 # (pack 'any ..) -> sym
 (de _pack (Exe)
@@ -720,7 +716,7 @@
       (if (nil? Y)
          Y
          (let
-            (P (push 0 (name (val (tail Y))) NIL)  # [cnt name link]
+            (P (push 0 (xName Exe Y) NIL)  # [cnt name link]
                Q (link (ofs P 1))
                R (push 4 NIL ZERO NIL)  # [cnt last name link]
                L (link (ofs R 2))
@@ -759,8 +755,8 @@
 (de i1 subStr (X Y)
    (or
       (nil? X)
-      (== ZERO (setq X (name (val (tail X)))))
-      (let (P (push 0 (name (val (tail Y))))  B T)
+      (== ZERO (setq X (xName Exe X)))
+      (let (P (push 0 (xName Exe Y))  B T)
          (loop
             (? (=0 (setq B (symByte P))) NO)
             (let (Cnt (val P)  Nm (val 2 P))
@@ -772,10 +768,10 @@
    (let (X (cdr Exe)  Y (save (evSym X))  Z (evSym (shift X)))
       (cond
          ((nil? Y) Z)
-         ((== ZERO (setq Y (name (val (tail Y)))))
+         ((== ZERO (setq Y (xName Exe Y)))
             Z )
          (T
-            (let P (push 0 (name (val (tail Z))))
+            (let P (push 0 (xName Exe Z))
                (cond
                   ((=0 (symByte P)) $Nil)
                   ((preStr Y @ P) Z)
@@ -1537,7 +1533,7 @@
             (unless @@  # Not dirty
                (add N N)
                (when @@  # and loaded
-                  (set X $Nil  (tail X) (| Nm 8)) ) ) )
+                  (set X $Nil  (tail X) Nm) ) ) )
          (set X $Nil  (tail X) Nm) ) ) )  # Clear value and properties
 
 # (wipe 'sym|lst) -> sym|lst
@@ -1606,60 +1602,51 @@
    (let X (eval (cadr Exe))
       (if (or (num? X) (pair X) (nil? X))
          X
-         (let Tail (val (tail X))
-            (if (sym? Tail)  # External symbol
-               X
-               (let
-                  (P (push 0 (name Tail) NIL)  # [cnt name link]
-                     Q (link (ofs P 1))
-                     R (push 4 NIL ZERO NIL)  # [cnt last name link]
-                     C T )
-                  (link (ofs R 2))
-                  (until (=0 (setq C (symChar P)))
-                     (charSym (toLowerCase C) R) )
-                  (drop Q
-                     (consStr (val 3 R)) ) ) ) ) ) ) )
+         (let
+            (P (push 0 (xName Exe X) NIL)  # [cnt name link]
+               Q (link (ofs P 1))
+               R (push 4 NIL ZERO NIL)  # [cnt last name link]
+               C T )
+            (link (ofs R 2))
+            (until (=0 (setq C (symChar P)))
+               (charSym (toLowerCase C) R) )
+            (drop Q
+               (consStr (val 3 R)) ) ) ) ) )
 
 # (uppc 'any) -> any
 (de _uppc (Exe)
    (let X (eval (cadr Exe))
       (if (or (num? X) (pair X) (nil? X))
          X
-         (let Tail (val (tail X))
-            (if (sym? Tail)  # External symbol
-               X
-               (let
-                  (P (push 0 (name Tail) NIL)  # [cnt name link]
-                     Q (link (ofs P 1))
-                     R (push 4 NIL ZERO NIL)  # [cnt last name link]
-                     C T )
-                  (link (ofs R 2))
-                  (until (=0 (setq C (symChar P)))
-                     (ifn (== C (char "ß"))
-                        (charSym (toUpperCase C) R)
-                        (charSym (char "S") R)
-                        (charSym (char "S") R) ) )
-                  (drop Q
-                     (consStr (val 3 R)) ) ) ) ) ) ) )
+         (let
+            (P (push 0 (xName Exe X) NIL)  # [cnt name link]
+               Q (link (ofs P 1))
+               R (push 4 NIL ZERO NIL)  # [cnt last name link]
+               C T )
+            (link (ofs R 2))
+            (until (=0 (setq C (symChar P)))
+               (ifn (== C (char "ß"))
+                  (charSym (toUpperCase C) R)
+                  (charSym (char "S") R)
+                  (charSym (char "S") R) ) )
+            (drop Q
+               (consStr (val 3 R)) ) ) ) ) )
 
 # (fold 'any ['cnt]) -> sym
 (de _fold (Exe)
    (let (X (cdr Exe)  Y (eval (++ X)))
       (if (or (num? Y) (pair Y) (nil? Y))
          Y
-         (let Tail (val (tail Y))
-            (if (sym? Tail)  # External symbol
-               Y
-               (let
-                  (N (if (atom X) 0 (evCnt Exe X))
-                     P (push 0 (name Tail) NIL)  # [cnt name link]
-                     Q (link (ofs P 1))
-                     R (push 4 NIL ZERO NIL)  # [cnt last name link]
-                     C T )
-                  (link (ofs R 2))
-                  (until (=0 (setq C (symChar P)))
-                     (when (isLetterOrDigit C)
-                        (charSym (toLowerCase C) R)
-                        (? (=0 (dec 'N))) ) )
-                  (drop Q
-                     (consStr (val 3 R)) ) ) ) ) ) ) )
+         (let
+            (N (if (atom X) 0 (evCnt Exe X))
+               P (push 0 (xName Exe Y) NIL)  # [cnt name link]
+               Q (link (ofs P 1))
+               R (push 4 NIL ZERO NIL)  # [cnt last name link]
+               C T )
+            (link (ofs R 2))
+            (until (=0 (setq C (symChar P)))
+               (when (isLetterOrDigit C)
+                  (charSym (toLowerCase C) R)
+                  (? (=0 (dec 'N))) ) )
+            (drop Q
+               (consStr (val 3 R)) ) ) ) ) )

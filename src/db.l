@@ -1,4 +1,4 @@
-# 28apr20 Software Lab. Alexander Burger
+# 07may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -198,7 +198,9 @@
          (set $Protect (dec (val $Protect))) ) ) )
 
 (de i1 isLife (Sym)
-   (let (Nm (name (val (tail Sym)))  N (objId Nm))
+   (let
+      (Nm (name (& (val (tail Sym)) -9))
+         N (objId Nm) )
       (unless (=0 N)
          (cond
             ((> (val $DBs) (objFile Nm))
@@ -323,7 +325,7 @@
 (de _extern (Exe)
    (let
       (Sym (needSym Exe (eval (cadr Exe)))
-         Nm (name (val (tail Sym))) )
+         Nm (name (& (val (tail Sym)) -9)) )
       (when (== Nm ZERO)
          (ret $Nil) )
       (let
@@ -375,10 +377,10 @@
 
 (local) (dbFetch dbTouch dbZap)
 
-(de dbFetch (Exe Sym)
+(de void dbFetch (Exe Sym)
    Sym )
 
-(de dbTouch (Exe Sym)
+(de void dbTouch (Exe Sym)
    Sym )
 
 # (touch 'sym) -> sym
@@ -391,5 +393,5 @@
          (dbTouch Exe X) )
       X ) )
 
-(de dbZap (Sym)
+(de void dbZap (Sym)
    Sym )

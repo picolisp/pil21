@@ -1,4 +1,4 @@
-# 06may20 Software Lab. Alexander Burger
+# 08may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -204,6 +204,291 @@
 # (num? 'any) -> num | NIL
 (de _numQ (Exe)
    (if (num? (eval (cadr Exe))) @ $Nil) )
+
+# (sym? 'any) -> flg
+(de _symQ (Exe)
+   (if (or (num? (eval (cadr Exe))) (pair @))
+      $Nil
+      $T ) )
+
+# (flg? 'any) -> flg
+(de _flgQ (Exe)
+   (if (or (t? (eval (cadr Exe))) (nil? @))
+      $T
+      $Nil ) )
+
+# (member 'any 'lst) -> any
+(de _member (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         Z (eval (car X)) )
+      (loop
+         (? (atom Z) $Nil)
+         (? (equal Y (car Z)) Z)
+         (shift Z) ) ) )
+
+# (memq 'any 'lst) -> any
+(de _memq (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         Z (eval (car X)) )
+      (loop
+         (? (atom Z) $Nil)
+         (? (== Y (car Z)) Z)
+         (shift Z) ) ) )
+
+# (mmeq 'lst 'lst) -> any
+(de _mmeq (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         Z (eval (car X)) )
+      (while (pair Y)
+         (let (U (++ Y)  V Z)
+            (while (pair V)
+               (when (== U (car V))
+                  (ret V) )
+               (when (== Z (shift V))  # Hit head
+                  (ret $Nil) ) )
+            (? (== U V) V) ) )
+      $Nil ) )
+
+# (sect 'lst 'lst) -> lst
+(de _sect (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         Z (eval (car X))
+         P 0
+         R (link (push $Nil NIL)) )
+      (while (pair Y)
+         (let U (++ Y)
+            (when (member U Z)
+               (let V (cons U $Nil)
+                  (setq P
+                     (if (=0 P)
+                        (set R V)
+                        (set 2 P V) ) ) ) ) ) )
+      (val R) ) )
+
+# (diff 'lst 'lst) -> lst
+(de _diff (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         Z (eval (car X))
+         P 0
+         R (link (push $Nil NIL)) )
+      (while (pair Y)
+         (let U (++ Y)
+            (unless (member U Z)
+               (let V (cons U $Nil)
+                  (setq P
+                     (if (=0 P)
+                        (set R V)
+                        (set 2 P V) ) ) ) ) ) )
+      (val R) ) )
+
+# (index 'any 'lst) -> cnt | NIL
+(de _index (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         Z (eval (car X))
+         Cnt 1
+         U Z )
+      (loop
+         (? (atom Z) $Nil)
+         (? (equal Y (car Z)) (cnt Cnt))
+         (inc 'Cnt)
+         (? (== U (shift Z)) $Nil) ) ) )
+
+# (offset 'lst1 'lst2) -> cnt | NIL
+(de _offset (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         Z (eval (car X))
+         Cnt 1 )
+      (loop
+         (? (atom Z) $Nil)
+         (? (equal Y Z) (cnt Cnt))
+         (inc 'Cnt)
+         (shift Z) ) ) )
+
+# (prior 'lst1 'lst2) -> lst | NIL
+(de _prior (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         Z (eval (car X)) )
+      (when (and (pair Y) (<> Y Z))
+         (while (pair Z)
+            (when (== (cdr Z) Y)
+               (ret Z) )
+            (setq Z @) ) )
+      $Nil ) )
+
+# (length 'any) -> cnt | T
+(de _length (Exe)
+   (let X (eval (cadr Exe))
+      (cond
+         ((num? X) (fmtNum X -2 0 0 null))
+         ((pair X)
+            (let (C ONE  Y X)
+               (loop
+                  (set X (| (car X) 1))
+                  (? (atom (shift X))  # Normal list
+                     (loop
+                        (set Y (& (car Y) -2))
+                        (? (== X (shift Y))) )
+                     C )
+                  (? (n0 (& (car X) 1))
+                     (until (== X Y)
+                        (set Y (& (car Y) -2))
+                        (shift Y) )
+                     (loop
+                        (set Y (& (car Y) -2))
+                        (? (== X (shift Y))) )
+                     $T )  # Infinite
+                  (setq C (+ C (hex "10"))) ) ) )
+         ((nil? X) ZERO)
+         ((sym? (val (tail X))) ZERO)
+         (T
+            (let (C ZERO  P (push 0 (name @)))
+               (until (=0 (symChar P))
+                  (setq C (+ C (hex "10"))) )
+               C ) ) ) ) )
+
+(local) (size binSize)
+
+(de size (L)
+   (let (C 1  X L  Y (car X))
+      (loop
+         (when (pair Y)
+            (stkChk 0)
+            (setq C (+ C (size Y))) )
+         (set X (| Y 1))
+         (? (atom (shift X))
+            (loop
+               (set L (& (car L) -2))
+               (? (== X (shift L))) )
+            C )
+         (? (n0 (& (setq Y (car X)) 1))
+            (until (== X L)
+               (set L (& (car L) -2))
+               (shift L) )
+            (loop
+               (set L (& (car L) -2))
+               (? (== X (shift L))) )
+            C )
+         (inc 'C) ) ) )
+
+(de binSize (X)
+   (cond
+      ((cnt? X)
+         (setq X (shr X 3))  # Normalize short, keep sign bit
+         (: 1
+            (let C 2  # Count significant bytes plus 1
+               (until (=0 (setq X (shr X 8)))
+                  (inc 'C) )
+               C ) ) )
+      ((big? X)
+         (setq X (pos X))
+         (let C 9  # Count 8 significant bytes plus 1
+            (loop
+               (setq D (val (dig X)))
+               (? (cnt? (setq X (val (big X)))))
+               (setq C (+ C 8)) )  # Increment count by 8
+            (setq X (int X))
+            (add D D)  # Get most significant bit of last digit
+            (setq X (+ X X @@))
+            (: 2
+               (unless (=0 X)
+                  (loop
+                     (inc 'C)
+                     (? (=0 (setq X (shr X 8)))) ) )
+               (if (>= C (+ 63 1))  # More than one chunk
+                  (+ C (/ (- C 64) 255) 1)
+                  C ) ) ) )
+      ((sym? X)
+         (cond
+            ((nil? X) 1)
+            ((== (name (& (val (tail X)) -9)) ZERO) 1)
+            ((cnt? @)
+               (setq X (shr (shl Nm 2) 6))  # Strip status bits
+               (goto 1) )
+            (T
+               (let C 9  # Count 8 significant bytes plus 1
+                  (until (cnt? (setq X (val (big X))))
+                     (setq C (+ C 8)) )  # Increment count by 8
+                  (setq X (int X))
+                  (goto 2) ) ) ) )
+      (T
+         (let (C 2  Y X)
+            (loop
+               (setq C (+ C (binSize (++ X))))
+               (? (nil? X) C)
+               (? (== Y X) (inc C))  # Circular
+               (? (atom X) (+ C (binSize X))) ) ) ) ) )
+
+# (size 'any) -> cnt
+(de _size (Exe)
+   (let X (eval (cadr Exe))
+      (cond
+         ((cnt? X)
+            (setq X (shr X 3))  # Normalize short, keep sign bit
+            (let C ONE
+               (until (=0 (setq X (shr X 8)))
+                  (setq C (+ C (hex "10"))) )
+               C ) )
+         ((big? X)
+            (setq X (pos X))
+            (let (C (hex "82")  D NIL)  # Count '8' significant bytes
+               (loop
+                  (setq D (val (dig X)))
+                  (? (cnt? (setq X (val (big X)))))
+                  (setq C (+ C (hex "80"))) )  # Increment count by '8'
+               (setq X (int X))
+               (add D D)  # Get most significant bit of last digit
+               (unless (=0 (setq X (+ X X @@)))
+                  (loop
+                     (setq C (+ C (hex "10")))
+                     (? (=0 (setq X (shr X 8)))) ) )
+               C ) )
+         ((pair X) (cnt (size X)))
+         ((nil? X) ZERO)
+         ((sym? (val (tail X)))
+            (let Y (& @ -9)  # Properties
+               (dbFetch Exe X)
+               (let C (+ (binSize (val X)) (inc BLK))
+                  (while (pair Y)
+                     (let Z (++ Y)
+                        (setq C
+                           (+ C
+                              (if (atom Z)
+                                 (+ (binSize Z) 2)
+                                 (+
+                                    (binSize (car Z))
+                                    (binSize (cdr Z)) ) ) ) ) ) )
+                  (cnt C) ) ) )
+         ((== (name @) ZERO) @)
+         ((cnt? @)
+            (let (C ONE  Z (int @))
+               (until (=0 (setq Z (shr Z 8)))
+                  (setq C (+ C (hex "10"))) )
+               C ) )
+         (T
+            (let (C (hex "82")  Z @)  # Count '8' significant bytes
+               (until (cnt? (setq Z (val (big Z))))
+                  (setq C (+ C (hex "80"))) )  # Increment count by '8'
+               (unless (=0 (setq Z (int Z)))
+                  (loop
+                     (setq C (+ C (hex "10")))
+                     (? (=0 (setq Z (shr Z 8)))) ) )
+               C ) ) ) ) )
 
 (local) fill
 

@@ -1,4 +1,4 @@
-# 04may20 Software Lab. Alexander Burger
+# 08may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -215,7 +215,7 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking)
 
 # main.l
 (local) (err stkErr argErr cntErr numErr symErr extErr atomErr pairErr lstErr
-varErr protErr xCnt evCnt evLst evSym equal compare evList)
+varErr protErr xCnt evCnt evLst evSym xName equal compare evList)
 
 (de NIL err (any any i8* i8*))
 (de NIL stkErr (any))
@@ -233,6 +233,7 @@ varErr protErr xCnt evCnt evLst evSym equal compare evList)
 (de i64 evCnt (any any))
 (de evLst (any))
 (de evSym (any))
+(de xName (any any))
 (de i1 equal (any any))
 (de i64 compare (any any))
 (de evList (any))
@@ -245,10 +246,9 @@ varErr protErr xCnt evCnt evLst evSym equal compare evList)
 (de consStr (any))
 
 # sym.l
-(local) (name bufSize pathSize bufString pathString mkStr firstByte firstChar
-pack xSym subStr)
+(local) (bufSize pathSize bufString pathString mkStr firstByte firstChar pack
+xSym subStr)
 
-(de name (any))
 (de i64 bufSize (any))
 (de i64 pathSize (any))
 (de i8* bufString (any i8*))
@@ -274,12 +274,13 @@ pack xSym subStr)
 # db.l
 (local) (dbFetch dbTouch dbZap)
 
-(de dbFetch (any any))
-(de dbTouch (any any))
-(de dbZap (any))
+(de void dbFetch (any any))
+(de void dbTouch (any any))
+(de void dbZap (any))
 
 ### Primitives ###
-(local) (caar cadr cdar cddr int cnt sign sym length eval run)
+(local) (caar cadr cdar cddr int cnt sign sym name memq member length box64 eval
+run)
 
 (inline caar (X)
    (car (car X)) )
@@ -304,6 +305,11 @@ pack xSym subStr)
 
 (inline sym (X)
    (any (| X 8)) )
+
+(inline name (Tail)
+   (until (num? Tail)
+      (shift Tail) )
+   Tail )
 
 (inline memq (X L)
    (use @

@@ -1,4 +1,4 @@
-# 04may20 Software Lab. Alexander Burger
+# 08may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -398,52 +398,7 @@
                         (setq N 255) )
                      (call $PutBin (i8 N)) ) ) ) ) )  # Output next chunk size
       ((nil? X) (call $PutBin NIX))
-      ((sym? X)
-         (let (Tail (val (tail X))  Nm (name Tail))
-            (cond
-               ((sym? Tail)  # External symbol
-                  (unless (=0 (val $Extn))
-                     (let N
-                        (shl
-                           (& (i64 (- (objFile Nm) @)) (hex "FFFF"))
-                           24 )  # Mask overflow
-                        (setq Nm
-                           (|
-                              (& Nm (hex "FFF00FFF00FFFFFF"))  # Mask object ID
-                              (&
-                                 (| N (shl N 12))
-                                 (hex "000FF000FF000000") ) ) ) ) )  # Mask file number
-                  (tailcall
-                     (prCnt (+ EXTERN 4) (shr (shl Nm 2) 6)) ) )  # Strip status bits
-               ((== Nm ZERO) (call $PutBin NIX))
-               (T
-                  (let Tag
-                     (if (== X (isLstIntern Nm (val $Intern)))
-                        (i8 INTERN)
-                        (i8 TRANSIENT) )
-                     (if (cnt? Nm)
-                        (prCnt (+ Tag 4) (int Nm))
-                        (let (Y Nm  N 8)
-                           (while (big? (setq Y (val (big Y))))
-                              (setq N (+ N 8)) )
-                           (setq Y (int Y))
-                           (until (=0 Y)
-                              (inc 'N)
-                              (setq Y (shr Y 8)) )
-                           (let (P (push 0 Nm)  M (- N 63)  C 8)  # [cnt name]
-                              (when (ge0 M)
-                                 (setq N 63) )
-                              (call $PutBin (+ Tag (i8 (shl N 2))))
-                              (loop
-                                 (loop
-                                    (call $PutBin (symByte P))
-                                    (? (=0 (dec 'N))) )
-                                 (? (lt0 M))
-                                 (? (=0 M) (call $PutBin 0))
-                                 (when (ge0 (setq M (- (setq N M) 255)))
-                                    (setq N 255) )
-                                 (call $PutBin (i8 N)) ) ) ) ) ) ) ) ) )
-      (T  # Pair
+      ((pair X)
          (call $PutBin BEG)
          (let P (circ X)
             (if (=0 P)
@@ -465,7 +420,52 @@
                         (binPrint (car X))
                         (? (== P (shift X))) )
                      (call $PutBin DOT) )
-                  (call $PutBin END) ) ) ) ) ) )
+                  (call $PutBin END) ) ) ) )
+      ((sym? (val (tail X)))  # External symbol
+         (let Nm (name (& @ -9))
+            (unless (=0 (val $Extn))
+               (let N
+                  (shl
+                     (& (i64 (- (objFile Nm) @)) (hex "FFFF"))
+                     24 )  # Mask overflow
+                  (setq Nm
+                     (|
+                        (& Nm (hex "FFF00FFF00FFFFFF"))  # Mask object ID
+                        (&
+                           (| N (shl N 12))
+                           (hex "000FF000FF000000") ) ) ) ) )  # Mask file number
+            (tailcall
+               (prCnt (+ EXTERN 4) (shr (shl Nm 2) 6)) ) ) )  # Strip status bits
+      ((== (name @) ZERO) (call $PutBin NIX))
+      (T
+         (let
+            (Nm @
+               Tag
+               (if (== X (isLstIntern Nm (val $Intern)))
+                  (i8 INTERN)
+                  (i8 TRANSIENT) ) )
+            (if (cnt? Nm)
+               (prCnt (+ Tag 4) (int Nm))
+               (let (Y Nm  N 8)
+                  (while (big? (setq Y (val (big Y))))
+                     (setq N (+ N 8)) )
+                  (setq Y (int Y))
+                  (until (=0 Y)
+                     (inc 'N)
+                     (setq Y (shr Y 8)) )
+                  (let (P (push 0 Nm)  M (- N 63)  C 8)  # [cnt name]
+                     (when (ge0 M)
+                        (setq N 63) )
+                     (call $PutBin (+ Tag (i8 (shl N 2))))
+                     (loop
+                        (loop
+                           (call $PutBin (symByte P))
+                           (? (=0 (dec 'N))) )
+                        (? (lt0 M))
+                        (? (=0 M) (call $PutBin 0))
+                        (when (ge0 (setq M (- (setq N M) 255)))
+                           (setq N 255) )
+                        (call $PutBin (i8 N)) ) ) ) ) ) ) ) )
 
 (de void pr (X)
    (set $PutBin (fun (void i8) _putStdout))
@@ -571,8 +571,8 @@
 
 # (path 'any) -> sym
 (de _path (Exe)
-   (let (X (cdr Exe)  Y (evSym X))
-      (mkStr (pathString Y (b8 (pathSize Y)))) ) )
+   (let Nm (xName Exe (evSym (cdr Exe)))
+      (mkStr (pathString Nm (b8 (pathSize Nm)))) ) )
 
 (local) (hasData waitFd)
 
@@ -676,29 +676,32 @@
                      (=0 (val (ofs (val $InFiles) N))) )
                   (badFd Exe X) ) ) )
          ((sym? X)
-            (let (Nm (pathString X (b8 (pathSize X)))  Flg (== (val Nm) (char "+")))
+            (let
+               (Nm (xName Exe X)
+                  S (pathString Nm (b8 (pathSize Nm)))
+                  Flg (== (val S) (char "+")) )
                (when Flg
-                  (setq Nm (ofs Nm 1)) )
-               (while (lt0 (Io: fd (if Flg (openRdWr Nm) (openRdonly Nm))))
+                  (setq S (ofs S 1)) )
+               (while (lt0 (Io: fd (if Flg (openRdWr S) (openRdonly S))))
                   (unless (== (gErrno) EINTR)
                      (openErr Exe X) )
                   (sigChk Exe) )
                (Io: pid 1)
-               (initInFile (Io: fd) (strdup Nm)) )
+               (initInFile (Io: fd) (strdup S)) )
             (closeOnExec Exe (Io: fd)) )
          (T  # Pipe
             (let
                (Pfd (b32 2)
                   Av (b8* (inc (length X)))
-                  Cmd (xSym (++ X)) )
+                  Cmd (xName Exe (xSym (++ X))) )
                (when (lt0 (pipe Pfd))
                   (pipeErr Exe) )
                (set Av (pathString Cmd (b8 (pathSize Cmd))))
                (let A Av
                   (while (pair X)
-                     (let S (xSym (++ X))
+                     (let Nm (xName Exe (xSym (++ X)))
                         (set (inc 'A)
-                           (bufString S (b8 (bufSize S))) ) ) )
+                           (bufString Nm (b8 (bufSize Nm))) ) ) )
                   (set (inc 'A) null) )
                (cond
                   ((lt0 (fork)) (forkErr Exe))
@@ -740,10 +743,13 @@
                      (=0 (val (ofs (val $OutFiles) N))) )
                   (badFd Exe X) ) ) )
          ((sym? X)
-            (let (Nm (pathString X (b8 (pathSize X)))  Flg (== (val Nm) (char "+")))
+            (let
+               (Nm (xName Exe X)
+                  S (pathString Nm (b8 (pathSize Nm)))
+                  Flg (== (val S) (char "+")) )
                (when Flg
-                  (setq Nm (ofs Nm 1)) )
-               (while (lt0 (Io: fd (if Flg (openWrAppend Nm) (openWronly Nm))))
+                  (setq S (ofs S 1)) )
+               (while (lt0 (Io: fd (if Flg (openWrAppend S) (openWronly S))))
                   (unless (== (gErrno) EINTR)
                      (openErr Exe X) )
                   (sigChk Exe) )
@@ -754,15 +760,15 @@
             (let
                (Pfd (b32 2)
                   Av (b8* (inc (length X)))
-                  Cmd (xSym (++ X)) )
+                  Cmd (xName Exe (xSym (++ X))) )
                (when (lt0 (pipe Pfd))
                   (pipeErr Exe) )
                (set Av (pathString Cmd (b8 (pathSize Cmd))))
                (let A Av
                   (while (pair X)
-                     (let S (xSym (++ X))
+                     (let Nm (xName Exe (xSym (++ X)))
                         (set (inc 'A)
-                           (bufString S (b8 (bufSize S))) ) ) )
+                           (bufString Nm (b8 (bufSize Nm))) ) ) )
                   (set (inc 'A) null) )
                (cond
                   ((lt0 (fork)) (forkErr Exe))
@@ -1433,59 +1439,58 @@
       ((cnt? X) (outNum X))
       ((big? X) (fmtNum X -1 0 0 null))
       ((sym? X)
-         (let Nm (name (val (tail X)))
-            (cond
-               ((== Nm ZERO)  # Anonymous
-                  (call $Put (char "$"))
-                  (outOct (int X)) )
-               ((sym? (val (tail X)))  # External
-                  (call $Put (char "{"))
-                  (prExt Nm)
-                  (call $Put (char "}")) )
-               (T
-                  (let (Lst (val $Intern)  F NO)  # Search namespaces
-                     (loop
-                        (? (atom Lst) # Transient
-                           (call $Put (char "\""))
-                           (let (P (push 0 Nm)  B (symByte P))  # [cnt name]
-                              (loop
-                                 (cond
-                                    ((or
-                                          (== B (char "\\"))
-                                          (== B (char "\^"))
-                                          (== B (char "\"")) )
-                                       (call $Put (char "\\")) )
-                                    ((== B 127)  # DEL
-                                       (call $Put (char "\^"))  # Print ^?
-                                       (setq B (char "?")) )
-                                    ((> 32 B)  # White space
-                                       (call $Put (char "\^"))  # Escape with caret
-                                       (setq B (| B 64)) ) )
-                                 (call $Put B)
-                                 (? (=0 (setq B (symByte P))) ) ) )
-                           (call $Put (char "\"")) )
-                        (let Nsp (car Lst)
-                           (unless (=0 (isIntern Nm (val Nsp)))
-                              (? (== @ Sym)  # Internal
-                                 (when F  # Found in other namespace
-                                    (outName Nsp)
-                                    (call $Put (char "~")) )
-                                 (ifn (== Nm (hex "2E2"))  # Dot
-                                    (let (P (push 0 Nm)  B (symByte P))  # [cnt name]
-                                       (when (== B (char "#"))
-                                          (call $Put (char "\\")) )  # Escape leading hash
-                                       (loop
-                                          (when
-                                             (or
-                                                (== B (char "\\"))
-                                                (n0 (strchr $Delim (i32 B))) )
-                                             (call $Put (char "\\")) )  # Escape backslash and delimiters
-                                          (call $Put B)
-                                          (? (=0 (setq B (symByte P))) ) ) )
-                                    (call $Put (char "\\"))
-                                    (call $Put (char ".")) ) )
-                              (setq F YES) ) )
-                        (shift Lst) ) ) ) ) ) )
+         (cond
+            ((sym? (val (tail X)))  # External
+               (call $Put (char "{"))
+               (prExt (name (& @ -9)))
+               (call $Put (char "}")) )
+            ((== (name @) ZERO)  # Anonymous
+               (call $Put (char "$"))
+               (outOct (int X)) )
+            (T
+               (let (Nm @  Lst (val $Intern)  F NO)  # Search namespaces
+                  (loop
+                     (? (atom Lst) # Transient
+                        (call $Put (char "\""))
+                        (let (P (push 0 Nm)  B (symByte P))  # [cnt name]
+                           (loop
+                              (cond
+                                 ((or
+                                       (== B (char "\\"))
+                                       (== B (char "\^"))
+                                       (== B (char "\"")) )
+                                    (call $Put (char "\\")) )
+                                 ((== B 127)  # DEL
+                                    (call $Put (char "\^"))  # Print ^?
+                                    (setq B (char "?")) )
+                                 ((> 32 B)  # White space
+                                    (call $Put (char "\^"))  # Escape with caret
+                                    (setq B (| B 64)) ) )
+                              (call $Put B)
+                              (? (=0 (setq B (symByte P))) ) ) )
+                        (call $Put (char "\"")) )
+                     (let Nsp (car Lst)
+                        (unless (=0 (isIntern Nm (val Nsp)))
+                           (? (== @ Sym)  # Internal
+                              (when F  # Found in other namespace
+                                 (outName Nsp)
+                                 (call $Put (char "~")) )
+                              (ifn (== Nm (hex "2E2"))  # Dot
+                                 (let (P (push 0 Nm)  B (symByte P))  # [cnt name]
+                                    (when (== B (char "#"))
+                                       (call $Put (char "\\")) )  # Escape leading hash
+                                    (loop
+                                       (when
+                                          (or
+                                             (== B (char "\\"))
+                                             (n0 (strchr $Delim (i32 B))) )
+                                          (call $Put (char "\\")) )  # Escape backslash and delimiters
+                                       (call $Put B)
+                                       (? (=0 (setq B (symByte P))) ) ) )
+                                 (call $Put (char "\\"))
+                                 (call $Put (char ".")) ) )
+                           (setq F YES) ) )
+                     (shift Lst) ) ) ) ) )
       ((and (== (car X) $Quote) (<> X (cdr X)))
          (call $Put (char "'"))
          (print (cdr X)) )
@@ -1525,9 +1530,9 @@
          ((cnt? X) (outNum X))
          ((big? X) (fmtNum X -1 0 0 null))
          ((sym? X)
-            (let Nm (name (val (tail X)))
-               (unless (== Nm ZERO)
-                  (ifn (sym? (val (tail X)))  # No external
+            (unless (sym? (val (tail X)))
+               (let Nm (name @)
+                  (unless (== Nm ZERO)
                      (prName Nm)
                      (call $Put (char "{"))
                      (prExt Nm)
@@ -1664,7 +1669,7 @@
                (if (=0 C) -1 (i32 (i8 C))) )
             @ ) ) ) )
 
-(de parse (Str (i1 . Skip) Set)
+(de parse (Nm (i1 . Skip) Set)
    (let
       (Pars (val $Parser)
          In: (inFile (val $InFile))
@@ -1672,7 +1677,7 @@
       (set $Parser
          (push  # [cnt name termination]
             0
-            (save (name (val (tail Str))))
+            (save Nm)
             (if (=0 Set) (hex "5D0A") 0) ) )  # '\n', ']', EOF
       (unless (=0 (In:))
          (In: next (val $Chr))
@@ -1704,7 +1709,7 @@
    (when (num? X)
       (argErr Exe X) )
    (if (and (sym? X) (== (firstByte X) (char "-")))
-      (let E (save (parse X YES 0))
+      (let E (save (parse (xName Exe X) YES 0))
          (evList E) )
       (let (Int (save (val $Intern))  P (b8 (ioFrame T)))
          (rdOpen Exe X P)

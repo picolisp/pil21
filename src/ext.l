@@ -1,4 +1,4 @@
-# 11apr20 Software Lab. Alexander Burger
+# 08may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -6,7 +6,7 @@
    "vers.l" "defs.l" "glob.l" "dec.l" )
 
 # External declarations
-(local) (name symChar charSym initInFile initOutFile)
+(local) (symChar charSym initInFile initOutFile)
 
 (de T i32 symChar (i64*))
 (de T void charSym (i32 i64*))
@@ -53,7 +53,7 @@
       (if (nil? (evSym X))
          @
          (let
-            (P (push 0 (name (val (tail @))) NIL)  # [cnt name link]
+            (P (push 0 (xName Exe @) NIL)  # [cnt name link]
                C (symChar P) )
             (while (> SNXBASE C)
                (when (=0 (setq C (symChar P)))
