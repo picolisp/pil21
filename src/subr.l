@@ -105,6 +105,25 @@
 (de _cddddr (Exe)
    (chkD (chkD (chkD (chkD (eval (cadr Exe)))))) )
 
+# (nth 'lst 'cnt ..) -> lst
+(de _nth (Exe)
+   (let (X (cdr Exe)  Y (save (eval (++ X))))
+      (loop
+         (? (atom Y) Y)
+         (let C (evCnt Exe X)
+            (? (lt0 (dec 'C)) $Nil)
+            (while (ge0 (dec 'C))
+               (shift Y) ) )
+         (? (atom (shift X)) Y)
+         (setq Y (car Y)) ) ) )
+
+# (con 'lst 'any) -> any
+(de _con (Exe)
+   (let X (cdr Exe)
+      (set 2
+         (save (needPair Exe (eval (++ X))))
+         (eval (car X)) ) ) )
+
 # (cons 'any ['any ..]) -> lst
 (de _cons (Exe)
    (let (X (cdr Exe)  Y (cons (eval (car X)) $Nil)  R (save Y))
@@ -191,6 +210,22 @@
                      (setq Z (ofs @ 1)) )
                   (set $Make Z) )
                Y ) ) ) ) )
+
+# (fin 'any) -> num|sym
+(de _fin (Exe)
+   (let X (eval (cadr Exe))
+      (while (pair X)
+         (shift X) )
+      X ) )
+
+# (last 'lst) -> any
+(de _last (Exe)
+   (let X (eval (cadr Exe))
+      (if (atom X)
+         X
+         (while (pair (cdr X))
+            (setq X @) )
+         (car X) ) ) )
 
 # (== 'any ..) -> flg
 (de _eq (Exe)
