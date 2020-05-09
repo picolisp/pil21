@@ -1,12 +1,17 @@
-# 08may20 Software Lab. Alexander Burger
+# 09may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
+
+(local) (chkA chkD makeErr)
 
 (inline (Exe) chkA (X)
    (car (needVar Exe X)) )
 
 (inline (Exe) chkD (X)
    (cdr (needLst Exe X)) )
+
+(de NIL makeErr (Exe)
+   (err Exe 0 ($ "Not making") null) )
 
 # (car 'var) -> any
 (de _car (Exe)
@@ -116,6 +121,76 @@
          (setq Y
             (set 2 Y (cons (eval (car X)) $Nil)) ) )
       R ) )
+
+# (make .. [(made 'lst ..)] .. [(link 'any ..)] ..) -> any
+(de _make (Exe)
+   (let
+      (Make (val $Make)
+         Yoke (val $Yoke)
+         R (link (push $Nil NIL)) )
+      (set $Make (set $Yoke R))
+      (exec (cdr Exe))
+      (set $Make Make  $Yoke Yoke)
+      (pop R) ) )
+
+# (made ['lst1 ['lst2]]) -> lst
+(de _made (Exe)
+   (let X (cdr Exe)
+      (when (=0 (val $Make))
+         (makeErr Exe) )
+      (when (pair X)
+         (set (val $Yoke) (eval (++ X)))
+         (let Y (eval (car X))
+            (when (atom Y)
+               (setq Y (val (val $Yoke)))
+               (while (pair (cdr Y))
+                  (setq Y @) ) )
+            (set $Make (ofs Y 1)) ) )
+      (val (val $Yoke)) ) )
+
+# (chain 'lst ..) -> lst
+(de _chain (Exe)
+   (let X (cdr Exe)
+      (when (=0 (val $Make))
+         (makeErr Exe) )
+      (loop
+         (let Y (eval (++ X))
+            (when (pair Y)
+               (set (val $Make) Y)
+               (let Z Y
+                  (while (pair (cdr Z))
+                     (setq Z @) )
+                  (set $Make (ofs Z 1)) ) ) )
+         (? (atom X) Y) ) ) )
+
+# (link 'any ..) -> any
+(de _link (Exe)
+   (let X (cdr Exe)
+      (when (=0 (val $Make))
+         (makeErr Exe) )
+      (loop
+         (let Y (eval (++ X))
+            (set $Make
+               (ofs
+                  (set (val $Make) (cons Y $Nil))
+                  1 ) )
+            (? (atom X) Y) ) ) ) )
+
+# (yoke 'any ..) -> any
+(de _yoke (Exe)
+   (let X (cdr Exe)
+      (when (=0 (val $Make))
+         (makeErr Exe) )
+      (loop
+         (let Y (eval (++ X))
+            (let P (val $Yoke)
+               (set P (cons Y (val P))) )
+            (? (atom X)
+               (let Z (val $Make)
+                  (while (pair (val Z))
+                     (setq Z (ofs @ 1)) )
+                  (set $Make Z) )
+               Y ) ) ) ) )
 
 # (== 'any ..) -> flg
 (de _eq (Exe)

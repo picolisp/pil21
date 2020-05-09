@@ -1,4 +1,4 @@
-# 08may20 Software Lab. Alexander Burger
+# 09may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1292,7 +1292,7 @@
                   $PRepl (val $Repl)  # Set parent REPL flag
                   $PPid (val $Pid) )  # Set parent process ID
                (set $Pid (cnt (i64 (getpid))))  # Set new process ID
-               (run (val $Fork))  # Run '*Fork'
+               (execAt (val $Fork))  # Run '*Fork'
                (set $Fork $Nil)
                0 )
             (T  # In parent

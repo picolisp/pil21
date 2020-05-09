@@ -1,9 +1,16 @@
-# 08may20 Software Lab. Alexander Burger
+# 09may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
 (begin "base" NIL
    "vers.l" "defs.l" "glob.l" "dec.l" )
+
+(local) execAt
+
+(de execAt (Prg)
+   (let At (save (val $At))
+      (exec Prg)
+      (set $At At) ) )
 
 # Unwind stack
 (local) unwind
@@ -47,7 +54,7 @@
    (unless (val $InBye)
       (set $InBye YES)
       (unwind null)
-      (run (val $Bye)) )
+      (exec (val $Bye)) )
    (flushAll)
    (finish N) )
 
@@ -108,22 +115,22 @@
             (unless (=0 (val P))
                (set $Signal (- (val $Signal) 1))
                (set P (- (val P) 1))
-               (run (val $Sigio)) ) )
+               (execAt (val $Sigio)) ) )
          (let P (ofs $Signal SIGUSR1)
             (unless (=0 (val P))
                (set $Signal (- (val $Signal) 1))
                (set P (- (val P) 1))
-               (run (val $Sig1)) ) )
+               (execAt (val $Sig1)) ) )
          (let P (ofs $Signal SIGUSR2)
             (unless (=0 (val P))
                (set $Signal (- (val $Signal) 1))
                (set P (- (val P) 1))
-               (run (val $Sig2)) ) )
+               (execAt (val $Sig2)) ) )
          (let P (ofs $Signal SIGALRM)
             (unless (=0 (val P))
                (set $Signal (- (val $Signal) 1))
                (set P (- (val P) 1))
-               (run (val $Alarm)) ) )
+               (execAt (val $Alarm)) ) )
          #! ...
          (? (=0 (val $Signal))) )
       (set $Protect 0) ) )
@@ -185,7 +192,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
             (newline)
             (unless (or (nil? (val $Err)) $Jam)
                (set $Jam YES)
-               (run (val $Err))
+               (execAt (val $Err))
                (set $Jam NO) )
             (when (or (=0 (isatty 0)) (=0 (isatty 1)))
                (bye 1) )

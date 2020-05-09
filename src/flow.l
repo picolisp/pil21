@@ -1,4 +1,4 @@
-# 06may20 Software Lab. Alexander Burger
+# 09may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -196,8 +196,9 @@
             (let (C (val $Cls)  K (val $Key))
                (set $Cls Cls)
                (set $Key Key)
-               (run (cdr Exe))  # Run body
-               (set $Key K  $Cls C) ) )
+               (prog1
+                  (run (cdr Exe))  # Run body
+                  (set $Key K  $Cls C) ) ) )
          (setq P (val $Bind))
          (loop
             (let Sym (val 2 P)
@@ -242,12 +243,12 @@
 
 # (nil . prg) -> NIL
 (de _nil (Exe)
-   (run (cdr Exe))
+   (exec (cdr Exe))
    $Nil )
 
 # (t . prg) -> T
 (de _t (Exe)
-   (run (cdr Exe))
+   (exec (cdr Exe))
    $T )
 
 # (prog . prg) -> any
@@ -260,7 +261,7 @@
       (prog1
          (eval (++ X))
          (set $At @)
-         (run X) ) ) )
+         (exec X) ) ) )
 
 # (prog2 'any1 'any2 . prg) -> any2
 (de _prog2 (Exe)
@@ -269,7 +270,7 @@
          (eval (++ X))
          (eval (++ X))
          (set $At @)
-         (run X) ) ) )
+         (exec X) ) ) )
 
 # (if 'any1 any2 . prg) -> any
 (de _if (Exe)

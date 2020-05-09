@@ -1,4 +1,4 @@
-# 08may20 Software Lab. Alexander Burger
+# 09may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -345,6 +345,13 @@ run)
          ((num? X) X)
          ((sym? X) (val X))
          (T (evList X)) ) ) )
+
+(inline exec (Prg)
+   (use @
+      (loop
+         (when (pair (++ Prg))
+            (evList @) )
+         (? (atom Prg)) ) ) )
 
 (inline run (Prg)
    (use @

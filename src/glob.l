@@ -1,4 +1,4 @@
-# 06may20 Software Lab. Alexander Burger
+# 09may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -247,6 +247,7 @@
    (NIL "mapcan" _mapcan)
    (NIL "filter" _filter)
    (NIL "extract" _extract)
+   (NIL "sum" _sum)
    # Control flow
    (NIL "eval" _eval)
    (NIL "run" _run)
@@ -323,6 +324,11 @@
    (NIL "cddddr" _cddddr)
    (NIL "cons" _cons)
    (NIL "list" _list)
+   (NIL "make" _make)
+   (NIL "made" _made)
+   (NIL "chain" _chain)
+   (NIL "link" _link)
+   (NIL "yoke" _yoke)
    (NIL "==" _eq)
    (NIL "n==" _neq)
    (NIL "=" _equal)
