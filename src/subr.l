@@ -1,4 +1,4 @@
-# 09may20 Software Lab. Alexander Burger
+# 10may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -140,6 +140,67 @@
          (setq Y
             (set 2 Y (cons (eval (car X)) $Nil)) ) )
       R ) )
+
+# (need 'cnt ['lst ['any]]) -> lst
+# (need 'cnt ['num|sym]) -> lst
+(de _need (Exe)
+   (let
+      (X (cdr Exe)
+         C (evCnt Exe X)
+         R (save (eval (car (shift X))))
+         Y
+         (save
+            (if (or (pair R) (nil? R))
+               (eval (cadr X))
+               (setq R $Nil)
+               R ) )
+         Z R )
+      (unless (=0 C)
+         (cond
+            ((gt0 C)
+               (while (pair Z)
+                  (dec 'C)
+                  (shift Z) )
+               (while (ge0 (dec 'C))
+                  (setq R (safe (cons Y R))) ) )
+            (T
+               (if (atom R)
+                  (setq Z (setq R (safe (cons Y $Nil))))
+                  (while (pair (cdr Z))
+                     (inc 'C)
+                     (shift Z) ) )
+               (while (lt0 (inc 'C))
+                  (setq Z (set 2 Z (cons Y $Nil))) ) ) ) )
+      R ) )
+
+# (range 'num1 'num2 ['num3]) -> lst
+(de _range (Exe)
+   (let
+      (X (cdr Exe)
+         N (needNum Exe (eval (++ X)))
+         R (save (cons N $Nil))
+         Lim (save (needNum Exe (eval (++ X))))
+         Inc
+         (if (nil? (eval (car X)))
+            ONE
+            (save (needNum Exe @)) ) )
+      (when (or (== Inc ZERO) (sign? Inc))
+         (argErr Exe Inc) )
+      (let P R
+         (if (le0 (cmpNum N Lim))
+            (while (le0 (cmpNum (setq N (adds N Inc)) Lim))
+               (setq P (set 2 P (cons N $Nil))) )
+            (while (ge0 (cmpNum (setq N (subs N Inc)) Lim))
+               (setq P (set 2 P (cons N $Nil))) ) ) )
+      R ) )
+
+# (full 'any) -> bool
+(de _full (Exe)
+   (let X (eval (cadr Exe))
+      (loop
+         (? (atom X) $T)
+         (? (nil? (car X)) $Nil)
+         (shift X) ) ) )
 
 # (make .. [(made 'lst ..)] .. [(link 'any ..)] ..) -> any
 (de _make (Exe)

@@ -1,4 +1,4 @@
-# 07may20 Software Lab. Alexander Burger
+# 10may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -776,7 +776,7 @@
                                     (add (val (dig X)) (val (dig Y)) C) )
                                  (setq C @@) )
                               (set (dig X) (+ (val (dig X)) C)) ) ) ) ) ) ) )
-         (safe (setq R (consNum Q R)))
+         (setq R (safe (consNum Q R)))
          (? (lt0 (dec 'M))) )
       (ifn Rem
          (zapZero R)

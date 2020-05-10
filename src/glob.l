@@ -1,4 +1,4 @@
-# 09may20 Software Lab. Alexander Burger
+# 10may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -326,6 +326,9 @@
    (NIL "con" _con)
    (NIL "cons" _cons)
    (NIL "list" _list)
+   (NIL "need" _need)
+   (NIL "range" _range)
+   (NIL "full" _full)
    (NIL "make" _make)
    (NIL "made" _made)
    (NIL "chain" _chain)
