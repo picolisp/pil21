@@ -1,4 +1,4 @@
-# 09may20 Software Lab. Alexander Burger
+# 11may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -6,36 +6,36 @@
 (de _apply (Exe)
    (let
       (X (cdr Exe)
-         E (save (push NIL $Nil ZERO (eval (++ X)))) )
-      (set E (ofs E 3))
+         E (push NIL $Nil ZERO (eval (++ X)) NIL) )  # [car cdr name fun link]
+      (set E (link (ofs E 3) T))
       (let (L (save (eval (car X)))  P E)
          (while (pair (shift X))
             (setq P
                (set 2 P
-                  (push NIL $Nil ZERO (eval (car X))) ) )
-            (set P (ofs P 3)) )
+                  (push NIL $Nil ZERO (eval (car X)) NIL) ) )  # [car cdr name val link]
+            (set P (link (ofs P 3))) )
          (while (pair L)
             (setq P
-               (set 2 P (push NIL $Nil ZERO (++ L))) )
-            (set P (ofs P 3)) )
+               (set 2 P (push NIL $Nil ZERO (++ L) NIL)) )
+            (set P (link (ofs P 3))) )
          (evList E) ) ) )
 
 # (pass 'fun ['any ..]) -> any
 (de _pass (Exe)
    (let
       (X (cdr Exe)
-         E (save (push NIL $Nil ZERO (eval (++ X)))) )
-      (set E (ofs E 3))
+         E (push NIL $Nil ZERO (eval (++ X)) NIL) )
+      (set E (link (ofs E 3) T))
       (let (L (val $Next)  P E)
          (while (pair X)
             (setq P
                (set 2 P
-                  (push NIL $Nil ZERO (eval (++ X))) ) )
-            (set P (ofs P 3)) )
+                  (push NIL $Nil ZERO (eval (++ X)) NIL) ) )
+            (set P (link (ofs P 3))) )
          (while (pair L)
             (setq P
-               (set 2 P (push NIL $Nil ZERO (++ L))) )
-            (set P (ofs P 3)) )
+               (set 2 P (push NIL $Nil ZERO (++ L) NIL)) )
+            (set P (link (ofs P 3))) )
          (evList E) ) ) )
 
 # (map 'fun 'lst ..) -> lst
@@ -43,14 +43,14 @@
    (let
       (X (cdr Exe)
          R $Nil
-         E (save (push NIL $Nil ZERO (eval (car X)))) )
-      (set E (ofs E 3))
+         E (push NIL $Nil ZERO (eval (car X)) NIL) )
+      (set E (link (ofs E 3) T))
       (let P E
          (while (pair (shift X))
             (setq P
                (set 2 P
-                  (push NIL $Nil ZERO (eval (car X))) ) )
-            (set P (ofs P 3)) ) )
+                  (push NIL $Nil ZERO (eval (car X)) NIL) ) )
+            (set P (link (ofs P 3))) ) )
       (loop
          (let (P (cdr E)  S (car P))
             (? (atom (val S)))
@@ -67,17 +67,17 @@
    (let
       (X (cdr Exe)
          R $Nil
-         E (save (push NIL $Nil ZERO (eval (++ X))))
+         E (push NIL $Nil ZERO (eval (++ X)) NIL)
          A (push NIL $Nil) )
-      (set E (ofs E 3))
+      (set E (link (ofs E 3) T))
       (let (P E  Q A  V (eval (car X)))
          (set (save A) V)
          (loop
             (when (pair V)
                (setq V (car V)) )
             (setq P
-               (set 2 P (push NIL $Nil ZERO V)) )
-            (set P (ofs P 3))
+               (set 2 P (push NIL $Nil ZERO V NIL)) )
+            (set P (link (ofs P 3) T))
             (? (atom (shift X)))
             (setq
                V (eval (car X))
@@ -99,14 +99,14 @@
       (X (cdr Exe)
          R (save $Nil)
          L 0
-         E (save (push NIL $Nil ZERO (eval (car X)))) )
-      (set E (ofs E 3))
+         E (push NIL $Nil ZERO (eval (car X)) NIL) )
+      (set E (link (ofs E 3)))
       (let P E
          (while (pair (shift X))
             (setq P
                (set 2 P
-                  (push NIL $Nil ZERO (eval (car X))) ) )
-            (set P (ofs P 3)) ) )
+                  (push NIL $Nil ZERO (eval (car X)) NIL) ) )
+            (set P (link (ofs P 3))) ) )
       (loop
          (let (P (cdr E)  S (car P))
             (? (atom (val S)))
@@ -128,17 +128,17 @@
       (X (cdr Exe)
          R (save $Nil)
          L 0
-         E (save (push NIL $Nil ZERO (eval (++ X))))
+         E (push NIL $Nil ZERO (eval (++ X)) NIL)
          A (push NIL $Nil) )
-      (set E (ofs E 3))
+      (set E (link (ofs E 3)))
       (let (P E  Q A  V (eval (car X)))
          (set (save A) V)
          (loop
             (when (pair V)
                (setq V (car V)) )
             (setq P
-               (set 2 P (push NIL $Nil ZERO V)) )
-            (set P (ofs P 3))
+               (set 2 P (push NIL $Nil ZERO V NIL)) )
+            (set P (link (ofs P 3)))
             (? (atom (shift X)))
             (setq
                V (eval (car X))
@@ -164,14 +164,14 @@
       (X (cdr Exe)
          R (save $Nil)
          L 0
-         E (save (push NIL $Nil ZERO (eval (car X)))) )
-      (set E (ofs E 3))
+         E (push NIL $Nil ZERO (eval (car X)) NIL) )
+      (set E (link (ofs E 3)))
       (let P E
          (while (pair (shift X))
             (setq P
                (set 2 P
-                  (push NIL $Nil ZERO (eval (car X))) ) )
-            (set P (ofs P 3)) ) )
+                  (push NIL $Nil ZERO (eval (car X)) NIL) ) )
+            (set P (link (ofs P 3))) ) )
       (loop
          (let (P (cdr E)  S (car P))
             (? (atom (val S)))
@@ -197,17 +197,17 @@
       (X (cdr Exe)
          R (save $Nil)
          L 0
-         E (save (push NIL $Nil ZERO (eval (++ X))))
+         E (push NIL $Nil ZERO (eval (++ X)) NIL)
          A (push NIL $Nil) )
-      (set E (ofs E 3))
+      (set E (link (ofs E 3)))
       (let (P E  Q A  V (eval (car X)))
          (set (save A) V)
          (loop
             (when (pair V)
                (setq V (car V)) )
             (setq P
-               (set 2 P (push NIL $Nil ZERO V)) )
-            (set P (ofs P 3))
+               (set 2 P (push NIL $Nil ZERO V NIL)) )
+            (set P (link (ofs P 3)))
             (? (atom (shift X)))
             (setq
                V (eval (car X))
@@ -237,17 +237,17 @@
       (X (cdr Exe)
          R (save $Nil)
          L 0
-         E (save (push NIL $Nil ZERO (eval (++ X))))
+         E (push NIL $Nil ZERO (eval (++ X)) NIL)
          A (push NIL $Nil) )
-      (set E (ofs E 3))
+      (set E (link (ofs E 3)))
       (let (P E  Q A  V (eval (car X)))
          (set (save A) V)
          (loop
             (when (pair V)
                (setq V (car V)) )
             (setq P
-               (set 2 P (push NIL $Nil ZERO V)) )
-            (set P (ofs P 3))
+               (set 2 P (push NIL $Nil ZERO V NIL)) )
+            (set P (link (ofs P 3)))
             (? (atom (shift X)))
             (setq
                V (eval (car X))
@@ -274,17 +274,17 @@
       (X (cdr Exe)
          R (save $Nil)
          L 0
-         E (save (push NIL $Nil ZERO (eval (++ X))))
+         E (push NIL $Nil ZERO (eval (++ X)) NIL)
          A (push NIL $Nil) )
-      (set E (ofs E 3))
+      (set E (link (ofs E 3)))
       (let (P E  Q A  V (eval (car X)))
          (set (save A) V)
          (loop
             (when (pair V)
                (setq V (car V)) )
             (setq P
-               (set 2 P (push NIL $Nil ZERO V)) )
-            (set P (ofs P 3))
+               (set 2 P (push NIL $Nil ZERO V NIL)) )
+            (set P (link (ofs P 3)))
             (? (atom (shift X)))
             (setq
                V (eval (car X))
@@ -310,17 +310,17 @@
    (let
       (X (cdr Exe)
          R (save ZERO)
-         E (save (push NIL $Nil ZERO (eval (++ X))))
+         E (push NIL $Nil ZERO (eval (++ X)) NIL)
          A (push NIL $Nil) )
-      (set E (ofs E 3))
+      (set E (link (ofs E 3)))
       (let (P E  Q A  V (eval (car X)))
          (set (save A) V)
          (loop
             (when (pair V)
                (setq V (car V)) )
             (setq P
-               (set 2 P (push NIL $Nil ZERO V)) )
-            (set P (ofs P 3))
+               (set 2 P (push NIL $Nil ZERO V NIL)) )
+            (set P (link (ofs P 3)))
             (? (atom (shift X)))
             (setq
                V (eval (car X))

@@ -1,4 +1,4 @@
-# 10may20 Software Lab. Alexander Burger
+# 11may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -468,7 +468,7 @@
                         (? (cnt? A)
                            (set (big P) (box64 (+ (int A) C))) )
                         (setq
-                           N (add (val (dig A)) 1 C)
+                           N (add (val (dig A)) 1)
                            C @@ ) ) ) )
                (setq
                   N (add (val (dig A)) (val (dig B)) C)
@@ -1278,8 +1278,7 @@
             (cond
                ((gt0 N)
                   (while (and (big? Y) (>= N 64))  # Large shift count
-                     (when (cnt? (setq Y (val (big Y))))  # Discard 64 bits
-                        (goto 9) )
+                     (setq Y (val (big Y)))  # Discard 64 bits
                      (when (=0 (setq N (- N 64)))
                         (goto 9) ) )
                   (setq Y (safe (shru Y)))  # Non-destructive
@@ -1459,19 +1458,17 @@
       (while (pair X)
          (setq C (+ C (initSeed (++ X)))) )
       (unless (nil? X)
-         (unless (num? X)
+         (unless (num? X)  # Need number
             (setq X (name (& (val (tail X)) -9))) )
-         (setq C
-            (+ C
-               (if (cnt? X)
-                  (shr X 3)
-                  (when (sign? X)
-                     (inc 'C)
-                     (setq X (pos X)) )
-                  (loop
-                     (setq C (+ C (val (dig X))))
-                     (? (cnt? (setq X (val (big X))))) )
-                  (int X) ) ) ) )
+         (if (cnt? X)
+            (setq C (+ C (shr X 3)))  # Keep sign
+            (when (sign? X)
+               (inc 'C)
+               (setq X (pos X)) )
+            (loop
+               (setq C (+ C (val (dig X))))
+               (? (cnt? (setq X (val (big X))))) )
+            (setq C (+ C (int X))) ) )
       C ) )
 
 # (seed 'any) -> cnt

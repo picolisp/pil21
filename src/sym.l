@@ -1,4 +1,4 @@
-# 08may20 Software Lab. Alexander Burger
+# 11may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -719,11 +719,11 @@
             (P (push 0 (xName Exe Y) NIL)  # [cnt name link]
                Q (link (ofs P 1))
                R (push 4 NIL ZERO NIL)  # [cnt last name link]
-               L (link (ofs R 2))
+               A (link (ofs R 2))
                N 0
                C T )
             (while (pair (shift X))
-               (setq L (link (push (eval (car X)) NIL)))
+               (setq A (link (push (eval (car X)) NIL)))
                (inc 'N) )
             (until (=0 (setq C (symByte P)))
                (cond
@@ -734,11 +734,10 @@
                      (when (> C 9)
                         (setq C (- C 7)) )  # Adjust for letter
                      (when (ge0 (setq C (- N (i64 C))))
-                        (let I L
-                           (loop
-                              (? (lt0 (dec 'C))
-                                 (pack (val I) R) )
-                              (shift I) ) ) ) ) ) )
+                        (let I A
+                           (while (ge0 (dec 'C))
+                              (shift I) )
+                           (pack (val I) R) ) ) ) ) )
             (drop Q
                (consStr (val 3 R)) ) ) ) ) )
 

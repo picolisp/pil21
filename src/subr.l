@@ -1,4 +1,4 @@
-# 10may20 Software Lab. Alexander Burger
+# 11may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -271,6 +271,32 @@
                      (setq Z (ofs @ 1)) )
                   (set $Make Z) )
                Y ) ) ) ) )
+
+# (replace 'lst 'any1 'any2 ..) -> lst
+(de _replace (Exe)
+   (let (X (cdr Exe)  L (save (eval (car X))))
+      (if (atom L)
+         L
+         (let (A $Nil  N 0  R (push NIL NIL))
+            (while (pair (shift X))
+               (link (push (eval (++ X)) NIL))
+               (setq A
+                  (link (push (eval (car X)) NIL)) )
+               (inc 'N) )
+            (let (Y (++ L)  Z A  I N)
+               (until (lt0 (dec 'I))
+                  (let (V (++ Z)  K (++ Z))
+                     (? (equal Y K)
+                        (setq Y V) ) ) )
+               (let P (set (link R) (cons Y $Nil))
+                  (while (pair L)
+                     (setq Y (++ L)  Z A  I N)
+                     (until (lt0 (dec 'I))
+                        (let (V (++ Z)  K (++ Z))
+                           (? (equal Y K)
+                              (setq Y V) ) ) )
+                     (setq P (set 2 P (cons Y $Nil))) ) ) )
+            (val R) ) ) ) )
 
 # (fin 'any) -> num|sym
 (de _fin (Exe)
@@ -617,7 +643,7 @@
                C ) )
          ((big? X)
             (setq X (pos X))
-            (let (C (hex "82")  D NIL)  # Count '8' significant bytes
+            (let (C (hex "82")  D T)  # Count '8' significant bytes
                (loop
                   (setq D (val (dig X)))
                   (? (cnt? (setq X (val (big X)))))

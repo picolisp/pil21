@@ -1,4 +1,4 @@
-# 29apr20 Software Lab. Alexander Burger
+# 11may20 Software Lab. Alexander Burger
 
    ### Primary data types ###
 
@@ -169,20 +169,25 @@
 
       Apply args:
 
-               fun  <---+
-               zero     |
-         +---- cdr      |
-         |     car  ----+  <-- E
+         ^
          |
-         |     val1 <---+
-         |     zero     |
-         |     cdr1 ----|--+
-         +---> car1 ----+  |
-               ...         |
-         +---> valN        |
-         |     zero        |
-         |      /          |
-         +---- carN <------+
+         +---- LINK
+               fun  <---+  <-----+
+               zero     |        |
+         +---- cdr      |        |
+         |     car  ----+  <-- E |
+         |                       |
+         |     LINK -------------+
+         | +-> val1 <---+
+         | |   zero     |
+         | |   cdr1 ----|-----+
+         +---> car1 ----+     |
+           |                  |
+           +-- LINK           |
+         +---> valN  <-- Link |
+         |     zero           |
+         |      /             |
+         +---- carN <---------+
 
 
       I/O frame:
