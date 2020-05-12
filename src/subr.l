@@ -1,4 +1,4 @@
-# 11may20 Software Lab. Alexander Burger
+# 12may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -615,7 +615,7 @@
             ((nil? X) 1)
             ((== (name (& (val (tail X)) -9)) ZERO) 1)
             ((cnt? @)
-               (setq X (shr (shl Nm 2) 6))  # Strip status bits
+               (setq X (shr (shl @ 2) 6))  # Strip status bits
                (goto 1) )
             (T
                (let C 9  # Count 8 significant bytes plus 1
@@ -686,6 +686,46 @@
                      (setq C (+ C (hex "10")))
                      (? (=0 (setq Z (shr Z 8)))) ) )
                C ) ) ) ) )
+
+# (bytes 'any) -> cnt
+(de _bytes (Exe)
+   (cnt (binSize (eval (cadr Exe)))) )
+
+# (assoc 'any 'lst) -> lst
+(de _assoc (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         Z (eval (car X)) )
+      (loop
+         (? (atom Z) $Nil)
+         (let C (car Z)
+            (? (and (pair C) (equal Y (car C))) C) )
+         (shift Z) ) ) )
+
+# (rassoc 'any 'lst) -> lst
+(de _rassoc (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         Z (eval (car X)) )
+      (loop
+         (? (atom Z) $Nil)
+         (let C (car Z)
+            (? (and (pair C) (equal Y (cdr C))) C) )
+         (shift Z) ) ) )
+
+# (asoq 'any 'lst) -> lst
+(de _asoq (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         Z (eval (car X)) )
+      (loop
+         (? (atom Z) $Nil)
+         (let C (car Z)
+            (? (and (pair C) (== Y (car C))) C) )
+         (shift Z) ) ) )
 
 (local) fill
 

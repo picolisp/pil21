@@ -357,10 +357,9 @@
          R (link (push $Nil NIL) T)
          E (push NIL $Nil ZERO (eval (++ X)) NIL) )
       (set E (link (ofs E 3)))
-      (let P (push NIL $Nil ZERO NIL)
-         (set 2 E P  P (ofs P 3))
-         (fish E
-            (save (eval (car X)))
-            (ofs P 3)
-            R )
+      (let
+         (V (eval (car X))
+            P (push NIL $Nil ZERO NIL NIL) )
+         (set 2 E P  P (link (ofs P 3)))
+         (fish E V (ofs P 3) R)
          (val R) ) ) )

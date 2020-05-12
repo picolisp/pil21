@@ -368,6 +368,10 @@
    (NIL "prior" _prior)
    (NIL "length" _length)
    (NIL "size" _size)
+   (NIL "bytes" _bytes)
+   (NIL "assoc" _assoc)
+   (NIL "rassoc" _rassoc)
+   (NIL "asoq" _asoq)
    (NIL "fill" _fill)
    # Networking
    (NIL "udp" _udp)
