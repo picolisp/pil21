@@ -263,44 +263,44 @@
 (de shru (N)
    (if (cnt? N)
       (| (& (shr N 1) -10) 2)  # Clear lowest bit and tag
-      (let (A (shr (val (dig N)) 1)  X (val (big N)))
-         (if (big? X)
+      (let A (shr (val (dig N)) 1)
+         (if (big? (setq N (val (big N))))
             (let
-               (B (val (dig X))
-                  Y (boxNum (| (shr B 0 1) A))
-                  R (save Y) )
+               (B (val (dig N))
+                  P (boxNum (| (shr B 0 1) A))
+                  R (save P) )
                (loop
-                  (setq A B  N X)
-                  (? (cnt? (setq X (val (big X)))))
+                  (setq A (shr B 1))
+                  (? (cnt? (setq N (val (big N)))))
                   (setq
-                     B (val (dig X))
-                     Y
-                     (set (big Y)
+                     B (val (dig N))
+                     P
+                     (set (big P)
                         (boxNum (| (shr B 0 1) A)) ) ) )
                (setq
-                  X (int X)
-                  A (| (shr X 0 1) A) )
-               (set (big Y)
+                  N (int N)
+                  A (| (shr N 0 1) A) )
+               (set (big P)
                   (if
                      (and
-                        (=0 (setq X (shr X 1)))
+                        (=0 (setq N (shr N 1)))
                         (=0 (& A (hex "F000000000000000"))) )
                      (cnt A)
                      (prog1
                         (boxNum A)
-                        (set (big @) (cnt X)) ) ) )
+                        (set (big @) (cnt N)) ) ) )
                R )
             (setq
-               X (int X)
-               A (| (shr X 0 1) A) )
+               N (int N)
+               A (| (shr N 0 1) A) )
             (if
                (and
-                  (=0 (setq X (shr X 1)))
+                  (=0 (setq N (shr N 1)))
                   (=0 (& A (hex "F000000000000000"))) )
                (cnt A)
                (prog1
                   (boxNum A)
-                  (set (big @) (cnt X)) ) ) ) ) ) )
+                  (set (big @) (cnt N)) ) ) ) ) ) )
 
 # Bitwise AND of two (unsigned) numbers
 (de andu (A B)
