@@ -248,6 +248,7 @@
    (NIL "filter" _filter)
    (NIL "extract" _extract)
    (NIL "sum" _sum)
+   (NIL "fish" _fish)
    # Control flow
    (NIL "as" _as)
    (NIL "lit" _lit)
