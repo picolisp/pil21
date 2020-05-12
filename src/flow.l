@@ -1,4 +1,4 @@
-# 09may20 Software Lab. Alexander Burger
+# 12may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -56,6 +56,25 @@
 # (quote . any) -> any
 (de _quote (Exe)
    (cdr Exe) )
+
+# (as 'any1 . any2) -> any2 | NIL
+(de _as (Exe)
+   (let X (cdr Exe)
+      (if (nil? (eval (car X)))
+         @
+         (cdr X) ) ) )
+
+# (lit 'any) -> any
+(de _lit (Exe)
+   (let X (eval (cadr Exe))
+      (if
+         (or
+            (num? X)
+            (nil? X)
+            (t? X)
+            (and (pair X) (num? (car X))) )
+         X
+         (cons $Quote X) ) ) )
 
 # (eval 'any ['cnt ['lst]]) -> any
 (de _eval (Exe)

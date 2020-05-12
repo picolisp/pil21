@@ -1,4 +1,4 @@
-# 10may20 Software Lab. Alexander Burger
+# 12may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -249,6 +249,8 @@
    (NIL "extract" _extract)
    (NIL "sum" _sum)
    # Control flow
+   (NIL "as" _as)
+   (NIL "lit" _lit)
    (NIL "eval" _eval)
    (NIL "run" _run)
    (NIL "def" _def)
