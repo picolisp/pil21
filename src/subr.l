@@ -1,4 +1,4 @@
-# 12may20 Software Lab. Alexander Burger
+# 13may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -724,8 +724,67 @@
       (loop
          (? (atom Z) $Nil)
          (let C (car Z)
+         (until (gt0 (compare (caar Z) Y))
+            (setq R Z)
+            (? (atom (shift Z))) )
             (? (and (pair C) (== Y (car C))) C) )
          (shift Z) ) ) )
+
+# (rank 'any 'lst ['flg]) -> lst
+(de _rank (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         Z (save (eval (++ X)))
+         R $Nil )
+      (if (nil? (eval (car X)))
+         (until (gt0 (compare (caar Z) Y))
+            (setq R Z)
+            (? (atom (shift Z))) )
+         (until (lt0 (compare (caar Z) Y))
+            (setq R Z)
+            (? (atom (shift Z))) ) )
+      (car R) ) )
+
+(local) match
+
+(de i1 match (Pat Dat)
+   (loop
+      (? (atom Pat)
+         (if (or (num? Pat) (<> (firstByte Pat) (char "@")))
+            (equal Pat Dat)
+            (set Pat Dat)
+            YES ) )
+      (stkChk 0)
+      (let X (car Pat)
+         (unless (or (num? X) (<> (firstByte X) (char "@")))
+            (? (atom Dat)
+               (and
+                  (equal (cdr Pat) Dat)
+                  (prog (set X $Nil) YES) ) )
+            (? (match (cdr Pat) (cdr Dat))
+               (set X (cons (car Dat) $Nil))
+               YES )
+            (? (match (cdr Pat) Dat)
+               (set X $Nil)
+               YES )
+            (? (match Pat (cdr Dat))
+               (set X (cons (car Dat) (val X)))
+               YES ) )
+         (? (or (atom Dat) (not (match X (car Dat))))
+            NO )
+         (shift Pat)
+         (shift Dat) ) ) )
+
+# (match 'lst1 'lst2) -> flg
+(de _match (Exe)
+   (let X (cdr Exe)
+      (if
+         (match
+            (save (eval (++ X)))
+            (save (eval (car X))) )
+         $T
+         $Nil ) ) )
 
 (local) fill
 

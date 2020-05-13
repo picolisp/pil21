@@ -1,4 +1,4 @@
-# 12may20 Software Lab. Alexander Burger
+# 13may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -40,6 +40,7 @@
 (var $End i8* null)                    # Buffer end pointer
 (var $ExtN i32 0)                      # External symbol offset
 (var $Extn i32 0)
+(var $StrP i64* null)                  # String status
 (var $Break i1 NO)                     # Breakpoint
 (var $GcCount i64 CELLS)               # Collector count
 
@@ -229,6 +230,9 @@
    (NIL "rd" _rd)
    (NIL "pr" _pr)
    (NIL "wr" _wr)
+   (NIL "any" _any)
+   (NIL "sym" _sym)
+   (NIL "str" _str)
    (NIL "load" _load)
    # Database
    (NIL "ext?" _extQ)
@@ -372,6 +376,8 @@
    (NIL "assoc" _assoc)
    (NIL "rassoc" _rassoc)
    (NIL "asoq" _asoq)
+   (NIL "rank" _rank)
+   (NIL "match" _match)
    (NIL "fill" _fill)
    # Networking
    (NIL "udp" _udp)

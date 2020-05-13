@@ -1,4 +1,4 @@
-# 09may20 Software Lab. Alexander Burger
+# 13may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -261,7 +261,7 @@ xSym subStr)
 (de i1 subStr (any any))
 
 # io.l
-(local) (flushAll newline space outWord outString print repl)
+(local) (flushAll newline space outWord outString print begString endString repl)
 
 (de void flushAll ())
 (de void newline ())
@@ -269,6 +269,8 @@ xSym subStr)
 (de void outWord (i64))
 (de void outString (i8*))
 (de void print (any))
+(de void begString (i64*))
+(de endString ())
 (de repl (any i8 any))
 
 # db.l

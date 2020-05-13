@@ -1,4 +1,4 @@
-# 09may20 Software Lab. Alexander Burger
+# 13may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -518,7 +518,7 @@
       (set $Chr
          (if (=0 (set $InFile (val (ofs (val $InFiles) (Io: fd)))))
             -1
-            (In: next) ) )
+            ((inFile @) next) ) )
       (Io: fun (val (i8** $Get)))
       (set $Get (fun (i32) _getStdin))
       (Io: link (val $InFrames))
@@ -1667,16 +1667,12 @@
                (if (=0 C) -1 (i32 (i8 C))) )
             @ ) ) ) )
 
-(de parse (Nm (i1 . Skip) Set)
+(de parse (Nm (i1 . Skip) Eof Set)
    (let
       (Pars (val $Parser)
          In: (inFile (val $InFile))
          Io: (ioFrame (b8 (ioFrame T))) )
-      (set $Parser
-         (push  # [cnt name termination]
-            0
-            (save Nm)
-            (if (=0 Set) (hex "5D0A") 0) ) )  # '\n', ']', EOF
+      (set $Parser (push 0 (save Nm) Eof))
       (unless (=0 (In:))
          (In: next (val $Chr))
          (set $InFile null) )  # No InFile
@@ -1692,6 +1688,7 @@
       (prog1
          (cond
             ((=0 Set) (rdList))
+            ((== 1 Set) (read0 YES))
             ((=0 (token Set 0)) $Nil)
             (T
                (let (R (save (cons @ $Nil))  P R)
@@ -1701,13 +1698,63 @@
          (popInFiles)
          (set $Parser Pars) ) ) )
 
+(de void putString ((i8 . B))
+   (byteSym B (val $StrP)) )
+
+(de void begString ((i64* . P))  # [cnt last name link fun]
+   (link (ofs (set $StrP P) 2))
+   (set
+      5 P (val (i64* $Put))
+      $Put (fun (void i8) putString) ) )
+
+(de endString ()
+   (let (P (val $StrP)  Q (ofs P 2))
+      (set (i64* $Put) (val 5 P))
+      (drop Q
+         (consStr (val Q)) ) ) )
+
+# (any 'sym) -> any
+(de _any (Exe)
+   (cond
+      ((nil? (needSym Exe (eval (cadr Exe)))) @)
+      ((sym? (val (tail @))) $Nil)
+      (T (parse (name @) YES (hex "20") 1)) ) )  # Blank, EOF
+
+# (sym 'any) -> sym
+(de _sym (Exe)
+   (let X (eval (cadr Exe))
+      (begString (push 4 NIL ZERO NIL NIL))  # [cnt last name link fun]
+      (print X)
+      (endString) ) )
+
+# (str 'sym ['sym1]) -> lst
+# (str 'lst) -> sym
+(de _str (Exe)
+   (let (X (cdr Exe)  Y (eval (car X)))
+      (cond
+         ((nil? Y) Y)
+         ((num? Y) (argErr Exe Y))
+         ((pair Y)
+            (begString (push 4 NIL ZERO NIL NIL))  # [cnt last name link fun]
+            (loop
+               (print (++ Y))
+               (? (atom Y))
+               (space) )
+            (endString) )
+         ((sym? (setq Y (val (tail @)))) $Nil)
+         ((atom (shift X))
+            (parse (name Y) NO (hex "5D0A") 0) )  # '\n', ']', EOF
+         (T
+            (save Y
+               (parse (name Y) NO 0 (save (evSym X))) ) ) ) ) )
+
 (local) (repl loadAll)
 
 (de repl (Exe (i8 . Pr) X)
    (when (num? X)
       (argErr Exe X) )
    (if (and (sym? X) (== (firstByte X) (char "-")))
-      (let E (save (parse (xName Exe X) YES 0))
+      (let E (save (parse (xName Exe X) YES (hex "5D0A") 0))  # '\n', ']', EOF
          (evList E) )
       (let (Int (save (val $Intern))  P (b8 (ioFrame T)))
          (rdOpen Exe X P)

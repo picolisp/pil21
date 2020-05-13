@@ -1,4 +1,4 @@
-# 09may20 Software Lab. Alexander Burger
+# 13may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -13,7 +13,10 @@
       (set $At At) ) )
 
 # Unwind stack
-(local) unwind
+(local) (popInFiles popOutFiles unwind)
+
+(de void popInFiles ())
+(de void popOutFiles ())
 
 (de void unwind ((i8* . Catch))
    (let (Ca (val $Catch)  Bnd (val $Bind))
@@ -36,6 +39,10 @@
             (set Sym (val Bnd))  # Restore values
             (setq Bnd (val 3 Bnd)) ) )
       (set $Bind 0)
+      (until (=0 (val $InFrames))
+         (popInFiles) )
+      (until (=0 (val $OutFrames))
+         (popOutFiles) )
       # ...
       ) )
 
@@ -311,6 +318,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
    (chkVar Exe X)
    X )
 
+# Value access
 (local) (xCnt evCnt evLst xSym evSym xName)
 
 (de i64 xCnt (Exe X)
