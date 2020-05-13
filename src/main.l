@@ -669,6 +669,19 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                            (undefined F Exe) ) )
                      (setq F V) ) ) ) ) ) ) )
 
+# (quit ['any ['any]])
+(de _quit (Exe)
+   (let
+      (X (cdr Exe)
+         Nm (xName Exe (evSym X))
+         Msg (bufString Nm (b8 (bufSize Nm))) )
+      (err 0
+         (if (atom (shift X))
+            0
+            (eval (car X)) )
+         ($ "%s")
+         Msg ) ) )
+
 # (sys 'any ['any]) -> sym
 (de _sys (Exe)
    (let

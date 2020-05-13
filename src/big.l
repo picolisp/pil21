@@ -1,4 +1,4 @@
-# 12may20 Software Lab. Alexander Burger
+# 13may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1070,7 +1070,7 @@
          Scl (if (nil? Y) 0 (xCnt Exe Y))
          Sep (i8 (char "."))
          Ign (i8 0) )
-      (when (pair (shift X))
+      (when (pair X)
          (setq Sep (firstByte (needSym Exe (eval (++ X)))))
          (when (pair X)
             (setq Ign (firstByte (needSym Exe (eval (++ X))))) ) )

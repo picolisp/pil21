@@ -383,6 +383,7 @@
    (NIL "udp" _udp)
    # System functions
    (NIL "raw" _raw)
+   (NIL "quit" _quit)
    (NIL "sys" _sys)
    (NIL "pwd" _pwd)
    (NIL "cd" _cd)
