@@ -1,4 +1,4 @@
-# 13may20 Software Lab. Alexander Burger
+# 14may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -905,8 +905,8 @@
          Num (push ZERO NIL)  # Result
          Sign NO
          Frac NO
-         B NIL )
-      (while (>= (char " ") (setq B (symByte P)))  # Skip white space
+         B T )
+      (until (> (setq B (symByte P)) (char " "))  # Skip white space
          (when (=0 B)  # None
             (ret 0) ) )
       (cond
@@ -917,26 +917,26 @@
             (: 1
                (when (=0 (setq B (symByte P)))
                   (ret 0) ) ) ) )
-      (when (>= (setq B (- B (char "0"))) 10)
+      (when (> (setq B (- B (char "0"))) 9)
          (ret 0) )
-      (set (link Num) (cnt (i64 B)))
+      (set (link Num T) (cnt (i64 B)))
       (until (=0 (setq B (symByte P)))
          (? (and Frac (=0 Scl))
-            (when (>= (setq B (- B (char "0"))) 10)
-               (goto 9) )
+            (when (> (setq B (- B (char "0"))) 9)
+               (ret 0) )
             (when (>= B 5)  # Round
                (set Num (addu (val Num) ONE)) )
             (until (=0 (setq B (symByte P)))
-               (and (> B (char "9")) (goto 9)) ) )
+               (when (> (setq B (- B (char "0"))) 9)
+                  (ret 0) ) ) )
          (cond
             ((== B Sep)
-               (and Frac (goto 9))
+               (when Frac
+                  (ret 0) )
                (setq Frac YES) )
             ((<> B Ign)
-               (when (>= (setq B (- B (char "0"))) 10)
-                  (: 9
-                     (drop Num)
-                     (ret 0) ) )
+               (when (> (setq B (- B (char "0"))) 9)
+                  (ret 0) )
                (set Num
                   (addu
                      (tenfold (val Num))
@@ -945,7 +945,7 @@
       (when Frac
          (while (ge0 (dec 'Scl))
             (set Num (tenfold (val Num))) ) )
-      (setq Num (pop Num))
+      (setq Num (val Num))
       (if Sign (neg Num) Num) ) )
 
 (de i64 fmtWord ((i64 . N) (i64 . Scl) (i8 . Sep) (i8 . Ign) (i64* . P))
@@ -1073,7 +1073,7 @@
       (when (pair X)
          (setq Sep (firstByte (needSym Exe (eval (++ X)))))
          (when (pair X)
-            (setq Ign (firstByte (needSym Exe (eval (++ X))))) ) )
+            (setq Ign (firstByte (needSym Exe (eval (car X))))) ) )
       (cond
          ((num? A)
             (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
