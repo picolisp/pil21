@@ -1,9 +1,9 @@
-# 15apr20 Software Lab. Alexander Burger
+# 14may20 Software Lab. Alexander Burger
 
 .SILENT:
 
 ASM = clang
-MAIN = -rdynamic -lc -lm -ldl -lffi
+MAIN = -rdynamic -lc -lm -ldl -lffi -lreadline
 SHARED = -shared
 
 BIN = ../bin

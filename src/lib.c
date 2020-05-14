@@ -1,4 +1,4 @@
-// 28apr20 Software Lab. Alexander Burger
+// 14may20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -56,6 +56,18 @@ int32_t nonBlocking(int32_t fd) {
 
    fcntlSetFl(fd, flg | O_NONBLOCK);
    return (int32_t)flg;
+}
+
+void setWaitTty(void) {
+   extern int *waitTty(void);
+
+   rl_pre_input_hook = (int (*)(void))waitTty;
+}
+
+char *currentLine() {
+   HIST_ENTRY *h;
+
+   return (h = history_get(history_length))? h->line : NULL;
 }
 
 // Terminal

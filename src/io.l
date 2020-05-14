@@ -1,4 +1,4 @@
-# 13may20 Software Lab. Alexander Burger
+# 14may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -797,6 +797,10 @@
 
 (de read0 (i1))
 
+(de i32 waitTty ()
+   (waitFd 0 0 292MY)
+   0 )
+
 (de i32 _getStdin ()
    (let In: (inFile (val $InFile))
       (set $Chr
@@ -814,20 +818,28 @@
                         (when (== @ (char "\n"))
                            (In: line (+ (In: line) 1)) )
                         (In: ix (+ I 1)) ) ) ) )
-            ((atom (val $Led))  # No line editor
-               (waitFd 0 0 292MY)
-               (stdinByte) )
+            ((=0 (isatty 0)) (bye 0))
             (T
-               (when (=0 (val 2 $Line))  # First call
-                  (let S (run (val $Led))
-                     (set $Line 0)
-                     (set 2 $Line
-                        (if (nil? S)
-                           ZERO
-                           (name S) ) ) ) )
-               (if (=0 (symByte $Line))  # Extract next byte
-                  (char "\n")
-                  (i32 @) ) ) ) ) ) )
+               (let P (val $LinePtr)
+                  (when (=0 P)
+                     (setWaitTty)
+                     (free (val $LineBuf))
+                     (when (=0 (setq P (set $LineBuf (readline (val $LinePrt)))))
+                        (write 1 ($ "\n") 1)
+                        (bye 0) )
+                     (unless
+                        (or
+                           (=0 (val P))
+                           (== @ 32)
+                           (and (n0 (currentLine)) (=0 (strcmp @ P))) )
+                        (add_history P) ) )
+                  (cond
+                     ((=0 (val P))
+                        (set $LinePtr null)
+                        (char "\n") )
+                     (T
+                        (set $LinePtr (inc P))
+                        (i32 @) ) ) ) ) ) ) ) )
 
 (de i32 getChar ((i32 . C))
    (cond
@@ -1342,7 +1354,8 @@
             (Io: fd 1)  # fd = stdout
             (pushOutFiles (Io:))
             ((outFile (val $OutFile)) tty NO)  # Clear 'tty'
-            (set $Led (set $Run $Nil))  # Switch off all tasks and line editor
+            (set $Run $Nil)  # Switch off all tasks and line editor
+            (set $LinePtr null)
             (when (pair E)  # Evaluate 'exe'
                (evList E) )
             (bye 0) )
@@ -1750,7 +1763,7 @@
 
 (local) (repl loadAll)
 
-(de repl (Exe (i8 . Pr) X)
+(de repl (Exe (i8* . Prt) X)
    (when (num? X)
       (argErr Exe X) )
    (if (and (sym? X) (== (firstByte X) (char "-")))
@@ -1764,11 +1777,8 @@
             (let Y
                (ifn (== (val $InFile) (val (val $InFiles)))
                   (read1 0)
-                  (prog2
-                     (when (and (n0 Pr) (=0 (val $Chr)))
-                        (call $Put Pr)
-                        (space)
-                        (flushAll) )
+                  (set $LinePrt Prt)
+                  (prog1
                      (read1
                         (if (=0 (isatty 0))
                            (i32 0)
@@ -1786,7 +1796,7 @@
                      (or
                         (<> (val $InFile) (val (val $InFiles)))
                         (n0 (val $Chr))
-                        (=0 Pr) )
+                        (=0 Prt) )
                      (setq X (eval Y))
                      (flushAll)
                      (let A (save (val $At))
@@ -1812,7 +1822,7 @@
                   (=0 (val 2 Q)) ) )
             (setq
                P (set $AV (ofs P 1))
-               X (repl Exe 0 (mkStr Q)) ) ) )
+               X (repl Exe null (mkStr Q)) ) ) )
       X ) )
 
 # (load 'any ..) -> any
@@ -1822,5 +1832,5 @@
          (let Y
             (if (t? (eval (++ X)))
                (loadAll Exe)
-               (repl Exe (char ">") @) )
+               (repl Exe ($ "> ") @) )
             (? (atom X) Y) ) ) ) )

@@ -1,4 +1,4 @@
-# 13may20 Software Lab. Alexander Burger
+# 14may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -14,6 +14,9 @@
 (var $Coroutines i8* null)             # Coroutines
 (var $StkSize i32 STACK)               # Coroutine stack segment size
 (var $StkLimit i8* null)               # Stack limit: StackN-Size+4096
+(var $LinePtr i8* null)                # Console line pointer
+(var $LinePrt i8* null)                # Console line prompt
+(var $LineBuf i8* null)                # Console line buffer
 (var $Ret 0)                           # Secondary return value
 (var $TtyPid i32 0)                    # Terminal process ID
 (var $InFDs i32 0)                     # Number of input files
@@ -55,11 +58,6 @@
 (var $BlkLink i64 0)                   # Next block
 (var $DbJnl i8* null)                  # Journal file
 (var $DbLog i8* null)                  # Transaction log file
-
-# Console line
-(array $Line i64
-   0    # cnt
-   0 )  # name
 
 # Signals
 (array $Signal i32  # Sync src/lib.c 'gErrno'
@@ -120,7 +118,6 @@
    ($Err "*Err" $Nil)
    ($Msg "*Msg" $Nil)
    ($Uni "*Uni" $Nil)
-   ($Led "*Led" $Nil)
    ($Adr "*Adr" $Nil)
    ($Fork "*Fork" $Nil)
    ($Bye "*Bye" $Nil)

@@ -1,4 +1,4 @@
-# 13may20 Software Lab. Alexander Burger
+# 14may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -50,7 +50,7 @@
 (local) (finish giveup bye execErr)
 
 (de NIL finish ((i32 . N))
-   #(setCooked)
+   (setCooked)
    (exit N) )
 
 (de NIL giveup ((i8* . Fmt) (i8* . Msg))
@@ -173,8 +173,8 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                   (setq Ca (Ca: link)) ) ) ) )
       (set $Chr (set $ExtN 0))
       (set $Break NO)
+      (set $LinePtr null)
       (set $Alarm (set $Sigio $Nil))
-      (set $Line (set 2 $Line 0))
       (let Io: (ioFrame (b8 (ioFrame T)))
          (Io: fd 2)  # Stderr
          (Io: pid 0)
@@ -203,7 +203,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                (set $Jam NO) )
             (when (or (=0 (isatty 0)) (=0 (isatty 1)))
                (bye 1) )
-            (repl 0 (char "?") $Nil) )
+            (repl 0 ($ "? ") $Nil) )
          (unwind null)
          (set
             $Link 0
@@ -884,6 +884,6 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
       (loadAll 0)  # Load arguments
       )
    (loop
-      (repl 0 (char ":") $Nil) ) )
+      (repl 0 ($ ": ") $Nil) ) )
 
 (end)

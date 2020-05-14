@@ -1,4 +1,4 @@
-# 13may20 Software Lab. Alexander Burger
+# 14may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -121,13 +121,20 @@ waitpid setjmp longjmp kill exit)
 (de T i32 kill (i32 i32))
 (de T NIL exit (i32))
 
+# libreadline
+(local) (readline add_history)
+
+(de T i8* readline (i8*))
+(de T void add_history (i8*))
+
 # Glue lib.c
 (local) (PipeBuf)
 
 (var PipeBuf i64 NIL)
 
 (local) (stderrNum stderrMsg gPrintf strErrno openRdonly openWronly openRdWr
-openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking)
+openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking currentLine
+setWaitTty)
 
 (de T i64 stderrNum (i8* i64))
 (de T i8* stderrMsg (i8* i8*))
@@ -141,6 +148,8 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking)
 (de T i32 fcntlCloExec (i32))
 (de T i32 fcntlSetFl (i32 i32))
 (de T i32 nonBlocking (i32))
+(de T i8* currentLine ())
+(de T void setWaitTty ())
 
 # Terminal
 (local) (Tio OrgTermio Termio setRaw setCooked)
@@ -271,7 +280,7 @@ xSym subStr)
 (de void print (any))
 (de void begString (i64*))
 (de endString ())
-(de repl (any i8 any))
+(de repl (any i8* any))
 
 # db.l
 (local) (dbFetch dbTouch dbZap)
