@@ -1,4 +1,4 @@
-# 12may20 Software Lab. Alexander Burger
+# 15may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -76,7 +76,7 @@
          X
          (cons $Quote X) ) ) )
 
-# (eval 'any ['cnt ['lst]]) -> any
+# (eval 'any ['cnt]) -> any
 (de _eval (Exe)
    (let (X (cdr Exe)  E (eval (car X)))
       (cond
@@ -86,7 +86,7 @@
          (T
             (save E
                (let N (needCnt Exe (eval (car X)))
-                  (unless (or (sign? N) (=0 (setq N (int N))))
+                  (unless (=0 (setq N (int N)))
                      (let Bnd (val $Bind)
                         (loop
                            (? (=0 Bnd))
@@ -99,7 +99,7 @@
                            (setq Bnd (val 3 Bnd)) ) ) ) )
                (evList E) ) ) ) ) )
 
-# (run 'any ['cnt ['lst]]) -> any
+# (run 'any ['cnt]) -> any
 (de _run (Exe)
    (let (X (cdr Exe)  E (eval (car X)))
       (cond
@@ -109,7 +109,7 @@
          (T
             (save E
                (let N (needCnt Exe (eval (car X)))
-                  (unless (or (sign? N) (=0 (setq N (int N))))
+                  (unless (=0 (setq N (int N)))
                      (let Bnd (val $Bind)
                         (loop
                            (? (=0 Bnd))

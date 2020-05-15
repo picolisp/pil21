@@ -1,4 +1,4 @@
-# 14may20 Software Lab. Alexander Burger
+# 15may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -824,6 +824,41 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                (setq Y
                   (set 2 Y (cons (++ X) $Nil)) ) )
             R ) ) ) )
+
+# (up [cnt] sym ['val]) -> any
+(de _up (Exe)
+   (let
+      (X (cdr Exe)
+         Y (car X)
+         N 1
+         Bnd (val $Bind) )
+      (when (num? Y)
+         (setq N (int Y)  Y (car (shift X))) )
+      (if (nil? Y)
+         (if (=0 N)
+            $Nil
+            (loop
+               (? (=0 Bnd) $Nil)
+               (?
+                  (and
+                     (== $At (val 2 Bnd))
+                     (=0 (dec 'N)) )
+                  (val 4 Bnd) )
+               (setq Bnd (val 3 Bnd)) ) )
+         (let Z Y
+            (unless (=0 N)
+               (loop
+                  (? (=0 Bnd))
+                  (?
+                     (and
+                        (== Y (val 2 Bnd))
+                        (prog
+                           (setq Z Bnd)
+                           (=0 (dec 'N)) ) ) )
+                  (setq Bnd (val 3 Bnd)) ) )
+            (if (atom (shift X))
+               (val Z)
+               (set Z (eval (car X))) ) ) ) ) )
 
 # (version ['flg]) -> lst
 (de _version (Exe)
