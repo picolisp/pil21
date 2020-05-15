@@ -1772,6 +1772,7 @@
       (let (Int (save (val $Intern))  P (b8 (ioFrame T)))
          (rdOpen Exe X P)
          (pushInFiles P)
+         (set $Transient (set 2 $Transient $Nil))
          (setq X $Nil)
          (loop
             (let Y
@@ -1808,6 +1809,7 @@
                      (print X)
                      (newline) ) ) ) )
          (popInFiles)
+         (set $Transient (set 2 $Transient $Nil))
          (set $Intern Int)
          X ) ) )
 

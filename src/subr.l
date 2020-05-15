@@ -1,4 +1,4 @@
-# 13may20 Software Lab. Alexander Burger
+# 15may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -126,16 +126,69 @@
 
 # (cons 'any ['any ..]) -> lst
 (de _cons (Exe)
-   (let (X (cdr Exe)  Y (cons (eval (car X)) $Nil)  R (save Y))
+   (let
+      (X (cdr Exe)
+         Y (cons (eval (car X)) $Nil)
+         R (save Y) )
       (while (pair (cdr (shift X)))
          (setq Y
             (set 2 Y (cons (eval (car X)) $Nil)) ) )
       (set 2 Y (eval (car X)))
       R ) )
 
+# (conc 'lst ..) -> lst
+(de _conc (Exe)
+   (let
+      (X (cdr Exe)
+         Y (eval (car X))
+         R (save Y) )
+      (while (pair (shift X))
+         (let Z (eval (car X))
+            (if (atom Y)
+               (setq Y (safe Z))
+               (while (pair (cdr Y))
+                  (setq Y @) )
+               (set 2 Y Z) ) ) )
+      R ) )
+
+# (circ 'any ..) -> lst
+(de _circ (Exe)
+   (let
+      (X (cdr Exe)
+         Y (cons (eval (car X)) $Nil)
+         R (save Y) )
+      (while (pair (shift X))
+         (setq Y
+            (set 2 Y (cons (eval (car X)) $Nil)) ) )
+      (set 2 Y R) ) )
+
+# (rot 'lst ['cnt]) -> lst
+(de _rot (Exe)
+   (let (X (cdr Exe)  R (eval (car X)))
+      (when (pair R)
+         (let (Y R  A (++ Y))
+            (if (pair (shift X))
+               (let N (save R (evCnt Exe X))
+                  (while (and (pair Y) (gt0 (dec 'N)))
+                     (let B (car Y)
+                        (set Y A)
+                        (setq A B) )
+                     (? (== R (shift Y))) )
+                  (set R A) )
+               (while (pair Y)
+                  (let B (car Y)
+                     (set Y A)
+                     (setq A B) )
+                  (? (== R (shift Y))) )
+               (set R A) ) ) )
+         R ) )
+
 # (list 'any ['any ..]) -> lst
 (de _list (Exe)
-   (let (X (cdr Exe)  Y (cons (eval (car X)) $Nil)  R (save Y))
+   (let
+      (X (cdr Exe)
+         Y (cons (eval (car X)) $Nil)
+         R (save Y) )
       (while (pair (shift X))
          (setq Y
             (set 2 Y (cons (eval (car X)) $Nil)) ) )
@@ -724,9 +777,6 @@
       (loop
          (? (atom Z) $Nil)
          (let C (car Z)
-         (until (gt0 (compare (caar Z) Y))
-            (setq R Z)
-            (? (atom (shift Z))) )
             (? (and (pair C) (== Y (car C))) C) )
          (shift Z) ) ) )
 
