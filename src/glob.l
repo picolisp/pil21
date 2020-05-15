@@ -248,6 +248,10 @@
    (NIL "mapcan" _mapcan)
    (NIL "filter" _filter)
    (NIL "extract" _extract)
+   (NIL "seek" _seek)
+   (NIL "find" _find)
+   (NIL "pick" _pick)
+   (NIL "fully" _fully)
    (NIL "sum" _sum)
    (NIL "fish" _fish)
    # Control flow

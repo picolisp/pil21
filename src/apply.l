@@ -1,4 +1,4 @@
-# 12may20 Software Lab. Alexander Burger
+# 15may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -304,6 +304,122 @@
                      (set S (car (set Q (cdr @))))
                      (set S @) ) ) ) ) )
       R ) )
+
+# (seek 'fun 'lst ..) -> lst
+(de _seek (Exe)
+   (let
+      (X (cdr Exe)
+         E (push NIL $Nil ZERO (eval (car X)) NIL) )
+      (set E (link (ofs E 3) T))
+      (let P E
+         (while (pair (shift X))
+            (setq P
+               (set 2 P
+                  (push NIL $Nil ZERO (eval (car X)) NIL) ) )
+            (set P (link (ofs P 3))) ) )
+      (loop
+         (let (P (cdr E)  S (car P))
+            (? (atom (val S)))
+            (? (not (nil? (evList E)))
+               (set $At2 @)
+               (val S) )
+            (loop
+               (when (pair (val S))
+                  (set S (cdr @)) )
+               (? (atom (shift P)))
+               (setq S (car P)) ) ) ) ) )
+
+# (find 'fun 'lst ..) -> any
+(de _find (Exe)
+   (let
+      (X (cdr Exe)
+         E (push NIL $Nil ZERO (eval (++ X)) NIL)
+         A (push NIL $Nil) )
+      (set E (link (ofs E 3) T))
+      (let (P E  Q A  V (eval (car X)))
+         (set (save A) V)
+         (loop
+            (when (pair V)
+               (setq V (car V)) )
+            (setq P
+               (set 2 P (push NIL $Nil ZERO V NIL)) )
+            (set P (link (ofs P 3) T))
+            (? (atom (shift X)))
+            (setq
+               V (eval (car X))
+               Q (set 2 Q (push V $Nil)) ) ) )
+      (loop
+         (? (atom (car A)) $Nil)
+         (? (not (nil? (evList E)))
+            (set $At2 @)
+            (caar A) )
+         (let (P (cdr E)  Q A)
+            (set (car P) (car (set A (cdar A))))
+            (while (pair (shift P))
+               (let S (car P)
+                  (if (pair (car (shift Q)))
+                     (set S (car (set Q (cdr @))))
+                     (set S @) ) ) ) ) ) ) )
+
+# (pick 'fun 'lst ..) -> any
+(de _pick (Exe)
+   (let
+      (X (cdr Exe)
+         E (push NIL $Nil ZERO (eval (++ X)) NIL)
+         A (push NIL $Nil) )
+      (set E (link (ofs E 3) T))
+      (let (P E  Q A  V (eval (car X)))
+         (set (save A) V)
+         (loop
+            (when (pair V)
+               (setq V (car V)) )
+            (setq P
+               (set 2 P (push NIL $Nil ZERO V NIL)) )
+            (set P (link (ofs P 3) T))
+            (? (atom (shift X)))
+            (setq
+               V (eval (car X))
+               Q (set 2 Q (push V $Nil)) ) ) )
+      (loop
+         (? (atom (car A)) $Nil)
+         (? (not (nil? (evList E))) @)
+         (let (P (cdr E)  Q A)
+            (set (car P) (car (set A (cdar A))))
+            (while (pair (shift P))
+               (let S (car P)
+                  (if (pair (car (shift Q)))
+                     (set S (car (set Q (cdr @))))
+                     (set S @) ) ) ) ) ) ) )
+
+# (fully 'fun 'lst ..) -> flg
+(de _fully (Exe)
+   (let
+      (X (cdr Exe)
+         E (push NIL $Nil ZERO (eval (++ X)) NIL)
+         A (push NIL $Nil) )
+      (set E (link (ofs E 3) T))
+      (let (P E  Q A  V (eval (car X)))
+         (set (save A) V)
+         (loop
+            (when (pair V)
+               (setq V (car V)) )
+            (setq P
+               (set 2 P (push NIL $Nil ZERO V NIL)) )
+            (set P (link (ofs P 3) T))
+            (? (atom (shift X)))
+            (setq
+               V (eval (car X))
+               Q (set 2 Q (push V $Nil)) ) ) )
+      (loop
+         (? (atom (car A)) $T)
+         (? (nil? (evList E)) @)
+         (let (P (cdr E)  Q A)
+            (set (car P) (car (set A (cdar A))))
+            (while (pair (shift P))
+               (let S (car P)
+                  (if (pair (car (shift Q)))
+                     (set S (car (set Q (cdr @))))
+                     (set S @) ) ) ) ) ) ) )
 
 # (sum 'fun 'lst ..) -> num
 (de _sum (Exe)
