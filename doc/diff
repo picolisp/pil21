@@ -1,4 +1,4 @@
-# 02may20 Software Lab. Alexander Burger
+# 15may20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -9,14 +9,16 @@
 + Shared libraries have ".so" extension
 + 'with' accepts 'var' instead of 'sym'
 + Map functions accept atomic arguments
++ Standard readline(3) library in REPL
 
 - '====' is removed
 - '(arg)' call is removed
 - Second argument to 'name' (i.e. renaming) is removed
 - Lambda-binding environment offset for 'eval' and 'run' only for '@'
 - 'native'
-   — only functions with fixed number of arguments
-   — no 'T' result spec (skipped call)
+   - only functions with fixed number of arguments
+   - no 'T' result spec (skipped call)
+- Because of readline(3), '*Run' tasks are suspended while typing in the REPL
 
 % Main coroutine has a tag 'T'
 % 'journal' format: Default size '0' instead of '64'

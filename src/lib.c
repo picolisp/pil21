@@ -1,4 +1,4 @@
-// 14may20 Software Lab. Alexander Burger
+// 15may20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -58,7 +58,7 @@ int32_t nonBlocking(int32_t fd) {
    return (int32_t)flg;
 }
 
-void setWaitTty(void) {
+void initReadline(void) {
    extern int *waitTty(void);
 
    rl_pre_input_hook = (int (*)(void))waitTty;

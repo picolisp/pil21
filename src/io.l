@@ -1,4 +1,4 @@
-# 14may20 Software Lab. Alexander Burger
+# 15may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -822,7 +822,7 @@
             (T
                (let P (val $LinePtr)
                   (when (=0 P)
-                     (setWaitTty)
+                     (initReadline)
                      (free (val $LineBuf))
                      (when (=0 (setq P (set $LineBuf (readline (val $LinePrt)))))
                         (write 1 ($ "\n") 1)
