@@ -1,4 +1,4 @@
-# 29apr20 Software Lab. Alexander Burger
+# 16may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -282,8 +282,11 @@
 (de consSym (Name Val)
    (let P (val $Avail)
       (when (=0 P)
-         (save2 Name Val
-            (gc) )
+         (if (=0 Val)
+            (save Name
+               (gc) )
+            (save2 Name Val
+               (gc) ) )
          (setq P (val $Avail)) )
       (set $Avail (car P))
       (set P Name)

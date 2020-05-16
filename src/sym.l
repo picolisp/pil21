@@ -1,4 +1,4 @@
-# 11may20 Software Lab. Alexander Burger
+# 16may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -670,13 +670,13 @@
    (let X (eval (cadr Exe))
       (if (or (pair X) (nil? X))
          X
-         (save X
-            (let Tail (val (tail (xSym X)))
-               (if (sym? Tail)  # External
-                  (chopExtNm (name (& Tail -9)))
-                  (let (P (push 0 (name Tail))  C (symChar P))
-                     (if (=0 C)
-                        $Nil
+         (let Tail (val (tail (xSym X)))
+            (if (sym? Tail)  # External
+               (chopExtNm (name (& Tail -9)))
+               (let (P (push 0 (name Tail))  C (symChar P))
+                  (if (=0 C)
+                     $Nil
+                     (save Tail
                         (let (Y (cons (mkChar C) $Nil)  R (save Y))
                            (until (=0 (setq C (symChar P)))
                               (setq Y

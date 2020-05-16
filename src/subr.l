@@ -1,4 +1,4 @@
-# 15may20 Software Lab. Alexander Burger
+# 16may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -350,6 +350,69 @@
                               (setq Y V) ) ) )
                      (setq P (set 2 P (cons Y $Nil))) ) ) )
             (val R) ) ) ) )
+
+# (head 'cnt|lst 'lst) -> lst
+(de _head (Exe)
+   (let (X (cdr Exe)  Y (eval (++ X)))
+      (cond
+         ((nil? Y) Y)
+         ((pair Y)
+            (save Y
+               (let (Z Y  L (eval (car X)))
+                  (loop
+                     (?
+                        (or
+                           (atom L)
+                           (not (equal (car Z) (car L))) )
+                        $Nil )
+                     (? (atom (shift Z)) Y)
+                     (shift L) ) ) ) )
+         ((=0 (xCnt Exe Y)) $Nil)
+         (T
+            (let (N @  L (eval (car X)))
+               (cond
+                  ((atom L) L)
+                  ((and
+                        (lt0 N)
+                        (le0 (setq N (+ N (length L)))) )
+                     $Nil )
+                  (T
+                     (save L
+                        (let (Z (cons (car L) $Nil)  R Z)
+                           (until (or (=0 (dec 'N)) (atom (shift L)))
+                              (setq Z
+                                 (set 2 Z (cons (car L) $Nil)) ) )
+                           R ) ) ) ) ) ) ) ) )
+
+# (tail 'cnt|lst 'lst) -> lst
+(de _tail (Exe)
+   (let (X (cdr Exe)  Y (eval (++ X)))
+      (cond
+         ((nil? Y) Y)
+         ((pair Y)
+            (save Y
+               (let L (eval (car X))
+                  (loop
+                     (? (atom L) $Nil)
+                     (? (equal L Y) Y)
+                     (? (atom (shift L)) $Nil) ) ) ) )
+         ((=0 (xCnt Exe Y)) $Nil)
+         (T
+            (let (N @  L (eval (car X)))
+               (cond
+                  ((atom L) L)
+                  ((lt0 N)
+                     (loop
+                        (shift L)
+                        (? (=0 (inc 'N)) L) ) )
+                  (T
+                     (let Z L
+                        (loop
+                           (? (=0 (dec 'N)))
+                           (? (atom (shift Z))) )
+                        (while (pair (shift Z))
+                           (shift L) )
+                        L ) ) ) ) ) ) ) )
 
 # (fin 'any) -> num|sym
 (de _fin (Exe)
