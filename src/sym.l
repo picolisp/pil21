@@ -1,4 +1,4 @@
-# 16may20 Software Lab. Alexander Burger
+# 17may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -990,12 +990,13 @@
             (? (atom V) V)
             (let Z (++ V)
                (? (not (equal Y Z))
-                  (let (P (cons Z $Nil)  R (save P))
-                     (loop
-                        (? (atom V))
-                        (if (equal Y (setq Z (++ V)))
-                           (? Flg)
-                           (setq P (set 2 P (cons Z $Nil))) ) )
+                  (let (P (cons Z $Nil)  R P)
+                     (save R
+                        (loop
+                           (? (atom V))
+                           (if (equal Y (setq Z (++ V)))
+                              (? Flg)
+                              (setq P (set 2 P (cons Z $Nil))) ) ) )
                      (set 2 P V  Var R) ) ) )
             (set Var V)
             (? Flg V) ) ) ) )

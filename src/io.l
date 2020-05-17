@@ -1,4 +1,4 @@
-# 15may20 Software Lab. Alexander Burger
+# 17may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1080,8 +1080,9 @@
                         X ) ) ) ) )
          ((== C (char "`"))
             (call $Get)
-            (let E (save (read0 Top))
-               (eval E) ) )
+            (let E (read0 Top)
+               (save E
+                  (eval E) ) ) )
          ((== C (char "\""))
             (if (== (setq C (call $Get)) (char "\""))
                (prog (call $Get) $Nil)  # Empty string
@@ -1800,10 +1801,11 @@
                         (=0 Prt) )
                      (setq X (eval Y))
                      (flushAll)
-                     (let A (save (val $At))
-                        (setq X (set $At (eval Y)))
-                        (set $At3 (val $At2))
-                        (set $At2 A) )
+                     (let A (val $At)
+                        (save A
+                           (setq X (set $At (eval Y)))
+                           (set $At3 (val $At2))
+                           (set $At2 A) ) )
                      (outString ($ "-> "))
                      (flushAll)
                      (print X)

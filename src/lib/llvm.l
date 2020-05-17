@@ -1,4 +1,4 @@
-# 13may20 Software Lab. Alexander Burger
+# 17may20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -1377,9 +1377,9 @@ False Beg End Safe *Safe)
          (prog1
             (pico~let *Log T
                (run pico~@) )
-            (pico~when (pico~and pico~@ (pico~not Safe))
-               (drop *Safe)
-               (off *Safe) ) )
+            (pico~when pico~@
+               (drop P)
+               (setq *Safe Safe) ) )
          X ) ) )
 
 (pico~de save2 (X Y . Prg)
@@ -1392,9 +1392,9 @@ False Beg End Safe *Safe)
          (prog1
             (pico~let *Log T
                (run pico~@) )
-            (pico~when (pico~and pico~@ (pico~not Safe))
-               (drop *Safe)
-               (off *Safe) ) )
+            (pico~when pico~@
+               (drop P)
+               (setq *Safe Safe) ) )
          Y ) ) )
 
 (pico~de safe (V)

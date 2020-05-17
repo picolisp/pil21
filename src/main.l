@@ -1,4 +1,4 @@
-# 15may20 Software Lab. Alexander Burger
+# 17may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -604,7 +604,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                   P ) ) ) )
       (prog1
          (if (== Y $At)  # VarArgs
-            (let Next (push (val $Next))
+            (let (Link (val $Link)  Next (val $Next))
                (if (atom X)
                   (set $Next $Nil)
                   (let L (link (push -ZERO NIL))  # [lst LINK]
@@ -621,7 +621,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                      (setq P (val 3 P)) ) )
                (prog1
                   (run (cdr Exe))  # Run body
-                  (set $Next (val Next)  $Link (val $Link)) ) )
+                  (set $Next Next  $Link Link) ) )
             (unless (== Y $Nil)
                (set
                   $Bind (push (val Y) Y P)  # Last parameter
@@ -739,9 +739,10 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                (set (needChkVar Exe X)
                   (if (=0 (setq P (val A)))
                      $Nil
-                     (let (Y (cons (mkStr P) $Nil)  R (save Y))
-                        (until (=0 (setq P (val (inc 'A))))
-                           (setq Y (set 2 Y (cons (mkStr P) $Nil))) )
+                     (let (Y (cons (mkStr P) $Nil)  R Y)
+                        (save R
+                           (until (=0 (setq P (val (inc 'A))))
+                              (setq Y (set 2 Y (cons (mkStr P) $Nil))) ) )
                         R ) ) ) )
             (let Y
                (if (=0 (setq P (val A)))

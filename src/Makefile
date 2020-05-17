@@ -1,4 +1,4 @@
-# 14may20 Software Lab. Alexander Burger
+# 17may20 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -24,7 +24,7 @@ picolisp.bc: base.bc lib.bc
 	llvm-link -o picolisp.bc base.bc lib.bc
 
 base.bc: $(INC) $(SRC)
-	pil lib/llvm.l main.l -bye > base.ll
+	../pil lib/llvm.l main.l -bye > base.ll
 	llvm-as -o base.bc base.ll
 
 lib.bc: pico.h lib.c
@@ -36,7 +36,7 @@ $(LIB)/ext.so: ext.bc
 	$(ASM) ext.s -o $(LIB)/ext.so $(SHARED)
 
 ext.bc: $(INC) ext.l
-	pil lib/llvm.l ext.l -bye > ext.ll
+	../pil lib/llvm.l ext.l -bye > ext.ll
 	llvm-as -o ext.bc ext.ll
 
 # Clean up
