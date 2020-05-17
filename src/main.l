@@ -346,9 +346,10 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
    (xSym (eval (car Exe))) )
 
 (de xName (Exe Sym)
-   (when (sym? (val (tail Sym)))
-      (nameErr Exe Sym) )
-   (name @) )
+   (cond
+      ((nil? Sym) ZERO)
+      ((sym? (val (tail Sym))) (nameErr Exe Sym))
+      (T (name @)) ) )
 
 # Structure checks
 (local) (circ funq)
@@ -860,6 +861,29 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
             (if (atom (shift X))
                (val Z)
                (set Z (eval (car X))) ) ) ) ) )
+
+# (history ['lst]) -> lst
+(de _history (Exe)
+   (let X (cdr Exe)
+      (if (atom X)
+         (let P (history_list)
+            (if (or (=0 P) (=0 (val P)))
+               $Nil
+               (let
+                  (Y (cons (mkStr (val (val P))) $Nil)
+                     R (save Y)
+                     I 0 )
+                  (until (=0 (val (ofs P (inc 'I))))
+                     (setq Y
+                        (set 2 Y (cons (mkStr (val @)) $Nil)) ) )
+                  R ) ) )
+         (clear_history)
+         (let (Y (needLst Exe (eval (car X)))  Z Y)
+            (while (pair Z)
+               (let (Nm (xName Exe (++ Z))  Stk (stack))
+                  (add_history (bufString Nm (b8 (bufSize Nm))) )
+                  (stack Stk) ) )
+            Y ) ) ) )
 
 # (version ['flg]) -> lst
 (de _version (Exe)

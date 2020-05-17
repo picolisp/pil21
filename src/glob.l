@@ -1,4 +1,4 @@
-# 16may20 Software Lab. Alexander Burger
+# 17may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -399,6 +399,7 @@
    (NIL "next" _next)
    (NIL "rest" _rest)
    (NIL "up" _up)
+   (NIL "history" _history)
    ($LastSym "version" _version) )
 
 # GC relevant data

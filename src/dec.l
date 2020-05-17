@@ -1,4 +1,4 @@
-# 15may20 Software Lab. Alexander Burger
+# 17may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -122,10 +122,12 @@ waitpid setjmp longjmp kill exit)
 (de T NIL exit (i32))
 
 # libreadline
-(local) (readline add_history)
+(local) (readline add_history history_list clear_history)
 
 (de T i8* readline (i8*))
 (de T void add_history (i8*))
+(de T i8*** history_list ())
+(de T void clear_history ())
 
 # Glue lib.c
 (local) (PipeBuf)
