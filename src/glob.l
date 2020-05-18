@@ -1,4 +1,4 @@
-# 17may20 Software Lab. Alexander Burger
+# 18may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -104,6 +104,7 @@
    ($At3 "@@@" $Nil)
    ($This "This" $Nil)
    ($Prompt "*Prompt" $Nil)
+   ($Tab "*Tab" $Nil)
    ($Zap "*Zap" $Nil)
    ($Ext "*Ext" $Nil)
    ($Scl "*Scl" ZERO)

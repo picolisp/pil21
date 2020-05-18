@@ -1,4 +1,4 @@
-// 15may20 Software Lab. Alexander Burger
+// 18may20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -58,10 +58,18 @@ int32_t nonBlocking(int32_t fd) {
    return (int32_t)flg;
 }
 
+static char *tabEntry(const char *text, int stat) {
+   extern char *tabComplete(const char*);
+
+   rl_completion_append_character = '\0';
+   return tabComplete(stat? NULL : text);
+}
+
 void initReadline(void) {
-   extern int *waitTty(void);
+   extern int waitTty(void);
 
    rl_pre_input_hook = (int (*)(void))waitTty;
+   rl_completion_entry_function = tabEntry;
 }
 
 char *currentLine() {

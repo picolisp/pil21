@@ -1,4 +1,4 @@
-# 15may20 Software Lab. Alexander Burger
+# 18may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -479,3 +479,21 @@
          (set 2 E P  P (link (ofs P 3)))
          (fish E V (ofs P 3) R)
          (val R) ) ) )
+
+(local) tabComplete
+
+(de i8* tabComplete ((i8* . Text))
+   (if (nil? (val $Tab))
+      null
+      (let
+         (E (push NIL NIL ZERO @ NIL)  # [car cdr name fun link]
+            P (push NIL $Nil ZERO NIL NIL) )
+         (set
+            E (link (ofs E 3) T)
+            2 E P
+            P (link (ofs P 3))
+            4 P (if (=0 Text) $Nil (mkStr Text)) )
+         (if (nil? (evList E))
+            null
+            (let Nm (name (val (tail (xSym @))))
+               (strdup (bufString Nm (b8 (bufSize Nm)))) ) ) ) ) )
