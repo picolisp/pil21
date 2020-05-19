@@ -145,7 +145,7 @@
       (while (pair (shift X))
          (let Z (eval (car X))
             (if (atom Y)
-               (setq Y (safe Z))
+               (setq Y (setq R (safe Z)))
                (while (pair (cdr Y))
                   (setq Y @) )
                (set 2 Y Z) ) ) )

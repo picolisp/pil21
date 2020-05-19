@@ -1,4 +1,4 @@
-# 02may20 Software Lab. Alexander Burger
+# 19may20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -318,6 +318,20 @@
                   (link X)
                   (recurse (cdr (asoq X G))) ) ) ) ) ) )
 }#
+
+### REPL ###
+(de *Tab (S)
+   (when S
+      (setq "*Tabs"
+         (conc
+            (filter '((X) (pre? S X)) (all))
+            (let P (rot (split (chop S) "/"))
+               (setq
+                  S (pack (car P))
+                  P (and (cdr P) (pack (glue "/" @) "/")) )
+               (extract '((X) (and (pre? S X) (pack P X)))
+                  (dir P T) ) ) ) ) )
+   (pop '"*Tabs") )
 
 ### Pretty Printing ###
 (de pretty (X N)
