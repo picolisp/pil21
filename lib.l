@@ -323,14 +323,16 @@
 (de *Tab (S)
    (when S
       (setq "*Tabs"
-         (conc
-            (filter '((X) (pre? S X)) (all))
-            (let P (rot (split (chop S) "/"))
-               (setq
-                  S (pack (car P))
-                  P (and (cdr P) (pack (glue "/" @) "/")) )
-               (extract '((X) (and (pre? S X) (pack P X)))
-                  (dir P T) ) ) ) ) )
+         (if (=T S)
+            (list "   ")
+            (conc
+               (filter '((X) (pre? S X)) (all))
+               (let P (rot (split (chop S) "/"))
+                  (setq
+                     S (pack (car P))
+                     P (and (cdr P) (pack (glue "/" @) "/")) )
+                  (extract '((X) (and (pre? S X) (pack P X)))
+                     (dir P T) ) ) ) ) ) )
    (pop '"*Tabs") )
 
 ### Pretty Printing ###

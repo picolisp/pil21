@@ -906,7 +906,11 @@
             YES ) )
       (stkChk 0)
       (let X (car Pat)
-         (unless (or (num? X) (<> (firstByte X) (char "@")))
+         (when
+            (and
+               (not (num? X))
+               (sym? X)
+               (== (firstByte X) (char "@")) )
             (? (atom Dat)
                (and
                   (equal (cdr Pat) Dat)
@@ -921,9 +925,9 @@
                (set X (cons (car Dat) (val X)))
                YES ) )
          (? (or (atom Dat) (not (match X (car Dat))))
-            NO )
-         (shift Pat)
-         (shift Dat) ) ) )
+            NO ) )
+      (shift Pat)
+      (shift Dat) ) )
 
 # (match 'lst1 'lst2) -> flg
 (de _match (Exe)

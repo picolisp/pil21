@@ -1,4 +1,4 @@
-# 18may20 Software Lab. Alexander Burger
+# 19may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -492,7 +492,11 @@
             E (link (ofs E 3) T)
             2 E P
             P (link (ofs P 3))
-            4 P (if (=0 Text) $Nil (mkStr Text)) )
+            4 P
+            (cond
+               ((=0 Text) $Nil)
+               ((=0 (val Text)) $T)
+               (T (mkStr Text)) ) )
          (if (nil? (evList E))
             null
             (let Nm (name (val (tail (xSym @))))
