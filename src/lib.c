@@ -1,4 +1,4 @@
-// 18may20 Software Lab. Alexander Burger
+// 19may20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -58,6 +58,19 @@ int32_t nonBlocking(int32_t fd) {
    return (int32_t)flg;
 }
 
+char *getDir(char *nm) {
+   static DIR *dp;
+   struct dirent *p;
+
+   if (nm  &&  (dp = opendir(nm)) == NULL)
+      return NULL;
+   if ((p = readdir(dp)) != NULL)
+      return p->d_name;
+   closedir(dp);
+   return NULL;
+}
+
+// Readline
 static char *tabEntry(const char *text, int stat) {
    extern char *tabComplete(const char*);
 

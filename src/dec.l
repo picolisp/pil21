@@ -1,4 +1,4 @@
-# 17may20 Software Lab. Alexander Burger
+# 19may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -135,8 +135,7 @@ waitpid setjmp longjmp kill exit)
 (var PipeBuf i64 NIL)
 
 (local) (stderrNum stderrMsg gPrintf strErrno openRdonly openWronly openRdWr
-openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking initReadline
-currentLine)
+openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking getDir)
 
 (de T i64 stderrNum (i8* i64))
 (de T i8* stderrMsg (i8* i8*))
@@ -150,6 +149,10 @@ currentLine)
 (de T i32 fcntlCloExec (i32))
 (de T i32 fcntlSetFl (i32 i32))
 (de T i32 nonBlocking (i32))
+(de T i8* getDir (i8*))
+
+(local) (initReadline currentLine)
+
 (de T void initReadline ())
 (de T i8* currentLine ())
 

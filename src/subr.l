@@ -1,4 +1,4 @@
-# 16may20 Software Lab. Alexander Burger
+# 19may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -329,12 +329,11 @@
 (de _replace (Exe)
    (let (X (cdr Exe)  L (save (eval (car X))))
       (if (atom L)
-         L
+         @
          (let (A $Nil  N 0  R (push NIL NIL))
             (while (pair (shift X))
                (link (push (eval (++ X)) NIL))
-               (setq A
-                  (link (push (eval (car X)) NIL)) )
+               (setq A (link (push (eval (car X)) NIL)))
                (inc 'N) )
             (let (Y (++ L)  Z A  I N)
                (until (lt0 (dec 'I))
@@ -350,6 +349,43 @@
                               (setq Y V) ) ) )
                      (setq P (set 2 P (cons Y $Nil))) ) ) )
             (val R) ) ) ) )
+
+# (split 'lst 'any ..) -> lst
+(de _split (Exe)
+   (let (X (cdr Exe)  L (save (eval (car X))))
+      (if (atom L)
+         @
+         (let (A $Nil  N 0)
+            (while (pair (shift X))
+               (setq A (link (push (eval (car X)) NIL)))
+               (inc 'N) )
+            (let
+               (P $Nil
+                  R (link (push P NIL))
+                  Q $Nil
+                  S (link (push Q NIL)) )
+               (loop
+                  (let (Y (++ L)  Z A  I N)
+                     (loop
+                        (? (lt0 (dec 'I))  # Not a delimiter
+                           (let C (cons Y $Nil)
+                              (setq Q
+                                 (if (nil? Q)
+                                    (set S C)
+                                    (set 2 Q C) ) ) ) )
+                        (? (equal Y (++ Z))  # Delimiter
+                           (let C (cons (val S) $Nil)
+                              (setq P
+                                 (if (nil? P)
+                                    (set R C)
+                                    (set 2 P C) ) ) )
+                           (setq Q (set S $Nil)) ) ) )
+                  (? (atom L)) )
+               (let C (cons (val S) $Nil)
+                  (if (nil? P)
+                     C
+                     (set 2 P C)
+                     (val R) ) ) ) ) ) ) )
 
 # (head 'cnt|lst 'lst) -> lst
 (de _head (Exe)

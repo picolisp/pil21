@@ -1,4 +1,4 @@
-# 18may20 Software Lab. Alexander Burger
+# 19may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -347,6 +347,7 @@
    (NIL "link" _link)
    (NIL "yoke" _yoke)
    (NIL "replace" _replace)
+   (NIL "split" _split)
    (NIL "head" _head)
    (NIL "tail" _tail)
    (NIL "fin" _fin)
@@ -394,6 +395,7 @@
    (NIL "sys" _sys)
    (NIL "pwd" _pwd)
    (NIL "cd" _cd)
+   (NIL "dir" _dir)
    (NIL "argv" _argv)
    (NIL "native" _native)
    (NIL "args" _args)

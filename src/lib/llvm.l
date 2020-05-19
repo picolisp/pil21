@@ -1,4 +1,4 @@
-# 17may20 Software Lab. Alexander Burger
+# 19may20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -226,7 +226,7 @@ False Beg End Safe *Safe)
       (let
          (Sym (pack "@$" (inc (length *Strings)))
             Arr (pack "[" (inc (size Str)) " x i8]")
-            Val (pack "bitcast (" Arr "* " Sym " to i8*)") )
+            Val (def (pack "bitcast (" Arr "* " Sym " to i8*)") 'i8*) )
          (push '*Strings
             (cons Str Val Sym
                (pack

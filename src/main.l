@@ -1,4 +1,4 @@
-# 17may20 Software Lab. Alexander Burger
+# 19may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -719,6 +719,28 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                $Nil
                (mkStr P) )
             (free P) ) ) ) )
+
+# (dir ['any] ['flg]) -> lst
+(de _dir (Exe)
+   (let X (cdr Exe)
+      (if
+         (=0
+            (getDir
+               (if (nil? (evSym X))
+                  ($ ".")
+                  (let Nm (xName Exe @)
+                     (pathString Nm (b8 (pathSize Nm))) ) ) ) )
+         $Nil
+         (let (P @  F (eval (car (shift X))))
+            (when (nil? F)
+               (while (== (val P) (char "."))
+                  (when (=0 (setq P (getDir null)))
+                     (ret $Nil) ) ) )
+            (let (Y (cons (mkStr P) $Nil)  R (save Y))
+               (until (=0 (setq P (getDir null)))
+                  (unless (and (nil? F) (== (val P) (char ".")))
+                     (setq Y (set 2 Y (cons (mkStr P) $Nil))) ) )
+               R ) ) ) ) )
 
 # (argv [var ..] [. sym]) -> lst|sym
 (de _argv (Exe)
