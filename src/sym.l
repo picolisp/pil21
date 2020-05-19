@@ -1,4 +1,4 @@
-# 17may20 Software Lab. Alexander Burger
+# 19may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1551,14 +1551,14 @@
 (local) meta
 
 (de meta (X Key)
-   (while (pair X)
+   (loop
+      (? (atom X) $Nil)
       (let Y (car X)
          (when (and (not (num? Y)) (sym? Y))
             (? (not (nil? (get Y Key))) @)
             (stkChk 0)
             (? (not (nil? (meta (car Y) Key))) @) ) )
-      (shift X) )
-   $Nil )
+      (shift X) ) )
 
 # (meta 'obj|typ 'sym ['sym2|cnt ..]) -> any
 (de _meta (Exe)
@@ -1569,10 +1569,10 @@
          (when (sym? (val (tail Y)))
             (dbFetch Exe Y) )
          (setq Y (val Y)) )
-      (setq Y (meta (eval (car X)) Y))
+      (setq Y (meta Y (eval (car X))))
       (while (pair (shift X))
          (safe Y)
-         (setq Y (get (eval (car X)) Y)) )
+         (setq Y (getn Exe Y (eval (car X)))) )
       Y ) )
 
 # (low? 'any) -> sym | NIL
