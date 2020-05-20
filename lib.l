@@ -1,4 +1,4 @@
-# 19may20 Software Lab. Alexander Burger
+# 20may20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -331,7 +331,13 @@
                   (setq
                      S (pack (car P))
                      P (and (cdr P) (pack (glue "/" @) "/")) )
-                  (extract '((X) (and (pre? S X) (pack P X)))
+                  (extract
+                     '((X)
+                        (when (pre? S X)
+                           (let F (pack P X)
+                              (if (=T (car (info F)))
+                                 (pack F "/")
+                                 F ) ) ) )
                      (dir P T) ) ) ) ) ) )
    (pop '"*Tabs") )
 

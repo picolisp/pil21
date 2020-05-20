@@ -1,4 +1,4 @@
-// 19may20 Software Lab. Alexander Burger
+// 20may20 Software Lab. Alexander Burger
 
 #include <stdint.h>
 #include <string.h>
@@ -16,6 +16,7 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/time.h>
+#include <sys/stat.h>
 #include <sys/socket.h>
 #include <readline/readline.h>
 #include <readline/history.h>

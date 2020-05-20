@@ -1,4 +1,4 @@
-# 15may20 Software Lab. Alexander Burger
+# 20may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -180,16 +180,16 @@
                   P ) ) ) )
       (prog1
          (if (== Y $At)  # VarArgs
-            (let Next (push (val $Next))
+            (let (Link (val $Link)  Next (val $Next))
                (if (atom X)
                   (set $Next $Nil)
-                  (let L (link (push -ZERO NIL))  # [lst LINK]
-                     (set $Next
-                        (setq L
-                           (set L (push (eval (++ X)) $Nil)) ) )  # [arg1 next]
+                  (let (L (push NIL (eval (++ X)) NIL)  Q L)
+                     (link (ofs L 1))
                      (while (pair X)
-                        (setq L  # [argN next]
-                           (set 2 L (push (eval (++ X)) $Nil)) ) ) ) )
+                        (setq L
+                           (set L (push NIL (eval (++ X)) NIL)) )
+                        (link (ofs L 1)) )
+                     (set L $Nil  $Next Q) ) )
                (loop
                   (let Sym (val 2 P)
                      (xchg Sym P)  # Exchange symbol value
@@ -198,11 +198,7 @@
                (let (C (val $Cls)  K (val $Key))
                   (prog1
                      (run (cdr Exe))  # Run body
-                     (set
-                        $Key K
-                        $Cls C
-                        $Next (val Next)
-                        $Link (val $Link) ) ) ) )
+                     (set $Key K  $Cls C  $Next Next  $Link Link) ) ) )
             (unless (== Y $Nil)
                (set
                   $Bind (push (val Y) Y P)  # Last parameter

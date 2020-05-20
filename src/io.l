@@ -1,4 +1,4 @@
-# 17may20 Software Lab. Alexander Burger
+# 20may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -586,7 +586,7 @@
    (let
       (Task (val $Task)
          P (link (push (val $At) NIL))
-         Tim (getTime) )
+         Tim (getMsec) )
       (loop
          (let
             (Stk (stack)
@@ -604,7 +604,7 @@
                   (selectErr Exe) )
                (sigChk Exe) )
             #! ...
-            (let (T2 (getTime)  D (- T2 Tim))
+            (let (T2 (getMsec)  D (- T2 Tim))
                (setq Tim T2)
                #! ...
                (when

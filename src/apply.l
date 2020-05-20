@@ -1,4 +1,4 @@
-# 19may20 Software Lab. Alexander Burger
+# 20may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -34,8 +34,9 @@
             (set P (link (ofs P 3))) )
          (while (pair L)
             (setq P
-               (set 2 P (push NIL $Nil ZERO (++ L) NIL)) )
-            (set P (link (ofs P 3))) )
+               (set 2 P (push NIL $Nil ZERO (cdr L) NIL)) )
+            (set P (link (ofs P 3)))
+            (setq L (car L)) )
          (evList E) ) ) )
 
 # (map 'fun 'lst ..) -> lst

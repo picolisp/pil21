@@ -1,4 +1,4 @@
-# 19may20 Software Lab. Alexander Burger
+# 20may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -168,9 +168,14 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking getDir)
 (de T void setCooked ())
 
 # System
-(local) getTime
+(local) (getMsec getDate getGmDate getTime getGmTime fileInfo)
 
+(de T i64 getMsec ())
+(de T i64 getDate ())
+(de T i64 getGmDate ())
 (de T i64 getTime ())
+(de T i64 getGmTime ())
+(de T i64 fileInfo (i1 i8* i64*))
 
 # Polling
 (local) (pollIn pollOut gPoll readyIn readyOut)

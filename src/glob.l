@@ -1,4 +1,4 @@
-# 19may20 Software Lab. Alexander Burger
+# 20may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -391,16 +391,19 @@
    (NIL "udp" _udp)
    # System functions
    (NIL "raw" _raw)
+   (NIL "date" _date)
    (NIL "quit" _quit)
    (NIL "sys" _sys)
    (NIL "pwd" _pwd)
    (NIL "cd" _cd)
    (NIL "dir" _dir)
+   (NIL "info" _info)
    (NIL "argv" _argv)
    (NIL "native" _native)
    (NIL "args" _args)
    (NIL "next" _next)
    (NIL "rest" _rest)
+   (NIL "trail" _trail)
    (NIL "up" _up)
    (NIL "history" _history)
    ($LastSym "version" _version) )

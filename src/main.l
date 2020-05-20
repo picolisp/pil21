@@ -1,4 +1,4 @@
-# 19may20 Software Lab. Alexander Burger
+# 20may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -408,6 +408,91 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                            0 ) )
                      (? (not (nil? Y)) 0) ) ) ) ) ) ) )
 
+# Date and time
+(local) date
+
+(de date ((i64 . Y) (i64 . M) (i64 . D))
+   (if
+      (and
+         (gt0 Y)
+         (gt0 M)
+         (>= 12 M)
+         (gt0 D)
+         (or
+            (>= (i64 (val (ofs $Month M))) D)
+            (and
+               (== D 29)
+               (== M 2)
+               (=0 (% Y 4))
+               (or
+                  (n0 (% Y 100))
+                  (=0 (% Y 400)) ) ) ) )
+      (let N (/ (+ (* Y 12) M -3) 12)
+         (cnt
+            (-
+               (+
+                  (/
+                     (+ (* Y 4404) (* M 367) -1094)
+                     12 )
+                  (/ N 4)
+                  (/ N 400)
+                  D )
+               (* 2 N)
+               (/ N 100) ) ) )
+      $Nil ) )
+
+# (date ['T]) -> dat
+# (date 'dat) -> (y m d)
+# (date 'y 'm 'd) -> dat | NIL
+# (date '(y m d)) -> dat | NIL
+(de _date (Exe)
+   (let X (cdr Exe)
+      (cond
+         ((atom X)
+            (let N (getDate)
+               (date
+                  (& N (hex "FFFF"))
+                  (& (shr N 16) (hex "FF"))
+                  (& (shr N 24) (hex "FF")) ) ) )
+         ((t? (eval (car X)))
+            (let N (getGmDate)
+               (date
+                  (& N (hex "FFFF"))
+                  (& (shr N 16) (hex "FF"))
+                  (& (shr N 24) (hex "FF")) ) ) )
+         ((nil? @) @)
+         ((pair @)
+            (let L @
+               (date
+                  (xCnt Exe (++ L))
+                  (xCnt Exe (++ L))
+                  (xCnt Exe (car L)) ) ) )
+         (T
+            (let N @
+               (cond
+                  ((pair (shift X))
+                     (date
+                        (xCnt Exe N)
+                        (evCnt Exe X)
+                        (evCnt Exe (cdr X)) ) )
+                  ((lt0 (setq N (xCnt Exe N))) $Nil)
+                  (T
+                     (let Y (/ (- (* N 100) 20) 3652425)
+                        (setq
+                           N (+ N (- Y (/ Y 4)))
+                           Y (/ (- (* N 100) 20) 36525)
+                           N (* (- N (/ (* Y 36525) 100)) 10) )
+                        (let
+                           (M (/ (- N 5) 306)
+                              D (/ (+ N (* M -306) 5) 10) )
+                           (if (> 10 M)
+                              (setq M (+ M 3))
+                              (inc 'Y)
+                              (setq M (- M 9)) )
+                           (cons (cnt Y)
+                              (cons (cnt M)
+                                 (cons (cnt D) $Nil) ) ) ) ) ) ) ) ) ) ) )
+
 # Try to load dynamic library
 (local) sharedLib
 
@@ -608,13 +693,13 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
             (let (Link (val $Link)  Next (val $Next))
                (if (atom X)
                   (set $Next $Nil)
-                  (let L (link (push -ZERO NIL))  # [lst LINK]
-                     (set $Next
-                        (setq L
-                           (set L (push (eval (++ X)) $Nil)) ) )  # [arg1 next]
+                  (let (L (push NIL (eval (++ X)) NIL)  Q L)
+                     (link (ofs L 1))
                      (while (pair X)
-                        (setq L  # [argN next]
-                           (set 2 L (push (eval (++ X)) $Nil)) ) ) ) )
+                        (setq L
+                           (set L (push NIL (eval (++ X)) NIL)) )
+                        (link (ofs L 1)) )
+                     (set L $Nil  $Next Q) ) )
                (loop
                   (let Sym (val 2 P)
                      (xchg Sym P)  # Exchange symbol value
@@ -742,6 +827,32 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                      (setq Y (set 2 Y (cons (mkStr P) $Nil))) ) )
                R ) ) ) ) )
 
+# (info 'any ['flg]) -> (cnt|flg dat . tim)
+(de _info (Exe)
+   (let
+      (X (cdr Exe)
+         Nm (xName Exe (evSym X))
+         Size (i64* (push NIL)) )
+      (if
+         (lt0
+            (fileInfo
+               (nil? (eval (car (shift X))))
+               (pathString Nm (b8 (pathSize Nm)))
+               Size ) )
+         $Nil
+         (let N @
+            (cons
+               (case (& N 3)
+                  (1 $T)
+                  (2 $Nil)
+                  (T (box64 (val Size))) )
+               (cons
+                  (date
+                     (& (setq N (shr N 2)) (hex "FFFF"))
+                     (& (setq N (shr N 16)) (hex "FF"))
+                     (& (setq N (shr N 8)) (hex "FF")) )
+                  (cnt (shr N 8)) ) ) ) ) ) )
+
 # (argv [var ..] [. sym]) -> lst|sym
 (de _argv (Exe)
    (let (X (cdr Exe)  A (val $AV)  P (val A))
@@ -835,19 +946,34 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
 # (next) -> any
 (de _next (Exe)
    (let X (val $Next)
-      (set $Next (cdr X))
-      (car X) ) )
+      (set $Next (car X))
+      (cdr X) ) )
 
 # (rest) -> lst
 (de _rest (Exe)
    (let X (val $Next)
       (if (atom X)
          X
-         (let (Y (cons (++ X) $Nil)  R (save Y))
-            (while (pair X)
-               (setq Y
-                  (set 2 Y (cons (++ X) $Nil)) ) )
+         (let (Y (cons (cdr X) $Nil)  R (save Y))
+            (while (pair (setq X (car X)))
+               (setq Y (set 2 Y (cons (cdr X) $Nil))) )
             R ) ) ) )
+
+# (trail ['flg]) -> lst
+(de _trail (Exe)
+   (let (F (eval (cadr Exe))  Bnd (val $Bind)  R $Nil)
+      (until (=0 Bnd)
+         (let S (val 2 Bnd)
+            (if (== S $At)
+               (setq R (cons (val 4 Bnd) R))
+               (setq R (cons S (cons (val S) R)))
+               (set S (val Bnd)) ) )
+         (setq Bnd (val 3 Bnd)) )
+      (let X R
+         (until (atom X)
+            (when (atom (++ X))
+               (set @ (++ X)) ) ) )
+      R ) )
 
 # (up [cnt] sym ['val]) -> any
 (de _up (Exe)

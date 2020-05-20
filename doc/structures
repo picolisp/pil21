@@ -1,4 +1,4 @@
-# 11may20 Software Lab. Alexander Burger
+# 20may20 Software Lab. Alexander Burger
 
    ### Primary data types ###
 
@@ -155,16 +155,20 @@
          +---- LINK
                symN
                valN  <-- Bind
-                                 ^
-               Next              |
-               LINK -------------+
-                 -------+  <-- Link
-         +-------       |
-         |     arg1 <---+  <-- Next
-         |       -------+
-         +---> arg2     |
-                /       |
-               arg3 <---+
+
+         ^
+         |
+         +~~~- LINK
+               arg1 <------------+
+         +-------   <-- Next     |
+         |                       |
+         |     LINK -------------+
+         | +-> arg2
+         +-|->   ----------------+
+           |                     |
+           +-- LINK              |
+               arg3 <-- Link     |
+                /   <------------+
 
 
       Apply args:

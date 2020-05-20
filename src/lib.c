@@ -1,4 +1,4 @@
-// 19may20 Software Lab. Alexander Burger
+// 20may20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -129,12 +129,57 @@ void setCooked(void) {
 }
 
 // System
-int64_t getTime(void) {
+static struct timeval Tv;
+static struct tm *Time;
+
+int64_t getMsec(void) {
    struct timeval tim;
 
    if (gettimeofday(&tim, NULL))
       return 0;
    return (int64_t)tim.tv_sec * 1000 + ((int64_t)tim.tv_usec + 500) / 1000;
+}
+
+int64_t getDate(void) {
+   gettimeofday(&Tv, NULL);
+   Time = localtime(&Tv.tv_sec);
+   return Time->tm_year+1900 | (Time->tm_mon+1) << 16 | Time->tm_mday << 24;
+}
+
+int64_t getGmDate(void) {
+   gettimeofday(&Tv, NULL);
+   Time = gmtime(&Tv.tv_sec);
+   return Time->tm_year+1900 | (Time->tm_mon+1) << 16 | Time->tm_mday << 24;
+}
+
+int64_t getTime(void) {
+   struct tm *p;
+
+   gettimeofday(&Tv, NULL);
+   p = localtime(&Tv.tv_sec);
+   return p->tm_year+1900 | (p->tm_mon+1) << 16 | p->tm_mday << 24;
+}
+
+int64_t getGmTime(void) {
+   return Time? (Time->tm_hour * 3600 + Time->tm_min * 60 + Time->tm_sec) : -1;
+}
+
+int64_t fileInfo(int lnk, char *nm, int64_t *siz) {
+   int64_t n;
+   struct tm *p;
+   struct stat st;
+
+   if ((lnk? stat(nm, &st) : lstat(nm, &st)) < 0)
+      return -1;
+   p = gmtime(&st.st_mtime);
+   n = (p->tm_year+1900 | (p->tm_mon+1) << 16 | p->tm_mday << 24 |
+         (int64_t)(p->tm_hour * 3600 + p->tm_min * 60 + p->tm_sec) << 32 ) << 2;
+   if ((st.st_mode & S_IFMT) == S_IFDIR)
+      return n + 1;
+   if ((st.st_mode & S_IFMT) != S_IFREG)
+      return n + 2;
+   *siz = st.st_size;
+   return n;
 }
 
 // Polling
