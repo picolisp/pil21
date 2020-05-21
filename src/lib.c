@@ -83,6 +83,7 @@ void initReadline(void) {
 
    rl_pre_input_hook = (int (*)(void))waitTty;
    rl_completion_entry_function = tabEntry;
+   rl_basic_quote_characters = NULL;
 }
 
 char *currentLine() {
