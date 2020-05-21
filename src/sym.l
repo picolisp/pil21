@@ -1,4 +1,4 @@
-# 19may20 Software Lab. Alexander Burger
+# 21may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -522,42 +522,44 @@
 
 # Build sorted list from tree
 (de consTree (P Lst)
-   (let (Q (link (push P NIL))  Tos (link (push -ZERO NIL)))
-      (loop
+   (if (atom P)
+      P
+      (let (Q (link (push P NIL))  Tos (link (push -ZERO NIL)))
          (loop
-            (let X (cdr P)  # Get subtrees
-               (? (atom (cdr X)))  # Right subtree
-               (let Y P  # Go right
-                  (setq P @)  # Invert tree
-                  (set 2 X (val Tos))
-                  (set Tos Y) ) ) )
-         (set Q P)  # Save tree
-         (loop
-            (setq Lst (cons (car P) Lst))  # Cons symbol
-            (let X (cdr P)
-               (? (pair (car X))  # Left subtree
-                  (let Y P  # Go left
-                     (setq P @)  # Invert tree
-                     (set X (val Tos))
-                     (set Tos (| Y 8))  # First visit
-                     (set Q P) ) ) )  # Save tree
             (loop
-               (let X (val Tos)
-                  (when (== -ZERO X)
-                     (drop Q)
-                     (ret Lst) )
-                  (? (=0 (& X 8))  # Second visit
+               (let X (cdr P)  # Get subtrees
+                  (? (atom (cdr X)))  # Right subtree
+                  (let Y P  # Go right
+                     (setq P @)  # Invert tree
+                     (set 2 X (val Tos))
+                     (set Tos Y) ) ) )
+            (set Q P)  # Save tree
+            (loop
+               (setq Lst (cons (car P) Lst))  # Cons symbol
+               (let X (cdr P)
+                  (? (pair (car X))  # Left subtree
+                     (let Y P  # Go left
+                        (setq P @)  # Invert tree
+                        (set X (val Tos))
+                        (set Tos (| Y 8))  # First visit
+                        (set Q P) ) ) )  # Save tree
+               (loop
+                  (let X (val Tos)
+                     (when (== -ZERO X)
+                        (drop Q)
+                        (ret Lst) )
+                     (? (=0 (& X 8))  # Second visit
+                        (let Y (cdr X)  # Nodes
+                           (set Tos (cdr Y))  # TOS on up link
+                           (set 2 Y P)
+                           (setq P X)
+                           (set Q P) ) )  # Save tree
+                     (setq X (& X -9))  # Clear visit bit
                      (let Y (cdr X)  # Nodes
-                        (set Tos (cdr Y))  # TOS on up link
-                        (set 2 Y P)
+                        (set Tos (car Y))
+                        (set Y P)
                         (setq P X)
-                        (set Q P) ) )  # Save tree
-                  (setq X (& X -9))  # Clear visit bit
-                  (let Y (cdr X)  # Nodes
-                     (set Tos (car Y))
-                     (set Y P)
-                     (setq P X)
-                     (set Q P) ) ) ) ) ) ) )  # Save tree
+                        (set Q P) ) ) ) ) ) ) ) )  # Save tree
 
 # (all ['NIL | 'T | '0 | 'sym | '(NIL . flg) | '(T . flg) | '(0)]) -> lst
 (de _all (Exe)
@@ -576,7 +578,9 @@
             (consTree (val $Extern) $Nil) )
          ((sym? X)  # Given namespace
             (let Y (val X)
-               (consTree (val Y) (consTree (val 2 Y) $Nil)) ) )
+               (if (pair Y)
+                  (consTree (val Y) (consTree (val 2 Y) $Nil))
+                  $Nil ) ) )
          ((nil? (car X))  # Direct internal tree
             (let Y (val (car (val $Intern)))
                (if (nil? (cdr X))
