@@ -1001,6 +1001,15 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                (setq Y (set 2 Y (cons (cdr X) $Nil))) )
             R ) ) ) )
 
+# (adr 'var) -> cnt
+# (adr 'cnt) -> var
+(de _adr (Exe)
+   (cond
+      ((cnt? (eval (cadr Exe)))
+         (& @ -3) )  # Make 'var' (pos -> cell, neg -> symbol)
+      ((big? @) (argErr Exe @))
+      (T (| @ 2)) ) )  # Make 'cnt'
+
 # (trail ['flg]) -> lst
 (de _trail (Exe)
    (let (F (eval (cadr Exe))  Bnd (val $Bind)  R $Nil)
