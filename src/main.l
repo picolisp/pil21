@@ -1,4 +1,4 @@
-# 20may20 Software Lab. Alexander Burger
+# 21may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -409,7 +409,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                      (? (not (nil? Y)) 0) ) ) ) ) ) ) )
 
 # Date and time
-(local) date
+(local) (date time)
 
 (de date ((i64 . Y) (i64 . M) (i64 . D))
    (if
@@ -439,6 +439,17 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                   D )
                (* 2 N)
                (/ N 100) ) ) )
+      $Nil ) )
+
+(de time ((i64 . H) (i64 . M) (i64 . S))
+   (if
+      (and
+         (ge0 H)
+         (ge0 M)
+         (> 60 M)
+         (ge0 S)
+         (> 60 S) )
+      (cnt (+ (* H 3600) (* M 60) S))
       $Nil ) )
 
 # (date ['T]) -> dat
@@ -492,6 +503,37 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
                            (cons (cnt Y)
                               (cons (cnt M)
                                  (cons (cnt D) $Nil) ) ) ) ) ) ) ) ) ) ) )
+
+# (time ['T]) -> tim
+# (time 'tim) -> (h m s)
+# (time 'h 'm ['s]) -> tim | NIL
+# (time '(h m [s])) -> tim | NIL
+(de _time (Exe)
+   (let X (cdr Exe)
+      (cond
+         ((atom X) (cnt (getTime)))
+         ((t? (eval (car X)))
+            (if (lt0 (getGmTime)) $Nil (cnt @)) )
+         ((nil? @) @)
+         ((pair @)
+            (let L @
+               (time
+                  (xCnt Exe (++ L))
+                  (xCnt Exe (++ L))
+                  (xCnt Exe (car L)) ) ) )
+         (T
+            (let N @
+               (cond
+                  ((pair (shift X))
+                     (time
+                        (xCnt Exe N)
+                        (evCnt Exe X)
+                        (if (pair (shift X)) (evCnt Exe X) 0) ) )
+                  ((lt0 (setq N (xCnt Exe N))) $Nil)
+                  (T
+                     (cons (cnt (/ N 3600))
+                        (cons (cnt (% (/ N 60) 60))
+                           (cons (cnt (% N 60)) $Nil) ) ) ) ) ) ) ) ) )
 
 # Try to load dynamic library
 (local) sharedLib

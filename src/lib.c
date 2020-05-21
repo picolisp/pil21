@@ -1,4 +1,4 @@
-// 20may20 Software Lab. Alexander Burger
+// 21may20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -157,7 +157,7 @@ int64_t getTime(void) {
 
    gettimeofday(&Tv, NULL);
    p = localtime(&Tv.tv_sec);
-   return p->tm_year+1900 | (p->tm_mon+1) << 16 | p->tm_mday << 24;
+   return p->tm_hour * 3600 + p->tm_min * 60 + p->tm_sec;
 }
 
 int64_t getGmTime(void) {

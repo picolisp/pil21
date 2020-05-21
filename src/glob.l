@@ -1,4 +1,4 @@
-# 20may20 Software Lab. Alexander Burger
+# 21may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -392,6 +392,7 @@
    # System functions
    (NIL "raw" _raw)
    (NIL "date" _date)
+   (NIL "time" _time)
    (NIL "quit" _quit)
    (NIL "sys" _sys)
    (NIL "pwd" _pwd)
