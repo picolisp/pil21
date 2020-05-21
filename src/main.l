@@ -1127,9 +1127,12 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
    (heapAlloc)
    (let P $Nil  # Init internal symbols
       (loop
-         (when (num? (val (tail P)))
-            (intern P 0 @ $Pico $Nil)
-            (? (== P $LastSym)) )
+         (let Nm (val (tail P))
+            (when (num? Nm)
+               (intern P 0 @ $Pico $Nil)
+               (? (== P $LastSym))
+               (when (big? Nm)  # Max 15 chars
+                  (setq P (ofs P 2)) ) ) )
          (setq P (ofs P 2)) ) )
    (set
       (tail $Db1) DB1  # Name of external root symbol '{1}'
