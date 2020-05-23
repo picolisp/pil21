@@ -1,4 +1,4 @@
-# 21may20 Software Lab. Alexander Burger
+# 22may20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -300,24 +300,6 @@
       (if (assoc Key (val "Var"))
          (con @ (+ Val (cdr @)))
          (push "Var" (cons Key Val)) ) ) )
-
-
-#{ -> @lib/simul.l
-# Flooding Algorithm
-(de flood ("Lst" "Fun" "Init")
-   (let G (mapcar '(("X") (cons "X" ("Fun" "X"))) "Lst")
-      (for L G
-         (for X (cdr L)
-            (let A (asoq X G)
-               (unless (memq (car L) (cdr A))
-                  (con A (cons (car L) (cdr A))) ) ) ) )
-      (make
-         (recur ("Init")
-            (for X "Init"
-               (unless (memq X (made))
-                  (link X)
-                  (recurse (cdr (asoq X G))) ) ) ) ) ) )
-}#
 
 ### REPL ###
 (de *Tab (S)

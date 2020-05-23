@@ -1,4 +1,4 @@
-// 20may20 Software Lab. Alexander Burger
+// 23may20 Software Lab. Alexander Burger
 
 #include <stdint.h>
 #include <string.h>
@@ -38,12 +38,12 @@ int64_t length(int64_t);
 extern int64_t SymTab[];
 #define Nil (0+1)
 // Sync src/glob.l 'T'
-#define T (9*2+1)
-#define I (10*2+1)
-#define N (11*2+1)
-#define S (12*2+1)
-#define C (13*2+1)
-#define B (14*2+1)
+#define T (11*2+1)
+#define I (12*2+1)
+#define N (13*2+1)
+#define S (14*2+1)
+#define C (15*2+1)
+#define B (16*2+1)
 
 int32_t bufSize(int64_t);
 char *bufString(int64_t, char*);

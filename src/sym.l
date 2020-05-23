@@ -1,4 +1,4 @@
-# 21may20 Software Lab. Alexander Burger
+# 23may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -254,7 +254,7 @@
 (de isLstIntern (Name Lst)
    (loop
       (? (atom Lst) 0)
-      (? (n0 (isIntern Name (val (car Lst)))) @)
+      (? (n0 (isIntern Name (cdar (car Lst)))) @)
       (shift Lst) ) )
 
 (inline intern1 (Sym Val Name Node More)
@@ -336,7 +336,7 @@
 
 (de requestSym (Name)
    (intern 0 $Nil Name
-      (val (car (val $Intern)))
+      (cdar (car (val $Intern)))
       (cdr (val $Intern)) ) )
 
 # Intern an external symbol
@@ -482,7 +482,7 @@
             (loop
                (? (atom Lst) $Nil)
                (let Nsp (car Lst)
-                  (? (== Sym (isIntern Nm (val Nsp))) Nsp) )
+                  (? (== Sym (isIntern Nm (cdar Nsp))) Nsp) )
                (shift Lst) ) ) ) ) )
 
 # (sp? 'any) -> flg
@@ -495,12 +495,12 @@
 (de _patQ (Exe)
    (let X (eval (cadr Exe))
       (if
-         (and
-            (not (num? X))
-            (sym? X)
-            (== (firstChar X) (char "@")) )
-         X
-         $Nil ) ) )
+         (or
+            (num? X)
+            (pair X)
+            (<> (firstChar X) (char "@")) )
+         $Nil
+         X ) ) )
 
 # (fun? 'any) -> any
 (de _funQ (Exe)
@@ -568,18 +568,18 @@
          ((nil? X)  # Internal symbols
             (let Y (val $Intern)
                (loop
-                  (let Z (val (++ Y))
+                  (let Z (cdar (++ Y))
                      (setq X
-                        (consTree (val Z) (consTree (val 2 Z) X)) ) )
+                        (consTree (car Z) (consTree (cdr Z) X)) ) )
                   (? (atom Y) X) ) ) )
          ((== $T X)  # Transient symbols
             (consTree (val $Transient) (consTree (val 2 $Transient) $Nil)) )
          ((num? X)  # External symbols
             (consTree (val $Extern) $Nil) )
          ((sym? X)  # Given namespace
-            (let Y (val X)
+            (let Y (cdar X)
                (if (pair Y)
-                  (consTree (val Y) (consTree (val 2 Y) $Nil))
+                  (consTree (car Y) (consTree (cdr Y) $Nil))
                   $Nil ) ) )
          ((nil? (car X))  # Direct internal tree
             (let Y (val (car (val $Intern)))
@@ -602,24 +602,29 @@
          (val $Intern)
          (let Y (eval (++ X))
             (if (pair Y)  # List argument
-               (if (atom X)  # No 'prg'
-                  (prog1
-                     (val $Intern)
-                     (set $Intern Y) )
-                  (let Z (save (val $Intern))
-                     (set $Intern Y)
+               (let L Y
+                  (loop
+                     (needNsp Exe (needSym Exe (++ L)))
+                     (? (atom L)) )
+                  (if (atom X)  # No 'prg'
                      (prog1
-                        (run X)  # Run 'prg'
-                        (set $Intern Z) ) ) )
-               (let V (val (needSym Exe Y))
-                  (cond
-                     ((nil? V) (set Y (cons $Nil $Nil)))  # New namespace
-                     ((atom V) (symNsErr Exe Y)) ) )  # Value must be a pair
+                        (val $Intern)
+                        (set $Intern Y) )
+                     (let Z (save (val $Intern))
+                        (set $Intern Y)
+                        (prog1
+                           (run X)  # Run 'prg'
+                           (set $Intern Z) ) ) ) )
+               (if (nil? (val (needSym Exe Y)))  # New namespace
+                  (set Y (cons $Tilde (cons $Nil $Nil)))
+                  (needNsp Exe Y) )
                (let R (setq Y (save (cons Y $Nil)))
                   (while (pair X)
-                     (let Z (needSym Exe (eval (++ X)))
-                        (and (atom (val Z)) (symNsErr Exe Z))
-                        (setq Y (set 2 Y (cons Z $Nil))) ) )
+                     (setq Y
+                        (set 2 Y
+                           (cons
+                              (needNsp Exe (needSym Exe (eval (++ X))))
+                              $Nil ) ) ) )
                   (prog1
                      (val $Intern)
                      (set $Intern R) ) ) ) ) ) ) )
@@ -634,8 +639,8 @@
          ((== (name @) ZERO) $Nil)
          (T
             (let (Nm @  L (val $Intern)  F (nil? (eval (car X))))
-               (intern Sym 0 Nm
-                  (val (car L))
+               (intern (if F 0 Sym) 0 Nm
+                  (cdar (car L))
                   (if F (cdr L) $Nil) ) ) ) ) ) )
 
 # (box? 'any) -> sym | NIL
@@ -689,14 +694,14 @@
 
 # (pack 'any ..) -> sym
 (de _pack (Exe)
-   (save -ZERO)
-   (let
-      (X (cdr Exe)
-         P (push 4 NIL ZERO NIL)  # [cnt last name link]
-         Q (link (ofs P 2)) )
-      (while (pair X)
-         (pack (safe (eval (++ X))) P) )
-      (consStr (val Q)) ) )
+   (save -ZERO
+      (let
+         (X (cdr Exe)
+            P (push 4 NIL ZERO NIL)  # [cnt last name link]
+            Q (link (ofs P 2)) )
+         (while (pair X)
+            (pack (safe (eval (++ X))) P) )
+         (consStr (val Q)) ) ) )
 
 # (glue 'any 'lst) -> sym
 (de _glue (Exe)
@@ -798,17 +803,17 @@
 
 # (set 'var 'any ..) -> any
 (de _set (Exe)
-   (save -ZERO)
-   (let X (cdr Exe)
-      (loop
-         (let Y (safe (needChkVar Exe (eval (++ X))))
-            (and
-               (sym? Y)
-               (sym? (val (tail Y)))
-               (dbTouch Exe Y) )
-            (let Z (eval (++ X))
-               (set Y Z)
-               (? (atom X) Z) ) ) ) ) )
+   (save -ZERO
+      (let X (cdr Exe)
+         (loop
+            (let Y (safe (needChkVar Exe (eval (++ X))))
+               (and
+                  (sym? Y)
+                  (sym? (val (tail Y)))
+                  (dbTouch Exe Y) )
+               (let Z (eval (++ X))
+                  (set Y Z)
+                  (? (atom X) Z) ) ) ) ) ) )
 
 # (setq var 'any ..) -> any
 (de _setq (Exe)
@@ -832,21 +837,21 @@
 
 # (xchg 'var 'var ..) -> any
 (de _xchg (Exe)
-   (save -ZERO)
-   (let X (cdr Exe)
-      (loop
-         (let Y (safe (needChkVar Exe (eval (++ X))))
-            (and
-               (sym? Y)
-               (sym? (val (tail Y)))
-               (dbTouch Exe Y) )
-            (let Z (needChkVar Exe (eval (++ X)))
+   (save -ZERO
+      (let X (cdr Exe)
+         (loop
+            (let Y (safe (needChkVar Exe (eval (++ X))))
                (and
-                  (sym? Z)
-                  (sym? (val (tail Z)))
-                  (dbTouch Exe Z) )
-               (setq Z (xchg Y Z))
-               (? (atom X) Z) ) ) ) ) )
+                  (sym? Y)
+                  (sym? (val (tail Y)))
+                  (dbTouch Exe Y) )
+               (let Z (needChkVar Exe (eval (++ X)))
+                  (and
+                     (sym? Z)
+                     (sym? (val (tail Z)))
+                     (dbTouch Exe Z) )
+                  (setq Z (xchg Y Z))
+                  (? (atom X) Z) ) ) ) ) ) )
 
 # (on var ..) -> T
 (de _on (Exe)
@@ -1558,7 +1563,7 @@
    (loop
       (? (atom X) $Nil)
       (let Y (car X)
-         (when (and (not (num? Y)) (sym? Y))
+         (unless (or (num? Y) (pair Y))
             (? (not (nil? (get Y Key))) @)
             (stkChk 0)
             (? (not (nil? (meta (car Y) Key))) @) ) )

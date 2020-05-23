@@ -1,4 +1,4 @@
-# 21may20 Software Lab. Alexander Burger
+# 23may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -144,7 +144,7 @@
 
 # Error handling
 (local) (pushOutFiles err stkErr argErr cntErr numErr symErr extErr nameErr
-atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
+atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de void pushOutFiles (i8*))
 
@@ -259,7 +259,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
 (de NIL forkErr (Exe)
    (err Exe 0 ($ "Can't fork") null) )
 
-(de NIL symNsErr (Exe X)
+(de NIL symNspErr (Exe X)
    (err Exe X ($ "Bad symbol namespace") null) )
 
 # Runtime checks
@@ -274,7 +274,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
       (sighandler Exe) ) )
 
 # Argument checks
-(local) (needCnt needNum needSym needPair needLst needVar chkVar needChkVar)
+(local) (needCnt needNum needSym needPair needLst needVar chkVar needChkVar needNsp)
 
 (inline needCnt (Exe X)
    (unless (cnt? X)
@@ -316,6 +316,11 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
 (inline needChkVar (Exe X)
    (and (num? X) (varErr Exe X))
    (chkVar Exe X)
+   X )
+
+(inline needNsp (Exe X)
+   (unless (and (pair (val X)) (== $Tilde (car @)))
+      (symNspErr 0 X) )
    X )
 
 # Value access
@@ -1129,7 +1134,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNsErr)
       (loop
          (let Nm (val (tail P))
             (when (num? Nm)
-               (intern P 0 @ $Pico $Nil)
+               (intern P 0 @ (cdr $Pico) $Nil)
                (? (== P $LastSym))
                (when (big? Nm)  # Max 15 chars
                   (setq P (ofs P 2)) ) ) )

@@ -1,4 +1,4 @@
-# 19may20 Software Lab. Alexander Burger
+# 23may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -906,11 +906,11 @@
             YES ) )
       (stkChk 0)
       (let X (car Pat)
-         (when
-            (and
-               (not (num? X))
-               (sym? X)
-               (== (firstByte X) (char "@")) )
+         (unless
+            (or
+               (num? X)
+               (pair X)
+               (<> (firstByte X) (char "@")) )
             (? (atom Dat)
                (and
                   (equal (cdr Pat) Dat)
@@ -984,3 +984,260 @@
       (if (=0 (fill Y (save (eval (car X)))))
          Y
          @ ) ) )
+
+(local) ($Penv $Pnl unify lup lookup uniFill)
+
+(var $Penv 0)
+(var $Pnl 0)
+
+(de i1 unify (N1 X1 N2 X2)
+   (let Penv (val $Penv)
+      (: 1
+         (unless
+            (or
+               (num? X1)
+               (pair X1)
+               (<> (firstByte X1) (char "@")) )
+            (let X (val Penv)
+               (while (pair (car X))
+                  (let (Y @  Z (car Y))
+                     (when (and (== N1 (car Z)) (== X1 (cdr Z)))
+                        (setq
+                           Z (cdr Y)
+                           N1 (car Z)
+                           X1 (cdr Z) )
+                        (goto 1) ) )
+                  (shift X) ) ) ) )
+      (: 2
+         (unless
+            (or
+               (num? X2)
+               (pair X2)
+               (<> (firstByte X2) (char "@")) )
+            (let X (val Penv)
+               (while (pair (car X))
+                  (let (Y @  Z (car Y))
+                     (when (and (== N2 (car Z)) (== X2 (cdr Z)))
+                        (setq
+                           Z (cdr Y)
+                           N2 (car Z)
+                           X2 (cdr Z) )
+                        (goto 2) ) )
+                  (shift X) ) ) ) )
+      (cond
+         ((and (== N1 N2) (equal X1 X2)) YES)
+         ((and
+               (not (num? X1))
+               (sym? X1)
+               (== (firstByte X1) (char "@")) )
+            (unless (== X1 $At)
+               (set Penv
+                  (cons (cons3 N1 X1 N2 X2) (val Penv)) ) )
+            YES )
+         ((and
+               (not (num? X2))
+               (sym? X2)
+               (== (firstByte X2) (char "@")) )
+            (unless (== X2 $At)
+               (set Penv
+                  (cons (cons3 N2 X2 N1 X1) (val Penv)) ) )
+            YES )
+         ((or (atom X1) (atom X2)) (equal X1 X2))
+         (T
+            (stkChk 0)
+            (let Env (val Penv)
+               (or
+                  (and
+                     (unify N1 (car X1) N2 (car X2))
+                     (unify N1 (cdr X1) N2 (cdr X2)) )
+                  (prog
+                     (set Penv Env)
+                     NO ) ) ) ) ) ) )
+
+(de lup (N X)
+   (stkChk 0)
+   (let Penv (val $Penv)
+      (until
+         (or
+            (num? X)
+            (pair X)
+            (<> (firstByte X) (char "@")) )
+         (let V (val Penv)
+            (while (pair (car V))
+               (let (Y @  Z (car Y))
+                  (? (and (== N (car Z)) (== X (cdr Z)))
+                     (setq
+                        Z (cdr Y)
+                        N (car Z)
+                        X (cdr Z) ) ) )
+               (shift V) ) ) ) )
+   (if (atom X)
+      X
+      (let Z (save (lup N (car X)))
+         (cons Z (lup N (cdr X))) ) ) )
+
+(de lookup (N X)
+   (if
+      (or
+         (num? (setq X (lup N X)))
+         (pair X)
+         (<> (firstByte X) (char "@")) )
+      X
+      $Nil ) )
+
+(de uniFill (X)
+   (cond
+      ((num? X) X)
+      ((sym? X)
+         (lup (car (val (val $Pnl))) X) )
+      (T
+         (stkChk 0)
+         (let Y (save (uniFill (car X)))
+            (cons Y (uniFill (cdr X))) ) ) ) )
+
+# (prove 'lst ['lst]) -> lst
+(de _prove (Exe)
+   (let X (cdr Exe)
+      (if (atom (eval (car X)))
+         $Nil
+         (let
+            (Q (save @)
+               Dbg (if (nil? (eval (cadr X))) 0 (save @))
+               P (prog1 (caar Q) (set Q (cdar Q)))
+               N (++ P)
+               Nl (link (push (++ P) NIL))
+               Alt (link (push (++ P) NIL))
+               Tp1 (link (push (++ P) NIL))
+               Tp2 (link (push (++ P) NIL))
+               Env (link (push P NIL))
+               E (link (push $Nil NIL))
+               At (save (val $At))
+               Penv (val $Penv)
+               Pnl (val $Pnl) )
+            (set $Penv Env  $Pnl Nl)
+            (while (or (pair (val Tp1)) (pair (val Tp2)))
+               (cond
+                  ((pair (val Alt))
+                     (set E (val Env))
+                     (if
+                        (unify
+                           (car (val Nl))
+                           (cdar (val Tp1))
+                           N
+                           (caar (val Alt)) )
+                        (when (atom (set Alt (cdr (val Alt))))
+                           (setq P (caar Q))
+                           (set Q (cdar Q))
+                           (setq N (++ P))
+                           (set
+                              Nl (++ P)
+                              Alt (++ P)
+                              Tp1 (++ P)
+                              Tp2 (++ P)
+                              Env P ) )
+                        (unless (=0 Dbg)
+                           (let Y (car (val Tp1))
+                              (when (memq (car Y) (val Dbg))
+                                 (let (L (get (car Y) $T)  I 1)
+                                    (until (equal (car (val Alt)) (car L))
+                                       (inc 'I)
+                                       (shift L) )
+                                    (outWord I) )
+                                 (space)
+                                 (print (uniFill Y))
+                                 (newline) ) ) )
+                        (when (pair (cdr (val Alt)))
+                           (set Q
+                              (cons
+                                 (cons N
+                                    (cons (val Nl)
+                                       (cons @
+                                          (cons (val Tp1) (cons (val Tp2) (val E))) ) ) )
+                                 (car (val Q)) ) ) )
+                           (set
+                              Nl (cons N (val Nl))
+                              Tp2 (cons (cdr (val Tp1)) (val Tp2))
+                              Tp1 (cdar (val Alt))
+                              Alt $Nil )
+                           (setq N (+ N (hex "10")) ) ) )  # Increment
+                  ((atom (setq X (val Tp1)))
+                     (set
+                        Tp1 (car (val Tp2))
+                        Tp2 (cdr (val Tp2))
+                        Nl (cdr (val Nl)) ) )
+                  ((t? (car X))
+                     (while
+                        (and
+                           (pair (car Q))
+                           (>= (caar @) (car (val Nl))) )
+                        (set Q (cdar Q)) )
+                     (set Tp1 (cdr X)) )
+                  ((num? (car @))
+                     (set E (run (cdar X)))
+                     (let (I (int (caar X))  Y (val Nl))
+                        (while (gt0 (dec 'I))
+                           (shift Y) )
+                        (set
+                           Nl (cons (car X) (val Nl))
+                           Tp2 (cons (cdr (val Tp1)) (val Tp2))
+                           Tp1 (val E) ) ) )
+                  ((== @ (val $Up))
+                     (if
+                        (and
+                           (nil? (set E (run (cddr (car X)))))
+                           (unify
+                              (car (val Nl))
+                              (cadr (car X))
+                              (car (val Nl))
+                              (val E) ) )
+                        (set Tp1 (cdr X))
+                        (setq P (caar Q))
+                        (set Q (cdar Q))
+                        (setq N (++ P))
+                        (set
+                           Nl (++ P)
+                           Alt (++ P)
+                           Tp1 (++ P)
+                           Tp2 (++ P)
+                           Env P ) ) )
+                  ((atom (set Alt (get (caar X) $T)))
+                     (setq P (caar Q))
+                     (set Q (cdar Q))
+                     (setq N (++ P))
+                     (set
+                        Nl (++ P)
+                        Alt (++ P)
+                        Tp1 (++ P)
+                        Tp2 (++ P)
+                        Env P ) ) ) )
+            (set E $Nil)
+            (let Y (val Env)
+               (while (pair (cdr Y))
+                  (let Z (caar Y)
+                     (when (== (car Z) ZERO)
+                        (set E
+                           (cons
+                              (cons (shift Z) (lookup ZERO Z))
+                              (val E) ) ) ) )
+                  (shift Y) ) )
+            (set $Pnl Pnl  $Penv Penv  $At At)
+            (cond
+               ((pair (val E)) @)
+               ((pair (val Env)) $T)
+               (T $Nil) ) ) ) ) )
+
+# (-> any [cnt]) -> any
+(de _arrow (Exe)
+   (let (X (cdr Exe)  L (val (val $Pnl)))
+      (when (num? (cadr X))
+         (let I (int @)
+            (while (gt0 (dec 'I))
+               (shift L) ) ) )
+      (lookup (car L) (car X)) ) )
+
+# (unify 'any) -> lst
+(de _unify (Exe)
+   (let (X (save (eval (cadr Exe)))  L (val (val $Pnl)))
+      (if (unify (cadr L) X (car L) X)
+         (val (val $Pnl))
+         $Nil ) ) )

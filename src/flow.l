@@ -1,4 +1,4 @@
-# 20may20 Software Lab. Alexander Burger
+# 23may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -234,20 +234,49 @@
 (de _and (Exe)
    (let X (cdr Exe)
       (loop
-         (let Y (eval (++ X))
+         (let Y (eval (car X))
             (? (nil? Y) Y)
             (set $At Y)
-            (? (atom X) Y) ) ) ) )
+            (? (atom (shift X)) Y) ) ) ) )
 
 # (or 'any ..) -> any
 (de _or (Exe)
    (let X (cdr Exe)
       (loop
-         (let Y (eval (++ X))
+         (let Y (eval (car X))
+            (? (not (nil? Y))
+               (set $At Y) )
+            (? (atom (shift X)) Y) ) ) ) )
+
+# (nand 'any ..) -> flg
+(de _nand (Exe)
+   (let X (cdr Exe)
+      (loop
+         (let Y (eval (car X))
+            (? (nil? Y) $T)
+            (set $At Y)
+            (? (atom (shift X)) $Nil) ) ) ) )
+
+# (nor 'any ..) -> flg
+(de _nor (Exe)
+   (let X (cdr Exe)
+      (loop
+         (let Y (eval (car X))
             (? (not (nil? Y))
                (set $At Y)
-               Y )
-            (? (atom X) Y) ) ) ) )
+               $Nil )
+            (? (atom (shift X)) $T) ) ) ) )
+
+# (xor 'any 'any) -> flg
+(de _xor (Exe)
+   (let X (cdr Exe)
+      (if (nil? (eval (++ X)))
+         (if (nil? (eval (car X))) @ $T)
+         (if (nil? (eval (car X))) $T $Nil) ) ) )
+
+# (bool 'any) -> flg
+(de _bool (Exe)
+   (if (nil? (eval (cadr Exe))) @ $T) )
 
 # (not 'any) -> flg
 (de _not (Exe)

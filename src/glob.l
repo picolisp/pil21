@@ -1,4 +1,4 @@
-# 21may20 Software Lab. Alexander Burger
+# 23may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -79,17 +79,19 @@
 
 # Symbol Table
 (symTab
-   ($Nil "NIL" $Nil)    # NIL symbol
-   (NIL $Nil 0)         # CDR of NIL as empty list
-   ($Db1 0 $Nil)        # Database root symbol
-   ($Pico $Nil $Nil 0)  # Initial namespace
+   ($Nil "NIL" $Nil)       # NIL symbol
+   (NIL $Nil 0)            # CDR of NIL as empty list
+   ($Db1 0 $Nil)           # Database root symbol
+   ($Tilde "~" $Nil)       # Tilde symbol
+   ($PT $Nil $Nil 0)       # Pico trees
+   ($Pico $Tilde $PT 0)    # Initial namespace
    # Protected symbols
    ($pico "pico" $Pico)
    ($Pico1 $pico $Nil 0)
    ($DB "*DB" $Db1)
    ($Meth "meth" _meth)
    ($Quote "quote" _quote)
-   ## Sync src/pico.h 'T' (9*2+1)
+   ## Sync src/pico.h 'T' (11*2+1)
    ($T "T" $T)
    ($I "I" $Nil)
    ($N "N" $Nil)
@@ -266,6 +268,10 @@
    (NIL "box" _box)
    (NIL "and" _and)
    (NIL "or" _or)
+   (NIL "nand" _nand)
+   (NIL "nor" _nor)
+   (NIL "xor" _xor)
+   (NIL "bool" _bool)
    (NIL "not" _not)
    (NIL "nil" _nil)
    (NIL "t" _t)
@@ -387,6 +393,9 @@
    (NIL "rank" _rank)
    (NIL "match" _match)
    (NIL "fill" _fill)
+   (NIL "prove" _prove)
+   (NIL "->" _arrow)
+   (NIL "unify" _unify)
    # Networking
    (NIL "udp" _udp)
    # System functions

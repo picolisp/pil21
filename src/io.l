@@ -1,4 +1,4 @@
-# 20may20 Software Lab. Alexander Burger
+# 23may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -965,8 +965,7 @@
       (while (ge0 Chr)
          (if (== Chr (char "~"))  # Namespace
             (let S (requestSym (val 3 R))  # Find or create symbol
-               (unless (pair (val S))
-                  (symNsErr 0 S) )
+               (needNsp 0 S)
                (set (set $Intern (any $Cell)) S)  # Switch symbol namespace
                (set R 4  3 R ZERO) )  # Build new name
             (? (n0 (strchr $Delim Chr)))
@@ -1484,7 +1483,7 @@
                               (? (=0 (setq B (symByte P))) ) ) )
                         (call $Put (char "\"")) )
                      (let Nsp (car Lst)
-                        (unless (=0 (isIntern Nm (val Nsp)))
+                        (unless (=0 (isIntern Nm (cdar Nsp)))
                            (? (== @ Sym)  # Internal
                               (when F  # Found in other namespace
                                  (outName Nsp)
