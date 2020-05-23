@@ -671,7 +671,7 @@
    (let Sym (needSym Exe (eval (cadr Exe)))
       (if (sym? (val (tail Sym)))  # External
          (dbZap Sym)
-         (unintern Sym (name @) (val (car (val $Intern)))) )
+         (unintern Sym (name @) (cdar (car (val $Intern)))) )
       Sym ) )
 
 # (chop 'any) -> lst
