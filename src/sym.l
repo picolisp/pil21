@@ -610,8 +610,13 @@
                         (prog1
                            (run X)  # Run 'prg'
                            (set $Intern Z) ) ) ) )
-               (if (nil? (val (needSymb Exe Y)))  # New namespace
-                  (set Y (cons $Tilde (cons $Nil $Nil)))
+               (if
+                  (or  # New namespace
+                     (nil? (val (needSymb Exe Y)))
+                     (== @ Y) )
+                  (set
+                     (chkVar Exe Y)
+                     (cons $Tilde (cons $Nil $Nil)) )
                   (needNsp Exe Y) )
                (let R (setq Y (save (cons Y $Nil)))
                   (while (pair X)

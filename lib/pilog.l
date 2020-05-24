@@ -1,6 +1,8 @@
-# 23may20 Software Lab. Alexander Burger
+# 24may20 Software Lab. Alexander Burger
 
-# *Rule
+(symbols "pilog" 'pico)
+
+(export) (be clause repeat asserta assertz retract rules)
 
 (de be CL
    (clause CL) )
@@ -43,41 +45,44 @@
          S ) ) )
 
 ### Pilog Interpreter ###
-(de goal ("CL" . @)
-   (let "Env" '(T)
+(export) (goal fail pilog solve query ?)
+(local) (CL Env Prg Q Dbg R L @H @A @B @Obj @X @Lst @CL @P @C *R)
+
+(de goal (CL . @)
+   (let Env '(T)
       (while (args)
-         (push '"Env"
+         (push 'Env
             (cons (cons 0 (next)) 1 (next)) ) )
-      (while (and "CL" (pat? (car "CL")))
-         (push '"Env"
+      (while (and CL (pat? (car CL)))
+         (push 'Env
             (cons
-               (cons 0 (++ "CL"))
-               (cons 1 (eval (++ "CL"))) ) ) )
+               (cons 0 (++ CL))
+               (cons 1 (eval (++ CL))) ) ) )
       (cons
          (cons
-            (conc (list 1 (0) NIL "CL" NIL) "Env") ) ) ) )
+            (conc (list 1 (0) NIL CL NIL) Env) ) ) ) )
 
 (de fail ()
    (goal '((NIL))) )
 
-(de pilog ("CL" . "Prg")
-   (for ("Q" (goal "CL") (prove "Q"))
-      (bind @ (run "Prg")) ) )
+(de pilog (CL . Prg)
+   (for (Q (goal CL) (prove Q))
+      (bind @ (run Prg)) ) )
 
-(de solve ("CL" . "Prg")
+(de solve (CL . Prg)
    (make
-      (if "Prg"
-         (for ("Q" (goal "CL") (prove "Q"))
-            (link (bind @ (run "Prg"))) )
-         (for ("Q" (goal "CL") (prove "Q"))
+      (if Prg
+         (for (Q (goal CL) (prove Q))
+            (link (bind @ (run Prg))) )
+         (for (Q (goal CL) (prove Q))
             (link @) ) ) ) )
 
-(de query ("Q" "Dbg")
-   (use "R"
+(de query (Q Dbg)
+   (use R
       (loop
-         (NIL (prove "Q" "Dbg"))
-         (T (=T (setq "R" @)) T)
-         (for X "R"
+         (NIL (prove Q Dbg))
+         (T (=T (setq R @)) T)
+         (for X R
             (space)
             (print (car X))
             (print '=)
@@ -85,14 +90,17 @@
             (flush) )
          (T (line)) ) ) )
 
-(de ? "CL"
-   (let "L"
+(de ? CL
+   (let L
       (make
-         (while (nor (pat? (car "CL")) (lst? (car "CL")))
-            (link (++ "CL")) ) )
-      (query (goal "CL") "L") ) )
+         (while (nor (pat? (car CL)) (lst? (car CL)))
+            (link (++ CL)) ) )
+      (query (goal CL) L) ) )
 
 ### Basic Rules ###
+(export) (repeat true not call or nil)
+(local) (_or _for)
+
 (be repeat)
 (repeat)
 
@@ -111,6 +119,9 @@
 (repeat)
 
 (be nil (@X) (^ @ (not (-> @X))))
+
+
+(export) (equal different append member delete permute uniq)
 
 (be equal (@X @X))
 
@@ -137,6 +148,9 @@
       (let X (-> @X)
          (not (idx (-> @B) (cons (hash X) X) T)) ) ) )
 
+
+(export) (asserta assertz retract clause show for)
+
 (be asserta (@C) (^ @ (asserta (-> @C))))
 
 (be assertz (@C) (^ @ (assertz (-> @C))))
@@ -145,9 +159,9 @@
    (2 (cons (-> @C)))
    (^ @ (retract (list (car (-> @C)) (cdr (-> @C))))) )
 
-(be clause ("@H" "@B")
-   (^ "@A" (get (-> "@H") T))
-   (member "@B" "@A") )
+(be clause (@H @B)
+   (^ @A (get (-> @H) T))
+   (member @B @A) )
 
 (be show (@X) (^ @ (show (-> @X))))
 
@@ -171,7 +185,10 @@
 
 (repeat)
 
+
 ### DB ###
+(export) initQuery
+
 (de initQuery (Var Cls Hook Val)
    (let (Tree (tree Var Cls Hook)  Rel (get Cls Var))
       (when (find '((B) (isa '+index B)) (get Rel 'bag))
@@ -218,6 +235,10 @@
                   (init Tree (cons Val) (cons (pack Val `(char T)) T)) ) ) )
          (T (init Tree (cons Val) (cons (pack Val `(char T)) T))) ) ) )
 
+
+(export) db
+(local) _db
+
 # (db var cls obj)
 (be db (@Var @Cls @Obj)
    (^ @Q
@@ -249,14 +270,17 @@
       (let (Q (val (-> @Q 2))  Cls (-> @Cls 2))
          (loop
             (NIL (step Q (= '(NIL) (caaar Q))) T)
-            (T (isa Cls (setq "R" @))) ) ) )
+            (T (isa Cls (setq R @))) ) ) )
    T
    (fail) )
 
-(be _db (@Obj) (^ @Obj "R"))
+(be _db (@Obj) (^ @Obj R))
 
 (repeat)
 
+
+(export) (val lst map)
+(local) (_lst _map)
 
 (be val (@V . @L)
    (^ @V (apply get (-> @L)))
@@ -279,6 +303,9 @@
 (repeat)
 
 
+(export) (isa same bool ub range head hold fold part tolr)
+(local) (_same _range _head _hold _fold _part _tolr)
+
 (be isa (@Typ . @L)
    (^ @
       (or
@@ -291,21 +318,21 @@
          (or
             (not V)
             (let L (-> @L)
-               ("same" (car L) (cdr L)) ) ) ) ) )
+               (_same (car L) (cdr L)) ) ) ) ) )
 
-(de "same" (X L)
+(de _same (X L)
    (cond
       ((not L)
          (if (atom X)
             (= V X)
             (member V X) ) )
       ((atom X)
-         ("same" (get X (car L)) (cdr L)) )
+         (_same (get X (car L)) (cdr L)) )
       ((atom (car L))
          (pick
-            '((Y) ("same" (get Y (car L)) (cdr L)))
+            '((Y) (_same (get Y (car L)) (cdr L)))
             X ) )
-      (T ("same" (apply get (car L) X) (cdr L))) ) )
+      (T (_same (apply get (car L) X) (cdr L))) ) )
 
 (be bool (@F . @L)
    (^ @
@@ -332,9 +359,9 @@
          (or
             (not R)
             (let L (-> @L)
-               ("range" (car L) (cdr L)) ) ) ) ) )
+               (_range (car L) (cdr L)) ) ) ) ) )
 
-(de "range" (X L)
+(de _range (X L)
    (cond
       ((not L)
          (if (atom X)
@@ -348,12 +375,12 @@
                      (>= (car R) Y (cdr R)) ) )
                X ) ) )
       ((atom X)
-         ("range" (get X (car L)) (cdr L)) )
+         (_range (get X (car L)) (cdr L)) )
       ((atom (car L))
          (pick
-            '((Y) ("range" (get Y (car L)) (cdr L)))
+            '((Y) (_range (get Y (car L)) (cdr L)))
             X ) )
-      (T ("range" (apply get (car L) X) (cdr L))) ) )
+      (T (_range (apply get (car L) X) (cdr L))) ) )
 
 (be head (@S . @L)
    (^ @
@@ -361,21 +388,21 @@
          (or
             (not S)
             (let L (-> @L)
-               ("head" (car L) (cdr L)) ) ) ) ) )
+               (_head (car L) (cdr L)) ) ) ) ) )
 
-(de "head" (X L)
+(de _head (X L)
    (cond
       ((not L)
          (if (atom X)
             (pre? S X)
             (find '((Y) (pre? S Y)) X) ) )
       ((atom X)
-         ("head" (get X (car L)) (cdr L)) )
+         (_head (get X (car L)) (cdr L)) )
       ((atom (car L))
          (pick
-            '((Y) ("head" (get Y (car L)) (cdr L)))
+            '((Y) (_head (get Y (car L)) (cdr L)))
             X ) )
-      (T ("head" (apply get (car L) X) (cdr L))) ) )
+      (T (_head (apply get (car L) X) (cdr L))) ) )
 
 (be hold (@S . @L)
    (^ @
@@ -383,21 +410,21 @@
          (or
             (not S)
             (let L (-> @L)
-               ("hold" (car L) (cdr L)) ) ) ) ) )
+               (_hold (car L) (cdr L)) ) ) ) ) )
 
-(de "hold" (X L)
+(de _hold (X L)
    (cond
       ((not L)
          (if (atom X)
             (sub? S X)
             (find '((Y) (sub? S Y)) X) ) )
       ((atom X)
-         ("hold" (get X (car L)) (cdr L)) )
+         (_hold (get X (car L)) (cdr L)) )
       ((atom (car L))
          (pick
-            '((Y) ("hold" (get Y (car L)) (cdr L)))
+            '((Y) (_hold (get Y (car L)) (cdr L)))
             X ) )
-      (T ("hold" (apply get (car L) X) (cdr L))) ) )
+      (T (_hold (apply get (car L) X) (cdr L))) ) )
 
 (be fold (@S . @L)
    (^ @
@@ -405,21 +432,21 @@
          (or
             (not S)
             (let L (-> @L)
-               ("fold" (car L) (cdr L)) ) ) ) ) )
+               (_fold (car L) (cdr L)) ) ) ) ) )
 
-(de "fold" (X L)
+(de _fold (X L)
    (cond
       ((not L)
          (if (atom X)
             (pre? S (fold X))
             (find '((Y) (pre? S (fold Y))) X) ) )
       ((atom X)
-         ("fold" (get X (car L)) (cdr L)) )
+         (_fold (get X (car L)) (cdr L)) )
       ((atom (car L))
          (pick
-            '((Y) ("fold" (get Y (car L)) (cdr L)))
+            '((Y) (_fold (get Y (car L)) (cdr L)))
             X ) )
-      (T ("fold" (apply get (car L) X) (cdr L))) ) )
+      (T (_fold (apply get (car L) X) (cdr L))) ) )
 
 (be part (@S . @L)
    (^ @
@@ -427,21 +454,21 @@
          (or
             (not S)
             (let L (-> @L)
-               ("part" (car L) (cdr L)) ) ) ) ) )
+               (_part (car L) (cdr L)) ) ) ) ) )
 
-(de "part" (X L)
+(de _part (X L)
    (cond
       ((not L)
          (if (atom X)
             (sub? S (fold X))
             (find '((Y) (sub? S (fold Y))) X) ) )
       ((atom X)
-         ("part" (get X (car L)) (cdr L)) )
+         (_part (get X (car L)) (cdr L)) )
       ((atom (car L))
          (pick
-            '((Y) ("part" (get Y (car L)) (cdr L)))
+            '((Y) (_part (get Y (car L)) (cdr L)))
             X ) )
-      (T ("part" (apply get (car L) X) (cdr L))) ) )
+      (T (_part (apply get (car L) X) (cdr L))) ) )
 
 (be tolr (@S . @L)
    (^ @
@@ -449,9 +476,9 @@
          (or
             (not S)
             (let L (-> @L)
-               ("tolr" (car L) (cdr L)) ) ) ) ) )
+               (_tolr (car L) (cdr L)) ) ) ) ) )
 
-(de "tolr" (X L)
+(de _tolr (X L)
    (cond
       ((not L)
          (if (atom X)
@@ -462,15 +489,18 @@
                      (or (sub? S (fold Y)) (pre? P (ext:Snx Y))) )
                   X ) ) ) )
       ((atom X)
-         ("tolr" (get X (car L)) (cdr L)) )
+         (_tolr (get X (car L)) (cdr L)) )
       ((atom (car L))
          (pick
-            '((Y) ("tolr" (get Y (car L)) (cdr L)))
+            '((Y) (_tolr (get Y (car L)) (cdr L)))
             X ) )
-      (T ("tolr" (apply get (car L) X) (cdr L))) ) )
+      (T (_tolr (apply get (car L) X) (cdr L))) ) )
 
 
-(de "select" (Lst Flg)
+(export) select
+(local) (_select _initSel _gen _sel)
+
+(de _select (Lst Flg)
    (let? X
       (nond
          ((atom (car Lst))
@@ -481,14 +511,14 @@
                         Cls (++ L)
                         Hook (and (get Cls Var 'hook) (++ L))
                         Val (++ L) )
-                     (and (or Val Flg) (chain ("initSel"))) ) ) ) )
+                     (and (or Val Flg) (chain (_initSel))) ) ) ) )
          ((pat? (car Lst))
             (let
                (Var (++ Lst)
                   Cls (++ Lst)
                   Hook (and (get Cls Var 'hook) (++ Lst))
                   Val (++ Lst) )
-               (and (or Val Flg) ("initSel")) ) )
+               (and (or Val Flg) (_initSel)) ) )
          (NIL
             (let (Var (++ Lst) Val (++ Lst))
                (and
@@ -501,7 +531,7 @@
                L )
             X ) ) ) )
 
-(de "initSel" ()
+(de _initSel ()
    (with (treeRel Var Cls)
       (let Tree (tree Var (: cls) Hook)
          (conc
@@ -551,63 +581,65 @@
       ((pat? (car Q)) (get (prove (cdr Q)) @))
       (T (step Q (= '(NIL) (caaar Q)))) ) )
 
-(be select (("@Obj" . "@X") . "@Lst")
-   (^ @ (unify (-> "@X")))
-   (^ "@P" (box (cdr (-> "@Lst"))))
-   (^ "@C"
+(be select ((@Obj . @X) . @Lst)
+   (^ @ (unify (-> @X)))
+   (^ @P (box (cdr (-> @Lst))))
+   (^ @C
       (box  # ((obj ..) curr . lst)
-         (let L (car (-> "@Lst"))
+         (let L (car (-> @Lst))
             (setq L
                (or
-                  (mapcan "select" L)
-                  ("select" (car L) T) ) )
+                  (mapcan _select L)
+                  (_select (car L) T) ) )
             (cons NIL L L) ) ) )
-   (_gen "@Obj")
+   (_gen @Obj)
    (_sel) )
 
 (be _gen (@Obj)
    (^ @
-      (let C (caadr (val (-> "@C" 2)))
-         (not (setq "*R" (_gen (car C) (cdr C)))) ) )
+      (let C (caadr (val (-> @C 2)))
+         (not (setq *R (_gen (car C) (cdr C)))) ) )
    T
    (fail) )
 
-(be _gen (@Obj) (^ @Obj "*R"))
+(be _gen (@Obj) (^ @Obj *R))
 
 (repeat)
 
 (be _sel ()
-   (2 (val (-> "@P" 2)))
+   (2 (val (-> @P 2)))
    (^ @
-      (let C (val (-> "@C" 2))
-         (unless (idx C "*R" T)
+      (let C (val (-> @C 2))
+         (unless (idx C *R T)
             (rot (cddr C) (offset (cadr C) (cddr C)))
             (set (cdr C) (cddr C)) ) ) )
    T )
 
 (be _sel ()
    (^ @
-      (let C (cdr (val (-> "@C" 2)))
+      (let C (cdr (val (-> @C 2)))
          (set C (or (cdar C) (cdr C))) ) )
    (fail) )
 
 ### Remote queries ###
+(export) (rqry remote revolve)
+
 (de rqry Args
    (for (Q (goal (cdr Args)) (prove Q))
       (pr (get @ (car Args)))
       (NIL (flush)) )
    (bye) )
 
-(be remote ("@Lst" . "@CL")
+(be remote (@Lst . @CL)
    (^ @Sockets
       (box
          (prog1
-            (cdr (-> "@Lst"))
+            (cdr (-> @Lst))
             (for X @  # (out . in)
                ((car X)
-                  (cons 'rqry (car (-> "@Lst")) (-> "@CL")) ) ) ) ) )
-   (^ @ (unify (car (-> "@Lst"))))
-   (_remote "@Lst") )
+                  (cons 'rqry (car (-> @Lst)) (-> @CL)) ) ) ) ) )
+   (^ @ (unify (car (-> @Lst))))
+   (_remote @Lst) )
 
 (be _remote ((@Obj . @))
    (^ @ (not (val (-> @Sockets 2))))
@@ -624,17 +656,17 @@
 
 (repeat)
 
-(be revolve ("@Lst" . "@CL")
+(be revolve (@Lst . @CL)
    (^ @Gen
-      (let L (-> "@Lst")
+      (let L (-> @Lst)
          (prog1 (box)
             (for X (cddr L)
                (push @
                   (goal
-                     (cons (cadr L) (lit X) (-> "@CL")) ) ) )
+                     (cons (cadr L) (lit X) (-> @CL)) ) ) )
             (push @ (car L)) ) ) )
-   (^ @ (unify (car (-> "@Lst"))))
-   (_revolve "@Lst") )
+   (^ @ (unify (car (-> @Lst))))
+   (_revolve @Lst) )
 
 (be _revolve ((@Val . @))
    (^ @ (not (cdar (-> @Gen 2))))
