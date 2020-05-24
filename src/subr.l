@@ -1155,10 +1155,10 @@
                         (while (gt0 (dec 'I))
                            (shift Y) )
                         (set
-                           Nl (cons (car X) (val Nl))
-                           Tp2 (cons (cdr (val Tp1)) (val Tp2))
+                           Nl (cons (car Y) (val Nl))
+                           Tp2 (cons (cdr X) (val Tp2))
                            Tp1 (val E) ) ) )
-                  ((== @ (val $Up))
+                  ((== @ $Up)
                      (if
                         (and
                            (not
@@ -1207,7 +1207,7 @@
 # (-> any [cnt]) -> any
 (de _arrow (Exe)
    (let (X (cdr Exe)  L (val (val $Pnl)))
-      (when (num? (cadr X))
+      (when (cnt? (cadr X))
          (let I (int @)
             (while (gt0 (dec 'I))
                (shift L) ) ) )

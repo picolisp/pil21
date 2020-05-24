@@ -1,4 +1,4 @@
-# 23may20 Software Lab. Alexander Burger
+# 24may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -82,7 +82,7 @@
    ($Nil "NIL" $Nil)       # NIL symbol
    (NIL $Nil 0)            # CDR of NIL as empty list
    ($Db1 0 $Nil)           # Database root symbol
-   ($Tilde "~" $Nil)       # Tilde symbol
+   ($Tilde "~" $Tilde)     # Tilde symbol
    ($PT $Nil $Nil 0)       # Pico trees
    ($Pico $Tilde $PT 0)    # Initial namespace
    # Protected symbols

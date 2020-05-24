@@ -1,4 +1,4 @@
-# 22may20 Software Lab. Alexander Burger
+# 24may20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -240,6 +240,10 @@
 
 (de local ()
    (symbols (list (car (symbols)))
+      (read) ) )
+
+(de export ()
+   (symbols (list (cadr (symbols)))
       (read) ) )
 
 (de import Lst
