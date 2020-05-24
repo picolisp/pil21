@@ -1,4 +1,4 @@
-# 23may20 Software Lab. Alexander Burger
+# 24may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -106,8 +106,7 @@
    (or
       (nil? X)
       (and
-         (not (num? X))
-         (sym? X)
+         (symb? X)
          (not (sym? (val (tail X))))
          (let P (push 0 (name @))  # [cnt name]
             (loop
@@ -465,7 +464,7 @@
 
 # (name 'sym) -> sym
 (de _name (Exe)
-   (let Tail (val (tail (needSym Exe (eval (cadr Exe)))))
+   (let Tail (val (tail (needSymb Exe (eval (cadr Exe)))))
       (if (sym? Tail)  # External
          (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
             (packExtNm (& (name Tail) -9) P)
@@ -475,7 +474,7 @@
 
 # (nsp 'sym) -> sym
 (de _nsp (Exe)
-   (let Sym (needSym Exe (eval (cadr Exe)))
+   (let Sym (needSymb Exe (eval (cadr Exe)))
       (if (sym? (val (tail Sym)))
          $Nil
          (let (Nm (name @)  Lst (val $Intern))  # Search namespaces
@@ -494,13 +493,9 @@
 # (pat? 'any) -> sym | NIL
 (de _patQ (Exe)
    (let X (eval (cadr Exe))
-      (if
-         (or
-            (num? X)
-            (pair X)
-            (<> (firstChar X) (char "@")) )
-         $Nil
-         X ) ) )
+      (if (and (symb? X) (== (firstChar X) (char "@")))
+         X
+         $Nil ) ) )
 
 # (fun? 'any) -> any
 (de _funQ (Exe)
@@ -512,7 +507,7 @@
 (de _getd (Exe)
    (let (X (eval (cadr Exe))  V T)
       (cond
-         ((or (num? X) (pair X)) $Nil)
+         ((not (symb? X)) $Nil)
          ((n0 (funq (setq V (val X)))) V)
          ((and (nil? V) (sharedLib X)) (val X))
          (T $Nil) ) ) )
@@ -604,7 +599,7 @@
             (if (pair Y)  # List argument
                (let L Y
                   (loop
-                     (needNsp Exe (needSym Exe (++ L)))
+                     (needNsp Exe (needSymb Exe (++ L)))
                      (? (atom L)) )
                   (if (atom X)  # No 'prg'
                      (prog1
@@ -615,7 +610,7 @@
                         (prog1
                            (run X)  # Run 'prg'
                            (set $Intern Z) ) ) ) )
-               (if (nil? (val (needSym Exe Y)))  # New namespace
+               (if (nil? (val (needSymb Exe Y)))  # New namespace
                   (set Y (cons $Tilde (cons $Nil $Nil)))
                   (needNsp Exe Y) )
                (let R (setq Y (save (cons Y $Nil)))
@@ -623,7 +618,7 @@
                      (setq Y
                         (set 2 Y
                            (cons
-                              (needNsp Exe (needSym Exe (eval (++ X))))
+                              (needNsp Exe (needSymb Exe (eval (++ X))))
                               $Nil ) ) ) )
                   (prog1
                      (val $Intern)
@@ -633,7 +628,7 @@
 (de _intern (Exe)
    (let
       (X (cdr Exe)
-         Sym (save (needSym Exe (eval (++ X)))) )
+         Sym (save (needSymb Exe (eval (++ X)))) )
       (cond
          ((sym? (val (tail Sym))) $Nil)
          ((== (name @) ZERO) $Nil)
@@ -648,8 +643,7 @@
    (let X (eval (cadr Exe))
       (if
          (and
-            (not (num? X))
-            (sym? X)
+            (symb? X)
             (not (sym? (val (tail X))))
             (== ZERO (name @)) )
          X
@@ -659,7 +653,7 @@
 (de _strQ (Exe)
    (let X (eval (cadr Exe))
       (cond
-         ((or (num? X) (pair X)) $Nil)
+         ((not (symb? X)) $Nil)
          ((or
                (sym? (val (tail X)))  # External
                (== X (isLstIntern (name @) (val $Intern))) )
@@ -668,7 +662,7 @@
 
 # (zap 'sym) -> sym
 (de _zap (Exe)
-   (let Sym (needSym Exe (eval (cadr Exe)))
+   (let Sym (needSymb Exe (eval (cadr Exe)))
       (if (sym? (val (tail Sym)))  # External
          (dbZap Sym)
          (unintern Sym (name @) (cdar (car (val $Intern)))) )
@@ -1424,7 +1418,7 @@
          (setq Key (eval (++ X)))
          (? (atom X))
          (setq Y (safe (getn Exe Y Key))) )
-      (needSym Exe Y)
+      (needSymb Exe Y)
       (link (push Key NIL))
       (when (sym? (val (tail Y)))
          (if (nil? Key)
@@ -1478,7 +1472,7 @@
          (setq Key (++ X))
          (? (atom X))
          (setq Y (getn Exe Y Key)) )
-      (needSym Exe Y)
+      (needSymb Exe Y)
       (when (sym? (val (tail Y)))
          (if (nil? Key)
             (dbFetch Exe Y)  # Volatile property
@@ -1519,7 +1513,7 @@
       (while (pair (shift X))
          (setq Y
             (safe (getn Exe Y (eval (car X)))) ) )
-      (when (sym? (setq X (val (tail (needSym Exe Y)))))
+      (when (sym? (setq X (val (tail (needSymb Exe Y)))))
          (dbFetch Exe Y)
          (setq X (& (val (tail Y)) -9)) )
       (if (num? X)
@@ -1535,7 +1529,7 @@
 
 (de void wipe (Exe X)
    (let
-      (Tail (val (tail (needSym Exe X)))
+      (Tail (val (tail (needSymb Exe X)))
          Nm (name Tail) )
       (if (sym? Tail)  # External symbol
          (let N (add Nm Nm)  # Get carry
@@ -1563,7 +1557,7 @@
    (loop
       (? (atom X) $Nil)
       (let Y (car X)
-         (unless (or (num? Y) (pair Y))
+         (when (symb? Y)
             (? (not (nil? (get Y Key))) @)
             (stkChk 0)
             (? (not (nil? (meta (car Y) Key))) @) ) )
@@ -1587,29 +1581,21 @@
 # (low? 'any) -> sym | NIL
 (de _lowQ (Exe)
    (let X (eval (cadr Exe))
-      (if
-         (and
-            (not (num? X))
-            (sym? X)
-            (isLowc (firstChar X)) )
+      (if (and (symb? X) (isLowc (firstChar X)))
          X
          $Nil ) ) )
 
 # (upp? 'any) -> sym | NIL
 (de _uppQ (Exe)
    (let X (eval (cadr Exe))
-      (if
-         (and
-            (not (num? X))
-            (sym? X)
-            (isUppc (firstChar X)) )
+      (if (and (symb? X) (isUppc (firstChar X)))
          X
          $Nil ) ) )
 
 # (lowc 'any) -> any
 (de _lowc (Exe)
    (let X (eval (cadr Exe))
-      (if (or (num? X) (pair X) (nil? X))
+      (if (or (not (symb? X)) (nil? X))
          X
          (let
             (P (push 0 (xName Exe X) NIL)  # [cnt name link]
@@ -1625,7 +1611,7 @@
 # (uppc 'any) -> any
 (de _uppc (Exe)
    (let X (eval (cadr Exe))
-      (if (or (num? X) (pair X) (nil? X))
+      (if (or (not (symb? X)) (nil? X))
          X
          (let
             (P (push 0 (xName Exe X) NIL)  # [cnt name link]
@@ -1644,7 +1630,7 @@
 # (fold 'any ['cnt]) -> sym
 (de _fold (Exe)
    (let (X (cdr Exe)  Y (eval (++ X)))
-      (if (or (num? Y) (pair Y) (nil? Y))
+      (if (or (not (symb? Y)) (nil? Y))
          Y
          (let
             (N (if (atom X) 0 (evCnt Exe X))

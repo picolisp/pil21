@@ -1,4 +1,4 @@
-# 07may20 Software Lab. Alexander Burger
+# 24may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -226,11 +226,13 @@
 # (ext? 'any) -> sym | NIL
 (de _extQ (Exe)
    (let X (eval (cadr Exe))
-      (if (or (num? X) (not (sym? X)))
-         $Nil
-         (if (and (sym? (val (tail X))) (isLife X))
-            X
-            $Nil ) ) ) )
+      (if
+         (and
+            (symb? X)
+            (sym? (val (tail X)))
+            (isLife X) )
+         X
+         $Nil ) ) )
 
 (de void cleanUp ((i64 . N))
    (let (P (b8 BLK)  Db: (dbFile (val $DbFile)))
@@ -324,7 +326,7 @@
 # (extern 'sym) -> sym | NIL
 (de _extern (Exe)
    (let
-      (Sym (needSym Exe (eval (cadr Exe)))
+      (Sym (needSymb Exe (eval (cadr Exe)))
          Nm (name (& (val (tail Sym)) -9)) )
       (when (== Nm ZERO)
          (ret $Nil) )
@@ -387,8 +389,7 @@
 (de _touch (Exe)
    (let X (eval (cadr Exe))
       (and
-         (not (num? X))
-         (sym? X)
+         (symb? X)
          (sym? (val (tail X)))
          (dbTouch Exe X) )
       X ) )

@@ -1,4 +1,4 @@
-# 23may20 Software Lab. Alexander Burger
+# 24may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -556,9 +556,9 @@
 
 # (sym? 'any) -> flg
 (de _symQ (Exe)
-   (if (or (num? (eval (cadr Exe))) (pair @))
-      $Nil
-      $T ) )
+   (if (symb? (eval (cadr Exe)))
+      $T
+      $Nil ) )
 
 # (flg? 'any) -> flg
 (de _flgQ (Exe)
@@ -906,11 +906,7 @@
             YES ) )
       (stkChk 0)
       (let X (car Pat)
-         (unless
-            (or
-               (num? X)
-               (pair X)
-               (<> (firstByte X) (char "@")) )
+         (when (and (symb? X) (== (firstByte X) (char "@")))
             (? (atom Dat)
                (and
                   (equal (cdr Pat) Dat)
@@ -993,11 +989,7 @@
 (de i1 unify (N1 X1 N2 X2)
    (let Penv (val $Penv)
       (: 1
-         (unless
-            (or
-               (num? X1)
-               (pair X1)
-               (<> (firstByte X1) (char "@")) )
+         (when (and (symb? X1) (== (firstByte X1) (char "@")))
             (let X (val Penv)
                (while (pair (car X))
                   (let (Y @  Z (car Y))
@@ -1009,11 +1001,7 @@
                         (goto 1) ) )
                   (shift X) ) ) ) )
       (: 2
-         (unless
-            (or
-               (num? X2)
-               (pair X2)
-               (<> (firstByte X2) (char "@")) )
+         (when (and (symb? X2) (== (firstByte X2) (char "@")))
             (let X (val Penv)
                (while (pair (car X))
                   (let (Y @  Z (car Y))
@@ -1026,18 +1014,12 @@
                   (shift X) ) ) ) )
       (cond
          ((and (== N1 N2) (equal X1 X2)) YES)
-         ((and
-               (not (num? X1))
-               (sym? X1)
-               (== (firstByte X1) (char "@")) )
+         ((and (symb? X1) (== (firstByte X1) (char "@")))
             (unless (== X1 $At)
                (set Penv
                   (cons (cons3 N1 X1 N2 X2) (val Penv)) ) )
             YES )
-         ((and
-               (not (num? X2))
-               (sym? X2)
-               (== (firstByte X2) (char "@")) )
+         ((and (symb? X2) (== (firstByte X2) (char "@")))
             (unless (== X2 $At)
                (set Penv
                   (cons (cons3 N2 X2 N1 X1) (val Penv)) ) )
@@ -1050,27 +1032,23 @@
                   (and
                      (unify N1 (car X1) N2 (car X2))
                      (unify N1 (cdr X1) N2 (cdr X2)) )
-                  (prog
-                     (set Penv Env)
-                     NO ) ) ) ) ) ) )
+                  (prog (set Penv Env) NO) ) ) ) ) ) )
 
 (de lup (N X)
    (stkChk 0)
    (let Penv (val $Penv)
-      (until
-         (or
-            (num? X)
-            (pair X)
-            (<> (firstByte X) (char "@")) )
-         (let V (val Penv)
-            (while (pair (car V))
-               (let (Y @  Z (car Y))
-                  (? (and (== N (car Z)) (== X (cdr Z)))
-                     (setq
-                        Z (cdr Y)
-                        N (car Z)
-                        X (cdr Z) ) ) )
-               (shift V) ) ) ) )
+      (: 1
+         (when (and (symb? X) (== (firstByte X) (char "@")))
+            (let V (val Penv)
+               (while (pair (car V))
+                  (let (Y @  Z (car Y))
+                     (when (and (== N (car Z)) (== X (cdr Z)))
+                        (setq
+                           Z (cdr Y)
+                           N (car Z)
+                           X (cdr Z) )
+                        (goto 1) ) )
+                  (shift V) ) ) ) ) )
    (if (atom X)
       X
       (let Z (save (lup N (car X)))
@@ -1078,12 +1056,11 @@
 
 (de lookup (N X)
    (if
-      (or
-         (num? (setq X (lup N X)))
-         (pair X)
-         (<> (firstByte X) (char "@")) )
-      X
-      $Nil ) )
+      (and
+         (symb? (setq X (lup N X)))
+         (== (firstByte X) (char "@")) )
+      $Nil
+      X ) )
 
 (de uniFill (X)
    (cond
@@ -1119,7 +1096,7 @@
                (cond
                   ((pair (val Alt))
                      (set E (val Env))
-                     (if
+                     (ifn
                         (unify
                            (car (val Nl))
                            (cdar (val Tp1))
@@ -1137,7 +1114,7 @@
                               Env P ) )
                         (unless (=0 Dbg)
                            (let Y (car (val Tp1))
-                              (when (memq (car Y) (val Dbg))
+                              (when (memq (car Y) Dbg)
                                  (let (L (get (car Y) $T)  I 1)
                                     (until (equal (car (val Alt)) (car L))
                                        (inc 'I)
@@ -1153,7 +1130,7 @@
                                     (cons (val Nl)
                                        (cons @
                                           (cons (val Tp1) (cons (val Tp2) (val E))) ) ) )
-                                 (car (val Q)) ) ) )
+                                 (car Q) ) ) )
                            (set
                               Nl (cons N (val Nl))
                               Tp2 (cons (cdr (val Tp1)) (val Tp2))

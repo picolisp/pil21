@@ -1,4 +1,4 @@
-# 23may20 Software Lab. Alexander Burger
+# 24may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1211,7 +1211,7 @@
                $Nil
                (mkChar (i32 @)) ) )
          ((t? @) (mkChar TOP))
-         ((sym? @) (cnt (i64 (firstChar @))))
+         ((symb? @) (cnt (i64 (firstChar @))))
          (T (atomErr Exe @)) ) ) )
 
 # (in 'any . prg) -> any
@@ -1729,7 +1729,7 @@
 # (any 'sym) -> any
 (de _any (Exe)
    (cond
-      ((nil? (needSym Exe (eval (cadr Exe)))) @)
+      ((nil? (needSymb Exe (eval (cadr Exe)))) @)
       ((sym? (val (tail @))) $Nil)
       (T (parse (name @) YES (hex "20") 1)) ) )  # Blank, EOF
 

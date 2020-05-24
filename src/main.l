@@ -1,4 +1,4 @@
-# 23may20 Software Lab. Alexander Burger
+# 24may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -274,7 +274,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (sighandler Exe) ) )
 
 # Argument checks
-(local) (needCnt needNum needSym needPair needLst needVar chkVar needChkVar needNsp)
+(local) (needCnt needNum needSymb needPair needLst needVar chkVar needChkVar needNsp)
 
 (inline needCnt (Exe X)
    (unless (cnt? X)
@@ -286,8 +286,8 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (numErr Exe X) )
    X )
 
-(inline needSym (Exe X)
-   (when (or (num? X) (pair X))
+(inline needSymb (Exe X)
+   (unless (symb? X)
       (symErr Exe X) )
    X )
 
@@ -340,12 +340,12 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       X ) )
 
 (de xSym (X)
-   (if (or (num? X) (pair X))
+   (if (symb? X)
+      X
       (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
          (pack X P)
          (drop Q
-            (consStr (val Q)) ) )
-      X ) )
+            (consStr (val Q)) ) ) ) )
 
 (de evSym (Exe)
    (xSym (eval (car Exe))) )
@@ -400,8 +400,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                                  X ) )
                            (?
                               (or
-                                 (num? (++ Y))
-                                 (pair @)
+                                 (not (symb? (++ Y)))
                                  (nil? @)
                                  (t? @) )
                               0 ) ) ) ) )

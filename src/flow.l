@@ -1,4 +1,4 @@
-# 23may20 Software Lab. Alexander Burger
+# 24may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -127,7 +127,7 @@
 (de _def (Exe)
    (let
       (X (cdr Exe)
-         Sym (save (needSym Exe (eval (++ X))))
+         Sym (save (needSymb Exe (eval (++ X))))
          Y (save (eval (++ X))) )
       (if (pair X)
          (let Val (save (eval (car X)))

@@ -1,4 +1,4 @@
-# 14may20 Software Lab. Alexander Burger
+# 24may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1071,9 +1071,9 @@
          Sep (i8 (char "."))
          Ign (i8 0) )
       (when (pair X)
-         (setq Sep (firstByte (needSym Exe (eval (++ X)))))
+         (setq Sep (firstByte (needSymb Exe (eval (++ X)))))
          (when (pair X)
-            (setq Ign (firstByte (needSym Exe (eval (car X))))) ) )
+            (setq Ign (firstByte (needSymb Exe (eval (car X))))) ) )
       (cond
          ((num? A)
             (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
