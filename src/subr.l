@@ -1149,7 +1149,7 @@
                            (>= (caar @) (car (val Nl))) )
                         (set Q (cdar Q)) )
                      (set Tp1 (cdr X)) )
-                  ((num? (car @))
+                  ((cnt? (car @))
                      (set E (run (cdar X)))
                      (let (I (int (caar X))  Y (val Nl))
                         (while (gt0 (dec 'I))
@@ -1161,7 +1161,8 @@
                   ((== @ (val $Up))
                      (if
                         (and
-                           (nil? (set E (run (cddr (car X)))))
+                           (not
+                              (nil? (set E (run (cddr (car X))))) )
                            (unify
                               (car (val Nl))
                               (cadr (car X))
