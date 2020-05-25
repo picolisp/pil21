@@ -1,4 +1,4 @@
-# 24may20 Software Lab. Alexander Burger
+# 25may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1052,7 +1052,7 @@
                      (call $Put (+ (i8 N) (char "0"))) ) )  # Output last digit
                0 )
             (T  # Calculate length
-               (let (N (* (shr (- TopA Acc) 3) 18)  D (val Acc))
+               (let (N (* (shr (- TopA Acc) 3) 18)  D (val TopA))
                   (loop
                      (inc 'N)
                      (? (=0 (setq D (/ D 10)))) )
