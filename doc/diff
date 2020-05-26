@@ -1,4 +1,4 @@
-# 15may20 Software Lab. Alexander Burger
+# 25may20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -12,6 +12,7 @@
 + Standard readline(3) library in REPL
 
 - '====' is removed
+- 'lines' is removed
 - '(arg)' call is removed
 - Second argument to 'name' (i.e. renaming) is removed
 - Lambda-binding environment offset for 'eval' and 'run' only for '@'

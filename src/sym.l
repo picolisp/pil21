@@ -1,4 +1,4 @@
-# 24may20 Software Lab. Alexander Burger
+# 26may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -81,13 +81,14 @@
 (de mkStr ((i8* . Str))
    (if (=0 Str)
       $Nil
-      (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
+      (let
+         (P (push 4 NIL ZERO NIL)
+            Q (link (ofs P 2) T) )  # [cnt last name link]
          (loop
             (? (=0 (val Str)))
             (byteSym @ P)
             (inc 'Str) )
-         (drop Q
-            (consStr (val Q)) ) ) ) )
+         (consStr (val Q)) ) ) )
 
 (de i8 firstByte (Sym)
    (i8
@@ -466,10 +467,11 @@
 (de _name (Exe)
    (let Tail (val (tail (needSymb Exe (eval (cadr Exe)))))
       (if (sym? Tail)  # External
-         (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
+         (let
+            (P (push 4 NIL ZERO NIL)
+               Q (link (ofs P 2) T) )  # [cnt last name link]
             (packExtNm (& (name Tail) -9) P)
-            (drop Q
-               (consStr (val Q)) ) )
+            (consStr (val Q)) )
          (consStr (name Tail)) ) ) )
 
 # (nsp 'sym) -> sym
@@ -715,8 +717,7 @@
             (pack (++ Z) P)
             (? (atom Z))
             (pack Y P) ) )
-      (drop Q
-         (consStr (val Q)) ) ) )
+      (consStr (val Q)) ) )
 
 # (text 'any1 'any ..) -> sym
 (de _text (Exe)
@@ -725,7 +726,7 @@
          Y
          (let
             (P (push 0 (xName Exe Y) NIL)  # [cnt name link]
-               Q (link (ofs P 1))
+               Q (link (ofs P 1) T)
                R (push 4 NIL ZERO NIL)  # [cnt last name link]
                A (link (ofs R 2))
                N 0
@@ -746,8 +747,7 @@
                            (while (ge0 (dec 'C))
                               (shift I) )
                            (pack (val I) R) ) ) ) ) )
-            (drop Q
-               (consStr (val 3 R)) ) ) ) ) )
+            (consStr (val 3 R)) ) ) ) )
 
 ### Matching ###
 (local) (preStr subStr)
@@ -1329,7 +1329,7 @@
                (let Y (car X)
                   (? (and (pair Y) (== Key (car Y)))
                      (cdr Y) ) )
-               (? (atom (shift X))) ) )
+               (? (atom (shift X)) $Nil) ) )
          ((== ZERO Key)
             (let Cnt (int Key)  # nth
                (until (=0 (dec 'Cnt))
@@ -1604,14 +1604,13 @@
          X
          (let
             (P (push 0 (xName Exe X) NIL)  # [cnt name link]
-               Q (link (ofs P 1))
+               Q (link (ofs P 1) T)
                R (push 4 NIL ZERO NIL)  # [cnt last name link]
                C T )
             (link (ofs R 2))
             (until (=0 (setq C (symChar P)))
                (charSym (toLowerCase C) R) )
-            (drop Q
-               (consStr (val 3 R)) ) ) ) ) )
+            (consStr (val 3 R)) ) ) ) )
 
 # (uppc 'any) -> any
 (de _uppc (Exe)
@@ -1620,7 +1619,7 @@
          X
          (let
             (P (push 0 (xName Exe X) NIL)  # [cnt name link]
-               Q (link (ofs P 1))
+               Q (link (ofs P 1) T)
                R (push 4 NIL ZERO NIL)  # [cnt last name link]
                C T )
             (link (ofs R 2))
@@ -1629,8 +1628,7 @@
                   (charSym (toUpperCase C) R)
                   (charSym (char "S") R)
                   (charSym (char "S") R) ) )
-            (drop Q
-               (consStr (val 3 R)) ) ) ) ) )
+            (consStr (val 3 R)) ) ) ) )
 
 # (fold 'any ['cnt]) -> sym
 (de _fold (Exe)
@@ -1640,7 +1638,7 @@
          (let
             (N (if (atom X) 0 (evCnt Exe X))
                P (push 0 (xName Exe Y) NIL)  # [cnt name link]
-               Q (link (ofs P 1))
+               Q (link (ofs P 1) T)
                R (push 4 NIL ZERO NIL)  # [cnt last name link]
                C T )
             (link (ofs R 2))
@@ -1648,5 +1646,4 @@
                (when (isLetterOrDigit C)
                   (charSym (toLowerCase C) R)
                   (? (=0 (dec 'N))) ) )
-            (drop Q
-               (consStr (val 3 R)) ) ) ) ) )
+            (consStr (val 3 R)) ) ) ) )

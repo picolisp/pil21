@@ -1,4 +1,4 @@
-# 24may20 Software Lab. Alexander Burger
+# 26may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -976,6 +976,7 @@
       (prog1
          (let Nm (val 3 R)
             (cond
+               ((== Nm ZERO) (badInput))
                ((n0 (symToNum Nm (int (val $Scl)) (char ".") 0)) @)
                ((n0 (anonymous Nm)) @)
                (T (requestSym Nm)) ) )
@@ -1213,6 +1214,96 @@
          ((t? @) (mkChar TOP))
          ((symb? @) (cnt (i64 (firstChar @))))
          (T (atomErr Exe @)) ) ) )
+
+(local) eol
+
+(de i1 eol ((i32 . C))
+   (cond
+      ((lt0 C) YES)
+      ((== C (char "\n"))
+         (set $Chr 0)
+         YES )
+      ((== C (char "\r"))
+         (when (== (call $Get) (char "\n"))
+            (set $Chr 0) )
+         YES )
+      (T NO) ) )
+
+# (line 'flg ['cnt ..]) -> lst|sym
+(de _line (Exe)
+   (let C (val $Chr)
+      (when (=0 C)
+         (setq C (call $Get)) )
+      (if (eol C)
+         $Nil
+         (let X (cdr Exe)
+            (cond
+               ((nil? (eval (++ X)))
+                  (let  # List of characters
+                     (Y (cons (mkChar (getChar C)) $Nil)
+                        R (save Y) )
+                     (when (pair X)
+                        (let Z (set Y (cons (car Y) $Nil))
+                           (loop
+                              (let N (evCnt Exe X)
+                                 (while (gt0 (dec 'N))
+                                    (when (eol (setq C (call $Get)))
+                                       (ret R) )
+                                    (setq Z
+                                       (set 2 Z (cons (mkChar (getChar C)) $Nil)) ) ) )
+                              (? (atom (shift X)))
+                              (when (eol (setq C (call $Get)))
+                                 (ret R) )
+                              (setq Y
+                                 (set 2 Y
+                                    (cons
+                                       (setq Z (cons (mkChar (getChar C)) $Nil))
+                                       $Nil ) ) ) ) ) )
+                     (until (eol (setq C (call $Get)))
+                        (setq Y
+                           (set 2 Y (cons (mkChar (getChar C)) $Nil)) ) )
+                     R ) )
+               ((atom X)  # Pack single string
+                  (let
+                     (P (push 4 NIL ZERO NIL)  # [cnt last name link]
+                        Q (link (ofs P 2)) )
+                     (loop
+                        (charSym (getChar C) P)
+                        (? (eol (setq C (call $Get)))) )
+                     (drop Q
+                        (consStr (val Q)) ) ) )
+               (T
+                  (let
+                     (N (evCnt Exe X)
+                        P (push 4 NIL ZERO NIL)  # [cnt last name link]
+                        Q (link (ofs P 2)) )
+                     (loop
+                        (charSym (getChar C) P)
+                        (when (eol (setq C (call $Get)))
+                           (ret
+                              (drop Q
+                                 (cons (consStr (val Q)) $Nil) ) ) )
+                        (? (=0 (dec 'N))) )
+                     (let
+                        (Y (cons (consStr (val Q)) $Nil)
+                           R (save Y) )
+                        (while (pair (shift X))
+                           (setq N (evCnt Exe X))
+                           (set P 4  3 P ZERO)
+                           (loop
+                              (charSym (getChar C) P)
+                              (when (eol (setq C (call $Get)))
+                                 (set 2 Y (cons (consStr (val Q)) $Nil))
+                                 (drop Q)
+                                 (ret R) )
+                              (? (=0 (dec 'N))) )
+                           (setq Y
+                              (set 2 Y (cons (consStr (val Q)) $Nil)) ) )
+                        (loop
+                           (setq Y
+                              (set 2 Y (cons (mkChar (getChar C)) $Nil)) )
+                           (? (eol (setq C (call $Get)))) )
+                        R ) ) ) ) ) ) ) )
 
 # (in 'any . prg) -> any
 (de _in (Exe)

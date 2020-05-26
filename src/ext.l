@@ -1,4 +1,4 @@
-# 08may20 Software Lab. Alexander Burger
+# 26may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -59,7 +59,7 @@
                (when (=0 (setq C (symChar P)))
                   (ret $Nil) ) )
             (let
-               (Q (link (ofs P 1))
+               (Q (link (ofs P 1) T)
                   R (push 4 NIL ZERO NIL)  # [cnt last name link]
                   N (if (pair (shift X)) (evCnt Exe X) 24) )
                (link (ofs R 2))
@@ -83,8 +83,7 @@
                            ((<> C Last)
                               (? (=0 (dec 'N)))
                               (charSym (setq Last C) R) ) ) ) )
-                  (drop Q
-                     (consStr (val 3 R)) ) ) ) ) ) ) )
+                  (consStr (val 3 R)) ) ) ) ) ) )
 
 # File Descriptor
 (local) FD
