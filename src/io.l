@@ -1062,7 +1062,7 @@
                   (call $Get) ) ) )
          ((== C (char "["))
             (let X (rdList)
-               (when (== (val $Chr) (char "]"))
+               (unless (== (val $Chr) (char "]"))
                   (err 0 X ($ "Super parentheses mismatch") null) )
                (call $Get)
                X ) )
