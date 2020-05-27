@@ -1,4 +1,4 @@
-# 26may20 Software Lab. Alexander Burger
+# 27may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -827,6 +827,7 @@
                      (when (=0 (setq P (set $LineBuf (readline (val $LinePrt)))))
                         (write 1 ($ "\n") 1)
                         (bye 0) )
+                     (set $LinePrt ($ "   "))
                      (unless
                         (or
                            (=0 (val P))
