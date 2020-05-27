@@ -826,8 +826,10 @@
                      (free (val $LineBuf))
                      (when (=0 (setq P (set $LineBuf (readline (val $LinePrt)))))
                         (write 1 ($ "\n") 1)
+                        (when (== (val $LinePrt) $Indent)
+                           (err 0 0 $Empty null) )
                         (bye 0) )
-                     (set $LinePrt ($ "   "))
+                     (set $LinePrt $Indent)
                      (unless
                         (or
                            (=0 (val P))

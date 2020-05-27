@@ -1,4 +1,4 @@
-# 25may20 Software Lab. Alexander Burger
+# 27may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -528,4 +528,6 @@
 (var $Sync i1 0)                 # Family IPC synchronization
 
 # Strings
+(str $Empty "")
+(str $Indent "   ")
 (str $Delim " \t\n\r\"'(),[]`~{}")

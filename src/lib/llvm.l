@@ -1,4 +1,4 @@
-# 24may20 Software Lab. Alexander Burger
+# 27may20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -196,8 +196,11 @@ False Beg End Safe *Safe)
 (de store (X P Ofs)
    (nond
       ((memq (val P) '(i64 any))
-         (when (num? X)
-            (setq X (def (format X) (pointee (val P)))) )
+         (cond
+            ((num? X)
+               (setq X (def (format X) (pointee (val P)))) )
+            ((pre? "bitcast" X)  # Assume i8*
+               (def X 'i8*) ) )
          (ifn Ofs
             (link
                (pack "store " (type (val X)) " " X ", "
