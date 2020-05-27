@@ -196,11 +196,8 @@ False Beg End Safe *Safe)
 (de store (X P Ofs)
    (nond
       ((memq (val P) '(i64 any))
-         (cond
-            ((num? X)
-               (setq X (def (format X) (pointee (val P)))) )
-            ((pre? "bitcast" X)  # Assume i8*
-               (def X 'i8*) ) )
+         (when (num? X)
+            (setq X (def (format X) (pointee (val P)))) )
          (ifn Ofs
             (link
                (pack "store " (type (val X)) " " X ", "
@@ -280,7 +277,8 @@ False Beg End Safe *Safe)
 
 (de str Lst
    (let ((Sym Val) Lst  Arr (pack "[" (inc (size Val)) " x i8]"))
-      (def Sym (pack "bitcast (" Arr "* @" Sym " to i8*)"))
+      (def Sym
+         (def (pack "bitcast (" Arr "* @" Sym " to i8*)") 'i8*) )
       (prin "@" Sym " = constant " Arr " c\"")
       (for C (chop Val)
          (if (or (> " " C) (sub? C "\""))
