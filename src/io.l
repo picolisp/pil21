@@ -1,4 +1,4 @@
-# 27may20 Software Lab. Alexander Burger
+# 30may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1218,24 +1218,114 @@
          ((symb? @) (cnt (i64 (firstChar @))))
          (T (atomErr Exe @)) ) ) )
 
+# (skip ['any]) -> sym
+(de _skip (Exe)
+   (if (lt0 (skipc (firstChar (evSym (cdr Exe)))))
+      $Nil
+      (mkChar @) ) )
+
+# (eol) -> flg
+(de _eol (Exe)
+   (if (or (le0 (val $Chr)) (== @ (char "\n")))
+      $T
+      $Nil ) )
+
+# (eof ['flg]) -> flg
+(de _eof (Exe)
+   (nond
+      ((nil? (eval (cadr Exe)))
+         (set $Chr -1)
+         $T )
+      ((=0 (val $Chr))
+         (if (lt0 @) $T $Nil) )
+      (NIL
+         (if (lt0 (call $Get)) $T $Nil) ) ) )
+
+# (from 'any ..) -> sym
+(de _from (Exe)
+   (let (X (cdr Exe)  Link (val $Link)  N 1  P T)
+      (loop
+         (let (Y (evSym X)  Nm (xName Exe Y))
+            (setq P
+               (link
+                  (push Y NIL 0  # [sym link ix str]
+                     (any (bufString Nm (b8 (bufSize Nm)))) ) ) ) )
+         (? (atom (shift X)))
+         (inc 'N) )
+      (when (=0 (val $Chr))
+         (call $Get) )
+      (while (ge0 (val $Chr))
+         (let (B (i8 @)  Q (i64* P)  I N)
+            (loop
+               (loop
+                  (let S (ofs (i8* (val 4 Q)) (val 3 Q))
+                     (when (== B (val S))  # Bytes match
+                        (set 3 Q (inc (val 3 Q)))  # Increment index
+                        (? (n0 (val 2 S)))  # Not end of string
+                        (call $Get) # Skip next input byte
+                        (set $Link Link)
+                        (ret (val Q)) ) )  # Return matched symbol
+                  (? (=0 (val 3 Q)))  # Still at beginning of string
+                  (let S (ofs (i8* (val 4 Q)) 1)  # Pointer to second byte
+                     (until (=0 (set 3 Q (dec (val 3 Q))))  # Decrement index
+                        (? (=0 (memcmp (i8* (val 4 Q)) S @)))
+                        (inc 'S) ) ) )
+               (? (=0 (dec 'I)))
+               (setq Q (i64* (val 2 Q))) ) )
+         (call $Get) )
+      (set $Link Link)
+      $Nil ) )
+
+# (till 'any ['flg]) -> lst|sym
+(de _till (Exe)
+   (let
+      (X (cdr Exe)
+         Nm (xName Exe (evSym X))
+         S (bufString Nm (b8 (bufSize Nm))) )
+      (let C (if (=0 (val $Chr)) (call $Get) @)
+         (cond
+            ((or (lt0 C) (n0 (strchr S C)))
+               $Nil )
+            ((nil? (eval (cadr X)))
+               (let
+                  (Y (cons (mkChar (getChar C)) $Nil)
+                     R (save Y) )
+                  (while
+                     (and
+                        (gt0 (setq C (call $Get)))
+                        (=0 (strchr S C)) )
+                     (setq Y
+                        (set 2 Y (cons (mkChar C) $Nil)) ) )
+                  R ) )
+            (T
+               (let
+                  (P (push 4 NIL ZERO NIL)  # [cnt last name link]
+                     Q (link (ofs P 2)) )
+                  (loop
+                     (charSym (getChar C) P)
+                     (? (le0 (setq C (call $Get))))
+                     (? (n0 (strchr S C))) )
+                  (drop Q
+                     (consStr (val Q)) ) ) ) ) ) ) )
+
 (local) eol
 
 (de i1 eol ((i32 . C))
-   (cond
-      ((lt0 C) YES)
-      ((== C (char "\n"))
-         (set $Chr 0)
-         YES )
-      ((== C (char "\r"))
-         (when (== (call $Get) (char "\n"))
-            (set $Chr 0) )
-         YES )
-      (T NO) ) )
+(cond
+   ((lt0 C) YES)
+   ((== C (char "\n"))
+      (set $Chr 0)
+      YES )
+   ((== C (char "\r"))
+      (when (== (call $Get) (char "\n"))
+         (set $Chr 0) )
+      YES )
+   (T NO) ) )
 
 # (line 'flg ['cnt ..]) -> lst|sym
 (de _line (Exe)
-   (let C (val $Chr)
-      (when (=0 C)
+(let C (val $Chr)
+   (when (=0 C)
          (setq C (call $Get)) )
       (if (eol C)
          $Nil

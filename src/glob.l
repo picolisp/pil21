@@ -1,4 +1,4 @@
-# 27may20 Software Lab. Alexander Burger
+# 30may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -215,6 +215,11 @@
    (NIL "read" _read)
    (NIL "key" _key)
    (NIL "char" _char)
+   (NIL "skip" _skip)
+   (NIL "eol" _eol)
+   (NIL "eof" _eof)
+   (NIL "from" _from)
+   (NIL "till" _till)
    (NIL "line" _line)
    (NIL "in" _in)
    (NIL "out" _out)
