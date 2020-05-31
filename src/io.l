@@ -1,4 +1,4 @@
-# 30may20 Software Lab. Alexander Burger
+# 31may20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1226,9 +1226,10 @@
 
 # (eol) -> flg
 (de _eol (Exe)
-   (if (or (le0 (val $Chr)) (== @ (char "\n")))
-      $T
-      $Nil ) )
+   (let C (if (=0 (val $Chr)) (call $Get) @)
+      (if (or (le0 C) (== C (char "\n")))
+         $T
+         $Nil ) ) )
 
 # (eof ['flg]) -> flg
 (de _eof (Exe)
@@ -1558,6 +1559,111 @@
                      (prog1
                         (run X)
                         (popInFiles) ) ) ) ) ) ) ) )
+
+# (echo ['cnt ['cnt]] | ['sym ..]) -> sym
+(de _echo (Exe)
+   (let (X (cdr Exe)  Y (eval (++ X)))
+      (cond
+         ((and (nil? Y) (atom X))
+            (let C (if (=0 (val $Chr)) (call $Get) @)
+               (until (lt0 C)
+                  (call $Put (i8 C))
+                  (setq C (call $Get)) ) )
+            $T )
+         ((num? Y)
+            (let N (xCnt Exe Y)
+               (when (pair X)
+                  (let C (evCnt Exe X)
+                     (while (ge0 (dec 'N))
+                        (when (lt0 (call $Get))
+                           (ret $Nil) ) )
+                     (setq N C) ) )
+               (while (ge0 (dec 'N))
+                  (when (lt0 (call $Get))
+                     (ret $Nil) )
+                  (call $Put (i8 @)) )
+               (set $Chr 0)
+               $T ) )
+         ((pair Y) (argErr Exe Y))
+         (T  # sym
+            (let (Link (val $Link)  M (i64* null)  N 1  P T)
+               (loop
+                  (let Nm (xName Exe Y)
+                     (setq P
+                        (link
+                           (push Y NIL 0  # [sym link ix str]
+                              (any (bufString Nm (b8 (bufSize Nm)))) ) ) ) )
+                  (? (atom X))
+                  (setq Y (evSym (++ X)))
+                  (inc 'N) )
+               (when (=0 (val $Chr))
+                  (call $Get) )
+               (while (ge0 (val $Chr))
+                  (let
+                     (B (i8 @)
+                        Q (i64* P)
+                        I N
+                        OutM M
+                        OutC (if (=0 M) 0 (val 3 M)) )
+                     (loop
+                        (loop
+                           (let S (ofs (i8* (val 4 Q)) (val 3 Q))
+                              (when (== B (val S))  # Bytes match
+                                 (set 3 Q (inc (val 3 Q)))  # Increment index
+                                 (? (n0 (val 2 S))  # Not end of string
+                                    (when
+                                       (or
+                                          (=0 M)
+                                          (> (val 3 Q) (val 3 M)) )
+                                       (setq M Q) ) )
+                                 (unless (=0 OutM)
+                                    (setq S (i8* (val 4 OutM)))
+                                    (setq OutC (- OutC (val 3 Q)))
+                                    (until (lt0 OutC)
+                                       (call $Put (val S))
+                                       (inc 'S)
+                                       (dec 'OutC) ) )
+                                 (set $Chr 0)  # Clear look ahead
+                                 (set $Link Link)
+                                 (ret (val Q)) ) )  # Return matched symbol
+                           (? (=0 (val 3 Q)))  # Still at beginning of string
+                           (let S (ofs (i8* (val 4 Q)) 1)  # Pointer to second byte
+                              (until (=0 (set 3 Q (dec (val 3 Q))))  # Decrement index
+                                 (? (=0 (memcmp (i8* (val 4 Q)) S @)))
+                                 (inc 'S) ) )
+                           (when (== Q M)  # On current max
+                              (setq M (i64* null))
+                              (let (Z (i64* P)  J N)
+                                 (loop
+                                    (unless (=0 (val 3 Z))
+                                       (when
+                                          (or
+                                             (=0 M)
+                                             (> (val 3 Z) (val 3 M)) )
+                                          (setq M Z) ) )
+                                    (? (=0 (dec 'J)))
+                                    (setq Z (i64* (val 2 Z))) ) ) ) )
+                        (? (=0 (dec 'I)))
+                        (setq Q (i64* (val 2 Q))) )
+                     (cond
+                        ((=0 M)
+                           (unless (=0 OutM)
+                              (let (S (i8* (val 4 OutM))  C OutC)
+                                 (loop
+                                    (call $Put (val S))
+                                    (inc 'S)
+                                    (? (=0 (dec 'C))) ) ) )
+                           (call $Put B) )
+                        ((n0 OutM)
+                           (let S (i8* (val 4 OutM))
+                              (setq OutC (- OutC (val 3 M)))
+                              (until (lt0 OutC)
+                                 (call $Put (val S))
+                                 (inc 'S)
+                                 (dec 'OutC) ) ) ) ) )
+                  (call $Get) )
+               (set $Link Link)
+               $Nil ) ) ) ) )
 
 (de void _putStdout ((i8 . B))
    (let Out: (outFile (val $OutFile))
