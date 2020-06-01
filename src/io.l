@@ -1,4 +1,4 @@
-# 31may20 Software Lab. Alexander Burger
+# 01jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1421,7 +1421,7 @@
 
 (de i32 forkLisp (Exe)
    (flushAll)
-   (when (=0 $Spkr)  # Not listening for children yet
+   (when (=0 (val $Spkr))  # Not listening for children yet
       (when (lt0 (pipe $SpMiPipe))  # Open speaker/microphone pipe
          (pipeErr Exe) )
       (closeOnExec Exe (set $Spkr (val $SpMiPipe)))
