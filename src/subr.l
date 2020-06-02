@@ -1,4 +1,4 @@
-# 24may20 Software Lab. Alexander Burger
+# 02jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -287,14 +287,13 @@
       (when (=0 (val $Make))
          (makeErr Exe) )
       (loop
-         (let Y (eval (++ X))
+         (let Y (set (val $Make) (eval (++ X)))
             (when (pair Y)
-               (set (val $Make) Y)
                (let Z Y
                   (while (pair (cdr Z))
                      (setq Z @) )
-                  (set $Make (ofs Z 1)) ) ) )
-         (? (atom X) Y) ) ) )
+                  (set $Make (ofs Z 1)) ) )
+            (? (atom X) Y) ) ) ) )
 
 # (link 'any ..) -> any
 (de _link (Exe)
