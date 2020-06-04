@@ -1,4 +1,4 @@
-# 01jun20 Software Lab. Alexander Burger
+# 04jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -579,43 +579,79 @@
 (de i1 hasData ((i32 . Fd))
    (and
       (> (val $InFDs) Fd)
-      (let In: (inFile (val (ofs (val $InFiles) Fd)))
-         (and (n0 (In:)) (> (In: cnt) (In: ix))) ) ) )
+      (n0 (val (ofs (val $InFiles) Fd)))
+      (let In: (inFile @)
+         (> (In: cnt) (In: ix)) ) ) )
 
 (de i64 waitFd (Exe (i32 . Fd) (i64 . Ms))
    (let
-      (Task (val $Task)
-         P (link (push (val $At) NIL))
+      (At (save (val $At))
+         Task (val $Task)
+         Run (link (push (set $Task (val $Run)) NIL))
          Tim (getMsec) )
+      (stkChk 0)
       (loop
          (let
             (Stk (stack)
                Poll (b64 (+ (length (val $Run)) (val $Children) 3))
-               Nfds 0 )
+               Nfds 0
+               Dly Ms )
             (when (ge0 Fd)
                (if (hasData Fd)
-                  (setq Ms 0)
+                  (setq Dly 0)
                   (pollIn Fd Poll)  # First 'pollfd' struct
                   (inc 'Nfds) ) )
-            #! ...
-            (while (lt0 (gPoll Poll Nfds Ms))
+            (let R (val Run)
+               (while (pair R)
+                  (let X (++ R)
+                     (unless (memq X Task)
+                        (cond
+                           ((sign? (car X))
+                              (let N (int (cadr X))
+                                 (when (> Dly N)
+                                    (setq Dly N) ) ) )
+                           ((<> (i32 (int @)) Fd)
+                              (let N @
+                                 (if (hasData N)
+                                    (setq Dly 0)
+                                    (pollIn N (ofs Poll Nfds))
+                                    (inc 'Nfds) ) ) ) ) ) ) ) )
+            #! ... $Hear
+            #! ... $Spkr
+            (while (lt0 (gPoll Poll Nfds Dly))
                (unless (== (gErrno) EINTR)
                   (set $Run $Nil)
                   (selectErr Exe) )
                (sigChk Exe) )
-            #! ...
-            (let (T2 (getMsec)  D (- T2 Tim))
-               (setq Tim T2)
-               #! ...
-               (when
-                  (and
-                     (gt0 Ms)
-                     (lt0 (setq Ms (- Ms D))) )
-                  (setq Ms 0) ) )
+            (let (Now (getMsec)  Dif (- Now Tim))
+               #! ... $Spkr
+               #! ... $Hear
+               (let R (val Run)
+                  (while (pair R)
+                     (let X (++ R)
+                        (unless (memq X Task)
+                           (cond
+                              ((sign? (car X))
+                                 (let Y (cdr X)
+                                    (if (gt0 (- (int (car Y)) Dif))  # Not yet timed out
+                                       (set Y (| (cnt @) 8))   # Store short negative number
+                                       (let V (car X)  # Timeout value
+                                          (set Y (pos V)  $At V)
+                                          (run (cdr Y)) ) ) ) )  # Run body
+                              ((<> (i32 (int @)) Fd)
+                                 (when (readyIn Poll @)
+                                    (set $At (car X))  # File descriptor
+                                    (run (cdr X)) ) ) ) ) ) ) )  # Run body
+               (and
+                  (gt0 Ms)
+                  (lt0 (setq Ms (- Ms Dif)))
+                  (setq Ms 0) )
+               (setq Tim Now) )
             (sigChk Exe)
             (? (or (=0 Ms) (lt0 Fd) (readyIn Poll Fd)))
-            (stack Stk) ) )
-      (set $At (pop P)  $Task Task)
+            (stack Stk)
+            (set Run (set $Task (val $Run))) ) )
+      (set $Task Task  $At At)
       Ms ) )
 
 # (wait 'cnt|NIL . prg) -> any
