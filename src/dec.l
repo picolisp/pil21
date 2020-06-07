@@ -1,4 +1,4 @@
-# 30may20 Software Lab. Alexander Burger
+# 06jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -131,9 +131,9 @@ signal waitpid setjmp longjmp kill exit)
 (de T void clear_history ())
 
 # Glue lib.c
-(local) (PipeBuf)
+(local) (PipeBufSize)
 
-(var PipeBuf i64 NIL)
+(var PipeBufSize i64 NIL)  # PIPE_BUF
 
 (local) (stderrNum stderrMsg gPrintf strErrno openRdonly openWronly openRdWr
 openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking getDir)
@@ -212,7 +212,7 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking getDir)
 # Catch and Throw
 (local) (JmpBufSize QuitRst)
 
-(var JmpBufSize i64 NIL)
+(var JmpBufSize i64 NIL)  # sizeof(jmp_buf)
 (var QuitRst i8 NIL)
 
 # Native lib.c

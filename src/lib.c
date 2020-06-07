@@ -1,9 +1,9 @@
-// 21may20 Software Lab. Alexander Burger
+// 06jun20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
 // I/O
-int64_t PipeBuf = PIPE_BUF;
+int64_t PipeBufSize = PIPE_BUF;
 
 int64_t stderrNum(char *fmt, int64_t n) {
    fprintf(stderr, fmt, (unsigned long)n);

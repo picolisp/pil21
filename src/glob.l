@@ -1,4 +1,4 @@
-# 31may20 Software Lab. Alexander Burger
+# 07jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -12,23 +12,25 @@
 (var $ExtCnt i64 1)                    # External symbol count
 (var $ExtSkip i64 0)                   # External tree skip
 (var $Coroutines i8* null)             # Coroutines
-(var $StkSize i32 STACK)               # Coroutine stack segment size
+(var $StkSize i64 STACK)               # Coroutine stack segment size
 (var $StkLimit i8* null)               # Stack limit: StackN-Size+4096
 (var $LinePtr i8* null)                # Console line pointer
 (var $LinePrt i8* null)                # Console line prompt
 (var $LineBuf i8* null)                # Console line buffer
 (var $Ret 0)                           # Secondary return value
 (var $TtyPid i32 0)                    # Terminal process ID
-(var $InFDs i32 0)                     # Number of input files
 (var $InFiles i8** null)               # Input files
-(var $OutFDs i32 0)                    # Number of ourput files
 (var $OutFiles i8** null)              # Output files
+(var $InFDs i32 0)                     # Number of input files
+(var $OutFDs i32 0)                    # Number of ourput files
 (var $PutBin (void i8) null)           # Binary output function
 (var $GetBin (i32) null)               # Binary input function
 (var $SeedL i64 0)                     # Random seed low
 (var $SeedH i64 0)                     # Random seed high
 (var $TickU i64 0)                     # Ticks in user time
 (var $TickS i64 0)                     # Ticks in system time
+(var $Children i64 0)                  # Number of children
+(var $Child i8* null)                  # Child array
 (var $Slot i64 0)                      # Child index
 (var $Spkr i32 0)                      # RPC loadspeaker
 (var $Mic i32 0)                       # RPC microphone
@@ -37,8 +39,6 @@
 (var $Tell i32 0)                      # RPC broadcaster
 (var $TellBuf i8* null)                # RPC buffer
 (var $Talking i32 0)                   # Active child
-(var $Children i64 0)                  # Number of children
-(var $Child i8* null)                  # Child array
 (var $Ptr i8* null)                    # Byte buffer pointer
 (var $End i8* null)                    # Buffer end pointer
 (var $ExtN i32 0)                      # External symbol offset
@@ -212,6 +212,7 @@
    # Input/Output
    (NIL "path" _path)
    (NIL "wait" _wait)
+   (NIL "hear" _hear)
    (NIL "read" _read)
    (NIL "key" _key)
    (NIL "char" _char)
@@ -521,6 +522,11 @@
    ($Y (short (pico~car *Version)))
    ($M (short (pico~cadr *Version)))
    ($D (short (pico~caddr *Version))) )
+
+# 'T' in PLIO format
+(array $TBuf i8
+   (+ INTERN 4)
+   (char "T") )
 
 # Bytes
 (array $Month i8
