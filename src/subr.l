@@ -1,4 +1,4 @@
-# 02jun20 Software Lab. Alexander Burger
+# 07jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -385,6 +385,66 @@
                      C
                      (set 2 P C)
                      (val R) ) ) ) ) ) ) )
+
+# (reverse 'lst) -> lst
+(de _reverse (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (car X)))
+         Z $Nil )
+      (while (pair Y)
+         (setq Z (cons (++ Y) Z)) )
+      Z ) )
+
+# (flip 'lst ['cnt]) -> lst
+(de _flip (Exe)
+   (let (X (cdr Exe)  Y (eval (car X)))
+      (if (atom Y)
+         Y
+         (let Z (cdr Y)
+            (cond
+               ((atom Z) Y)
+               ((atom (shift X))
+                  (set 2 Y $Nil)
+                  (loop
+                     (setq X (cdr Z))
+                     (set 2 Z Y)
+                     (? (atom X) Z)
+                     (setq Y Z  Z X) ) )
+               (T
+                  (let N (save Y (evCnt Exe X))
+                     (if (le0 (dec 'N))
+                        Y
+                        (set 2 Y (cdr Z)  2 Z Y)
+                        (until
+                           (or
+                              (=0 (dec 'N))
+                              (atom (setq X (cdr Y))) )
+                           (set 2 Y (cdr X)  2 X Z)
+                           (setq Z X) )
+                        Z ) ) ) ) ) ) ) )
+
+(local) trim
+
+(de trim (X)
+   (if (atom X)
+      X
+      (stkChk 0)
+      (let Y (trim (cdr X))
+         (if (and (nil? Y) (isBlank (car X)))
+            $Nil
+            (cons (car X) Y) ) ) ) )
+
+# (trim 'lst) -> lst
+(de _trim (Exe)
+   (trim (save (eval (cadr Exe)))) )
+
+# (clip 'lst) -> lst
+(de _clip (Exe)
+   (let (X (cdr Exe)  Y (eval (car X)))
+      (while (and (pair Y) (isBlank (car Y)))
+         (shift Y) )
+      (trim (save Y)) ) )
 
 # (head 'cnt|lst 'lst) -> lst
 (de _head (Exe)
