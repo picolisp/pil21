@@ -1,4 +1,4 @@
-// 06jun20 Software Lab. Alexander Burger
+// 09jun20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -92,6 +92,82 @@ char *currentLine() {
    return (h = history_get(history_length))? h->line : NULL;
 }
 
+// Signals
+int32_t Sig[] = {
+   SIGHUP, SIGINT, SIGUSR1, SIGUSR2, SIGPIPE, SIGALRM, SIGTERM, SIGCHLD,
+   SIGCONT, SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU, SIGIO
+};
+
+sighandler_t SigDfl = SIG_DFL;
+sighandler_t SigIgn = SIG_IGN;
+
+// Sync src/defs.l 'SIGHUP' and src/glob.l '$Signal'
+int32_t gSignal(int32_t n) {
+   switch (n) {
+   case SIGHUP:  return 1;
+   case SIGINT:  return 2;
+   case SIGUSR1: return 3;
+   case SIGUSR2: return 4;
+   case SIGPIPE: return 5;
+   case SIGALRM: return 6;
+   case SIGTERM: return 7;
+   case SIGCHLD: return 8;
+   case SIGCONT: return 9;
+   case SIGSTOP: return 10;
+   case SIGTSTP: return 11;
+   case SIGTTIN: return 12;
+   case SIGTTOU: return 13;
+   case SIGIO:   return 14;
+   }
+   return 0;
+}
+
+void iSignal(int n, void (*fun)(int)) {
+   struct sigaction act;
+
+   act.sa_handler = fun;
+   sigemptyset(&act.sa_mask);
+   act.sa_flags = 0;
+   sigaction(n, &act, NULL);
+}
+
+void sigUnblock(int sig) {
+   sigset_t mask;
+
+   if (sig == 0)
+      sigfillset(&mask);
+   else {
+      sigemptyset(&mask);
+      sigaddset(&mask, sig);
+   }
+   sigprocmask(SIG_UNBLOCK, &mask, NULL);
+}
+
+void waitNohang(void) {
+   int e, stat;
+   pid_t pid;
+
+   e = errno;
+   while ((pid = waitpid(0, &stat, WNOHANG)) > 0)
+      if (WIFSIGNALED(stat))
+         fprintf(stderr, "%d SIG-%d\n", (int)pid, WTERMSIG(stat));
+   errno = e;
+}
+
+// Sync src/defs.l 'ENOENT'
+int32_t gErrno(void) {
+   switch (errno) {
+   case ENOENT:     return 1;
+   case EINTR:      return 2;
+   case EBADF:      return 3;
+   case EAGAIN:     return 4;
+   case EACCES:     return 5;
+   case EPIPE:      return 6;
+   case ECONNRESET: return 7;
+   }
+   return 0;
+}
+
 // Terminal
 int Tio;
 struct termios OrgTermio, *Termio;
@@ -105,9 +181,7 @@ void stopTerm(void) {
    sigset_t mask;
 
    tcSet(&OrgTermio);
-   sigemptyset(&mask);
-   sigaddset(&mask, SIGTSTP);
-   sigprocmask(SIG_UNBLOCK, &mask, NULL);
+   sigUnblock(SIGTSTP);
    signal(SIGTSTP, SIG_DFL),  raise(SIGTSTP);
    tcSet(Termio);
 }
@@ -132,6 +206,14 @@ void setCooked(void) {
 // System
 static struct timeval Tv;
 static struct tm *Time;
+
+int64_t getUsec(void) {
+   struct timeval tim;
+
+   if (gettimeofday(&tim, NULL))
+      return 0;
+   return (int64_t)tim.tv_sec * 1000000 + (int64_t)tim.tv_usec;
+}
 
 int64_t getMsec(void) {
    struct timeval tim;
@@ -251,62 +333,6 @@ int32_t getLock(int32_t fd, off_t n, off_t len) {
    if (fcntl(fd, F_GETLK, &fl) < 0)
       return -1;
    return fl.l_type == F_UNLCK? 0 : fl.l_pid;
-}
-
-// Signals
-int32_t Sig[] = {
-   SIGHUP, SIGINT, SIGUSR1, SIGUSR2, SIGPIPE, SIGALRM, SIGTERM, SIGCHLD,
-   SIGCONT, SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU, SIGIO
-};
-
-sighandler_t SigDfl = SIG_DFL;
-sighandler_t SigIgn = SIG_IGN;
-int SigUnblock = SIG_UNBLOCK;
-
-// Sync src/defs.l 'SIGHUP' and src/glob.l '$Signal'
-int32_t gSignal(int32_t n) {
-   switch (n) {
-   case SIGHUP:  return 1;
-   case SIGINT:  return 2;
-   case SIGUSR1: return 3;
-   case SIGUSR2: return 4;
-   case SIGPIPE: return 5;
-   case SIGALRM: return 6;
-   case SIGTERM: return 7;
-   case SIGCHLD: return 8;
-   case SIGCONT: return 9;
-   case SIGSTOP: return 10;
-   case SIGTSTP: return 11;
-   case SIGTTIN: return 12;
-   case SIGTTOU: return 13;
-   case SIGIO:   return 14;
-   }
-   return 0;
-}
-
-void waitNohang(void) {
-   int e, stat;
-   pid_t pid;
-
-   e = errno;
-   while ((pid = waitpid(0, &stat, WNOHANG)) > 0)
-      if (WIFSIGNALED(stat))
-         fprintf(stderr, "%d SIG-%d\n", (int)pid, WTERMSIG(stat));
-   errno = e;
-}
-
-// Sync src/defs.l 'ENOENT'
-int32_t gErrno(void) {
-   switch (errno) {
-   case ENOENT:     return 1;
-   case EINTR:      return 2;
-   case EBADF:      return 3;
-   case EAGAIN:     return 4;
-   case EACCES:     return 5;
-   case EPIPE:      return 6;
-   case ECONNRESET: return 7;
-   }
-   return 0;
 }
 
 // Catch and Throw

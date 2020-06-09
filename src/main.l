@@ -1,4 +1,4 @@
-# 27may20 Software Lab. Alexander Burger
+# 09jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -108,8 +108,11 @@
          (set P (+ (val P) 1)) ) ) )
 
 (de void sigTerm ((i32 . N))
-   #!
-   )
+   (ifn (=0 (val $TtyPid))
+      (kill @ N)
+      (set $Signal (+ (val $Signal) 1))
+      (let P (ofs $Signal (gSignal (val SIGTERM Sig)))
+         (set P (+ (val P) 1)) ) ) )
 
 (de void sigChld ((i32 . N))
    (waitNohang) )
@@ -117,29 +120,58 @@
 (de void sighandler (Exe)
    (when (=0 (val $Protect))
       (set $Protect 1)
-      (loop
-         (let P (ofs $Signal SIGIO)
-            (unless (=0 (val P))
-               (set $Signal (- (val $Signal) 1))
-               (set P (- (val P) 1))
-               (execAt (val $Sigio)) ) )
-         (let P (ofs $Signal SIGUSR1)
-            (unless (=0 (val P))
-               (set $Signal (- (val $Signal) 1))
-               (set P (- (val P) 1))
-               (execAt (val $Sig1)) ) )
-         (let P (ofs $Signal SIGUSR2)
-            (unless (=0 (val P))
-               (set $Signal (- (val $Signal) 1))
-               (set P (- (val P) 1))
-               (execAt (val $Sig2)) ) )
-         (let P (ofs $Signal SIGALRM)
-            (unless (=0 (val P))
-               (set $Signal (- (val $Signal) 1))
-               (set P (- (val P) 1))
-               (execAt (val $Alarm)) ) )
-         #! ...
-         (? (=0 (val $Signal))) )
+      (let P T
+         (loop
+            (nond
+               ((=0 (val (setq P (ofs $Signal SIGIO))))
+                  (set P (dec @))
+                  (set $Signal (dec (val $Signal)))
+                  (execAt (val $Sigio)) )
+               ((=0 (val (setq P (ofs $Signal SIGUSR1))))
+                  (set P (dec @))
+                  (set $Signal (dec (val $Signal)))
+                  (execAt (val $Sig1)) )
+               ((=0 (val (setq P (ofs $Signal SIGUSR2))))
+                  (set P (dec @))
+                  (set $Signal (dec (val $Signal)))
+                  (execAt (val $Sig2)) )
+               ((=0 (val (setq P (ofs $Signal SIGALRM))))
+                  (set P (dec @))
+                  (set $Signal (dec (val $Signal)))
+                  (execAt (val $Alarm)) )
+               ((=0 (val (setq P (ofs $Signal SIGHUP))))
+                  (set P (dec @))
+                  (set $Signal (dec (val $Signal)))
+                  (execAt (val $Hup)) )
+               ((=0 (val (setq P (ofs $Signal SIGINT))))
+                  (set P (dec @))
+                  (set $Signal (dec (val $Signal)))
+                  #! ...
+                  )
+               ((=0 (val (setq P (ofs $Signal SIGTSTP))))
+                  (set P (dec @))
+                  (set $Signal (dec (val $Signal)))
+                  (execAt (val $TStp1))  # Run 'TStp1'
+                  (stopTerm)  # Stop
+                  (execAt (val $TStp2)) )  # Run 'TStp2'
+               ((=0 (val (setq P (ofs $Signal SIGTERM))))
+                  (set P (dec @))
+                  (set $Signal (dec (val $Signal)))
+                  (let
+                     (Cld (val $Child)  # Iterate children
+                        <Cld (ofs Cld (* (val $Children) (child T)))
+                        Flg NO )
+                     (until (== Cld <Cld)
+                        (let Cld: (child Cld)
+                           (and
+                              (n0 (Cld: pid))
+                              (=0 (kill @ (val SIGTERM Sig)))
+                              (setq Flg YES) ) )
+                        (setq Cld (ofs Cld (child T))) )
+                     (? Flg)
+                     (set $Signal 0)
+                     (bye 0) ) ) )
+            (? (=0 (val $Signal))) ) )
       (set $Protect 0) ) )
 
 # Error handling
@@ -1146,10 +1178,25 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (set $OutFile (initOutFile 1))  # Standard output
    (set $InFile (initInFile 0 null))  # Standard input
    (set Tio (=0 (tcgetattr 0 OrgTermio)))  # Save terminal I/O
+   (sigUnblock 0)  # Set all signals to unblocked
+   (iSignal (val SIGHUP Sig) (fun sig))
+   (iSignal (val SIGUSR1 Sig) (fun sig))
+   (iSignal (val SIGUSR2 Sig) (fun sig))
+   (iSignal (val SIGALRM Sig) (fun sig))
+   (iSignal (val SIGTERM Sig) (fun sig))
+   (iSignal (val SIGIO Sig) (fun sig))
+   (when (== (signal (val SIGTSTP Sig) (val SigIgn)) (val SigDfl))
+      (iSignal (val SIGTSTP Sig) (fun sig)) )
+   (iSignal (val SIGINT Sig) (fun sigTerm))
    (signal (val SIGCHLD Sig) (fun sigChld))
+   (signal (val SIGPIPE Sig) (val SigIgn))
+   (signal (val SIGTTIN Sig) (val SigIgn))
+   (signal (val SIGTTOU Sig) (val SigIgn))
+   (set $USec (getUsec))
    (when (=0 (setjmp QuitRst))
       (loadAll 0)  # Load arguments
-      )
+      (set $Repl YES)
+      (iSignal (val SIGINT Sig) (fun sig)) )
    (loop
       (repl 0 ($ ": ") $Nil) ) )
 

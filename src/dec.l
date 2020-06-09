@@ -1,4 +1,4 @@
-# 06jun20 Software Lab. Alexander Burger
+# 09jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -157,6 +157,21 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking getDir)
 (de T void initReadline ())
 (de T i8* currentLine ())
 
+# Signals
+(local) (Sig SigDfl SigIgn gSignal sigUnblock iSignal waitNohang)
+
+(var Sig i32 NIL)
+(var SigDfl i8* NIL)
+(var SigIgn i8* NIL)
+
+(de T i32 gSignal (i32))
+(de T void sigUnblock (i32))
+(de T void iSignal (i32 i8*))
+(de T void waitNohang ())
+
+(local) gErrno
+(de T i32 gErrno ())
+
 # Terminal
 (local) (Tio OrgTermio Termio setRaw setCooked)
 
@@ -169,8 +184,9 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking getDir)
 (de T void setCooked ())
 
 # System
-(local) (getMsec getDate getGmDate getTime getGmTime fileInfo)
+(local) (getUsec getMsec getDate getGmDate getTime getGmTime fileInfo)
 
+(de T i64 getUsec ())
 (de T i64 getMsec ())
 (de T i64 getDate ())
 (de T i64 getGmDate ())
@@ -194,20 +210,6 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking getDir)
 (de T i32 wrLock (i32 i64 i64 i32))
 (de T i32 unLock (i32 i64 i64))
 (de T i32 getLock (i32 i64 i64))
-
-# Signals
-(local) (Sig SigDfl SigIgn SigUnblock gSignal waitNohang)
-
-(var Sig i32 NIL)
-(var SigDfl i8* NIL)
-(var SigIgn i8* NIL)
-(var SigUnblock i32 NIL)
-
-(de T i32 gSignal (i32))
-(de T void waitNohang ())
-
-(local) gErrno
-(de T i32 gErrno ())
 
 # Catch and Throw
 (local) (JmpBufSize QuitRst)

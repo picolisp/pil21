@@ -1,4 +1,4 @@
-# 07jun20 Software Lab. Alexander Burger
+# 09jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -27,6 +27,7 @@
 (var $GetBin (i32) null)               # Binary input function
 (var $SeedL i64 0)                     # Random seed low
 (var $SeedH i64 0)                     # Random seed high
+(var $USec i64 0)                      # Startup microseconds
 (var $TickU i64 0)                     # Ticks in user time
 (var $TickS i64 0)                     # Ticks in system time
 (var $Children i64 0)                  # Number of children
