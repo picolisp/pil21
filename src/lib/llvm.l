@@ -1,4 +1,4 @@
-# 04jun20 Software Lab. Alexander Burger
+# 10jun20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -611,6 +611,13 @@ False Beg End Safe *Safe)
       (cadr Lst)
       (cddr Lst) ) )
 
+(de llvm~evBool (Exe)
+   (let X (eval Exe)
+      (if (== 'i1 (val X))
+         X
+         (let *Log NIL
+            (llvm~n0 X) ) ) ) )
+
 # Type casts
 (asm ()
    ((X)
@@ -1134,7 +1141,7 @@ False Beg End Safe *Safe)
                      (set Var @Val2) )
                   (phi End Var)
                   (br End) )
-               (let (Flg (eval (++ Prg))  Skip (+lbl))
+               (let (Flg (evBool (++ Prg))  Skip (+lbl))
                   (set Var @Val1)
                   (phi End Var)
                   (br Flg @Lbl1 @Lbl2)
@@ -1160,7 +1167,7 @@ False Beg End Safe *Safe)
 
 (asm (@Lbl1 @Lbl2)
    (Prg
-      (let (Flg (eval (++ Prg))  Var (box)  Body (+lbl)  Skip (+lbl)  End (+lbl))
+      (let (Flg (evBool (++ Prg))  Var (box)  Body (+lbl)  Skip (+lbl)  End (+lbl))
          (br Flg @Lbl1 @Lbl2)
          (label Body)
          (use llvm~@
@@ -1178,7 +1185,7 @@ False Beg End Safe *Safe)
 
 (asm (@Lbl1 @Lbl2)
    (Prg
-      (let (Flg (eval (++ Prg))  Body (+lbl)  End (+lbl))
+      (let (Flg (evBool (++ Prg))  Body (+lbl)  End (+lbl))
          (br Flg @Lbl1 @Lbl2)
          (label Body)
          (use llvm~@
@@ -1197,7 +1204,7 @@ False Beg End Safe *Safe)
                   (when (set Var (run (cdr Prg)))
                      (phi End Var)
                      (br End) ) )
-               (setq Flg (eval (++ Prg)))
+               (setq Flg (evBool (++ Prg)))
                (let Skip (+lbl)
                   (if Prg
                      (let Body (+lbl)
@@ -1250,7 +1257,7 @@ False Beg End Safe *Safe)
 
 (asm ()
    (Prg
-      (let (Flg (eval (++ Prg))  False (+lbl))
+      (let (Flg (evBool (++ Prg))  False (+lbl))
          (default *Exit (cons (+lbl) (box)))
          (if Prg
             (let True (+lbl)
@@ -1275,7 +1282,7 @@ False Beg End Safe *Safe)
       (let Beg (+lbl)
          (br Beg)
          (label Beg)
-         (let (Flg (eval (++ Prg))  Body (+lbl)  *Exit (cons (+lbl)))
+         (let (Flg (evBool (++ Prg))  Body (+lbl)  *Exit (cons (+lbl)))
             (br Flg @Lbl1 @Lbl2)
             (label Body)
             (use llvm~@

@@ -1,4 +1,4 @@
-# 26may20 Software Lab. Alexander Burger
+# 10jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -217,7 +217,7 @@
 # Compare long names
 (de i64 cmpLong (X Y)
    (loop
-      (? (n0 (sub (val (dig X)) (val (dig Y))))
+      (? (sub (val (dig X)) (val (dig Y)))
          (if @@ -1 +1) )
       (setq X (val (big X))  Y (val (big Y)))
       (? (cnt? X)
@@ -254,12 +254,12 @@
 (de isLstIntern (Name Lst)
    (loop
       (? (atom Lst) 0)
-      (? (n0 (isIntern Name (cdar (car Lst)))) @)
+      (? (isIntern Name (cdar (car Lst))) @)
       (shift Lst) ) )
 
 (inline intern1 (Sym Val Name Node More)
    (let Found (isLstIntern Name More)
-      (if (and (n0 Found) (or (=0 Sym) (== Found Sym)))
+      (if (and Found (or (=0 Sym) (== Found Sym)))
          Found
          (when (=0 Sym)  # New symbol
             (setq Sym (consSym Name Val)) )
@@ -268,7 +268,7 @@
 
 (inline intern2 (Sym Val Name Node More)
    (let Found (isLstIntern Name More)
-      (if (and (n0 Found) (or (=0 Sym) (== Found Sym)))
+      (if (and Found (or (=0 Sym) (== Found Sym)))
          Found
          (when (=0 Sym)  # New symbol
             (setq Sym (consSym Name Val)) )
@@ -277,7 +277,7 @@
 
 (inline internRight (Sym Val Name Node More)
    (let Found (isLstIntern Name More)
-      (if (and (n0 Found) (or (=0 Sym) (== Found Sym)))
+      (if (and Found (or (=0 Sym) (== Found Sym)))
          Found
          (when (=0 Sym)  # New symbol
             (setq Sym (consSym Name Val)) )
@@ -286,7 +286,7 @@
 
 (inline internLeft (Sym Val Name Node More)
    (let Found (isLstIntern Name More)
-      (if (and (n0 Found) (or (=0 Sym) (== Found Sym)))
+      (if (and Found (or (=0 Sym) (== Found Sym)))
          Found
          (when (=0 Sym)  # New symbol
             (setq Sym (consSym Name Val)) )
@@ -510,7 +510,7 @@
    (let (X (eval (cadr Exe))  V T)
       (cond
          ((not (symb? X)) $Nil)
-         ((n0 (funq (setq V (val X)))) V)
+         ((funq (setq V (val X))) V)
          ((and (nil? V) (sharedLib X)) (val X))
          (T $Nil) ) ) )
 

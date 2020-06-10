@@ -1,4 +1,4 @@
-# 24may20 Software Lab. Alexander Burger
+# 10jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -169,7 +169,7 @@
       (blkPeek 0 P (* 2 BLK))  # Read 'free' and 'next' from block zero
       (let N (getAdr P)
          (cond
-            ((and (n0 N) (n0 (Db: flu)))
+            ((and N (n0 (Db: flu)))
                (blkPeek (shl N (i64 (Db: sh))) P BLK)  # Get free link
                (Db: flu (dec (Db: flu))) )
             ((== (setq N (getAdr (ofs P BLK))) (hex "FFFFFFFFFFC0"))  # Max object ID

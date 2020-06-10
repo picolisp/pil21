@@ -1,4 +1,4 @@
-# 23may20 Software Lab. Alexander Burger
+# 10jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -24,7 +24,7 @@
             (let P (any (& Tos -16))  # TOS cell pointer
                (and (=0 P) (ret))  # Empty
                (let Q (val P)  # Up pointer
-                  (? (n0 (& Q 1))  # Second visit
+                  (? (& Q 1)  # Second visit
                      (set P Exe)  # Restore CAR
                      (setq Exe (cdr P))  # Get CDR
                      (set 2 P (& Q -2)) ) )  # Store up pointer

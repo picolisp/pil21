@@ -1,4 +1,4 @@
-# 09jun20 Software Lab. Alexander Burger
+# 10jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -78,15 +78,15 @@
    @ )
 
 (de void heapAlloc ()
-   (let H (any (alloc null (* 8 (inc HEAP))))
-      (set
-         (ofs H HEAP) (val $Heaps)
-         $Heaps H )
-      (let (P (ofs H HEAP)  A (val $Avail))
-         (loop
-            (set (setq P (ofs P -2)) A)  # Link avail
-            (? (== (setq A P) H)) )
-         (set $Avail A) ) ) )
+   (let
+      (H (any (alloc null (* 8 (inc HEAP))))
+         P (ofs H HEAP)
+         A (val $Avail) )
+      (set P (val $Heaps)  $Heaps H)
+      (loop
+         (set (setq P (ofs P -2)) A)  # Link avail
+         (? (== (setq A P) H)) )
+      (set $Avail A) ) )
 
 # (raw ['flg]) -> flg
 (de _raw (Exe)
@@ -165,7 +165,7 @@
                      (until (== Cld <Cld)
                         (let Cld: (child Cld)
                            (and
-                              (n0 (Cld: pid))
+                              (Cld: pid)
                               (=0 (kill @ (val SIGTERM Sig)))
                               (setq Flg YES) ) )
                         (setq Cld (ofs Cld (child T))) )
@@ -404,7 +404,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (set X (& (val X) -2))  # Unmark
                   (? (atom (shift X))) )
                0 )
-            (? (n0 (& (val Y) 1))  # Detected circularity
+            (? (& (val Y) 1)  # Detected circularity
                (until (== X Y)  # Skip non-circular part
                   (set X (& (val X) -2))  # Unmark
                   (shift X) )
@@ -417,7 +417,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (cond
       ((cnt? X) X)
       ((or (big? X) (sym? X)) 0)
-      ((n0 (circ X)) 0)
+      ((circ X) 0)
       (T
          (let Y (cdr X)
             (loop
@@ -425,7 +425,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (cond
                      ((not (nil? Y)) 0)
                      ((nil? (setq X (car X))) $T)
-                     ((n0 (circ (setq Y X))) 0)
+                     ((circ (setq Y X)) 0)
                      (T
                         (loop
                            (? (atom Y)
@@ -462,9 +462,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (== D 29)
                (== M 2)
                (=0 (% Y 4))
-               (or
-                  (n0 (% Y 100))
-                  (=0 (% Y 400)) ) ) ) )
+               (or (% Y 100) (=0 (% Y 400))) ) ) )
       (let N (/ (+ (* Y 12) M -3) 12)
          (cnt
             (-
@@ -582,9 +580,9 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          S (bufString Nm (b8 (bufSize Nm)))
          P (strchr S (char ":")) )
       (and
-         (n0 P)
+         P
          (<> P S)
-         (n0 (val 2 P))
+         (val 2 P)
          (let N (val $HomeLen)
             (set P 0)
             (let (Len (strlen S)  Q (b8 (+ N Len (+ 4 3 1))))
@@ -597,8 +595,8 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (setq Len (+ Len N 4)) )
                (strcpy (ofs Q Len) ($ ".so"))
                (and
-                  (n0 (dlOpen Q))
-                  (n0 (dlsym @ (inc P)))
+                  (dlOpen Q)
+                  (dlsym @ (inc P))
                   (prog
                      (set Sym (| (i64 @) 2))
                      YES ) ) ) ) ) ) )
@@ -657,7 +655,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (set X (| (val X) 1))  # Mark
                   (shift X)
                   (shift Y)
-                  (? (n0 (& (val X) 1))  # Detected circularity
+                  (? (& (val X) 1)  # Detected circularity
                      (prog1
                         (loop
                            (? (== A X)
@@ -739,7 +737,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (stkChk 0)
          (let (A X  B Y)
             (loop
-               (? (n0 (compare (car X) (car Y))) @)
+               (? (compare (car X) (car Y)) @)
                (? (atom (shift X))
                   (compare X (cdr Y)) )
                (? (atom (shift Y))
@@ -937,7 +935,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de _argv (Exe)
    (let (X (cdr Exe)  A (val $AV)  P (val A))
       (and
-         (n0 P)
+         P
          (== (val P) (char "-"))
          (=0 (val 2 P))  # Single-dash argument
          (inc 'A) )  # Skip "-"

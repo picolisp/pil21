@@ -1,4 +1,4 @@
-# 07jun20 Software Lab. Alexander Burger
+# 10jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -585,7 +585,7 @@
 (de i1 hasData ((i32 . Fd))
    (and
       (> (val $InFDs) Fd)
-      (n0 (val (ofs (val $InFiles) Fd)))
+      (val (ofs (val $InFiles) Fd))
       (let In: (inFile @)
          (> (In: cnt) (In: ix)) ) ) )
 
@@ -625,7 +625,7 @@
                                     (pollIn N (ofs Poll Nfds))
                                     (inc 'Nfds) ) ) ) ) ) ) ) )
             (and
-               (n0 (val $Hear))  # RPC listener
+               (val $Hear)  # RPC listener
                (<> @ Fd)
                (let N @
                   (if (hasData N)
@@ -671,8 +671,7 @@
                                           ((=0 (val (i64* Pn)))  # PID and size are zero
                                              (when (== (Cld: pid) (val $Talking))
                                                 (set $Talking 0) ) )
-                                          ((n0
-                                                (rdBytes (Cld: hear) Buf (i64 (val 1 Pn))) )
+                                          ((rdBytes (Cld: hear) Buf (i64 (val 1 Pn)))
                                              (let
                                                 (Cld2 (val $Child)  # Iterate children
                                                    <Cld2 (ofs Cld2 (* (val $Children) (child T))) )
@@ -680,7 +679,7 @@
                                                    (let Cld2: (child Cld2)
                                                       (and
                                                          (<> Cld Cld2)
-                                                         (n0 (Cld2: pid))
+                                                         (Cld2: pid)
                                                          (or (=0 (val Pn)) (== @ (Cld2: pid)))
                                                          (wrChild Cld2 Buf (i64 (val 2 Pn))) ) )
                                                    (setq Cld2 (ofs Cld2 (child T))) ) ) )
@@ -722,7 +721,7 @@
                   (set $Protect (dec (val $Protect))) )
                (let N (val $Hear)  # RPC listener
                   (and
-                     (n0 N)
+                     N
                      (<> N Fd)
                      (readyIn Poll N)
                      (cond
@@ -965,7 +964,7 @@
       (set $Chr
          (cond
             ((=0 (In:)) -1)  # EOF
-            ((n0 (In: fd))  # Not stdin
+            ((In: fd)  # Not stdin
                (if
                   (and
                      (== (In: ix) (In: cnt))
@@ -985,7 +984,7 @@
                      (free (val $LineBuf))
                      (when (=0 (setq P (set $LineBuf (readline (val $LinePrt)))))
                         (write 1 ($ "\n") 1)
-                        (when (== (val $LinePrt) $Indent)
+                        (when (or (val $Bind) (== (val $LinePrt) $Indent))
                            (err 0 0 $Empty null) )
                         (bye 0) )
                      (set $LinePrt $Indent)
@@ -993,7 +992,7 @@
                         (or
                            (=0 (val P))
                            (== @ 32)
-                           (and (n0 (currentLine)) (=0 (strcmp @ P))) )
+                           (and (currentLine) (=0 (strcmp @ P))) )
                         (add_history P) ) )
                   (cond
                      ((=0 (val P))
@@ -1130,7 +1129,7 @@
                (needNsp 0 S)
                (set (set $Intern (any $Cell)) S)  # Switch symbol namespace
                (set R 4  3 R ZERO) )  # Build new name
-            (? (n0 (strchr $Delim Chr)))
+            (? (strchr $Delim Chr))
             (when (== Chr (char "\\"))
                (setq Chr (call $Get)) )
             (charSym Chr R) )
@@ -1139,8 +1138,8 @@
          (let Nm (val 3 R)
             (cond
                ((== Nm ZERO) (badInput))
-               ((n0 (symToNum Nm (int (val $Scl)) (char ".") 0)) @)
-               ((n0 (anonymous Nm)) @)
+               ((symToNum Nm (int (val $Scl)) (char ".") 0) @)
+               ((anonymous Nm) @)
                (T (requestSym Nm)) ) )
          (set $Intern Int) ) ) )
 
@@ -1176,7 +1175,7 @@
             (? (== C (char "]")))
             (cond
                ((== C (char "."))
-                  (? (n0 (strchr $Delim (call $Get)))
+                  (? (strchr $Delim (call $Get))
                      (setq X
                         (set 2 X
                            (if
@@ -1208,7 +1207,7 @@
    (let C (skip)
       (and
          Top
-         (n0 (val $InFile))
+         (val $InFile)
          (let In: (inFile @)
             (In: src (In: line)) ) )
       (cond
@@ -1421,7 +1420,7 @@
                   (let S (ofs (i8* (val 4 Q)) (val 3 Q))
                      (when (== B (val S))  # Bytes match
                         (set 3 Q (inc (val 3 Q)))  # Increment index
-                        (? (n0 (val 2 S)))  # Not end of string
+                        (? (val 2 S))  # Not end of string
                         (call $Get) # Skip next input byte
                         (set $Link Link)
                         (ret (val Q)) ) )  # Return matched symbol
@@ -1464,7 +1463,7 @@
                   (loop
                      (charSym (getChar C) P)
                      (? (le0 (setq C (call $Get))))
-                     (? (n0 (strchr S C))) )
+                     (? (strchr S C)) )
                   (drop Q
                      (consStr (val Q)) ) ) ) ) ) ) )
 
@@ -1769,7 +1768,7 @@
                            (let S (ofs (i8* (val 4 Q)) (val 3 Q))
                               (when (== B (val S))  # Bytes match
                                  (set 3 Q (inc (val 3 Q)))  # Increment index
-                                 (? (n0 (val 2 S))  # Not end of string
+                                 (? (val 2 S)  # Not end of string
                                     (when
                                        (or
                                           (=0 M)
@@ -1813,7 +1812,7 @@
                                     (inc 'S)
                                     (? (=0 (dec 'C))) ) ) )
                            (call $Put B) )
-                        ((n0 OutM)
+                        (OutM
                            (let S (i8* (val 4 OutM))
                               (setq OutC (- OutC (val 3 M)))
                               (until (lt0 OutC)
@@ -1881,7 +1880,7 @@
 
 # Output string
 (de void outString ((i8* . S))
-   (while (n0 (val S))
+   (while (val S)
       (call $Put @)
       (inc 'S) ) )
 
@@ -2245,7 +2244,7 @@
                   (if
                      (or
                         (<> (val $InFile) (val (val $InFiles)))
-                        (n0 (val $Chr))
+                        (val $Chr)
                         (=0 Prt) )
                      (setq X (eval Y))
                      (flushAll)

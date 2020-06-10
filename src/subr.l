@@ -1,4 +1,4 @@
-# 07jun20 Software Lab. Alexander Burger
+# 10jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -753,7 +753,7 @@
                         (set Y (& (car Y) -2))
                         (? (== X (shift Y))) )
                      C )
-                  (? (n0 (& (car X) 1))
+                  (? (& (car X) 1)
                      (until (== X Y)
                         (set Y (& (car Y) -2))
                         (shift Y) )
@@ -784,7 +784,7 @@
                (set L (& (car L) -2))
                (? (== X (shift L))) )
             C )
-         (? (n0 (& (setq Y (car X)) 1))
+         (? (& (setq Y (car X)) 1)
             (until (== X L)
                (set L (& (car L) -2))
                (shift L) )
@@ -1025,11 +1025,11 @@
                         V ) ) )
                (let V (fill Z Y)
                   (cond
-                     ((n0 V)
+                     (V
                         (save V
                            (cons V
                               (if (=0 (fill X Y)) X @) ) ) )
-                     ((n0 (fill X Y))
+                     ((fill X Y)
                         (cons Z @) )
                      (T 0) ) ) ) ) ) ) )
 

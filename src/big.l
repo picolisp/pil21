@@ -1,4 +1,4 @@
-# 25may20 Software Lab. Alexander Burger
+# 10jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -953,7 +953,7 @@
       (setq Scl (fmtWord (/ N 10) Scl Sep Ign P))
       (cond
          ((=0 Scl) (byteSym Sep P))
-         ((and (n0 Ign) (gt0 Scl) (=0 (% Scl 3)))
+         ((and Ign (gt0 Scl) (=0 (% Scl 3)))
             (byteSym Ign P) ) )
       (dec 'Scl)
       (setq N (% N 10)) )
@@ -1031,7 +1031,7 @@
                      (loop
                         (cond
                            ((=0 Scl) (byteSym Sep P))
-                           ((and (n0 Ign) (gt0 Scl) (=0 (% Scl 3)))
+                           ((and Ign (gt0 Scl) (=0 (% Scl 3)))
                               (byteSym Ign P) ) )
                         (dec 'Scl)
                         (byteSym (+ (i8 (/ N D)) (char "0")) P)

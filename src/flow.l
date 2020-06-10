@@ -1,4 +1,4 @@
-# 09jun20 Software Lab. Alexander Burger
+# 10jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -909,14 +909,29 @@
          (loadCoEnv Src) ) ) )
 
 (de brkLoad (Exe)
-   (when
-      (and
-         (=0 (val $Break))
-         (n0 (isatty 0))
-         (n0 (isatty 1)) )
-      #! ...
-      (set $Break (val $Bind))
-      #! ...
+   (when (and (isatty 0) (isatty 1) (=0 (val $Break)))
+      (let P (val $Bind)
+         (setq P (push (val $Up) $Up P))
+         (set $Up Exe)
+         (setq P (push (val $Run) $Run P))
+         (set $Run $Nil)
+         (set $Break (set $Bind (push (val $At) $At P))) )
+      (let (Out (b8 (ioFrame T))  Io: (ioFrame Out))
+         (Io: fd 1)  # Stdout
+         (Io: pid 0)
+         (pushOutFiles Out)
+         (print Exe)
+         (newline)
+         (repl 0 ($ "! ") $Nil)
+         (popOutFiles) )
+      (setq Exe (val $Up))
+      (let P (val $Bind)
+         (set $At (val P))
+         (setq P (val 3 P))
+         (set $Run (val P))
+         (setq P (val 3 P))
+         (set $Up (val P))
+         (set $Bind (val 3 P)) )
       (set $Break 0) )
    Exe )
 
