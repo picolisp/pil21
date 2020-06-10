@@ -713,7 +713,7 @@
                      (and
                         (=0 (val $Talking))
                         (readyIn Poll (val $Spkr))
-                        (gt0 (rdBytes (val $Spkr) (i8* Pn) 4)) )
+                        (gt0 (rdBytesNb (val $Spkr) (i8* Pn) 4)) )
                      (let Cld (ofs (val $Child) (* (val Pn) (child T)))
                         (unless (=0 ((child Cld) pid))
                            (set $Talking @)

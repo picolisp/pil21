@@ -613,10 +613,12 @@ False Beg End Safe *Safe)
 
 (de llvm~evBool (Exe)
    (let X (eval Exe)
-      (if (== 'i1 (val X))
-         X
-         (let *Log NIL
-            (llvm~n0 X) ) ) ) )
+      (cond
+         ((num? X) (if (=0 X) NO YES))
+         ((== 'i1 (val X)) X)
+         (T
+            (let *Log NIL
+               (llvm~n0 X) ) ) ) ) )
 
 # Type casts
 (asm ()
@@ -1136,7 +1138,7 @@ False Beg End Safe *Safe)
       (let (End (+lbl)  Var (box))
          (for Exe Prg
             (if (== Exe (last Prg))
-               (let? V (set Var (eval (++ Prg)))
+               (let? V (set Var (eval (car Prg)))
                   (unless (and (sym? V) (== 'i1 (val V)))
                      (set Var @Val2) )
                   (phi End Var)
