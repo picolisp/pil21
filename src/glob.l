@@ -1,4 +1,4 @@
-# 09jun20 Software Lab. Alexander Burger
+# 10jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -539,11 +539,11 @@
    31 31 28 31 30 31 30 31 31 30 31 30 31 )
 
 # Booleans
-(var $Repl i1 0)                 # REPL flag
-(var $PRepl i1 0)                # Parent REPL
-(var $Jam i1 0)                  # Error jam
-(var $InBye i1 0)                # Exit status
-(var $Sync i1 0)                 # Family IPC synchronization
+(var $Repl i1 NO)                # REPL flag
+(var $PRepl i1 NO)               # Parent REPL
+(var $Jam i1 NO)                 # Error jam
+(var $InBye i1 NO)               # Exit status
+(var $Sync i1 NO)                # Family IPC synchronization
 
 # Strings
 (str $Empty "")
