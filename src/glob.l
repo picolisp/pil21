@@ -45,7 +45,6 @@
 (var $ExtN i32 0)                      # External symbol offset
 (var $Extn i32 0)
 (var $StrP i64* null)                  # String status
-(var $Break i1 NO)                     # Breakpoint
 (var $GcCount i64 CELLS)               # Collector count
 
 # Database
@@ -314,6 +313,7 @@
    (NIL "finally" _finally)
    (NIL "co" _co)
    (NIL "yield" _yield)
+   (NIL "!" _break)
    (NIL "bye" _bye)
    # List processing
    (NIL "car" _car)
@@ -495,6 +495,7 @@
 (table env
    ($Link 0)                     # Link register
    ($Bind 0)                     # Bind frames
+   ($Break 0)                    # Breakpoint
    ($Catch i8* null)             # Catch frames
    ($CoFrames i8* null)          # Coroutine frames
    ($InFrames i8* null)          # Input frames

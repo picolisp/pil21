@@ -302,6 +302,11 @@ xSym subStr)
 (de void dbTouch (any any))
 (de void dbZap (any))
 
+# flow.l
+(local) brkLoad
+
+(de brkLoad (any))
+
 ### Primitives ###
 (local) (caar cadr cdar cddr int cnt sign sym name memq member length box64 eval
 run)

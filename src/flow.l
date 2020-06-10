@@ -1,4 +1,4 @@
-# 24may20 Software Lab. Alexander Burger
+# 09jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -907,6 +907,25 @@
             (set $Ret Val)
             (longjmp (Dst: (rst)) 1) )
          (loadCoEnv Src) ) ) )
+
+(de brkLoad (Exe)
+   (when
+      (and
+         (=0 (val $Break))
+         (n0 (isatty 0))
+         (n0 (isatty 1)) )
+      #! ...
+      (set $Break (val $Bind))
+      #! ...
+      (set $Break 0) )
+   Exe )
+
+# (! . exe) -> any
+(de _break (Exe)
+   (let X (cdr Exe)
+      (unless (nil? (val $Dbg))
+         (setq X (brkLoad X)) )
+      (eval X) ) )
 
 # (bye ['cnt])
 (de _bye (Exe)
