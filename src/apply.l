@@ -1,4 +1,4 @@
-# 10jun20 Software Lab. Alexander Burger
+# 11jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -109,9 +109,9 @@
             (? (atom (val 4 P)))
             (let Y (cons (evList E) $Nil)
                (setq L
-                  (if (=0 L)
-                     (setq R (safe Y))
-                     (set 2 L Y) ) ) )
+                  (if L
+                     (set 2 L Y)
+                     (setq R (safe Y)) ) ) )
             (loop
                (when (pair (val 4 P))
                   (set 4 P (cdr @)) )
@@ -140,9 +140,9 @@
       (while (pair (car A))
          (let Y (cons (evList E) $Nil)
             (setq L
-               (if (=0 L)
-                  (setq R (safe Y))
-                  (set 2 L Y) ) ) )
+               (if L
+                  (set 2 L Y)
+                  (setq R (safe Y)) ) ) )
          (let (P (cdr E)  Q A)
             (set 4 P (car (set Q (cdar Q))))
             (while (pair (shift P))
@@ -171,12 +171,12 @@
             (let Y (evList E)
                (when (pair Y)
                   (setq L
-                     (if (=0 L)
-                        (setq R (safe Y))
+                     (if L
                         (let Z L
                            (while (pair (cdr Z))
                               (setq Z @) )
-                           (set 2 Z Y) ) ) ) ) )
+                           (set 2 Z Y) )
+                        (setq R (safe Y)) ) ) ) )
             (loop
                (when (pair (val 4 P))
                   (set 4 P (cdr @)) )
@@ -206,12 +206,12 @@
          (let Y (evList E)
             (when (pair Y)
                (setq L
-                  (if (=0 L)
-                     (setq R (safe Y))
+                  (if L
                      (let Z L
                         (while (pair (cdr Z))
                            (setq Z @) )
-                        (set 2 Z Y) ) ) ) ) )
+                        (set 2 Z Y) )
+                     (setq R (safe Y)) ) ) ) )
          (let (P (cdr E)  Q A)
             (set 4 P (car (set A (cdar A))))
             (while (pair (shift P))
@@ -243,9 +243,9 @@
          (unless (nil? (evList E))
             (let Y (cons (caar A) $Nil)
                (setq L
-                  (if (=0 L)
-                     (setq R (safe Y))
-                     (set 2 L Y) ) ) ) )
+                  (if L
+                     (set 2 L Y)
+                     (setq R (safe Y)) ) ) ) )
          (let (P (cdr E)  Q A)
             (set 4 P (car (set A (cdar A))))
             (while (pair (shift P))
@@ -277,9 +277,9 @@
          (unless (nil? (evList E))
             (let Y (cons @ $Nil)
                (setq L
-                  (if (=0 L)
-                     (setq R (safe Y))
-                     (set 2 L Y) ) ) ) )
+                  (if L
+                     (set 2 L Y)
+                     (setq R (safe Y)) ) ) ) )
          (let (P (cdr E)  Q A)
             (set 4 P (car (set A (cdar A))))
             (while (pair (shift P))
@@ -463,10 +463,10 @@
             2 E P
             P (link (ofs P 3))
             4 P
-            (cond
-               ((=0 Text) $Nil)
-               ((=0 (val Text)) $T)
-               (T (mkStr Text)) ) )
+            (nond
+               (Text $Nil)
+               ((val Text) $T)
+               (NIL (mkStr Text)) ) )
          (if (nil? (evList E))
             null
             (let Nm (name (val (tail (xSym @))))

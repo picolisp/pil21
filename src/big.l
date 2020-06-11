@@ -1,4 +1,4 @@
-# 10jun20 Software Lab. Alexander Burger
+# 11jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -20,7 +20,7 @@
 
 (de i8 symByte ((i64* . P))  # [cnt name]
    (let C (val P)  # Get cnt
-      (when (=0 C)  # New round
+      (unless C  # New round
          (let Nm (val 2 P)
             (cond
                ((== Nm ZERO) (ret (i8 0)))  # Done
@@ -41,11 +41,11 @@
          (T
             (|
                (shl
-                  (if (=0 (& C (hex "20")))
+                  (ifn (& C (hex "20"))
                      (& C (hex "1F"))
                      (|
                         (shl
-                           (if (=0 (& C (hex "10")))
+                           (ifn (& C (hex "10"))
                               (& C (hex "0F"))
                               (|
                                  (shl (& C (hex "7")) 6)
@@ -143,22 +143,21 @@
 (de zapZero (N)
    (let (P (push N)  X P  Y P  Z T)
       (until (cnt? (setq Z (val (big N))))  # Last cell
-         (unless (=0 (val (dig N)))  # Null digit?
+         (when (val (dig N))  # Null digit?
             (setq X Y) )  # New null-tail
          (setq
             Y (big N)  # New short-tail
             N (val Y) ) )  # Next cell
       (when (== Z ZERO)
-         (nond
-            ((=0 (setq N (val (dig N))))  # Final digit
-               (when (=0 (& N (hex "F000000000000000")))
+         (cond
+            ((setq N (val (dig N)))  # Final digit
+               (unless (& N (hex "F000000000000000"))
                   (set Y (cnt N)) ) )  # Store in short-tail
-            ((=0
-                  (&
-                     (setq N (val (dig (val X))))  # Digit in null-tail
-                     (hex "F000000000000000") ) )
+            ((&
+                  (setq N (val (dig (val X))))  # Digit in null-tail
+                  (hex "F000000000000000") )
                (set (big (val X)) ZERO) )  # Trim null-tail
-            (NIL (set X (cnt N))) ) )  # Store in null-tail
+            (T (set X (cnt N))) ) )  # Store in null-tail
       (val P) ) )
 
 # Multiply (unsigned) number by 2
@@ -199,19 +198,20 @@
                (setq
                   Z (int Z)
                   A (| (shr Z 0 1) A) )
-               (if
-                  (and
-                     (=0 (setq Z (shr Z 1)))
-                     (=0 (& A (hex "F000000000000000"))) )
+               (ifn
+                  (or
+                     (setq Z (shr Z 1))
+                     (& A (hex "F000000000000000")) )
                   (set (big X) (cnt A))
                   (set (dig Y) A)
                   (set (big Y) (cnt Z)) ) )
             (setq
                Y (int Y)
                A (| (shr Y 0 1) A) )
-            (and
-               (=0 (setq Y (shr Y 1)))
-               (=0 (& A (hex "F000000000000000")))
+            (unless
+               (or
+                  (setq Y (shr Y 1))
+                  (& A (hex "F000000000000000")) )
                (ret (cnt A)) )
             (set (dig X) A)
             (set (big X) (cnt Y)) )
@@ -281,10 +281,10 @@
                   N (int N)
                   A (| (shr N 0 1) A) )
                (set (big P)
-                  (if
-                     (and
-                        (=0 (setq N (shr N 1)))
-                        (=0 (& A (hex "F000000000000000"))) )
+                  (ifn
+                     (or
+                        (setq N (shr N 1))
+                        (& A (hex "F000000000000000")) )
                      (cnt A)
                      (prog1
                         (boxNum A)
@@ -293,10 +293,10 @@
             (setq
                N (int N)
                A (| (shr N 0 1) A) )
-            (if
-               (and
-                  (=0 (setq N (shr N 1)))
-                  (=0 (& A (hex "F000000000000000"))) )
+            (ifn
+               (or
+                  (setq N (shr N 1))
+                  (& A (hex "F000000000000000")) )
                (cnt A)
                (prog1
                   (boxNum A)
@@ -587,9 +587,9 @@
          (setq A (int A))
          (if (cnt? B)
             (let N (mul A (int B))
-               (if (and (=0 @@@) (=0 (& N (hex "F000000000000000"))))  # Fit in short number
-                  (cnt N)
-                  (consNum N (cnt @@@)) ) )
+               (if (or @@@ (& N (hex "F000000000000000")))  # Fit in short number
+                  (consNum N (cnt @@@))
+                  (cnt N) ) )
             (: 1
                (let
                   (Lo (mul A (val (dig B)))
@@ -605,9 +605,9 @@
                      Lo (add (mul A (int B)) Hi)
                      Hi (+ @@@ @@) )
                   (set (big P)
-                     (if (and (=0 Hi) (=0 (& Lo (hex "F000000000000000"))))  # Fit in short number
-                        (cnt Lo)
-                        (consNum Lo (cnt Hi)) ) )
+                     (if (or Hi (& Lo (hex "F000000000000000")))  # Fit in short number
+                        (consNum Lo (cnt Hi))
+                        (cnt Lo) ) )
                   R ) ) ) )
       ((== B ZERO) B)
       ((cnt? B)  # A is big
@@ -635,7 +635,7 @@
                      (mulAddHiLo (val (dig X)) (val (dig B)) Q) )
                   (mulAddHiLo (int X) (val (dig B)) Q)
                   (set (dig Q) Lo)
-                  (unless (=0 Hi)
+                  (when Hi
                      (if (cnt? (val (big Q)))
                         (set (big Q) (boxNum Hi))
                         (set (big @) Hi) ) ) )
@@ -658,7 +658,7 @@
                   (mulAddHiLo (val (dig A)) B P) )
                (mulAddHiLo (int A) B P)
                (set (dig P) Lo)
-               (unless (=0 Hi)
+               (when Hi
                   (if (cnt? (val (big P)))
                      (set (big P) (boxNum Hi))
                      (set (big @) Hi) ) ) )
@@ -713,7 +713,7 @@
          (twiceBig (val V))
          (inc 'D) )
       (setq V1 (val (dig Q)))
-      (unless (=0 V2)
+      (when V2
          (setq V2 (val (dig V2))) )
       (loop
          (let (X (val U)  U1 0  U2 0  U3 T)
@@ -736,7 +736,7 @@
                (setq
                   Lo (sub Lo (mul Q V1))  # 'r' - 'q' * 'v1'
                   Hi (sub Hi @@@ @@) )
-               (while (=0 Hi)  # 'r' <= MAX  and
+               (until Hi  # 'r' <= MAX  and
                   (let L (mul Q V2)  # 'q' * 'v2 '> [lo(r) u3]
                      (? (> Lo @@@))
                      (? (and (== Lo @@@) (>= U3 L))) )
@@ -759,12 +759,12 @@
                            (val (dig Z))
                            (mul Q (val (dig Y))) ) )
                      (setq Hi (- (sub Hi @@@ @@))) )
-                  (unless (=0 Hi)  # Borrow
+                  (when Hi  # Borrow
                      (setq Z (val (big Z)))
                      (set (dig Z) (sub (val (dig Z)) Hi))  # Subtract borrow
                      (when @@
                         (dec 'Q)
-                        (when (or Rem (n0 M))
+                        (when (or Rem M)
                            (setq Y (val V))
                            (set (dig X)  # 'x' += 'v'
                               (add (val (dig X)) (val (dig Y))) )
@@ -781,7 +781,7 @@
       (ifn Rem
          (zapZero R)
          (setq A (zapZero (val U)))
-         (until (=0 D)
+         (while D
             (setq A (half A))  # Shift right (destructive)
             (dec 'D) )
          A ) ) )
@@ -878,7 +878,7 @@
                      (setq X A  A C)
                      (set (big B) Y)  # Reverse B
                      (setq Y B  B D) ) )
-               (until (=0 X)  # Revert
+               (while X  # Revert
                   (let Z (val (big X))
                      (set (big X) A)  # Restore A
                      (setq A X  X Z) )
@@ -907,7 +907,7 @@
          Frac NO
          B T )
       (until (> (setq B (symByte P)) (char " "))  # Skip white space
-         (when (=0 B)  # None
+         (unless B  # None
             (ret 0) ) )
       (cond
          ((== B (char "+"))
@@ -915,18 +915,18 @@
          ((== B (char "-"))
             (setq Sign YES)
             (: 1
-               (when (=0 (setq B (symByte P)))
+               (unless (setq B (symByte P))
                   (ret 0) ) ) ) )
       (when (> (setq B (- B (char "0"))) 9)
          (ret 0) )
       (set (link Num T) (cnt (i64 B)))
-      (until (=0 (setq B (symByte P)))
+      (while (setq B (symByte P))
          (? (and Frac (=0 Scl))
             (when (> (setq B (- B (char "0"))) 9)
                (ret 0) )
             (when (>= B 5)  # Round
                (set Num (addu (val Num) ONE)) )
-            (until (=0 (setq B (symByte P)))
+            (while (setq B (symByte P))
                (when (> (setq B (- B (char "0"))) 9)
                   (ret 0) ) ) )
          (cond
@@ -941,7 +941,8 @@
                   (addu
                      (tenfold (val Num))
                      (cnt (i64 B)) ) )
-               (and Frac (dec 'Scl)) ) ) )
+               (when Frac
+                  (dec 'Scl) ) ) ) )
       (when Frac
          (while (ge0 (dec 'Scl))
             (set Num (tenfold (val Num))) ) )
@@ -977,7 +978,7 @@
                   (when (big? Num)  # and first digit and mask
                      (setq Dig (val (dig Num))  Mask 1) )
                   (loop
-                     (unless (=0 (& Dig Mask))  # Bit is set
+                     (when (& Dig Mask)  # Bit is set
                         # Add incrementor to accumulator
                         (let (A Acc  I Inc  C 0)  # Carry for BCD addition
                            (loop
@@ -992,7 +993,7 @@
                               (when (> (inc 'A) TopA)
                                  (inc 'TopA)  # Extend accumulator
                                  (set A 0) ) )  # with 0
-                           (unless (=0 C) # BCD-Carry
+                           (when C  # BCD-Carry
                               (set (inc 'TopA) 1) ) ) )  # Extend accumulator with 1
                      # Shift incrementor left
                      (let (I Inc  C 0)
@@ -1005,7 +1006,7 @@
                                     1 ) )
                               (set I N) )
                            (? (> (inc 'I) TopI)) )
-                        (unless (=0 C) # BCD-Carry
+                        (when C  # BCD-Carry
                            (inc 'TopI)  # Extend incrementor
                            (set I 1) ) )  # with 1
                      (? (=0 (setq Mask (shl Mask 1)))) ) )
@@ -1017,7 +1018,7 @@
                   (byteSym (char "-") P) )
                (let N (* (shr (- TopA Acc) 3) 18)  # Calculate length~1
                   (let D (val TopA)
-                     (until (=0 (setq D (/ D 10)))
+                     (while (setq D (/ D 10))
                         (inc 'N) ) )
                   (when (lt0 (setq Scl (- N Scl)))
                      (byteSym (char "0") P)
@@ -1085,14 +1086,14 @@
                ((=0 (symToNum (name @) Scl Sep Ign)) $Nil)
                (T @) ) )
          (T
-            (if (=0
-                  (symToNum
-                     (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
-                        (pack A P)
-                        (val Q) )
-                     Scl Sep Ign ) )
-               $Nil
-               @ ) ) ) ) )
+            (if
+               (symToNum
+                  (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
+                     (pack A P)
+                     (val Q) )
+                  Scl Sep Ign )
+               @
+               $Nil ) ) ) ) )
 
 ### Arithmetics ###
 # (+ 'num ..) -> num
@@ -1133,9 +1134,7 @@
          ((num? @) (incs @))
          (T
             (let Y (save (chkVar Exe @))  # Symbol or cell
-               (and
-                  (sym? Y)
-                  (sym? (val (tail Y)))  # External
+               (when (and (sym? Y) (sym? (val (tail Y))))  # External
                   (dbTouch Exe Y) )
                (if (atom (shift X))
                   (if (nil? (val Y))
@@ -1156,9 +1155,7 @@
          ((num? @) (decs @))
          (T
             (let Y (save (chkVar Exe @))  # Symbol or cell
-               (and
-                  (sym? Y)
-                  (sym? (val (tail Y)))  # External
+               (when (and (sym? Y) (sym? (val (tail Y))))  # External
                   (dbTouch Exe Y) )
                (if (atom (shift X))
                   (if (nil? (val Y))
@@ -1279,18 +1276,18 @@
                ((gt0 N)
                   (while (and (big? Y) (>= N 64))  # Large shift count
                      (setq Y (val (big Y)))  # Discard 64 bits
-                     (when (=0 (setq N (- N 64)))
+                     (unless (setq N (- N 64))
                         (goto 9) ) )
                   (setq Y (safe (shru Y)))  # Non-destructive
-                  (until (=0 (dec 'N))
+                  (while (dec 'N)
                      (setq Y (half Y)) ) )  # Shift right (destructive)
                (T
                   (while (>= -64 N)
                      (setq Y (safe (consNum 0 Y)))
-                     (when (=0 (setq N (+ N 64)))
+                     (unless (setq N (+ N 64))
                         (goto 9) ) )
                   (setq Y (safe (shlu Y)))  # Non-destructive
-                  (until (=0 (inc 'N))
+                  (while (inc 'N)
                      (setq Y (safe (twice Y))) ) ) )  # Shift left (destructive)
             (: 9
                (if Sign (neg Y) Y) ) ) ) ) )
@@ -1481,7 +1478,7 @@
 (de _hash (Exe)
    (let (N (initSeed (eval (cadr Exe)))  C 64  R 0)
       (loop
-         (unless (=0 (& (x| N R) 1))
+         (when (& (x| N R) 1)
             (setq R (x| R (hex "14002"))) )  # CRC Polynom x**16 + x**15 + x**2 + 1
          (setq N (shr N 1)  R (shr R 1))
          (? (=0 (dec 'C))) )

@@ -1,4 +1,4 @@
-# 10jun20 Software Lab. Alexander Burger
+# 11jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -20,9 +20,9 @@
 
 (de void unwind ((i8* . Catch))
    (let (Ca (val $Catch)  Bnd (val $Bind))
-      (until (=0 Ca)
+      (while Ca
          (let Ca: (caFrame Ca)
-            (until (or (=0 Bnd) (== Bnd (Ca: (env $Bind any))))
+            (while (and Bnd (<> Bnd (Ca: (env $Bind any))))
                (loop
                   (let Sym (val 2 Bnd)
                      (set Sym (val Bnd))  # Restore values
@@ -32,16 +32,17 @@
             (memcpy (env) (Ca: (env)) (env T))
             (eval (Ca: fin))  # Evaluate 'finally' expression
             (set $Catch (Ca: link))
-            (and (== Ca Catch) (ret))
+            (when (== Ca Catch)
+               (ret) )
             (setq Ca (Ca: link)) ) )
-      (until (=0 Bnd)
+      (while Bnd
          (let Sym (val 2 Bnd)
             (set Sym (val Bnd))  # Restore values
             (setq Bnd (val 3 Bnd)) ) )
       (set $Bind 0)
-      (until (=0 (val $InFrames))
+      (while (val $InFrames)
          (popInFiles) )
-      (until (=0 (val $OutFrames))
+      (while (val $OutFrames)
          (popOutFiles) )
       # ...
       ) )
@@ -73,7 +74,7 @@
 (local) (alloc heapAlloc)
 
 (de i8* alloc ((i8* . Ptr) (i64 . Siz))
-   (when (=0 (realloc Ptr Siz)@)   # Reallocate pointer
+   (unless (realloc Ptr Siz)   # Reallocate pointer
       (giveup ($ "No memory") null) )
    @ )
 
@@ -93,7 +94,7 @@
    (let X (cdr Exe)
       (cond
          ((atom X)
-            (if (=0 (val Termio)) $Nil $T) )
+            (if (val Termio) $T $Nil) )
          ((nil? (eval (car X))) (setCooked) @)
          (T (setRaw) @) ) ) )
 
@@ -101,14 +102,14 @@
 (local) (sig sigTerm sigChld sighandler)
 
 (de void sig ((i32 . N))
-   (ifn (=0 (val $TtyPid))
+   (if (val $TtyPid)
       (kill @ N)
       (set $Signal (+ (val $Signal) 1))
       (let P (ofs $Signal (gSignal N))
          (set P (+ (val P) 1)) ) ) )
 
 (de void sigTerm ((i32 . N))
-   (ifn (=0 (val $TtyPid))
+   (if (val $TtyPid)
       (kill @ N)
       (set $Signal (+ (val $Signal) 1))
       (let P (ofs $Signal (gSignal (val SIGTERM Sig)))
@@ -118,44 +119,44 @@
    (waitNohang) )
 
 (de void sighandler (Exe)
-   (when (=0 (val $Protect))
+   (unless (val $Protect)
       (set $Protect 1)
       (let P T
          (loop
-            (nond
-               ((=0 (val (setq P (ofs $Signal SIGIO))))
+            (cond
+               ((val (setq P (ofs $Signal SIGIO)))
                   (set P (dec @))
                   (set $Signal (dec (val $Signal)))
                   (execAt (val $Sigio)) )
-               ((=0 (val (setq P (ofs $Signal SIGUSR1))))
+               ((val (setq P (ofs $Signal SIGUSR1)))
                   (set P (dec @))
                   (set $Signal (dec (val $Signal)))
                   (execAt (val $Sig1)) )
-               ((=0 (val (setq P (ofs $Signal SIGUSR2))))
+               ((val (setq P (ofs $Signal SIGUSR2)))
                   (set P (dec @))
                   (set $Signal (dec (val $Signal)))
                   (execAt (val $Sig2)) )
-               ((=0 (val (setq P (ofs $Signal SIGALRM))))
+               ((val (setq P (ofs $Signal SIGALRM)))
                   (set P (dec @))
                   (set $Signal (dec (val $Signal)))
                   (execAt (val $Alarm)) )
-               ((=0 (val (setq P (ofs $Signal SIGHUP))))
+               ((val (setq P (ofs $Signal SIGHUP)))
                   (set P (dec @))
                   (set $Signal (dec (val $Signal)))
                   (execAt (val $Hup)) )
-               ((=0 (val (setq P (ofs $Signal SIGINT))))
+               ((val (setq P (ofs $Signal SIGINT)))
                   (set P (dec @))
                   (set $Signal (dec (val $Signal)))
                   (unless (val $PRepl)  # Not child of REPL process?
-                     (brkLoad (if (=0 Exe) $Nil Exe)) ) )
-               ((=0 (val (setq P (ofs $Signal SIGTSTP))))
+                     (brkLoad (if Exe @ $Nil)) ) )
+               ((val (setq P (ofs $Signal SIGTSTP)))
                   (set P (dec @))
                   (set $Signal (dec (val $Signal)))
                   (execAt (val $TStp1))  # Run 'TStp1'
                   (stopTerm)  # Stop
                   (iSignal (val SIGTSTP Sig) (fun sig))  # Set signal again
                   (execAt (val $TStp2)) )  # Run 'TStp2'
-               ((=0 (val (setq P (ofs $Signal SIGTERM))))
+               ((val (setq P (ofs $Signal SIGTERM)))
                   (set P (dec @))
                   (set $Signal (dec (val $Signal)))
                   (let
@@ -164,9 +165,10 @@
                         Flg NO )
                      (until (== Cld <Cld)
                         (let Cld: (child Cld)
-                           (and
-                              (Cld: pid)
-                              (=0 (kill @ (val SIGTERM Sig)))
+                           (when
+                              (and
+                                 (Cld: pid)
+                                 (=0 (kill @ (val SIGTERM Sig))) )
                               (setq Flg YES) ) )
                         (setq Cld (ofs Cld (child T))) )
                      (? Flg)
@@ -182,18 +184,18 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de void pushOutFiles (i8*))
 
 (de NIL err (Exe X (i8* . Fmt) (i8* . Arg))
-   (set $Up (if (=0 Exe) $Nil Exe))
-   (unless (=0 X)
+   (set $Up (if Exe @ $Nil))
+   (when X
       (link (push X NIL)) )  # Save
    (let Msg (b8 240)
       (gPrintf Msg 240 Fmt Arg)
-      (unless (=0 (val Msg))
+      (when (val Msg)
          (set $Msg (mkStr Msg))
          (let Ca (val $Catch)
-            (until (=0 Ca)
+            (while Ca
                (let Ca: (caFrame Ca)
                   (let Tag (Ca: tag)
-                     (unless (=0 Tag)
+                     (when Tag
                         (while (pair Tag)
                            (when (subStr (car Tag) (val $Msg))
                               (set $Ret
@@ -213,28 +215,28 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (Io: pid 0)
          (pushOutFiles (Io:))
          (let In: (inFile (val $InFile))
-            (unless (or (=0 (In:)) (=0 (In: name)))
+            (when (and (In:) (In: name))
                (call $Put (char "["))
                (outString (In: name))
                (call $Put (char ":"))
                (outWord (i64 (In: src)))
                (call $Put (char "]"))
                (space) ) )
-         (unless (=0 Exe)
+         (when Exe
             (outString ($ "!? "))
             (print Exe)
             (newline) )
-         (unless (=0 X)
+         (when X
             (print X)
             (outString ($ " -- ")) )
-         (unless (=0 (val Msg))
+         (when (val Msg)
             (outString Msg)
             (newline)
-            (unless (or (nil? (val $Err)) $Jam)
+            (unless (or (nil? (val $Err)) (val $Jam))
                (set $Jam YES)
                (execAt (val $Err))
                (set $Jam NO) )
-            (when (or (=0 (isatty 0)) (=0 (isatty 1)))
+            (unless (and (isatty 0) (isatty 1))
                (bye 1) )
             (repl 0 ($ "? ") $Nil) )
          (unwind null)
@@ -303,7 +305,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (stkErr Exe) ) )
 
 (inline sigChk (Exe)
-   (unless (=0 (val $Signal))
+   (when (val $Signal)
       (sighandler Exe) ) )
 
 # Argument checks
@@ -340,14 +342,13 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    X )
 
 (inline chkVar (Exe X)
-   (and
-      (>= X $Nil)
-      (>= $T X)
+   (when (and (>= X $Nil) (>= $T X))
       (protErr Exe X) )
    X )
 
 (inline needChkVar (Exe X)
-   (and (num? X) (varErr Exe X))
+   (when (num? X)
+      (varErr Exe X) )
    (chkVar Exe X)
    X )
 
@@ -586,9 +587,9 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (let N (val $HomeLen)
             (set P 0)
             (let (Len (strlen S)  Q (b8 (+ N Len (+ 4 3 1))))
-               (ifn (=0 (strchr S (char "/")))
+               (if (strchr S (char "/"))
                   (strcpy Q S)
-                  (unless (=0 N)
+                  (when N
                      (memcpy Q (val $Home) N) )
                   (strcpy (ofs Q N) ($ "lib/"))
                   (strcpy (ofs Q (+ N 4)) S)
@@ -721,16 +722,16 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                                        (val (dig NmY))  # Next digit
                                        (setq NmY (val (big NmY))) ) ) )
                               (loop
-                                 (unless (=0 (- (& A 255) (& B 255)))
+                                 (when (- (& A 255) (& B 255))
                                     (ret (if (gt0 @) +1 -1)) )
                                  (? (=0 (setq A (shr A 8)))
-                                    (unless (=0 (setq B (shr B 8)))
+                                    (when (setq B (shr B 8))
                                        (ret -1) )
-                                    (when (=0 NmX)
-                                       (ret (if (=0 NmY) 0 -1)) )
-                                    (when (=0 NmY)
+                                    (unless NmX
+                                       (ret (if NmY -1 0)) )
+                                    (unless NmY
                                        (ret +1) ) )
-                                 (when (=0 (setq B (shr B 8)))
+                                 (unless (setq B (shr B 8))
                                     (ret +1) ) ) ) ) ) ) ) ) ) )
       ((atom Y) (if (t? Y) -1 +1))
       (T
@@ -856,54 +857,52 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (mkStr (getenv S))
          (let (Y (evSym X)  Nm2 (xName Exe Y))
             (if
-               (=0
-                  (setenv S
-                     (bufString Nm2 (b8 (bufSize Nm2)))
-                     1 ) )
-               Y
-               $Nil ) ) ) ) )
+               (setenv S
+                  (bufString Nm2 (b8 (bufSize Nm2)))
+                  1 )
+               $Nil
+               Y ) ) ) ) )
 
 # (pwd) -> sym
 (de _pwd (Exe)
    (let P (getcwd null 0)
-      (if (=0 P)
-         $Nil
-         (prog1 (mkStr P) (free P)) ) ) )
+      (if P
+         (prog1 (mkStr P) (free P))
+         $Nil ) ) )
 
 # (cd 'any) -> sym
 (de _cd (Exe)
    (let
       (Nm (xName Exe (evSym (cdr Exe)))
          P (getcwd null 0) )
-      (if (=0 P)
-         $Nil
+      (if P
          (prog1
             (if (lt0 (chdir (pathString Nm (b8 (pathSize Nm)))))
                $Nil
                (mkStr P) )
-            (free P) ) ) ) )
+            (free P) )
+         $Nil ) ) )
 
 # (dir ['any] ['flg]) -> lst
 (de _dir (Exe)
    (let X (cdr Exe)
       (if
-         (=0
-            (getDir
-               (if (nil? (evSym X))
-                  ($ ".")
-                  (let Nm (xName Exe @)
-                     (pathString Nm (b8 (pathSize Nm))) ) ) ) )
-         $Nil
+         (getDir
+            (if (nil? (evSym X))
+               ($ ".")
+               (let Nm (xName Exe @)
+                  (pathString Nm (b8 (pathSize Nm))) ) ) )
          (let (P @  F (eval (car (shift X))))
             (when (nil? F)
                (while (== (val P) (char "."))
-                  (when (=0 (setq P (getDir null)))
+                  (unless (setq P (getDir null))
                      (ret $Nil) ) ) )
             (let (Y (cons (mkStr P) $Nil)  R (save Y))
-               (until (=0 (setq P (getDir null)))
+               (while (setq P (getDir null))
                   (unless (and (nil? F) (== (val P) (char ".")))
                      (setq Y (set 2 Y (cons (mkStr P) $Nil))) ) )
-               R ) ) ) ) )
+               R ) )
+         $Nil ) ) )
 
 # (info 'any ['flg]) -> (cnt|flg dat . tim)
 (de _info (Exe)
@@ -934,30 +933,31 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 # (argv [var ..] [. sym]) -> lst|sym
 (de _argv (Exe)
    (let (X (cdr Exe)  A (val $AV)  P (val A))
-      (and
-         P
-         (== (val P) (char "-"))
-         (=0 (val 2 P))  # Single-dash argument
+      (when
+         (and
+            P
+            (== (val P) (char "-"))
+            (=0 (val 2 P)) )  # Single-dash argument
          (inc 'A) )  # Skip "-"
       (if (nil? X)  # No args
-         (if (=0 (setq P (val A)))
-            $Nil
+         (if (setq P (val A))
             (let (Y (cons (mkStr P) $Nil)  R (save Y))
-               (until (=0 (setq P (val (inc 'A))))
+               (while (setq P (val (inc 'A)))
                   (setq Y (set 2 Y (cons (mkStr P) $Nil))) )
-               R ) )
+               R )
+            $Nil )
          (loop
             (? (atom X)
                (set (needChkVar Exe X)
-                  (if (=0 (setq P (val A)))
-                     $Nil
+                  (if (setq P (val A))
                      (let (Y (cons (mkStr P) $Nil)  R Y)
                         (save R
-                           (until (=0 (setq P (val (inc 'A))))
+                           (while (setq P (val (inc 'A)))
                               (setq Y (set 2 Y (cons (mkStr P) $Nil))) ) )
-                        R ) ) ) )
+                        R )
+                     $Nil ) ) )
             (let Y
-               (if (=0 (setq P (val A)))
+               (ifn (setq P (val A))
                   $Nil
                   (inc 'A)
                   (mkStr P) )
@@ -985,12 +985,11 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             ((big? Y) (i8* (val (dig Y))))
             (T
                (let Nm (xName Exe Y)
-                  (when
-                     (=0
-                        (dlOpen
-                           (if (== Nm (| 2 (>> -4 (char "@"))))
-                              null
-                              (pathString Nm (b8 (pathSize Nm))) ) ) )
+                  (unless
+                     (dlOpen
+                        (if (== Nm (| 2 (>> -4 (char "@"))))
+                           null
+                           (pathString Nm (b8 (pathSize Nm))) ) )
                      (err Exe Y ($ "[DLL] %s") (dlerror)) )
                   (set Y (box64 (i64 @)))
                   @ ) ) )
@@ -1009,9 +1008,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                ((big? Fun) (i8* (val (dig Fun))))
                (T
                   (let Nm (xName Exe Fun)
-                     (when
-                        (=0
-                           (ffiPrep Lib (bufString Nm (b8 (bufSize Nm))) Args) )
+                     (unless (ffiPrep Lib (bufString Nm (b8 (bufSize Nm))) Args)
                         (err Exe 0 ($ "Bad ffi") null) )
                      (set Fun (box64 (i64 @)))
                      @ ) ) )
@@ -1049,7 +1046,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 # (trail ['flg]) -> lst
 (de _trail (Exe)
    (let (F (eval (cadr Exe))  Bnd (val $Bind)  R $Nil)
-      (until (=0 Bnd)
+      (while Bnd
          (let S (val 2 Bnd)
             (if (== S $At)
                (setq R (cons (val 4 Bnd) R))
@@ -1072,8 +1069,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (when (num? Y)
          (setq N (int Y)  Y (car (shift X))) )
       (if (nil? Y)
-         (if (=0 N)
-            $Nil
+         (if N
             (loop
                (? (=0 Bnd) $Nil)
                (?
@@ -1081,9 +1077,10 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                      (== $At (val 2 Bnd))
                      (=0 (dec 'N)) )
                   (val 4 Bnd) )
-               (setq Bnd (val 3 Bnd)) ) )
+               (setq Bnd (val 3 Bnd)) )
+            $Nil )
          (let Z Y
-            (unless (=0 N)
+            (when N
                (loop
                   (? (=0 Bnd))
                   (?
@@ -1102,16 +1099,16 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (let X (cdr Exe)
       (if (atom X)
          (let P (history_list)
-            (if (or (=0 P) (=0 (val P)))
-               $Nil
+            (if (and P (val P))
                (let
                   (Y (cons (mkStr (val (val P))) $Nil)
                      R (save Y)
                      I 0 )
-                  (until (=0 (val (ofs P (inc 'I))))
+                  (while (val (ofs P (inc 'I)))
                      (setq Y
                         (set 2 Y (cons (mkStr (val @)) $Nil)) ) )
-                  R ) ) )
+                  R )
+               $Nil ) )
          (clear_history)
          (let (Y (needLst Exe (eval (car X)))  Z Y)
             (while (pair Z)
@@ -1141,11 +1138,11 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (set $AV (setq Av (ofs Av 1)))  # and argument vector
    # Check debug mode
    (let P (ofs Av (- Ac 2))
-      (when (=0 (strcmp (val P) ($ "+")))
+      (unless (strcmp (val P) ($ "+"))
          (set $Dbg $T  P null) ) )
    # Locate home directory
    (let P (val Av)  # First argument
-      (unless (or (=0 P) (== (val P) (char "-")))
+      (when (and P (<> (val P) (char "-")))
          (let Q (strrchr P (char "/"))
             (unless
                (or
@@ -1192,7 +1189,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (signal (val SIGTTIN Sig) (val SigIgn))
    (signal (val SIGTTOU Sig) (val SigIgn))
    (set $USec (getUsec))
-   (when (=0 (setjmp QuitRst))
+   (unless (setjmp QuitRst)
       (loadAll 0)  # Load arguments
       (set $Repl YES)
       (iSignal (val SIGINT Sig) (fun sig)) )

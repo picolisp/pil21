@@ -1,4 +1,4 @@
-# 10jun20 Software Lab. Alexander Burger
+# 11jun20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -1138,9 +1138,7 @@ False Beg End Safe *Safe)
       (let (End (+lbl)  Var (box))
          (for Exe Prg
             (if (== Exe (last Prg))
-               (let? V (set Var (eval (car Prg)))
-                  (unless (and (sym? V) (== 'i1 (val V)))
-                     (set Var @Val2) )
+               (when (set Var (evBool (car Prg)))
                   (phi End Var)
                   (br End) )
                (let (Flg (evBool (++ Prg))  Skip (+lbl))

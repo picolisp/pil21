@@ -1,4 +1,4 @@
-# 10jun20 Software Lab. Alexander Burger
+# 11jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -85,7 +85,7 @@
 (de void closeInFile ((i32 . Fd))
    (when (> (val $InFDs) Fd)
       (let (P (ofs (val $InFiles) Fd)  V (val P))
-         (unless (=0 V)
+         (when V
             (when (== V (val $InFile))
                (set $InFile null) )
             (free ((inFile V) name))
@@ -95,7 +95,7 @@
 (de void closeOutFile ((i32 . Fd))
    (when (> (val $OutFDs) Fd)
       (let (P (ofs (val $OutFiles) Fd)  V (val P))
-         (unless (=0 V)
+         (when V
             (when (== V (val $OutFile))
                (set $OutFile null) )
             (free V)
@@ -133,7 +133,7 @@
       (loop
          (? (gt0 (read Fd P Cnt))
             (setq P (ofs P @)  Cnt (- Cnt @)) )
-         (when (or (=0 @) (<> (gErrno) EINTR))
+         (unless (and @ (== (gErrno) EINTR))
             (ret NO) )
          (sigChk 0) )
       (? (=0 Cnt) YES) ) )
@@ -144,11 +144,11 @@
          (fcntlSetFl Fd Flg)
          (when (gt0 N)
             (loop
-               (when (=0 (setq Cnt (- Cnt N)))
+               (unless (setq Cnt (- Cnt N))
                   (ret 1) )
                (setq P (ofs P N))
                (while (le0 (setq N (read Fd P Cnt)))
-                  (when (or (=0 N) (<> (gErrno) EINTR))
+                  (unless (and N (== (gErrno) EINTR))
                      (ret 0) )
                   (sigChk 0) ) ) )
          (? (=0 N) 0) )
@@ -182,7 +182,7 @@
 
 (de void wrChild ((i8* . Cld)  (i8* . P) (i64 . Cnt))
    (let (Cld: (child Cld)  C (Cld: cnt))
-      (when (=0 C)
+      (unless C
          (loop
             (let N (write (Cld: tell) P Cnt)
                (if (lt0 N)
@@ -193,7 +193,7 @@
                         (ret) )
                      (unless (== E EINTR)
                         (writeErr ($ "child write: %s")) ) )
-                  (when (=0 (setq Cnt (- Cnt N)))
+                  (unless (setq Cnt (- Cnt N))
                      (ret) )
                   (setq P (ofs P N)) ) ) ) )
       (setq N (+ C Cnt 8))  # New buffer size
@@ -203,10 +203,10 @@
          (Cld: cnt N) ) ) )
 
 (de i1 flush ((i8* . Out))
-   (if (=0 Out)
+   (ifn Out
       YES
       (let Out: (outFile Out)
-         (if (=0 (Out: ix))
+         (ifn (Out: ix)
             YES
             (Out: ix 0)
             (wrBytes (Out: fd) (Out: (buf)) @) ) ) ) )
@@ -221,23 +221,25 @@
 
 (de i32 stdinByte ()
    (let In: (inFile (val (val $InFiles)))  # Stdin
-      (unless (=0 (In:))
+      (when (In:)
          (when
             (or
                (<> (In: ix) (In: cnt))
-               (and (ge0 @) (n0 (slow (In:)))) )
+               (and (ge0 @) (slow (In:))) )
             (let I (In: ix)
                (In: ix (+ I 1))
                (ret (i32 (val (ofs (In: (buf)) I)))) ) ) )
-      (unless (=0 (isatty 0))
+      (when (isatty 0)
          (bye 0) )
       -1 ) )
 
 (de i32 getBinary ()
    (let (In: (inFile (val $InFile))  I (In: ix))
       (when (== I (In: cnt))
-         (and (lt0 I) (ret -1))  # Closed
-         (and (=0 (slow (In:))) (ret -1))  # EOF
+         (when (lt0 I)  # Closed
+            (ret -1) )
+         (unless (slow (In:))  # EOF
+            (ret -1) )
          (setq I 0) )
       (In: ix (+ I 1))
       (i32 (val (ofs (In: (buf)) I))) ) )
@@ -252,14 +254,14 @@
             (if (<> BEG B)
                (any (i64 B))  # DOT or END
                (let X (binRead)
-                  (if (=0 X)
+                  (ifn X
                      0
                      (let (Y (cons X $Nil)  R (save Y))
                         (loop
                            (? (=0 (setq X (binRead))) 0)
                            (? (== X END) R)
                            (? (== X DOT)
-                              (if (=0 (setq X (binRead)))
+                              (ifn (setq X (binRead))
                                  0
                                  (set 2 Y (if (== X END) R X))
                                  R ) )
@@ -285,7 +287,7 @@
                            (when (lt0 (setq Cnt (call $GetBin)))
                               (goto 1) )
                            (? (<> Cnt 255)) )
-                        (when (=0 Cnt)
+                        (unless Cnt
                            (goto 2) ) )
                      (loop
                         (when (lt0 (call $GetBin))
@@ -309,7 +311,7 @@
                            (when (lt0 (setq Cnt (call $GetBin)))
                               (goto 1) )
                            (? (<> Cnt 255)) )
-                        (when (=0 Cnt)
+                        (unless Cnt
                            (goto 3) ) )
                      (loop
                         (when (lt0 (call $GetBin))
@@ -323,7 +325,7 @@
                                  (TRANSIENT (consStr Nm))
                                  (INTERN (requestSym Nm))
                                  (T  # External
-                                   (unless (=0 (val $Extn))
+                                   (when (val $Extn)
                                        (let N
                                           (shl
                                              (& (i64 (+ (objFile Nm) @)) (hex "FFFF"))
@@ -341,7 +343,7 @@
 # Binary print short number
 (de void prCnt ((i8 . Tag) Num)
    (let N Num
-      (until (=0 (setq N (shr N 8)))
+      (while (setq N (shr N 8))
          (setq Tag (+ Tag 4)) ) )
    (call $PutBin Tag)
    (loop
@@ -364,7 +366,7 @@
                         Z (add Z Z @@) )
                      )
                   (setq N (+ N 8)) ) )
-            (unless (=0 Z)  # Significant bits in short number
+            (when Z  # Significant bits in short number
                (loop
                   (inc 'N)
                   (? (=0 (setq Z (shr Z 8)))) ) )
@@ -380,7 +382,7 @@
                   (loop
                      (loop
                         (call $PutBin (i8 D))  # Output next byte
-                        (ifn (=0 (dec 'C))
+                        (if (dec 'C)
                            (setq D (shr D 8))
                            (setq C 8)
                            (if (cnt? Y)
@@ -401,7 +403,7 @@
       ((pair X)
          (call $PutBin BEG)
          (let P (circ X)
-            (if (=0 P)
+            (ifn P
                (loop  # Non-circular
                   (binPrint (car X))
                   (? (== $Nil (shift X))
@@ -423,7 +425,7 @@
                   (call $PutBin END) ) ) ) )
       ((sym? (val (tail X)))  # External symbol
          (let Nm (name (& @ -9))
-            (unless (=0 (val $Extn))
+            (when (val $Extn)
                (let N
                   (shl
                      (& (i64 (- (objFile Nm) @)) (hex "FFFF"))
@@ -450,7 +452,7 @@
                   (while (big? (setq Y (val (big Y))))
                      (setq N (+ N 8)) )
                   (setq Y (int Y))
-                  (until (=0 Y)
+                  (while Y
                      (inc 'N)
                      (setq Y (shr Y 8)) )
                   (let (P (push 0 Nm)  M (- N 63)  C 8)  # [cnt name]
@@ -519,12 +521,12 @@
 
 (de void pushInFiles ((i8* . P))
    (let (Io: (ioFrame P)  In: (inFile (val $InFile)))
-      (unless (=0 (In:))
+      (when (In:)
          (In: next (val $Chr)) )
       (set $Chr
-         (if (=0 (set $InFile (val (ofs (val $InFiles) (Io: fd)))))
-            -1
-            ((inFile @) next) ) )
+         (if (set $InFile (val (ofs (val $InFiles) (Io: fd))))
+            ((inFile @) next)
+            -1 ) )
       (Io: fun (val (i8** $Get)))
       (set $Get (fun (i32) _getStdin))
       (Io: link (val $InFrames))
@@ -540,30 +542,29 @@
 
 (de void popInFiles ()
    (let Io: (ioFrame (val $InFrames))
-      (nond
-         ((=0 (Io: pid))
+      (cond
+         ((Io: pid)
             (close (Io: fd))
             (closeInFile (Io: fd))
             (waitFile (Io: pid)) )
-         ((=0 (val $InFile))
+         ((val $InFile)
             ((inFile (val $InFile)) next (val $Chr)) ) )
       (set (i8** $Get) (Io: fun))
       (setq Io: (ioFrame (set $InFrames (Io: link))))
       (set $Chr
          (if
-            (=0
-               (set $InFile
-                  (val
-                     (if (=0 (Io:))
-                        (val $InFiles)  # Stdin
-                        (ofs (val $InFiles) (Io: fd)) ) ) ) )
-            -1
-            ((inFile (val $InFile)) next) ) ) ) )
+            (set $InFile
+               (val
+                  (if (Io:)
+                     (ofs (val $InFiles) (Io: fd))
+                     (val $InFiles) ) ) )  # Stdin
+            ((inFile (val $InFile)) next)
+            -1 ) ) ) )
 
 (de void popOutFiles ()
    (flush (val $OutFile))
    (let Io: (ioFrame (val $OutFrames))
-      (unless (=0 (Io: pid))
+      (when (Io: pid)
          (close (Io: fd))
          (closeOutFile (Io: fd))
          (waitFile (Io: pid)) )
@@ -571,9 +572,9 @@
       (setq Io: (ioFrame (set $OutFrames (Io: link))))
       (set $OutFile
          (val
-            (if (=0 (Io:))
-               (ofs (val $OutFiles) 1)  # Stdout
-               (ofs (val $OutFiles) (Io: fd)) ) ) ) ) )
+            (if (Io:)
+               (ofs (val $OutFiles) (Io: fd))
+               (ofs (val $OutFiles) 1) ) ) ) ) )  # Stdout
 
 # (path 'any) -> sym
 (de _path (Exe)
@@ -632,7 +633,7 @@
                      (setq Dly 0)
                      (pollIn N (ofs Poll Nfds))
                      (inc 'Nfds) ) ) )
-            (unless (=0 (val $Spkr))  # RPC speaker
+            (when (val $Spkr)  # RPC speaker
                (pollIn @ (ofs Poll Nfds))
                (inc 'Nfds)
                (let
@@ -640,10 +641,10 @@
                      <Cld (ofs Cld (* (val $Children) (child T))) )
                   (until (== Cld <Cld)
                      (let Cld: (child Cld)
-                        (unless (=0 (Cld: pid))
+                        (when (Cld: pid)
                            (pollIn (Cld: hear) (ofs Poll Nfds))
                            (inc 'Nfds)
-                           (unless (=0 (Cld: cnt))
+                           (when (Cld: cnt)
                               (pollIn (Cld: tell) (ofs Poll Nfds))
                               (inc 'Nfds) ) ) )
                      (setq Cld (ofs Cld (child T))) ) ) )
@@ -653,14 +654,14 @@
                   (selectErr Exe) )
                (sigChk Exe) )
             (let (Now (getMsec)  Dif (- Now Tim))
-               (unless (=0 (val $Spkr))  # RPC speaker
+               (when (val $Spkr)  # RPC speaker
                   (set $Protect (inc (val $Protect)))
                   (let
                      (Cld (val $Child)  # Iterate children
                         <Cld (ofs Cld (* (val $Children) (child T))) )
                      (until (== Cld <Cld)
                         (let Cld: (child Cld)
-                           (unless (=0 (Cld: pid))
+                           (when (Cld: pid)
                               (when (readyIn Poll (Cld: hear))
                                  (cond
                                     ((=0 (rdBytesNb (Cld: hear) (i8* Pn) (* 2 4)))
@@ -677,10 +678,11 @@
                                                    <Cld2 (ofs Cld2 (* (val $Children) (child T))) )
                                                 (until (== Cld2 <Cld2)
                                                    (let Cld2: (child Cld2)
-                                                      (and
-                                                         (<> Cld Cld2)
-                                                         (Cld2: pid)
-                                                         (or (=0 (val Pn)) (== @ (Cld2: pid)))
+                                                      (when
+                                                         (and
+                                                            (<> Cld Cld2)
+                                                            (Cld2: pid)
+                                                            (or (=0 (val Pn)) (== @ (Cld2: pid))) )
                                                          (wrChild Cld2 Buf (i64 (val 2 Pn))) ) )
                                                    (setq Cld2 (ofs Cld2 (child T))) ) ) )
                                           (T
@@ -691,16 +693,15 @@
                                     (+
                                        (i64 (val (i32* (Cld: buf))))
                                        (Cld: ofs) )
-                                    (if
-                                       (=0
-                                          (wrBytes
-                                             (Cld: tell)
-                                             (ofs (Cld: buf) (+ (Cld: ofs) 4))
-                                             N ) )
+                                    (ifn
+                                       (wrBytes
+                                          (Cld: tell)
+                                          (ofs (Cld: buf) (+ (Cld: ofs) 4))
+                                          N )
                                        (clsChild Cld)
                                        (Cld: ofs (+ (Cld: ofs) (Cld: cnt) N))
                                        (when (>= (* 2 (Cld: ofs)) (Cld: cnt))
-                                          (unless (=0 (Cld: cnt (- (Cld: cnt) (Cld: ofs))))
+                                          (when (Cld: cnt (- (Cld: cnt) (Cld: ofs)))
                                              (memcpy
                                                 (Cld: buf)
                                                 (ofs (Cld: buf) (Cld: ofs))
@@ -715,15 +716,12 @@
                         (readyIn Poll (val $Spkr))
                         (gt0 (rdBytesNb (val $Spkr) (i8* Pn) 4)) )
                      (let Cld (ofs (val $Child) (* (val Pn) (child T)))
-                        (unless (=0 ((child Cld) pid))
+                        (when ((child Cld) pid)
                            (set $Talking @)
                            (wrChild Cld $TBuf 2) ) ) )
                   (set $Protect (dec (val $Protect))) )
                (let N (val $Hear)  # RPC listener
-                  (and
-                     N
-                     (<> N Fd)
-                     (readyIn Poll N)
+                  (when (and N (<> N Fd) (readyIn Poll N))
                      (cond
                         ((=0 (rdHear))
                            (close N)
@@ -771,9 +769,9 @@
             (xCnt Exe @) ) )
       (if (t? (car X))
          (let Fd (evCnt Exe (cdr X))  # Wait for file descriptor
-            (if (=0 (waitFd Exe (i32 Fd) N))
-               $Nil
-               (cnt Fd) ) )
+            (if (waitFd Exe (i32 Fd) N)
+               (cnt Fd)
+               $Nil ) )
          (loop
             (? (not (nil? (run X))) @)  # 'prg'
             (? (=0 (waitFd Exe -1 N)) (run X))  # Timeout
@@ -788,7 +786,7 @@
             (>= (i32 N) (val $InFDs))
             (=0 (val (ofs (val $InFiles) N))) )
          (badFd Exe C) )
-      (unless (=0 (val $Hear))
+      (when (val $Hear)
          (close @)
          (closeInFile @)
          (closeOutFile @) )
@@ -799,12 +797,12 @@
 
 (de i32 currFd (Exe)
    (let (In (val $InFrames)  Out (val $OutFrames))
-      (cond
-         ((and (=0 In) (=0 Out))
+      (nond
+         ((or In Out)
             (err 0 0 ($ "No current fd") null) )
-         ((=0 Out) ((ioFrame In) fd))
-         ((=0 In) ((ioFrame Out) fd))
-         (T
+         (Out ((ioFrame In) fd))
+         (In ((ioFrame Out) fd))
+         (NIL
             (if
                (if (> In (stack))  # Stack growing downwards
                   (> Out In)
@@ -824,7 +822,7 @@
                (when (sign? X)
                   (let In (val $InFrames)
                      (loop
-                        (when (=0 (setq In ((ioFrame In) link)))
+                        (unless (setq In ((ioFrame In) link))
                            (badFd Exe X) )
                         (? (=0 (dec 'N))) )
                      (setq N ((ioFrame In) fd)) ) )
@@ -891,7 +889,7 @@
                (when (sign? X)
                   (let Out (val $OutFrames)
                      (loop
-                        (when (=0 (setq Out ((ioFrame Out) link)))
+                        (unless (setq Out ((ioFrame Out) link))
                            (badFd Exe X) )
                         (? (=0 (dec 'N))) )
                      (setq N ((ioFrame Out) fd)) ) )
@@ -933,7 +931,7 @@
                   ((=0 @)  # In child
                      (setpgid 0 0)  # Set process group
                      (close (val 2 Pfd))  # Close write pipe
-                     (unless (=0 (val Pfd))  # STDIN_FILENO
+                     (when (val Pfd)  # STDIN_FILENO
                         (dup2 @ 0)  # Dup read pipe to STDIN_FILENO
                         (close @) )
                      (execvp (val Av) Av)  # Execute program
@@ -979,10 +977,10 @@
             ((=0 (isatty 0)) (bye 0))
             (T
                (let P (val $LinePtr)
-                  (when (=0 P)
+                  (unless P
                      (initReadline)
                      (free (val $LineBuf))
-                     (when (=0 (setq P (set $LineBuf (readline (val $LinePrt)))))
+                     (unless (setq P (set $LineBuf (readline (val $LinePrt))))
                         (write 1 ($ "\n") 1)
                         (when (or (val $Bind) (== (val $LinePrt) $Indent))
                            (err 0 0 $Empty null) )
@@ -994,11 +992,11 @@
                            (== @ 32)
                            (and (currentLine) (=0 (strcmp @ P))) )
                         (add_history P) ) )
-                  (cond
-                     ((=0 (val P))
+                  (nond
+                     ((val P)
                         (set $LinePtr null)
                         (char "\n") )
-                     (T
+                     (NIL
                         (set $LinePtr (inc P))
                         (i32 @) ) ) ) ) ) ) ) )
 
@@ -1008,10 +1006,10 @@
       ((== C (hex "FF")) (i32 TOP))  # Infinite
       (T
          (let B
-            (if (=0 (& C (hex "20")))  # Two bytes
+            (ifn (& C (hex "20"))  # Two bytes
                (& C (hex "1F"))  # First byte 110xxxxx
                (let A
-                  (if (=0 (& C (hex "10")))  # Three bytes
+                  (ifn (& C (hex "10"))  # Three bytes
                      (& C (hex "0F"))  # First byte 1110xxxx
                      (|  # Four bytes
                         (shl (& C 7) 6)  # First byte 11110xxx
@@ -1290,7 +1288,7 @@
 (local) (read1 token)
 
 (de read1 ((i32 . End))
-   (when (=0 (val $Chr))
+   (unless (val $Chr)
       (call $Get) )
    (if (== End (val $Chr))
       $Nil
@@ -1298,7 +1296,7 @@
 
 (de token (Set (i32 . C))
    (let C (val $Chr)
-      (when (=0 C)
+      (unless C
          (setq C (call $Get)) )
       (cond
          ((lt0 (skipc C)) 0)  # Skip white space and comments
@@ -1327,12 +1325,11 @@
 (de _key (Exe)
    (flushAll)
    (setRaw)
-   (if
-      (=0
-         (waitFd Exe 0
-            (if (nil? (eval (cadr Exe)))
-               292MY
-               (xCnt Exe @) ) ) )
+   (ifn
+      (waitFd Exe 0
+         (if (nil? (eval (cadr Exe)))
+            292MY
+            (xCnt Exe @) ) )
       $Nil
       (let C (stdinByte)
          (mkChar
@@ -1341,10 +1338,10 @@
                ((== C (hex "FF")) (i32 TOP))  # Infinite
                (T
                   (let B
-                     (if (=0 (& C (hex "20")))  # Two bytes
+                     (ifn (& C (hex "20"))  # Two bytes
                         (& C (hex "1F"))  # First byte 110xxxxx
                         (let A
-                           (if (=0 (& C (hex "10")))  # Three bytes
+                           (ifn (& C (hex "10"))  # Three bytes
                               (& C (hex "0F"))  # First byte 1110xxxx
                               (|  # Four bytes
                                  (shl (& C 7) 6)  # First byte 11110xxx
@@ -1361,7 +1358,7 @@
       (cond
          ((atom X)
             (let Chr (val $Chr)
-               (when (=0 Chr)
+               (unless Chr
                   (setq Chr (call $Get)) )
                (prog1
                   (if (lt0 Chr)
@@ -1369,9 +1366,9 @@
                      (mkChar (getChar Chr)) )
                   (call $Get) ) ) )
          ((cnt? (eval (car X)))
-            (if (=0 (int @))
-               $Nil
-               (mkChar (i32 @)) ) )
+            (if (int @)
+               (mkChar (i32 @))
+               $Nil ) )
          ((t? @) (mkChar TOP))
          ((symb? @) (cnt (i64 (firstChar @))))
          (T (atomErr Exe @)) ) ) )
@@ -1384,7 +1381,7 @@
 
 # (eol) -> flg
 (de _eol (Exe)
-   (let C (if (=0 (val $Chr)) (call $Get) @)
+   (let C (if (val $Chr) @ (call $Get))
       (if (or (le0 C) (== C (char "\n")))
          $T
          $Nil ) ) )
@@ -1411,7 +1408,7 @@
                      (any (bufString Nm (b8 (bufSize Nm)))) ) ) ) )
          (? (atom (shift X)))
          (inc 'N) )
-      (when (=0 (val $Chr))
+      (unless (val $Chr)
          (call $Get) )
       (while (ge0 (val $Chr))
          (let (B (i8 @)  Q (i64* P)  I N)
@@ -1426,7 +1423,7 @@
                         (ret (val Q)) ) )  # Return matched symbol
                   (? (=0 (val 3 Q)))  # Still at beginning of string
                   (let S (ofs (i8* (val 4 Q)) 1)  # Pointer to second byte
-                     (until (=0 (set 3 Q (dec (val 3 Q))))  # Decrement index
+                     (while (set 3 Q (dec (val 3 Q)))  # Decrement index
                         (? (=0 (memcmp (i8* (val 4 Q)) S @)))
                         (inc 'S) ) ) )
                (? (=0 (dec 'I)))
@@ -1441,18 +1438,18 @@
       (X (cdr Exe)
          Nm (xName Exe (evSym X))
          S (bufString Nm (b8 (bufSize Nm))) )
-      (let C (if (=0 (val $Chr)) (call $Get) @)
+      (let C (if (val $Chr) @ (call $Get))
          (cond
-            ((or (lt0 C) (n0 (strchr S C)))
+            ((or (lt0 C) (strchr S C))
                $Nil )
             ((nil? (eval (cadr X)))
                (let
                   (Y (cons (mkChar (getChar C)) $Nil)
                      R (save Y) )
-                  (while
-                     (and
-                        (gt0 (setq C (call $Get)))
-                        (=0 (strchr S C)) )
+                  (until
+                     (or
+                        (le0 (setq C (call $Get)))
+                        (strchr S C) )
                      (setq Y
                         (set 2 Y (cons (mkChar C) $Nil)) ) )
                   R ) )
@@ -1483,8 +1480,8 @@
 
 # (line 'flg ['cnt ..]) -> lst|sym
 (de _line (Exe)
-(let C (val $Chr)
-   (when (=0 C)
+   (let C (val $Chr)
+      (unless C
          (setq C (call $Get)) )
       (if (eol C)
          $Nil
@@ -1579,7 +1576,7 @@
 
 (de i32 forkLisp (Exe)
    (flushAll)
-   (when (=0 (val $Spkr))  # Not listening for children yet
+   (unless (val $Spkr)  # Not listening for children yet
       (when (lt0 (pipe $SpMiPipe))  # Open speaker/microphone pipe
          (pipeErr Exe) )
       (closeOnExec Exe (set $Spkr (val $SpMiPipe)))
@@ -1607,18 +1604,18 @@
                (close (val 2 Hear))  # Close write end of 'hear'
                (close (val Tell))  # Close read end of 'tell'
                (close (val $SpMiPipe))  # Close read end
-               (unless (=0 (val $Hear))
+               (when (val $Hear)
                   (close @)
                   (closeInFile @)
                   (closeOutFile @) )
                (initInFile (set $Hear (val Hear)) null)  # Read end of 'hear'
-               (unless (=0 (val $Tell))  # Telling
+               (when (val $Tell)  # Telling
                   (close @) )
                (set $Tell (val 2 Tell))  # Write end of 'tell'
                (let Cld (val $Child)
                   (while (ge0 (dec 'N))  # Close children
                      (let Cld: (child Cld)
-                        (unless (=0 (Cld: pid))
+                        (when (Cld: pid)
                            (free (Cld: buf))
                            (close (Cld: hear))
                            (close (Cld: tell)) ) )
@@ -1627,17 +1624,17 @@
                (free (val $Child))
                (set $Child null)
                (let In (val $InFrames)  # Clear pids in InFrames
-                  (until (=0 In)
+                  (while In
                      (let In: (ioFrame In)
                         (In: pid 0)
                         (setq In (In: link)) ) ) )
                (let Out (val $OutFrames)  # Clear pids in OutFrames
-                  (until (=0 Out)
+                  (while Out
                      (let Out: (ioFrame Out)
                         (Out: pid 0)
                         (setq Out (Out: link)) ) ) )
                (let Ca (val $Catch)  # Clear 'finally' expressions in Catch frames
-                  (until (=0 Ca)
+                  (while Ca
                      (let Ca: (caFrame Ca)
                         (Ca: fin ZERO)
                         (setq Ca (Ca: link)) ) ) )
@@ -1723,7 +1720,7 @@
    (let (X (cdr Exe)  Y (eval (++ X)))
       (cond
          ((and (nil? Y) (atom X))
-            (let C (if (=0 (val $Chr)) (call $Get) @)
+            (let C (if (val $Chr) @ (call $Get))
                (until (lt0 C)
                   (call $Put (i8 C))
                   (setq C (call $Get)) ) )
@@ -1754,7 +1751,7 @@
                   (? (atom X))
                   (setq Y (evSym (++ X)))
                   (inc 'N) )
-               (when (=0 (val $Chr))
+               (unless (val $Chr)
                   (call $Get) )
                (while (ge0 (val $Chr))
                   (let
@@ -1762,19 +1759,16 @@
                         Q (i64* P)
                         I N
                         OutM M
-                        OutC (if (=0 M) 0 (val 3 M)) )
+                        OutC (if M (val 3 M) 0) )
                      (loop
                         (loop
                            (let S (ofs (i8* (val 4 Q)) (val 3 Q))
                               (when (== B (val S))  # Bytes match
                                  (set 3 Q (inc (val 3 Q)))  # Increment index
                                  (? (val 2 S)  # Not end of string
-                                    (when
-                                       (or
-                                          (=0 M)
-                                          (> (val 3 Q) (val 3 M)) )
+                                    (unless (and M (>= (val 3 M) (val 3 Q)))
                                        (setq M Q) ) )
-                                 (unless (=0 OutM)
+                                 (when OutM
                                     (setq S (i8* (val 4 OutM)))
                                     (setq OutC (- OutC (val 3 Q)))
                                     (until (lt0 OutC)
@@ -1786,18 +1780,15 @@
                                  (ret (val Q)) ) )  # Return matched symbol
                            (? (=0 (val 3 Q)))  # Still at beginning of string
                            (let S (ofs (i8* (val 4 Q)) 1)  # Pointer to second byte
-                              (until (=0 (set 3 Q (dec (val 3 Q))))  # Decrement index
+                              (while (set 3 Q (dec (val 3 Q)))  # Decrement index
                                  (? (=0 (memcmp (i8* (val 4 Q)) S @)))
                                  (inc 'S) ) )
                            (when (== Q M)  # On current max
                               (setq M (i64* null))
                               (let (Z (i64* P)  J N)
                                  (loop
-                                    (unless (=0 (val 3 Z))
-                                       (when
-                                          (or
-                                             (=0 M)
-                                             (> (val 3 Z) (val 3 M)) )
+                                    (when (val 3 Z)
+                                       (unless (and M (>= (val 3 M) (val 3 Z)))
                                           (setq M Z) ) )
                                     (? (=0 (dec 'J)))
                                     (setq Z (i64* (val 2 Z))) ) ) ) )
@@ -1805,7 +1796,7 @@
                         (setq Q (i64* (val 2 Q))) )
                      (cond
                         ((=0 M)
-                           (unless (=0 OutM)
+                           (when OutM
                               (let (S (i8* (val 4 OutM))  C OutC)
                                  (loop
                                     (call $Put (val S))
@@ -1825,7 +1816,7 @@
 
 (de void _putStdout ((i8 . B))
    (let Out: (outFile (val $OutFile))
-      (unless (=0 (Out:))
+      (when (Out:)
          (let I (Out: ix)
             (when (== I BUFSIZ)
                (Out: ix (setq I 0))
@@ -1874,7 +1865,7 @@
 
 # Output external symbol name
 (de void prExt (Nm)
-   (unless (=0 (objFile Nm))
+   (when (objFile Nm)
       (outAo @) )
    (outOct (objId Nm)) )
 
@@ -1886,7 +1877,7 @@
 
 (de void prName (Name)
    (let P (push 0 Name)  # [cnt name]
-      (until (=0 (symByte P))
+      (while (symByte P)
          (call $Put @) ) ) )
 
 (de void outName (Sym)
@@ -1931,7 +1922,7 @@
                               (? (=0 (setq B (symByte P))) ) ) )
                         (call $Put (char "\"")) )
                      (let Nsp (car Lst)
-                        (unless (=0 (isIntern Nm (cdar Nsp)))
+                        (when (isIntern Nm (cdar Nsp))
                            (? (== @ Sym)  # Internal
                               (when F  # Found in other namespace
                                  (outName Nsp)
@@ -1944,7 +1935,7 @@
                                        (when
                                           (or
                                              (== B (char "\\"))
-                                             (n0 (strchr $Delim (i32 B))) )
+                                             (strchr $Delim (i32 B)) )
                                           (call $Put (char "\\")) )  # Escape backslash and delimiters
                                        (call $Put B)
                                        (? (=0 (setq B (symByte P))) ) ) )
@@ -1959,7 +1950,7 @@
          (stkChk 0)
          (call $Put (char "("))
          (let P (circ X)
-            (if (=0 P)
+            (ifn P
                (loop  # Non-circular
                   (print (car X))
                   (? (== $Nil (shift X)))
@@ -2098,7 +2089,7 @@
             (set
                $GetBin (fun (i32) getBinary)
                $Extn (val $ExtN) )
-            (if (=0 (binRead)) X @) ) ) ) )
+            (if (binRead) @ X) ) ) ) )
 
 # (pr 'any ..) -> any
 (de _pr (Exe)
@@ -2122,11 +2113,11 @@
 (de i32 getParse ()
    (let P (val $Parser)
       (set $Chr
-         (if (=0 (i32 (symByte P)))
+         (if (i32 (symByte P))
+            @
             (let C (val 3 P)
                (set 3 P (shr C 8))
-               (if (=0 C) -1 (i32 (i8 C))) )
-            @ ) ) ) )
+               (if C (i32 (i8 C)) -1) ) ) ) ) )
 
 (de parse (Nm (i1 . Skip) Eof Set)
    (let
@@ -2134,7 +2125,7 @@
          In: (inFile (val $InFile))
          Io: (ioFrame (b8 (ioFrame T))) )
       (set $Parser (push 0 (save Nm) Eof))
-      (unless (=0 (In:))
+      (when (In:)
          (In: next (val $Chr))
          (set $InFile null) )  # No InFile
       (set $Chr 0)
@@ -2153,7 +2144,7 @@
             ((=0 (token Set 0)) $Nil)
             (T
                (let (R (save (cons @ $Nil))  P R)
-                  (until (=0 (token Set 0))
+                  (while (token Set 0)
                      (setq P (set 2 P (cons @ $Nil))) )
                   R ) ) )
          (popInFiles)
@@ -2229,9 +2220,9 @@
                   (set $LinePrt Prt)
                   (prog1
                      (read1
-                        (if (=0 (isatty 0))
-                           (i32 0)
-                           (char "\n") ) )
+                        (if (isatty 0)
+                           (char "\n")
+                           (i32 0) ) )
                      (while (gt0 (val $Chr))
                         (? (== (val $Chr) (char "\n"))
                            (set $Chr 0) )

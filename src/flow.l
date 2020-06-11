@@ -1,4 +1,4 @@
-# 10jun20 Software Lab. Alexander Burger
+# 11jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -11,7 +11,7 @@
          $Put (fun (void i8) _putStdout) )
       (outString ($ "# "))
       (print Sym)
-      (unless (=0 Sym2)
+      (when Sym2
          (space)
          (print @) )
       (outString ($ " redefined\n"))
@@ -23,7 +23,7 @@
          (nil? (val $Dbg))
          (sym? (val (tail Sym))) )
       (let In: (inFile (val $InFile))
-         (unless (or (=0 (In:)) (=0 (In: name)))
+         (when (and (In:) (In: name))
             (let
                (Dbg (get Sym $Dbg)
                   Src
@@ -86,7 +86,7 @@
          (T
             (save E
                (let N (needCnt Exe (eval (car X)))
-                  (unless (=0 (setq N (int N)))
+                  (when (setq N (int N))
                      (let Bnd (val $Bind)
                         (loop
                            (? (=0 Bnd))
@@ -109,7 +109,7 @@
          (T
             (save E
                (let N (needCnt Exe (eval (car X)))
-                  (unless (=0 (setq N (int N)))
+                  (when (setq N (int N))
                      (let Bnd (val $Bind)
                         (loop
                            (? (=0 Bnd))
@@ -702,7 +702,8 @@
                                  (unless (nil? S)  # Dotted structure symbol
                                     (set $Bind (setq P (push (val S) S P))) ) )
                               (loop
-                                 (and (=0 Tos) (goto 1))
+                                 (unless Tos
+                                    (goto 1) )
                                  (? (=0 (& Tos 8))  # Second visit
                                     (let U Tos
                                        (setq Tos (car U))  # TOS on up link
@@ -765,9 +766,9 @@
       (Ca: fin ZERO)
       (memcpy (Ca: (env)) (env) (env T))
       (prog1
-         (if (=0 (setjmp (Ca: (rst))))
-            (run X)
-            (val $Ret) )
+         (if (setjmp (Ca: (rst)))
+            (val $Ret)
+            (run X) )
          (set $Catch (Ca: link)) ) ) )
 
 # (throw 'sym 'any)
@@ -775,7 +776,7 @@
    (let (X (cdr Exe)  Tag (eval (++ X)))
       (set $Ret (eval (car X)))
       (let Ca (val $Catch)
-         (until (=0 Ca)
+         (while Ca
             (let Ca: (caFrame Ca)
                (when (or (== $T (Ca: tag)) (== Tag (Ca: tag)))
                   (unwind Ca)
@@ -805,7 +806,7 @@
 # (co 'sym [. prg]) -> any
 (de _co (Exe)
    (let (X (cdr Exe)  Tag (eval (++ X)))
-      (when (=0 (val $Coroutines))  # First call
+      (unless (val $Coroutines)  # First call
          (let Main: (coroutine (alloc null (+ (val JmpBufSize) (coroutine T))))
             (Main: tag $T)  # Tag 'T'
             (Main: next null)
@@ -833,23 +834,23 @@
             (loop
                (let Crt: (coroutine Crt)
                   (when (== Tag (Crt: tag))  # Found running coroutine
-                     (when (=0 ((coroutine Crt) at))
+                     (unless ((coroutine Crt) at)
                         (err Exe Tag ($ "Reentrant coroutine") null) )
-                     (unless (=0 (setjmp ((coroutine Src) (rst))))
+                     (when (setjmp ((coroutine Src) (rst)))
                         (ret
                            (loadCoEnv
                               ((coFrame (val (i8** (val $CoFrames)))) crt) ) ) )
                      (set $Ret $Nil)
                      (longjmp (Crt: (rst)) 1) )
-                  (when (=0 (Crt: tag))
+                  (unless (Crt: tag)
                      (setq P Crt) )  # Remember possible free slot
                   (? (=0 (Crt: next)))
                   (setq Crt (Crt: next)) ) )
-            (unless (=0 (setjmp ((coroutine Src) (rst))))
+            (when (setjmp ((coroutine Src) (rst)))
                (ret
                   (loadCoEnv
                      ((coFrame (val (i8** (val $CoFrames)))) crt) ) ) )
-            (ifn (=0 P)  # Start new coroutine
+            (if P  # Start new coroutine
                (stack P)  # Use free slot
                (stack  # Found no free slot
                   (if (== Crt (val $Coroutines))
@@ -885,25 +886,25 @@
          Val (save (eval (++ X)))
          Tag (eval (++ X))
          Crt (val $Coroutines) )
-      (when (=0 Crt)
+      (unless Crt
          (err Exe 0 ($ "No coroutines") null) )
       (let
          (Co: (coFrame (val $CoFrames))
             Dst:
             (coroutine
                (if (nil? Tag)
-                  (if (=0 (Co: link))
-                     (err Exe 0 ($ "Tag expected") null)
-                     ((coFrame (Co: link)) crt) )
+                  (if (Co: link)
+                     ((coFrame (Co: link)) crt)
+                     (err Exe 0 ($ "Tag expected") null) )
                   (until (== Tag ((coroutine Crt) tag))
-                     (when (=0 (setq Crt ((coroutine Crt) next)))
+                     (unless (setq Crt ((coroutine Crt) next))
                         (err Exe Tag ($ "Coroutine not found") null) ) )
-                  (when (=0 ((coroutine Crt) at))
+                  (unless ((coroutine Crt) at)
                      (err Exe Tag ($ "Reentrant coroutine") null) )
                   Crt ) )
             Src (Co: crt) )
          (saveCoEnv Src)
-         (when (=0 (setjmp ((coroutine Src) (rst))))
+         (unless (setjmp ((coroutine Src) (rst)))
             (set $Ret Val)
             (longjmp (Dst: (rst)) 1) )
          (loadCoEnv Src) ) ) )

@@ -1,4 +1,4 @@
-# 10jun20 Software Lab. Alexander Burger
+# 11jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -208,7 +208,7 @@
                (setq R $Nil)
                R ) )
          Z R )
-      (unless (=0 C)
+      (when C
          (cond
             ((gt0 C)
                (while (pair Z)
@@ -269,7 +269,7 @@
 # (made ['lst1 ['lst2]]) -> lst
 (de _made (Exe)
    (let X (cdr Exe)
-      (when (=0 (val $Make))
+      (unless (val $Make)
          (makeErr Exe) )
       (when (pair X)
          (set (val $Yoke) (eval (++ X)))
@@ -284,7 +284,7 @@
 # (chain 'lst ..) -> lst
 (de _chain (Exe)
    (let X (cdr Exe)
-      (when (=0 (val $Make))
+      (unless (val $Make)
          (makeErr Exe) )
       (loop
          (let Y (set (val $Make) (eval (++ X)))
@@ -298,7 +298,7 @@
 # (link 'any ..) -> any
 (de _link (Exe)
    (let X (cdr Exe)
-      (when (=0 (val $Make))
+      (unless (val $Make)
          (makeErr Exe) )
       (loop
          (let Y (eval (++ X))
@@ -311,7 +311,7 @@
 # (yoke 'any ..) -> any
 (de _yoke (Exe)
    (let X (cdr Exe)
-      (when (=0 (val $Make))
+      (unless (val $Make)
          (makeErr Exe) )
       (loop
          (let Y (eval (++ X))
@@ -474,7 +474,7 @@
                   (T
                      (save L
                         (let (Z (cons (car L) $Nil)  R Z)
-                           (until (or (=0 (dec 'N)) (atom (shift L)))
+                           (while (and (dec 'N) (pair (shift L)))
                               (setq Z
                                  (set 2 Z (cons (car L) $Nil)) ) )
                            R ) ) ) ) ) ) ) ) )
@@ -601,7 +601,7 @@
 
 # (circ? 'any) -> any
 (de _circQ (Exe)
-   (if (=0 (circ (eval (cadr Exe)))) $Nil @) )
+   (if (circ (eval (cadr Exe))) @ $Nil) )
 
 # (lst? 'any) -> flg
 (de _lstQ (Exe)
@@ -676,9 +676,9 @@
             (when (member U Z)
                (let V (cons U $Nil)
                   (setq P
-                     (if (=0 P)
-                        (set R V)
-                        (set 2 P V) ) ) ) ) ) )
+                     (if P
+                        (set 2 P V)
+                        (set R V) ) ) ) ) ) )
       (val R) ) )
 
 # (diff 'lst 'lst) -> lst
@@ -694,9 +694,9 @@
             (unless (member U Z)
                (let V (cons U $Nil)
                   (setq P
-                     (if (=0 P)
-                        (set R V)
-                        (set 2 P V) ) ) ) ) ) )
+                     (if P
+                        (set 2 P V)
+                        (set R V) ) ) ) ) ) )
       (val R) ) )
 
 # (index 'any 'lst) -> cnt | NIL
@@ -766,7 +766,7 @@
          ((sym? (val (tail X))) ZERO)
          (T
             (let (C ZERO  P (push 0 (name @)))
-               (until (=0 (symChar P))
+               (while (symChar P)
                   (setq C (+ C (hex "10"))) )
                C ) ) ) ) )
 
@@ -800,7 +800,7 @@
          (setq X (shr X 3))  # Normalize short, keep sign bit
          (: 1
             (let C 2  # Count significant bytes plus 1
-               (until (=0 (setq X (shr X 8)))
+               (while (setq X (shr X 8))
                   (inc 'C) )
                C ) ) )
       ((big? X)
@@ -814,7 +814,7 @@
             (add D D)  # Get most significant bit of last digit
             (setq X (+ X X @@))
             (: 2
-               (unless (=0 X)
+               (when X
                   (loop
                      (inc 'C)
                      (? (=0 (setq X (shr X 8)))) ) )
@@ -849,7 +849,7 @@
          ((cnt? X)
             (setq X (shr X 3))  # Normalize short, keep sign bit
             (let C ONE
-               (until (=0 (setq X (shr X 8)))
+               (while (setq X (shr X 8))
                   (setq C (+ C (hex "10"))) )
                C ) )
          ((big? X)
@@ -861,7 +861,7 @@
                   (setq C (+ C (hex "80"))) )  # Increment count by '8'
                (setq X (int X))
                (add D D)  # Get most significant bit of last digit
-               (unless (=0 (setq X (+ X X @@)))
+               (when (setq X (+ X X @@))
                   (loop
                      (setq C (+ C (hex "10")))
                      (? (=0 (setq X (shr X 8)))) ) )
@@ -885,14 +885,14 @@
          ((== (name @) ZERO) @)
          ((cnt? @)
             (let (C ONE  Z (int @))
-               (until (=0 (setq Z (shr Z 8)))
+               (while (setq Z (shr Z 8))
                   (setq C (+ C (hex "10"))) )
                C ) )
          (T
             (let (C (hex "82")  Z @)  # Count '8' significant bytes
                (until (cnt? (setq Z (val (big Z))))
                   (setq C (+ C (hex "80"))) )  # Increment count by '8'
-               (unless (=0 (setq Z (int Z)))
+               (when (setq Z (int Z))
                   (loop
                      (setq C (+ C (hex "10")))
                      (? (=0 (setq Z (shr Z 8)))) ) )
@@ -1016,19 +1016,19 @@
             (if (== Z $Up)  # Expand expression
                (let V (eval (++ X))
                   (if (atom V)
-                     (if (=0 (fill X Y)) X @)
+                     (if (fill X Y) @ X)
                      (save V
                         (while (pair (cdr V))
                            (setq V @) )
                         (set 2 V
-                           (if (=0 (fill X Y)) X @) )
+                           (if (fill X Y) @ X) )
                         V ) ) )
                (let V (fill Z Y)
                   (cond
                      (V
                         (save V
                            (cons V
-                              (if (=0 (fill X Y)) X @) ) ) )
+                              (if (fill X Y) @ X) ) ) )
                      ((fill X Y)
                         (cons Z @) )
                      (T 0) ) ) ) ) ) ) )
@@ -1036,9 +1036,9 @@
 # (fill 'any ['sym|lst]) -> any
 (de _fill (Exe)
    (let (X (cdr Exe)  Y (save (eval (++ X))))
-      (if (=0 (fill Y (save (eval (car X)))))
-         Y
-         @ ) ) )
+      (if (fill Y (save (eval (car X))))
+         @
+         Y ) ) )
 
 (local) ($Penv $Pnl unify lup lookup uniFill)
 
@@ -1171,7 +1171,7 @@
                               Tp1 (++ P)
                               Tp2 (++ P)
                               Env P ) )
-                        (unless (=0 Dbg)
+                        (when Dbg
                            (let Y (car (val Tp1))
                               (when (memq (car Y) Dbg)
                                  (let (L (get (car Y) $T)  I 1)

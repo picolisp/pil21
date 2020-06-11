@@ -1,4 +1,4 @@
-# 10jun20 Software Lab. Alexander Burger
+# 11jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -22,7 +22,8 @@
                   (setq Tos X) ) ) )  # TOS on previous
          (loop
             (let P (any (& Tos -16))  # TOS cell pointer
-               (and (=0 P) (ret))  # Empty
+               (unless P  # Empty
+                  (ret) )
                (let Q (val P)  # Up pointer
                   (? (& Q 1)  # Second visit
                      (set P Exe)  # Restore CAR
@@ -60,37 +61,37 @@
          (setq P (ofs P 1)) ) )  # Next global
    (mark (val $Intern))  # Current namespaces
    (let P (val $Link)  # Stack(s)
-      (until (=0 P)
+      (while P
          (mark (val P))  # Mark item
          (shift P) ) )
    (let P (val $Bind)  # Bind frames
-      (until (=0 P)
+      (while P
          (mark (val P))  # Mark saved value
          (setq P (val 3 P)) ) )
    (let Ca (val $Catch)  # Catch frames
-      (until (=0 Ca)
+      (while Ca
          (let Ca: (caFrame Ca)
-            (unless (=0 (Ca: tag))  # Mark 'tag'
+            (when (Ca: tag)  # Mark 'tag'
                (mark (Ca: tag)) )
             (mark (Ca: fin))  # Mark 'fin'
             (mark (Ca: (env $Intern any)))
             (setq Ca (Ca: link)) ) ) )
    (let Crt (val $Coroutines)
-      (until (=0 Crt)
+      (while Crt
          (let Crt: (coroutine Crt)
-            (unless (or (=0 (Crt: tag)) (=0 (Crt: at)))
+            (when (and (Crt: tag) (Crt: at))
                (mark (Crt: tag))
                (mark (Crt: prg))
                (mark (Crt: at))
                (mark (Crt: (env $Intern any)))
                (let P (Crt: (env $Link any))
-                  (until (=0 P)
+                  (while P
                      (mark (val P))
                      (shift P) ) )
                (let Ca (Crt: (env $Catch))
-                  (until (=0 Ca)
+                  (while Ca
                      (let Ca: (caFrame Ca)
-                        (unless (=0 (Ca: tag))  # Mark 'tag'
+                        (when (Ca: tag)  # Mark 'tag'
                            (mark (Ca: tag)) )
                         (mark (Ca: fin))
                         (mark (Ca: (env $Intern any)))
@@ -110,7 +111,7 @@
                      (setq Tos Z) ) ) ) )
          (loop
             (let S (val P)  # Get external symbol
-               (unless (=0 (& (val S) 1))  # Not marked
+               (when (& (val S) 1)  # Not marked
                   (let Tail (val (tail S))
                      (unless (num? Tail)  # Has properties
                         (setq Tail (& Tail -10))  # Clear 'extern' tag and mark bit
@@ -126,7 +127,8 @@
                      (set X Tos)
                      (setq Tos (| Z 8)) ) ) )  # First visit
             (loop
-               (and (=0 Tos) (goto 1))
+               (unless Tos
+                  (goto 1) )
                (? (=0 (& Tos 8))  # Second visit
                   (let (X Tos  Y (cdr X))  # Nodes
                      (setq Tos (cdr Y))  # TOS on up link
@@ -139,7 +141,7 @@
                   (setq P X) ) ) ) ) )
    (: 1
       (set $DB $Db1)  # Restore DB root
-      (unless (=0 (& (val $Db1) 1))  # Not marked
+      (when (& (val $Db1) 1)  # Not marked
          (set
             $Db1 $Nil  # Clear
             (tail $Db1) DB1 ) ) )  # Set to "not loaded"
@@ -154,7 +156,7 @@
                      (set 2 X Tos)
                      (setq Tos Z) ) ) )
             (loop
-               (unless (=0 (& (val (val P)) 1))  # External symbol not marked
+               (when (& (val (val P)) 1)  # External symbol not marked
                   (set $ExtCnt (- (val $ExtCnt) 1))  # Remove it
                   (let X (cdr P)
                      (when (atom X)  # No subtrees
@@ -193,7 +195,8 @@
                            (setq Tos (| Z 8)) ) ) ) )  # First visit
                (: 4
                   (loop
-                     (and (=0 Tos) (goto 5))
+                     (unless Tos
+                        (goto 5) )
                      (? (=0 (& Tos 8))  # Second visit
                         (let (X Tos  Y (cdr X))  # Nodes
                            (setq Tos (cdr Y))  # TOS on up link
@@ -206,30 +209,30 @@
       (: 5 (set $Extern P)) )
    # Clean up
    (let Crt (val $Coroutines)
-      (until (=0 Crt)
+      (while Crt
          (let Crt: (coroutine Crt)
-            (unless
-               (or
-                  (=0 (Crt: tag))  # Unused
-                  (=0 (Crt: at))  # Running
-                  (=0 (& (Crt: tag) 1)) )  # 'tag' marked
+            (when
+               (and
+                  (Crt: tag)  # Unused
+                  (Crt: at)  # Running
+                  (& (Crt: tag) 1) )  # 'tag' marked
                (Crt: tag 0) )  # Mark as unused
             (setq Crt (Crt: next)) ) ) )
    # Sweep
    (let (Avail 0  Heap (val $Heaps)  Cnt (val $GcCount))
-      (if (=0 Cnt)
+      (ifn Cnt
          (let H (any $Heaps)  # Try to free heaps
             (loop
                (let (A Avail  P (ofs Heap (- HEAP 2)))  # P on last cell in chunk
                   (setq Cnt CELLS)
                   (loop
-                     (unless (=0 (& (cdr P) 1))  # Free cell
+                     (when (& (cdr P) 1)  # Free cell
                         (set P Avail)  # Link avail
                         (setq Avail P)
                         (dec 'Cnt) )
                      (? (== P Heap))
                      (setq P (ofs P -2)) )  # Back one cell
-                  (ifn (=0 Cnt)
+                  (if Cnt
                      (setq Heap (val (setq H (ofs Heap HEAP))))  # Next heap
                      (setq Avail A  Heap (val (inc HEAP) Heap))  # Reset avail list
                      (free (i8* (val H)))  # Free empty heap
@@ -239,7 +242,7 @@
          (loop
             (let P (ofs Heap (- HEAP 2))  # P on last cell in chunk
                (loop
-                  (unless (=0 (& (cdr P) 1))  # Free cell
+                  (when (& (cdr P) 1)  # Free cell
                      (set P Avail)  # Link avail
                      (setq Avail P)
                      (dec 'Cnt) )
@@ -270,7 +273,7 @@
 
 (de cons (Car Cdr)
    (let P (val $Avail)
-      (when (=0 P)
+      (unless P
          (save2 Car Cdr
             (gc) )
          (setq P (val $Avail)) )
@@ -281,11 +284,11 @@
 
 (de cons3 (Car1 Cdr1 Car2 Cdr2)
    (let P (val $Avail)
-      (unless (=0 P)
+      (when P
          (let Q (val P)
-            (unless (=0 Q)
+            (when Q
                (let R (val Q)
-                  (unless (=0 R)
+                  (when R
                      (set $Avail (car R))
                      (set P Car1)
                      (set 2 P Cdr1)
@@ -310,17 +313,17 @@
 
 (de consSym (Name Val)
    (let P (val $Avail)
-      (when (=0 P)
-         (if (=0 Val)
-            (save Name
-               (gc) )
+      (unless P
+         (if Val
             (save2 Name Val
+               (gc) )
+            (save Name
                (gc) ) )
          (setq P (val $Avail)) )
       (set $Avail (car P))
       (set P Name)
       (let S (sym P)
-         (set S (if (=0 Val) S Val))
+         (set S (if Val @ S))
          S ) ) )
 
 (de consStr (Name)
@@ -334,7 +337,7 @@
 
 (de boxNum (Dig)
    (let P (val $Avail)
-      (when (=0 P)
+      (unless P
          (gc)
          (setq P (val $Avail)) )
       (set $Avail (car P))
@@ -344,7 +347,7 @@
 
 (de consNum (Dig Big)
    (let P (val $Avail)
-      (when (=0 P)
+      (unless P
          (save Big
             (gc) )
          (setq P (val $Avail)) )

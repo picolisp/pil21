@@ -1,4 +1,4 @@
-# 09jun20 Software Lab. Alexander Burger
+# 11jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -364,9 +364,9 @@ run)
 
 (inline box64 (N)
    (use @
-      (if (=0 (& N (hex "F000000000000000")))  # Fit in short number
-         (cnt N)
-         (boxNum N) ) ) )
+      (if (& N (hex "F000000000000000"))  # Fit in short number
+         (boxNum N)
+         (cnt N) ) ) )
 
 (inline eval (X)
    (use @

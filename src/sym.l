@@ -1,4 +1,4 @@
-# 10jun20 Software Lab. Alexander Burger
+# 11jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -9,7 +9,7 @@
       (while (big? Nm)
          (setq N (+ N 8)  Nm (val (big Nm))) )
       (setq Nm (int Nm))
-      (until (=0 Nm)
+      (while Nm
          (inc 'N)
          (setq Nm (shr Nm 8)) )
       N ) )
@@ -31,7 +31,7 @@
 (de i8* bufString (Nm (i8* . P))
    (let Q (push 0 Nm)  # [cnt name]
       (prog1 P
-         (until (=0 (set P (symByte Q)))
+         (while (set P (symByte Q))
             (inc 'P) ) ) ) )
 
 (de i8* pathString (Nm (i8* . P))
@@ -42,12 +42,12 @@
             (inc 'P)
             (setq B (symByte Q)) )
          (if (== B (char "@"))
-            (unless (=0 (val $HomeLen))
+            (when (val $HomeLen)
                (memcpy P (val $Home) @)
                (setq P (ofs P @)) )
             (set P B)
             (inc 'P) )
-         (until (=0 (set P (symByte Q)))
+         (while (set P (symByte Q))
             (inc 'P) ) ) ) )
 
 (local) (mkChar mkStr firstByte firstChar isBlank)
@@ -79,8 +79,7 @@
                      (shl (| (hex "80") (& C (hex "3F"))) 24) ) ) ) ) ) ) )
 
 (de mkStr ((i8* . Str))
-   (if (=0 Str)
-      $Nil
+   (if Str
       (let
          (P (push 4 NIL ZERO NIL)
             Q (link (ofs P 2) T) )  # [cnt last name link]
@@ -88,7 +87,8 @@
             (? (=0 (val Str)))
             (byteSym @ P)
             (inc 'Str) )
-         (consStr (val Q)) ) ) )
+         (consStr (val Q)) )
+      $Nil ) )
 
 (de i8 firstByte (Sym)
    (i8
@@ -159,7 +159,7 @@
    (byteSym (+ (& (i8 Obj) 7) (char "0")) P) )  # Make ASCII digit
 
 (de void packExtNm (Name (i64* . P))
-   (unless (=0 (objFile Name))
+   (when (objFile Name)
       (packAO @ P) )
    (packOct (objId Name) P) )
 
@@ -179,7 +179,7 @@
          (byteSym (char "}") P) )
       (T
          (let Q (push 0 (name @))  # [cnt name]
-            (until (=0 (symByte Q))
+            (while (symByte Q)
                (byteSym @ P) ) ) ) ) )
 
 # Chop external symbol name
@@ -187,12 +187,12 @@
    (let (R (link (push $Nil NIL))  N (objId Name))
       (loop
          (let A (+ (& N 7) (char "0"))  # Make ASCII digit
-            (unless (=0 (setq N (shr N 3)))
+            (when (setq N (shr N 3))
                (setq A
                   (|
                      (shl A 8)
                      (+ (& N 7) (char "0")) ) )  # Second octal digit
-               (unless (=0 (setq N (shr N 3)))
+               (when (setq N (shr N 3))
                   (setq A
                      (|
                         (shl A 8)
@@ -200,7 +200,7 @@
             (set R
                (cons (consSym (cnt A) 0) (val R)) ) )
          (? (=0 (setq N (shr N 3)))) )
-      (unless (=0 (setq N (objFile Name)))
+      (when (setq N (objFile Name))
          (let F (i32 0)
             (loop
                (setq F
@@ -261,7 +261,7 @@
    (let Found (isLstIntern Name More)
       (if (and Found (or (=0 Sym) (== Found Sym)))
          Found
-         (when (=0 Sym)  # New symbol
+         (unless Sym  # New symbol
             (setq Sym (consSym Name Val)) )
          (set Node (cons Sym $Nil))
          Sym ) ) )
@@ -270,7 +270,7 @@
    (let Found (isLstIntern Name More)
       (if (and Found (or (=0 Sym) (== Found Sym)))
          Found
-         (when (=0 Sym)  # New symbol
+         (unless Sym  # New symbol
             (setq Sym (consSym Name Val)) )
          (set 2 Node (cons Sym $Nil))
          Sym ) ) )
@@ -279,7 +279,7 @@
    (let Found (isLstIntern Name More)
       (if (and Found (or (=0 Sym) (== Found Sym)))
          Found
-         (when (=0 Sym)  # New symbol
+         (unless Sym  # New symbol
             (setq Sym (consSym Name Val)) )
          (set 2 Node (cons $Nil (cons Sym $Nil)))
          Sym ) ) )
@@ -288,7 +288,7 @@
    (let Found (isLstIntern Name More)
       (if (and Found (or (=0 Sym) (== Found Sym)))
          Found
-         (when (=0 Sym)  # New symbol
+         (unless Sym  # New symbol
             (setq Sym (consSym Name Val)) )
          (set 2 Node (cons (cons Sym $Nil) $Nil))
          Sym ) ) )
@@ -501,9 +501,9 @@
 
 # (fun? 'any) -> any
 (de _funQ (Exe)
-   (if (=0 (funq (eval (cadr Exe))))
-      $Nil
-      @ ) )
+   (if (funq (eval (cadr Exe)))
+      @
+      $Nil ) )
 
 # (getd 'any) -> fun | NIL
 (de _getd (Exe)
@@ -684,14 +684,14 @@
             (if (sym? Tail)  # External
                (chopExtNm (name (& Tail -9)))
                (let (P (push 0 (name Tail))  C (symChar P))
-                  (if (=0 C)
-                     $Nil
+                  (if C
                      (save Tail
                         (let (Y (cons (mkChar C) $Nil)  R (save Y))
-                           (until (=0 (setq C (symChar P)))
+                           (while (setq C (symChar P))
                               (setq Y
                                  (set 2 Y (cons (mkChar C) $Nil)) ) )
-                           R ) ) ) ) ) ) ) ) )
+                           R ) )
+                     $Nil ) ) ) ) ) ) )
 
 # (pack 'any ..) -> sym
 (de _pack (Exe)
@@ -734,7 +734,7 @@
             (while (pair (shift X))
                (setq A (link (push (eval (car X)) NIL)))
                (inc 'N) )
-            (until (=0 (setq C (symByte P)))
+            (while (setq C (symByte P))
                (cond
                   ((<> C (char "@")) (byteSym C R))
                   ((== (setq C (symByte P)) (char "@"))
@@ -794,9 +794,7 @@
 # (val 'var) -> any
 (de _val (Exe)
    (let V (needVar Exe (eval (cadr Exe)))
-      (and
-         (sym? V)
-         (sym? (val (tail V)))
+      (when (and (sym? V) (sym? (val (tail V))))
          (dbFetch Exe V) )
       (val V) ) )
 
@@ -806,9 +804,7 @@
       (let X (cdr Exe)
          (loop
             (let Y (safe (needChkVar Exe (eval (++ X))))
-               (and
-                  (sym? Y)
-                  (sym? (val (tail Y)))
+               (when (and (sym? Y) (sym? (val (tail Y))))
                   (dbTouch Exe Y) )
                (let Z (eval (++ X))
                   (set Y Z)
@@ -826,9 +822,7 @@
    (let
       (X (cdr Exe)
          Y (save (needChkVar Exe (eval (++ X)))) )
-      (and
-         (sym? Y)
-         (sym? (val (tail Y)))
+      (when (and (sym? Y) (sym? (val (tail Y))))
          (dbTouch Exe Y) )
       (let (Z (eval (car X))  V (val Y))
          (set Y Z)
@@ -840,14 +834,10 @@
       (let X (cdr Exe)
          (loop
             (let Y (safe (needChkVar Exe (eval (++ X))))
-               (and
-                  (sym? Y)
-                  (sym? (val (tail Y)))
+               (when (and (sym? Y) (sym? (val (tail Y))))
                   (dbTouch Exe Y) )
                (let Z (needChkVar Exe (eval (++ X)))
-                  (and
-                     (sym? Z)
-                     (sym? (val (tail Z)))
+                  (when (and (sym? Z) (sym? (val (tail Z))))
                      (dbTouch Exe Z) )
                   (setq Z (xchg Y Z))
                   (? (atom X) Z) ) ) ) ) ) )
@@ -904,9 +894,7 @@
    (let
       (X (cdr Exe)
          Y (save (needChkVar Exe (eval (++ X)))) )
-      (and
-         (sym? Y)
-         (sym? (val (tail Y)))
+      (when (and (sym? Y) (sym? (val (tail Y))))
          (dbTouch Exe Y) )
       (loop
          (let Z (eval (++ X))
@@ -918,9 +906,7 @@
    (let
       (X (cdr Exe)
          Y (save (needChkVar Exe (eval (++ X)))) )
-      (and
-         (sym? Y)
-         (sym? (val (tail Y)))
+      (when (and (sym? Y) (sym? (val (tail Y))))
          (dbTouch Exe Y) )
       (loop
          (let (Z (eval (++ X))  V (val Y))
@@ -933,9 +919,7 @@
    (let
       (X (cdr Exe)
          Y (save (needChkVar Exe (eval (++ X)))) )
-      (and
-         (sym? Y)
-         (sym? (val (tail Y)))
+      (when (and (sym? Y) (sym? (val (tail Y))))
          (dbTouch Exe Y) )
       (loop
          (let (Z (eval (++ X))  V (val Y))
@@ -946,9 +930,7 @@
 # (pop 'var) -> any
 (de _pop (Exe)
    (let X (needChkVar Exe (eval (cadr Exe)))
-      (and
-         (sym? X)
-         (sym? (val (tail X)))
+      (when (and (sym? X) (sym? (val (tail X))))
          (dbTouch Exe X) )
       (if (atom (val X))
          @
@@ -969,15 +951,13 @@
       (if (le0 N)
          $Nil
          (let Y (needChkVar Exe (eval (cadr X)))
-            (and
-               (sym? Y)
-               (sym? (val (tail Y)))
+            (when (and (sym? Y) (sym? (val (tail Y))))
                (dbTouch Exe Y) )
             (let
                (V (save (val Y))
                   Z (cons (++ V) $Nil)
                   R (save Z) )
-               (while (and (pair V) (n0 (dec 'N)))
+               (while (and (pair V) (dec 'N))
                   (setq Z (set 2 Z (cons (++ V) $Nil))) )
                (set Y V)  # Set new value
                R ) ) ) ) )
@@ -989,9 +969,7 @@
          Y (save (eval (++ X)))
          Var (save (needChkVar Exe (eval (++ X))))
          Flg (nil? (eval (car X))) )
-      (and
-         (sym? Var)
-         (sym? (val (tail Var)))
+      (when (and (sym? Var) (sym? (val (tail Var))))
          (dbTouch Exe Var) )
       (let V (val Var)
          (loop
@@ -1014,9 +992,7 @@
    (let
       (X (cdr Exe)
          Y (save (needChkVar Exe (eval (++ X)))) )
-      (and
-         (sym? Y)
-         (sym? (val (tail Y)))
+      (when (and (sym? Y) (sym? (val (tail Y))))
          (dbTouch Exe Y) )
       (let
          (Z (eval (car X))
@@ -1034,9 +1010,7 @@
    (let
       (X (cdr Exe)
          Y (save (needChkVar Exe (eval (++ X)))) )
-      (and
-         (sym? Y)
-         (sym? (val (tail Y)))
+      (when (and (sym? Y) (sym? (val (tail Y))))
          (dbTouch Exe Y) )
       (let V (val Y)
          (if (atom X)
@@ -1280,7 +1254,7 @@
                (itemErr Exe Key) ) ) )
       ((== ZERO Key)
          (let Cnt (int Key)  # index
-            (until (=0 (dec 'Cnt))
+            (while (dec 'Cnt)
                (when (atom (shift Lst))
                   (itemErr Exe Key) ) ) )
          (if (sign? Key)
@@ -1295,8 +1269,10 @@
          (unless (num? Tail)
             (let (L (any (& Tail -9))  X (car L))
                (if (atom X)
-                  (and (== Key X) (ret $T))
-                  (and (== Key (cdr X)) (ret (car X))) )
+                  (when (== Key X)
+                     (ret $T) )
+                  (when (== Key (cdr X))
+                     (ret (car X)) ) )
                (while (pair (setq X (cdr L)))
                   (let Y (car X)
                      (if (atom Y)
@@ -1332,7 +1308,7 @@
                (? (atom (shift X)) $Nil) ) )
          ((== ZERO Key)
             (let Cnt (int Key)  # nth
-               (until (=0 (dec 'Cnt))
+               (while (dec 'Cnt)
                   (shift X) )
                (if (sign? Key)
                   (cdr X)
@@ -1348,8 +1324,10 @@
       (unless (num? Tail)
          (let (L (any (& Tail -9))  X (car L))
             (if (atom X)
-               (and (== Key X) (ret Key))
-               (and (== Key (cdr X)) (ret X)) )
+               (when (== Key X)
+                  (ret Key) )
+               (when (== Key (cdr X))
+                  (ret X) ) )
             (while (pair (setq X (cdr L)))
                (let Y (car X)
                   (if (atom Y)
@@ -1608,7 +1586,7 @@
                R (push 4 NIL ZERO NIL)  # [cnt last name link]
                C T )
             (link (ofs R 2))
-            (until (=0 (setq C (symChar P)))
+            (while (setq C (symChar P))
                (charSym (toLowerCase C) R) )
             (consStr (val 3 R)) ) ) ) )
 
@@ -1623,7 +1601,7 @@
                R (push 4 NIL ZERO NIL)  # [cnt last name link]
                C T )
             (link (ofs R 2))
-            (until (=0 (setq C (symChar P)))
+            (while (setq C (symChar P))
                (ifn (== C (char "ß"))
                   (charSym (toUpperCase C) R)
                   (charSym (char "S") R)
@@ -1642,7 +1620,7 @@
                R (push 4 NIL ZERO NIL)  # [cnt last name link]
                C T )
             (link (ofs R 2))
-            (until (=0 (setq C (symChar P)))
+            (while (setq C (symChar P))
                (when (isLetterOrDigit C)
                   (charSym (toLowerCase C) R)
                   (? (=0 (dec 'N))) ) )

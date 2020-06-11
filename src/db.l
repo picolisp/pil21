@@ -1,4 +1,4 @@
-# 10jun20 Software Lab. Alexander Burger
+# 11jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -64,9 +64,9 @@
 
 (de void unLockDb ((i64 . Len))
    (unless (== $T (val $Solo))  # Not already locked whole DB
-      (when (=0 Len)
+      (unless Len
          (let (P (val $DbFiles)  C (val $DBs))
-            (until (=0 (dec 'C))
+            (while (dec 'C)
                (let Db: (dbFile (setq P (ofs P (dbFile T))))  # Skip first, increment by size of dbFile
                   (when (Db: lck)
                      (unLock (Db: fd) 0 0)
@@ -83,10 +83,11 @@
                ((=0 N) (set $Solo $T))  # Set solo mode
                ((== $T (val $Solo)) (set $Solo $Nil)) )  # Clear solo mode
             (ret 0) )
-         (or
-            (== (gErrno) EINTR)  # Interrupted
-            (== @ EACCES)  # Locked by another process
-            (== @ EAGAIN)  # Memory-mapped by another process
+         (unless
+            (or
+               (== (gErrno) EINTR)  # Interrupted
+               (== @ EACCES)  # Locked by another process
+               (== @ EAGAIN) )  # Memory-mapped by another process
             (lockErr) )
          (let Pid T
             (while (lt0 (setq Pid (getLock (Db: fd) N Len)))
@@ -127,7 +128,7 @@
       (unless (== Siz (i32 (pwrite (Db: fd) Buf (i64 Siz) Pos)))
          (dbWrErr) )
       (let Jnl (val $DbJnl)
-         (unless (=0 Jnl)
+         (when Jnl
             (putc_unlocked (if (== Siz (Db: siz)) BLKSIZE Siz) Jnl)
             (let P (b8 (+ BLK 2))  # Allocate buffer
                (set P (i8 (Db: db)))  # Store file number
@@ -169,7 +170,7 @@
       (blkPeek 0 P (* 2 BLK))  # Read 'free' and 'next' from block zero
       (let N (getAdr P)
          (cond
-            ((and N (n0 (Db: flu)))
+            ((and N (Db: flu))
                (blkPeek (shl N (i64 (Db: sh))) P BLK)  # Get free link
                (Db: flu (dec (Db: flu))) )
             ((== (setq N (getAdr (ofs P BLK))) (hex "FFFFFFFFFFC0"))  # Max object ID
@@ -184,30 +185,32 @@
       (dbfErr Exe) )
    (set $DbFile  # Set current file
       (ofs (val $DbFiles) (* N (dbFile T))) )
-   (when (=0 (val $DbLog))
+   (unless (val $DbLog)
       (set $Protect (inc (val $Protect))) )
    (wrLockDb)
-   (unless (=0 (val $DbJnl))
+   (when (val $DbJnl)
       (lockJnl) )
    (prog1
       (extNm ((dbFile (val $DbFile)) db) (newBlock))
-      (unless (=0 (val $DbJnl))
+      (when (val $DbJnl)
          (unLockJnl) )
       (unLockDb 1)
-      (when (=0 (val $DbLog))
+      (unless (val $DbLog)
          (set $Protect (dec (val $Protect))) ) ) )
 
 (de i1 isLife (Sym)
    (let
       (Nm (name (& (val (tail Sym)) -9))
          N (objId Nm) )
-      (unless (=0 N)
+      (when N
          (cond
             ((> (val $DBs) (objFile Nm))
                (setq Nm (add Nm Nm))
-               (and @@ (ret YES))  # Dirty
+               (when @@  # Dirty
+                  (ret YES) )
                (add Nm Nm)
-               (and @@ (ret YES))  # Loaded
+               (when @@  # Loaded
+                  (ret YES) )
                (let
                   (Db:
                      (dbFile
@@ -252,7 +255,8 @@
 (de i32 getBlock ()
    (let P (val $Ptr)
       (when (== P (val $End))
-         (and (=0 (val $BlkLink)) (ret 0))
+         (unless (val $BlkLink)
+            (ret 0) )
          (setq P (rdBlock @)) )
       (set $Ptr (inc P))
       (i32 (val P)) ) )
@@ -261,7 +265,7 @@
    (let P (val $Ptr)
       (when (== P (val $End))
          (let Link (val $BlkLink)
-            (if (=0 Link)
+            (ifn Link
                (let (New (newBlock)  Cnt (i64 (val P)))  # Block count (link is zero)
                   (setAdr (| New Cnt) (val $DbBlock))
                   (wrBlock)  # Write new block
@@ -304,7 +308,8 @@
                         (set X Tos)
                         (setq Tos (| Y 8)) ) ) )  # First visit
                (loop
-                  (and (=0 Tos) (goto 1))
+                  (unless Tos
+                     (goto 1) )
                   (? (=0 (& Tos 8))  # Second visit
                      (let (X Tos  Y (cdr X))  # Nodes
                         (setq Tos (cdr Y))  # TOS on up link
@@ -318,7 +323,7 @@
       (: 1
          (when (pair (val $Zap))  # Objects to delete
             (set @ $Nil) ) )  # Clear zap list
-      (unless (=0 (val $DBs))  # DB open
+      (when (val $DBs)  # DB open
          (unLockDb 0) )  # Unlock all
       #! (unsync)
       $T ) )
@@ -367,7 +372,7 @@
          Sym2 (save (evSym (shift X)))
          Sym3 (save (evSym (shift X))) )
       (set $Solo ZERO)  # Reset solo mode
-      (unless (=0 (val $DBs))
+      (when (val $DBs)
          (_rollback ZERO)
          )
       (let N (i64 (val $MaxBlkSize))
@@ -388,9 +393,7 @@
 # (touch 'sym) -> sym
 (de _touch (Exe)
    (let X (eval (cadr Exe))
-      (and
-         (symb? X)
-         (sym? (val (tail X)))
+      (when (and (symb? X) (sym? (val (tail X))))
          (dbTouch Exe X) )
       X ) )
 

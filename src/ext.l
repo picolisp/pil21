@@ -1,4 +1,4 @@
-# 26may20 Software Lab. Alexander Burger
+# 11jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -56,7 +56,7 @@
             (P (push 0 (xName Exe @) NIL)  # [cnt name link]
                C (symChar P) )
             (while (> SNXBASE C)
-               (when (=0 (setq C (symChar P)))
+               (unless (setq C (symChar P))
                   (ret $Nil) ) )
             (let
                (Q (link (ofs P 1) T)
