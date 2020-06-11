@@ -55,28 +55,32 @@
 (de mkChar ((i32 . C))
    (consStr
       (cnt
-         (i64
-            (cond
-               ((>= 127 C) C)  # Single byte
-               ((== TOP C) (hex "FF"))  # Infinite
-               ((> (hex "800") C)  # Double-byte
+         (cond
+            ((>= 127 C) (i64 C))  # Single byte
+            ((== TOP C) (hex "FF"))  # Infinite
+            ((> (hex "800") C)  # Double-byte
+               (i64
                   (|
                      (| (hex "C0") (& (shr C 6) (hex "1F")))  # 10xxxxx 10xxxxxx
-                     (shl (| (hex "80") (& C (hex "3F"))) 8) ) )
-               ((> (hex "10000") C)  # Three bytes
+                     (shl (| (hex "80") (& C (hex "3F"))) 8) ) ) )
+            ((> (hex "10000") C)  # Three bytes
+               (i64
                   (|
                      (|
                         (| (hex "E0") (& (shr C 12) (hex "0F")))  # 1110xxxx 10xxxxxx 10xxxxxx
                         (shl (| (hex "80") (& (shr C 6) (hex "3F"))) 8) )
-                     (shl (| (hex "80") (& C (hex "3F"))) 16) ) )
-               (T
-                  (|
+                     (shl (| (hex "80") (& C (hex "3F"))) 16) ) ) )
+            (T
+               (|
+                  (i64
                      (|
                         (|
                            (| (hex "F0") (& (shr C 18) (hex "07")))  # 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
                            (shl (| (hex "80") (& (shr C 12) (hex "3F"))) 8) )
-                        (shl (| (hex "80") (& (shr C 6) (hex "3F"))) 16) )
-                     (shl (| (hex "80") (& C (hex "3F"))) 24) ) ) ) ) ) ) )
+                        (shl (| (hex "80") (& (shr C 6) (hex "3F"))) 16) ) )
+                  (shl
+                     (| (hex "80") (& (i64 C) (hex "3F")))
+                     24 ) ) ) ) ) ) )
 
 (de mkStr ((i8* . Str))
    (if Str
