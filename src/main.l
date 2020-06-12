@@ -1,4 +1,4 @@
-# 11jun20 Software Lab. Alexander Burger
+# 12jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -13,22 +13,29 @@
       (set $At At) ) )
 
 # Unwind stack
-(local) (popInFiles popOutFiles unwind)
+(local) (popInFiles popOutFiles popErrFiles popCtlFiles unwind)
 
 (de void popInFiles ())
 (de void popOutFiles ())
+(de void popErrFiles ())
+(de void popCtlFiles ())
 
 (de void unwind ((i8* . Catch))
    (let (Ca (val $Catch)  Bnd (val $Bind))
       (while Ca
          (let Ca: (caFrame Ca)
             (while (and Bnd (<> Bnd (Ca: (env $Bind any))))
-               (loop
-                  (let Sym (val 2 Bnd)
-                     (set Sym (val Bnd))  # Restore values
-                     (? (== $At Sym))
-                     (setq Bnd (val 3 Bnd)) ) ) )
-            # ...
+               (set (val 2 Bnd) (val Bnd))  # Restore values
+               (setq Bnd (val 3 Bnd)) )
+            (until (== (val $InFrames) (Ca: (env $InFrames i8*)))
+               (popInFiles) )
+            (until (== (val $OutFrames) (Ca: (env $OutFrames i8*)))
+               (popOutFiles) )
+            (until (== (val $ErrFrames) (Ca: (env $ErrFrames i8*)))
+               (popErrFiles) )
+            (until (== (val $CtlFrames) (Ca: (env $CtlFrames i8*)))
+               (popCtlFiles) )
+            #! $CoFrames
             (memcpy (env) (Ca: (env)) (env T))
             (eval (Ca: fin))  # Evaluate 'finally' expression
             (set $Catch (Ca: link))
@@ -36,15 +43,18 @@
                (ret) )
             (setq Ca (Ca: link)) ) )
       (while Bnd
-         (let Sym (val 2 Bnd)
-            (set Sym (val Bnd))  # Restore values
-            (setq Bnd (val 3 Bnd)) ) )
+         (set (val 2 Bnd) (val Bnd))  # Restore values
+         (setq Bnd (val 3 Bnd)) )
       (set $Bind 0)
       (while (val $InFrames)
          (popInFiles) )
       (while (val $OutFrames)
          (popOutFiles) )
-      # ...
+      (while (val $ErrFrames)
+         (popErrFiles) )
+      (while (val $CtlFrames)
+         (popCtlFiles) )
+      #! $CoFrames
       ) )
 
 # Exit

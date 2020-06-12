@@ -1,4 +1,4 @@
-# 11jun20 Software Lab. Alexander Burger
+# 12jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -507,7 +507,7 @@
          (binRead)
          (set $InFile In) ) ) )
 
-(local) (waitFile pushInFiles pushOutFiles popInFiles popOutFiles)
+(local) (waitFile currFd)
 
 # Wait for pipe process if necessary
 (de void waitFile ((i32 . Pid))
@@ -518,6 +518,23 @@
                (closeErr) )
             (sigChk 0) )
          (set $At2 (cnt (i64 (val Res)))) ) ) )
+
+(de i32 currFd (Exe)
+   (let (In (val $InFrames)  Out (val $OutFrames))
+      (nond
+         ((or In Out)
+            (err 0 0 ($ "No current fd") null) )
+         (Out ((ioFrame In) fd))
+         (In ((ioFrame Out) fd))
+         (NIL
+            (if
+               (if (> In (stack))  # Stack growing downwards
+                  (> Out In)
+                  (> In Out) )
+               ((ioFrame In) fd)
+               ((ioFrame Out) fd) ) ) ) ) )
+
+(local) (pushInFiles pushOutFiles pushErrFiles pushCtlFiles)
 
 (de void pushInFiles ((i8* . P))
    (let (Io: (ioFrame P)  In: (inFile (val $InFile)))
@@ -539,6 +556,16 @@
       (set $Put (fun (void i8) _putStdout))
       (Io: link (val $OutFrames))
       (set $OutFrames (Io:)) ) )
+
+(de void pushErrFiles ((i8* . P))
+   ((ioFrame P) link (val $ErrFrames))
+   (set $ErrFrames P) )
+
+(de void pushCtlFiles ((i8* . P))
+   ((ioFrame P) link (val $CtlFrames))
+   (set $CtlFrames P) )
+
+(local) (popInFiles popOutFiles popErrFiles popCtlFiles)
 
 (de void popInFiles ()
    (let Io: (ioFrame (val $InFrames))
@@ -575,6 +602,19 @@
             (if (Io:)
                (ofs (val $OutFiles) (Io: fd))
                (ofs (val $OutFiles) 1) ) ) ) ) )  # Stdout
+
+(de void popErrFiles ()
+   (let Io: (ioFrame (val $ErrFrames))
+      (dup2 (Io: fd) 2)  # Restore stderr
+      (close (Io: fd))
+      (set $ErrFrames (Io: link)) ) )
+
+(de void popCtlFiles ()
+   (let Io: (ioFrame (val $CtlFrames))
+      (if (ge0 (Io: fd))
+         (close @)
+         (unLock (currFd 0) 0 0) )
+      (set $CtlFrames (Io: link)) ) )
 
 # (path 'any) -> sym
 (de _path (Exe)
@@ -793,22 +833,7 @@
       (set $Hear (i32 N))
       C ) )
 
-(local) (currFd rdOpen wrOpen erOpen ctOpen)
-
-(de i32 currFd (Exe)
-   (let (In (val $InFrames)  Out (val $OutFrames))
-      (nond
-         ((or In Out)
-            (err 0 0 ($ "No current fd") null) )
-         (Out ((ioFrame In) fd))
-         (In ((ioFrame Out) fd))
-         (NIL
-            (if
-               (if (> In (stack))  # Stack growing downwards
-                  (> Out In)
-                  (> In Out) )
-               ((ioFrame In) fd)
-               ((ioFrame Out) fd) ) ) ) ) )
+(local) (rdOpen wrOpen erOpen ctOpen)
 
 (de void rdOpen (Exe X (i8* . P))
    (let Io: (ioFrame P)
