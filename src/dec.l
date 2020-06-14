@@ -153,9 +153,11 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking getDir)
 (de T i32 nonBlocking (i32))
 (de T i8* getDir (i8*))
 
-(local) (initReadline currentLine)
+(local) (initReadline rlSigBeg rlSigEnd currentLine)
 
 (de T void initReadline ())
+(de T void rlSigBeg ())
+(de T void rlSigEnd ())
 (de T i8* currentLine ())
 
 # Signals

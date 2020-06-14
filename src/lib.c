@@ -1,4 +1,4 @@
-// 09jun20 Software Lab. Alexander Burger
+// 14jun20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -81,9 +81,19 @@ static char *tabEntry(const char *text, int stat) {
 void initReadline(void) {
    extern int waitTty(void);
 
+   rl_catch_signals = 0;
    rl_pre_input_hook = (int (*)(void))waitTty;
    rl_completion_entry_function = tabEntry;
    rl_basic_quote_characters = NULL;
+}
+
+void rlSigBeg(void) {
+   rl_free_line_state();
+   rl_cleanup_after_signal();
+}
+
+void rlSigEnd(void) {
+   rl_reset_after_signal();
 }
 
 char *currentLine() {

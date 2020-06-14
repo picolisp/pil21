@@ -149,14 +149,18 @@
                   (set P (dec @))
                   (set $Signal (dec (val $Signal)))
                   (unless (val $PRepl)  # Not child of REPL process?
-                     (brkLoad (if Exe @ $Nil)) ) )
+                     (rlSigBeg)
+                     (brkLoad (if Exe @ $Nil))
+                     (rlSigEnd) ) )
                ((val (setq P (ofs $Signal SIGTSTP)))
                   (set P (dec @))
                   (set $Signal (dec (val $Signal)))
+                  (rlSigBeg)
                   (execAt (val $TStp1))  # Run 'TStp1'
                   (stopTerm)  # Stop
                   (iSignal (val SIGTSTP Sig) (fun sig))  # Set signal again
-                  (execAt (val $TStp2)) )  # Run 'TStp2'
+                  (execAt (val $TStp2))  # Run 'TStp2'
+                  (rlSigEnd) )
                ((val (setq P (ofs $Signal SIGTERM)))
                   (set P (dec @))
                   (set $Signal (dec (val $Signal)))
