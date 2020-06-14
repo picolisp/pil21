@@ -1,4 +1,4 @@
-# 12jun20 Software Lab. Alexander Burger
+# 14jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -98,15 +98,6 @@
          (set (setq P (ofs P -2)) A)  # Link avail
          (? (== (setq A P) H)) )
       (set $Avail A) ) )
-
-# (raw ['flg]) -> flg
-(de _raw (Exe)
-   (let X (cdr Exe)
-      (cond
-         ((atom X)
-            (if (val Termio) $T $Nil) )
-         ((nil? (eval (car X))) (setCooked) @)
-         (T (setRaw) @) ) ) )
 
 # Signals
 (local) (sig sigTerm sigChld sighandler)
@@ -456,6 +447,22 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                         (? (or (nil? (car Z)) (== $T (car Z)))
                            0 ) )
                      (? (not (nil? Y)) 0) ) ) ) ) ) ) )
+
+# (raw ['flg]) -> flg
+(de _raw (Exe)
+   (let X (cdr Exe)
+      (cond
+         ((atom X)
+            (if (val Termio) $T $Nil) )
+         ((nil? (eval (car X))) (setCooked) @)
+         (T (setRaw) @) ) ) )
+
+# (alarm 'cnt . prg) -> cnt
+(de _alarm (Exe)
+   (let X (cdr Exe)
+      (prog1
+         (cnt (i64 (alarm (i32 (evCnt Exe X)))))
+         (set $Alarm (cdr X)) ) ) )
 
 # Date and time
 (local) (date time)
