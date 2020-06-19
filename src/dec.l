@@ -1,4 +1,4 @@
-# 14jun20 Software Lab. Alexander Burger
+# 19jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -356,6 +356,15 @@ run)
          (? (atom L) NO)
          (? (equal X (car L)) YES)
          (shift L) ) ) )
+
+(inline nth (N X)
+   (use @
+      (let C (int N)
+         (while (dec 'C)
+            (shift X) )
+         (if (sign? N)
+            (cdr X)
+            (car X) ) ) ) )
 
 (inline length (X)
    (use @

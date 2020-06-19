@@ -1,4 +1,4 @@
-# 14jun20 Software Lab. Alexander Burger
+# 19jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -15,8 +15,9 @@
 (var $StkSize i64 STACK)               # Coroutine stack segment size
 (var $StkLimit i8* null)               # Stack limit: StackN-Size+4096
 (var $LinePtr i8* null)                # Console line pointer
-(var $LinePrt i8* null)                # Console line prompt
 (var $LineBuf i8* null)                # Console line buffer
+(var $LinePrmt i8* null)               # Console line prompt
+(var $ReplPrmt i8* null)               # REPL console prompt
 (var $Ret 0)                           # Secondary return value
 (var $TtyPid i32 0)                    # Terminal process ID
 (var $InFiles i8** null)               # Input files
@@ -361,6 +362,11 @@
    (NIL "chain" _chain)
    (NIL "link" _link)
    (NIL "yoke" _yoke)
+   (NIL "copy" _copy)
+   (NIL "mix" _mix)
+   (NIL "append" _append)
+   (NIL "delete" _delete)
+   (NIL "delq" _delq)
    (NIL "replace" _replace)
    (NIL "split" _split)
    (NIL "reverse" _reverse)

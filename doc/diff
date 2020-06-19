@@ -1,4 +1,4 @@
-# 25may20 Software Lab. Alexander Burger
+# 19jun20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -10,6 +10,7 @@
 + 'with' accepts 'var' instead of 'sym'
 + Map functions accept atomic arguments
 + Standard readline(3) library in REPL
++ 'mix' accepts also negative arguments
 
 - '====' is removed
 - 'lines' is removed

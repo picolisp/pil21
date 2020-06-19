@@ -1,4 +1,4 @@
-# 11jun20 Software Lab. Alexander Burger
+# 19jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -323,6 +323,113 @@
                      (setq Z (ofs @ 1)) )
                   (set $Make Z) )
                Y ) ) ) ) )
+
+# (copy 'any) -> any
+(de _copy (Exe)
+   (let X (cdr Exe)
+      (if (atom (setq X (eval (car X))))
+         X
+         (let
+            (Y (cons (car X) (cdr X))
+               R (save Y)
+               Z X )
+            (while (pair (setq X (cdr Y)))
+               (? (== X Z) (set 2 Y R))
+               (setq Y
+                  (set 2 Y (cons (car X) (cdr X))) ) )
+            R ) ) ) )
+
+# (mix 'lst cnt|'any ..) -> lst
+(de _mix (Exe)
+   (let (X (cdr Exe)  Y (eval (car X)))
+      (nond
+         ((or (pair Y) (nil? Y)) Y)
+         ((pair (shift X)) $Nil)
+         (NIL
+            (save Y
+               (let
+                  (Z
+                     (cons
+                        (if (cnt? (car X))
+                           (nth @ Y)
+                           (eval @) )
+                        $Nil )
+                     R (save Z) )
+                  (while (pair (shift X))
+                     (setq Z
+                        (set 2 Z
+                           (cons
+                              (if (cnt? (car X))
+                                 (nth @ Y)
+                                 (eval @) )
+                              $Nil ) ) ) )
+                  R ) ) ) ) ) )
+
+# (append 'lst ..) -> lst
+(de _append (Exe)
+   (let X Exe
+      (loop
+         (? (atom (cdr (shift X)))
+            (eval (car X)) )
+         (? (pair (eval (car X)))
+            (let
+               (Y @
+                  R (save (cons (car Y) (cdr Y)))
+                  Z R )
+               (while (pair (setq Y (cdr Z)))
+                  (setq Z
+                     (set 2 Z (cons (car Y) (cdr Y))) ) )
+               (while (pair (cdr (shift X)))
+                  (setq Y (eval (car X)))
+                  (while (pair Y)
+                     (setq
+                        Z (set 2 Z (cons (car Y) (cdr Y))) )
+                     (shift Y) )
+                  (set 2 Z Y) )
+               (set 2 Z (eval (car X)))
+               R ) ) ) ) )
+
+# (delete 'any 'lst ['flg]) -> lst
+(de _delete (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         L (save (eval (++ X)))
+         F (nil? (eval (car X))) )
+      (loop
+         (? (atom L) L)
+         (? (not (equal Y (car L)))
+            (let R (setq X (cons (car L) $Nil))
+               (loop
+                  (? (atom (shift L))
+                     (set 2 X L) )
+                  (ifn (equal Y (car L))
+                     (setq X (set 2 X (cons (car L) $Nil)))
+                     (? F (set 2 X (cdr L))) ) )
+               R ) )
+         (shift L)
+         (? F L) ) ) )
+
+# (delq 'any 'lst ['flg]) -> lst
+(de _delq (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         L (save (eval (++ X)))
+         F (nil? (eval (car X))) )
+      (loop
+         (? (atom L) L)
+         (? (<> Y (car L))
+            (let R (setq X (cons (car L) $Nil))
+               (loop
+                  (? (atom (shift L))
+                     (set 2 X L) )
+                  (if (<> Y (car L))
+                     (setq X (set 2 X (cons (car L) $Nil)))
+                     (? F (set 2 X (cdr L))) ) )
+               R ) )
+         (shift L)
+         (? F L) ) ) )
 
 # (replace 'lst 'any1 'any2 ..) -> lst
 (de _replace (Exe)

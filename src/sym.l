@@ -1,4 +1,4 @@
-# 11jun20 Software Lab. Alexander Burger
+# 19jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1310,13 +1310,7 @@
                   (? (and (pair Y) (== Key (car Y)))
                      (cdr Y) ) )
                (? (atom (shift X)) $Nil) ) )
-         ((== ZERO Key)
-            (let Cnt (int Key)  # nth
-               (while (dec 'Cnt)
-                  (shift X) )
-               (if (sign? Key)
-                  (cdr X)
-                  (car X) ) ) )
+         ((== ZERO Key) (nth Key X))
          (NIL $Nil) )
       (when (sym? (val (tail X)))
          (dbFetch Exe X) )

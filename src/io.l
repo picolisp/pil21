@@ -1,4 +1,4 @@
-# 12jun20 Software Lab. Alexander Burger
+# 19jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1005,12 +1005,12 @@
                   (unless P
                      (initReadline)
                      (free (val $LineBuf))
-                     (unless (setq P (set $LineBuf (readline (val $LinePrt))))
+                     (unless (setq P (set $LineBuf (readline (val $LinePrmt))))
                         (write 1 ($ "\n") 1)
-                        (when (or (val $Bind) (== (val $LinePrt) $Indent))
-                           (err 0 0 $Empty null) )
+                        (when (or (val $Bind) (== (val $LinePrmt) $Indent))
+                           (err 0 0 $Empty null) )  # quit
                         (bye 0) )
-                     (set $LinePrt $Indent)
+                     (set $LinePrmt $Indent)
                      (unless
                         (or
                            (=0 (val P))
@@ -2227,7 +2227,7 @@
 
 (local) (repl loadAll)
 
-(de repl (Exe (i8* . Prt) X)
+(de repl (Exe (i8* . Prmt) X)
    (when (num? X)
       (argErr Exe X) )
    (if (and (sym? X) (== (firstByte X) (char "-")))
@@ -2242,7 +2242,22 @@
             (let Y
                (ifn (== (val $InFile) (val (val $InFiles)))
                   (read1 0)
-                  (set $LinePrt Prt)
+                  (cond
+                     ((=0 Prmt) (set $LinePrmt null))
+                     ((or
+                           (nil? (run (val $Prompt)))
+                           (not (symb? @)) )
+                        (set $LinePrmt Prmt) )
+                     (T
+                        (let
+                           (Nm (name (val (tail @)))
+                              N (bufSize Nm)
+                              P
+                              (set $ReplPrmt
+                                 (alloc (val $ReplPrmt) (+ N (strlen Prmt))) ) )
+                           (bufString Nm P)
+                           (strcpy (ofs P (dec N)) Prmt)
+                           (set $LinePrmt P) ) ) )
                   (prog1
                      (read1
                         (if (isatty 0)
@@ -2261,7 +2276,7 @@
                      (or
                         (<> (val $InFile) (val (val $InFiles)))
                         (val $Chr)
-                        (=0 Prt) )
+                        (=0 Prmt) )
                      (setq X (eval Y))
                      (flushAll)
                      (let A (val $At)

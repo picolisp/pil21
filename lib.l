@@ -1,4 +1,4 @@
-# 14jun20 Software Lab. Alexander Burger
+# 18jun20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -549,13 +549,9 @@
 ### Debug ###
 `*Dbg
 
-#{
-(if (info (pil "editor"))
-   (load (pil "editor"))
-   (load "@lib/led.l" "@lib/edit.l") )
-
 (load "@lib/debug.l" "@lib/lint.l")
 
+#{
 (noLint 'pretty 'Z)
 (noLint '_pretty 'Z)
 }#
