@@ -1,4 +1,4 @@
-# 19jun20 Software Lab. Alexander Burger
+# 20jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -957,14 +957,16 @@
          (let Y (needChkVar Exe (eval (cadr X)))
             (when (and (sym? Y) (sym? (val (tail Y))))
                (dbTouch Exe Y) )
-            (let
-               (V (save (val Y))
-                  Z (cons (++ V) $Nil)
-                  R (save Z) )
-               (while (and (pair V) (dec 'N))
-                  (setq Z (set 2 Z (cons (++ V) $Nil))) )
-               (set Y V)  # Set new value
-               R ) ) ) ) )
+            (if (atom (val Y))
+               @
+               (let
+                  (V (save @)
+                     Z (cons (++ V) $Nil)
+                     R (save Z) )
+                  (while (and (pair V) (dec 'N))
+                     (setq Z (set 2 Z (cons (++ V) $Nil))) )
+                  (set Y V)  # Set new value
+                  R ) ) ) ) ) )
 
 # (del 'any 'var ['flg]) -> lst
 (de _del (Exe)

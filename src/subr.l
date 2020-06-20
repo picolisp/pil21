@@ -1,4 +1,4 @@
-# 19jun20 Software Lab. Alexander Burger
+# 20jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -205,8 +205,9 @@
          (save
             (if (or (pair R) (nil? R))
                (eval (cadr X))
-               (setq R $Nil)
-               R ) )
+               (prog1
+                  R
+                  (setq R $Nil) ) ) )
          Z R )
       (when C
          (cond
@@ -739,7 +740,8 @@
          Y (save (eval (++ X)))
          Z (eval (car X)) )
       (loop
-         (? (atom Z) $Nil)
+         (? (atom Z)
+            (if (equal Y Z) Z $Nil) )
          (? (equal Y (car Z)) Z)
          (shift Z) ) ) )
 
@@ -750,7 +752,8 @@
          Y (save (eval (++ X)))
          Z (eval (car X)) )
       (loop
-         (? (atom Z) $Nil)
+         (? (atom Z)
+            (if (== Y Z) Z $Nil) )
          (? (== Y (car Z)) Z)
          (shift Z) ) ) )
 
