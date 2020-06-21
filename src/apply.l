@@ -1,4 +1,4 @@
-# 11jun20 Software Lab. Alexander Burger
+# 21jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -80,14 +80,18 @@
                (set P (link (ofs P 3))) )
             (? (atom (shift X)))
             (setq Q (set 2 Q (push NIL NIL))) ) )
-      (while (pair (car A))
-         (setq R (evList E))
-         (let (P (cdr E)  Q A)
-            (set 4 P (car (set A (cdar A))))
-            (while (pair (shift P))
-               (if (pair (car (shift Q)))
-                  (set 4 P (car (set Q (cdr @))))
-                  (set 4 P @) ) ) ) )
+      (when (pair (car A))
+         (loop
+            (setq R (evList E))
+            (? (atom (set A (cdar A))))
+            (let (P (cdr E)  Q A)
+               (set 4 P (car @))
+               (while (pair (shift P))
+                  (set 4 P
+                     (cond
+                        ((atom (car (shift Q))) @)
+                        ((atom (set Q (cdr @))) @)
+                        (T (car @)) ) ) ) ) ) )
       R ) )
 
 # (maplist 'fun 'lst ..) -> lst
@@ -137,18 +141,22 @@
                (set P (link (ofs P 3))) )
             (? (atom (shift X)))
             (setq Q (set 2 Q (push NIL NIL))) ) )
-      (while (pair (car A))
-         (let Y (cons (evList E) $Nil)
-            (setq L
-               (if L
-                  (set 2 L Y)
-                  (setq R (safe Y)) ) ) )
-         (let (P (cdr E)  Q A)
-            (set 4 P (car (set Q (cdar Q))))
-            (while (pair (shift P))
-               (if (pair (car (shift Q)))
-                  (set 4 P (car (set Q (cdr @))))
-                  (set 4 P @) ) ) ) )
+      (when (pair (car A))
+         (loop
+            (let Y (cons (evList E) $Nil)
+               (setq L
+                  (if L
+                     (set 2 L Y)
+                     (setq R (safe Y)) ) ) )
+            (? (atom (set A (cdar A))))
+            (let (P (cdr E)  Q A)
+               (set 4 P (car @))
+               (while (pair (shift P))
+                  (set 4 P
+                     (cond
+                        ((atom (car (shift Q))) @)
+                        ((atom (set Q (cdr @))) @)
+                        (T (car @)) ) ) ) ) ) )
       R ) )
 
 # (mapcon 'fun 'lst ..) -> lst
@@ -202,22 +210,26 @@
                (set P (link (ofs P 3))) )
             (? (atom (shift X)))
             (setq Q (set 2 Q (push NIL NIL))) ) )
-      (while (pair (car A))
-         (let Y (evList E)
-            (when (pair Y)
-               (setq L
-                  (if L
-                     (let Z L
-                        (while (pair (cdr Z))
-                           (setq Z @) )
-                        (set 2 Z Y) )
-                     (setq R (safe Y)) ) ) ) )
-         (let (P (cdr E)  Q A)
-            (set 4 P (car (set A (cdar A))))
-            (while (pair (shift P))
-               (if (pair (car (shift Q)))
-                  (set 4 P (car (set Q (cdr @))))
-                  (set 4 P @) ) ) ) )
+      (when (pair (car A))
+         (loop
+            (let Y (evList E)
+               (when (pair Y)
+                  (setq L
+                     (if L
+                        (let Z L
+                           (while (pair (cdr Z))
+                              (setq Z @) )
+                           (set 2 Z Y) )
+                        (setq R (safe Y)) ) ) ) )
+            (? (atom (set A (cdar A))))
+            (let (P (cdr E)  Q A)
+               (set 4 P (car @))
+               (while (pair (shift P))
+                  (set 4 P
+                     (cond
+                        ((atom (car (shift Q))) @)
+                        ((atom (set Q (cdr @))) @)
+                        (T (car @)) ) ) ) ) ) )
       R ) )
 
 # (filter 'fun 'lst ..) -> lst
@@ -239,19 +251,23 @@
                (set P (link (ofs P 3))) )
             (? (atom (shift X)))
             (setq Q (set 2 Q (push NIL NIL))) ) )
-      (while (pair (car A))
-         (unless (nil? (evList E))
-            (let Y (cons (caar A) $Nil)
-               (setq L
-                  (if L
-                     (set 2 L Y)
-                     (setq R (safe Y)) ) ) ) )
-         (let (P (cdr E)  Q A)
-            (set 4 P (car (set A (cdar A))))
-            (while (pair (shift P))
-               (if (pair (car (shift Q)))
-                  (set 4 P (car (set Q (cdr @))))
-                  (set 4 P @) ) ) ) )
+      (when (pair (car A))
+         (loop
+            (unless (nil? (evList E))
+               (let Y (cons (caar A) $Nil)
+                  (setq L
+                     (if L
+                        (set 2 L Y)
+                        (setq R (safe Y)) ) ) ) )
+            (? (atom (set A (cdar A))))
+            (let (P (cdr E)  Q A)
+               (set 4 P (car @))
+               (while (pair (shift P))
+                  (set 4 P
+                     (cond
+                        ((atom (car (shift Q))) @)
+                        ((atom (set Q (cdr @))) @)
+                        (T (car @)) ) ) ) ) ) )
       R ) )
 
 # (extract 'fun 'lst ..) -> lst
@@ -273,19 +289,23 @@
                (set P (link (ofs P 3))) )
             (? (atom (shift X)))
             (setq Q (set 2 Q (push NIL NIL))) ) )
-      (while (pair (car A))
-         (unless (nil? (evList E))
-            (let Y (cons @ $Nil)
-               (setq L
-                  (if L
-                     (set 2 L Y)
-                     (setq R (safe Y)) ) ) ) )
-         (let (P (cdr E)  Q A)
-            (set 4 P (car (set A (cdar A))))
-            (while (pair (shift P))
-               (if (pair (car (shift Q)))
-                  (set 4 P (car (set Q (cdr @))))
-                  (set 4 P @) ) ) ) )
+      (when (pair (car A))
+         (loop
+            (unless (nil? (evList E))
+               (let Y (cons @ $Nil)
+                  (setq L
+                     (if L
+                        (set 2 L Y)
+                        (setq R (safe Y)) ) ) ) )
+            (? (atom (set A (cdar A))))
+            (let (P (cdr E)  Q A)
+               (set 4 P (car @))
+               (while (pair (shift P))
+                  (set 4 P
+                     (cond
+                        ((atom (car (shift Q))) @)
+                        ((atom (set Q (cdr @))) @)
+                        (T (car @)) ) ) ) ) ) )
       R ) )
 
 # (seek 'fun 'lst ..) -> lst
@@ -328,17 +348,21 @@
                (set P (link (ofs P 3))) )
             (? (atom (shift X)))
             (setq Q (set 2 Q (push NIL NIL))) ) )
-      (loop
-         (? (atom (car A)) $Nil)
-         (? (not (nil? (evList E)))
-            (set $At2 @)
-            (caar A) )
-         (let (P (cdr E)  Q A)
-            (set 4 P (car (set A (cdar A))))
-            (while (pair (shift P))
-               (if (pair (car (shift Q)))
-                  (set 4 P (car (set Q (cdr @))))
-                  (set 4 P @) ) ) ) ) ) )
+      (if (atom (car A))
+         $Nil
+         (loop
+            (? (not (nil? (evList E)))
+               (set $At2 @)
+               (caar A) )
+            (? (atom (set A (cdar A))) $Nil)
+            (let (P (cdr E)  Q A)
+               (set 4 P (car @))
+               (while (pair (shift P))
+                  (set 4 P
+                     (cond
+                        ((atom (car (shift Q))) @)
+                        ((atom (set Q (cdr @))) @)
+                        (T (car @)) ) ) ) ) ) ) ) )
 
 # (pick 'fun 'lst ..) -> any
 (de _pick (Exe)
@@ -357,15 +381,19 @@
                (set P (link (ofs P 3))) )
             (? (atom (shift X)))
             (setq Q (set 2 Q (push NIL NIL))) ) )
-      (loop
-         (? (atom (car A)) $Nil)
-         (? (not (nil? (evList E))) @)
-         (let (P (cdr E)  Q A)
-            (set 4 P (car (set A (cdar A))))
-            (while (pair (shift P))
-               (if (pair (car (shift Q)))
-                  (set 4 P (car (set Q (cdr @))))
-                  (set 4 P @) ) ) ) ) ) )
+      (if (atom (car A))
+         $Nil
+         (loop
+            (? (not (nil? (evList E))) @)
+            (? (atom (set A (cdar A))) $Nil)
+            (let (P (cdr E)  Q A)
+               (set 4 P (car @))
+               (while (pair (shift P))
+                  (set 4 P
+                     (cond
+                        ((atom (car (shift Q))) @)
+                        ((atom (set Q (cdr @))) @)
+                        (T (car @)) ) ) ) ) ) ) ) )
 
 # (fully 'fun 'lst ..) -> flg
 (de _fully (Exe)
@@ -384,15 +412,19 @@
                (set P (link (ofs P 3))) )
             (? (atom (shift X)))
             (setq Q (set 2 Q (push NIL NIL))) ) )
-      (loop
-         (? (atom (car A)) $T)
-         (? (nil? (evList E)) @)
-         (let (P (cdr E)  Q A)
-            (set 4 P (car (set A (cdar A))))
-            (while (pair (shift P))
-               (if (pair (car (shift Q)))
-                  (set 4 P (car (set Q (cdr @))))
-                  (set 4 P @) ) ) ) ) ) )
+      (if (atom (car A))
+         $T
+         (loop
+            (? (nil? (evList E)) @)
+            (? (atom (set A (cdar A))) $T)
+            (let (P (cdr E)  Q A)
+               (set 4 P (car @))
+               (while (pair (shift P))
+                  (set 4 P
+                     (cond
+                        ((atom (car (shift Q))) @)
+                        ((atom (set Q (cdr @))) @)
+                        (T (car @)) ) ) ) ) ) ) ) )
 
 # (sum 'fun 'lst ..) -> num
 (de _sum (Exe)
@@ -412,16 +444,20 @@
                (set P (link (ofs P 3))) )
             (? (atom (shift X)))
             (setq Q (set 2 Q (push NIL NIL))) ) )
-      (while (pair (car A))
-         (when (num? (evList E))
-            (save @
-               (setq R (safe (adds R @))) ) )
-         (let (P (cdr E)  Q A)
-            (set 4 P (car (set A (cdar A))))
-            (while (pair (shift P))
-               (if (pair (car (shift Q)))
-                  (set 4 P (car (set Q (cdr @))))
-                  (set 4 P @) ) ) ) )
+      (when (pair (car A))
+         (loop
+            (when (num? (evList E))
+               (save @
+                  (setq R (safe (adds R @))) ) )
+            (? (atom (set A (cdar A))))
+            (let (P (cdr E)  Q A)
+               (set 4 P (car @))
+               (while (pair (shift P))
+                  (set 4 P
+                     (cond
+                        ((atom (car (shift Q))) @)
+                        ((atom (set Q (cdr @))) @)
+                        (T (car @)) ) ) ) ) ) )
       R ) )
 
 (local) fish
