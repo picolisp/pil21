@@ -1,4 +1,4 @@
-# 20jun20 Software Lab. Alexander Burger
+# 21jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -738,24 +738,26 @@
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
-         Z (eval (car X)) )
+         Z (eval (car X))
+         H Z )
       (loop
          (? (atom Z)
             (if (equal Y Z) Z $Nil) )
          (? (equal Y (car Z)) Z)
-         (shift Z) ) ) )
+         (? (== H (shift Z)) $Nil) ) ) )
 
 # (memq 'any 'lst) -> any
 (de _memq (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
-         Z (eval (car X)) )
+         Z (eval (car X))
+         H Z )
       (loop
          (? (atom Z)
             (if (== Y Z) Z $Nil) )
          (? (== Y (car Z)) Z)
-         (shift Z) ) ) )
+         (? (== H (shift Z)) $Nil) ) ) )
 
 # (mmeq 'lst 'lst) -> any
 (de _mmeq (Exe)
