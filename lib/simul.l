@@ -37,7 +37,6 @@
 
 # Flooding Algorithm
 (private) (Lst Fun Init X)
-
 (local) flood
 
 (de flood (Lst Fun Init)
@@ -56,7 +55,6 @@
 
 # Genetic Algorithm
 (private) (Pop Cond Re Mu Se P)
-
 (local) gen
 
 (de gen (Pop Cond Re Mu Se)
@@ -73,7 +71,6 @@
 
 # Alpha-Beta tree search
 (private) (*Val Flg Cnt Moves Move Cost Alpha Beta Mov)
-
 (local) game
 
 (de game (Flg Cnt Moves Move Cost)
@@ -114,7 +111,7 @@
 
 
 ### Grids ###
-(local) (grid west east south north disp border)
+(local) (grid west east south north)
 
 (de grid (DX DY FX FY)
    (let Grid
@@ -159,6 +156,7 @@
    (: 0 -1 -1) )
 
 (private) (Grid How Fun X Y DX DY)
+(local) (disp border)
 
 (de disp (Grid How Fun X Y DX DY)
    (setq Grid

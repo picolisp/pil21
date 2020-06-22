@@ -1,4 +1,4 @@
-// 14jun20 Software Lab. Alexander Burger
+// 22jun20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -47,8 +47,8 @@ int32_t fcntlCloExec(int32_t fd) {
    return (int32_t)fcntl(fd, F_SETFD, FD_CLOEXEC);
 }
 
-int32_t fcntlSetFl(int32_t fd, int32_t flg) {
-   return (int32_t)fcntl(fd, F_SETFL, flg);
+void fcntlSetFl(int32_t fd, int32_t flg) {
+   fcntl(fd, F_SETFL, flg);
 }
 
 int32_t nonBlocking(int32_t fd) {
@@ -56,6 +56,11 @@ int32_t nonBlocking(int32_t fd) {
 
    fcntlSetFl(fd, flg | O_NONBLOCK);
    return (int32_t)flg;
+}
+
+void fcntlSetOwn(int32_t fd, int32_t pid) {
+   fcntl(fd, F_SETOWN, pid);
+   fcntlSetFl(fd, fcntl(fd, F_GETFL, 0) | O_NONBLOCK|O_ASYNC);
 }
 
 char *getDir(char *nm) {

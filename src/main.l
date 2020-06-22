@@ -1,4 +1,4 @@
-# 14jun20 Software Lab. Alexander Burger
+# 22jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -467,6 +467,52 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (prog1
          (cnt (i64 (alarm (i32 (evCnt Exe X)))))
          (set $Alarm (cdr X)) ) ) )
+
+# (sigio 'cnt . prg) -> cnt
+(de _sigio (Exe)
+   (let (X (cdr Exe)  Fd (evCnt Exe X))
+      (set $Sigio (cdr X))
+      (fcntlSetOwn (i32 Fd) (i32 (int (val $Pid))))
+      (cnt Fd) ) )
+
+# (kids) -> lst
+(de _kids (Exe)
+   (let
+      (X $Nil
+         Cld (val $Child)  # Iterate children
+         <Cld (ofs Cld (* (val $Children) (child T))) )
+      (until (== Cld <Cld)
+         (when ((child Cld) pid)
+            (setq X (cons (cnt (i64 @)) X)) )
+         (setq Cld (ofs Cld (child T))) )
+      X ) )
+
+# (protect . prg) -> any
+(de _protect (Exe)
+   (let X (cdr Exe)
+      (prog2
+         (set $Protect (+ (val $Protect) 1))
+         (run X)
+         (set $Protect (- (val $Protect) 1)) ) ) )
+
+# (heap 'flg) -> cnt
+(de _heap (Exe)
+   (if (nil? (eval (cadr Exe)))
+      (let (N 1  P (val $Heaps))
+         (while (setq P (val (ofs P HEAP)))
+            (inc 'N) )
+         (cnt N) )
+      (let (N 0  P (val $Avail))
+         (while P
+            (inc 'N)
+            (setq P (car P)) )
+         (cnt (shr N (- 20 4))) ) ) )  # Divide by CELLS (1M/16)
+
+# (stack ['cnt]) -> cnt | (.. sym . cnt)
+(de _stack (Exe)
+   (let X (cdr Exe)
+      #!
+      X ) )
 
 # Date and time
 (local) (date time)
@@ -1063,6 +1109,56 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (& @ -3) )  # Make 'var' (pos -> cell, neg -> symbol)
       ((big? @) (argErr Exe @))
       (T (| @ 2)) ) )  # Make 'cnt'
+
+# (byte 'num ['cnt]) -> cnt
+(de _byte (Exe)
+   (let
+      (X (cdr Exe)
+         P
+         (i8*
+            (if (cnt? (needNum Exe (eval (++ X))))
+               (int @)
+               (val (dig @)) ) ) )
+      (if (atom X)
+         (cnt (i64 (val P)))
+         (prog1
+            (needCnt Exe (eval (car X)))
+            (set P (i8 (int @))) ) ) ) )
+
+# (env ['lst] | ['sym 'val] ..) -> lst
+(de _env (Exe)
+   (let (X (cdr Exe)  R (save $Nil))
+      (if (atom X)
+         (let Bnd (val $Bind)
+            (while Bnd
+               (let (S (val 2 Bnd)  Y R)
+                  (loop
+                     (? (atom Y)
+                        (setq R
+                           (safe (cons (cons S (val S)) R)) ) )  # (sym . val)
+                     (? (== S (caar Y)))
+                     (shift Y) ) )
+               (setq Bnd (val 3 Bnd)) ) )
+         (let Y (link (push $Nil NIL))
+            (loop
+               (let Z (set Y (eval (++ X)))  # Eval 'lst' or 'sym'
+                  (nond
+                     ((atom Z)
+                        (loop
+                           (let V (++ Z)
+                              (setq R
+                                 (safe
+                                    (cons
+                                       (if (pair V)
+                                          (cons (car V) (cdr V))
+                                          (cons V (val V)) )
+                                       R ) ) ) )
+                           (? (atom Z)) ) )
+                     ((nil? Z)
+                        (setq R
+                           (safe (cons (cons Z (eval (++ X))) R)) ) ) ) )
+                  (? (atom X)) ) ) )
+      R ) )
 
 # (trail ['flg]) -> lst
 (de _trail (Exe)

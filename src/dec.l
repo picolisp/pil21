@@ -1,4 +1,4 @@
-# 19jun20 Software Lab. Alexander Burger
+# 22jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -137,7 +137,7 @@ signal waitpid setjmp longjmp kill exit)
 (var PipeBufSize i64 NIL)  # PIPE_BUF
 
 (local) (stderrNum stderrMsg gPrintf strErrno openRdonly openWronly openRdWr
-openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking getDir)
+openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 
 (de T i64 stderrNum (i8* i64))
 (de T i8* stderrMsg (i8* i8*))
@@ -149,8 +149,9 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking getDir)
 (de T i32 openWrAppend (i8*))
 (de T i32 socketPair (i32*))
 (de T i32 fcntlCloExec (i32))
-(de T i32 fcntlSetFl (i32 i32))
+(de T void fcntlSetFl (i32 i32))
 (de T i32 nonBlocking (i32))
+(de T void fcntlSetOwn(i32 i32))
 (de T i8* getDir (i8*))
 
 (local) (initReadline rlSigBeg rlSigEnd currentLine)

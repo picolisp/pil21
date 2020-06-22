@@ -1,4 +1,4 @@
-# 19jun20 Software Lab. Alexander Burger
+# 22jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -420,6 +420,13 @@
    # System functions
    (NIL "raw" _raw)
    (NIL "alarm" _alarm)
+   (NIL "sigio" _sigio)
+   (NIL "kids" _kids)
+   (NIL "protect" _protect)
+   (NIL "heap" _heap)
+   (NIL "stack" _stack)
+   (NIL "byte" _byte)
+   (NIL "env" _env)
    (NIL "date" _date)
    (NIL "time" _time)
    (NIL "quit" _quit)
