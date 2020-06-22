@@ -1,6 +1,6 @@
-# 24may20 Software Lab. Alexander Burger
+# 21jun20 Software Lab. Alexander Burger
 
-(symbols "pilog" 'pico)
+(symbols "priv" 'pico)
 
 (export) (be clause repeat asserta assertz retract rules)
 

@@ -1,14 +1,14 @@
-# 18jun20 Software Lab. Alexander Burger
+# 22jun20 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
    (unless (== 'pico (car (symbols)))
       (or (name (car (symbols))) "$") ) )
 
-(symbols "debug" 'pico)
+(symbols "priv" 'pico)
 
 (export) (help docs doc more less what who has can dep methods)
-(local) (_who _match nest nst1 nst2 C D S X Y Z Prg Who dep1 dep2)
+(local) (_who _match nest nst1 nst2 C D M S X Y Z Fun Prg Who dep1 dep2)
 
 # Browsing
 (de help (Sym Ex)
@@ -56,19 +56,19 @@
                (pack @ "#" Sym)
                "@doc/ref.html" ) ) ) ) )
 
-(de more ("M" "Fun")
+(de more (M Fun)
    (let *Dbg NIL
-      (if (pair "M")
-         ((default "Fun" print) (++ "M"))
-         (println (type "M"))
+      (if (pair M)
+         ((default Fun print) (++ M))
+         (println (type M))
          (setq
-            "Fun" (list '(X) (list 'pp 'X (lit "M")))
-            "M" (mapcar car (filter pair (val "M"))) ) )
+            Fun (list '(X) (list 'pp 'X (lit M)))
+            M (mapcar car (filter pair (val M))) ) )
       (loop
          (flush)
-         (T (atom "M") (prinl))
+         (T (atom M) (prinl))
          (T (line) T)
-         ("Fun" (++ "M")) ) ) )
+         (Fun (++ M)) ) ) )
 
 (de less (X N)
    (default N 4)

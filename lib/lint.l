@@ -1,6 +1,6 @@
-# 18jun20 Software Lab. Alexander Burger
+# 21jun20 Software Lab. Alexander Burger
 
-(symbols "lint" 'pico)
+(symbols "priv" 'pico)
 
 (export) (noLint lint lintAll)
 (local) (*NoLint global? local? dlsym? lint1 lint2 lintVar lintDup lintLoop
