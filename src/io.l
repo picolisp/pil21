@@ -1,4 +1,4 @@
-# 19jun20 Software Lab. Alexander Burger
+# 23jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2233,7 +2233,11 @@
    (if (and (sym? X) (== (firstByte X) (char "-")))
       (let E (save (parse (xName Exe X) YES (hex "5D0A") 0))  # '\n', ']', EOF
          (evList E) )
-      (let (Int (save (val $Intern))  P (b8 (ioFrame T)))
+      (let
+         (Int (save (val $Intern))
+            P (b8 (ioFrame T))
+            V (link (push -ZERO NIL))
+            At (link (push -ZERO NIL)) )
          (rdOpen Exe X P)
          (pushInFiles P)
          (set $Transient (set 2 $Transient $Nil))
@@ -2271,23 +2275,23 @@
                            (? (> (val $Chr) (char " ")))
                            (call $Get) ) ) ) )
                (? (nil? Y))
-               (save Y
-                  (if
-                     (or
-                        (<> (val $InFile) (val (val $InFiles)))
-                        (val $Chr)
-                        (=0 Prmt) )
-                     (setq X (eval Y))
-                     (flushAll)
-                     (let A (val $At)
-                        (save A
-                           (setq X (set $At (eval Y)))
-                           (set $At3 (val $At2))
-                           (set $At2 A) ) )
-                     (outString ($ "-> "))
-                     (flushAll)
-                     (print X)
-                     (newline) ) ) ) )
+               (set V Y)
+               (if
+                  (or
+                     (<> (val $InFile) (val (val $InFiles)))
+                     (val $Chr)
+                     (=0 Prmt) )
+                  (setq X (eval Y))
+                  (flushAll)
+                  (let A (val $At)
+                     (set At A)
+                     (setq X (set $At (eval Y)))
+                     (set $At3 (val $At2))
+                     (set $At2 A) )
+                  (outString ($ "-> "))
+                  (flushAll)
+                  (print X)
+                  (newline) ) ) )
          (popInFiles)
          (set $Transient (set 2 $Transient $Nil))
          (set $Intern Int)
