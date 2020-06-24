@@ -1,16 +1,19 @@
-# 22jun20 Software Lab. Alexander Burger
+# 24jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
 (begin "base" NIL
    "vers.l" "defs.l" "glob.l" "dec.l" )
 
-(local) execAt
+(local) (execAt wrnl)
 
 (de execAt (Prg)
    (let At (save (val $At))
       (exec Prg)
       (set $At At) ) )
+
+(de wrnl ()
+   (write 1 ($ "\n") 1) )
 
 # Unwind stack
 (local) (popInFiles popOutFiles popErrFiles popCtlFiles unwind)
@@ -149,6 +152,7 @@
                   (set P (dec @))
                   (set $Signal (dec (val $Signal)))
                   (unless (val $PRepl)  # Not child of REPL process?
+                     (wrnl)
                      (rlSigBeg)
                      (brkLoad (if Exe @ $Nil))
                      (rlSigEnd) ) )

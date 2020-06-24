@@ -1,4 +1,4 @@
-# 11jun20 Software Lab. Alexander Burger
+# 24jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -562,7 +562,7 @@
                         (setq R (& R -2)) )
                      (set $At @)
                      (? (=0 (& (setq R (loop1 X)) 1)))
-                     (safe R)
+                     (safe (setq R (& R -2)))
                      (when (pair (cdr Z))
                         (set Y (run @)) ) ) ) ) )
          (T  # (for ((sym2 . sym) ..) ..)
@@ -578,7 +578,7 @@
                            (setq R (& R -2)) )
                         (set $At @)
                         (? (=0 (& (setq R (loop1 X)) 1)))
-                        (safe R)
+                        (safe (setq R (& R -2)))
                         (when (pair (cdr Z))
                            (set Sym2 (run @)) )
                         (set Y (+ (val Y) (hex "10"))) )
