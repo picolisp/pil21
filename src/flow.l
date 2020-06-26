@@ -1,4 +1,4 @@
-# 24jun20 Software Lab. Alexander Burger
+# 25jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -558,8 +558,7 @@
                   Y (eval (++ Z)) )
                (save R
                   (loop  # (any2 . prg)
-                     (? (nil? (eval (car Z)))
-                        (setq R (& R -2)) )
+                     (? (nil? (eval (car Z))))
                      (set $At @)
                      (? (=0 (& (setq R (loop1 X)) 1)))
                      (safe (setq R (& R -2)))
@@ -574,8 +573,7 @@
                         Sym2 (save (eval (++ Z)))
                         Y ONE )
                      (loop
-                        (? (nil? (eval (car Z)))
-                           (setq R (& R -2)) )
+                        (? (nil? (eval (car Z))))
                         (set $At @)
                         (? (=0 (& (setq R (loop1 X)) 1)))
                         (safe (setq R (& R -2)))

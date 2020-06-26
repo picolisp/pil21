@@ -1,4 +1,4 @@
-# 22jun20 Software Lab. Alexander Burger
+# 26jun20 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -287,10 +287,10 @@
    (and "*Ed" (load (cdr "*Ed"))) )
 }#
 
-# Single-Stepping
-(export) (d debug u unbug)
-(local) (_dbg _dbg2 dbg ubg)
+(export) (d debug u unbug trace untrace *NoTrace traceAll)
+(local) (_dbg _dbg2 dbg ubg traced?)
 
+# Single-Stepping
 (de _dbg (Lst)
    (or
       (atom (car Lst))
@@ -369,9 +369,6 @@
          (quit "Can't unbug" X) ) ) )
 
 # Tracing
-(export) (trace untrace *NoTrace traceAll)
-(local) (traced?)
-
 (de traced? (X C)
    (setq X
       (if C

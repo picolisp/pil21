@@ -1,23 +1,23 @@
-# 11jun20 Software Lab. Alexander Burger
+# 26jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
 (local) (mark gc)
 
-(de void mark (Exe)
+(de void mark (E)
    (let Tos 0  # Clear
       (loop
-         (until (cnt? Exe)
-            (let (P (any (& Exe -16))  Q (cdr P))  # Cell pointer
+         (until (cnt? E)
+            (let (P (any (& E -16))  Q (cdr P))  # Cell pointer
                (? (=0 (& Q 1)))  # Already marked
                (set 2 P (setq Q (& Q -2)))  # Mark cell
-               (? (big? Exe)
+               (? (big? E)
                   (until (cnt? Q)
                      (let N (val (big Q))
                         (? (=0 (& N 1)))  # Already marked
                         (setq Q (set (big Q) (& N -2))) ) ) )  # Mark big digits
-               (let X Exe  # Current item
-                  (setq Exe (val P))  # Get CAR
+               (let X E  # Current item
+                  (setq E (val P))  # Get CAR
                   (set P (| Tos 1))  # First visit
                   (setq Tos X) ) ) )  # TOS on previous
          (loop
@@ -26,16 +26,16 @@
                   (ret) )
                (let Q (val P)  # Up pointer
                   (? (& Q 1)  # Second visit
-                     (set P Exe)  # Restore CAR
-                     (setq Exe (cdr P))  # Get CDR
+                     (set P E)  # Restore CAR
+                     (setq E (cdr P))  # Get CDR
                      (set 2 P (& Q -2)) ) )  # Store up pointer
                (let X Tos
                   (setq Tos (cdr P))  # TOS up
-                  (set 2 P Exe)  # Restore CDR
-                  (setq Exe X) ) ) ) ) ) )  # Go up
+                  (set 2 P E)  # Restore CDR
+                  (setq E X) ) ) ) ) ) )  # Go up
 
 (de void gc ()
-   (set $DB ZERO)  # Cut off DB root
+   (set $DB -ZERO)  # Cut off DB root
    # Prepare
    (let P $Nil  # Symbol table
       (set P (| (val P) 1))  # Set mark bit
