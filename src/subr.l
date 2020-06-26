@@ -1,4 +1,4 @@
-# 23jun20 Software Lab. Alexander Burger
+# 26jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -581,7 +581,7 @@
                      $Nil )
                   (T
                      (save L
-                        (let (Z (cons (car L) $Nil)  R Z)
+                        (let (Z (cons (car L) $Nil)  R (save Z))
                            (while (and (dec 'N) (pair (shift L)))
                               (setq Z
                                  (set 2 Z (cons (car L) $Nil)) ) )
