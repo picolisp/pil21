@@ -1,4 +1,4 @@
-# 11jun20 Software Lab. Alexander Burger
+# 26jun20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -1021,12 +1021,12 @@ False Beg End Safe *Safe)
    (llvm~val) )
 
 (asm ()
-   (@
-      (while (args)
-         (let (P (next)  X (next))
-            (ifn (num? P)
-               (store X P)
-               (store (next) X (dec P)) ) ) ) )
+   (Args
+      (while Args
+         (let (A (eval (++ Args) 1)  B (eval (++ Args) 1))
+            (ifn (num? A)
+               (store B A)
+               (store (eval (++ Args) 1) B (dec A)) ) ) ) )
    (llvm~set) )
 
 (asm ()
