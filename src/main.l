@@ -15,7 +15,7 @@
 (de runAt (Prg)
    (let At (save (val $At))
       (prog1
-         (exec Prg)
+         (run Prg)
          (set $At At) ) ) )
 
 (de wrnl ()
