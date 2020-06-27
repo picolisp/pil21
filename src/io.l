@@ -1,4 +1,4 @@
-# 24jun20 Software Lab. Alexander Burger
+# 27jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2249,7 +2249,7 @@
                   (cond
                      ((=0 Prmt) (set $LinePrmt null))
                      ((or
-                           (nil? (run (val $Prompt)))
+                           (nil? (runAt (val $Prompt)))
                            (not (symb? @)) )
                         (set $LinePrmt Prmt) )
                      (T
@@ -2283,11 +2283,12 @@
                      (=0 Prmt) )
                   (setq X (eval Y))
                   (flushAll)
-                  (let A (val $At)
-                     (set At A)
-                     (setq X (set $At (eval Y)))
-                     (set $At3 (val $At2))
-                     (set $At2 A) )
+                  (let A (set At (val $At))
+                     (setq X (eval Y))
+                     (set
+                        $At3 (val $At2)
+                        $At2 A
+                        $At X ) )
                   (outString ($ "-> "))
                   (flushAll)
                   (print X)

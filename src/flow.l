@@ -1,4 +1,4 @@
-# 25jun20 Software Lab. Alexander Burger
+# 27jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -105,7 +105,7 @@
       (cond
          ((num? E) E)
          ((sym? E) (val E))
-         ((atom (shift X)) (run E))
+         ((atom (shift X)) (runAt E))
          (T
             (save E
                (let N (needCnt Exe (eval (car X)))
@@ -120,7 +120,7 @@
                                     (set $At (val Bnd))
                                     (=0 (dec 'N)) ) ) )
                            (setq Bnd (val 3 Bnd)) ) ) ) )
-               (run E) ) ) ) ) )
+               (runAt E) ) ) ) ) )
 
 # (def 'sym 'any) -> sym
 # (def 'sym 'sym 'any) -> sym

@@ -1,16 +1,22 @@
-# 24jun20 Software Lab. Alexander Burger
+# 27jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
 (begin "base" NIL
    "vers.l" "defs.l" "glob.l" "dec.l" )
 
-(local) (execAt wrnl)
+(local) (execAt runAt wrnl)
 
 (de execAt (Prg)
    (let At (save (val $At))
       (exec Prg)
       (set $At At) ) )
+
+(de runAt (Prg)
+   (let At (save (val $At))
+      (prog1
+         (exec Prg)
+         (set $At At) ) ) )
 
 (de wrnl ()
    (write 1 ($ "\n") 1) )
