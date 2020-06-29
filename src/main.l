@@ -1,4 +1,4 @@
-# 27jun20 Software Lab. Alexander Burger
+# 29jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1040,6 +1040,19 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (mkStr P) )
                (set (needChkVar Exe (++ X)) Y)
                (? (nil? X) Y) ) ) ) ) )
+
+# (opt) -> sym
+(de _opt (Exe)
+   (let (A (val $AV)  P (val A))
+      (if
+         (or
+            (=0 P)
+            (and
+               (== (val P) (char "-"))
+               (=0 (val 2 P)) ) )
+         $Nil
+         (set $AV (inc A))
+         (mkStr P) ) ) )
 
 # Native calls
 (local) natRet

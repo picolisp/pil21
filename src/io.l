@@ -1,4 +1,4 @@
-# 27jun20 Software Lab. Alexander Burger
+# 29jun20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2299,17 +2299,17 @@
          X ) ) )
 
 (de loadAll (Exe)
-   (let (X $Nil  P (val $AV))
+   (let X $Nil
       (loop
-         (let Q (val P)
-            (? (=0 Q))
+         (let (A (val $AV)  P (val A))
             (?
-               (and
-                  (== (val Q) (char "-"))
-                  (=0 (val 2 Q)) ) )
-            (setq
-               P (set $AV (ofs P 1))
-               X (repl Exe null (mkStr Q)) ) ) )
+               (or
+                  (=0 P)
+                  (and
+                     (== (val P) (char "-"))
+                     (=0 (val 2 P)) ) ) )
+            (set $AV (inc A))
+            (setq X (repl Exe null (mkStr P))) ) )
       X ) )
 
 # (load 'any ..) -> any
