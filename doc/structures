@@ -1,4 +1,4 @@
-# 20may20 Software Lab. Alexander Burger
+# 05jul20 Software Lab. Alexander Burger
 
    ### Primary data types ###
 
@@ -141,21 +141,8 @@
 
 
       VarArgs frame:
-                        ^
-               Exe      |
-               LINK ----+
-                @
-         +---> [@]
-         |
-         +---- LINK
-               sym1
-         +---> val1
-         .
-         .
-         +---- LINK
-               symN
-               valN  <-- Bind
 
+            [Bind frame]
          ^
          |
          +~~~- LINK

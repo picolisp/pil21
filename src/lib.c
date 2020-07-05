@@ -1,4 +1,4 @@
-// 22jun20 Software Lab. Alexander Burger
+// 05jul20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -355,18 +355,15 @@ int64_t JmpBufSize = sizeof(jmp_buf);
 jmp_buf QuitRst;
 
 // Lisp data access from C
-int64_t car(int64_t x) {
-   return *(int64_t*)x;
+int64_t name(int64_t x) {
+   while (!num(x))
+      x = cdr(x);
+   return x;
 }
 
-int64_t cdr(int64_t x) {
-   return *((int64_t*)x + 1);
-}
-
-int64_t num(int64_t x) {
-   if ((x & 8) == 0)
-      return x >> 4;
-   return -(x >> 4);
+int64_t number(int64_t x) {
+   int64_t n = cnt(x)? x >> 4 : val(dig(x));
+   return (x & 8) == 0? n : -n;
 }
 
 int64_t length(int64_t x) {
@@ -416,7 +413,7 @@ ffi *ffiPrep(char *lib, char *fun, int64_t lst) {
       rtype = &ffi_type_pointer;
    for (i = 0; i < nargs; ++i, y = cdr(y)) {
       x  = car(y);
-      if (cnt(x))
+      if (num(x))
          p->args[i] = &ffi_type_sint64;
       else if (symb(x))
          p->args[i] = &ffi_type_pointer;
@@ -431,17 +428,19 @@ int64_t ffiCall(ffi *p, int64_t lst) {
    int64_t x = car(lst);
    int64_t y = cdr(lst);
    int i, nargs = length(y);
-   int64_t val[nargs];
+   int64_t value[nargs];
    void *ptr[nargs];
    int64_t rc;
 
    for (i = 0; i < nargs; ++i, y = cdr(y)) {
       x  = car(y);
-      ptr[i] = &val[i];
-      if (cnt(x))
-         *(int64_t*)&val[i] = num(x);
-      else if (symb(x))
-         bufString(x, (char*)(val[i] = (int64_t)alloca(bufSize(x))));
+      ptr[i] = &value[i];
+      if (num(x))
+         *(int64_t*)&value[i] = number(x);
+      else if (symb(x)) {
+         int64_t nm = name(val(tail(x)));
+         bufString(nm, (char*)(value[i] = (int64_t)alloca(bufSize(nm))));
+      }
    }
    ffi_call(&p->cif, p->fun, &rc, ptr);
    return rc;

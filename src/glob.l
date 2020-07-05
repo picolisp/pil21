@@ -1,4 +1,4 @@
-# 29jun20 Software Lab. Alexander Burger
+# 05jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -437,9 +437,13 @@
    (NIL "info" _info)
    (NIL "argv" _argv)
    (NIL "opt" _opt)
+   (NIL "errno" _errno)
    (NIL "native" _native)
+   (NIL "struct" _struct)
+   (NIL "lisp" _lisp)
    (NIL "args" _args)
    (NIL "next" _next)
+   (NIL "arg" _arg)
    (NIL "rest" _rest)
    (NIL "adr" _adr)
    (NIL "trail" _trail)

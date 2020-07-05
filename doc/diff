@@ -1,4 +1,4 @@
-# 19jun20 Software Lab. Alexander Burger
+# 05jul20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -14,7 +14,7 @@
 
 - '====' is removed
 - 'lines' is removed
-- '(arg)' call is removed
+- 'arg' without arguments is not supported
 - Second argument to 'name' (i.e. renaming) is removed
 - Lambda-binding environment offset for 'eval' and 'run' only for '@'
 - 'native'

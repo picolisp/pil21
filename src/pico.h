@@ -1,4 +1,4 @@
-// 23may20 Software Lab. Alexander Burger
+// 05jul20 Software Lab. Alexander Burger
 
 #include <stdint.h>
 #include <string.h>
@@ -26,13 +26,19 @@ typedef void (*sighandler_t)(int);
 // Lisp data access
 #define cnt(x) (x & 2)
 #define big(x) (x & 4)
-#define numb(x) (x & 6)
+#define num(x) (x & 6)
 #define symb(x) (x & 8)
 #define atom(x) (x & 15)
 
-int64_t car(int64_t);
-int64_t cdr(int64_t);
-int64_t num(int64_t);
+#define car(x) (*(int64_t*)x)
+#define cdr(x) (*(int64_t*)(x + 8))
+#define set(p,x) (*(int64_t*)p = x)
+#define val(x) (*(int64_t*)x)
+#define dig(x) (x - 4)
+#define tail(x) (x - 8)
+
+int64_t name(int64_t);
+int64_t number(int64_t);
 int64_t length(int64_t);
 
 extern int64_t SymTab[];

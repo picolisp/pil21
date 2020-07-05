@@ -1,4 +1,4 @@
-# 29jun20 Software Lab. Alexander Burger
+# 05jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1054,6 +1054,10 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (set $AV (inc A))
          (mkStr P) ) ) )
 
+# (errno) -> cnt
+(de _errno (Exe)
+   (cnt (i64 (gErrno))) )
+
 # Native calls
 (local) natRet
 
@@ -1073,6 +1077,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (cond
             ((cnt? Y) (i8* (int Y)))
             ((big? Y) (i8* (val (dig Y))))
+            ((pair Y) (argErr Exe Y))
             (T
                (let Nm (xName Exe Y)
                   (unless
@@ -1083,7 +1088,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                      (err Exe Y ($ "[DLL] %s") (dlerror)) )
                   (set Y (box64 (i64 @)))
                   @ ) ) )
-         Fun (eval (++ X))  # Eval function 'cnt2|sym2'
+         Fun (save (eval (++ X)))  # Eval function 'cnt2|sym2'
          Args (save (cons (eval (++ X)) $Nil))
          L Args )  # [ret args]
       (while (pair X)
@@ -1096,6 +1101,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (cond
                ((cnt? Fun) (i8* (int Fun)))
                ((big? Fun) (i8* (val (dig Fun))))
+               ((pair Fun) (argErr Exe Fun))
                (T
                   (let Nm (xName Exe Fun)
                      (unless (ffiPrep Lib (bufString Nm (b8 (bufSize Nm))) Args)
@@ -1103,6 +1109,16 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                      (set Fun (box64 (i64 @)))
                      @ ) ) )
             Args ) ) ) )
+
+# (struct 'num 'any 'any ..) -> any
+(de _struct (Exe)
+   #!
+   $Nil )
+
+# (lisp 'sym ['fun]) -> num
+(de _lisp (Exe)
+   #!
+   $Nil )
 
 # (args) -> flg
 (de _args (Exe)
@@ -1113,6 +1129,15 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (let X (val $Next)
       (set $Next (car X))
       (cdr X) ) )
+
+# (arg 'cnt) -> any
+(de _arg (Exe)
+   (if (le0 (evCnt Exe (cdr Exe)))
+      $Nil
+      (let (N @  X (val $Next))
+         (while (gt0 (dec 'N))
+            (setq X (car X)) )
+         (cdr X) ) ) )
 
 # (rest) -> lst
 (de _rest (Exe)
