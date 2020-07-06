@@ -1,4 +1,4 @@
-// 05jul20 Software Lab. Alexander Burger
+// 06jul20 Software Lab. Alexander Burger
 
 #include <stdint.h>
 #include <string.h>
@@ -9,6 +9,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <poll.h>
+#include <math.h>
 #include <signal.h>
 #include <setjmp.h>
 #include <dirent.h>
@@ -27,7 +28,7 @@ typedef void (*sighandler_t)(int);
 #define cnt(x) (x & 2)
 #define big(x) (x & 4)
 #define num(x) (x & 6)
-#define symb(x) (x & 8)
+#define sym(x) (x & 8)
 #define atom(x) (x & 15)
 
 #define car(x) (*(int64_t*)x)

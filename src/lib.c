@@ -1,4 +1,4 @@
-// 05jul20 Software Lab. Alexander Burger
+// 06jul20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -405,18 +405,18 @@ ffi *ffiPrep(char *lib, char *fun, int64_t lst) {
       rtype = &ffi_type_uint32;
    else if (x == (int64_t)(SymTab + B))
       rtype = &ffi_type_uint8;
-   //else if ()
-   //   rtype = &ffi_type_float;
-   //else if ()
-   //   rtype = &ffi_type_double;
+   else if (cnt(x))
+      rtype = (x & 8)? &ffi_type_float : &ffi_type_double;
    else
       rtype = &ffi_type_pointer;
    for (i = 0; i < nargs; ++i, y = cdr(y)) {
       x  = car(y);
       if (num(x))
          p->args[i] = &ffi_type_sint64;
-      else if (symb(x))
+      else if (sym(x))
          p->args[i] = &ffi_type_pointer;
+      else if (cnt(cdr(x)))
+         p->args[i] = (cdr(x) & 8)? &ffi_type_float : &ffi_type_double;
    }
    if (ffi_prep_cif(&p->cif, FFI_DEFAULT_ABI, nargs, rtype, p->args) == FFI_OK  &&  (p->fun = dlsym(lib, fun)))
       return p;
@@ -436,14 +436,27 @@ int64_t ffiCall(ffi *p, int64_t lst) {
       x  = car(y);
       ptr[i] = &value[i];
       if (num(x))
-         *(int64_t*)&value[i] = number(x);
-      else if (symb(x)) {
+         value[i] = number(x);
+      else if (sym(x)) {
          int64_t nm = name(val(tail(x)));
          bufString(nm, (char*)(value[i] = (int64_t)alloca(bufSize(nm))));
+      }
+      else if (cnt(cdr(x))) {
+         if (cdr(x) & 8)
+            *(float*)(value + i) = (float)number(car(x)) / (float)number(cdr(x));
+         else
+            *(double*)(value + i) = (double)number(car(x)) / (double)number(cdr(x));
       }
    }
    ffi_call(&p->cif, p->fun, &rc, ptr);
    return rc;
+}
+
+int64_t boxFix(int64_t value, int64_t scl) {
+   int64_t n = (scl & 8)?
+      lroundf(*(float*)&value * (float)(scl >> 4)) :
+      lround(*(double*)&value * (double)(scl >> 4));
+   return n >= 0? n << 4 | 2 : -n << 4 | 10;
 }
 
 // Case mappings from the GNU Kaffe Project

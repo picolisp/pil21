@@ -1,4 +1,4 @@
-# 05jul20 Software Lab. Alexander Burger
+# 06jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1063,9 +1063,17 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de natRet (Spec Val)
    (cond
-      ((== Spec $I) (cnt Val))
-      ((== Spec $N) (box64 Val))
+      ((== Spec $N) (box Val))
+      ((== Spec $I)
+         (if
+            (ge0
+               (-
+                  (x| (& Val (hex "FFFFFFFF")) (hex "80000000"))
+                  (hex "80000000") ) )
+            (cnt @)
+            (sign (cnt (- @))) ) )
       ((== Spec $S) (mkStr (i8* Val)))
+      ((cnt? Spec) (boxFix Val Spec))
       (T $Nil) ) )
 
 # (native 'cnt1|sym1 'cnt2|sym2 'any 'any ..) -> any
