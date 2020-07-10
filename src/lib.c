@@ -1,4 +1,4 @@
-// 06jul20 Software Lab. Alexander Burger
+// 10jul20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -425,37 +425,60 @@ ffi *ffiPrep(char *lib, char *fun, int64_t lst) {
 }
 
 int64_t ffiCall(ffi *p, int64_t lst) {
-   int64_t x = car(lst);
-   int64_t y = cdr(lst);
-   int i, nargs = length(y);
+   int64_t x, y;
+   int64_t z = cdr(lst);
+   int i, nargs = length(z);
    int64_t value[nargs];
    void *ptr[nargs];
    int64_t rc;
 
-   for (i = 0; i < nargs; ++i, y = cdr(y)) {
-      x  = car(y);
+   for (i = 0;  i < nargs;  ++i, z = cdr(z)) {
+      x  = car(z);
       ptr[i] = &value[i];
-      if (num(x))
+      if (num(x))  // Number
          value[i] = number(x);
-      else if (sym(x)) {
+      else if (sym(x)) {  // String
          int64_t nm = name(val(tail(x)));
          bufString(nm, (char*)(value[i] = (int64_t)alloca(bufSize(nm))));
       }
-      else if (cnt(cdr(x))) {
+      else if (cnt(y = cdr(x))) {  // Fixpoint
          if (cdr(x) & 8)
             *(float*)(value + i) = (float)number(car(x)) / (float)number(cdr(x));
          else
             *(double*)(value + i) = (double)number(car(x)) / (double)number(cdr(x));
+      }
+      else {  // Structure
+         int n = car(car(y)) >> 4;
+         char *p = alloca(n);
+
+         value[i] = (int64_t)p;
+         for (;;) {
+            if (cnt(y = cdr(y))) {
+               char b = y >> 4;  // Byte value
+
+               while (--n >= 0)
+                  *p++ = b;
+               break;
+            }
+            if (atom(y))
+               break;
+
+         }
       }
    }
    ffi_call(&p->cif, p->fun, &rc, ptr);
    return rc;
 }
 
-int64_t boxFix(int64_t value, int64_t scl) {
-   int64_t n = (scl & 8)?
-      lroundf(*(float*)&value * (float)(scl >> 4)) :
-      lround(*(double*)&value * (double)(scl >> 4));
+int64_t boxFloat(int32_t value, int64_t scl) {
+   int64_t n = lroundf(*(float*)&value * (float)scl);
+
+   return n >= 0? n << 4 | 2 : -n << 4 | 10;
+}
+
+int64_t boxDouble(int64_t value, int64_t scl) {
+   int64_t n = lround(*(double*)&value * (double)scl);
+
    return n >= 0? n << 4 | 2 : -n << 4 | 10;
 }
 

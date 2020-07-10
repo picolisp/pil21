@@ -1,4 +1,4 @@
-# 06jul20 Software Lab. Alexander Burger
+# 10jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -222,12 +222,13 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (var QuitRst i8 NIL)
 
 # Native lib.c
-(local) (dlOpen ffiPrep ffiCall boxFix)
+(local) (dlOpen ffiPrep ffiCall boxFloat boxDouble)
 
 (de T i8* dlOpen (i8*))
 (de T i8* ffiPrep (i8* i8* i64))
 (de T i64 ffiCall (i8* i64))
-(de T i64 boxFix (i64 i64))
+(de T i64 boxFloat (i32 i64))
+(de T i64 boxDouble (i64 i64))
 
 # Case mappings lib.c
 (local) (isLowc isUppc isLetterOrDigit toUpperCase toLowerCase)

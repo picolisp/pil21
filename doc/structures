@@ -1,4 +1,4 @@
-# 05jul20 Software Lab. Alexander Burger
+# 10jul20 Software Lab. Alexander Burger
 
    ### Primary data types ###
 
@@ -271,3 +271,5 @@
 
    - 8 bit per byte
    - 64 bit per word
+   - sizeof(float) = 4 bytes
+   - sizeof(double) = 8 bytes

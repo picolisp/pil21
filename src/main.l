@@ -1,4 +1,4 @@
-# 09jul20 Software Lab. Alexander Burger
+# 10jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1059,25 +1059,114 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (cnt (i64 (gErrno))) )
 
 # Native calls
-(local) natRet
+(local) (fetchChar natRet)
 
-(de natRet (Spec Val)
+(de i32 fetchChar ((i8** . Ptr))
+   (let (P (val Ptr)  C (i32 (val P)))
+      (prog2
+         (inc P)
+         (cond
+            ((>= 127 C) C)  # Single byte
+            ((== C (hex "FF")) (i32 TOP))  # Infinite
+            (T
+               (|
+                  (shl
+                     (ifn (& C (hex "20"))
+                        (& C (hex "1F"))
+                        (|
+                           (shl
+                              (ifn (& C (hex "10"))
+                                 (& C (hex "0F"))
+                                 (|
+                                    (shl (& C (hex "7")) 6)
+                                    (&
+                                       (i32 (prog1 (val P) (inc 'P)))
+                                       (hex "3F") ) ) )
+                              6 )
+                           (&
+                              (i32 (prog1 (val P) (inc 'P)))
+                              (hex "3F") ) ) )
+                     6 )
+                  (&
+                     (i32 (prog1 (val P) (inc 'P)))
+                     (hex "3F") ) ) ) )
+         (set Ptr P) ) ) )
+
+(de natRet (Spec (i8** . Ptr) Val)
    (cond
-      ((== Spec $N) (box Val))
-      ((== Spec $I)
-         (if
-            (ge0
-               (-
-                  (x| (& Val (hex "FFFFFFFF")) (hex "80000000"))
-                  (hex "80000000") ) )
-            (cnt @)
-            (sign (cnt (- @))) ) )
-      ((== Spec $C)
-         (if (=0 Val) $Nil (mkChar (i32 Val))) )
-      ((== Spec $B)
-         (cnt (& Val (hex "FF"))) )
-      ((== Spec $S) (mkStr (i8* Val)))
-      ((cnt? Spec) (boxFix Val Spec))
+      ((== Spec $N)  # 'N' Long or pointer (signed 64 bit)
+         (when Ptr
+            (let P (i64* (val Ptr))
+               (setq Val (val P))
+               (set Ptr (i8* (inc P))) ) )
+         (box Val) )
+      ((== Spec $I)  # 'I' Integer (signed 32 bit)
+         (setq Val
+            (if Ptr
+               (let P (i32* (val Ptr))
+                  (set Ptr (i8* (inc P)))
+                  (val P) )
+               (i32 Val) ) )
+         (if (ge0 (- (x| Val (hex "80000000")) (hex "80000000")))
+            (cnt (i64 @))
+            (sign (cnt (i64 (- @)))) ) )
+      ((== Spec $C)  # 'C' Character (UTF-8, 1-4 bytes)
+         (setq Val
+            (if Ptr
+               (fetchChar Ptr)
+               (i32 Val) ) )
+         (if Val (mkChar @) $Nil) )
+      ((== Spec $B)  # 'B' Byte (unsigned 8 bit)
+         (cnt
+            (i64
+               (if Ptr
+                  (let P (val Ptr)
+                     (set Ptr (inc P))
+                     (val P) )
+                  (i8 Val) ) ) ) )
+      ((== Spec $S)  # 'S' String (UTF-8)
+         (mkStr
+            (if Ptr
+               (let P (i8** (val Ptr))
+                  (set Ptr (i8* (inc P)))
+                  (val P) )
+               (i8* Val) ) ) )
+      ((cnt? Spec)  # [+-]1.0 Scaled fixpoint number
+         (if (sign? Spec)
+            (boxFloat
+               (if Ptr
+                  (let P (i32* (val Ptr))
+                     (set Ptr (i8* (inc P)))
+                     (val P) )
+                  (i32 Val) )
+               (int Spec) )
+            (boxDouble
+               (if Ptr
+                  (let P (i64* (val Ptr))
+                     (set Ptr (i8* (inc P)))
+                     (val P) )
+                  Val )
+               (int Spec) ) ) )
+      ((pair Spec)  # Arrary or structure
+         (unless Ptr
+            (setq Ptr (i8** (push Val))) )
+         (ifn Ptr
+            $Nil
+            (let (S (++ Spec)  R (natRet S Ptr Val))
+               (unless (or (nil? R) (== S $C))
+                  (let X (setq R (save (cons R $Nil)))
+                     (loop
+                        (? (cnt? Spec)  # (sym . cnt)
+                           (let C (int Spec)
+                              (while (dec 'C)
+                                 (let Y (natRet S Ptr Val)
+                                    (? (and (nil? Y) (== S $C)))
+                                    (setq X (set 2 X (cons Y $Nil))) ) ) ) )
+                        (? (atom Spec))
+                        (let Y (natRet (setq S (++ Spec)) Ptr Val)
+                           (? (and (nil? Y) (== S $C)))
+                           (setq X (set 2 X (cons Y $Nil))) ) ) ) )
+               R ) ) )
       (T $Nil) ) )
 
 # (native 'cnt1|sym1 'cnt2|sym2 'any 'any ..) -> any
@@ -1107,8 +1196,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (let Z (push (eval (++ X)) $Nil NIL)  # [argN next]
             (set 2 L Z)
             (setq L Z) ) )
-      (natRet
-         (car Args)
+      (natRet (car Args) null
          (ffiCall
             (cond
                ((cnt? Fun) (i8* (int Fun)))
