@@ -1,4 +1,4 @@
-# 10jul20 Software Lab. Alexander Burger
+# 12jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -226,6 +226,7 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 
 (de T i8* dlOpen (i8*))
 (de T i8* ffiPrep (i8* i8* i64))
+(de T i64 natBuf (i64 i8** i64))
 (de T i64 ffiCall (i8* i64))
 (de T i64 boxFloat (i32 i64))
 (de T i64 boxDouble (i64 i64))

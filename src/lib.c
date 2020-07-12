@@ -1,4 +1,4 @@
-// 11jul20 Software Lab. Alexander Burger
+// 12jul20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -426,7 +426,7 @@ ffi *ffiPrep(char *lib, char *fun, int64_t lst) {
    return NULL;
 }
 
-int natBuf(int64_t val, char **ptr, int len) {
+int64_t natBuf(int64_t val, char **ptr, int64_t len) {
    char *p = *ptr;
 
    if (atom(val)) {  // Byte or unsigned

@@ -1212,8 +1212,17 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 # (struct 'num 'any 'any ..) -> any
 (de _struct (Exe)
-   #!
-   $Nil )
+   (let
+      (X (cdr Exe)
+         N  # Native value (pointer or scalar)
+         (if (cnt? (needNum Exe (eval (++ X))))
+            (int @)
+            (dig @) )
+         P (i8** (push N))  # Indirect pointer
+         Y (save (eval (car X))) )  # Result specification
+      (while (pair (shift X))
+         (natBuf (eval (car X)) P 0) )
+      (natRet Y null N) ) )
 
 # (lisp 'sym ['fun]) -> num
 (de _lisp (Exe)
