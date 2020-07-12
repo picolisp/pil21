@@ -1,4 +1,4 @@
-# 10jul20 Software Lab. Alexander Burger
+# 12jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1064,7 +1064,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de i32 fetchChar ((i8** . Ptr))
    (let (P (val Ptr)  C (i32 (val P)))
       (prog2
-         (inc P)
+         (inc 'P)
          (cond
             ((>= 127 C) C)  # Single byte
             ((== C (hex "FF")) (i32 TOP))  # Infinite
@@ -1153,7 +1153,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (ifn Ptr
             $Nil
             (let (S (++ Spec)  R (natRet S Ptr Val))
-               (unless (or (nil? R) (== S $C))
+               (unless (and (nil? R) (== S $C))
                   (let X (setq R (save (cons R $Nil)))
                      (loop
                         (? (cnt? Spec)  # (sym . cnt)
@@ -1208,7 +1208,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                         (err Exe 0 ($ "Bad ffi") null) )
                      (set Fun (box64 (i64 @)))
                      @ ) ) )
-            Args ) ) ) )
+            (cdr Args) ) ) ) )
 
 # (struct 'num 'any 'any ..) -> any
 (de _struct (Exe)

@@ -1,4 +1,4 @@
-// 10jul20 Software Lab. Alexander Burger
+// 11jul20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -417,6 +417,8 @@ ffi *ffiPrep(char *lib, char *fun, int64_t lst) {
          p->args[i] = &ffi_type_pointer;
       else if (cnt(cdr(x)))
          p->args[i] = (cdr(x) & 8)? &ffi_type_float : &ffi_type_double;
+      else
+         p->args[i] = &ffi_type_pointer;
    }
    if (ffi_prep_cif(&p->cif, FFI_DEFAULT_ABI, nargs, rtype, p->args) == FFI_OK  &&  (p->fun = dlsym(lib, fun)))
       return p;
@@ -424,15 +426,75 @@ ffi *ffiPrep(char *lib, char *fun, int64_t lst) {
    return NULL;
 }
 
+int natBuf(int64_t val, char **ptr, int len) {
+   char *p = *ptr;
+
+   if (atom(val)) {  // Byte or unsigned
+      if (val & 8) {  // Unsigned 32 bit
+         *(int32_t*)p = val >> 4;
+         p += 4;
+         len -= 4;
+      }
+      else {
+         *p++ = val >> 4;
+         --len;
+      }
+   }
+   else {
+      int64_t x = car(val);  // 'num', 'sym' or [-]1.0
+
+      if (cnt(val = cdr(val))) {  // 'cnt' or 'lst'
+         int n = val >> 4;
+
+         if (num(x)) {  // (num . cnt)
+            x = number(x);
+            switch (n) {
+            case 1: *p = (int8_t)x; break;
+            case 2: *(int16_t*)p = (int16_t)x; break;
+            case 4: *(int32_t*)p = (int32_t)x; break;
+            default: *(int64_t*)p = x; break;
+            }
+         }
+         else if (sym(x)) {  // (sym . cnt)
+            int64_t nm = name(val(tail(x)));
+            bufString(nm, p);
+         }
+         p += n;
+         len -= n;
+      }
+      else if (x & 8) {  // (-1.0 . lst)
+         float scl = (float)(x >> 4);
+
+         while (!atom(val)) {
+            *(float*)p = (float)number(car(val)) / scl;
+            val = cdr(val);
+            p += 4;
+            len -= 4;
+         }
+      }
+      else {  // (1.0 . lst)
+         double scl = (double)(x >> 4);
+
+         while (!atom(val)) {
+            *(double*)p = (double)number(car(val)) / scl;
+            val = cdr(val);
+            p += 8;
+            len -= 8;
+         }
+      }
+   }
+   *ptr = p;
+   return len;
+}
+
 int64_t ffiCall(ffi *p, int64_t lst) {
-   int64_t x, y;
-   int64_t z = cdr(lst);
-   int i, nargs = length(z);
+   int64_t x, y, z;
+   int i, nargs = length(lst);
    int64_t value[nargs];
    void *ptr[nargs];
    int64_t rc;
 
-   for (i = 0;  i < nargs;  ++i, z = cdr(z)) {
+   for (i = 0, z = lst;  i < nargs;  ++i, z = cdr(z)) {
       x  = car(z);
       ptr[i] = &value[i];
       if (num(x))  // Number
@@ -442,31 +504,35 @@ int64_t ffiCall(ffi *p, int64_t lst) {
          bufString(nm, (char*)(value[i] = (int64_t)alloca(bufSize(nm))));
       }
       else if (cnt(y = cdr(x))) {  // Fixpoint
-         if (cdr(x) & 8)
-            *(float*)(value + i) = (float)number(car(x)) / (float)number(cdr(x));
+         if (y & 8)
+            *(float*)&value[i] = (float)number(car(x)) / (float)(y >> 4);
          else
-            *(double*)(value + i) = (double)number(car(x)) / (double)number(cdr(x));
+            *(double*)&value[i] = (double)number(car(x)) / (double)(y >> 4);
       }
       else {  // Structure
          int n = car(car(y)) >> 4;
-         char *p = alloca(n);
+         char *q = alloca(n);
 
-         value[i] = (int64_t)p;
+         value[i] = (int64_t)q;
          for (;;) {
             if (cnt(y = cdr(y))) {
                char b = y >> 4;  // Byte value
 
                while (--n >= 0)
-                  *p++ = b;
+                  *q++ = b;
                break;
             }
-            if (atom(y))
+            if (atom(y) || (n = natBuf(car(y), &q, n)) == 0)
                break;
-
          }
       }
    }
    ffi_call(&p->cif, p->fun, &rc, ptr);
+   for (i = 0;  i < nargs;  ++i, lst = cdr(lst)) {
+      x = car(lst);
+      if (!atom(x)  &&  !num(y = cdr(x))  &&  (z = car(x)) != (int64_t)(SymTab + Nil))
+         set(z, natRet(cdr(car(y)), (char**)&value[i], 0));
+   }
    return rc;
 }
 
