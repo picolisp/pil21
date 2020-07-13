@@ -464,7 +464,7 @@ int64_t ffiCall(ffi *p, int64_t lst) {
             if (atom(y))
                break;
             if (n <= 0)
-               return 0;  // Buffer overflow
+               err(0, 0, "Init oversize", NULL);
             d = natBuf(car(y), q);
             n -= d, q += d;
          }

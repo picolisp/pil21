@@ -1252,22 +1252,19 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (let Z (push (save (eval (++ X))) $Nil)  # [argN next]
             (set 2 L Z)
             (setq L Z) ) )
-      (when
-         (=0
-            (ffiCall
-               (cond
-                  ((cnt? Fun) (i8* (int Fun)))
-                  ((big? Fun) (i8* (val (dig Fun))))
-                  ((pair Fun) (argErr Exe Fun))
-                  (T
-                     (let Nm (xName Exe Fun)
-                        (unless (ffiPrep Lib (bufString Nm (b8 (bufSize Nm))) Args)
-                           (err Exe 0 ($ "Bad ffi") null) )
-                        (set Fun (box64 (i64 @)))
-                        @ ) ) )
-               (cdr Args) ) )
-         (err Exe 0 ($ "Size overflow") null) )
-      (natRet (car Args) @) ) )
+      (natRet (car Args)
+         (ffiCall
+            (cond
+               ((cnt? Fun) (i8* (int Fun)))
+               ((big? Fun) (i8* (val (dig Fun))))
+               ((pair Fun) (argErr Exe Fun))
+               (T
+                  (let Nm (xName Exe Fun)
+                     (unless (ffiPrep Lib (bufString Nm (b8 (bufSize Nm))) Args)
+                        (err Exe 0 ($ "Bad ffi") null) )
+                     (set Fun (box64 (i64 @)))
+                     @ ) ) )
+            (cdr Args) ) ) ) )
 
 # (struct 'num 'any 'any ..) -> any
 (de _struct (Exe)

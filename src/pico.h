@@ -56,3 +56,4 @@ int32_t bufSize(int64_t);
 char *bufString(int64_t, char*);
 int64_t natBuf(int64_t, char*);
 int64_t natRetBuf(int64_t, char**);
+void err(int64_t, int64_t, char*, char*) __attribute__ ((noreturn));
