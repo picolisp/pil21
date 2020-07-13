@@ -1,12 +1,12 @@
-# 06jul20 Software Lab. Alexander Burger
+# 13jul20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
 
-(local) (@ @@ @@@ priv void null i1 i1* i1** i8 i8* i8** i8*** i32 i32* i32**
-i64 i64* i64** any YES NO ZERO -ZERO ONE SymTab begin end $ ? short global var
-str const globals array table symTab inline tailcall define struct $Nil $T $Link
-drop)
+(local) (@ @@ @@@ priv void null i1 i1* i1** i8 i8* i8** i8*** i16 i16* i16**
+i32 i32* i32** i64 i64* i64** any YES NO ZERO -ZERO ONE SymTab begin end $ ?
+short global var str const globals array table symTab inline tailcall define
+struct $Nil $T $Link drop)
 
 (import pico llvm symbols local T NIL load use setq prog */ ** >> char hex)
 
@@ -127,7 +127,7 @@ False Beg End Safe *Safe)
                         (cond
                            ((=T (cdr X)))
                            ((num? (cdr X))
-                              (memq Typ '(i8 i32 i64 any)) )
+                              (memq Typ '(i8 i16 i32 i64 any)) )
                            (T
                               (== (type Typ) (type (val (cdr X)))) ) ) )
                      (cddr L) )
@@ -627,10 +627,22 @@ False Beg End Safe *Safe)
          (def (format X) 'i8)
          (let V (type (val X))
             (casq V
-               ((i32 i64 any) (ssa (inc '*Ssa) "trunc " V " " X " to i8"))
+               ((i16 i32 i64 any) (ssa (inc '*Ssa) "trunc " V " " X " to i8"))
                (T (quit "Bad type" V)) ) )
          (def (pack "%" *Ssa) 'i8) ) )
    (llvm~i8) )
+
+(asm ()
+   ((X)
+      (if (num? X)
+         (def (format X) 'i16)
+         (let V (type (val X))
+            (casq V
+               ((i1 i8) (ssa (inc '*Ssa) "zext " V " " X " to i16"))
+               ((i64 any) (ssa (inc '*Ssa) "trunc " V " " X " to i16"))
+               (T (quit "Bad type" V)) ) )
+         (def (pack "%" *Ssa) 'i16) ) )
+   (llvm~i16) )
 
 (asm ()
    ((X)
@@ -651,8 +663,8 @@ False Beg End Safe *Safe)
             (def (name X) 'i64)
             (casq V
                ((i1 i8) (ssa (inc '*Ssa) "zext " V " " X " to i64"))
-               (i32 (ssa (inc '*Ssa) "sext " V " " X " to i64"))
-               ((i1* i8* i8** i32* i32** i64* i64**)
+               ((i16 i32) (ssa (inc '*Ssa) "sext " V " " X " to i64"))
+               ((i1* i8* i8** i16* i16** i32* i32** i64* i64**)
                   (ssa (inc '*Ssa) "ptrtoint " V " " X " to i64") )
                (T (quit "Bad type" V)) )
             (def (pack "%" *Ssa) 'i64) ) ) )
@@ -680,6 +692,7 @@ False Beg End Safe *Safe)
    (llvm~i1* llvm~i1*)
    (llvm~i8* llvm~i8*)
    (llvm~i8** llvm~i8**)
+   (llvm~i16* llvm~i16*)
    (llvm~i32* llvm~i32*)
    (llvm~i64* llvm~i64*) )
 
@@ -693,7 +706,7 @@ False Beg End Safe *Safe)
                   (ssa (inc '*Ssa) "ptrtoint i64* " X " to i64") )
                ((== 'i64 V)
                   (def (name X) 'any) )
-               ((memq V '(i1* i8* i32* i64*))
+               ((memq V '(i1* i8* i16* i32* i64*))
                   (ssa (inc '*Ssa) "ptrtoint " V " " X " to i64") )
                (T (quit "Bad type" V)) )
             (def (pack "%" *Ssa) 'any) ) ) )
@@ -715,7 +728,7 @@ False Beg End Safe *Safe)
             ((i64 any)
                (ssa (inc '*Ssa) "add i64 " X ", " @Tag)
                (def (pack "%" *Ssa) 'any) )
-            ((i1* i8* i32* i64*)
+            ((i1* i8* i64*)
                (ssa (inc '*Ssa) "ptrtoint " V " " X " to i64")
                (ssa (inc '*Ssa) "add i64 %" (dec *Ssa) ", " @Tag)
                (ssa (inc '*Ssa) "inttoptr i64 %" (dec *Ssa) " to " V)

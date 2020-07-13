@@ -1,4 +1,4 @@
-# 12jul20 Software Lab. Alexander Burger
+# 13jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1059,7 +1059,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (cnt (i64 (gErrno))) )
 
 # Native calls
-(local) (fetchChar natRet)
+(local) (fetchChar natBuf natRetBuf natRet)
 
 (de i32 fetchChar ((i8** . Ptr))
    (let (P (val Ptr)  C (i32 (val P)))
@@ -1092,81 +1092,137 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                      (hex "3F") ) ) ) )
          (set Ptr P) ) ) )
 
-(de natRet (Spec (i8** . Ptr) Val)
+(de i64 natBuf (Val (i8* . Ptr))
+   (if (atom Val)  # Byte or unsigned
+      (if (sign? Val)  # Unsigned 32 bit
+         (let P (i32* Ptr)
+            (set P (i32 (int Val)))
+            4 )
+         (set Ptr (i8 (int Val)))
+         1 )
+      (let X (++ Val)  # 'num', 'sym' or [-]1.0
+         (if (cnt? Val)  # 'cnt' or 'lst'
+            (let Siz (int Val)
+               (cond
+                  ((num? X)  # (num . cnt)
+                     (setq X (if (cnt? X) (int @) (dig @)))
+                     (case Siz
+                        (1 (set Ptr (i8 X)))
+                        (2 (set (i16* Ptr) (i16 X)))
+                        (4 (set (i32* Ptr) (i32 X)))
+                        (T (set (i64* Ptr) X)) ) )
+                  ((sym? X)  # (sym . cnt)
+                     (setq X (name (val (tail X))))
+                     (bufString X Ptr) ) )
+               Siz )
+            (let (N 0  Scl (int X))
+               (if (sign? X)  # ([-]1.0 . lst)
+                  (while (pair Val)
+                     (bufFloat (++ Val) Scl Ptr)
+                     (setq N (+ N 4)  Ptr (ofs Ptr 4)) )
+                  (while (pair Val)
+                     (bufDouble (++ Val) Scl Ptr)
+                     (setq N (+ N 8)  Ptr (ofs Ptr 8)) ) )
+               N ) ) ) ) )
+
+(de natRetBuf (Spec (i8** . Ptr))
    (cond
       ((== Spec $N)  # 'N' Long or pointer (signed 64 bit)
-         (when Ptr
-            (let P (i64* (val Ptr))
-               (setq Val (val P))
-               (set Ptr (i8* (inc P))) ) )
-         (box Val) )
+         (let P (i64* (val Ptr))
+            (set Ptr (i8* (inc P)))
+            (box (val P)) ) )
       ((== Spec $I)  # 'I' Integer (signed 32 bit)
-         (setq Val
-            (if Ptr
-               (let P (i32* (val Ptr))
-                  (set Ptr (i8* (inc P)))
-                  (val P) )
-               (i32 Val) ) )
-         (if (ge0 (- (x| Val (hex "80000000")) (hex "80000000")))
+         (if
+            (ge0
+               (-
+                  (x|
+                     (let P (i32* (val Ptr))
+                        (set Ptr (i8* (inc P)))
+                        (val P) )
+                     (hex "80000000") )
+                  (hex "80000000") ) )
             (cnt (i64 @))
             (sign (cnt (i64 (- @)))) ) )
       ((== Spec $C)  # 'C' Character (UTF-8, 1-4 bytes)
-         (setq Val
-            (if Ptr
-               (fetchChar Ptr)
-               (i32 Val) ) )
-         (if Val (mkChar @) $Nil) )
+         (if (fetchChar Ptr) (mkChar @) $Nil) )
       ((== Spec $B)  # 'B' Byte (unsigned 8 bit)
-         (cnt
-            (i64
-               (if Ptr
-                  (let P (val Ptr)
-                     (set Ptr (inc P))
-                     (val P) )
-                  (i8 Val) ) ) ) )
+         (let P (val Ptr)
+            (set Ptr (inc P))
+            (cnt (i64 (val P))) ) )
       ((== Spec $S)  # 'S' String (UTF-8)
-         (mkStr
-            (if Ptr
-               (let P (i8** (val Ptr))
-                  (set Ptr (i8* (inc P)))
-                  (val P) )
-               (i8* Val) ) ) )
+         (let P (i8** (val Ptr))
+            (set Ptr (i8* (inc P)))
+            (mkStr (val P)) ) )
       ((cnt? Spec)  # [+-]1.0 Scaled fixpoint number
          (if (sign? Spec)
             (boxFloat
-               (if Ptr
-                  (let P (i32* (val Ptr))
-                     (set Ptr (i8* (inc P)))
-                     (val P) )
-                  (i32 Val) )
+               (let P (i32* (val Ptr))
+                  (set Ptr (i8* (inc P)))
+                  (val P) )
                (int Spec) )
             (boxDouble
-               (if Ptr
-                  (let P (i64* (val Ptr))
-                     (set Ptr (i8* (inc P)))
-                     (val P) )
-                  Val )
+               (let P (i64* (val Ptr))
+                  (set Ptr (i8* (inc P)))
+                  (val P) )
                (int Spec) ) ) )
       ((pair Spec)  # Arrary or structure
-         (unless Ptr
-            (setq Ptr (i8** (push Val))) )
-         (ifn Ptr
-            $Nil
-            (let (S (++ Spec)  R (natRet S Ptr Val))
-               (unless (and (nil? R) (== S $C))
-                  (let X (setq R (save (cons R $Nil)))
-                     (loop
-                        (? (cnt? Spec)  # (sym . cnt)
-                           (let C (int Spec)
-                              (while (dec 'C)
-                                 (let Y (natRet S Ptr Val)
-                                    (? (and (nil? Y) (== S $C)))
-                                    (setq X (set 2 X (cons Y $Nil))) ) ) ) )
-                        (? (atom Spec))
-                        (let Y (natRet (setq S (++ Spec)) Ptr Val)
-                           (? (and (nil? Y) (== S $C)))
-                           (setq X (set 2 X (cons Y $Nil))) ) ) ) )
-               R ) ) )
+         (let (S (++ Spec)  R (natRetBuf S Ptr))
+            (unless (and (nil? R) (== S $C))
+               (let X (setq R (save (cons R $Nil)))
+                  (loop
+                     (? (cnt? Spec)  # (sym . cnt)
+                        (let C (int Spec)
+                           (while (dec 'C)
+                              (let Y (natRetBuf S Ptr)
+                                 (? (and (nil? Y) (== S $C)))
+                                 (setq X (set 2 X (cons Y $Nil))) ) ) ) )
+                     (? (atom Spec))
+                     (let Y (natRetBuf (setq S (++ Spec)) Ptr)
+                        (? (and (nil? Y) (== S $C)))
+                        (setq X (set 2 X (cons Y $Nil))) ) ) ) )
+            R ) )
+      (T $Nil) ) )
+
+(de natRet (Spec Val)
+   (cond
+      ((== Spec $N) (box Val))  # 'N' Long or pointer (signed 64 bit)
+      ((== Spec $I)  # 'I' Integer (signed 32 bit)
+         (if
+            (ge0
+               (-
+                  (x| (i32 Val) (hex "80000000"))
+                  (hex "80000000") ) )
+            (cnt (i64 @))
+            (sign (cnt (i64 (- @)))) ) )
+      ((== Spec $C)  # 'C' Character (UTF-8, 1-4 bytes)
+         (if (i32 Val) (mkChar @) $Nil) )
+      ((== Spec $B)  # 'B' Byte (unsigned 8 bit)
+         (cnt (i64 (i8 Val))) )
+      ((== Spec $S)  # 'S' String (UTF-8)
+         (mkStr (i8* Val)) )
+      ((cnt? Spec)  # [+-]1.0 Scaled fixpoint number
+         (if (sign? Spec)
+            (boxFloat (i32 Val) (int Spec))
+            (boxDouble Val (int Spec)) ) )
+      ((and (pair Spec) Val)  # Arrary or structure
+         (let
+            (Ptr (i8** (push Val))
+               S (++ Spec)
+               R (natRetBuf S Ptr) )
+            (unless (and (nil? R) (== S $C))
+               (let X (setq R (save (cons R $Nil)))
+                  (loop
+                     (? (cnt? Spec)  # (sym . cnt)
+                        (let C (int Spec)
+                           (while (dec 'C)
+                              (let Y (natRetBuf S Ptr)
+                                 (? (and (nil? Y) (== S $C)))
+                                 (setq X (set 2 X (cons Y $Nil))) ) ) ) )
+                     (? (atom Spec))
+                     (let Y (natRetBuf (setq S (++ Spec)) Ptr)
+                        (? (and (nil? Y) (== S $C)))
+                        (setq X (set 2 X (cons Y $Nil))) ) ) ) )
+            R ) )
       (T $Nil) ) )
 
 # (native 'cnt1|sym1 'cnt2|sym2 'any 'any ..) -> any
@@ -1196,7 +1252,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (let Z (push (eval (++ X)) $Nil NIL)  # [argN next]
             (set 2 L Z)
             (setq L Z) ) )
-      (natRet (car Args) null
+      (natRet (car Args)
          (ffiCall
             (cond
                ((cnt? Fun) (i8* (int Fun)))
@@ -1218,11 +1274,12 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (if (cnt? (needNum Exe (eval (++ X))))
             (int @)
             (dig @) )
-         P (i8** (push N))  # Indirect pointer
+         P (i8* N)
          Y (save (eval (car X))) )  # Result specification
       (while (pair (shift X))
-         (natBuf (eval (car X)) P 0) )
-      (natRet Y null N) ) )
+         (setq P
+            (ofs P (natBuf (eval (car X)) P)) ) )
+      (natRet Y N) ) )
 
 # (lisp 'sym ['fun]) -> num
 (de _lisp (Exe)

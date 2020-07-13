@@ -1,4 +1,4 @@
-// 12jul20 Software Lab. Alexander Burger
+// 13jul20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -426,67 +426,6 @@ ffi *ffiPrep(char *lib, char *fun, int64_t lst) {
    return NULL;
 }
 
-int64_t natBuf(int64_t val, char **ptr, int64_t len) {
-   char *p = *ptr;
-
-   if (atom(val)) {  // Byte or unsigned
-      if (val & 8) {  // Unsigned 32 bit
-         *(int32_t*)p = val >> 4;
-         p += 4;
-         len -= 4;
-      }
-      else {
-         *p++ = val >> 4;
-         --len;
-      }
-   }
-   else {
-      int64_t x = car(val);  // 'num', 'sym' or [-]1.0
-
-      if (cnt(val = cdr(val))) {  // 'cnt' or 'lst'
-         int n = val >> 4;
-
-         if (num(x)) {  // (num . cnt)
-            x = number(x);
-            switch (n) {
-            case 1: *p = (int8_t)x; break;
-            case 2: *(int16_t*)p = (int16_t)x; break;
-            case 4: *(int32_t*)p = (int32_t)x; break;
-            default: *(int64_t*)p = x; break;
-            }
-         }
-         else if (sym(x)) {  // (sym . cnt)
-            int64_t nm = name(val(tail(x)));
-            bufString(nm, p);
-         }
-         p += n;
-         len -= n;
-      }
-      else if (x & 8) {  // (-1.0 . lst)
-         float scl = (float)(x >> 4);
-
-         while (!atom(val)) {
-            *(float*)p = (float)number(car(val)) / scl;
-            val = cdr(val);
-            p += 4;
-            len -= 4;
-         }
-      }
-      else {  // (1.0 . lst)
-         double scl = (double)(x >> 4);
-
-         while (!atom(val)) {
-            *(double*)p = (double)number(car(val)) / scl;
-            val = cdr(val);
-            p += 8;
-            len -= 8;
-         }
-      }
-   }
-   *ptr = p;
-   return len;
-}
-
 int64_t ffiCall(ffi *p, int64_t lst) {
    int64_t x, y, z;
    int i, nargs = length(lst);
@@ -510,7 +449,7 @@ int64_t ffiCall(ffi *p, int64_t lst) {
             *(double*)&value[i] = (double)number(car(x)) / (double)(y >> 4);
       }
       else {  // Structure
-         int n = car(car(y)) >> 4;
+         int64_t d, n = car(car(y)) >> 4;
          char *q = alloca(n);
 
          value[i] = (int64_t)q;
@@ -522,8 +461,10 @@ int64_t ffiCall(ffi *p, int64_t lst) {
                   *q++ = b;
                break;
             }
-            if (atom(y) || (n = natBuf(car(y), &q, n)) == 0)
+            if (atom(y))
                break;
+            d = natBuf(car(y), q);
+            n -= d, q += d;
          }
       }
    }
@@ -531,7 +472,7 @@ int64_t ffiCall(ffi *p, int64_t lst) {
    for (i = 0;  i < nargs;  ++i, lst = cdr(lst)) {
       x = car(lst);
       if (!atom(x)  &&  !num(y = cdr(x))  &&  (z = car(x)) != (int64_t)(SymTab + Nil))
-         set(z, natRet(cdr(car(y)), (char**)&value[i], 0));
+         set(z, natRetBuf(cdr(car(y)), (char**)&value[i]));
    }
    return rc;
 }
@@ -546,6 +487,14 @@ int64_t boxDouble(int64_t value, int64_t scl) {
    int64_t n = lround(*(double*)&value * (double)scl);
 
    return n >= 0? n << 4 | 2 : -n << 4 | 10;
+}
+
+void bufFloat(int64_t value, int64_t scl, char* p) {
+   *(float*)p = (float)number(value) / (float)scl;
+}
+
+void bufDouble(int64_t value, int64_t scl, char* p) {
+   *(double*)p = (double)number(value) / (double)scl;
 }
 
 // Case mappings from the GNU Kaffe Project

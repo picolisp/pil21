@@ -1,4 +1,4 @@
-// 11jul20 Software Lab. Alexander Burger
+// 13jul20 Software Lab. Alexander Burger
 
 #include <stdint.h>
 #include <string.h>
@@ -54,4 +54,5 @@ extern int64_t SymTab[];
 
 int32_t bufSize(int64_t);
 char *bufString(int64_t, char*);
-int64_t natRet(int64_t, char**, int64_t);
+int64_t natBuf(int64_t, char*);
+int64_t natRetBuf(int64_t, char**);
