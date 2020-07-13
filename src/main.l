@@ -1249,7 +1249,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          Args (save (cons (eval (++ X)) $Nil))
          L Args )  # [ret args]
       (while (pair X)
-         (let Z (push (eval (++ X)) $Nil NIL)  # [argN next]
+         (let Z (push (save (eval (++ X))) $Nil)  # [argN next]
             (set 2 L Z)
             (setq L Z) ) )
       (natRet (car Args)
