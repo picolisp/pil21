@@ -463,6 +463,8 @@ int64_t ffiCall(ffi *p, int64_t lst) {
             }
             if (atom(y))
                break;
+            if (n <= 0)
+               return 0;  // Buffer overflow
             d = natBuf(car(y), q);
             n -= d, q += d;
          }
