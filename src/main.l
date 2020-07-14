@@ -1,4 +1,4 @@
-# 13jul20 Software Lab. Alexander Burger
+# 14jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1281,10 +1281,116 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (ofs P (natBuf (eval (car X)) P)) ) )
       (natRet Y N) ) )
 
+# Lisp callbacks
+(local) cbl
+
+(de cbl (Fun A B C D E)
+   (let Exe (push NIL NIL ZERO Fun)  # [car cdr name fun]
+      (set Exe (ofs Exe 3))
+      (let P (set 2 Exe (push NIL NIL ZERO (box A)))
+         (set P (ofs P 3))
+         (setq P
+            (set 2 P (push NIL NIL ZERO (box B))) )
+         (set P (ofs P 3))
+         (setq P
+            (set 2 P (push NIL NIL ZERO (box C))) )
+         (set P (ofs P 3))
+         (setq P
+            (set 2 P (push NIL NIL ZERO (box D))) )
+         (set P (ofs P 3))
+         (setq P
+            (set 2 P (push NIL $Nil ZERO (box E))) )
+         (set P (ofs P 3)) )
+      (xCnt 0 (evList Exe)) ) )
+
+(de _cb1 (A B C D E)
+   (cbl (val 2 $Lisp) A B C D E) )
+
+(de _cb2 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb3 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb4 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb5 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb6 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb7 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb8 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb9 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb10 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb11 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb12 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb13 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb14 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb15 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb16 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb17 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb18 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb19 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb20 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb21 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb22 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb23 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
+(de _cb24 (A B C D E)
+   (cbl (val 4 $Lisp) A B C D E) )
+
 # (lisp 'sym ['fun]) -> num
 (de _lisp (Exe)
-   #!
-   $Nil )
+   (let (X (cdr Exe)  Y (evSym X))
+      (let (P $Lisp  Q (i8** (cbFuns)))
+         (loop  # Search for tag 'sym'
+            (? (== Y (val P)))  # Found
+            (setq P (ofs P 2)  Q (ofs Q 1))
+            (? (> P $LispEnd)  # Not found
+               (setq P $Lisp  Q (i8** (cbFuns)))
+               (until (nil? (val 2 P))  # Search for empty slot
+                  (setq P (ofs P 2)  Q (ofs Q 1))
+                  (when (> P $LispEnd)
+                     (err Exe 0 ($ "Too many callbacks") null) ) )
+               (set P Y) ) )
+         (set 2 P (eval (cadr X)))  # Eval 'fun'
+         (box64 (i64 (val Q))) ) ) )
 
 # (args) -> flg
 (de _args (Exe)

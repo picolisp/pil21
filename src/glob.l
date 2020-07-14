@@ -1,4 +1,4 @@
-# 05jul20 Software Lab. Alexander Burger
+# 14jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -452,7 +452,7 @@
    ($LastSym "version" _version) )
 
 # GC relevant data
-(local) gcData
+(local) (gcData cbFuns)
 
 (table gcData
    ($Transient $Nil)    # Short transient names
@@ -507,6 +507,32 @@
    (NIL $Nil)
    (NIL $Nil)           # 24
    ($LispEnd $Nil) )
+
+(table cbFuns
+   ($Cb (i64 i64 i64 i64 i64 i64) _cb1)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb2)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb3)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb4)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb5)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb6)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb7)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb8)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb9)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb10)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb11)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb12)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb13)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb14)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb15)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb16)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb17)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb18)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb19)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb20)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb21)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb22)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb23)
+   (NIL (i64 i64 i64 i64 i64 i64) _cb24) )
 
 # Environment
 (local) env
