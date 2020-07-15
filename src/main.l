@@ -529,9 +529,9 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       X ) )
 
 # Date and time
-(local) (date time)
+(local) (tmDate tmTime)
 
-(de date ((i64 . Y) (i64 . M) (i64 . D))
+(de tmDate ((i64 . Y) (i64 . M) (i64 . D))
    (if
       (and
          (gt0 Y)
@@ -559,7 +559,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (/ N 100) ) ) )
       $Nil ) )
 
-(de time ((i64 . H) (i64 . M) (i64 . S))
+(de tmTime ((i64 . H) (i64 . M) (i64 . S))
    (if
       (and
          (ge0 H)
@@ -579,20 +579,20 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (cond
          ((atom X)
             (let N (getDate)
-               (date
+               (tmDate
                   (& N (hex "FFFF"))
                   (& (shr N 16) (hex "FF"))
                   (& (shr N 24) (hex "FF")) ) ) )
          ((t? (eval (car X)))
             (let N (getGmDate)
-               (date
+               (tmDate
                   (& N (hex "FFFF"))
                   (& (shr N 16) (hex "FF"))
                   (& (shr N 24) (hex "FF")) ) ) )
          ((nil? @) @)
          ((pair @)
             (let L @
-               (date
+               (tmDate
                   (xCnt Exe (++ L))
                   (xCnt Exe (++ L))
                   (xCnt Exe (car L)) ) ) )
@@ -600,7 +600,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (let N @
                (cond
                   ((pair (shift X))
-                     (date
+                     (tmDate
                         (xCnt Exe N)
                         (evCnt Exe X)
                         (evCnt Exe (cdr X)) ) )
@@ -635,7 +635,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          ((nil? @) @)
          ((pair @)
             (let L @
-               (time
+               (tmTime
                   (xCnt Exe (++ L))
                   (xCnt Exe (++ L))
                   (xCnt Exe (car L)) ) ) )
@@ -643,7 +643,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (let N @
                (cond
                   ((pair (shift X))
-                     (time
+                     (tmTime
                         (xCnt Exe N)
                         (evCnt Exe X)
                         (if (pair (shift X)) (evCnt Exe X) 0) ) )
@@ -1006,7 +1006,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (2 $Nil)
                   (T (box64 (val Size))) )
                (cons
-                  (date
+                  (tmDate
                      (& (setq N (shr N 2)) (hex "FFFF"))
                      (& (setq N (shr N 16)) (hex "FF"))
                      (& (setq N (shr N 8)) (hex "FF")) )
