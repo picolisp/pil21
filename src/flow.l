@@ -1,4 +1,4 @@
-# 27jun20 Software Lab. Alexander Burger
+# 15jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -784,7 +784,18 @@
 
 # (finally exe . prg) -> any
 (de _finally (Exe)
-   $Nil )
+   (let
+      (X (cdr Exe)
+         Ca: (caFrame (b8 (+ (val JmpBufSize) (caFrame T)))) )
+      (Ca: tag 0)
+      (Ca: link (val $Catch))
+      (set $Catch (Ca:))
+      (Ca: fin (++ X))
+      (memcpy (Ca: (env)) (env) (env T))
+      (prog1
+         (save (run X)
+            (eval (Ca: fin)) )
+         (set $Catch (Ca: link)) ) ) )
 
 # Coroutines
 (local) (saveCoEnv loadCoEnv)
