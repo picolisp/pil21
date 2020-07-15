@@ -837,6 +837,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 # Apply EXPR to CDR of list
 (de evExpr (Exe Lst)
+   (stkChk Exe)
    (let
       (X (cdr Lst)  # Arguments
          Y (car Exe)  # Parameters
