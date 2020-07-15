@@ -952,6 +952,85 @@
          (setq X (brkLoad X)) )
       (eval X) ) )
 
+# (e . prg) -> any
+(de _e (Exe)
+   (let P (val $Break)
+      (unless P
+         (err Exe 0 ($ "No Break")  null) )
+      (let
+         (Dbg (save (val $Dbg))
+            At (save (val $At))
+            Run (save (val $Run)) )
+         (set
+            $Dbg $Nil
+            $At (val P)
+            $Run (val (val 3 P)) )
+         (let (In (val $InFrames)  Out (val $OutFrames))
+            (popInFiles)
+            (popOutFiles)
+            (prog1
+               (if (pair (cdr Exe))
+                  (run @)
+                  (eval (val $Up)) )
+               (pushOutFiles Out)
+               (pushInFiles In)
+               (set $Run Run  $At At  $Dbg Dbg) ) ) ) ) )
+
+(local) trace
+
+(de void trace ((i32 . C) X)
+   (when (> C 64)
+      (setq C 64) )
+   (while (ge0 (dec 'C))
+      (space) )
+   (if (atom X)  # Symbol
+      (print @)
+      (print (car X))  # Method
+      (space)
+      (print (cdr X))  # Class
+      (space)
+      (print (val $This)) ) )  # 'This'
+
+# ($ sym|lst lst . prg) -> any
+(de _trace (Exe)
+   (let X (cdr Exe)
+      (if (nil? (val $Dbg))
+         (run (cddr X))
+         (let (Out (val $OutFile)  Put (val (i8** $Put)))
+            (set
+               $OutFile (val (ofs (val $OutFiles) 2))  # Stderr
+               $Put (fun (void i8) _putStdout) )
+            (let (Y (++ X)  Z (++ X))
+               (trace (set $Trace (inc (val $Trace))) Y)
+               (outString ($ " :"))
+               (while (pair Z)
+                  (space)
+                  (print (val (++ Z))) )
+               (cond
+                  ((== Z $At)
+                     (setq Z (val $Next))
+                     (while (pair Z)
+                        (space)
+                        (print (cdr Z))
+                        (setq Z (car Z)) ) )
+                  ((not (nil? Z))
+                     (space)
+                     (print (val Z)) ) )
+               (newline)
+               (set (i8** $Put) Put  $OutFile Out)
+               (prog1
+                  (run X)
+                  (set
+                     $OutFile (val (ofs (val $OutFiles) 2))  # Stderr
+                     $Put (fun (void i8) _putStdout) )
+                  (let I (val $Trace)
+                     (trace I Y)
+                     (set $Trace (dec I)) )
+                  (outString ($ " = "))
+                  (print @)
+                  (newline)
+                  (set (i8** $Put) Put  $OutFile Out) ) ) ) ) ) )
+
 # (bye ['cnt])
 (de _bye (Exe)
    (bye

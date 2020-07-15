@@ -1,4 +1,4 @@
-# 14jul20 Software Lab. Alexander Burger
+# 15jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -315,6 +315,8 @@
    (NIL "co" _co)
    (NIL "yield" _yield)
    (NIL "!" _break)
+   (NIL "e" _e)
+   (NIL "$" _trace)
    (NIL "bye" _bye)
    # List processing
    (NIL "car" _car)
@@ -560,8 +562,8 @@
    ($Make 0)                     # 'make' environment
    ($Yoke 0)
    ($Task $Nil)                  # Task list
-   ($Protect 0)                  # Signal protection
-   ($Trace 0) )                  # Trace level
+   ($Protect i32 0)              # Signal protection
+   ($Trace i32 0) )              # Trace level
 
 # Temporary cell
 (array $Cell any

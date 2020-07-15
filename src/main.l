@@ -1,4 +1,4 @@
-# 14jul20 Software Lab. Alexander Burger
+# 15jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -222,7 +222,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                            (shift Tag) ) ) )
                   (setq Ca (Ca: link)) ) ) ) )
       (set $Chr (set $ExtN 0))
-      (set $Break NO)
+      (set $Break 0)
       (set $LinePtr null)
       (set $Alarm (set $Sigio $Nil))
       (let Io: (ioFrame (b8 (ioFrame T)))
@@ -258,7 +258,11 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (set
             $Link 0
             $Protect 0
-            $Task $Nil )
+            $Task $Nil
+            $Next $Nil
+            $Make 0
+            $Yoke 0
+            $Trace 0 )
          (set $Put (fun (void i8) _putStdout))
          (set $Get (fun (i32) _getStdin))
          (longjmp QuitRst 1) ) ) )
