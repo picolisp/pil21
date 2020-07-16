@@ -19,6 +19,7 @@
 - Second argument to 'name' (i.e. renaming) is removed
 - Lambda-binding environment offset for 'eval' and 'run' only for '@'
 - 'native'
+   + 'P' result specification
    - only functions with fixed number of arguments
    - no 'T' result spec (skipped call)
 - Because of readline(3), '*Run' tasks are suspended while typing in the REPL
