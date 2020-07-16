@@ -1,4 +1,4 @@
-# 15jul20 Software Lab. Alexander Burger
+# 16jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -317,6 +317,13 @@
    (NIL "!" _break)
    (NIL "e" _e)
    (NIL "$" _trace)
+   (NIL "exec" _exec)
+   (NIL "call" _call)
+   (NIL "ipid" _ipid)
+   (NIL "opid" _opid)
+   (NIL "kill" _kill)
+   (NIL "fork" _fork)
+   (NIL "detach" _detach)
    (NIL "bye" _bye)
    # List processing
    (NIL "car" _car)

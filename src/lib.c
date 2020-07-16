@@ -1,4 +1,4 @@
-// 13jul20 Software Lab. Alexander Burger
+// 16jul20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -167,6 +167,14 @@ void waitNohang(void) {
       if (WIFSIGNALED(stat))
          fprintf(stderr, "%d SIG-%d\n", (int)pid, WTERMSIG(stat));
    errno = e;
+}
+
+int waitWuntraced(int pid, int *res) {
+   return waitpid(pid, res, WUNTRACED);
+}
+
+int wifStopped(int *res) {
+   return WIFSTOPPED(*res);
 }
 
 // Sync src/defs.l 'ENOENT'

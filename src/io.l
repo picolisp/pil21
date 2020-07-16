@@ -1,4 +1,4 @@
-# 29jun20 Software Lab. Alexander Burger
+# 16jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -874,13 +874,13 @@
             (let
                (Pfd (b32 2)
                   Av (b8* (inc (length X)))
-                  Cmd (xName Exe (xSym (++ X))) )
+                  Cmd (xName Exe (xSym (car X))) )
                (when (lt0 (pipe Pfd))
                   (pipeErr Exe) )
                (set Av (pathString Cmd (b8 (pathSize Cmd))))
                (let A Av
-                  (while (pair X)
-                     (let Nm (xName Exe (xSym (++ X)))
+                  (while (pair (shift X))
+                     (let Nm (xName Exe (xSym (car X)))
                         (set (inc 'A)
                            (bufString Nm (b8 (bufSize Nm))) ) ) )
                   (set (inc 'A) null) )
@@ -894,13 +894,13 @@
                         (close @) )
                      (signal (val SIGPIPE Sig) (val SigDfl))  # Default SIGPIPE
                      (execvp (val Av) Av)  # Execute program
-                     (execErr (val Av)) )  # Error if failed
-                  (T  # In parent
-                     (setpgid (Io: pid @) 0)  # Set process group
-                     (close (val 2 Pfd))  # Close write pipe
-                     (let F (Io: fd (val Pfd))
-                        (initInFile F null)
-                        (closeOnExec Exe F) ) ) ) ) ) ) ) )
+                     (execErr (val Av)) ) )  # Error if failed
+               # In parent
+               (setpgid (Io: pid @) 0)  # Set process group
+               (close (val 2 Pfd))  # Close write pipe
+               (let F (Io: fd (val Pfd))
+                  (initInFile F null)
+                  (closeOnExec Exe F) ) ) ) ) ) )
 
 (de void wrOpen (Exe X (i8* . P))
    (let Io: (ioFrame P)
@@ -941,13 +941,13 @@
             (let
                (Pfd (b32 2)
                   Av (b8* (inc (length X)))
-                  Cmd (xName Exe (xSym (++ X))) )
+                  Cmd (xName Exe (xSym (car X))) )
                (when (lt0 (pipe Pfd))
                   (pipeErr Exe) )
                (set Av (pathString Cmd (b8 (pathSize Cmd))))
                (let A Av
-                  (while (pair X)
-                     (let Nm (xName Exe (xSym (++ X)))
+                  (while (pair (shift X))
+                     (let Nm (xName Exe (xSym (car X)))
                         (set (inc 'A)
                            (bufString Nm (b8 (bufSize Nm))) ) ) )
                   (set (inc 'A) null) )
@@ -960,18 +960,20 @@
                         (dup2 @ 0)  # Dup read pipe to STDIN_FILENO
                         (close @) )
                      (execvp (val Av) Av)  # Execute program
-                     (execErr (val Av)) )  # Error if failed
-                  (T  # In parent
-                     (setpgid (Io: pid @) 0)  # Set process group
-                     (close (val Pfd))  # Close read pipe
-                     (let F (Io: fd (val 2 Pfd))
-                        (initOutFile F null)
-                        (closeOnExec Exe F) ) ) ) ) ) ) ) )
+                     (execErr (val Av)) ) )  # Error if failed
+               # In parent
+               (setpgid (Io: pid @) 0)  # Set process group
+               (close (val Pfd))  # Close read pipe
+               (let F (Io: fd (val 2 Pfd))
+                  (initOutFile F null)
+                  (closeOnExec Exe F) ) ) ) ) ) )
 
 (de void erOpen (Exe X (i8* . P))
+   #!
    0 )
 
 (de void ctOpen (Exe X (i8* . P))
+   #!
    0 )
 
 (local) (read0 getChar skipc comment skip testEsc anonymous rdAtom rdList)

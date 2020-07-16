@@ -1,4 +1,4 @@
-# 13jul20 Software Lab. Alexander Burger
+# 16jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -76,10 +76,11 @@
    (tell 4 i32) )       # Tell pipe
 
 # libc
-(local) (malloc realloc free fork getenv setenv getpid setpgid execvp isatty
-tcgetattr read write pread pwrite fread fwrite putc_unlocked fflush fileno pipe
-memcmp strlen strcpy strdup strcmp strchr strrchr dlsym dlerror dup2 close
-signal waitpid setjmp longjmp kill exit)
+(local) (malloc realloc free fork getenv setenv getpid getpgrp setsid alarm
+setpgid execvp isatty tcgetattr read write pread pwrite fread fwrite
+putc_unlocked fflush fileno pipe memcmp strlen strcpy strdup strcmp strchr
+strrchr dlsym dlerror dup2 close signal tcsetpgrp waitpid setjmp longjmp kill
+exit)
 
 (de T i8* malloc (i64))
 (de T i8* realloc (i8* i64))
@@ -90,6 +91,8 @@ signal waitpid setjmp longjmp kill exit)
 (de T i8* getcwd (i8* i64))
 (de T i32 chdir (i8*))
 (de T i32 getpid ())
+(de T i32 getpgrp ())
+(de T i32 setsid ())
 (de T i32 alarm (i32))
 (de T i32 setpgid (i32 i32))
 (de T i32 execvp (i8* i8**))
@@ -117,6 +120,7 @@ signal waitpid setjmp longjmp kill exit)
 (de T i32 dup2 (i32 i32))
 (de T i32 close (i32))
 (de T i8* signal (i32 i8*))
+(de T i32 tcsetpgrp (i32 i32))
 (de T i32 waitpid (i32 i32* i32))
 (de T i32 setjmp (i8*))
 (de T NIL longjmp (i8* i32))
@@ -162,16 +166,20 @@ openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (de T i8* currentLine ())
 
 # Signals
-(local) (Sig SigDfl SigIgn gSignal sigUnblock iSignal waitNohang)
+(local) (Sig SigDfl SigIgn)
 
 (var Sig i32 NIL)
 (var SigDfl i8* NIL)
 (var SigIgn i8* NIL)
 
+(local) (gSignal sigUnblock iSignal waitNohang waitWuntraced wifStopped)
+
 (de T i32 gSignal (i32))
 (de T void sigUnblock (i32))
 (de T void iSignal (i32 i8*))
 (de T void waitNohang ())
+(de T i32 waitWuntraced (i32 i32*))
+(de T i32 wifStopped (i32*))
 
 (local) gErrno
 (de T i32 gErrno ())
