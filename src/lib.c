@@ -409,6 +409,8 @@ ffi *ffiPrep(char *lib, char *fun, int64_t lst) {
       rtype = &ffi_type_sint32;
    else if (x == (int64_t)(SymTab + N))
       rtype = &ffi_type_sint64;
+   else if (x == (int64_t)(SymTab + P))
+      rtype = &ffi_type_uint64;
    else if (x == (int64_t)(SymTab + C))
       rtype = &ffi_type_uint32;
    else if (x == (int64_t)(SymTab + B))

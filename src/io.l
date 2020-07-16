@@ -817,6 +817,11 @@
             (? (=0 (waitFd Exe -1 N)) (run X))  # Timeout
             (setq N @) ) ) ) )
 
+# (sync) -> flg
+(de _sync (Exe)
+   #!
+   Exe )
+
 # (hear 'cnt) -> cnt
 (de _hear (Exe)
    (let (N (evCnt Exe (cdr Exe))  C (cnt N))
@@ -832,6 +837,16 @@
          (closeOutFile @) )
       (set $Hear (i32 N))
       C ) )
+
+# (tell ['cnt] 'sym ['any ..]) -> any
+(de _tell (Exe)
+   #!
+   Exe )
+
+# (poll 'cnt) -> cnt | NIL
+(de _poll (Exe)
+   #!
+   Exe )
 
 (local) (rdOpen wrOpen erOpen ctOpen)
 
@@ -1376,6 +1391,11 @@
                            (| (shl A 6) (& (stdinByte) (hex "3F"))) ) )
                      (| (shl B 6) (& (stdinByte) (hex "3F"))) ) ) ) ) ) ) )
 
+# (peek) -> sym
+(de _peek (Exe)
+   #!
+   Exe )
+
 # (char) -> sym
 # (char 'cnt) -> sym
 # (char T) -> sym
@@ -1599,6 +1619,21 @@
          (run X)
          (popOutFiles) ) ) )
 
+# (err 'sym . prg) -> any
+(de _err (Exe)
+   #!
+   Exe )
+
+# (ctl 'sym . prg) -> any
+(de _ctl (Exe)
+   #!
+   Exe )
+
+# (fd) -> cnt
+(de _fd (Exe)
+   #!
+   Exe )
+
 (local) forkLisp
 
 (de i32 forkLisp (Exe)
@@ -1741,6 +1776,16 @@
                      (prog1
                         (run X)
                         (popInFiles) ) ) ) ) ) ) ) )
+
+# (open 'any ['flg]) -> cnt | NIL
+(de _open (Exe)
+   #!
+   Exe )
+
+# (close 'cnt) -> cnt | NIL
+(de _close (Exe)
+   #!
+   Exe )
 
 # (echo ['cnt ['cnt]] | ['sym ..]) -> sym
 (de _echo (Exe)

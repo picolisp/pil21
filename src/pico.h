@@ -1,4 +1,4 @@
-// 13jul20 Software Lab. Alexander Burger
+// 16jul20 Software Lab. Alexander Burger
 
 #include <stdint.h>
 #include <string.h>
@@ -48,9 +48,10 @@ extern int64_t SymTab[];
 #define T (11*2+1)
 #define I (12*2+1)
 #define N (13*2+1)
-#define S (14*2+1)
-#define C (15*2+1)
-#define B (16*2+1)
+#define P (14*2+1)
+#define S (15*2+1)
+#define C (16*2+1)
+#define B (17*2+1)
 
 int32_t bufSize(int64_t);
 char *bufString(int64_t, char*);

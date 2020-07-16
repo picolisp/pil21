@@ -1,4 +1,4 @@
-# 15jul20 Software Lab. Alexander Burger
+# 16jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1132,10 +1132,14 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de natRetBuf (Spec (i8** . Ptr))
    (cond
-      ((== Spec $N)  # 'N' Long or pointer (signed 64 bit)
+      ((== Spec $N)  # 'N' Number (signed 64 bit)
          (let P (i64* (val Ptr))
             (set Ptr (i8* (inc P)))
             (box (val P)) ) )
+      ((== Spec $P)  # 'P' Pointer or positive (unsigned 64 bit)
+         (let P (i64* (val Ptr))
+            (set Ptr (i8* (inc P)))
+            (box64 (val P)) ) )
       ((== Spec $I)  # 'I' Integer (signed 32 bit)
          (if
             (ge0
@@ -1190,7 +1194,8 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de natRet (Spec Val)
    (cond
-      ((== Spec $N) (box Val))  # 'N' Long or pointer (signed 64 bit)
+      ((== Spec $N) (box Val))  # 'N' Number (signed 64 bit)
+      ((== Spec $P) (box64 Val))  # 'P' Pointer or positive (unsigned 64 bit)
       ((== Spec $I)  # 'I' Integer (signed 32 bit)
          (if
             (ge0
