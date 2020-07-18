@@ -1,4 +1,4 @@
-# 12jul20 Software Lab. Alexander Burger
+# 18jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -17,7 +17,7 @@
 (de i64 pathSize (Nm)
    (let
       (Len (bufSize Nm)
-         N (if (cnt? Nm) (int @) (dig @))
+         N (if (cnt? Nm) (int @) (val (dig @)))
          B (i8 N) )
       (if
          (or

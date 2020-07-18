@@ -1,4 +1,4 @@
-# 16jul20 Software Lab. Alexander Burger
+# 18jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1110,7 +1110,10 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (let Siz (int Val)
                (cond
                   ((num? X)  # (num . cnt)
-                     (setq X (if (cnt? X) (int @) (dig @)))
+                     (setq X
+                        (if (cnt? X)
+                           (int @)
+                           (val (dig @)) ) )
                      (case Siz
                         (1 (set Ptr (i8 X)))
                         (2 (set (i16* Ptr) (i16 X)))
@@ -1283,7 +1286,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          N  # Native value (pointer or scalar)
          (if (cnt? (needNum Exe (eval (++ X))))
             (int @)
-            (dig @) )
+            (val (dig @)) )
          P (i8* N)
          Y (save (eval (car X))) )  # Result specification
       (while (pair (shift X))

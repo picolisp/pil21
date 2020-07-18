@@ -1,4 +1,4 @@
-# 16jul20 Software Lab. Alexander Burger
+# 18jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -485,13 +485,19 @@
       $Extn 0 )
    (tailcall (binPrint X)) )
 
-(de void tellBeg ()
-   #!
-   0 )
+(de void tellBeg ((i8* . P))
+   (set
+      $TellBuf P
+      $End (ofs P (dec (val PipeBufSize)))
+      (setq P (ofs P 8)) BEG  # 8 bytes space (PID and count)
+      $Ptr (inc P) ) )  # Begin a list
 
 (de void tellEnd ()
-   #!
-   0 )
+   (let P (val $Ptr)
+      (set P END)  # Close list
+      (inc 'P)
+      #!
+      ) )
 
 (de void unsync ()
    #!
