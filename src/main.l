@@ -1412,8 +1412,9 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 # (next) -> any
 (de _next (Exe)
    (let X (val $Next)
-      (set $Next (car X))
-      (cdr X) ) )
+      (set
+         $Next (car X)
+         $At2 (cdr X)) ) )
 
 # (arg 'cnt) -> any
 (de _arg (Exe)

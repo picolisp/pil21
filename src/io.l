@@ -492,12 +492,28 @@
       (setq P (ofs P 8)) BEG  # 8 bytes space (PID and count)
       $Ptr (inc P) ) )  # Begin a list
 
-(de void tellEnd ()
-   (let P (val $Ptr)
+(de void tellEnd ((i32 . Pid))
+   (let (P (val $Ptr)  Q (val $TellBuf))
       (set P END)  # Close list
-      (inc 'P)
-      #!
-      ) )
+      (setq P (+ P 8))
+      (let N (- P Q)  # Size without PID and count
+         (set
+            (i32* Q) Pid
+            (inc (i32* Q)) (i32 N) )
+         (when (val $Tell)
+            (unless (wrBytes @ Q N)
+               (close @)
+               (set $Tell 0) ) )
+         (let
+            (Cld (val $Child)  # Iterate children
+               <Cld (ofs Cld (* (val $Children) (child T))) )
+            (until (== Cld <Cld)
+               (let Cld: (child Cld)
+                  (when
+                     (and
+                        (Cld: pid)
+                        (or (=0 Pid) (== Pid (Cld: pid))) )
+                     (wrChild Cld P N) ) ) ) ) ) ) )
 
 (de void unsync ()
    #!
