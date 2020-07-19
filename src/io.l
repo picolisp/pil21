@@ -1,4 +1,4 @@
-# 18jul20 Software Lab. Alexander Burger
+# 19jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -132,7 +132,8 @@
    (loop
       (loop
          (? (gt0 (read Fd P Cnt))
-            (setq P (ofs P @)  Cnt (- Cnt @)) )
+            (inc 'P @)
+            (dec 'Cnt @) )
          (unless (and @ (== (gErrno) EINTR))
             (ret NO) )
          (sigChk 0) )
@@ -144,9 +145,9 @@
          (fcntlSetFl Fd Flg)
          (when (gt0 N)
             (loop
-               (unless (setq Cnt (- Cnt N))
+               (unless (dec 'Cnt N)
                   (ret 1) )
-               (setq P (ofs P N))
+               (inc 'P N)
                (while (le0 (setq N (read Fd P Cnt)))
                   (unless (and N (== (gErrno) EINTR))
                      (ret 0) )
@@ -169,8 +170,8 @@
                      (bye 2) )
                   (writeErr ($ "bytes write: %s")) )
                (sigChk 0) )
-            (? (=0 (setq Cnt (- Cnt N))) YES)
-            (setq P (ofs P N)) ) ) ) )
+            (? (=0 (dec 'Cnt N)) YES)
+            (inc 'P N) ) ) ) )
 
 (de void clsChild ((i8* . Cld))
    (let Cld: (child Cld)
@@ -193,9 +194,9 @@
                         (ret) )
                      (unless (== E EINTR)
                         (writeErr ($ "child write: %s")) ) )
-                  (unless (setq Cnt (- Cnt N))
+                  (unless (dec 'Cnt N)
                      (ret) )
-                  (setq P (ofs P N)) ) ) ) )
+                  (inc 'P N) ) ) ) )
       (setq N (+ C Cnt 8))  # New buffer size
       (let Q (ofs (Cld: buf (alloc (Cld: buf) N)) C)
          (set (i64* Q) Cnt)
@@ -344,7 +345,7 @@
 (de void prCnt ((i8 . Tag) Num)
    (let N Num
       (while (setq N (shr N 8))
-         (setq Tag (+ Tag 4)) ) )
+         (inc 'Tag 4) ) )
    (call $PutBin Tag)
    (loop
       (call $PutBin (i8 Num))
@@ -363,9 +364,8 @@
                      (setq
                         Z (int Z)  # Normalize short
                         C (add C C)  # Get most significant bit of last digit
-                        Z (add Z Z @@) )
-                     )
-                  (setq N (+ N 8)) ) )
+                        Z (add Z Z @@) ) )
+                  (inc 'N 8) ) )
             (when Z  # Significant bits in short number
                (loop
                   (inc 'N)
@@ -450,7 +450,7 @@
                (prCnt (+ Tag 4) (int Nm))
                (let (Y Nm  N 8)
                   (while (big? (setq Y (val (big Y))))
-                     (setq N (+ N 8)) )
+                     (inc 'N 8) )
                   (setq Y (int Y))
                   (while Y
                      (inc 'N)
@@ -489,13 +489,13 @@
    (set
       $TellBuf P
       $End (ofs P (dec (val PipeBufSize)))
-      (setq P (ofs P 8)) BEG  # 8 bytes space (PID and count)
+      (inc 'P 8) BEG  # 8 bytes space (PID and count)
       $Ptr (inc P) ) )  # Begin a list
 
 (de void tellEnd ((i32 . Pid))
    (let (P (val $Ptr)  Q (val $TellBuf))
       (set P END)  # Close list
-      (setq P (+ P 8))
+      (inc 'P 8)
       (let N (- P Q)  # Size without PID and count
          (set
             (i32* Q) Pid
@@ -516,8 +516,11 @@
                      (wrChild Cld P N) ) ) ) ) ) ) )
 
 (de void unsync ()
-   #!
-   0 )
+   (when (val $Tell)
+      (unless (wrBytes @ (i8* (push 0)) 8)
+         (close @)
+         (set $Tell 0) ) )
+   (set $Sync NO) )
 
 (de rdHear ()
    (let In (val $InFile)
@@ -660,7 +663,7 @@
          Buf (b8 (val PipeBufSize))
          Pn (b32 2)
          Tim (getMsec) )
-      (stkChk 0)
+      (stkChk Exe)
       (loop
          (let
             (Stk (stack)
@@ -810,7 +813,7 @@
                                     (run (cdr X)) ) ) ) ) ) ) )  # Run body
                (and
                   (gt0 Ms)
-                  (lt0 (setq Ms (- Ms Dif)))
+                  (lt0 (dec 'Ms Dif))
                   (setq Ms 0) )
                (setq Tim Now) )
             (sigChk Exe)
@@ -841,34 +844,89 @@
 
 # (sync) -> flg
 (de _sync (Exe)
-   #!
-   Exe )
+   (cond
+      ((or (=0 (val $Mic)) (=0 (val $Hear)))
+         $Nil )
+      ((val $Sync) $T)
+      (T
+         (let (Mic (val $Mic)  P (i8* $Slot)  Cnt 8)
+            (loop
+               (let N (write Mic P Cnt)
+                  (cond
+                     ((ge0 N)
+                        (? (=0 (dec 'Cnt N)))
+                        (setq P (ofs P N)) )
+                     ((== (gErrno) EINTR) (sigChk Exe))
+                     (T (writeErr ($ "sync write: %s"))) ) ) ) )
+         (set $Sync NO)
+         (loop
+            (waitFd Exe -1 292MY)
+            (? (val $Sync)) )
+         $T ) ) )
 
 # (hear 'cnt) -> cnt
 (de _hear (Exe)
-   (let (N (evCnt Exe (cdr Exe))  C (cnt N))
+   (let (Fd (evCnt Exe (cdr Exe))  C (cnt Fd))
       (when
          (or
-            (lt0 N)
-            (>= (i32 N) (val $InFDs))
-            (=0 (val (ofs (val $InFiles) N))) )
+            (lt0 Fd)
+            (>= (i32 Fd) (val $InFDs))
+            (=0 (val (ofs (val $InFiles) Fd))) )
          (badFd Exe C) )
       (when (val $Hear)
          (close @)
          (closeInFile @)
          (closeOutFile @) )
-      (set $Hear (i32 N))
+      (set $Hear (i32 Fd))
       C ) )
 
 # (tell ['cnt] 'sym ['any ..]) -> any
 (de _tell (Exe)
-   #!
-   Exe )
+   (cond
+      ((and (=0 (val $Tell)) (=0 (val $Children)))
+         $Nil )
+      ((atom (cdr Exe))
+         (unsync)
+         $Nil )
+      (T
+         (let
+            (X @
+               Y (eval (car X))
+               Pid (i32 0)
+               TellBuf (val $TellBuf) )
+            (when (cnt? Y)
+               (setq
+                  Pid (i32 (int @))
+                  Y (eval (car (shift X))) ) )
+            (tellBeg (b8 (val PipeBufSize)))
+            (stkChk Exe)
+            (loop
+               (prTell Y)
+               (? (atom (shift X)))
+               (setq Y (eval (car X))) )
+            (tellEnd Pid)
+            (set $TellBuf TellBuf)
+            Y ) ) ) )
 
 # (poll 'cnt) -> cnt | NIL
 (de _poll (Exe)
-   #!
-   Exe )
+   (let
+      (X (cdr Exe)
+         Fd (i32 (xCnt Exe (setq X (eval (car X))))) )
+      (when (or (lt0 Fd) (>= Fd (val $InFDs)))
+         (badFd Exe X) )
+      (let In: (inFile (val (ofs (val $InFiles) Fd)))
+         (ifn (In:)
+            $Nil
+            (let Poll (b64 1)
+               (pollIn Fd Poll)
+               (loop
+                  (? (> (In: cnt) (In: ix)) X)
+                  (while (lt0 (gPoll Poll 1 0))
+                     (unless (== (gErrno) EINTR)
+                        (selectErr Exe) ) )
+                  (? (not (readyIn Poll Fd)) $Nil)
+                  (? (ge0 (slowNb (In:)))) ) ) ) ) ) )
 
 (local) (rdOpen wrOpen erOpen ctOpen)
 
@@ -1149,7 +1207,7 @@
             ((char "t") (set $Chr (char "\t")))
             (T
                (when (and (>= Chr (char "0")) (>= (char "9") Chr))
-                  (setq Chr (- Chr (char "0")))
+                  (dec 'Chr (char "0"))
                   (until (== (call $Get) (char "\\"))
                      (unless
                         (and
@@ -1734,7 +1792,7 @@
             (T  # In parent
                (let Pid @
                   (when (== I N)  # Children table full
-                     (set $Children (setq N (+ N 8)))  # Eight more slots
+                     (set $Children (inc 'N 8))  # Eight more slots
                      (let P
                         (set $Child
                            (alloc (val $Child) (* N (child T))) )
@@ -1864,7 +1922,7 @@
                                        (setq M Q) ) )
                                  (when OutM
                                     (setq S (i8* (val 4 OutM)))
-                                    (setq OutC (- OutC (val 3 Q)))
+                                    (dec 'OutC (val 3 Q))
                                     (until (lt0 OutC)
                                        (call $Put (val S))
                                        (inc 'S)
@@ -1899,7 +1957,7 @@
                            (call $Put B) )
                         (OutM
                            (let S (i8* (val 4 OutM))
-                              (setq OutC (- OutC (val 3 M)))
+                              (dec 'OutC (val 3 M))
                               (until (lt0 OutC)
                                  (call $Put (val S))
                                  (inc 'S)

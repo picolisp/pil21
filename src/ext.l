@@ -1,4 +1,4 @@
-# 11jun20 Software Lab. Alexander Burger
+# 19jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -76,7 +76,7 @@
                      (when (> C 32)  # Non-white
                         (cond
                            ((or
-                                 (lt0 (setq C (- C SNXBASE)))  # Too small
+                                 (lt0 (dec 'C SNXBASE))  # Too small
                                  (>= C SNXSIZE)  # Too big
                                  (=0 (setq C (i32 (val (ofs $SnxTab C))))) )  # No entry
                               (setq Last 0) )

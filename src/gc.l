@@ -1,4 +1,4 @@
-# 06jul20 Software Lab. Alexander Burger
+# 19jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -252,7 +252,7 @@
          (set $Avail Avail)
          (while (ge0 Cnt)  # Ensure free cells
             (heapAlloc)
-            (setq Cnt (- Cnt CELLS)) ) ) ) )
+            (dec 'Cnt CELLS) ) ) ) )
 
 # (gc ['cnt [cnt2]]) -> cnt | NIL
 (de _gc (Exe)

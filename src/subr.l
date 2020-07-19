@@ -1,4 +1,4 @@
-# 26jun20 Software Lab. Alexander Burger
+# 19jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -577,7 +577,7 @@
                   ((atom L) L)
                   ((and
                         (lt0 N)
-                        (le0 (setq N (+ N (length L)))) )
+                        (le0 (inc 'N (length L))) )
                      $Nil )
                   (T
                      (save L
@@ -873,13 +873,13 @@
                         (set Y (& (car Y) -2))
                         (? (== X (shift Y))) )
                      $T )  # Infinite
-                  (setq C (+ C (hex "10"))) ) ) )
+                  (inc 'C (hex "10")) ) ) )
          ((nil? X) ZERO)
          ((sym? (val (tail X))) ZERO)
          (T
             (let (C ZERO  P (push 0 (name @)))
                (while (symChar P)
-                  (setq C (+ C (hex "10"))) )
+                  (inc 'C (hex "10")) )
                C ) ) ) ) )
 
 (local) (size binSize)
@@ -889,7 +889,7 @@
       (loop
          (when (pair Y)
             (stkChk 0)
-            (setq C (+ C (size Y))) )
+            (inc 'C (size Y)) )
          (set X (| Y 1))
          (? (atom (shift X))
             (loop
@@ -921,7 +921,7 @@
             (loop
                (setq D (val (dig X)))
                (? (cnt? (setq X (val (big X)))))
-               (setq C (+ C 8)) )  # Increment count by 8
+               (inc 'C 8) )  # Increment count by 8
             (setq X (int X))
             (add D D)  # Get most significant bit of last digit
             (setq X (+ X X @@))
@@ -943,13 +943,13 @@
             (T
                (let C 9  # Count 8 significant bytes plus 1
                   (until (cnt? (setq X (val (big X))))
-                     (setq C (+ C 8)) )  # Increment count by 8
+                     (inc 'C 8) )  # Increment count by 8
                   (setq X (int X))
                   (goto 2) ) ) ) )
       (T
          (let (C 2  Y X)
             (loop
-               (setq C (+ C (binSize (++ X))))
+               (inc 'C (binSize (++ X)))
                (? (nil? X) C)
                (? (== Y X) (inc C))  # Circular
                (? (atom X) (+ C (binSize X))) ) ) ) ) )
@@ -962,7 +962,7 @@
             (setq X (shr X 3))  # Normalize short, keep sign bit
             (let C ONE
                (while (setq X (shr X 8))
-                  (setq C (+ C (hex "10"))) )
+                  (inc 'C (hex "10")) )
                C ) )
          ((big? X)
             (setq X (pos X))
@@ -970,12 +970,12 @@
                (loop
                   (setq D (val (dig X)))
                   (? (cnt? (setq X (val (big X)))))
-                  (setq C (+ C (hex "80"))) )  # Increment count by '8'
+                  (inc 'C (hex "80")) )  # Increment count by '8'
                (setq X (int X))
                (add D D)  # Get most significant bit of last digit
                (when (setq X (+ X X @@))
                   (loop
-                     (setq C (+ C (hex "10")))
+                     (inc 'C (hex "10"))
                      (? (=0 (setq X (shr X 8)))) ) )
                C ) )
          ((pair X) (cnt (size X)))
@@ -998,15 +998,15 @@
          ((cnt? @)
             (let (C ONE  Z (int @))
                (while (setq Z (shr Z 8))
-                  (setq C (+ C (hex "10"))) )
+                  (inc 'C (hex "10")) )
                C ) )
          (T
             (let (C (hex "82")  Z @)  # Count '8' significant bytes
                (until (cnt? (setq Z (val (big Z))))
-                  (setq C (+ C (hex "80"))) )  # Increment count by '8'
+                  (inc 'C (hex "80")) )  # Increment count by '8'
                (when (setq Z (int Z))
                   (loop
-                     (setq C (+ C (hex "10")))
+                     (inc 'C (hex "10"))
                      (? (=0 (setq Z (shr Z 8)))) ) )
                C ) ) ) ) )
 
@@ -1302,12 +1302,12 @@
                                        (cons @
                                           (cons (val Tp1) (cons (val Tp2) (val E))) ) ) )
                                  (car Q) ) ) )
-                           (set
-                              Nl (cons N (val Nl))
-                              Tp2 (cons (cdr (val Tp1)) (val Tp2))
-                              Tp1 (cdar (val Alt))
-                              Alt $Nil )
-                           (setq N (+ N (hex "10")) ) ) )  # Increment
+                        (set
+                           Nl (cons N (val Nl))
+                           Tp2 (cons (cdr (val Tp1)) (val Tp2))
+                           Tp1 (cdar (val Alt))
+                           Alt $Nil )
+                        (inc 'N (hex "10")) ) )  # Increment
                   ((atom (setq X (val Tp1)))
                      (set
                         Tp1 (car (val Tp2))

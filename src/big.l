@@ -1,4 +1,4 @@
-# 11jun20 Software Lab. Alexander Burger
+# 19jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -917,17 +917,17 @@
             (: 1
                (unless (setq B (symByte P))
                   (ret 0) ) ) ) )
-      (when (> (setq B (- B (char "0"))) 9)
+      (when (> (dec 'B (char "0")) 9)
          (ret 0) )
       (set (link Num T) (cnt (i64 B)))
       (while (setq B (symByte P))
          (? (and Frac (=0 Scl))
-            (when (> (setq B (- B (char "0"))) 9)
+            (when (> (dec 'B (char "0")) 9)
                (ret 0) )
             (when (>= B 5)  # Round
                (set Num (addu (val Num) ONE)) )
             (while (setq B (symByte P))
-               (when (> (setq B (- B (char "0"))) 9)
+               (when (> (dec 'B (char "0")) 9)
                   (ret 0) ) ) )
          (cond
             ((== B Sep)
@@ -935,7 +935,7 @@
                   (ret 0) )
                (setq Frac YES) )
             ((<> B Ign)
-               (when (> (setq B (- B (char "0"))) 9)
+               (when (> (dec 'B (char "0")) 9)
                   (ret 0) )
                (set Num
                   (addu
@@ -967,7 +967,8 @@
       # Calculate buffer size
       (let N (setq Num (& Num -9))  # Clear sign bit
          (until (cnt? N)  # Calculate length
-            (setq Len (+ Len 20)  N (val (big N))) ) )  # Add length of 'digit'
+            (inc 'Len 20)
+            (setq N (val (big N))) ) )  # Add length of 'digit'
       (setq Len (/ Len 18))  # Divide by 18 (rounded), word count
       (let (Acc (b64 Len)  TopA Acc)
          # Build BCD
@@ -986,7 +987,7 @@
                                  (setq C
                                     (if (> 1000000000000000000 N)
                                        0
-                                       (setq N (- N 1000000000000000000))  # BCD overflow
+                                       (dec 'N 1000000000000000000)  # BCD overflow
                                        1 ) )
                                  (set A N) )
                               (? (> (inc 'I) TopI))
@@ -1002,7 +1003,7 @@
                               (setq C
                                  (if (> 1000000000000000000 (setq N (+ N N C)))  # Double digit
                                     0
-                                    (setq N (- N 1000000000000000000))  # BCD overflow
+                                    (dec 'N 1000000000000000000)  # BCD overflow
                                     1 ) )
                               (set I N) )
                            (? (> (inc 'I) TopI)) )
@@ -1276,7 +1277,7 @@
                ((gt0 N)
                   (while (and (big? Y) (>= N 64))  # Large shift count
                      (setq Y (val (big Y)))  # Discard 64 bits
-                     (unless (setq N (- N 64))
+                     (unless (dec 'N 64)
                         (goto 9) ) )
                   (setq Y (safe (shru Y)))  # Non-destructive
                   (while (dec 'N)
@@ -1284,7 +1285,7 @@
                (T
                   (while (>= -64 N)
                      (setq Y (safe (consNum 0 Y)))
-                     (unless (setq N (+ N 64))
+                     (unless (inc 'N 64)
                         (goto 9) ) )
                   (setq Y (safe (shlu Y)))  # Non-destructive
                   (while (inc 'N)
@@ -1411,7 +1412,8 @@
                      (loop
                         (let N (+ R M)
                            (when (>= Y N)
-                              (setq Y (- Y N)  R (+ N M)) ) )
+                              (dec 'Y N)
+                              (setq R (+ N M)) ) )
                         (setq R (shr R 1))
                         (? (=0 (setq M (shr M 2)))) )
                      (or (nil? Z) (>= R Y) (inc 'R))  # Round
@@ -1453,19 +1455,19 @@
 (de initSeed (X)
    (let C 0
       (while (pair X)
-         (setq C (+ C (initSeed (++ X)))) )
+         (inc 'C (initSeed (++ X))) )
       (unless (nil? X)
          (unless (num? X)  # Need number
             (setq X (name (& (val (tail X)) -9))) )
          (if (cnt? X)
-            (setq C (+ C (shr X 3)))  # Keep sign
+            (inc 'C (shr X 3))  # Keep sign
             (when (sign? X)
                (inc 'C)
                (setq X (pos X)) )
             (loop
-               (setq C (+ C (val (dig X))))
+               (inc 'C (val (dig X)))
                (? (cnt? (setq X (val (big X))))) )
-            (setq C (+ C (int X))) ) )
+            (inc 'C (int X)) ) )
       C ) )
 
 # (seed 'any) -> cnt

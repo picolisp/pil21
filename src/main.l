@@ -1,4 +1,4 @@
-# 18jul20 Software Lab. Alexander Burger
+# 19jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -615,9 +615,9 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                            (M (/ (- N 5) 306)
                               D (/ (+ N (* M -306) 5) 10) )
                            (if (> 10 M)
-                              (setq M (+ M 3))
+                              (inc 'M 3)
                               (inc 'Y)
-                              (setq M (- M 9)) )
+                              (dec 'M 9) )
                            (cons (cnt Y)
                               (cons (cnt M)
                                  (cons (cnt D) $Nil) ) ) ) ) ) ) ) ) ) ) )
@@ -1127,10 +1127,12 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (if (sign? X)  # ([-]1.0 . lst)
                   (while (pair Val)
                      (bufFloat (++ Val) Scl Ptr)
-                     (setq N (+ N 4)  Ptr (ofs Ptr 4)) )
+                     (inc 'N 4)
+                     (setq Ptr (ofs Ptr 4)) )
                   (while (pair Val)
                      (bufDouble (++ Val) Scl Ptr)
-                     (setq N (+ N 8)  Ptr (ofs Ptr 8)) ) )
+                     (inc 'N 8)
+                     (setq Ptr (ofs Ptr 8)) ) )
                N ) ) ) ) )
 
 (de natRetBuf (Spec (i8** . Ptr))

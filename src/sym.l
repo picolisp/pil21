@@ -1,4 +1,4 @@
-# 18jul20 Software Lab. Alexander Burger
+# 19jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -7,7 +7,8 @@
 (de i64 bufSize (Nm)
    (let N 1
       (while (big? Nm)
-         (setq N (+ N 8)  Nm (val (big Nm))) )
+         (inc 'N 8)
+         (setq Nm (val (big Nm))) )
       (setq Nm (int Nm))
       (while Nm
          (inc 'N)
@@ -44,7 +45,7 @@
          (if (== B (char "@"))
             (when (val $HomeLen)
                (memcpy P (val $Home) @)
-               (setq P (ofs P @)) )
+               (inc 'P @) )
             (set P B)
             (inc 'P) )
          (while (set P (symByte Q))
@@ -743,9 +744,9 @@
                   ((<> C (char "@")) (byteSym C R))
                   ((== (setq C (symByte P)) (char "@"))
                      (byteSym C R) )  # "@@"
-                  ((gt0 (setq C (- C (char "0"))))
+                  ((gt0 (dec 'C (char "0")))
                      (when (> C 9)
-                        (setq C (- C 7)) )  # Adjust for letter
+                        (dec 'C 7) )  # Adjust for letter
                      (when (ge0 (setq C (- N (i64 C))))
                         (let I A
                            (while (ge0 (dec 'C))

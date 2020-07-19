@@ -1,4 +1,4 @@
-# 13jul20 Software Lab. Alexander Burger
+# 19jul20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -871,16 +871,19 @@ False Beg End Safe *Safe)
    (llvm~sub "sub") )
 
 (asm (@Op1 @Op2 @Sgn)
-   ((X Z)
-      (and Z (quit "Second argument not supported" Z))
+   ((X Y)
       (if (num? X)
-         (@Op1 X)
-         (let (Y (or (pre? "%" X) (val X))  V (val Y))
+         (if Y (@Op1 X @) (@Op1 X))
+         (default Y 1)
+         (let
+            (Typ (if (num? Y) 'i32 (type (val Y)))
+               Z (or (pre? "%" X) (val X))
+               V (val Z) )
             (casq V
                ((i8 i32 i64 any)
-                  (ssa (inc '*Ssa) @Op2 " " (type V) " " Y ", 1") )
+                  (ssa (inc '*Ssa) @Op2 " " (type V) " " Z ", " Y) )
                ((i1* i1** i8* i8** i8*** i32* i32** i64* i64**)
-                  (ssa (inc '*Ssa) "getelementptr " (pointee V) ", " V " " Y ", i32 " @Sgn 1) )
+                  (ssa (inc '*Ssa) "getelementptr " (pointee V) ", " V " " Z ", " Typ " " @Sgn Y) )
                (T (quit "Bad type" V)) )
             (prog1
                (def (pack "%" *Ssa) V)
