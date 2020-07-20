@@ -1,4 +1,4 @@
-# 19jul20 Software Lab. Alexander Burger
+# 20jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1414,9 +1414,8 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 # (next) -> any
 (de _next (Exe)
    (let X (val $Next)
-      (set
-         $Next (car X)
-         $At2 (cdr X)) ) )
+      (set $Next (car X))
+      (cdr X) ) )
 
 # (arg 'cnt) -> any
 (de _arg (Exe)

@@ -1,4 +1,4 @@
-# 19jul20 Software Lab. Alexander Burger
+# 20jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -495,25 +495,27 @@
 (de void tellEnd ((i32 . Pid))
    (let (P (val $Ptr)  Q (val $TellBuf))
       (set P END)  # Close list
-      (inc 'P 8)
-      (let N (- P Q)  # Size without PID and count
+      (inc 'P)
+      (let (D (- P Q)  N (- D 8))  # Size without PID and count
          (set
             (i32* Q) Pid
             (inc (i32* Q)) (i32 N) )
          (when (val $Tell)
-            (unless (wrBytes @ Q N)
+            (unless (wrBytes @ Q D)
                (close @)
                (set $Tell 0) ) )
          (let
             (Cld (val $Child)  # Iterate children
                <Cld (ofs Cld (* (val $Children) (child T))) )
+            (inc 'Q 8)
             (until (== Cld <Cld)
                (let Cld: (child Cld)
                   (when
                      (and
                         (Cld: pid)
                         (or (=0 Pid) (== Pid (Cld: pid))) )
-                     (wrChild Cld P N) ) ) ) ) ) ) )
+                     (wrChild Cld Q N) ) )
+               (setq Cld (ofs Cld (child T))) ) ) ) ) )
 
 (de void unsync ()
    (when (val $Tell)
