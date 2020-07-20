@@ -1064,7 +1064,7 @@
                (setpgid (Io: pid @) 0)  # Set process group
                (close (val Pfd))  # Close read pipe
                (let F (Io: fd (val 2 Pfd))
-                  (initOutFile F null)
+                  (initOutFile F)
                   (closeOnExec Exe F) ) ) ) ) ) )
 
 (de void erOpen (Exe X (i8* . P))
@@ -1902,7 +1902,7 @@
                (closeOnExec Exe F)
                (cond
                   ((atom X)  # No 'prg'
-                     (initOutFile F null)
+                     (initOutFile F)
                      (cnt (i64 F)) )
                   (T
                      (setpgid (Io: pid) 0)  # Set process group
@@ -1913,8 +1913,19 @@
 
 # (open 'any ['flg]) -> cnt | NIL
 (de _open (Exe)
-   #!
-   Exe )
+   (let
+      (X (cdr Exe)
+         Nm (xName Exe (evSym X))
+         S (pathString Nm (b8 (pathSize Nm)))
+         Flg (nil? (eval (cadr X))) )
+      (loop
+         (? (ge0 (if Flg (openRdWr S) (openRd S)))
+            (closeOnExec Exe @)
+            (initInFile @ (strdup S))
+            (initOutFile @)
+            (cnt (i64 @)) )
+         (? (<> (gErrno) EINTR) $Nil)
+         (sigChk Exe) ) ) )
 
 # (close 'cnt) -> cnt | NIL
 (de _close (Exe)
