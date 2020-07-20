@@ -1,4 +1,4 @@
-# 16jul20 Software Lab. Alexander Burger
+# 20jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -79,8 +79,8 @@
 (local) (malloc realloc free fork getenv setenv getpid getpgrp setsid alarm
 setpgid execvp isatty tcgetattr read write pread pwrite fread fwrite
 putc_unlocked fflush fileno pipe memcmp strlen strcpy strdup strcmp strchr
-strrchr dlsym dlerror dup2 close signal tcsetpgrp waitpid setjmp longjmp kill
-exit)
+strrchr dlsym dlerror dup dup2 close signal tcsetpgrp waitpid setjmp longjmp
+kill exit)
 
 (de T i8* malloc (i64))
 (de T i8* realloc (i8* i64))
@@ -117,6 +117,7 @@ exit)
 (de T i8* strrchr (i8* i32))
 (de T i8* dlsym (i8* i8*))
 (de T i8* dlerror ())
+(de T i32 dup (i32))
 (de T i32 dup2 (i32 i32))
 (de T i32 close (i32))
 (de T i8* signal (i32 i8*))
@@ -140,16 +141,18 @@ exit)
 
 (var PipeBufSize i64 NIL)  # PIPE_BUF
 
-(local) (stderrNum stderrMsg gPrintf strErrno openRdonly openWronly openRdWr
-openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
+(local) (stderrNum stderrMsg gPrintf strErrno openRd openWr openRdWr
+openRdWrAppend openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking
+fcntlSetOwn getDir)
 
 (de T i64 stderrNum (i8* i64))
 (de T i8* stderrMsg (i8* i8*))
 (de T i32 gPrintf (i8* i32 i8* i8*))
 (de T i8* strErrno ())
-(de T i32 openRdonly (i8*))
-(de T i32 openWronly (i8*))
+(de T i32 openRd (i8*))
+(de T i32 openWr (i8*))
 (de T i32 openRdWr (i8*))
+(de T i32 openRdWrAppend (i8*))
 (de T i32 openWrAppend (i8*))
 (de T i32 socketPair (i32*))
 (de T i32 fcntlCloExec (i32))

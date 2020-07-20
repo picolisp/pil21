@@ -1,4 +1,4 @@
-# 11jun20 Software Lab. Alexander Burger
+# 20jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -52,7 +52,9 @@
 
 (de void rdLockDb ()
    (unless (== $T (val $Solo))  # Not already locked whole DB
-      (while (lt0 (rdLock ((dbFile (val $DbFiles)) fd) 0 1))  # Descriptor of first file
+      (while
+         (lt0
+            (rdLock ((dbFile (val $DbFiles)) fd) 0 1 YES) )  # Descriptor of first file
          (unless (== (gErrno) EINTR)
             (lockErr) ) ) ) )
 

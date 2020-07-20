@@ -1,4 +1,4 @@
-// 16jul20 Software Lab. Alexander Burger
+// 20jul20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -23,15 +23,19 @@ char *strErrno(void) {
    return strerror(errno);
 }
 
-int32_t openRdonly(char *nm) {
+int32_t openRd(char *nm) {
    return (int32_t)open(nm, O_RDONLY);
 }
 
-int32_t openWronly(char *nm) {
+int32_t openWr(char *nm) {
    return (int32_t)open(nm, O_CREAT | O_TRUNC | O_WRONLY, 0666);
 }
 
 int32_t openRdWr(char *nm) {
+   return (int32_t)open(nm, O_CREAT|O_RDWR, 0666);
+}
+
+int32_t openRdWrAppend(char *nm) {
    return (int32_t)open(nm, O_APPEND|O_CREAT|O_RDWR, 0666);
 }
 
@@ -316,14 +320,14 @@ int readyOut(struct pollfd *p, int32_t fd) {
 }
 
 // Locking
-int32_t rdLock(int32_t fd, off_t n, off_t len) {
+int32_t rdLock(int32_t fd, off_t n, off_t len, int32_t wait) {
    struct flock fl;
 
    fl.l_type = F_RDLCK;
    fl.l_whence = SEEK_SET;
    fl.l_start = n;
    fl.l_len = len;
-   return (int32_t)fcntl(fd, F_SETLKW, &fl);
+   return (int32_t)fcntl(fd, wait? F_SETLKW : F_SETLK, &fl);
 }
 
 int32_t wrLock(int32_t fd, off_t n, off_t len, int32_t wait) {
