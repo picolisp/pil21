@@ -142,8 +142,8 @@ kill exit)
 (var PipeBufSize i64 NIL)  # PIPE_BUF
 
 (local) (stderrNum stderrMsg gPrintf strErrno openRd openWr openRdWr
-openRdWrAppend openWrAppend socketPair fcntlCloExec fcntlSetFl nonBlocking
-fcntlSetOwn getDir)
+openRdWrAppend openWrAppend seekSet fTruncate socketPair fcntlCloExec fcntlSetFl
+nonBlocking fcntlSetOwn getDir)
 
 (de T i64 stderrNum (i8* i64))
 (de T i8* stderrMsg (i8* i8*))
@@ -154,6 +154,8 @@ fcntlSetOwn getDir)
 (de T i32 openRdWr (i8*))
 (de T i32 openRdWrAppend (i8*))
 (de T i32 openWrAppend (i8*))
+(de T i1 seekSet (i32))
+(de T i1 fTruncate (i32))
 (de T i32 socketPair (i32*))
 (de T i32 fcntlCloExec (i32))
 (de T void fcntlSetFl (i32 i32))

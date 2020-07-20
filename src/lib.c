@@ -43,6 +43,14 @@ int32_t openWrAppend(char *nm) {
    return (int32_t)open(nm, O_APPEND|O_CREAT|O_WRONLY, 0666);
 }
 
+int seekSet(int fd) {
+   return lseek(fd, 0L, SEEK_SET) == 0;
+}
+
+int fTruncate(int fd) {
+   return ftruncate(fd, 0) == 0;
+}
+
 int32_t socketPair(int *sv) {
    return (int32_t)socketpair(AF_UNIX, SOCK_STREAM, 0, sv);
 }

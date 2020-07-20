@@ -868,18 +868,20 @@
 
 # (hear 'cnt) -> cnt
 (de _hear (Exe)
-   (let (Fd (evCnt Exe (cdr Exe))  C (cnt Fd))
+   (let
+      (C (eval (cadr Exe))
+         Fd (i32 (xCnt Exe C)) )
       (when
          (or
             (lt0 Fd)
-            (>= (i32 Fd) (val $InFDs))
+            (>= Fd (val $InFDs))
             (=0 (val (ofs (val $InFiles) Fd))) )
          (badFd Exe C) )
       (when (val $Hear)
          (close @)
          (closeInFile @)
          (closeOutFile @) )
-      (set $Hear (i32 Fd))
+      (set $Hear Fd)
       C ) )
 
 # (tell ['cnt] 'sym ['any ..]) -> any
@@ -913,17 +915,17 @@
 # (poll 'cnt) -> cnt | NIL
 (de _poll (Exe)
    (let
-      (X (cdr Exe)
-         Fd (i32 (xCnt Exe (setq X (eval (car X))))) )
+      (C (eval (cadr Exe))
+         Fd (i32 (xCnt Exe C)) )
       (when (or (lt0 Fd) (>= Fd (val $InFDs)))
-         (badFd Exe X) )
+         (badFd Exe C) )
       (let In: (inFile (val (ofs (val $InFiles) Fd)))
          (ifn (In:)
             $Nil
             (let Poll (b64 1)
                (pollIn Fd Poll)
                (loop
-                  (? (> (In: cnt) (In: ix)) X)
+                  (? (> (In: cnt) (In: ix)) C)
                   (while (lt0 (gPoll Poll 1 0))
                      (unless (== (gErrno) EINTR)
                         (selectErr Exe) ) )
@@ -1514,8 +1516,12 @@
 
 # (peek) -> sym
 (de _peek (Exe)
-   #!
-   Exe )
+   (let Chr (val $Chr)
+      (unless Chr
+         (setq Chr (call $Get)) )
+      (if (lt0 Chr)
+         $Nil
+         (mkChar (getChar Chr)) ) ) )
 
 # (char) -> sym
 # (char 'cnt) -> sym
@@ -1742,18 +1748,25 @@
 
 # (err 'sym . prg) -> any
 (de _err (Exe)
-   #!
-   Exe )
+   (let (X (cdr Exe)  Err (b8 (ioFrame T)))
+      (erOpen Exe (eval (++ X)) Err)
+      (pushErrFiles Err)
+      (prog1
+         (run X)
+         (popErrFiles) ) ) )
 
 # (ctl 'sym . prg) -> any
 (de _ctl (Exe)
-   #!
-   Exe )
+   (let (X (cdr Exe)  Ctl (b8 (ioFrame T)))
+      (ctOpen Exe (eval (++ X)) Ctl)
+      (pushCtlFiles Ctl)
+      (prog1
+         (run X)
+         (popCtlFiles) ) ) )
 
 # (fd) -> cnt
 (de _fd (Exe)
-   #!
-   Exe )
+   (cnt (i64 (currFd Exe))) )
 
 (local) forkLisp
 
@@ -1905,8 +1918,16 @@
 
 # (close 'cnt) -> cnt | NIL
 (de _close (Exe)
-   #!
-   Exe )
+   (let
+      (C (eval (cadr Exe))
+         Fd (i32 (xCnt Exe C)) )
+      (loop
+         (? (=0 (close Fd))
+            (closeInFile Fd)
+            (closeOutFile Fd)
+            C )
+         (? (<> (gErrno) EINTR) $Nil)
+         (sigChk Exe) ) ) )
 
 # (echo ['cnt ['cnt]] | ['sym ..]) -> sym
 (de _echo (Exe)
@@ -2233,8 +2254,15 @@
 
 # (rewind) -> flg
 (de _rewind (Exe)
-   #!
-   $Nil )
+   (let Out: (outFile (val $OutFile))
+      (if
+         (and
+            (Out:)
+            (let Fd (Out: fd)
+               (Out: ix 0)
+               (and (seekSet Fd) (fTruncate Fd)) ) )
+         $T
+         $Nil ) ) )
 
 # (ext 'cnt . prg) -> any
 (de _ext (Exe)
