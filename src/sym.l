@@ -1,4 +1,4 @@
-# 19jul20 Software Lab. Alexander Burger
+# 21jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -85,14 +85,13 @@
 
 (de mkStr ((i8* . Str))
    (if Str
-      (let
-         (P (push 4 NIL ZERO NIL)
-            Q (link (ofs P 2) T) )  # [cnt last name link]
+      (let P (push 4 NIL ZERO NIL)  # [cnt last name link]
+         (link (ofs P 2) T)
          (loop
             (? (=0 (val Str)))
             (byteSym @ P)
             (inc 'Str) )
-         (consStr (val Q)) )
+         (consStr (val 3 P)) )
       $Nil ) )
 
 (de i8 firstByte (Sym)
@@ -472,11 +471,10 @@
 (de _name (Exe)
    (let Tail (val (tail (needSymb Exe (eval (cadr Exe)))))
       (if (sym? Tail)  # External
-         (let
-            (P (push 4 NIL ZERO NIL)
-               Q (link (ofs P 2) T) )  # [cnt last name link]
+         (let P (push 4 NIL ZERO NIL)  # [cnt last name link]
+            (link (ofs P 2) T)
             (packExtNm (& (name Tail) -9) P)
-            (consStr (val Q)) )
+            (consStr (val 3 P)) )
          (consStr (name Tail)) ) ) )
 
 # (nsp 'sym) -> sym
@@ -703,11 +701,11 @@
    (save -ZERO
       (let
          (X (cdr Exe)
-            P (push 4 NIL ZERO NIL)  # [cnt last name link]
-            Q (link (ofs P 2)) )
+            P (push 4 NIL ZERO NIL) )  # [cnt last name link]
+         (link (ofs P 2))
          (while (pair X)
             (pack (safe (eval (++ X))) P) )
-         (consStr (val Q)) ) ) )
+         (consStr (val 3 P)) ) ) )
 
 # (glue 'any 'lst) -> sym
 (de _glue (Exe)
@@ -715,14 +713,14 @@
       (X (cdr Exe)
          Y (save (eval (++ X)))  # 'any'
          Z (save (eval (++ X)))  # 'lst'
-         P (push 4 NIL ZERO NIL)  # [cnt last name link]
-         Q (link (ofs P 2)) )
+         P (push 4 NIL ZERO NIL) )  # [cnt last name link]
+      (link (ofs P 2))
       (when (pair Z)
          (loop
             (pack (++ Z) P)
             (? (atom Z))
             (pack Y P) ) )
-      (consStr (val Q)) ) )
+      (consStr (val 3 P)) ) )
 
 # (text 'any1 'any ..) -> sym
 (de _text (Exe)

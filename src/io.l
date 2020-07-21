@@ -1,4 +1,4 @@
-# 20jul20 Software Lab. Alexander Burger
+# 21jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1282,23 +1282,23 @@
 (de rdAtom ((i32 . Chr))
    (let
       (Int (save (val $Intern))  # Current symbol namespaces
-         R (push 4 NIL ZERO NIL) )  # [cnt last name link]
-      (link (ofs R 2))
-      (charSym Chr R)  # Pack first char
+         P (push 4 NIL ZERO NIL) )  # [cnt last name link]
+      (link (ofs P 2))
+      (charSym Chr P)  # Pack first char
       (setq Chr (val $Chr))
       (while (ge0 Chr)
          (if (== Chr (char "~"))  # Namespace
-            (let S (requestSym (val 3 R))  # Find or create symbol
+            (let S (requestSym (val 3 P))  # Find or create symbol
                (needNsp 0 S)
                (set (set $Intern (any $Cell)) S)  # Switch symbol namespace
-               (set R 4  3 R ZERO) )  # Build new name
+               (set P 4  3 P ZERO) )  # Build new name
             (? (strchr $Delim Chr))
             (when (== Chr (char "\\"))
                (setq Chr (call $Get)) )
-            (charSym Chr R) )
+            (charSym Chr P) )
          (setq Chr (call $Get)) )
       (prog1
-         (let Nm (val 3 R)
+         (let Nm (val 3 P)
             (cond
                ((== Nm ZERO) (badInput))
                ((symToNum Nm (int (val $Scl)) (char ".") 0) @)
@@ -1411,7 +1411,9 @@
             (if (== (setq C (call $Get)) (char "\""))
                (prog (call $Get) $Nil)  # Empty string
                (unless (testEsc C) (eofErr))
-               (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
+               (let
+                  (P (push 4 NIL ZERO NIL)  # [cnt last name link]
+                     Q (link (ofs P 2)) )
                   (loop
                      (charSym (val $Chr) P)
                      (? (== (setq C (call $Get)) (char "\"")))
@@ -1450,7 +1452,7 @@
             (call $Get)
             (rdAtom C) ) ) ) )
 
-(local) (read1 token)
+(local) (read1 noToken token)
 
 (de read1 ((i32 . End))
    (unless (val $Chr)
@@ -1459,19 +1461,72 @@
       $Nil
       (read0 YES) ) )
 
-(de token (Set (i32 . C))
+(inline noToken (C Set)
+   (not
+      (or
+         (== C (char "\\"))
+         (and (>= (char "z") C) (>= C (char "a")))
+         (and (>= (char "Z") C) (>= C (char "A")))
+         (strchr Set C) ) ) )
+
+(de token (Set (i32 . Cmt))
    (let C (val $Chr)
       (unless C
          (setq C (call $Get)) )
       (cond
-         ((lt0 (skipc C)) 0)  # Skip white space and comments
+         ((lt0 (skipc Cmt)) 0)  # Skip white space and comments
          ((== (setq C @) (char "\""))
-            (setq C (call $Get))
-            #!
-            $T )
+            (cond
+               ((== (setq C (call $Get)) (char "\""))  # Empty string
+                  (call $Get)
+                  $Nil )
+               ((not (testEsc C)) $Nil)
+               (T
+                  (let
+                     (Y (cons (mkChar (val $Chr)) $Nil)
+                        R (save Y) )
+                     (loop
+                        (? (== (setq C (call $Get)) (char "\""))
+                           (call $Get) )  # Skip "\""
+                        (? (not (testEsc C)))
+                        (setq Y
+                           (set 2 Y (cons (mkChar (val $Chr)) $Nil)) ) )
+                     R ) ) ) )
+         ((and (>= (char "9") C) (>= C (char "0")))
+            (let P (push 4 NIL ZERO NIL)  # [cnt last name link]
+               (link (ofs P 2) T)
+               (loop
+                  (byteSym (i8 C) P)
+                  (?
+                     (and
+                        (<> (setq C (call $Get)) (char "."))
+                        (or (> (char "0") C) (> C (char "9"))) ) ) )
+               (symToNum (val 3 P) 0 (char ".") 0) ) )
          (T
-            #!
-            $Nil ) ) ) )
+            (let
+               (Nm (xName 0 Set)
+                  S (pathString Nm (b8 (pathSize Nm))) )
+               (if
+                  (or
+                     (== C (char "+"))
+                     (== C (char "-"))
+                     (noToken C S) )
+                  (prog1
+                     (mkChar (getChar C))
+                     (call $Get) )
+                  (when (== C (char "\\"))
+                     (call $Get) )
+                  (let P (push 4 NIL ZERO NIL)  # [cnt last name link]
+                     (link (ofs P 2) T)
+                     (loop
+                        (byteSym (i8 C) P)
+                        (?
+                           (and
+                              (noToken (setq C (call $Get)) S)
+                              (or (> (char "0") C) (> C (char "9"))) ) )
+                        (when (== C (char "\\"))
+                           (call $Get) ) )
+                     (requestSym (val 3 P)) ) ) ) ) ) ) )
 
 # (read ['sym1 ['sym2]]) -> any
 (de _read (Exe)
@@ -1479,8 +1534,10 @@
       (prog1
          (if (atom X)
             (read1 0)
-            # (token)
-            $Nil )
+            (let Y (save (needSymb Exe (eval (++ X))))
+               (if (token Y (firstChar (needSymb Exe (eval (car X)))))
+                  @
+                  $Nil ) ) )
          (and
             (== (val $Chr) (char "\n"))
             (== (val $InFile) (val (val $InFiles)))  # Stdin
@@ -1636,21 +1693,21 @@
                      (? (le0 (setq C (call $Get))))
                      (? (strchr S C)) )
                   (drop Q
-                     (consStr (val Q)) ) ) ) ) ) ) )
+                     (consStr (val 3 P)) ) ) ) ) ) ) )
 
 (local) eol
 
 (de i1 eol ((i32 . C))
-(cond
-   ((lt0 C) YES)
-   ((== C (char "\n"))
-      (set $Chr 0)
-      YES )
-   ((== C (char "\r"))
-      (when (== (call $Get) (char "\n"))
-         (set $Chr 0) )
-      YES )
-   (T NO) ) )
+   (cond
+      ((lt0 C) YES)
+      ((== C (char "\n"))
+         (set $Chr 0)
+         YES )
+      ((== C (char "\r"))
+         (when (== (call $Get) (char "\n"))
+            (set $Chr 0) )
+         YES )
+      (T NO) ) )
 
 # (line 'flg ['cnt ..]) -> lst|sym
 (de _line (Exe)
@@ -1694,7 +1751,7 @@
                         (charSym (getChar C) P)
                         (? (eol (setq C (call $Get)))) )
                      (drop Q
-                        (consStr (val Q)) ) ) )
+                        (consStr (val 3 P)) ) ) )
                (T
                   (let
                      (N (evCnt Exe X)

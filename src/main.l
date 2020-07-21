@@ -1,4 +1,4 @@
-# 20jul20 Software Lab. Alexander Burger
+# 21jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -395,11 +395,10 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de xSym (X)
    (if (symb? X)
       X
-      (let
-         (P (push 4 NIL ZERO NIL)
-            Q (link (ofs P 2) T) )  # [cnt last name link]
+      (let P (push 4 NIL ZERO NIL)  # [cnt last name link]
+         (link (ofs P 2) T)
          (pack X P)
-         (consStr (val Q)) ) ) )
+         (consStr (val 3 P)) ) ) )
 
 (de evSym (Exe)
    (xSym (eval (car Exe))) )

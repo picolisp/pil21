@@ -1,4 +1,4 @@
-# 19jul20 Software Lab. Alexander Burger
+# 21jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1078,9 +1078,10 @@
             (setq Ign (firstByte (needSymb Exe (eval (car X))))) ) )
       (cond
          ((num? A)
-            (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
+            (let P (push 4 NIL ZERO NIL)  # [cnt last name link]
+               (link (ofs P 2))
                (fmtNum A Scl Sep Ign P)
-               (consStr (val Q)) ) )
+               (consStr (val 3 P)) ) )
          ((sym? A)
             (cond
                ((sym? (val (tail A))) $Nil)
@@ -1089,9 +1090,10 @@
          (T
             (if
                (symToNum
-                  (let (P (push 4 NIL ZERO NIL)  Q (link (ofs P 2)))  # [cnt last name link]
+                  (let P (push 4 NIL ZERO NIL)  # [cnt last name link]
+                     (link (ofs P 2))
                      (pack A P)
-                     (val Q) )
+                     (val 3 P) )
                   Scl Sep Ign )
                @
                $Nil ) ) ) ) )
