@@ -1419,10 +1419,11 @@
          $Nil ) ) )
 
 # (group 'lst) -> lst
-#!
+(de _group (Exe)
+   #!
+   Exe )
 
-
-## List Merge Sort: Bill McDaniel, DDJ Jun99 ###
 # (sort 'lst ['fun]) -> lst
-#!
-
+(de _sort (Exe)
+   #!
+   Exe )

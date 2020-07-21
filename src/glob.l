@@ -438,6 +438,8 @@
    (NIL "prove" _prove)
    (NIL "->" _arrow)
    (NIL "unify" _unify)
+   (NIL "group" _group)
+   (NIL "sort" _sort)
    # Networking
    (NIL "udp" _udp)
    # System functions
