@@ -1,4 +1,4 @@
-# 19jul20 Software Lab. Alexander Burger
+# 21jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -457,6 +457,18 @@
                      (setq P (set 2 P (cons Y $Nil))) ) ) )
             (val R) ) ) ) )
 
+# (insert 'cnt 'lst 'any) -> lst
+#!
+
+# (remove 'cnt 'lst) -> lst
+#!
+
+# (place 'cnt 'lst 'any) -> lst
+#!
+
+# (strip 'any) -> any
+#!
+
 # (split 'lst 'any ..) -> lst
 (de _split (Exe)
    (let (X (cdr Exe)  L (save (eval (car X))))
@@ -617,6 +629,9 @@
                            (shift L) )
                         L ) ) ) ) ) ) ) )
 
+# (stem 'lst 'any ..) -> lst
+#!
+
 # (fin 'any) -> num|sym
 (de _fin (Exe)
    (let X (eval (cadr Exe))
@@ -681,6 +696,12 @@
 (de _neqT (Exe)
    (if (== (eval (cadr Exe)) $T) $Nil $T) )
 
+# (< 'any ..) -> flg
+#!
+
+# (<= 'any ..) -> flg
+#!
+
 # (> 'any ..) -> flg
 (de _gt (Exe)
    (let (X (cdr Exe)  Y (save (eval (car X))))
@@ -698,6 +719,12 @@
          (let Z (eval (car X))
             (? (lt0 (compare Y Z)) $Nil)
             (setq Y (safe Z)) ) ) ) )
+
+# (max 'any ..) -> any
+#!
+
+# (min 'any ..) -> any
+#!
 
 # (atom 'any) -> flg
 (de _atom (Exe)
@@ -1390,3 +1417,12 @@
       (if (unify (cadr L) X (car L) X)
          (val (val $Pnl))
          $Nil ) ) )
+
+# (group 'lst) -> lst
+#!
+
+
+## List Merge Sort: Bill McDaniel, DDJ Jun99 ###
+# (sort 'lst ['fun]) -> lst
+#!
+

@@ -1,4 +1,4 @@
-# 16jul20 Software Lab. Alexander Burger
+# 21jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -205,7 +205,6 @@
    (NIL "getl" _getl)
    (NIL "wipe" _wipe)
    (NIL "meta" _meta)
-   #!
    (NIL "low?" _lowQ)
    (NIL "upp?" _uppQ)
    (NIL "lowc" _lowc)
@@ -262,6 +261,7 @@
    # Mapping
    (NIL "apply" _apply)
    (NIL "pass" _pass)
+   (NIL "maps" _maps)
    (NIL "map" _map)
    (NIL "mapc" _mapc)
    (NIL "maplist" _maplist)
@@ -274,8 +274,12 @@
    (NIL "find" _find)
    (NIL "pick" _pick)
    (NIL "fully" _fully)
+   (NIL "cnt" _cnt)
    (NIL "sum" _sum)
+   (NIL "maxi" _maxi)
+   (NIL "mini" _mini)
    (NIL "fish" _fish)
+   (NIL "by" _by)
    # Control flow
    (NIL "as" _as)
    (NIL "lit" _lit)
