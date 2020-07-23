@@ -1,4 +1,4 @@
-# 21jul20 Software Lab. Alexander Burger
+# 23jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -651,6 +651,13 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                      (cons (cnt (/ N 3600))
                         (cons (cnt (% (/ N 60) 60))
                            (cons (cnt (% N 60)) $Nil) ) ) ) ) ) ) ) ) )
+
+# (usec ['flg]) -> num
+(de _usec (Exe)
+   (cnt
+      (if (nil? (eval (cadr Exe)))
+         (- (getUsec YES) (val $USec))
+         (getUsec NO) ) ) )
 
 # Try to load dynamic library
 (local) sharedLib
@@ -1639,7 +1646,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (signal (val SIGPIPE Sig) (val SigIgn))
    (signal (val SIGTTIN Sig) (val SigIgn))
    (signal (val SIGTTOU Sig) (val SigIgn))
-   (set $USec (getUsec))
+   (set $USec (getUsec YES))
    (unless (setjmp QuitRst)
       (loadAll 0)  # Load arguments
       (set $Repl YES)

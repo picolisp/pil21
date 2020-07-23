@@ -1,4 +1,4 @@
-# 20jul20 Software Lab. Alexander Burger
+# 23jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -203,7 +203,7 @@ nonBlocking fcntlSetOwn getDir)
 # System
 (local) (getUsec getMsec getDate getGmDate getTime getGmTime fileInfo)
 
-(de T i64 getUsec ())
+(de T i64 getUsec (i1))
 (de T i64 getMsec ())
 (de T i64 getDate ())
 (de T i64 getGmDate ())

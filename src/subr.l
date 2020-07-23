@@ -1,4 +1,4 @@
-# 21jul20 Software Lab. Alexander Burger
+# 23jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -697,10 +697,22 @@
    (if (== (eval (cadr Exe)) $T) $Nil $T) )
 
 # (< 'any ..) -> flg
-#!
+(de _lt (Exe)
+   (let (X (cdr Exe)  Y (save (eval (car X))))
+      (loop
+         (? (atom (shift X)) $T)
+         (let Z (eval (car X))
+            (? (ge0 (compare Y Z)) $Nil)
+            (setq Y (safe Z)) ) ) ) )
 
 # (<= 'any ..) -> flg
-#!
+(de _le (Exe)
+   (let (X (cdr Exe)  Y (save (eval (car X))))
+      (loop
+         (? (atom (shift X)) $T)
+         (let Z (eval (car X))
+            (? (gt0 (compare Y Z)) $Nil)
+            (setq Y (safe Z)) ) ) ) )
 
 # (> 'any ..) -> flg
 (de _gt (Exe)
@@ -721,10 +733,22 @@
             (setq Y (safe Z)) ) ) ) )
 
 # (max 'any ..) -> any
-#!
+(de _max (Exe)
+   (let (X (cdr Exe)  R (save (eval (car X))))
+      (while (pair (shift X))
+         (let Z (eval (car X))
+            (when (gt0 (compare Z R))
+               (setq R (safe Z)) ) ) )
+      R ) )
 
 # (min 'any ..) -> any
-#!
+(de _min (Exe)
+   (let (X (cdr Exe)  R (save (eval (car X))))
+      (while (pair (shift X))
+         (let Z (eval (car X))
+            (when (lt0 (compare Z R))
+               (setq R (safe Z)) ) ) )
+      R ) )
 
 # (atom 'any) -> flg
 (de _atom (Exe)
@@ -1420,10 +1444,142 @@
 
 # (group 'lst) -> lst
 (de _group (Exe)
-   #!
-   Exe )
+   (let X (save (eval (cadr Exe)))
+      (if (atom X)
+         $Nil
+         (let Y (cons (cdar X) $Nil)
+            (setq Y
+               (cons (cons (caar X) (cons Y Y)) $Nil) )
+            (let R (save Y)
+               (while (pair (shift X))
+                  (let (L (car X)  K (car L))
+                     (setq Y (cons (cdr L) $Nil))
+                     (let Z R
+                        (loop
+                           (let V (car Z)
+                              (? (equal K (car V))
+                                 (set
+                                    (shift V)
+                                    (set 2 (car V) Y) ) )
+                              (? (atom (cdr Z))
+                                 (set 2 Z
+                                    (cons (cons K (cons Y Y)) $Nil) ) )
+                              (setq Z @) ) ) ) ) )
+               (let Z R
+                  (loop
+                     (let V (car Z)
+                        (set 2 V (cddr V)) )
+                     (? (atom (shift Z))) ) )
+               R ) ) ) ) )
+
+(local) cmpSort
+
+(inline (E A B) cmpSort (X Y)
+   (set 4 A X  4 B Y)
+   (if (nil? (evList E)) 0 -1) )
 
 # (sort 'lst ['fun]) -> lst
 (de _sort (Exe)
-   #!
-   Exe )
+   (let (X (cdr Exe)  Y (eval (++ X)))
+      (cond
+         ((atom Y) @)
+         ((atom X)
+            (let (Out0 Y  Out1 $Nil)
+               (loop
+                  (let (In0 Out0  In1 Out1  P)
+                     (if
+                        (and
+                           (pair In1)
+                           (ge0 (compare (car In0) (car In1))) )
+                        (setq In1 (cdr (setq P In1)))
+                        (setq In0 (cdr (setq P In0))) )
+                     (let (Tail0 (ofs P 1)  Tail1 0  Last (car P))
+                        (setq Out0 P  Out1 $Nil)
+                        (set 2 P $Nil)
+                        (while (or (pair In0) (pair In1))
+                           (cond
+                              ((atom In1)
+                                 (setq In0 (cdr (setq P In0)))
+                                 (when (lt0 (compare (car P) Last))
+                                    (xchg 'Tail0 'Tail1) ) )
+                              ((atom In0)
+                                 (setq In1 (cdr (setq P In1)))
+                                 (when (lt0 (compare (car P) Last))
+                                    (xchg 'Tail0 'Tail1) ) )
+                              ((lt0 (compare (car In0) Last))
+                                 (if (ge0 (compare (car In1) Last))
+                                    (setq In1 (cdr (setq P In1)))
+                                    (if (lt0 (compare (car In0) (car In1)))
+                                       (setq In0 (cdr (setq P In0)))
+                                       (setq In1 (cdr (setq P In1))) )
+                                    (xchg 'Tail0 'Tail1) ) )
+                              ((lt0 (compare (car In1) Last))
+                                 (setq In0 (cdr (setq P In0))) )
+                              ((lt0 (compare (car In0) (car In1)))
+                                 (setq In0 (cdr (setq P In0))) )
+                              (T (setq In1 (cdr (setq P In1)))) )
+                           (setq Tail0
+                              (ofs
+                                 (if Tail0
+                                    (set Tail0 P)
+                                    (setq Out1 P) )
+                                 1 ) )
+                           (set 2 P $Nil)
+                           (setq Last (car P)) ) ) )
+                  (? (atom Out1) Out0) ) ) )
+         (T
+            (let
+               (Out0 (link (push Y NIL) T)
+                  Out1 (link (push $Nil NIL))
+                  In0 (link (push -ZERO NIL))
+                  In1 (link (push -ZERO NIL))
+                  B (push NIL $Nil ZERO NIL)
+                  A (push NIL B ZERO NIL)
+                  E (push NIL A ZERO (eval (car X)) NIL)  # [car cdr name fun link]
+                  P )
+               (set
+                  B (ofs B 3)
+                  A (ofs A 3)
+                  E (link (ofs E 3)) )
+               (loop
+                  (set In0 (val Out0)  In1 (val Out1))
+                  (if
+                     (and
+                        (pair (val In1))
+                        (ge0 (cmpSort (caar In0) (caar In1))) )
+                     (set In1 (cdr (setq P (val In1))))
+                     (set In0 (cdr (setq P (val In0)))) )
+                  (let (Tail0 (ofs P 1)  Tail1 0  Last (car P))
+                     (set Out0 P  Out1 $Nil)
+                     (set 2 P $Nil)
+                     (while (or (pair (val In0)) (pair (val In1)))
+                        (cond
+                           ((atom (val In1))
+                              (set In0 (cdr (setq P (val In0))))
+                              (when (lt0 (cmpSort (car P) Last))
+                                 (xchg 'Tail0 'Tail1) ) )
+                           ((atom (val In0))
+                              (set In1 (cdr (setq P (val In1))))
+                              (when (lt0 (cmpSort (car P) Last))
+                                 (xchg 'Tail0 'Tail1) ) )
+                           ((lt0 (cmpSort (caar In0) Last))
+                              (if (ge0 (cmpSort (caar In1) Last))
+                                 (set In1 (cdr (setq P (val In1))))
+                                 (if (lt0 (cmpSort (caar In0) (caar In1)))
+                                    (set In0 (cdr (setq P (val In0))))
+                                    (set In1 (cdr (setq P (val In1)))) )
+                                 (xchg 'Tail0 'Tail1) ) )
+                           ((lt0 (cmpSort (caar In1) Last))
+                              (set In0 (cdr (setq P (val In0)))) )
+                           ((lt0 (cmpSort (caar In0) (caar In1)))
+                              (set In0 (cdr (setq P (val In0)))) )
+                           (T (set In1 (cdr (setq P (val In1))))) )
+                        (setq Tail0
+                           (ofs
+                              (if Tail0
+                                 (set Tail0 P)
+                                 (set Out1 P) )
+                              1 ) )
+                        (set 2 P $Nil)
+                        (setq Last (car P)) ) )
+                  (? (atom (val Out1)) (val Out0)) ) ) ) ) ) )

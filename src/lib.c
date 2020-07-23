@@ -1,4 +1,4 @@
-// 20jul20 Software Lab. Alexander Burger
+// 23jul20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -242,12 +242,15 @@ void setCooked(void) {
 static struct timeval Tv;
 static struct tm *Time;
 
-int64_t getUsec(void) {
-   struct timeval tim;
+int64_t getUsec(int flg) {
+   if (flg) {
+      struct timeval tim;
 
-   if (gettimeofday(&tim, NULL))
-      return 0;
-   return (int64_t)tim.tv_sec * 1000000 + (int64_t)tim.tv_usec;
+      if (gettimeofday(&tim, NULL))
+         return 0;
+      return (int64_t)tim.tv_sec * 1000000 + (int64_t)tim.tv_usec;
+   }
+   return (int64_t)Tv.tv_usec;
 }
 
 int64_t getMsec(void) {
