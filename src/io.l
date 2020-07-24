@@ -1,4 +1,4 @@
-# 21jul20 Software Lab. Alexander Burger
+# 24jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1108,7 +1108,7 @@
                   (unless (== (gErrno) EINTR)
                      (openErr Exe X) )
                   (sigChk Exe) )
-               (let Fd @
+               (let Fd (Io: fd @)
                   (if Flg
                      (rdLock Fd 0 0 YES)
                      (wrLock Fd 0 0 YES) )
