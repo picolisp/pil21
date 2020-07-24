@@ -1,4 +1,4 @@
-# 23jul20 Software Lab. Alexander Burger
+# 24jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -458,16 +458,66 @@
             (val R) ) ) ) )
 
 # (insert 'cnt 'lst 'any) -> lst
-#!
+(de _insert (Exe)
+   (let
+      (X (cdr Exe)
+         N (evCnt Exe X)
+         L (save (eval (car (shift X)))) )
+      (setq X (eval (car (shift X))))
+      (if (or (atom L) (le0 (dec 'N)))
+         (cons X L)
+         (let (Y (cons (car L) $Nil)  R (save Y))
+            (while (and (pair (shift L)) (dec 'N))
+               (setq Y (set 2 Y (cons (car L) $Nil))) )
+            (set 2 Y (cons X L))
+            R ) ) ) )
 
 # (remove 'cnt 'lst) -> lst
-#!
+(de _remove (Exe)
+   (let
+      (X (cdr Exe)
+         N (evCnt Exe X)
+         L (save (eval (car (shift X)))) )
+      (cond
+         ((or (atom L) (lt0 (dec 'N))) L)
+         ((=0 N) (cdr L))
+         (T
+            (let (Y (cons (car L) $Nil)  R (save Y))
+               (loop
+                  (? (atom (shift L))
+                     (set 2 Y L) )
+                  (? (=0 (dec 'N))
+                     (set 2 Y (cdr L)) )
+                  (setq Y (set 2 Y (cons (car L) $Nil))) )
+               R ) ) ) ) )
 
 # (place 'cnt 'lst 'any) -> lst
-#!
+(de _place (Exe)
+   (let
+      (X (cdr Exe)
+         N (evCnt Exe X)
+         L (save (eval (car (shift X)))) )
+      (setq X (eval (car (shift X))))
+      (cond
+         ((atom L) (eval (car X)))
+         ((le0 (dec 'N)) (cons X (cdr L)))
+         (T
+            (let (Y (cons (car L) $Nil)  R (save Y))
+               (loop
+                  (? (atom (shift L))
+                     (set 2 Y (cons X L)) )
+                  (? (=0 (dec 'N))
+                     (set 2 Y (cons X (cdr L))) )
+                  (setq Y (set 2 Y (cons (car L) $Nil))) )
+               R ) ) ) ) )
 
 # (strip 'any) -> any
-#!
+(de _strip (Exe)
+   (let X (eval (cadr Exe))
+      (while (and (pair X) (== $Quote (car X)))
+         (? (== (cdr X) X))  # Circular
+         (setq X @) )
+      X ) )
 
 # (split 'lst 'any ..) -> lst
 (de _split (Exe)
@@ -630,7 +680,24 @@
                         L ) ) ) ) ) ) ) )
 
 # (stem 'lst 'any ..) -> lst
-#!
+(de _stem (Exe)
+   (let (X (cdr Exe)  L (save (eval (++ X))))
+      (if (atom X)
+         L
+         (let (R L  N 1  A)
+            (loop
+               (setq A (link (push (eval (car X)))))
+               (? (atom (shift X)))
+               (inc 'N) )
+            (loop
+               (let (P A  I N)
+                  (loop
+                     (? (equal (car L) (car P))
+                        (setq R (cdr L)) )
+                     (? (=0 (dec 'I)))
+                     (shift P) ) )
+               (? (atom (shift L))) )
+            R ) ) ) )
 
 # (fin 'any) -> num|sym
 (de _fin (Exe)

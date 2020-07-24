@@ -1,4 +1,4 @@
-# 23jul20 Software Lab. Alexander Burger
+# 24jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -391,6 +391,10 @@
    (NIL "delete" _delete)
    (NIL "delq" _delq)
    (NIL "replace" _replace)
+   (NIL "insert" _insert)
+   (NIL "remove" _remove)
+   (NIL "place" _place)
+   (NIL "strip" _strip)
    (NIL "split" _split)
    (NIL "reverse" _reverse)
    (NIL "flip" _flip)
@@ -398,6 +402,7 @@
    (NIL "clip" _clip)
    (NIL "head" _head)
    (NIL "tail" _tail)
+   (NIL "stem" _stem)
    (NIL "fin" _fin)
    (NIL "last" _last)
    (NIL "==" _eq)
