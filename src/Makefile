@@ -1,4 +1,4 @@
-# 17may20 Software Lab. Alexander Burger
+# 25jul20 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -10,9 +10,9 @@ BIN = ../bin
 LIB = ../lib
 
 INC = lib/llvm.l vers.l defs.l glob.l dec.l
-SRC = main.l gc.l big.l sym.l io.l db.l apply.l flow.l subr.l net.l
+SRC = main.l gc.l big.l sym.l io.l db.l apply.l flow.l subr.l
 
-all: $(BIN)/picolisp $(LIB)/ext.so
+all: $(BIN)/picolisp $(LIB)/ext.so $(LIB)/const
 
 # Base system
 $(BIN)/picolisp: picolisp.bc
@@ -38,6 +38,10 @@ $(LIB)/ext.so: ext.bc
 ext.bc: $(INC) ext.l
 	../pil lib/llvm.l ext.l -bye > ext.ll
 	llvm-as -o ext.bc ext.ll
+
+# System constants
+$(LIB)/const: const.c
+	clang const.c  &&  ./a.out > $(LIB)/const  &&  rm ./a.out
 
 # Clean up
 clean:

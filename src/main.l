@@ -1,4 +1,4 @@
-# 23jul20 Software Lab. Alexander Burger
+# 25jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -833,7 +833,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (? (and (== X A) (== Y B)) 0)
                (sigChk 0) ) ) ) ) )
 
-(load "io.l" "db.l" "apply.l" "flow.l" "subr.l" "net.l")
+(load "io.l" "db.l" "apply.l" "flow.l" "subr.l")
 
 # Evaluation
 (local) (undefined evExpr evList)
@@ -1143,6 +1143,10 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de natRetBuf (Spec (i8** . Ptr))
    (cond
+      ((== Spec $T)  # 'T' Direct Lisp value
+         (let P (i64* (val Ptr))
+            (set Ptr (i8* (inc P)))
+            (val P) ) )
       ((== Spec $N)  # 'N' Number (signed 64 bit)
          (let P (i64* (val Ptr))
             (set Ptr (i8* (inc P)))
@@ -1205,6 +1209,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de natRet (Spec Val)
    (cond
+      ((== Spec $T) Val)  # 'T' Direct Lisp value
       ((== Spec $N) (box Val))  # 'N' Number (signed 64 bit)
       ((== Spec $P) (box64 Val))  # 'P' Pointer or positive (unsigned 64 bit)
       ((== Spec $I)  # 'I' Integer (signed 32 bit)

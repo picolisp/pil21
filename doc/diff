@@ -1,4 +1,4 @@
-# 23jul20 Software Lab. Alexander Burger
+# 25jul20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -22,7 +22,8 @@
 - 'native'
    + 'P' result specification
    - only functions with fixed number of arguments
-   - no 'T' result spec (skipped call)
+   - 'T' result spec returns direct Lisp value (no skipped call)
+   - (T . any) argument passes direct Lisp value
 - Because of readline(3), '*Run' tasks are suspended while typing in the REPL
 
 % Main coroutine has a tag 'T'

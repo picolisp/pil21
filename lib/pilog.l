@@ -1,8 +1,9 @@
-# 21jun20 Software Lab. Alexander Burger
+# 25jul20 Software Lab. Alexander Burger
 
 (symbols "priv" 'pico)
 
-(export) (be clause repeat asserta assertz retract rules)
+(export) (*Rule be clause repeat asserta assertz retract rules)
+(local) CL
 
 (de be CL
    (clause CL) )
@@ -46,7 +47,7 @@
 
 ### Pilog Interpreter ###
 (export) (goal fail pilog solve query ?)
-(local) (CL Env Prg Q Dbg R L @H @A @B @Obj @X @Lst @CL @P @C *R)
+(local) (Env Prg Q Dbg R L @H @A @B @Obj @X @Lst @CL @P @C *R)
 
 (de goal (CL . @)
    (let Env '(T)

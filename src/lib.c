@@ -1,4 +1,4 @@
-// 23jul20 Software Lab. Alexander Burger
+// 25jul20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -420,6 +420,8 @@ ffi *ffiPrep(char *lib, char *fun, int64_t lst) {
 
    if (x == (int64_t)(SymTab + Nil))
       rtype = &ffi_type_void;
+   else if (x == (int64_t)(SymTab + T))
+      rtype = &ffi_type_sint64;
    else if (x == (int64_t)(SymTab + I))
       rtype = &ffi_type_sint32;
    else if (x == (int64_t)(SymTab + N))
@@ -467,6 +469,8 @@ int64_t ffiCall(ffi *p, int64_t lst) {
          int64_t nm = name(val(tail(x)));
          bufString(nm, (char*)(value[i] = (int64_t)alloca(bufSize(nm))));
       }
+      else if (car(x) == (int64_t)(SymTab + T))  // Direct Lisp value
+         value[i] = cdr(x);
       else if (cnt(y = cdr(x))) {  // Fixpoint
          if (y & 8)
             *(float*)&value[i] = (float)number(car(x)) / (float)(y >> 4);

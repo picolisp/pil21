@@ -1,4 +1,4 @@
-# 24jul20 Software Lab. Alexander Burger
+# 25jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -449,8 +449,6 @@
    (NIL "unify" _unify)
    (NIL "group" _group)
    (NIL "sort" _sort)
-   # Networking
-   (NIL "udp" _udp)
    # System functions
    (NIL "raw" _raw)
    (NIL "alarm" _alarm)
