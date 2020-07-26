@@ -117,8 +117,8 @@
 (de sysdefs ("Sym" "Alt")
    (in (or "Alt" "@lib/sysdefs")
       (if (from (pack "\n[" "Sym" "]\n"))
-         (while (read)
-            (def @ (read)) )
+         (while (and (skip) (<> "[" @))
+            (def (read) (read)) )
          (quit "No sysdefs" "Sym") ) ) )
 
 (de daemon ("X" . Prg)

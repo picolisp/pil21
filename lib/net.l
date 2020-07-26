@@ -58,6 +58,12 @@ NI_MAXHOST NI_NAMEREQD)
                (when (or (atom A) (> (inc 'Port) (cdr A)))
                   (close Sd)
                   (ipErr "IP bind") ) )
+            (when
+               (and
+                  (== Type SOCK_STREAM)
+                  (lt0 (native "@" "listen" 'I Sd 5)) )
+               (close Sd)
+               (ipErr "IP listen") )
             #!
             ) )
       Sd ) )

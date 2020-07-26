@@ -27,10 +27,6 @@ static void ttl(char *nm) {
    printf("\n[%s]\n", nm);
 }
 
-static void sep(void) {
-   printf("[]\n");
-}
-
 static void num(char *sym, long val) {
    printf("%s\t%ld\n", sym, val);
 }
@@ -59,7 +55,6 @@ int main(void) {
    num("sin6_port", (char*)&addr.sin6_port - (char*)&addr);
    num("NI_MAXHOST", NI_MAXHOST);
    num("NI_NAMEREQD", NI_NAMEREQD);
-   sep();
 
    return 0;
 }
