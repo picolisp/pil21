@@ -32,6 +32,8 @@ static void str(char *sym, char *val) {
 }
 
 int main(void) {
+   struct sockaddr_in6 addr;
+
    printf("%sSystem Constants\n", __VERSION__);
    // Networking
    num("SOCK_STREAM", SOCK_STREAM);
@@ -40,5 +42,8 @@ int main(void) {
    num("IPPROTO_IPV6", IPPROTO_IPV6);
    num("IPV6_V6ONLY", IPV6_V6ONLY);
    num("sockaddr_in6", sizeof(struct sockaddr_in6));
+   num("sin6_family",  (char*)&addr.sin6_family - (char*)&addr);
+   num("sin6_addr", (char*)&addr.sin6_addr - (char*)&addr);
+   num("sin6_port", (char*)&addr.sin6_port - (char*)&addr);
    return 0;
 }

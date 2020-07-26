@@ -1,4 +1,4 @@
-// 25jul20 Software Lab. Alexander Burger
+// 26jul20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -502,7 +502,7 @@ int64_t ffiCall(ffi *p, int64_t lst) {
    ffi_call(&p->cif, p->fun, &rc, ptr);
    for (i = 0;  i < nargs;  ++i, lst = cdr(lst)) {
       x = car(lst);
-      if (!atom(x)  &&  !num(y = cdr(x))  &&  (z = car(x)) != (int64_t)(SymTab + Nil))
+      if (!atom(x)  &&  !num(y = cdr(x))  &&  (z = car(x)) != (int64_t)(SymTab + Nil)  &&  z != (int64_t)(SymTab + T))
          set(z, natRetBuf(cdr(car(y)), (char**)&value[i]));
    }
    return rc;

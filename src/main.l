@@ -1,4 +1,4 @@
-# 25jul20 Software Lab. Alexander Burger
+# 26jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1070,7 +1070,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (cnt (i64 (gErrno))) )
 
 # Native calls
-(local) (fetchChar natBuf natRetBuf natRet)
+(local) (fetchChar natBuf natErr natRetBuf natRet)
 
 (de i32 fetchChar ((i8** . Ptr))
    (let (P (val Ptr)  C (i32 (val P)))
@@ -1141,6 +1141,9 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                      (setq Ptr (ofs Ptr 8)) ) )
                N ) ) ) ) )
 
+(de NIL natErr (Spec)
+   (err 0 Spec ($ "Bad result spec") null) )
+
 (de natRetBuf (Spec (i8** . Ptr))
    (cond
       ((== Spec $T)  # 'T' Direct Lisp value
@@ -1205,10 +1208,11 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                         (? (and (nil? Y) (== S $C)))
                         (setq X (set 2 X (cons Y $Nil))) ) ) ) )
             R ) )
-      (T $Nil) ) )
+      (T (natErr Spec)) ) )
 
 (de natRet (Spec Val)
    (cond
+      ((nil? Spec) $Nil)
       ((== Spec $T) Val)  # 'T' Direct Lisp value
       ((== Spec $N) (box Val))  # 'N' Number (signed 64 bit)
       ((== Spec $P) (box64 Val))  # 'P' Pointer or positive (unsigned 64 bit)
@@ -1249,7 +1253,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                         (? (and (nil? Y) (== S $C)))
                         (setq X (set 2 X (cons Y $Nil))) ) ) ) )
             R ) )
-      (T $Nil) ) )
+      (T (natErr Spec)) ) )
 
 # (native 'cnt1|sym1 'cnt2|sym2 'any 'any ..) -> any
 (de _native (Exe)

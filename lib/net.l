@@ -2,14 +2,13 @@
 
 (symbols 'net 'pico)
 
-(local) (SOCK_STREAM SOCK_DGRAM AF_INET6 sockaddr_in6)
+(local) (SOCK_STREAM SOCK_DGRAM AF_INET6 IPPROTO_IPV6 IPV6_V6ONLY sockaddr_in6
+sin6_family sin6_addr sin6_port)
 
-(const 'SOCK_STREAM)
-(const 'SOCK_DGRAM)
-(const 'AF_INET6)
-(const 'IPPROTO_IPV6)
-(const 'IPV6_V6ONLY)
-(const 'sockaddr_in6)
+(mapc const
+   (quote
+      SOCK_STREAM SOCK_DGRAM AF_INET6 IPPROTO_IPV6 IPV6_V6ONLY
+      sockaddr_in6 sin6_family sin6_addr sin6_port ) )
 
 (local) (ipErr)
 
@@ -37,6 +36,8 @@
          (ipErr "IPV6_V6ONLY") )
       (buf Addr sockaddr_in6
          (native "@" "memset" NIL Addr 0 sockaddr_in6)
+         (struct (+ Addr sin6_family) NIL `(- AF_INET6))
+         (struct (+ Addr sin6_addr) NIL (0 . 8) (0 . 8))  # "::" (16 null-bytes)
          #!
          )
       Sd ) )
