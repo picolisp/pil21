@@ -1,4 +1,4 @@
-# 16jul20 Software Lab. Alexander Burger
+# 26jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -752,6 +752,18 @@
                   (set (val 2 P) (val P))  # Restore values
                   (? (== Q (setq P (val 3 P)) ) ) )
                (set $Bind P) ) ) ) ) )
+
+# (buf sym 'cnt . prg)
+(de _buf (Exe)
+   (let
+      (X (cdr Exe)
+         Y (++ X)
+         Z (needCnt Exe (eval (++ X)))
+         P (set $Bind (push (val Y) Y (val $Bind))) )  # [[sym] sym LINK]
+      (set Y (box64 (i64 (b8 (int Z)))))
+      (prog1
+         (run X)
+         (set Y (val P)  $Bind (val 3 P)) ) ) )
 
 # (catch 'any . prg) -> any
 (de _catch (Exe)

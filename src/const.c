@@ -1,4 +1,4 @@
-// 25jul20 Software Lab. Alexander Burger
+// 26jul20 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdint.h>
@@ -37,6 +37,8 @@ int main(void) {
    num("SOCK_STREAM", SOCK_STREAM);
    num("SOCK_DGRAM", SOCK_DGRAM);
    num("AF_INET6", AF_INET6);
+   num("IPPROTO_IPV6", IPPROTO_IPV6);
+   num("IPV6_V6ONLY", IPV6_V6ONLY);
    num("sockaddr_in6", sizeof(struct sockaddr_in6));
    return 0;
 }
