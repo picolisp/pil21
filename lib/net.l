@@ -2,15 +2,13 @@
 
 (symbols 'net 'pico)
 
-(local) (SOCK_STREAM SOCK_DGRAM AF_INET6 IPPROTO_IPV6 IPV6_V6ONLY sockaddr_in6
-sin6_family sin6_addr sin6_port)
+(local) (SOCK_STREAM SOCK_DGRAM AF_INET6 SOL_SOCKET SO_REUSEADDR IPPROTO_IPV6
+IPV6_V6ONLY INET6_ADDRSTRLEN sockaddr_in6 sin6_family sin6_addr sin6_port
+NI_MAXHOST NI_NAMEREQD)
 
-(mapc const
-   (quote
-      SOCK_STREAM SOCK_DGRAM AF_INET6 IPPROTO_IPV6 IPV6_V6ONLY
-      sockaddr_in6 sin6_family sin6_addr sin6_port ) )
+(sysdefs "Networking")
 
-(local) (ipErr)
+(local) ipErr
 
 (de ipErr (Msg)
    (quit Msg (native "@" "strErrno" 'S)) )
@@ -31,13 +29,28 @@ sin6_family sin6_addr sin6_port)
                Sd
                IPPROTO_IPV6
                IPV6_V6ONLY
-               '(NIL (4 . I) . 0)
+               '(NIL (4 . I) (0 . 4))
                4 ) )
          (ipErr "IPV6_V6ONLY") )
       (buf Addr sockaddr_in6
          (native "@" "memset" NIL Addr 0 sockaddr_in6)
          (struct (+ Addr sin6_family) NIL `(- AF_INET6))
          (struct (+ Addr sin6_addr) NIL (0 . 8) (0 . 8))  # "::" (16 null-bytes)
+         (let Port A
+            (cond
+               ((num? A)
+                  (or
+                     (=0 Port)
+                     (ge0
+                        (native "@" "setsockopt" 'I  #? OpenBSD
+                           Sd
+                           SOL_SOCKET
+                           SO_REUSEADDR
+                           '(NIL (4 . I) (1 . 4))
+                           4 ) )
+                     (ipErr "SO_REUSEADDR") ) )
+               ((pair A) (setq Port (car A)))
+               (T (quit "Bad argument" A)) ) )
          #!
          )
       Sd ) )

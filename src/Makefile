@@ -1,4 +1,4 @@
-# 25jul20 Software Lab. Alexander Burger
+# 26jul20 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -12,11 +12,11 @@ LIB = ../lib
 INC = lib/llvm.l vers.l defs.l glob.l dec.l
 SRC = main.l gc.l big.l sym.l io.l db.l apply.l flow.l subr.l
 
-all: $(LIB)/const $(BIN)/picolisp $(LIB)/ext.so
+all: $(LIB)/sysdefs $(BIN)/picolisp $(LIB)/ext.so
 
-# System constants
-$(LIB)/const: const.c
-	clang const.c  &&  ./a.out > $(LIB)/const  &&  rm ./a.out
+# System definitions
+$(LIB)/sysdefs: sysdefs.c
+	clang sysdefs.c  &&  ./a.out > $(LIB)/sysdefs  &&  rm ./a.out
 
 # Base system
 $(BIN)/picolisp: picolisp.bc

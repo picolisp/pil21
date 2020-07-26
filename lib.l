@@ -1,4 +1,4 @@
-# 25jul20 Software Lab. Alexander Burger
+# 26jul20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -114,11 +114,12 @@
          "Old" (fill (cdr "Lst") "Old") )
       "New" ) )
 
-(de const ("Sym" "Alt")
-   (in (or "Alt" "@lib/const")
-      (if (from (pack "\n" "Sym" "\t"))
-         (val (def "Sym" (read)))
-         (quit "Undefined constant" "Sym") ) ) )
+(de sysdefs ("Sym" "Alt")
+   (in (or "Alt" "@lib/sysdefs")
+      (if (from (pack "\n[" "Sym" "]\n"))
+         (while (read)
+            (def @ (read)) )
+         (quit "No sysdefs" "Sym") ) ) )
 
 (de daemon ("X" . Prg)
    (prog1
