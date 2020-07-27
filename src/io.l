@@ -1,4 +1,4 @@
-# 24jul20 Software Lab. Alexander Burger
+# 27jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2339,6 +2339,42 @@
       (prog1
          (run (cdr X))
          (set $ExtN Old) ) ) )
+
+(local) (getPlio putPlio)
+
+(de i32 getPlio ()
+   (let P (val $Ptr)
+      (set $Ptr (inc P))
+      (i32 (val P)) ) )
+
+(de void putPlio ((i8 . B))
+   (let P (val $Ptr)
+      (set P B)
+      (when (== (set $Ptr (inc P)) (val $End))
+         (err 0 0 ($ "Size overflow") null) ) ) )
+
+# (plio 'num) -> any
+# (plio 'num 'cnt 'any) -> cnt
+(de _plio (Exe)
+   (let
+      (X (cdr Exe)
+         P
+         (i8*
+            (if (cnt? (needNum Exe (eval (++ X))))
+               (int @)
+               (val (dig @)) ) ) )
+      (set
+         $Extn (val $ExtN)  # Set external symbol offset
+         $Ptr P )
+      (if (pair X)
+         (let (N (evCnt Exe X)  Y (eval (car (shift X))))
+            (set
+               $PutBin (fun (void i8) putPlio)
+               $End (ofs P N) )
+            (binPrint Y)
+            (cnt (- (val $Ptr) P)) )
+         (set $GetBin (fun (i32) getPlio))
+         (if (binRead) @ $Nil) ) ) )
 
 # (rd ['sym]) -> any
 # (rd 'cnt) -> num | NIL

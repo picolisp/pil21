@@ -1,6 +1,8 @@
-# 26jul20 Software Lab. Alexander Burger
+# 27jul20 Software Lab. Alexander Burger
 
 (symbols 'net 'pico)
+
+(export) (port udp)
 
 (local) (SOCK_STREAM SOCK_DGRAM AF_INET6 SOL_SOCKET SO_REUSEADDR IPPROTO_IPV6
 IPV6_V6ONLY INET6_ADDRSTRLEN sockaddr_in6 sin6_family sin6_addr sin6_port
@@ -13,7 +15,7 @@ NI_MAXHOST NI_NAMEREQD)
 (de ipErr (Msg)
    (quit Msg (native "@" "strErrno" 'S)) )
 
-(export) (port udp)
+(private) (A Type Sd Addr Port Var)
 
 # (port ['T] 'cnt|(cnt . cnt) ['var]) -> cnt
 (de port (A . @)
@@ -52,8 +54,8 @@ NI_MAXHOST NI_NAMEREQD)
                ((pair A) (setq Port (car A)))
                (T (quit "Bad argument" A)) )
             (loop
-               (struct (+ Addr sin6_port) NIL
-                  (cons (native "@" "htons" 'I Port) 2) )
+               (byte (+ Addr sin6_port) (>> 8 Port))  # Put big-endian (network byte order)
+               (byte (+ Addr sin6_port 1) Port)
                (T (ge0 (native "@" "bind" 'I Sd Addr sockaddr_in6)))
                (when (or (atom A) (> (inc 'Port) (cdr A)))
                   (close Sd)
@@ -64,9 +66,27 @@ NI_MAXHOST NI_NAMEREQD)
                   (lt0 (native "@" "listen" 'I Sd 5)) )
                (close Sd)
                (ipErr "IP listen") )
-            #!
-            ) )
+            (let? Var (next)
+               (when
+                  (lt0
+                     (native "@" "getsockname" 'I
+                        Sd
+                        Addr
+                        '(NIL (4 . I) (`sockaddr_in6 . 4)) ) )
+                  (close Sd)
+                  (ipErr "IP getsockname") )
+               (set Var
+                  (+  # Get big-endian (network byte order)
+                     (>> -8 (byte (+ Addr sin6_port)))
+                     (byte (+ Addr sin6_port 1)) ) ) ) ) )
       Sd ) )
 
-(de udp ()
-   )
+# (udp 'cnt) -> any
+# (udp 'sym 'any2 'any3) -> any
+(de udp (X Port Val)
+   (buf P 4096
+      (ifn Port
+         (when (ge0 (native "@" "recv" 'N X P 4096 0))
+            (plio P) )
+         #!
+         ]

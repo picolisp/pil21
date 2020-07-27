@@ -1,4 +1,4 @@
-# 26jul20 Software Lab. Alexander Burger
+# 27jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -245,6 +245,7 @@
    (NIL "flush" _flush)
    (NIL "rewind" _rewind)
    (NIL "ext" _ext)
+   (NIL "plio" _plio)
    (NIL "rd" _rd)
    (NIL "pr" _pr)
    (NIL "wr" _wr)
