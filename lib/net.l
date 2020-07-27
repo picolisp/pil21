@@ -6,7 +6,8 @@
 
 (local) (SOCK_STREAM SOCK_DGRAM AF_INET6 SOL_SOCKET SO_REUSEADDR IPPROTO_IPV6
 IPV6_V6ONLY INET6_ADDRSTRLEN sockaddr_in6 sin6_family sin6_addr sin6_port
-NI_MAXHOST NI_NAMEREQD)
+NI_MAXHOST NI_NAMEREQD addrinfo ai_family ai_socktype ai_addrlen ai_addr ai_next
+AF_UNSPEC)
 
 (sysdefs "Networking")
 
@@ -84,15 +85,44 @@ NI_MAXHOST NI_NAMEREQD)
 (local) server
 
 (de server(Type Node Service)
-   #!
-   )
+   (use Lst
+      (and
+         (=0
+            (native "@" "getaddrinfo" 'I
+               Node
+               Service
+               (cons NIL (`addrinfo)  # hints:
+                  (0 . 4)  # ai_flags
+                  (`AF_UNSPEC . 4)  # ai_family
+                  (cons Type 4)  # ai_socktype
+                  0 )  # Clear rest
+               '(Lst (8 . P)) ) )
+         Lst ) ) )
 
 # (udp 'cnt) -> any
 # (udp 'sym 'any2 'any3) -> any
 (de udp (X Port Val)
-   (buf P 4096
-      (ifn Port
-         (when (ge0 (native "@" "recv" 'N X P 4096 0))
-            (plio P) )
-         #!
-         ]
+   (buf Buf 4096
+      (cond
+         (Port
+            (let? Lst (server SOCK_DGRAM X (sym Port))
+               (let (P Lst  N (plio Buf 4096 Val))
+                  (loop
+                     (T (=0 P)
+                        (native "@" "freeaddrinfo" 'I Lst)
+                        NIL )
+                     (T
+                        (ge0
+                           (native "@" "socket" 'I
+                              (struct (+ P ai_family) 'I)
+                              (struct (+ P ai_socktype) 'I)
+                              0 ) )
+                        (native "@" "sendto" 'I @ Buf N 0
+                           (struct (+ P ai_addr) 'P)
+                           (struct (+ P ai_addrlen) 'N) )
+                        (close @)
+                        (native "@" "freeaddrinfo" 'I Lst)
+                        Val )
+                     (setq P (struct (+ P ai_next) 'P)) ) ) ) )
+         ((ge0 (native "@" "recv" 'N X Buf 4096 0))
+            (plio Buf) ) ) ) )

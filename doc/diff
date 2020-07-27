@@ -1,4 +1,4 @@
-# 25jul20 Software Lab. Alexander Burger
+# 27jul20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -17,6 +17,7 @@
 - 'tick' is not supported
 - 'arg' without arguments is not supported
 - 'tzo' is not supported
+- 'case' is more strict in expecting atomic keys
 - Second argument to 'name' (i.e. renaming) is not supported
 - Lambda-binding environment offset for 'eval' and 'run' only for '@'
 - 'native'

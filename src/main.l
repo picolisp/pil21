@@ -1,4 +1,4 @@
-# 26jul20 Software Lab. Alexander Burger
+# 27jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1309,7 +1309,9 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (while (pair (shift X))
          (setq P
             (ofs P (natBuf (eval (car X)) P)) ) )
-      (natRet Y N) ) )
+      (if (nil? Y)
+         @
+         (natRetBuf Y (i8** (push N))) ) ) )
 
 # Lisp callbacks
 (local) cbl
