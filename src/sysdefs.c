@@ -1,4 +1,4 @@
-// 26jul20 Software Lab. Alexander Burger
+// 27jul20 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdint.h>
@@ -37,6 +37,7 @@ static void str(char *sym, char *val) {
 
 int main(void) {
    struct sockaddr_in6 addr;
+   struct addrinfo ai;
 
    printf("# %sSystem Definitions\n", __VERSION__);
 
@@ -55,6 +56,9 @@ int main(void) {
    num("sin6_port", (char*)&addr.sin6_port - (char*)&addr);
    num("NI_MAXHOST", NI_MAXHOST);
    num("NI_NAMEREQD", NI_NAMEREQD);
+   num("addrinfo", sizeof(struct addrinfo));
+   num("ai_family", (char*)&ai.ai_family - (char*)&ai);
+   num("ai_socktype", (char*)&ai.ai_socktype - (char*)&ai);
 
    return 0;
 }

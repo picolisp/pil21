@@ -81,6 +81,12 @@ NI_MAXHOST NI_NAMEREQD)
                      (byte (+ Addr sin6_port 1)) ) ) ) ) )
       Sd ) )
 
+(local) server
+
+(de server(Type Node Service)
+   #!
+   )
+
 # (udp 'cnt) -> any
 # (udp 'sym 'any2 'any3) -> any
 (de udp (X Port Val)

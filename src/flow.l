@@ -1,4 +1,4 @@
-# 26jul20 Software Lab. Alexander Burger
+# 27jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -327,10 +327,10 @@
 # (ifn 'any1 any2 . prg) -> any
 (de _ifn (Exe)
    (let X (cdr Exe)
-      (ifn (nil? (eval (++ X)))
-         (run (cdr X))
+      (if (nil? (eval (++ X)))
+         (eval (car X))
          (set $At @)
-         (eval (car X)) ) ) )
+         (run (cdr X)) ) ) )
 
 # (if2 'any1 'any2 any3 any4 any5 . prg) -> any
 (de _if2 (Exe)
