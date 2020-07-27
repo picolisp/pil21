@@ -1,4 +1,4 @@
-# 21jul20 Software Lab. Alexander Burger
+# 27jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -367,7 +367,7 @@
             (set P (link (ofs P 3))) ) )
       (loop
          (let P (cdr E)
-            (? (atom (val 4 P)))
+            (? (atom (val 4 P)) $Nil)
             (? (not (nil? (evList E)))
                (set $At2 @)
                (val 4 P) )
