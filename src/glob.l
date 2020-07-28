@@ -1,4 +1,4 @@
-# 27jul20 Software Lab. Alexander Burger
+# 28jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -94,12 +94,13 @@
    ($Quote "quote" _quote)
    ## Sync src/pico.h 'T' (11*2+1)
    ($T "T" $T)
-   ($I "I" $Nil)
    ($N "N" $Nil)
-   ($P "P" $Nil)
-   ($S "S" $Nil)
    ($C "C" $Nil)
+   ($S "S" $Nil)
    ($B "B" $Nil)
+   ($I "I" $Nil)
+   ($P "P" $Nil)
+   ($W "W" $Nil)
    ($Solo "*Solo" ZERO)
    ($PPid "*PPid" $Nil)
    ($Pid "*Pid" 0)

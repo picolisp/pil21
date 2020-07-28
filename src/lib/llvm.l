@@ -1,4 +1,4 @@
-# 19jul20 Software Lab. Alexander Burger
+# 28jul20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -882,7 +882,7 @@ False Beg End Safe *Safe)
             (casq V
                ((i8 i32 i64 any)
                   (ssa (inc '*Ssa) @Op2 " " (type V) " " Z ", " Y) )
-               ((i1* i1** i8* i8** i8*** i32* i32** i64* i64**)
+               ((i1* i1** i8* i8** i8*** i16* i16** i32* i32** i64* i64**)
                   (ssa (inc '*Ssa) "getelementptr " (pointee V) ", " V " " Z ", " Typ " " @Sgn Y) )
                (T (quit "Bad type" V)) )
             (prog1
@@ -1026,7 +1026,7 @@ False Beg End Safe *Safe)
                      (ssa (inc '*Ssa) "getelementptr i64, i64* %" (dec *Ssa) ", i32 " Ofs) )
                   (ssa (inc '*Ssa) "load " "i64, i64* %" (dec *Ssa)) )
                (def (pack "%" *Ssa) 'any) )
-            ((i1* i1** i8* i8** i8*** i32* i32** i64* i64**)
+            ((i1* i1** i8* i8** i8*** i16* i16** i32* i32** i64* i64**)
                (let Typ (pointee (val X))
                   (ifn Ofs
                      (ssa (inc '*Ssa) "load " Typ ", " (val X) " " X)

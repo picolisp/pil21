@@ -1,4 +1,4 @@
-// 26jul20 Software Lab. Alexander Burger
+// 28jul20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -422,14 +422,16 @@ ffi *ffiPrep(char *lib, char *fun, int64_t lst) {
       rtype = &ffi_type_void;
    else if (x == (int64_t)(SymTab + T))
       rtype = &ffi_type_sint64;
-   else if (x == (int64_t)(SymTab + I))
-      rtype = &ffi_type_sint32;
    else if (x == (int64_t)(SymTab + N))
       rtype = &ffi_type_sint64;
    else if (x == (int64_t)(SymTab + P))
       rtype = &ffi_type_uint64;
+   else if (x == (int64_t)(SymTab + I))
+      rtype = &ffi_type_sint32;
    else if (x == (int64_t)(SymTab + C))
       rtype = &ffi_type_uint32;
+   else if (x == (int64_t)(SymTab + W))
+      rtype = &ffi_type_sint16;
    else if (x == (int64_t)(SymTab + B))
       rtype = &ffi_type_uint8;
    else if (cnt(x))

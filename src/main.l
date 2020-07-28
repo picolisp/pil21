@@ -1,4 +1,4 @@
-# 27jul20 Software Lab. Alexander Burger
+# 28jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1116,15 +1116,17 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (let Siz (int Val)
                (cond
                   ((num? X)  # (num . cnt)
-                     (setq X
+                     (let N
                         (if (cnt? X)
                            (int @)
-                           (val (dig @)) ) )
-                     (case Siz
-                        (1 (set Ptr (i8 X)))
-                        (2 (set (i16* Ptr) (i16 X)))
-                        (4 (set (i32* Ptr) (i32 X)))
-                        (T (set (i64* Ptr) X)) ) )
+                           (val (dig @)) )
+                        (when (sign? X)
+                           (setq N (- N)) )
+                        (case Siz
+                           (1 (set Ptr (i8 N)))
+                           (2 (set (i16* Ptr) (i16 N)))
+                           (4 (set (i32* Ptr) (i32 N)))
+                           (T (set (i64* Ptr) N)) ) ) )
                   ((sym? X)  # (sym . cnt)
                      (setq X (name (val (tail X))))
                      (bufString X Ptr) ) )
@@ -1161,17 +1163,21 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       ((== Spec $I)  # 'I' Integer (signed 32 bit)
          (if
             (ge0
-               (-
-                  (x|
-                     (let P (i32* (val Ptr))
-                        (set Ptr (i8* (inc P)))
-                        (val P) )
-                     (hex "80000000") )
-                  (hex "80000000") ) )
+               (let P (i32* (val Ptr))
+                  (set Ptr (i8* (inc P)))
+                  (val P) ) )
             (cnt (i64 @))
             (sign (cnt (i64 (- @)))) ) )
       ((== Spec $C)  # 'C' Character (UTF-8, 1-4 bytes)
          (if (fetchChar Ptr) (mkChar @) $Nil) )
+      ((== Spec $W)  # 'W' Integer (signed 16 bit)
+         (if
+            (ge0
+               (let P (i16* (val Ptr))
+                  (set Ptr (i8* (inc P)))
+                  (val P) ) )
+            (cnt (i64 @))
+            (sign (cnt (i64 (- @)))) ) )
       ((== Spec $B)  # 'B' Byte (unsigned 8 bit)
          (let P (val Ptr)
             (set Ptr (inc P))
@@ -1217,15 +1223,15 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       ((== Spec $N) (box Val))  # 'N' Number (signed 64 bit)
       ((== Spec $P) (box64 Val))  # 'P' Pointer or positive (unsigned 64 bit)
       ((== Spec $I)  # 'I' Integer (signed 32 bit)
-         (if
-            (ge0
-               (-
-                  (x| (i32 Val) (hex "80000000"))
-                  (hex "80000000") ) )
+         (if (ge0 (i32 Val))
             (cnt (i64 @))
             (sign (cnt (i64 (- @)))) ) )
       ((== Spec $C)  # 'C' Character (UTF-8, 1-4 bytes)
          (if (i32 Val) (mkChar @) $Nil) )
+      ((== Spec $W)  # 'W' Integer (signed 16 bit)
+         (if (ge0 (i16 Val))
+            (cnt (i64 @))
+            (sign (cnt (i64 (- @)))) ) )
       ((== Spec $B)  # 'B' Byte (unsigned 8 bit)
          (cnt (i64 (i8 Val))) )
       ((== Spec $S)  # 'S' String (UTF-8)
@@ -1473,9 +1479,12 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (val (dig @)) ) ) )
       (if (atom X)
          (cnt (i64 (val P)))
-         (prog1
-            (needCnt Exe (eval (car X)))
-            (set P (i8 (int @))) ) ) ) )
+         (let
+            (Y (needCnt Exe (eval (car X)))
+               N (int @) )
+            (set P
+               (i8 (if (sign? Y) (- N) N)) )
+            Y ) ) ) )
 
 # (env ['lst] | ['sym 'val] ..) -> lst
 (de _env (Exe)
