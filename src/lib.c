@@ -189,6 +189,10 @@ int wifStopped(int *res) {
    return WIFSTOPPED(*res);
 }
 
+int32_t nErrno(void) {
+   return errno;
+}
+
 // Sync src/defs.l 'ENOENT'
 int32_t gErrno(void) {
    switch (errno) {

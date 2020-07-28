@@ -124,7 +124,6 @@
    ($Err "*Err" $Nil)
    ($Msg "*Msg" $Nil)
    ($Uni "*Uni" $Nil)
-   ($Adr "*Adr" $Nil)
    ($Fork "*Fork" $Nil)
    ($Bye "*Bye" $Nil)
    ($Dbg "*Dbg" $Nil)

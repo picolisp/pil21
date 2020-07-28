@@ -2,13 +2,9 @@
 
 (symbols 'net 'pico)
 
-(export) (port udp)
+(export) (*Adr port accept listen udp)
 
-(local) (SOCK_STREAM SOCK_DGRAM AF_INET6 SOL_SOCKET SO_REUSEADDR IPPROTO_IPV6
-IPV6_V6ONLY INET6_ADDRSTRLEN sockaddr_in6 sin6_family sin6_addr sin6_port
-NI_MAXHOST NI_NAMEREQD addrinfo ai_family ai_socktype ai_addrlen ai_addr ai_next
-AF_UNSPEC)
-
+(sysdefs "Errno")
 (sysdefs "Networking")
 
 (local) ipErr
@@ -81,6 +77,38 @@ AF_UNSPEC)
                      (>> -8 (byte (+ Addr sin6_port)))
                      (byte (+ Addr sin6_port 1)) ) ) ) ) )
       Sd ) )
+
+# (accept 'cnt) -> cnt | NIL
+(de accept (Sd)
+   (let (Flg (native "@" "nonBlocking" 'I Sd)  N 200)
+      (buf Addr sockaddr_in6
+         (loop
+            (T
+               (ge0
+                  (native "@" "accept" 'I
+                     Sd
+                     Addr
+                     '(NIL (4 . I) (`sockaddr_in6 . 4)) ) )
+               (let Sd2 @
+                  (fcntlSetFl Sd Flg)
+                  ## (fcntlSetFl Sd2 0)  # Non-Linux?
+                  (buf Str INET6_ADDRSTRLEN
+                     (setq *Adr
+                        (native "@" "inet_ntop" 'S
+                           AF_INET6
+                           (+ Addr sin6_addr)
+                           Str
+                           INET6_ADDRSTRLEN ) ) )
+                  (native "@" "initInFile" NIL Sd2 0)
+                  (native "@" "initOuFile" NIL Sd2)
+                  Sd2 ) )
+            (NIL (and (== (errno) EAGAIN) (gt0 (dec 'N)))
+               (fcntlSetFl Sd Flg) )
+            (native "@" "usleep" NIL 99999) ) ) ) )
+
+# (listen 'cnt1 ['cnt2]) -> cnt | NIL
+(de listen ()
+   )
 
 (local) server
 

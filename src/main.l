@@ -1067,7 +1067,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 # (errno) -> cnt
 (de _errno (Exe)
-   (cnt (i64 (gErrno))) )
+   (cnt (i64 (nErrno))) )
 
 # Native calls
 (local) (fetchChar natBuf natErr natRetBuf natRet)
@@ -1315,9 +1315,10 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (while (pair (shift X))
          (setq P
             (ofs P (natBuf (eval (car X)) P)) ) )
-      (if (nil? Y)
-         @
-         (natRetBuf Y (i8** (push N))) ) ) )
+      (cond
+         ((nil? Y) @)
+         ((== Y $S) (mkStr (i8* N)))
+         (T (natRetBuf Y (i8** (push N)))) ) ) )
 
 # Lisp callbacks
 (local) cbl

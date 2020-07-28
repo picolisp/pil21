@@ -1,4 +1,4 @@
-# 23jul20 Software Lab. Alexander Burger
+# 28jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -186,7 +186,8 @@ nonBlocking fcntlSetOwn getDir)
 (de T i32 waitWuntraced (i32 i32*))
 (de T i32 wifStopped (i32*))
 
-(local) gErrno
+(local) (nErrno gErrno)
+(de T i32 nErrno ())
 (de T i32 gErrno ())
 
 # Terminal

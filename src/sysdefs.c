@@ -1,4 +1,4 @@
-// 27jul20 Software Lab. Alexander Burger
+// 28jul20 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdint.h>
@@ -40,6 +40,11 @@ int main(void) {
    struct addrinfo ai;
 
    printf("# %sSystem Definitions\n", __VERSION__);
+
+   ttl("Errno");
+   num("EINTR", EINTR);
+   num("EAGAIN", EAGAIN);
+   num("EACCES", EACCES);
 
    ttl("Networking");
    num("SOCK_STREAM", SOCK_STREAM);
