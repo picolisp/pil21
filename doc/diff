@@ -17,6 +17,7 @@
    * 'T' result spec returns direct Lisp value (no skipped call)
 + 'struct'
    * Useful atomic result specifications
++ 'adr' returns a pointer usable by 'native' and 'struct'
 
 - '====' is not supported
 - 'lines' is not supported

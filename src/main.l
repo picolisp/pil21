@@ -1460,14 +1460,13 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (setq Y (set 2 Y (cons (cdr X) $Nil))) )
             R ) ) ) )
 
-# (adr 'var) -> cnt
-# (adr 'cnt) -> var
+# (adr 'var) -> num
+# (adr 'num) -> var
 (de _adr (Exe)
    (cond
-      ((cnt? (eval (cadr Exe)))
-         (& @ -3) )  # Make 'var' (pos -> cell, neg -> symbol)
-      ((big? @) (argErr Exe @))
-      (T (| @ 2)) ) )  # Make 'cnt'
+      ((cnt? (eval (cadr Exe))) (int @))  # Make 'var'
+      ((big? @) (val (dig Fun)))
+      (T (box64 @)) ) )  # Make 'num'
 
 # (byte 'num ['cnt]) -> cnt
 (de _byte (Exe)
