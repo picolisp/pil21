@@ -1,4 +1,4 @@
-# 27jul20 Software Lab. Alexander Burger
+# 28jul20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -11,6 +11,12 @@
 + Map functions accept atomic arguments
 + Standard readline(3) library in REPL
 + 'mix' accepts also negative arguments
++ 'native'
+   * 'P' and 'W' result specifications
+   * (T . any) argument passes direct Lisp value
+   * 'T' result spec returns direct Lisp value (no skipped call)
++ 'struct'
+   * Useful atomic result specifications
 
 - '====' is not supported
 - 'lines' is not supported
@@ -21,10 +27,8 @@
 - Second argument to 'name' (i.e. renaming) is not supported
 - Lambda-binding environment offset for 'eval' and 'run' only for '@'
 - 'native'
-   + 'P' result specification
-   - only functions with fixed number of arguments
-   - 'T' result spec returns direct Lisp value (no skipped call)
-   - (T . any) argument passes direct Lisp value
+   * only functions with fixed number of arguments
+   * 'T' changed (no skipped call)
 - Because of readline(3), '*Run' tasks are suspended while typing in the REPL
 
 % Main coroutine has a tag 'T'
