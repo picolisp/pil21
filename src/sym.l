@@ -1,4 +1,4 @@
-# 21jul20 Software Lab. Alexander Burger
+# 28jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1471,7 +1471,7 @@
          (setq Z (eval (++ X)))
          (? (atom X))
          (setq Y (safe (getn Exe Y Z))) )
-      (let (R (link (push Z NIL))  Tail (val (tail Sym)))
+      (let (R (save Z)  Tail (val (tail Y)))
          (when (sym? (setq X Tail))
             (dbTouch Exe Y)
             (setq X (& (val (tail Y)) -9)) )
@@ -1487,7 +1487,7 @@
                      (setq X (cons P X)) ) ) ) )
          (set (tail Y)
             (if (sym? Tail) (| X 8) X) )
-         (val R) ) ) )
+         R ) ) )
 
 # (getl 'sym1|lst1 ['sym2|cnt ..]) -> lst
 (de _getl (Exe)
