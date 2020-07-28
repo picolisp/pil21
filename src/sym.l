@@ -765,8 +765,8 @@
 (de i1 subStr (X Y)
    (or
       (nil? X)
-      (== ZERO (setq X (xName Exe X)))
-      (let (P (push 0 (xName Exe Y))  B T)
+      (== ZERO (setq X (xName 0 X)))
+      (let (P (push 0 (xName 0 Y))  B T)
          (loop
             (? (=0 (setq B (symByte P))) NO)
             (let (Cnt (val P)  Nm (val 2 P))

@@ -1,4 +1,4 @@
-# 27jul20 Software Lab. Alexander Burger
+# 28jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2205,7 +2205,7 @@
                         (call $Put (char "\"")) )
                      (let Nsp (car Lst)
                         (when (isIntern Nm (cdar Nsp))
-                           (? (== @ Sym)  # Internal
+                           (? (== @ X)  # Internal
                               (when F  # Found in other namespace
                                  (outName Nsp)
                                  (call $Put (char "~")) )

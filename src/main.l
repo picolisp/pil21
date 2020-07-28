@@ -1465,7 +1465,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de _adr (Exe)
    (cond
       ((cnt? (eval (cadr Exe))) (int @))  # Make 'var'
-      ((big? @) (val (dig Fun)))
+      ((big? @) (val (dig @)))
       (T (box64 @)) ) )  # Make 'num'
 
 # (byte 'num ['cnt]) -> cnt

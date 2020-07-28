@@ -470,84 +470,85 @@ False Beg End Safe *Safe)
    (and Body (prinl))
    (setq *Ssa -1)
    (off *Bind *Phi *Safe)
-   (with Sym
-      (setq *Ret
-         (if Ret
-            (type Ret)
-            (=: noreturn T)
-            void ) )
-      (cond
-         (Ext (prin "declare " *Ret " @" Sym "("))
-         (Body (prin "define " *Ret " @" Sym "(")) )
-      (when
-         (=: args
-            (replace
-               (ifn Body
-                  Args
-                  (mapcar
-                     '((A)
-                        (+bind Body (fin A))
-                        (set
-                           (set (fin A) (pack "%" (inc '*Ssa)))
-                           (if (atom A) 'any (car A)) ) )
-                     Args ) )
-               'any 'i64 ) )
-         (=: sign (cons *Ret (: args)))
-         (when (or Ext Body)
-            (prin (car (: args)))
-            (for A (cdr (: args))
-               (prin ", " A) ) ) )
-      (cond
-         (Ext (prinl ")"))
-         (Body (prinl ") {")) )
-      (def This
-         (list 'pico~@
-            (make
-               (link 'let 'A
-                  (list 'mapcar
-                     ''((Typ) (pack Typ " " (next)))
-                     (lit (: args)) ) )
-               (link '(log))
-               (let L
-                  (list
-                     '*Call " " (lit *Ret) " @" (lit Sym)
-                     "(" '(glue ", " A) ")" )
-                  (link
+   (bind (and Body (mapcar fin Args))
+      (with Sym
+         (setq *Ret
+            (if Ret
+               (type Ret)
+               (=: noreturn T)
+               void ) )
+         (cond
+            (Ext (prin "declare " *Ret " @" Sym "("))
+            (Body (prin "define " *Ret " @" Sym "(")) )
+         (when
+            (=: args
+               (replace
+                  (ifn Body
+                     Args
+                     (mapcar
+                        '((A)
+                           (+bind Body (fin A))
+                           (set
+                              (set (fin A) (pack "%" (inc '*Ssa)))
+                              (if (atom A) 'any (car A)) ) )
+                        Args ) )
+                  'any 'i64 ) )
+            (=: sign (cons *Ret (: args)))
+            (when (or Ext Body)
+               (prin (car (: args)))
+               (for A (cdr (: args))
+                  (prin ", " A) ) ) )
+         (cond
+            (Ext (prinl ")"))
+            (Body (prinl ") {")) )
+         (def This
+            (list 'pico~@
+               (make
+                  (link 'let 'A
+                     (list 'mapcar
+                        ''((Typ) (pack Typ " " (next)))
+                        (lit (: args)) ) )
+                  (link '(log))
+                  (let L
+                     (list
+                        '*Call " " (lit *Ret) " @" (lit Sym)
+                        "(" '(glue ", " A) ")" )
+                     (link
+                        (if (== void *Ret)
+                           (list 'link (cons 'pack L))
+                           (cons 'ssa '(inc '*Ssa) L) ) ) )
+                  (if (: noreturn)
+                     (link '(link "unreachable") NIL)
+                     (link
+                        (or
+                           (== void *Ret)
+                           (list 'def '(pack "%" *Ssa) (lit Ret)) ) ) ) ) ) ) )
+      (when Body
+         (let (*Lbl 1  *Log T)
+            (for X
+               (make
+                  (label *Lbl)
+                  (let? R (run Body)
+                     (and *Safe (drop *Safe))
                      (if (== void *Ret)
-                        (list 'link (cons 'pack L))
-                        (cons 'ssa '(inc '*Ssa) L) ) ) )
-               (if (: noreturn)
-                  (link '(link "unreachable") NIL)
-                  (link
-                     (or
-                        (== void *Ret)
-                        (list 'def '(pack "%" *Ssa) (lit Ret)) ) ) ) ) ) ) )
-   (when Body
-      (let (*Lbl 1  *Log T)
-         (for X
-            (make
-               (label *Lbl)
-               (let? R (run Body)
-                  (and *Safe (drop *Safe))
-                  (if (== void *Ret)
-                     (link "ret void")
-                     (link (pack "ret " *Ret " " R)) ) ) )
-            (cond
-               ((num? X)
-                  (prinl "$" X ":")
-                  (for L (cdr (asoq X *Phi))
-                     (when (cadr L)
-                        (prin
-                           "  " (cadr L) " = phi "
-                           (type (val (cadr L)))
-                           " [" (cdaddr L) ", %$" (caaddr L) "]" )
-                        (for X (cdddr L)
-                           (prin ", [" (cdr X) ", %$" (car X) "]") )
-                        (prinl " ; # " (or (name (car L)) "->")) ) ) )
-               ((atom X) (prinl "  " X))
-               ((not (car X)) (prinl "; # " (cdr X)))
-               (T (prinl "  " (car X) " = " (cdr X))) ) ) )
-      (prinl "}") ) )
+                        (link "ret void")
+                        (link (pack "ret " *Ret " " R)) ) ) )
+               (cond
+                  ((num? X)
+                     (prinl "$" X ":")
+                     (for L (cdr (asoq X *Phi))
+                        (when (cadr L)
+                           (prin
+                              "  " (cadr L) " = phi "
+                              (type (val (cadr L)))
+                              " [" (cdaddr L) ", %$" (caaddr L) "]" )
+                           (for X (cdddr L)
+                              (prin ", [" (cdr X) ", %$" (car X) "]") )
+                           (prinl " ; # " (or (name (car L)) "->")) ) ) )
+                  ((atom X) (prinl "  " X))
+                  ((not (car X)) (prinl "; # " (cdr X)))
+                  (T (prinl "  " (car X) " = " (cdr X))) ) ) )
+         (prinl "}") ) ) )
 
 (de struct Lst
    (def (car Lst)

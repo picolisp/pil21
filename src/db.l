@@ -1,4 +1,4 @@
-# 20jul20 Software Lab. Alexander Burger
+# 28jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -249,10 +249,10 @@
             (let Pos (shl N (i64 (Db: sh)))
                (blkPeek Pos P BLK)  # Get block link
                (set P (& (val P) BLKMASK))  # Clear tag
-               (? (=0 (setq N (getAdr P))))  # No more links
-               (blkPoke Pos P BLK) ) )
-         (setAdr Free P)  # Append old 'free' list
-         (blkPoke Pos P BLK) ) ) )
+               (? (=0 (setq N (getAdr P)))  # No more links
+                  (setAdr Free P)  # Append old 'free' list
+                  (blkPoke Pos P BLK) )
+               (blkPoke Pos P BLK) ) ) ) ) )
 
 (de i32 getBlock ()
    (let P (val $Ptr)
