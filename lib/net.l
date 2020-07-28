@@ -1,4 +1,4 @@
-# 27jul20 Software Lab. Alexander Burger
+# 28jul20 Software Lab. Alexander Burger
 
 (symbols 'net 'pico)
 
@@ -99,14 +99,18 @@ AF_UNSPEC)
                '(Lst (8 . P)) ) )
          Lst ) ) )
 
+(local) UDPMAX
+
+(de UDPMAX . 4096)
+
 # (udp 'cnt) -> any
 # (udp 'sym 'any2 'any3) -> any
 (de udp (X Port Val)
-   (buf Buf 4096
+   (buf Buf UDPMAX
       (cond
          (Port
             (let? Lst (server SOCK_DGRAM X (sym Port))
-               (let (P Lst  N (plio Buf 4096 Val))
+               (let (P Lst  N (plio Buf UDPMAX Val))
                   (loop
                      (T (=0 P)
                         (native "@" "freeaddrinfo" 'I Lst)
@@ -124,5 +128,5 @@ AF_UNSPEC)
                         (native "@" "freeaddrinfo" 'I Lst)
                         Val )
                      (setq P (struct (+ P ai_next) 'P)) ) ) ) )
-         ((ge0 (native "@" "recv" 'N X Buf 4096 0))
+         ((ge0 (native "@" "recv" 'N X Buf UDPMAX 0))
             (plio Buf) ) ) ) )
