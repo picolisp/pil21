@@ -24,10 +24,7 @@
       (%@ "closeOnExec" NIL (cons T (up)) Sd)
       (when
          (lt0
-            (%@ "setsockopt" 'I  #? OpenBSD
-               Sd
-               IPPROTO_IPV6
-               IPV6_V6ONLY
+            (%@ "setsockopt" 'I Sd IPPROTO_IPV6 IPV6_V6ONLY  #? OpenBSD
                '(NIL (4 . I) (0 . 4))
                4 ) )
          (ipErr "IPV6_V6ONLY") )
@@ -41,10 +38,7 @@
                   (or
                      (=0 Port)
                      (ge0
-                        (%@ "setsockopt" 'I  #? OpenBSD
-                           Sd
-                           SOL_SOCKET
-                           SO_REUSEADDR
+                        (%@ "setsockopt" 'I Sd SOL_SOCKET SO_REUSEADDR  #? OpenBSD
                            '(NIL (4 . I) (1 . 4))
                            4 ) )
                      (ipErr "SO_REUSEADDR") ) )
@@ -66,9 +60,7 @@
             (let? Var (next)
                (when
                   (lt0
-                     (%@ "getsockname" 'I
-                        Sd
-                        Addr
+                     (%@ "getsockname" 'I Sd Addr
                         '(NIL (4 . I) (`sockaddr_in6 . 4)) ) )
                   (close Sd)
                   (ipErr "IP getsockname") )
@@ -85,29 +77,30 @@
          (loop
             (T
                (ge0
-                  (%@ "accept" 'I
-                     Sd
-                     Addr
+                  (%@ "accept" 'I Sd Addr
                      '(NIL (4 . I) (`sockaddr_in6 . 4)) ) )
                (let Sd2 @
-                  (fcntlSetFl Sd Flg)
-                  ## (fcntlSetFl Sd2 0)  # Non-Linux?
+                  (%@ "fcntlSetFl" 'I Sd Flg)
+                  ## (%@ "fcntlSetFl" 'I Sd2 0)  # Non-Linux?
                   (buf Str INET6_ADDRSTRLEN
                      (setq *Adr
-                        (%@ "inet_ntop" 'S
-                           AF_INET6
-                           (+ Addr sin6_addr)
-                           Str
-                           INET6_ADDRSTRLEN ) ) )
+                        (%@ "inet_ntop" 'S AF_INET6 (+ Addr sin6_addr) Str INET6_ADDRSTRLEN) ) )
                   (%@ "initInFile" NIL Sd2 0)
-                  (%@ "initOuFile" NIL Sd2)
+                  (%@ "initOutFile" NIL Sd2)
                   Sd2 ) )
             (NIL (and (== (errno) EAGAIN) (gt0 (dec 'N)))
-               (fcntlSetFl Sd Flg) )
+               (%@ "fcntlSetFl" 'I Sd Flg) )
             (%@ "usleep" NIL 99999) ) ) ) )
 
 # (listen 'cnt1 ['cnt2]) -> cnt | NIL
-(de listen ()
+(de listen (Sd Ms)
+   (loop
+      (NIL (wait Ms T Sd))
+      (T (accept Sd) @) ) )
+
+# (host 'any) -> sym
+(de host (Addr)
+   #!
    )
 
 (local) server
@@ -116,9 +109,7 @@
    (use Lst
       (and
          (=0
-            (%@ "getaddrinfo" 'I
-               Node
-               Service
+            (%@ "getaddrinfo" 'I Node Service
                (cons NIL (`addrinfo)  # hints:
                   (0 . 4)  # ai_flags
                   (`AF_UNSPEC . 4)  # ai_family
