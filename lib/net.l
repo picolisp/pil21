@@ -2,7 +2,7 @@
 
 (symbols 'net 'pico)
 
-(export) (*Adr port accept listen host udp)
+(export) (*Adr port accept listen host connect udp)
 
 (sysdefs "Errno")
 (sysdefs "Networking")
@@ -126,7 +126,7 @@
    (use Lst
       (and
          (=0
-            (%@ "getaddrinfo" 'I Node Service
+            (%@ "getaddrinfo" 'I Node (sym Service)
                (cons NIL (`addrinfo)  # hints:
                   (0 . 4)  # ai_flags
                   (`AF_UNSPEC . 4)  # ai_family
@@ -134,6 +134,34 @@
                   0 )  # Clear rest
                '(Lst (8 . P)) ) )
          Lst ) ) )
+
+# (connect 'any1 'any2) -> cnt | NIL
+(de connect (Node Port)
+   (let? Lst (server SOCK_STREAM Node Port)
+      (prog1
+         (let (P Lst  Sd)
+            (loop
+               (T
+                  (and
+                     (ge0
+                        (setq Sd
+                           (%@ "socket" 'I
+                              (struct (+ P ai_family) 'I)
+                              (struct (+ P ai_socktype) 'I)
+                              0 ) ) )
+                     (or
+                        (=0
+                           (%@ "connect" 'I Sd
+                              (struct (+ P ai_addr) 'P)
+                              (struct (+ P ai_addrlen) 'N) ) )
+                        (nil (close Sd)) ) )
+                  (%@ "closeOnExec" NIL (cons T (up)) Sd)
+                  (%@ "initInFile" NIL Sd 0)
+                  (%@ "initOutFile" NIL Sd)
+                  Sd )
+               (T
+                  (=0 (setq P (struct (+ P ai_next) 'P))) ) ) )
+         (%@ "freeaddrinfo" 'I Lst) ) ) )
 
 (local) UDPMAX
 
@@ -145,7 +173,7 @@
    (buf Buf UDPMAX
       (cond
          (Port
-            (let? Lst (server SOCK_DGRAM X (sym Port))
+            (let? Lst (server SOCK_DGRAM X Port)
                (let (P Lst  N (plio Buf UDPMAX Val))
                   (loop
                      (T (=0 P)
