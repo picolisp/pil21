@@ -1,4 +1,4 @@
-# 28jul20 Software Lab. Alexander Burger
+# 29jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1070,7 +1070,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (cnt (i64 (nErrno))) )
 
 # Native calls
-(local) (fetchChar natBuf natErr natRetBuf natRet)
+(local) (fetchChar natBuf natErr natRetBuf ffi)
 
 (de i32 fetchChar ((i8** . Ptr))
    (let (P (val Ptr)  C (i32 (val P)))
@@ -1216,50 +1216,78 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             R ) )
       (T (natErr Spec)) ) )
 
-(de natRet (Spec Val)
-   (cond
-      ((nil? Spec) $Nil)
-      ((== Spec $T) Val)  # 'T' Direct Lisp value
-      ((== Spec $N) (box Val))  # 'N' Number (signed 64 bit)
-      ((== Spec $P) (box64 Val))  # 'P' Pointer or positive (unsigned 64 bit)
-      ((== Spec $I)  # 'I' Integer (signed 32 bit)
-         (if (ge0 (i32 Val))
-            (cnt (i64 @))
-            (sign (cnt (i64 (- @)))) ) )
-      ((== Spec $C)  # 'C' Character (UTF-8, 1-4 bytes)
-         (if (i32 Val) (mkChar @) $Nil) )
-      ((== Spec $W)  # 'W' Integer (signed 16 bit)
-         (if (ge0 (i16 Val))
-            (cnt (i64 @))
-            (sign (cnt (i64 (- @)))) ) )
-      ((== Spec $B)  # 'B' Byte (unsigned 8 bit)
-         (cnt (i64 (i8 Val))) )
-      ((== Spec $S)  # 'S' String (UTF-8)
-         (mkStr (i8* Val)) )
-      ((cnt? Spec)  # [+-]1.0 Scaled fixpoint number
-         (if (sign? Spec)
-            (boxFloat (i32 Val) (int Spec))
-            (boxDouble Val (int Spec)) ) )
-      ((and (pair Spec) Val)  # Arrary or structure
-         (let
-            (Ptr (i8** (push Val))
-               S (++ Spec)
-               R (natRetBuf S Ptr) )
-            (unless (and (nil? R) (== S $C))
-               (let X (setq R (save (cons R $Nil)))
-                  (loop
-                     (? (cnt? Spec)  # (sym . cnt)
-                        (let C (int Spec)
-                           (while (dec 'C)
-                              (let Y (natRetBuf S Ptr)
-                                 (? (and (nil? Y) (== S $C)))
-                                 (setq X (set 2 X (cons Y $Nil))) ) ) ) )
-                     (? (atom Spec))
-                     (let Y (natRetBuf (setq S (++ Spec)) Ptr)
-                        (? (and (nil? Y) (== S $C)))
-                        (setq X (set 2 X (cons Y $Nil))) ) ) ) )
-            R ) )
-      (T (natErr Spec)) ) )
+(de ffi (Exe (i8* . Lib) Fun Args)
+   (let
+      (Spec (car Args)
+         Val
+         (ffiCall
+            (cond
+               ((cnt? Fun) (i8* (int Fun)))
+               ((big? Fun) (i8* (val (dig Fun))))
+               ((pair Fun) (argErr Exe Fun))
+               (T
+                  (let Nm (xName Exe Fun)
+                     (unless (ffiPrep Lib (bufString Nm (b8 (bufSize Nm))) Args)
+                        (err Exe 0 ($ "Bad ffi") null) )
+                     (set Fun (box64 (i64 @)))
+                     @ ) ) )
+            (cdr Args) ) )
+      (cond
+         ((nil? Spec) $Nil)
+         ((== Spec $T) Val)  # 'T' Direct Lisp value
+         ((== Spec $N) (box Val))  # 'N' Number (signed 64 bit)
+         ((== Spec $P) (box64 Val))  # 'P' Pointer or positive (unsigned 64 bit)
+         ((== Spec $I)  # 'I' Integer (signed 32 bit)
+            (if (ge0 (i32 Val))
+               (cnt (i64 @))
+               (sign (cnt (i64 (- @)))) ) )
+         ((== Spec $C)  # 'C' Character (UTF-8, 1-4 bytes)
+            (if (i32 Val) (mkChar @) $Nil) )
+         ((== Spec $W)  # 'W' Integer (signed 16 bit)
+            (if (ge0 (i16 Val))
+               (cnt (i64 @))
+               (sign (cnt (i64 (- @)))) ) )
+         ((== Spec $B)  # 'B' Byte (unsigned 8 bit)
+            (cnt (i64 (i8 Val))) )
+         ((== Spec $S)  # 'S' String (UTF-8)
+            (mkStr (i8* Val)) )
+         ((cnt? Spec)  # [+-]1.0 Scaled fixpoint number
+            (if (sign? Spec)
+               (boxFloat (i32 Val) (int Spec))
+               (boxDouble Val (int Spec)) ) )
+         ((and (pair Spec) Val)  # Arrary or structure
+            (let
+               (Ptr (i8** (push Val))
+                  S (++ Spec)
+                  R (natRetBuf S Ptr) )
+               (unless (and (nil? R) (== S $C))
+                  (let X (setq R (save (cons R $Nil)))
+                     (loop
+                        (? (cnt? Spec)  # (sym . cnt)
+                           (let C (int Spec)
+                              (while (dec 'C)
+                                 (let Y (natRetBuf S Ptr)
+                                    (? (and (nil? Y) (== S $C)))
+                                    (setq X (set 2 X (cons Y $Nil))) ) ) ) )
+                        (? (atom Spec))
+                        (let Y (natRetBuf (setq S (++ Spec)) Ptr)
+                           (? (and (nil? Y) (== S $C)))
+                           (setq X (set 2 X (cons Y $Nil))) ) ) ) )
+               R ) )
+         (T (natErr Spec)) ) ) )
+
+# (%@ 'cnt2|sym2 'any 'any ..) -> any
+(de _nat (Exe)
+   (let
+      (X (cdr Exe)
+         Fun (save (eval (++ X)))  # Eval function 'cnt2|sym2'
+         Args (save (cons (eval (++ X)) $Nil))
+         L Args )  # [ret args]
+      (while (pair X)
+         (let Z (push (save (eval (++ X))) $Nil)  # [argN next]
+            (set 2 L Z)
+            (setq L Z) ) )
+      (tailcall (ffi Exe null Fun Args)) ) )
 
 # (native 'cnt1|sym1 'cnt2|sym2 'any 'any ..) -> any
 (de _native (Exe)
@@ -1288,19 +1316,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (let Z (push (save (eval (++ X))) $Nil)  # [argN next]
             (set 2 L Z)
             (setq L Z) ) )
-      (natRet (car Args)
-         (ffiCall
-            (cond
-               ((cnt? Fun) (i8* (int Fun)))
-               ((big? Fun) (i8* (val (dig Fun))))
-               ((pair Fun) (argErr Exe Fun))
-               (T
-                  (let Nm (xName Exe Fun)
-                     (unless (ffiPrep Lib (bufString Nm (b8 (bufSize Nm))) Args)
-                        (err Exe 0 ($ "Bad ffi") null) )
-                     (set Fun (box64 (i64 @)))
-                     @ ) ) )
-            (cdr Args) ) ) ) )
+      (tailcall (ffi Exe Lib Fun Args)) ) )
 
 # (struct 'num 'any 'any ..) -> any
 (de _struct (Exe)
