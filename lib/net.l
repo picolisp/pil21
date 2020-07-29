@@ -2,7 +2,7 @@
 
 (symbols 'net 'pico)
 
-(export) (*Adr port accept listen udp)
+(export) (*Adr port accept listen host udp)
 
 (sysdefs "Errno")
 (sysdefs "Networking")
@@ -99,9 +99,26 @@
       (T (accept Sd) @) ) )
 
 # (host 'any) -> sym
-(de host (Addr)
-   #!
-   )
+(de host (Node)
+   (use Lst
+      (when (=0 (%@ "getaddrinfo" 'I Node 0 0 '(Lst (8 . P))))
+         (buf Host NI_MAXHOST
+            (prog1
+               (let P Lst
+                  (loop
+                     (T
+                        (=0
+                           (%@ "getnameinfo" 'I
+                              (struct (+ P ai_addr) 'P)
+                              (struct (+ P ai_addrlen) 'N)
+                              Host
+                              NI_MAXHOST
+                              0
+                              NI_NAMEREQD ) )
+                        (struct Host 'S) )
+                     (T
+                        (=0 (setq P (struct (+ P ai_next) 'P))) ) ) )
+               (%@ "freeaddrinfo" 'I Lst) ) ) ) ) )
 
 (local) server
 
