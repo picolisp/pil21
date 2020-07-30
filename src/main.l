@@ -1,4 +1,4 @@
-# 29jul20 Software Lab. Alexander Burger
+# 30jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1299,16 +1299,14 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             ((cnt? Y) (i8* (int Y)))
             ((big? Y) (i8* (val (dig Y))))
             ((pair Y) (argErr Exe Y))
+            ((== (xName Exe Y) (| 2 (>> -4 (char "@"))))
+               (set Y ZERO)
+               null )  # RTLD_DEFAULT
             (T
-               (let Nm (xName Exe Y)
-                  (unless
-                     (dlOpen
-                        (if (== Nm (| 2 (>> -4 (char "@"))))
-                           null
-                           (pathString Nm (b8 (pathSize Nm))) ) )
-                     (err Exe Y ($ "[DLL] %s") (dlerror)) )
-                  (set Y (box64 (i64 @)))
-                  @ ) ) )
+               (unless (dlOpen (pathString @ (b8 (pathSize @))))
+                  (err Exe Y ($ "[DLL] %s") (dlerror)) )
+               (set Y (box64 (i64 @)))
+               @ ) )
          Fun (save (eval (++ X)))  # Eval function 'cnt2|sym2'
          Args (save (cons (eval (++ X)) $Nil))
          L Args )  # [ret args]
