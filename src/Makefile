@@ -1,4 +1,4 @@
-# 26jul20 Software Lab. Alexander Burger
+# 30jul20 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -16,7 +16,7 @@ all: $(LIB)/sysdefs $(BIN)/picolisp $(LIB)/ext.so
 
 # System definitions
 $(LIB)/sysdefs: sysdefs.c
-	clang sysdefs.c  &&  ./a.out > $(LIB)/sysdefs  &&  rm ./a.out
+	$(ASM) sysdefs.c  &&  ./a.out > $(LIB)/sysdefs  &&  rm ./a.out
 
 # Base system
 $(BIN)/picolisp: picolisp.bc
@@ -27,21 +27,25 @@ $(BIN)/picolisp: picolisp.bc
 picolisp.bc: base.bc lib.bc
 	llvm-link -o picolisp.bc base.bc lib.bc
 
-base.bc: $(INC) $(SRC)
-	../pil lib/llvm.l main.l -bye > base.ll
+base.bc: base.ll
 	llvm-as -o base.bc base.ll
 
+base.ll: $(INC) $(SRC)
+	../pil lib/llvm.l main.l -bye > base.ll
+
 lib.bc: pico.h lib.c
-	clang -c -O3 `pkg-config --cflags libffi` -emit-llvm lib.c
+	$(ASM) -c -O3 `pkg-config --cflags libffi` -emit-llvm lib.c
 
 # Extension library
 $(LIB)/ext.so: ext.bc
 	llc ext.bc -relocation-model=pic -o ext.s
 	$(ASM) ext.s -o $(LIB)/ext.so $(SHARED)
 
-ext.bc: $(INC) ext.l
-	../pil lib/llvm.l ext.l -bye > ext.ll
+ext.bc: ext.ll
 	llvm-as -o ext.bc ext.ll
+
+ext.ll: $(INC) ext.l
+	../pil lib/llvm.l ext.l -bye > ext.ll
 
 # Clean up
 clean:
