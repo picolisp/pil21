@@ -1,4 +1,4 @@
-# 26jul20 Software Lab. Alexander Burger
+# 31jul20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -147,14 +147,14 @@
                   (con "Lst" (run "Prg")) ) )
             (setq "Lst" (cdr "Lst")) ) ) ) )
 
-(de cache ("Var" X . Prg)
-   (let K (cons (char (hash X)) X)
+(de cache ("Var" "X" . "Prg")
+   (let "K" (cons (char (hash "X")) "X")
       (nond
-         (Prg (caar (idx "Var" K)))
-         ((setq "Var" (caar (idx "Var" K T)))
-            (set (car K) (run Prg 1)) )
+         ("Prg" (caar (idx "Var" "K")))
+         ((setq "Var" (caar (idx "Var" "K" T)))
+            (set (car "K") (run "Prg" 1)) )
          ((n== "Var" (val "Var"))
-            (set "Var" (run Prg 1)) )
+            (set "Var" (run "Prg" 1)) )
          (NIL (val "Var")) ) ) )
 
 ### I/O ###
@@ -178,9 +178,9 @@
 (de script (File . @)
    (load File) )
 
-(de once Prg
+(de once "Prg"
    (unless (idx '*Once (file) T)
-      (run Prg 1) ) )
+      (run "Prg" 1) ) )
 
 (de pil @
    (when (== "Pil" '"Pil")
@@ -557,11 +557,11 @@
                (list 'quit "'assert' failed" (lit A)) ) ) ) ) )
 
 # Unit tests
-(de test (Pat . Prg)
-   (bind (fish pat? Pat)
-      (unless (match Pat (run Prg 1))
-         (msg Prg)
-         (quit "'test' failed" Pat) ) ) )
+(de test ("Pat" . "Prg")
+   (bind (fish pat? "Pat")
+      (unless (match "Pat" (run "Prg"))
+         (msg "Prg")
+         (quit "'test' failed" "Pat") ) ) )
 
 ### Debug ###
 `*Dbg
