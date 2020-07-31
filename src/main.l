@@ -1,4 +1,4 @@
-# 30jul20 Software Lab. Alexander Burger
+# 31jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -637,7 +637,9 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (tmTime
                   (xCnt Exe (++ L))
                   (xCnt Exe (++ L))
-                  (xCnt Exe (car L)) ) ) )
+                  (if (pair L)
+                     (xCnt Exe (car L))
+                     0 ) ) ) )
          (T
             (let N @
                (cond

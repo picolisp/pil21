@@ -4551,7 +4551,7 @@ $15:
   br i1 %36, label %$18, label %$17
 $18:
   %37 = phi i64 [%34, %$15] ; # X
-; # (let L @ (tmTime (xCnt Exe (++ L)) (xCnt Exe (++ L)) (xCnt Exe (c...
+; # (let L @ (tmTime (xCnt Exe (++ L)) (xCnt Exe (++ L)) (if (pair L)...
 ; # (++ L)
   %38 = inttoptr i64 %20 to i64*
   %39 = load i64, i64* %38
@@ -4566,107 +4566,124 @@ $18:
   %46 = load i64, i64* %45
 ; # (xCnt Exe (++ L))
   %47 = call i64 @xCnt(i64 %0, i64 %44)
+; # (if (pair L) (xCnt Exe (car L)) 0)
+; # (pair L)
+  %48 = and i64 %46, 15
+  %49 = icmp eq i64 %48, 0
+  br i1 %49, label %$19, label %$20
+$19:
+  %50 = phi i64 [%37, %$18] ; # X
+  %51 = phi i64 [%46, %$18] ; # L
 ; # (car L)
-  %48 = inttoptr i64 %46 to i64*
-  %49 = load i64, i64* %48
+  %52 = inttoptr i64 %51 to i64*
+  %53 = load i64, i64* %52
 ; # (xCnt Exe (car L))
-  %50 = call i64 @xCnt(i64 %0, i64 %49)
-; # (tmTime (xCnt Exe (++ L)) (xCnt Exe (++ L)) (xCnt Exe (car L)))
-  %51 = call i64 @tmTime(i64 %42, i64 %47, i64 %50)
+  %54 = call i64 @xCnt(i64 %0, i64 %53)
+  br label %$21
+$20:
+  %55 = phi i64 [%37, %$18] ; # X
+  %56 = phi i64 [%46, %$18] ; # L
+  br label %$21
+$21:
+  %57 = phi i64 [%50, %$19], [%55, %$20] ; # X
+  %58 = phi i64 [%51, %$19], [%56, %$20] ; # L
+  %59 = phi i64 [%54, %$19], [0, %$20] ; # ->
+; # (tmTime (xCnt Exe (++ L)) (xCnt Exe (++ L)) (if (pair L) (xCnt Ex...
+  %60 = call i64 @tmTime(i64 %42, i64 %47, i64 %59)
   br label %$2
 $17:
-  %52 = phi i64 [%34, %$15] ; # X
+  %61 = phi i64 [%34, %$15] ; # X
 ; # (let N @ (cond ((pair (shift X)) (tmTime (xCnt Exe N) (evCnt Exe ...
 ; # (cond ((pair (shift X)) (tmTime (xCnt Exe N) (evCnt Exe X) (if (p...
 ; # (shift X)
-  %53 = inttoptr i64 %52 to i64*
-  %54 = getelementptr i64, i64* %53, i32 1
-  %55 = load i64, i64* %54
-; # (pair (shift X))
-  %56 = and i64 %55, 15
-  %57 = icmp eq i64 %56, 0
-  br i1 %57, label %$21, label %$20
-$21:
-  %58 = phi i64 [%55, %$17] ; # X
-  %59 = phi i64 [%20, %$17] ; # N
-; # (xCnt Exe N)
-  %60 = call i64 @xCnt(i64 %0, i64 %59)
-; # (evCnt Exe X)
-  %61 = call i64 @evCnt(i64 %0, i64 %58)
-; # (if (pair (shift X)) (evCnt Exe X) 0)
-; # (shift X)
-  %62 = inttoptr i64 %58 to i64*
+  %62 = inttoptr i64 %61 to i64*
   %63 = getelementptr i64, i64* %62, i32 1
   %64 = load i64, i64* %63
 ; # (pair (shift X))
   %65 = and i64 %64, 15
   %66 = icmp eq i64 %65, 0
-  br i1 %66, label %$22, label %$23
-$22:
-  %67 = phi i64 [%64, %$21] ; # X
-  %68 = phi i64 [%59, %$21] ; # N
-; # (evCnt Exe X)
-  %69 = call i64 @evCnt(i64 %0, i64 %67)
-  br label %$24
-$23:
-  %70 = phi i64 [%64, %$21] ; # X
-  %71 = phi i64 [%59, %$21] ; # N
-  br label %$24
+  br i1 %66, label %$24, label %$23
 $24:
-  %72 = phi i64 [%67, %$22], [%70, %$23] ; # X
-  %73 = phi i64 [%68, %$22], [%71, %$23] ; # N
-  %74 = phi i64 [%69, %$22], [0, %$23] ; # ->
-; # (tmTime (xCnt Exe N) (evCnt Exe X) (if (pair (shift X)) (evCnt Ex...
-  %75 = call i64 @tmTime(i64 %60, i64 %61, i64 %74)
-  br label %$19
-$20:
-  %76 = phi i64 [%55, %$17] ; # X
-  %77 = phi i64 [%20, %$17] ; # N
+  %67 = phi i64 [%64, %$17] ; # X
+  %68 = phi i64 [%20, %$17] ; # N
 ; # (xCnt Exe N)
-  %78 = call i64 @xCnt(i64 %0, i64 %77)
-; # (lt0 (setq N (xCnt Exe N)))
-  %79 = icmp slt i64 %78, 0
-  br i1 %79, label %$26, label %$25
-$26:
-  %80 = phi i64 [%76, %$20] ; # X
-  %81 = phi i64 [%78, %$20] ; # N
-  br label %$19
+  %69 = call i64 @xCnt(i64 %0, i64 %68)
+; # (evCnt Exe X)
+  %70 = call i64 @evCnt(i64 %0, i64 %67)
+; # (if (pair (shift X)) (evCnt Exe X) 0)
+; # (shift X)
+  %71 = inttoptr i64 %67 to i64*
+  %72 = getelementptr i64, i64* %71, i32 1
+  %73 = load i64, i64* %72
+; # (pair (shift X))
+  %74 = and i64 %73, 15
+  %75 = icmp eq i64 %74, 0
+  br i1 %75, label %$25, label %$26
 $25:
-  %82 = phi i64 [%76, %$20] ; # X
-  %83 = phi i64 [%78, %$20] ; # N
+  %76 = phi i64 [%73, %$24] ; # X
+  %77 = phi i64 [%68, %$24] ; # N
+; # (evCnt Exe X)
+  %78 = call i64 @evCnt(i64 %0, i64 %76)
+  br label %$27
+$26:
+  %79 = phi i64 [%73, %$24] ; # X
+  %80 = phi i64 [%68, %$24] ; # N
+  br label %$27
+$27:
+  %81 = phi i64 [%76, %$25], [%79, %$26] ; # X
+  %82 = phi i64 [%77, %$25], [%80, %$26] ; # N
+  %83 = phi i64 [%78, %$25], [0, %$26] ; # ->
+; # (tmTime (xCnt Exe N) (evCnt Exe X) (if (pair (shift X)) (evCnt Ex...
+  %84 = call i64 @tmTime(i64 %69, i64 %70, i64 %83)
+  br label %$22
+$23:
+  %85 = phi i64 [%64, %$17] ; # X
+  %86 = phi i64 [%20, %$17] ; # N
+; # (xCnt Exe N)
+  %87 = call i64 @xCnt(i64 %0, i64 %86)
+; # (lt0 (setq N (xCnt Exe N)))
+  %88 = icmp slt i64 %87, 0
+  br i1 %88, label %$29, label %$28
+$29:
+  %89 = phi i64 [%85, %$23] ; # X
+  %90 = phi i64 [%87, %$23] ; # N
+  br label %$22
+$28:
+  %91 = phi i64 [%85, %$23] ; # X
+  %92 = phi i64 [%87, %$23] ; # N
 ; # (/ N 3600)
-  %84 = udiv i64 %83, 3600
+  %93 = udiv i64 %92, 3600
 ; # (cnt (/ N 3600))
-  %85 = shl i64 %84, 4
-  %86 = or i64 %85, 2
+  %94 = shl i64 %93, 4
+  %95 = or i64 %94, 2
 ; # (/ N 60)
-  %87 = udiv i64 %83, 60
+  %96 = udiv i64 %92, 60
 ; # (% (/ N 60) 60)
-  %88 = urem i64 %87, 60
+  %97 = urem i64 %96, 60
 ; # (cnt (% (/ N 60) 60))
-  %89 = shl i64 %88, 4
-  %90 = or i64 %89, 2
+  %98 = shl i64 %97, 4
+  %99 = or i64 %98, 2
 ; # (% N 60)
-  %91 = urem i64 %83, 60
+  %100 = urem i64 %92, 60
 ; # (cnt (% N 60))
-  %92 = shl i64 %91, 4
-  %93 = or i64 %92, 2
+  %101 = shl i64 %100, 4
+  %102 = or i64 %101, 2
 ; # (cons (cnt (% N 60)) $Nil)
-  %94 = call i64 @cons(i64 %93, i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([792 x i64]* @SymTab to i8*), i32 8) to i64))
+  %103 = call i64 @cons(i64 %102, i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([792 x i64]* @SymTab to i8*), i32 8) to i64))
 ; # (cons (cnt (% (/ N 60) 60)) (cons (cnt (% N 60)) $Nil))
-  %95 = call i64 @cons(i64 %90, i64 %94)
+  %104 = call i64 @cons(i64 %99, i64 %103)
 ; # (cons (cnt (/ N 3600)) (cons (cnt (% (/ N 60) 60)) (cons (cnt (% ...
-  %96 = call i64 @cons(i64 %86, i64 %95)
-  br label %$19
-$19:
-  %97 = phi i64 [%72, %$24], [%80, %$26], [%82, %$25] ; # X
-  %98 = phi i64 [%73, %$24], [%81, %$26], [%83, %$25] ; # N
-  %99 = phi i64 [%75, %$24], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([792 x i64]* @SymTab to i8*), i32 8) to i64), %$26], [%96, %$25] ; # ->
+  %105 = call i64 @cons(i64 %95, i64 %104)
+  br label %$22
+$22:
+  %106 = phi i64 [%81, %$27], [%89, %$29], [%91, %$28] ; # X
+  %107 = phi i64 [%82, %$27], [%90, %$29], [%92, %$28] ; # N
+  %108 = phi i64 [%84, %$27], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([792 x i64]* @SymTab to i8*), i32 8) to i64), %$29], [%105, %$28] ; # ->
   br label %$2
 $2:
-  %100 = phi i64 [%6, %$4], [%29, %$14], [%33, %$16], [%37, %$18], [%97, %$19] ; # X
-  %101 = phi i64 [%9, %$4], [%30, %$14], [%20, %$16], [%51, %$18], [%99, %$19] ; # ->
-  ret i64 %101
+  %109 = phi i64 [%6, %$4], [%29, %$14], [%33, %$16], [%57, %$21], [%106, %$22] ; # X
+  %110 = phi i64 [%9, %$4], [%30, %$14], [%20, %$16], [%60, %$21], [%108, %$22] ; # ->
+  ret i64 %110
 }
 
 define i64 @_usec(i64) {
