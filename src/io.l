@@ -1,4 +1,4 @@
-# 28jul20 Software Lab. Alexander Burger
+# 31jul20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1243,7 +1243,7 @@
       (? (<> Chr (char "\\"))  # No Backslash
          (set $Chr (getChar Chr))
          YES )
-      (? (<> 10 (setq Chr (call $Get)))  # Backslash: Skip '\'
+      (? (<> (char "\n") (setq Chr (call $Get)))  # Backslash: Skip '\'
          (case Chr
             ((char "n") (set $Chr (char "\n")))
             ((char "r") (set $Chr (char "\r")))
@@ -1262,8 +1262,11 @@
                (set $Chr Chr) ) )
          YES )
       (loop
-         (? (== (setq Chr (call $Get)) (char " ")))
-         (? (== Chr (char "\t"))) ) ) )
+         (setq Chr (call $Get))
+         (?
+            (and
+               (<> Chr (char " "))
+               (<> Chr (char "\t")) ) ) ) ) )
 
 (de anonymous (Nm)
    (let P (push 0 Nm)  # [cnt name]
