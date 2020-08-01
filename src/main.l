@@ -1,4 +1,4 @@
-# 31jul20 Software Lab. Alexander Burger
+# 01aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -973,6 +973,18 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (free P) )
          $Nil ) ) )
 
+# (ctty 'sym|NIL|pid) -> flg
+(de _ctty (Exe)
+   #!
+   Exe )
+
+# (cmd ['any]) -> sym
+(de _cmd (Exe)
+   (if (nil? (evSym (cdr Exe)))
+      (mkStr (val $AV0))
+      (bufString (xName Exe @) (val $AV0))
+      @ ) )
+
 # (dir ['any] ['flg]) -> lst
 (de _dir (Exe)
    (let X (cdr Exe)
@@ -1019,6 +1031,23 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                      (& (setq N (shr N 16)) (hex "FF"))
                      (& (setq N (shr N 8)) (hex "FF")) )
                   (cnt (shr N 8)) ) ) ) ) ) )
+
+# (file) -> (sym1 sym2 . num) | NIL
+(de _file (Exe)
+   (let In: (inFile (val $InFile))
+      (ifn (and (In:) (In: name))
+         $Nil
+         (let
+            (N (cnt (i64 (In: src)))
+               S (In: name)
+               P (strrchr S (char "/")) )
+            (if P
+               (cons
+                  (mkStrE S (inc 'P))
+                  (cons (mkStr P) N) )
+               (cons
+                  (consSym (hex "2F2E2") 0)  # "./"
+                  (cons (mkStr S) N) ) ) ) ) ) )
 
 # (argv [var ..] [. sym]) -> lst|sym
 (de _argv (Exe)

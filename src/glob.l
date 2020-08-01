@@ -1,4 +1,4 @@
-# 29jul20 Software Lab. Alexander Burger
+# 01aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -468,8 +468,11 @@
    (NIL "sys" _sys)
    (NIL "pwd" _pwd)
    (NIL "cd" _cd)
+   (NIL "ctty" _ctty)
+   (NIL "cmd" _cmd)
    (NIL "dir" _dir)
    (NIL "info" _info)
+   (NIL "file" _file)
    (NIL "argv" _argv)
    (NIL "opt" _opt)
    (NIL "%@" _nat)

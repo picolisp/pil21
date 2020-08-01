@@ -1,4 +1,4 @@
-# 28jul20 Software Lab. Alexander Burger
+# 01aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -87,12 +87,21 @@
    (if Str
       (let P (push 4 NIL ZERO NIL)  # [cnt last name link]
          (link (ofs P 2) T)
-         (loop
-            (? (=0 (val Str)))
+         (while (val Str)
             (byteSym @ P)
             (inc 'Str) )
          (consStr (val 3 P)) )
       $Nil ) )
+
+(de mkStrE ((i8* . Str) (i8* . End))
+   (let P (push 4 NIL ZERO NIL)  # [cnt last name link]
+      (link (ofs P 2) T)
+      (loop
+         (? (== Str End))
+         (? (=0 (val Str)))
+         (byteSym @ P)
+         (inc 'Str) )
+      (consStr (val 3 P)) ) )
 
 (de i8 firstByte (Sym)
    (i8
