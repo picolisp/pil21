@@ -85789,7 +85789,7 @@ $2:
 ; # (val (val $Pnl))
   %23 = inttoptr i64 %22 to i64*
   %24 = load i64, i64* %23
-; # (if (unify (cadr L) X (car L) X) (val (val $Pnl)) $Nil)
+; # (if (unify (cadr L) X (car L) X) (val (val $Penv)) $Nil)
 ; # (cadr L)
   %25 = inttoptr i64 %24 to i64*
   %26 = getelementptr i64, i64* %25, i32 1
@@ -85803,9 +85803,9 @@ $2:
   %32 = call i1 @unify(i64 %29, i64 %13, i64 %31, i64 %13)
   br i1 %32, label %$7, label %$8
 $7:
-; # (val $Pnl)
-  %33 = load i64, i64* @$Pnl
-; # (val (val $Pnl))
+; # (val $Penv)
+  %33 = load i64, i64* @$Penv
+; # (val (val $Penv))
   %34 = inttoptr i64 %33 to i64*
   %35 = load i64, i64* %34
   br label %$9

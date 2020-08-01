@@ -1,4 +1,4 @@
-# 24jul20 Software Lab. Alexander Burger
+# 01aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1305,12 +1305,12 @@
          ((and (== N1 N2) (equal X1 X2)) YES)
          ((and (symb? X1) (== (firstByte X1) (char "@")))
             (unless (== X1 $At)
-               (set Penv
+               (set Penv  # (((n1 . x1) . (n2 . x2)) . Penv)
                   (cons (cons3 N1 X1 N2 X2) (val Penv)) ) )
             YES )
          ((and (symb? X2) (== (firstByte X2) (char "@")))
             (unless (== X2 $At)
-               (set Penv
+               (set Penv  # (((n2 . x2) . (n1 . x1)) . Penv)
                   (cons (cons3 N2 X2 N1 X1) (val Penv)) ) )
             YES )
          ((or (atom X1) (atom X2)) (equal X1 X2))
@@ -1506,7 +1506,7 @@
 (de _unify (Exe)
    (let (X (save (eval (cadr Exe)))  L (val (val $Pnl)))
       (if (unify (cadr L) X (car L) X)
-         (val (val $Pnl))
+         (val (val $Penv))
          $Nil ) ) )
 
 # (group 'lst) -> lst
