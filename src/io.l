@@ -1,4 +1,4 @@
-# 31jul20 Software Lab. Alexander Burger
+# 01aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -625,10 +625,9 @@
       (set (i8** $Put) (Io: fun))
       (setq Io: (ioFrame (set $OutFrames (Io: link))))
       (set $OutFile
-         (val
-            (if (Io:)
-               (ofs (val $OutFiles) (Io: fd))
-               (ofs (val $OutFiles) 1) ) ) ) ) )  # Stdout
+         (if (Io:)
+            (val (ofs (val $OutFiles) (Io: fd)))
+            (val 2 (val $OutFiles)) ) ) ) )  # Stdout
 
 (de void popErrFiles ()
    (let Io: (ioFrame (val $ErrFrames))
@@ -2547,7 +2546,7 @@
          (setq X $Nil)
          (loop
             (let Y
-               (ifn (== (val $InFile) (val (val $InFiles)))
+               (ifn (== (val $InFile) (val (val $InFiles)))  # Stdin
                   (read1 0)
                   (cond
                      ((=0 Prmt) (set $LinePrmt null))
@@ -2581,7 +2580,7 @@
                (set V Y)
                (if
                   (or
-                     (<> (val $InFile) (val (val $InFiles)))
+                     (<> (val $InFile) (val (val $InFiles)))  # Stdin
                      (val $Chr)
                      (=0 Prmt) )
                   (setq X (eval Y))

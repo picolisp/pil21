@@ -1,4 +1,4 @@
-// 28jul20 Software Lab. Alexander Burger
+// 01aug20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -240,6 +240,13 @@ void setRaw(void) {
 void setCooked(void) {
    tcSet(&OrgTermio);
    free(Termio),  Termio = NULL;
+}
+
+int reopenTty(char* tty) {
+   return
+      freopen(tty, "r", stdin) != NULL  &&
+      freopen(tty, "w", stdout) != NULL  &&
+      freopen(tty, "w", stderr) != NULL;
 }
 
 // System

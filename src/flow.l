@@ -1,4 +1,4 @@
-# 27jul20 Software Lab. Alexander Burger
+# 01aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -7,7 +7,7 @@
 (de void redefMsg (Sym Sym2)
    (let (Out (val $OutFile)  Put (val (i8** $Put)))
       (set
-         $OutFile (val (ofs (val $OutFiles) 2))  # Stderr
+         $OutFile (val 3 (val $OutFiles))  # Stderr
          $Put (fun (void i8) _putStdout) )
       (outString ($ "# "))
       (print Sym)
@@ -1010,7 +1010,7 @@
          (run (cddr X))
          (let (Out (val $OutFile)  Put (val (i8** $Put)))
             (set
-               $OutFile (val (ofs (val $OutFiles) 2))  # Stderr
+               $OutFile (val 3 (val $OutFiles))  # Stderr
                $Put (fun (void i8) _putStdout) )
             (let (Y (++ X)  Z (++ X))
                (trace (set $Trace (inc (val $Trace))) Y)
@@ -1033,7 +1033,7 @@
                (prog1
                   (run X)
                   (set
-                     $OutFile (val (ofs (val $OutFiles) 2))  # Stderr
+                     $OutFile (val 3 (val $OutFiles))  # Stderr
                      $Put (fun (void i8) _putStdout) )
                   (let I (val $Trace)
                      (trace I Y)

@@ -1,4 +1,4 @@
-# 28jul20 Software Lab. Alexander Burger
+# 01aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -191,7 +191,7 @@ nonBlocking fcntlSetOwn getDir)
 (de T i32 gErrno ())
 
 # Terminal
-(local) (Tio OrgTermio Termio setRaw setCooked)
+(local) (Tio OrgTermio Termio setRaw setCooked reopenTty)
 
 (var Tio i1 NIL)
 (var OrgTermio i8 NIL)
@@ -200,6 +200,7 @@ nonBlocking fcntlSetOwn getDir)
 (de T void stopTerm ())
 (de T void setRaw ())
 (de T void setCooked ())
+(de T i1 reopenTty (i8*))
 
 # System
 (local) (getUsec getMsec getDate getGmDate getTime getGmTime fileInfo)

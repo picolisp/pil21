@@ -1507,6 +1507,7 @@ declare i32 @gErrno()
 declare void @stopTerm()
 declare void @setRaw()
 declare void @setCooked()
+declare i1 @reopenTty(i8*)
 declare i64 @getUsec(i1)
 declare i64 @getMsec()
 declare i64 @getDate()
@@ -37274,8 +37275,8 @@ $3:
   %21 = bitcast i8* %2 to i8**
   %22 = load i8*, i8** %21
   store i8* %22, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 48) to i8**)
-; # (set $OutFile (val (if (Io:) (ofs (val $OutFiles) (Io: fd)) (ofs ...
-; # (if (Io:) (ofs (val $OutFiles) (Io: fd)) (ofs (val $OutFiles) 1))...
+; # (set $OutFile (if (Io:) (val (ofs (val $OutFiles) (Io: fd))) (val...
+; # (if (Io:) (val (ofs (val $OutFiles) (Io: fd))) (val 2 (val $OutFi...
 ; # (Io:)
   %23 = icmp ne i8* %22, null
   br i1 %23, label %$4, label %$5
@@ -37288,18 +37289,19 @@ $4:
   %27 = load i32, i32* %26
 ; # (ofs (val $OutFiles) (Io: fd))
   %28 = getelementptr i8*, i8** %24, i32 %27
+; # (val (ofs (val $OutFiles) (Io: fd)))
+  %29 = load i8*, i8** %28
   br label %$6
 $5:
 ; # (val $OutFiles)
-  %29 = load i8**, i8*** @$OutFiles
-; # (ofs (val $OutFiles) 1)
-  %30 = getelementptr i8*, i8** %29, i32 1
+  %30 = load i8**, i8*** @$OutFiles
+; # (val 2 (val $OutFiles))
+  %31 = getelementptr i8*, i8** %30, i32 1
+  %32 = load i8*, i8** %31
   br label %$6
 $6:
-  %31 = phi i8** [%28, %$4], [%30, %$5] ; # ->
-; # (val (if (Io:) (ofs (val $OutFiles) (Io: fd)) (ofs (val $OutFiles...
-  %32 = load i8*, i8** %31
-  store i8* %32, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 104) to i8**)
+  %33 = phi i8* [%29, %$4], [%32, %$5] ; # ->
+  store i8* %33, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 104) to i8**)
   ret void
 }
 
@@ -59775,12 +59777,11 @@ $1:
   %3 = bitcast void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 80) to void(i8)**) to i8**
 ; # (val (i8** $Put))
   %4 = load i8*, i8** %3
-; # (set $OutFile (val (ofs (val $OutFiles) 2)) $Put (fun (void i8) _...
+; # (set $OutFile (val 3 (val $OutFiles)) $Put (fun (void i8) _putStd...
 ; # (val $OutFiles)
   %5 = load i8**, i8*** @$OutFiles
-; # (ofs (val $OutFiles) 2)
+; # (val 3 (val $OutFiles))
   %6 = getelementptr i8*, i8** %5, i32 2
-; # (val (ofs (val $OutFiles) 2))
   %7 = load i8*, i8** %6
   store i8* %7, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 104) to i8**)
 ; # (fun (void i8) _putStdout)
@@ -69224,12 +69225,11 @@ $3:
   %42 = bitcast void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 80) to void(i8)**) to i8**
 ; # (val (i8** $Put))
   %43 = load i8*, i8** %42
-; # (set $OutFile (val (ofs (val $OutFiles) 2)) $Put (fun (void i8) _...
+; # (set $OutFile (val 3 (val $OutFiles)) $Put (fun (void i8) _putStd...
 ; # (val $OutFiles)
   %44 = load i8**, i8*** @$OutFiles
-; # (ofs (val $OutFiles) 2)
+; # (val 3 (val $OutFiles))
   %45 = getelementptr i8*, i8** %44, i32 2
-; # (val (ofs (val $OutFiles) 2))
   %46 = load i8*, i8** %45
   store i8* %46, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 104) to i8**)
 ; # (fun (void i8) _putStdout)
@@ -69354,7 +69354,7 @@ $19:
   %101 = bitcast void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 80) to void(i8)**) to i8**
   store i8* %43, i8** %101
   store i8* %41, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 104) to i8**)
-; # (prog1 (run X) (set $OutFile (val (ofs (val $OutFiles) 2)) $Put (...
+; # (prog1 (run X) (set $OutFile (val 3 (val $OutFiles)) $Put (fun (v...
 ; # (run X)
   br label %$27
 $27:
@@ -69404,12 +69404,11 @@ $36:
 $29:
   %126 = phi i64 [%109, %$31] ; # Prg
   %127 = phi i64 [%117, %$31] ; # ->
-; # (set $OutFile (val (ofs (val $OutFiles) 2)) $Put (fun (void i8) _...
+; # (set $OutFile (val 3 (val $OutFiles)) $Put (fun (void i8) _putStd...
 ; # (val $OutFiles)
   %128 = load i8**, i8*** @$OutFiles
-; # (ofs (val $OutFiles) 2)
+; # (val 3 (val $OutFiles))
   %129 = getelementptr i8*, i8** %128, i32 2
-; # (val (ofs (val $OutFiles) 2))
   %130 = load i8*, i8** %129
   store i8* %130, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 104) to i8**)
 ; # (fun (void i8) _putStdout)
@@ -88505,7 +88504,127 @@ $4:
 
 define i64 @_ctty(i64) {
 $1:
-  ret i64 %0
+; # (let X (eval (cadr Exe)) (cond ((cnt? X) (set $TtyPid (i32 (int @...
+; # (cadr Exe)
+  %1 = inttoptr i64 %0 to i64*
+  %2 = getelementptr i64, i64* %1, i32 1
+  %3 = load i64, i64* %2
+  %4 = inttoptr i64 %3 to i64*
+  %5 = load i64, i64* %4
+; # (eval (cadr Exe))
+  %6 = and i64 %5, 6
+  %7 = icmp ne i64 %6, 0
+  br i1 %7, label %$4, label %$3
+$4:
+  br label %$2
+$3:
+  %8 = and i64 %5, 8
+  %9 = icmp ne i64 %8, 0
+  br i1 %9, label %$6, label %$5
+$6:
+  %10 = inttoptr i64 %5 to i64*
+  %11 = load i64, i64* %10
+  br label %$2
+$5:
+  %12 = call i64 @evList(i64 %5)
+  br label %$2
+$2:
+  %13 = phi i64 [%5, %$4], [%11, %$6], [%12, %$5] ; # ->
+; # (cond ((cnt? X) (set $TtyPid (i32 (int @))) $T) ((not (sym? X)) (...
+; # (cnt? X)
+  %14 = and i64 %13, 2
+  %15 = icmp ne i64 %14, 0
+  br i1 %15, label %$9, label %$8
+$9:
+; # (set $TtyPid (i32 (int @)))
+; # (int @)
+  %16 = lshr i64 %13, 4
+; # (i32 (int @))
+  %17 = trunc i64 %16 to i32
+  store i32 %17, i32* @$TtyPid
+  br label %$7
+$8:
+; # (sym? X)
+  %18 = and i64 %13, 8
+  %19 = icmp ne i64 %18, 0
+; # (not (sym? X))
+  %20 = icmp eq i1 %19, 0
+  br i1 %20, label %$11, label %$10
+$11:
+; # (argErr Exe X)
+  call void @argErr(i64 %0, i64 %13)
+  unreachable
+$10:
+; # (nil? X)
+  %21 = icmp eq i64 %13, ptrtoint (i8* getelementptr (i8, i8* bitcast ([798 x i64]* @SymTab to i8*), i32 8) to i64)
+  br i1 %21, label %$13, label %$12
+$13:
+  br label %$7
+$12:
+; # (let (Nm (xName Exe X) In: (inFile (val (val $InFiles))) Out: (ou...
+; # (xName Exe X)
+  %22 = call i64 @xName(i64 %0, i64 %13)
+; # (val $InFiles)
+  %23 = load i8**, i8*** @$InFiles
+; # (val (val $InFiles))
+  %24 = load i8*, i8** %23
+; # (val $OutFiles)
+  %25 = load i8**, i8*** @$OutFiles
+; # (val 2 (val $OutFiles))
+  %26 = getelementptr i8*, i8** %25, i32 1
+  %27 = load i8*, i8** %26
+; # (ifn (reopenTty (bufString Nm (b8 (bufSize Nm)))) $Nil (In: ix (I...
+; # (bufSize Nm)
+  %28 = call i64 @bufSize(i64 %22)
+; # (b8 (bufSize Nm))
+  %29 = alloca i8, i64 %28
+; # (bufString Nm (b8 (bufSize Nm)))
+  %30 = call i8* @bufString(i64 %22, i8* %29)
+; # (reopenTty (bufString Nm (b8 (bufSize Nm))))
+  %31 = call i1 @reopenTty(i8* %30)
+  br i1 %31, label %$15, label %$14
+$14:
+  br label %$16
+$15:
+; # (In: ix (In: cnt 0))
+  %32 = bitcast i8* %24 to i64*
+  %33 = getelementptr i8, i8* %24, i32 8
+  %34 = bitcast i8* %33 to i64*
+  store i64 0, i64* %34
+  store i64 0, i64* %32
+; # (In: next 0)
+  %35 = getelementptr i8, i8* %24, i32 20
+  %36 = bitcast i8* %35 to i32*
+  store i32 0, i32* %36
+; # (set Tio (=0 (tcgetattr 0 OrgTermio)))
+; # (tcgetattr 0 OrgTermio)
+  %37 = call i32 @tcgetattr(i32 0, i8* @OrgTermio)
+; # (=0 (tcgetattr 0 OrgTermio))
+  %38 = icmp eq i32 %37, 0
+  store i1 %38, i1* @Tio
+; # (Out: ix 0)
+  %39 = bitcast i8* %27 to i64*
+  store i64 0, i64* %39
+; # (Out: tty YES)
+  %40 = getelementptr i8, i8* %27, i32 4108
+  %41 = bitcast i8* %40 to i1*
+  store i1 1, i1* %41
+; # (val $OutFiles)
+  %42 = load i8**, i8*** @$OutFiles
+; # (val 3 (val $OutFiles))
+  %43 = getelementptr i8*, i8** %42, i32 2
+  %44 = load i8*, i8** %43
+; # ((outFile (val 3 (val $OutFiles))) tty YES)
+  %45 = getelementptr i8, i8* %44, i32 4108
+  %46 = bitcast i8* %45 to i1*
+  store i1 1, i1* %46
+  br label %$16
+$16:
+  %47 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([798 x i64]* @SymTab to i8*), i32 8) to i64), %$14], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([798 x i64]* @SymTab to i8*), i32 184) to i64), %$15] ; # ->
+  br label %$7
+$7:
+  %48 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([798 x i64]* @SymTab to i8*), i32 184) to i64), %$9], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([798 x i64]* @SymTab to i8*), i32 184) to i64), %$13], [%47, %$16] ; # ->
+  ret i64 %48
 }
 
 define i64 @_cmd(i64) {
