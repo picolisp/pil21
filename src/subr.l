@@ -1,4 +1,4 @@
-# 01aug20 Software Lab. Alexander Burger
+# 02aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -400,7 +400,7 @@
       (loop
          (? (atom L) L)
          (? (not (equal Y (car L)))
-            (let R (setq X (cons (car L) $Nil))
+            (let R (save (setq X (cons (car L) $Nil)))
                (loop
                   (? (atom (shift L))
                      (set 2 X L) )
@@ -421,7 +421,7 @@
       (loop
          (? (atom L) L)
          (? (<> Y (car L))
-            (let R (setq X (cons (car L) $Nil))
+            (let R (save (setq X (cons (car L) $Nil)))
                (loop
                   (? (atom (shift L))
                      (set 2 X L) )
