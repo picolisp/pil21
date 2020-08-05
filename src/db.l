@@ -1,4 +1,4 @@
-# 28jul20 Software Lab. Alexander Burger
+# 03aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -327,7 +327,7 @@
             (set @ $Nil) ) )  # Clear zap list
       (when (val $DBs)  # DB open
          (unLockDb 0) )  # Unlock all
-      #! (unsync)
+      (unsync)
       $T ) )
 
 # (extern 'sym) -> sym | NIL
@@ -376,7 +376,25 @@
       (set $Solo ZERO)  # Reset solo mode
       (when (val $DBs)
          (_rollback ZERO)
-         )
+         (let (P (val $DbFiles)  C @)
+            (loop
+               (let Db: (dbFile P)
+                  (close (Db: fd))
+                  (free (Db: mark)) )
+               (? (=0 (dec 'C)))
+               (setq P (ofs P (dbFile T))) ) )
+         (set $DBs 0)
+         (when (val $DbJnl)
+            (fclose @)
+            (set $DbJnl null) )
+         (when (val $DbLog)
+            (fclose @)
+            (set $DbLog null) ) )
+      (unless (nil? Sym1)
+         (let Nm (save (xName Exe Sym1))
+            (bufString Nm (b8 (bufSize Nm)))
+         ) )
+      #!
       (let N (i64 (val $MaxBlkSize))
          (set $DbBlock (alloc (val $DbBlock) N))
          (memset (set $IniBlk (alloc (val $IniBlk) N)) 0 N) )

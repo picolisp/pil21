@@ -1,4 +1,4 @@
-# 01aug20 Software Lab. Alexander Burger
+# 05aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1025,26 +1025,30 @@
       (X (cdr Exe)
          Y (save (needChkVar Exe (eval (++ X)))) )
       (when (and (sym? Y) (sym? (val (tail Y))))
-         (dbTouch Exe Y) )
+         (dbTouch Exe Y) )  # External symbol
       (let V (val Y)
-         (if (atom X)
-            (if (atom V)
-               $Nil
-               (if (== (cdr V) V)  # Single cell
-                  (prog
-                     (set Y $Nil)  # Clear value
-                     (car V) )
-                  (set 2 V (cdr @))
-                  (car @) ) )
-            (let E (eval (car X))
-               (if (pair V)
-                  (setq V (set 2 V (cons E (cdr V))))  # Concat into value
-                  (setq V (cons E -ZERO))  # Circular cell
-                  (set 2 V V) )
-               (while (pair (shift X))
-                  (setq V (cons (eval (car X)) (cdr V))) )
-               (set Y V)
-               E ) ) ) ) )
+         (cond
+            ((pair X)  # Add to fifo
+               (let E (eval (car X))
+                  (if (pair V)
+                     (setq V (set 2 V (cons E (cdr V))))  # Concat into value
+                     (setq V (cons E -ZERO))  # Circular cell
+                     (set 2 V V) )
+                  (while (pair (shift X))
+                     (setq V
+                        (set 2 V
+                           (cons
+                              (setq E (eval (car X)))
+                              (cdr V) ) ) ) )
+                  (set Y V)
+                  E ) )
+            ((atom V) $Nil)  # Empty
+            ((== (cdr V) V)  # Single cell
+               (set Y $Nil)  # Clear value
+               (car V) )
+            (T
+               (set 2 V (cdr @))  # Remove
+               (car @) ) ) ) ) )  # and return
 
 (local) (idxPut idxGet idxDel)
 
