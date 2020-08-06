@@ -1,4 +1,4 @@
-# 01aug20 Software Lab. Alexander Burger
+# 06aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1103,7 +1103,7 @@
                   Flg (== (val S) (char "+")) )
                (when Flg
                   (setq S (ofs S 1)) )
-               (while (lt0 (openRdWr S))
+               (while (lt0 (openRdWrCreate S))
                   (unless (== (gErrno) EINTR)
                      (openErr Exe X) )
                   (sigChk Exe) )
@@ -1978,7 +1978,7 @@
          S (pathString Nm (b8 (pathSize Nm)))
          Flg (nil? (eval (cadr X))) )
       (loop
-         (? (ge0 (if Flg (openRdWr S) (openRd S)))
+         (? (ge0 (if Flg (openRdWrCreate S) (openRd S)))
             (closeOnExec Exe @)
             (initInFile @ (strdup S))
             (initOutFile @)
@@ -2119,7 +2119,7 @@
 (de void space ()
    (call $Put (char " ")) )
 
-(local) (outWord outNum outOct outAo prExt outString prName outName)
+(local) (outWord outNum outOct outAo bufAo prExt outString prName outName)
 
 # Output decimal number
 (de void outWord ((i64 . N))
@@ -2146,6 +2146,15 @@
       (outAo (shr N 4))
       (setq N (& N 15)) )
    (call $Put (+ (i8 N) (char "@"))) )
+
+# Append A-O encoding to buffer
+(de i8* bufAo ((i8* . P) (i32 . N))
+   (when (> N 15)
+      (setq
+         P (bufAo P (shr N 4))
+         N (& N 15) ) )
+   (set P (+ (i8 N) (char "@")))
+   (inc P) )
 
 # Output external symbol name
 (de void prExt (Nm)
@@ -2330,7 +2339,7 @@
             (Out:)
             (let Fd (Out: fd)
                (Out: ix 0)
-               (and (seekSet Fd) (fTruncate Fd)) ) )
+               (and (seek0 Fd) (truncate0 Fd)) ) )
          $T
          $Nil ) ) )
 

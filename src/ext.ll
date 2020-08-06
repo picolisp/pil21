@@ -59,7 +59,6 @@ declare void @llvm.stackrestore(i8*)
 @$DBs = external global i32
 @$MaxBlkSize = external global i32
 @$DbBlock = external global i8*
-@$IniBlk = external global i8*
 @$BlkIndex = external global i64
 @$BlkLink = external global i64
 @$DbJnl = external global i8*
@@ -104,7 +103,9 @@ declare i64 @pwrite(i32, i8*, i64, i64)
 declare i32 @fread(i8*, i32, i32, i8*)
 declare i32 @fwrite(i8*, i32, i32, i8*)
 declare i32 @putc_unlocked(i32, i8*)
+declare i8* @fopen(i8*, i8*)
 declare i32 @fflush(i8*)
+declare i32 @feof(i8*)
 declare i32 @fclose(i8*)
 declare i32 @fileno(i8*)
 declare i32 @pipe(i32*)
@@ -139,10 +140,14 @@ declare i8* @strErrno()
 declare i32 @openRd(i8*)
 declare i32 @openWr(i8*)
 declare i32 @openRdWr(i8*)
+declare i32 @openRdWrExcl(i8*)
+declare i32 @openRdWrCreate(i8*)
 declare i32 @openRdWrAppend(i8*)
 declare i32 @openWrAppend(i8*)
-declare i1 @seekSet(i32)
-declare i1 @fTruncate(i32)
+declare i1 @fseekOfs(i8*, i32)
+declare i1 @fseek0(i8*)
+declare i1 @seek0(i32)
+declare i1 @truncate0(i32)
 declare i32 @socketPair(i32*)
 declare i32 @fcntlCloExec(i32)
 declare void @fcntlSetFl(i32, i32)

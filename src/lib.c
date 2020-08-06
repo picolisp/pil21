@@ -1,4 +1,4 @@
-// 01aug20 Software Lab. Alexander Burger
+// 06aug20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -28,10 +28,18 @@ int32_t openRd(char *nm) {
 }
 
 int32_t openWr(char *nm) {
-   return (int32_t)open(nm, O_CREAT | O_TRUNC | O_WRONLY, 0666);
+   return (int32_t)open(nm, O_CREAT|O_TRUNC|O_WRONLY, 0666);
 }
 
 int32_t openRdWr(char *nm) {
+   return (int32_t)open(nm, O_RDWR);
+}
+
+int32_t openRdWrExcl(char *nm) {
+   return (int32_t)open(nm, O_CREAT|O_EXCL|O_RDWR, 0666);
+}
+
+int32_t openRdWrCreate(char *nm) {
    return (int32_t)open(nm, O_CREAT|O_RDWR, 0666);
 }
 
@@ -43,11 +51,19 @@ int32_t openWrAppend(char *nm) {
    return (int32_t)open(nm, O_APPEND|O_CREAT|O_WRONLY, 0666);
 }
 
-int seekSet(int fd) {
+int fseekOfs(FILE *fp, int ofs) {
+   return fseek(fp, (long)ofs, SEEK_CUR) == 0;
+}
+
+int fseek0(FILE *fp) {
+   return fseek(fp, 0L, SEEK_SET) == 0;
+}
+
+int seek0(int fd) {
    return lseek(fd, 0L, SEEK_SET) == 0;
 }
 
-int fTruncate(int fd) {
+int truncate0(int fd) {
    return ftruncate(fd, 0) == 0;
 }
 

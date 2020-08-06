@@ -1,4 +1,4 @@
-# 03aug20 Software Lab. Alexander Burger
+# 06aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -46,6 +46,19 @@
    (set 4 P (i8 (setq N (shr N 8))))
    (set 5 P (i8 (setq N (shr N 8))))
    (set 6 P (i8 (shr N 8))) )
+
+# Read file number from buffer into '$DbFile'
+(de i1 dbfBuf ((i8* . P))
+   (let N
+      (|  # Two bytes little endian
+         (shl (i32 (val 2 P)) 8)
+         (i32 (val P)) )
+      (and
+         (> (val $DBs) N)
+         (prog
+            (set $DbFile  # Set current file
+               (ofs (val $DbFiles) (* N (dbFile T))) )
+            YES ) ) ) )
 
 # Locking
 (local) (rdLockDb wrLockDb unLockDb tryLock lockJnl unLockJnl)
@@ -168,7 +181,10 @@
 (local) (newBlock newId isLife cleanUp getBlock putBlock)
 
 (de i64 newBlock ()
-   (let (Db: (dbFile (val $DbFile))  P (b8 (* BLK 2)))
+   (let
+      (Db: (dbFile (val $DbFile))
+         Siz (Db: siz)
+         P (b8 (i64 Siz)) )
       (blkPeek 0 P (* 2 BLK))  # Read 'free' and 'next' from block zero
       (let N (getAdr P)
          (cond
@@ -179,7 +195,8 @@
                (err 0 0 ($ "DB Oversize") null) )
             (T (setAdr (+ N BLKSIZE) (ofs P BLK))) )  # Increment next
          (blkPoke 0 P (* 2 BLK))  # Write back
-         (blkPoke (shl N (i64 (Db: sh))) (val $IniBlk) (Db: siz))
+         (memset P 0 (i64 Siz))  # Init new block
+         (blkPoke (shl N (i64 (Db: sh))) P Siz)
          N ) ) )
 
 (de newId (Exe (i32 . N))
@@ -365,14 +382,44 @@
                Sym
                $Nil ) ) ) ) )
 
+(de void ignLog ()
+   (stderrMsg ($ "Discarding incomplete transaction\n") null) )
+
+(de i1 transaction ()
+   (let (Log (val $DbLog)  P (b8 BLK))
+      (fseek0 Log)
+      (if (fread P 2 1 Log)
+         (loop
+            (? (== (val (i16* P)) (hex "FFFF")) YES)
+            (?
+               (or
+                  (not (dbfBuf P))
+                  (<> (fread P BLK 1 Log) 1)
+                  (not (fseekOfs Log ((dbFile (val $DbFile)) siz)))
+                  (<> (fread P 2 1 Log) 1) )
+               (ignLog)
+               NO ) )
+         (unless (feof Log)
+            (ignLog) )
+         NO ) ) )
+
+(de void restore (Exe)
+   #!
+   0 )
+
+(de void truncLog (Exe)
+   (let Log (val $DbLog)
+      (unless (and (fseek0 Log) (truncate0 (fileno Log)))
+         (err Exe 0 ($ "Log truncate error: %s") (strErrno)) ) ) )
+
 # (pool ['sym1 ['lst] ['sym2] ['sym3]]) -> T
 (de _pool (Exe)
    (let
       (X (cdr Exe)
-         Sym1 (save (evSym X))
-         Lst (save (evLst (shift X)))
-         Sym2 (save (evSym (shift X)))
-         Sym3 (save (evSym (shift X))) )
+         Sym1 (save (evSym X))  # Database name
+         Dbs (save (evLst (shift X)))  # Database sizes
+         Sym2 (save (evSym (shift X)))  # Replication journal
+         Sym3 (save (evSym (shift X))) )  # Transaction log
       (set $Solo ZERO)  # Reset solo mode
       (when (val $DBs)
          (_rollback ZERO)
@@ -391,14 +438,84 @@
             (fclose @)
             (set $DbLog null) ) )
       (unless (nil? Sym1)
-         (let Nm (save (xName Exe Sym1))
-            (bufString Nm (b8 (bufSize Nm)))
-         ) )
-      #!
-      (let N (i64 (val $MaxBlkSize))
-         (set $DbBlock (alloc (val $DbBlock) N))
-         (memset (set $IniBlk (alloc (val $IniBlk) N)) 0 N) )
-      )
+         (let
+            (Nm (xName Exe Sym1)  # DB name
+               Len (pathSize Nm)
+               Buf (pathString Nm (b8 (+ Len 4)))  # 4 bytes for AO file number
+               End (ofs Buf Len)
+               Siz (dbFile T) )  # Default to single dbFile
+            (when (pair Dbs)
+               (let L Dbs
+                  (while (pair (shift L))
+                     (inc 'Siz (dbFile T)) ) ) )
+            (let
+               (Db: (dbFile (set $DbFiles (alloc (val $DbFiles) Siz)))
+                  P (b8 (+ BLK BLK 1))
+                  Fnr (i32 0)
+                  Max (i32 0) )
+               (loop
+                  (Db: db Fnr)
+                  (if (atom Dbs)
+                     (Db: sh 2)
+                     (set (bufAo End Fnr) 0)
+                     (Db: sh (i32 (++ Dbs))) )
+                  (set $DbFile (Db:))  # Set current file
+                  (cond
+                     ((ge0 (Db: fd (openRdWr Buf)))  # Exists
+                        (blkPeek 0 P (+ BLK BLK 1))  # Read block shift from block zero
+                        (Db: siz
+                           (shl
+                              (i32 BLKSIZE)
+                              (Db: sh (i32 (val (+ BLK BLK) P))) ) ) )  # Override block shift from 'Dbs'
+                     ((and
+                           (== (gErrno) ENOENT)
+                           (ge0 (Db: fd (openRdWrExcl Buf))) )
+                        (let
+                           (N (shl (Db: sh) BLKSIZE)
+                              Stk (stack)
+                              Blk (b8 (i64 (Db: siz N))) )
+                           (memset Blk 0 (i64 N))  # 'free' is null
+                           (setAdr
+                              (if (== (Db:) (val $DbFiles))  # First file
+                                 (* 2 BLKSIZE)  # Block zero plus DB root
+                                 BLKSIZE )
+                              (ofs Blk BLK) )  # Address of 'next' in buffer
+                           (set (* 2 BLK) Blk (i8 (Db: sh)))  # Set block shift in block zero
+                           (blkPoke 0 Blk N)  # Write DB block zero
+                           (when (== (Db:) (val $DbFiles))  # First file
+                              (memset Blk 0 16)  # Clear 'next' link in buffer
+                              (setAdr 1 Blk)  # First block for DB root into link field
+                              (blkPoke (i64 (Db: siz)) Blk N) )  # has block size position
+                           (stack Stk) )
+                        (closeOnExec Exe (Db: fd))
+                        (when (> (Db: siz) Max)
+                           (setq Max @) )
+                        (Db: mark null)
+                        (Db: mrks 0)
+                        (Db: flu 0)
+                        (Db: lck (Db: drt NO)) )
+                     (T (openErr Exe Sym1)) )
+                  (inc 'Fnr)
+                  (? (atom Dbs)) )
+               (set
+                  $DBs Fnr
+                  $MaxBlkSize Max
+                  $DbBlock (alloc (val $DbBlock) (i64 Max)) ) ) )
+         (unless (nil? Sym2)  # Replication journal
+            (let Nm (xName Exe Sym2)  # Journal name
+               (unless (fopen (pathString Nm (b8 (pathSize Nm))) ($ "a"))
+                  (openErr Exe Sym2) )
+               (set $DbJnl @)
+               (closeOnExec Exe (fileno @)) ) )
+         (unless (nil? Sym3)  # Transaction log
+            (let Nm (xName Exe Sym3)  # Transaction log name
+               (unless (fopen (pathString Nm (b8 (pathSize Nm))) ($ "a+"))
+                  (openErr Exe Sym3) )
+               (set $DbLog @)
+               (closeOnExec Exe (fileno @))
+               (when (transaction)
+                  (restore Exe) )
+               (truncLog Exe)  ) ) ) )
    $T )
 
 

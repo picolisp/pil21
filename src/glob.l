@@ -1,4 +1,4 @@
-# 01aug20 Software Lab. Alexander Burger
+# 06aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -54,7 +54,6 @@
 (var $DBs i32 0)                       # Number of DB files
 (var $MaxBlkSize i32 0)                # Maximum block size
 (var $DbBlock i8* null)                # Block buffer
-(var $IniBlk i8* null)                 # Empty initial block
 (var $BlkIndex i64 0)                  # Block index
 (var $BlkLink i64 0)                   # Next block
 (var $DbJnl i8* null)                  # Journal file

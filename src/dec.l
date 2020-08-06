@@ -1,4 +1,4 @@
-# 03aug20 Software Lab. Alexander Burger
+# 06aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -78,9 +78,9 @@
 # libc
 (local) (malloc realloc free fork getenv setenv getpid getpgrp setsid alarm
 setpgid execvp isatty tcgetattr read write pread pwrite fread fwrite
-putc_unlocked fflush fclose fileno pipe memcmp strlen strcpy strdup strcmp
-strchr strrchr dlsym dlerror dup dup2 close signal tcsetpgrp waitpid setjmp
-longjmp kill exit)
+putc_unlocked fopen fflush feof fclose fileno pipe memcmp strlen strcpy strdup
+strcmp strchr strrchr dlsym dlerror dup dup2 close signal tcsetpgrp waitpid
+setjmp longjmp kill exit)
 
 (de T i8* malloc (i64))
 (de T i8* realloc (i8* i64))
@@ -105,7 +105,9 @@ longjmp kill exit)
 (de T i32 fread (i8* i32 i32 i8*))
 (de T i32 fwrite (i8* i32 i32 i8*))
 (de T i32 putc_unlocked (i32 i8*))
+(de T i8* fopen (i8* i8*))
 (de T i32 fflush (i8*))
+(de T i32 feof (i8*))
 (de T i32 fclose (i8*))
 (de T i32 fileno (i8*))
 (de T i32 pipe (i32*))
@@ -143,8 +145,8 @@ longjmp kill exit)
 (var PipeBufSize i64 NIL)  # PIPE_BUF
 
 (local) (stderrNum stderrMsg gPrintf strErrno openRd openWr openRdWr
-openRdWrAppend openWrAppend seekSet fTruncate socketPair fcntlCloExec fcntlSetFl
-nonBlocking fcntlSetOwn getDir)
+openRdWrExcl openRdWrCreate openRdWrAppend openWrAppend fseekOfs fseek0 seek0
+truncate0 socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 
 (de T i64 stderrNum (i8* i64))
 (de T i8* stderrMsg (i8* i8*))
@@ -153,10 +155,14 @@ nonBlocking fcntlSetOwn getDir)
 (de T i32 openRd (i8*))
 (de T i32 openWr (i8*))
 (de T i32 openRdWr (i8*))
+(de T i32 openRdWrExcl (i8*))
+(de T i32 openRdWrCreate (i8*))
 (de T i32 openRdWrAppend (i8*))
 (de T i32 openWrAppend (i8*))
-(de T i1 seekSet (i32))
-(de T i1 fTruncate (i32))
+(de T i1 fseekOfs (i8* i32))
+(de T i1 fseek0 (i8*))
+(de T i1 seek0 (i32))
+(de T i1 truncate0 (i32))
 (de T i32 socketPair (i32*))
 (de T i32 fcntlCloExec (i32))
 (de T void fcntlSetFl (i32 i32))
