@@ -1,8 +1,8 @@
-# 06aug20 Software Lab. Alexander Burger
+# 07aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
-(local) (dbfErr dbRdErr dbWrErr)
+(local) (dbfErr dbRdErr dbWrErr jnlErr dbSyncErr)
 
 (de NIL dbfErr (Exe)
    (err Exe 0 ($ "Bad DB file") null) )
@@ -12,6 +12,12 @@
 
 (de NIL dbWrErr ()
    (err 0 0 ($ "DB write: %s") (strErrno)) )
+
+(de NIL jnlErr (Exe)
+   (err Exe 0 ($ "Bad Journal") null) )
+
+(de NIL dbSyncErr (Exe)
+   (err Exe 0 ($ "DB fsync error: %s") (strErrno)) )
 
 (local) (getAdr setAdr)
 
@@ -382,30 +388,72 @@
                Sym
                $Nil ) ) ) ) )
 
+(local) (ignLog transaction fsyncDB restore truncLog)
+
 (de void ignLog ()
    (stderrMsg ($ "Discarding incomplete transaction\n") null) )
 
+# Test for existing transaction
 (de i1 transaction ()
-   (let (Log (val $DbLog)  P (b8 BLK))
+   (let (Log (val $DbLog)  A (b8 BLK))
       (fseek0 Log)
-      (if (fread P 2 1 Log)
+      (if (fread A 2 1 Log)  # Read first file number
          (loop
-            (? (== (val (i16* P)) (hex "FFFF")) YES)
+            (? (== (val (i16* A)) (hex "FFFF")) YES)  # Byte order doesn't matter
             (?
                (or
-                  (not (dbfBuf P))
-                  (<> (fread P BLK 1 Log) 1)
+                  (not (dbfBuf A))
+                  (<> (fread A BLK 1 Log) 1)
                   (not (fseekOfs Log ((dbFile (val $DbFile)) siz)))
-                  (<> (fread P 2 1 Log) 1) )
+                  (<> (fread A 2 1 Log) 1) )
                (ignLog)
                NO ) )
          (unless (feof Log)
-            (ignLog) )
+            (ignLog) )  # Discard incomplete transaction
          NO ) ) )
 
+(de void fsyncDB (Exe)
+   (let (P (val $DbFiles)  C (val $DBs))
+      (loop
+         (let Db: (dbFile P)
+            (when (and (Db: drt) (lt0 (fsync (Db: fd))))
+               (dbSyncErr Exe) ) )
+         (? (=0 (dec 'C)))
+         (setq P (ofs P (dbFile T))) ) ) )
+
 (de void restore (Exe)
-   #!
-   0 )
+   (stderrMsg ($ "Last transaction not completed: Rollback\n") null)
+   (let Log (val $DbLog)
+      (fseek0 Log)
+      (let (P (val $DbFiles)  C (val $DBs))
+         (loop
+            ((dbFile P) drt NO)
+            (? (=0 (dec 'C)))
+            (setq P (ofs P (dbFile T))) ) )
+      (let (A (b8 BLK)  Buf (b8 (i64 (val $MaxBlkSize))))
+         (loop
+            (unless (== (fread A 2 1 Log) 1)  # Get file number
+               (jnlErr Exe) )
+            (? (== (val (i16* A)) (hex "FFFF")))  # Byte order doesn't matter
+            (unless (dbfBuf A)
+               (jnlErr Exe) )
+            (let Db: (dbFile (val $DbFile))
+               (unless
+                  (and
+                     (== (fread A BLK 1 Log) 1)
+                     (== (fread Buf (Db: siz) 1 Log) 1) )
+                  (jnlErr Exe) )
+               (unless
+                  (==
+                     (pwrite
+                        (Db: fd)
+                        Buf
+                        (i64 (Db: siz))
+                        (shl (getAdr A) (i64 (Db: sh))) )
+                     (i64 (Db: siz)) )
+                  (dbWrErr) )
+               (Db: drt YES) ) )
+         (fsyncDB Exe) ) ) )
 
 (de void truncLog (Exe)
    (let Log (val $DbLog)
@@ -471,7 +519,7 @@
                            (== (gErrno) ENOENT)
                            (ge0 (Db: fd (openRdWrExcl Buf))) )
                         (let
-                           (N (shl (Db: sh) BLKSIZE)
+                           (N (shl (i32 BLKSIZE) (Db: sh))
                               Stk (stack)
                               Blk (b8 (i64 (Db: siz N))) )
                            (memset Blk 0 (i64 N))  # 'free' is null
@@ -480,7 +528,9 @@
                                  (* 2 BLKSIZE)  # Block zero plus DB root
                                  BLKSIZE )
                               (ofs Blk BLK) )  # Address of 'next' in buffer
-                           (set (* 2 BLK) Blk (i8 (Db: sh)))  # Set block shift in block zero
+                           (set  # Set block shift in block zero
+                              (inc (* 2 BLK)) Blk
+                              (i8 (Db: sh)) )
                            (blkPoke 0 Blk N)  # Write DB block zero
                            (when (== (Db:) (val $DbFiles))  # First file
                               (memset Blk 0 16)  # Clear 'next' link in buffer
