@@ -172,8 +172,6 @@
                   (execAt (val $TStp2))  # Run 'TStp2'
                   (rlSigEnd) )
                ((val (setq P (ofs $Signal SIGTERM)))
-                  (set P (dec @))
-                  (set $Signal (dec (val $Signal)))
                   (let
                      (Cld (val $Child)  # Iterate children
                         <Cld (ofs Cld (* (val $Children) (child T)))
@@ -188,6 +186,7 @@
                         (setq Cld (ofs Cld (child T))) )
                      (? Flg)
                      (set $Signal 0)
+                     (rlSigBeg)
                      (bye 0) ) ) )
             (? (=0 (val $Signal))) ) )
       (set $Protect 0) ) )

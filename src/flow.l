@@ -1,4 +1,4 @@
-# 01aug20 Software Lab. Alexander Burger
+# 08aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -804,10 +804,10 @@
       (set $Catch (Ca:))
       (Ca: fin (++ X))
       (memcpy (Ca: (env)) (env) (env T))
-      (prog1
-         (save (run X)
-            (eval (Ca: fin)) )
-         (set $Catch (Ca: link)) ) ) )
+      (let R (save (run X))
+         (eval (Ca: fin))
+         (set $Catch (Ca: link))
+         R ) ) )
 
 # Coroutines
 (local) (saveCoEnv loadCoEnv)

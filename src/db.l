@@ -1,4 +1,4 @@
-# 07aug20 Software Lab. Alexander Burger
+# 08aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -568,13 +568,14 @@
                (truncLog Exe)  ) ) ) )
    $T )
 
-
 (local) (dbFetch dbTouch dbZap)
 
 (de void dbFetch (Exe Sym)
+   #!
    Sym )
 
 (de void dbTouch (Exe Sym)
+   #!
    Sym )
 
 # (touch 'sym) -> sym
@@ -585,4 +586,25 @@
       X ) )
 
 (de void dbZap (Sym)
+   #!
    Sym )
+
+# (commit ['any] [exe1] [exe2]) -> T
+(de _commit (Exe)
+   #!
+   Exe )
+
+# (mark 'sym|0 [NIL | T | 0]) -> flg
+(de _mark (Exe)
+   #!
+   Exe )
+
+# (free 'cnt) -> (sym . lst)
+(de _free (Exe)
+   #!
+   Exe )
+
+# (dbck ['cnt] 'flg) -> any
+(de _dbck (Exe)
+   #!
+   Exe )

@@ -1,4 +1,4 @@
-# 06aug20 Software Lab. Alexander Burger
+# 08aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -258,6 +258,10 @@
    (NIL "extern" _extern)
    (NIL "pool" _pool)
    (NIL "touch" _touch)
+   (NIL "commit" _commit)
+   (NIL "mark" _mark)
+   (NIL "free" _free)
+   (NIL "dbck" _dbck)
    # Mapping
    (NIL "apply" _apply)
    (NIL "pass" _pass)
