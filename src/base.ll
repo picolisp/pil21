@@ -89857,132 +89857,135 @@ $7:
 
 define i64 @_info(i64) {
 $1:
-; # (let (X (cdr Exe) Nm (xName Exe (evSym X)) Size (i64* (push NIL))...
+; # (let (X (cdr Exe) Nm (xName Exe (set $At2 (evSym X))) Size (i64* ...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
+; # (set $At2 (evSym X))
 ; # (evSym X)
   %4 = call i64 @evSym(i64 %3)
-; # (xName Exe (evSym X))
-  %5 = call i64 @xName(i64 %0, i64 %4)
+  %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([798 x i64]* @SymTab to i8*), i32 376) to i64) to i64*
+  store i64 %4, i64* %5
+; # (xName Exe (set $At2 (evSym X)))
+  %6 = call i64 @xName(i64 %0, i64 %4)
 ; # (push NIL)
-  %6 = alloca i64, i64 1
-  %7 = ptrtoint i64* %6 to i64
+  %7 = alloca i64, i64 1
+  %8 = ptrtoint i64* %7 to i64
 ; # (i64* (push NIL))
-  %8 = inttoptr i64 %7 to i64*
+  %9 = inttoptr i64 %8 to i64*
 ; # (if (lt0 (fileInfo (nil? (eval (car (shift X)))) (pathString Nm (...
 ; # (shift X)
-  %9 = inttoptr i64 %3 to i64*
-  %10 = getelementptr i64, i64* %9, i32 1
-  %11 = load i64, i64* %10
+  %10 = inttoptr i64 %3 to i64*
+  %11 = getelementptr i64, i64* %10, i32 1
+  %12 = load i64, i64* %11
 ; # (car (shift X))
-  %12 = inttoptr i64 %11 to i64*
-  %13 = load i64, i64* %12
+  %13 = inttoptr i64 %12 to i64*
+  %14 = load i64, i64* %13
 ; # (eval (car (shift X)))
-  %14 = and i64 %13, 6
-  %15 = icmp ne i64 %14, 0
-  br i1 %15, label %$4, label %$3
+  %15 = and i64 %14, 6
+  %16 = icmp ne i64 %15, 0
+  br i1 %16, label %$4, label %$3
 $4:
   br label %$2
 $3:
-  %16 = and i64 %13, 8
-  %17 = icmp ne i64 %16, 0
-  br i1 %17, label %$6, label %$5
+  %17 = and i64 %14, 8
+  %18 = icmp ne i64 %17, 0
+  br i1 %18, label %$6, label %$5
 $6:
-  %18 = inttoptr i64 %13 to i64*
-  %19 = load i64, i64* %18
+  %19 = inttoptr i64 %14 to i64*
+  %20 = load i64, i64* %19
   br label %$2
 $5:
-  %20 = call i64 @evList(i64 %13)
+  %21 = call i64 @evList(i64 %14)
   br label %$2
 $2:
-  %21 = phi i64 [%13, %$4], [%19, %$6], [%20, %$5] ; # ->
+  %22 = phi i64 [%14, %$4], [%20, %$6], [%21, %$5] ; # ->
 ; # (nil? (eval (car (shift X))))
-  %22 = icmp eq i64 %21, ptrtoint (i8* getelementptr (i8, i8* bitcast ([798 x i64]* @SymTab to i8*), i32 8) to i64)
+  %23 = icmp eq i64 %22, ptrtoint (i8* getelementptr (i8, i8* bitcast ([798 x i64]* @SymTab to i8*), i32 8) to i64)
 ; # (pathSize Nm)
-  %23 = call i64 @pathSize(i64 %5)
+  %24 = call i64 @pathSize(i64 %6)
 ; # (b8 (pathSize Nm))
-  %24 = alloca i8, i64 %23
+  %25 = alloca i8, i64 %24
 ; # (pathString Nm (b8 (pathSize Nm)))
-  %25 = call i8* @pathString(i64 %5, i8* %24)
+  %26 = call i8* @pathString(i64 %6, i8* %25)
 ; # (fileInfo (nil? (eval (car (shift X)))) (pathString Nm (b8 (pathS...
-  %26 = call i64 @fileInfo(i1 %22, i8* %25, i64* %8)
+  %27 = call i64 @fileInfo(i1 %23, i8* %26, i64* %9)
 ; # (lt0 (fileInfo (nil? (eval (car (shift X)))) (pathString Nm (b8 (...
-  %27 = icmp slt i64 %26, 0
-  br i1 %27, label %$7, label %$8
+  %28 = icmp slt i64 %27, 0
+  br i1 %28, label %$7, label %$8
 $7:
-  %28 = phi i64 [%11, %$2] ; # X
+  %29 = phi i64 [%12, %$2] ; # X
   br label %$9
 $8:
-  %29 = phi i64 [%11, %$2] ; # X
+  %30 = phi i64 [%12, %$2] ; # X
 ; # (let N @ (cons (case (& N 3) (1 $T) (2 $Nil) (T (box64 (val Size)...
 ; # (case (& N 3) (1 $T) (2 $Nil) (T (box64 (val Size))))
 ; # (& N 3)
-  %30 = and i64 %26, 3
-  switch i64 %30, label %$10 [
+  %31 = and i64 %27, 3
+  switch i64 %31, label %$10 [
     i64 1, label %$12
     i64 2, label %$13
   ]
 $12:
-  %31 = phi i64 [%29, %$8] ; # X
-  %32 = phi i64 [%26, %$8] ; # N
+  %32 = phi i64 [%30, %$8] ; # X
+  %33 = phi i64 [%27, %$8] ; # N
   br label %$11
 $13:
-  %33 = phi i64 [%29, %$8] ; # X
-  %34 = phi i64 [%26, %$8] ; # N
+  %34 = phi i64 [%30, %$8] ; # X
+  %35 = phi i64 [%27, %$8] ; # N
   br label %$11
 $10:
-  %35 = phi i64 [%29, %$8] ; # X
-  %36 = phi i64 [%26, %$8] ; # N
+  %36 = phi i64 [%30, %$8] ; # X
+  %37 = phi i64 [%27, %$8] ; # N
 ; # (val Size)
-  %37 = load i64, i64* %8
+  %38 = load i64, i64* %9
 ; # (box64 (val Size))
-  %38 = and i64 %37, 17293822569102704640
-  %39 = icmp ne i64 %38, 0
-  br i1 %39, label %$14, label %$15
+  %39 = and i64 %38, 17293822569102704640
+  %40 = icmp ne i64 %39, 0
+  br i1 %40, label %$14, label %$15
 $14:
-  %40 = call i64 @boxNum(i64 %37)
+  %41 = call i64 @boxNum(i64 %38)
   br label %$16
 $15:
-  %41 = shl i64 %37, 4
-  %42 = or i64 %41, 2
+  %42 = shl i64 %38, 4
+  %43 = or i64 %42, 2
   br label %$16
 $16:
-  %43 = phi i64 [%40, %$14], [%42, %$15] ; # ->
+  %44 = phi i64 [%41, %$14], [%43, %$15] ; # ->
   br label %$11
 $11:
-  %44 = phi i64 [%31, %$12], [%33, %$13], [%35, %$16] ; # X
-  %45 = phi i64 [%32, %$12], [%34, %$13], [%36, %$16] ; # N
-  %46 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([798 x i64]* @SymTab to i8*), i32 184) to i64), %$12], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([798 x i64]* @SymTab to i8*), i32 8) to i64), %$13], [%43, %$16] ; # ->
+  %45 = phi i64 [%32, %$12], [%34, %$13], [%36, %$16] ; # X
+  %46 = phi i64 [%33, %$12], [%35, %$13], [%37, %$16] ; # N
+  %47 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([798 x i64]* @SymTab to i8*), i32 184) to i64), %$12], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([798 x i64]* @SymTab to i8*), i32 8) to i64), %$13], [%44, %$16] ; # ->
 ; # (shr N 2)
-  %47 = lshr i64 %45, 2
+  %48 = lshr i64 %46, 2
 ; # (& (setq N (shr N 2)) (hex "FFFF"))
-  %48 = and i64 %47, 65535
+  %49 = and i64 %48, 65535
 ; # (shr N 16)
-  %49 = lshr i64 %47, 16
+  %50 = lshr i64 %48, 16
 ; # (& (setq N (shr N 16)) (hex "FF"))
-  %50 = and i64 %49, 255
+  %51 = and i64 %50, 255
 ; # (shr N 8)
-  %51 = lshr i64 %49, 8
+  %52 = lshr i64 %50, 8
 ; # (& (setq N (shr N 8)) (hex "FF"))
-  %52 = and i64 %51, 255
+  %53 = and i64 %52, 255
 ; # (tmDate (& (setq N (shr N 2)) (hex "FFFF")) (& (setq N (shr N 16)...
-  %53 = call i64 @tmDate(i64 %48, i64 %50, i64 %52)
+  %54 = call i64 @tmDate(i64 %49, i64 %51, i64 %53)
 ; # (shr N 8)
-  %54 = lshr i64 %51, 8
+  %55 = lshr i64 %52, 8
 ; # (cnt (shr N 8))
-  %55 = shl i64 %54, 4
-  %56 = or i64 %55, 2
+  %56 = shl i64 %55, 4
+  %57 = or i64 %56, 2
 ; # (cons (tmDate (& (setq N (shr N 2)) (hex "FFFF")) (& (setq N (shr...
-  %57 = call i64 @cons(i64 %53, i64 %56)
+  %58 = call i64 @cons(i64 %54, i64 %57)
 ; # (cons (case (& N 3) (1 $T) (2 $Nil) (T (box64 (val Size)))) (cons...
-  %58 = call i64 @cons(i64 %46, i64 %57)
+  %59 = call i64 @cons(i64 %47, i64 %58)
   br label %$9
 $9:
-  %59 = phi i64 [%28, %$7], [%44, %$11] ; # X
-  %60 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([798 x i64]* @SymTab to i8*), i32 8) to i64), %$7], [%58, %$11] ; # ->
-  ret i64 %60
+  %60 = phi i64 [%29, %$7], [%45, %$11] ; # X
+  %61 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([798 x i64]* @SymTab to i8*), i32 8) to i64), %$7], [%59, %$11] ; # ->
+  ret i64 %61
 }
 
 define i64 @_file(i64) {

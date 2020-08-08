@@ -1029,7 +1029,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de _info (Exe)
    (let
       (X (cdr Exe)
-         Nm (xName Exe (evSym X))
+         Nm (xName Exe (set $At2 (evSym X)))
          Size (i64* (push NIL)) )
       (if
          (lt0

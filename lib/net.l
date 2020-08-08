@@ -1,8 +1,8 @@
-# 29jul20 Software Lab. Alexander Burger
+# 08aug20 Software Lab. Alexander Burger
 
 (symbols 'net 'pico)
 
-(export) (*Adr port accept listen host connect udp)
+(export) (*Adr *SPort port accept listen host connect udp)
 
 (sysdefs "Errno")
 (sysdefs "Networking")
@@ -85,6 +85,10 @@
                   (buf Str INET6_ADDRSTRLEN
                      (setq *Adr
                         (%@ "inet_ntop" 'S AF_INET6 (+ Addr sin6_addr) Str INET6_ADDRSTRLEN) ) )
+                  (setq *SPort
+                     (+  # Get big-endian (network byte order)
+                        (>> -8 (byte (+ Addr sin6_port)))
+                        (byte (+ Addr sin6_port 1)) ) )
                   (%@ "initInFile" NIL Sd2 0)
                   (%@ "initOutFile" NIL Sd2)
                   Sd2 ) )

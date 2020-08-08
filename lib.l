@@ -1,4 +1,4 @@
-# 31jul20 Software Lab. Alexander Burger
+# 08aug20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -565,6 +565,8 @@
 
 ### Debug ###
 `*Dbg
+
+(and (info (pil "rc")) (load @@))
 
 (load "@lib/debug.l" "@lib/lint.l")
 
