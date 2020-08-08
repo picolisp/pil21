@@ -1,4 +1,4 @@
-# 06aug20 Software Lab. Alexander Burger
+# 08aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2544,6 +2544,9 @@
    (if (and (sym? X) (== (firstByte X) (char "-")))
       (let E (save (parse (xName Exe X) YES (hex "5D0A") 0))  # '\n', ']', EOF
          (evList E) )
+      (when (and (nil? X) (not (val $Repl)))
+         (set $Repl YES)
+         (iSignal (val SIGINT Sig) (fun sig)) )
       (let
          (Int (save (val $Intern))
             P (b8 (ioFrame T))

@@ -1,4 +1,4 @@
-# 01aug20 Software Lab. Alexander Burger
+# 08aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1732,9 +1732,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (signal (val SIGTTOU Sig) (val SigIgn))
    (set $USec (getUsec YES))
    (unless (setjmp QuitRst)
-      (loadAll 0)  # Load arguments
-      (set $Repl YES)
-      (iSignal (val SIGINT Sig) (fun sig)) )
+      (loadAll 0) )  # Load arguments
    (loop
       (repl 0 ($ ": ") $Nil) ) )
 
