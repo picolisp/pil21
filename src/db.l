@@ -591,8 +591,9 @@
 
 # (commit ['any] [exe1] [exe2]) -> T
 (de _commit (Exe)
-   #!
-   Exe )
+   (let (X (cdr Exe)  Y (save (eval (++ X))))
+      #!
+      Y ) )
 
 # (mark 'sym|0 [NIL | T | 0]) -> flg
 (de _mark (Exe)

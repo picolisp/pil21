@@ -804,10 +804,10 @@
       (set $Catch (Ca:))
       (Ca: fin (++ X))
       (memcpy (Ca: (env)) (env) (env T))
-      (let R (save (run X))
+      (prog1
+         (save (run X))
          (eval (Ca: fin))
-         (set $Catch (Ca: link))
-         R ) ) )
+         (set $Catch (Ca: link)) ) ) )
 
 # Coroutines
 (local) (saveCoEnv loadCoEnv)
