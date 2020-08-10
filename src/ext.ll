@@ -44,12 +44,15 @@ declare void @llvm.stackrestore(i8*)
 @$Spkr = external global i32
 @$Mic = external global i32
 @$SpMiPipe = external global [2 x i32]
+@$Talking = external global i32
 @$Hear = external global i32
 @$Tell = external global i32
 @$TellBuf = external global i8*
-@$Talking = external global i32
 @$Ptr = external global i8*
 @$End = external global i8*
+@$BufX = external global i8*
+@$PtrX = external global i8*
+@$EndX = external global i8*
 @$ExtN = external global i32
 @$Extn = external global i32
 @$StrP = external global i64*
@@ -61,6 +64,8 @@ declare void @llvm.stackrestore(i8*)
 @$DbBlock = external global i8*
 @$BlkIndex = external global i64
 @$BlkLink = external global i64
+@$BlkPtr = external global i8*
+@$BlkEnd = external global i8*
 @$DbJnl = external global i8*
 @$DbLog = external global i8*
 @$Signal = external global [15 x i32]

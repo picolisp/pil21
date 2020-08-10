@@ -1,4 +1,4 @@
-# 05aug20 Software Lab. Alexander Burger
+# 09aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1525,7 +1525,7 @@
 (de void wipe (Exe X)
    (let
       (Tail (val (tail (needSymb Exe X)))
-         Nm (name Tail) )
+         Nm (name (& Tail -9)) )
       (if (sym? Tail)  # External symbol
          (let N (add Nm Nm)  # Get carry
             (unless @@  # Not dirty

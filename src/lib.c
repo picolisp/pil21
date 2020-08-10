@@ -1,9 +1,9 @@
-// 06aug20 Software Lab. Alexander Burger
+// 10aug20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
 // I/O
-int64_t PipeBufSize = PIPE_BUF;
+const int64_t PipeBufSize = PIPE_BUF;
 
 int64_t stderrNum(char *fmt, int64_t n) {
    fprintf(stderr, fmt, (unsigned long)n);
@@ -136,13 +136,13 @@ char *currentLine() {
 }
 
 // Signals
-int32_t Sig[] = {
+const int32_t Sig[] = {
    SIGHUP, SIGINT, SIGUSR1, SIGUSR2, SIGPIPE, SIGALRM, SIGTERM, SIGCHLD,
    SIGCONT, SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU, SIGIO
 };
 
-sighandler_t SigDfl = SIG_DFL;
-sighandler_t SigIgn = SIG_IGN;
+const sighandler_t SigDfl = SIG_DFL;
+const sighandler_t SigIgn = SIG_IGN;
 
 // Sync src/defs.l 'SIGHUP' and src/glob.l '$Signal'
 int32_t gSignal(int32_t n) {
@@ -401,7 +401,7 @@ int32_t getLock(int32_t fd, off_t n, off_t len) {
 }
 
 // Catch and Throw
-int64_t JmpBufSize = sizeof(jmp_buf);
+const int64_t JmpBufSize = sizeof(jmp_buf);
 jmp_buf QuitRst;
 
 // Lisp data access from C

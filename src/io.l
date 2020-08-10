@@ -1,4 +1,4 @@
-# 08aug20 Software Lab. Alexander Burger
+# 10aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -892,24 +892,21 @@
          (unsync)
          $Nil )
       (T
-         (let
-            (X @
-               Y (eval (car X))
-               Pid (i32 0)
-               TellBuf (val $TellBuf) )
+         (let (X @  Y (eval (car X))  Pid (i32 0))
             (when (cnt? Y)
                (setq
                   Pid (i32 (int @))
                   Y (eval (car (shift X))) ) )
-            (tellBeg (b8 (val PipeBufSize)))
-            (stkChk Exe)
-            (loop
-               (prTell Y)
-               (? (atom (shift X)))
-               (setq Y (eval (car X))) )
-            (tellEnd Pid)
-            (set $TellBuf TellBuf)
-            Y ) ) ) )
+            (let (TellBuf (val $TellBuf)  Ptr (val $Ptr)  End (val $End))
+               (tellBeg (b8 (val PipeBufSize)))
+               (stkChk Exe)
+               (loop
+                  (prTell Y)
+                  (? (atom (shift X)))
+                  (setq Y (eval (car X))) )
+               (tellEnd Pid)
+               (set $TellBuf TellBuf  $Ptr Ptr  $End End)
+               Y ) ) ) ) )
 
 # (poll 'cnt) -> cnt | NIL
 (de _poll (Exe)

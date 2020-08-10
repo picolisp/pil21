@@ -1,4 +1,4 @@
-# 08aug20 Software Lab. Alexander Burger
+# 10aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -37,12 +37,15 @@
 (var $Spkr i32 0)                      # RPC loadspeaker
 (var $Mic i32 0)                       # RPC microphone
 (array $SpMiPipe i32 0 0)              # Speaker/microphone pipe
+(var $Talking i32 0)                   # Active child
 (var $Hear i32 0)                      # RPC listener
 (var $Tell i32 0)                      # RPC broadcaster
 (var $TellBuf i8* null)                # RPC buffer
-(var $Talking i32 0)                   # Active child
 (var $Ptr i8* null)                    # Byte buffer pointer
 (var $End i8* null)                    # Buffer end pointer
+(var $BufX i8* null)                   # Exchange buffer
+(var $PtrX i8* null)                   # Exchange buffer pointer
+(var $EndX i8* null)                   # Exchange end pointer
 (var $ExtN i32 0)                      # External symbol offset
 (var $Extn i32 0)
 (var $StrP i64* null)                  # String status
@@ -56,6 +59,8 @@
 (var $DbBlock i8* null)                # Block buffer
 (var $BlkIndex i64 0)                  # Block index
 (var $BlkLink i64 0)                   # Next block
+(var $BlkPtr i8* null)                 # Block byte buffer pointer
+(var $BlkEnd i8* null)                 # Block buffer end pointer
 (var $DbJnl i8* null)                  # Journal file
 (var $DbLog i8* null)                  # Transaction log file
 
