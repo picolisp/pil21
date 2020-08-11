@@ -1,4 +1,4 @@
-# 10aug20 Software Lab. Alexander Burger
+# 11aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -569,15 +569,36 @@
                (truncLog Exe)  ) ) ) )
    $T )
 
-(local) (dbFetch dbTouch dbZap)
+(local) (db dbFetch dbTouch dbZap)
+
+(de void db (Exe Sym)
+   Sym
+   #!
+   )
 
 (de void dbFetch (Exe Sym)
-   #!
-   Sym )
+   (let Nm (val (tail Sym))
+      (when
+         (and
+            (num? Nm)  # No properties
+            (prog (setq Nm (add Nm Nm)) (not @@))  # Not dirty
+            (prog (setq Nm (add Nm Nm)) (not @@)) )  # Not loaded
+         (set (tail Sym) (shr 1 Nm 2))  # Set "loaded"
+         (tailcall (db Exe Sym)) ) ) )
 
 (de void dbTouch (Exe Sym)
-   #!
-   Sym )
+   (let (Q (tail Sym)  Nm (val Q))
+      (unless (num? Nm)  # Has properties
+         (setq Nm (& Nm -9))  # Clear 'extern' tag
+         (loop
+            (setq Q (ofs Nm 1))  # Skip property
+            (? (num? (setq Nm (car Q)))) ) )  # Find name
+      (setq Nm (add Nm Nm))
+      (unless @@  # Not yet dirty
+         (setq Nm (add Nm Nm))
+         (set Q (shr 2 Nm 2))  # Set "dirty"
+         (unless @@  # Not loaded
+            (tailcall (db Exe Sym)) ) ) ) )
 
 # (touch 'sym) -> sym
 (de _touch (Exe)

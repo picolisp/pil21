@@ -53486,13 +53486,142 @@ $12:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([806 x i64]* @SymTab to i8*), i32 184) to i64)
 }
 
+define void @db(i64, i64) {
+$1:
+  ret void
+}
+
 define void @dbFetch(i64, i64) {
 $1:
+; # (let Nm (val (tail Sym)) (when (and (num? Nm) (prog (setq Nm (add...
+; # (tail Sym)
+  %2 = add i64 %1, -8
+; # (val (tail Sym))
+  %3 = inttoptr i64 %2 to i64*
+  %4 = load i64, i64* %3
+; # (when (and (num? Nm) (prog (setq Nm (add Nm Nm)) (not @@)) (prog ...
+; # (and (num? Nm) (prog (setq Nm (add Nm Nm)) (not @@)) (prog (setq ...
+; # (num? Nm)
+  %5 = and i64 %4, 6
+  %6 = icmp ne i64 %5, 0
+  br i1 %6, label %$3, label %$2
+$3:
+  %7 = phi i64 [%4, %$1] ; # Nm
+; # (add Nm Nm)
+  %8 = call {i64, i1} @llvm.uadd.with.overflow.i64(i64 %7, i64 %7)
+  %9 = extractvalue {i64, i1} %8, 1
+  %10 = extractvalue {i64, i1} %8, 0
+; # (not @@)
+  %11 = icmp eq i1 %9, 0
+  br i1 %11, label %$4, label %$2
+$4:
+  %12 = phi i64 [%10, %$3] ; # Nm
+; # (add Nm Nm)
+  %13 = call {i64, i1} @llvm.uadd.with.overflow.i64(i64 %12, i64 %12)
+  %14 = extractvalue {i64, i1} %13, 1
+  %15 = extractvalue {i64, i1} %13, 0
+; # (not @@)
+  %16 = icmp eq i1 %14, 0
+  br label %$2
+$2:
+  %17 = phi i64 [%4, %$1], [%10, %$3], [%15, %$4] ; # Nm
+  %18 = phi i1 [0, %$1], [0, %$3], [%16, %$4] ; # ->
+  br i1 %18, label %$5, label %$6
+$5:
+  %19 = phi i64 [%17, %$2] ; # Nm
+; # (set (tail Sym) (shr 1 Nm 2))
+; # (tail Sym)
+  %20 = add i64 %1, -8
+; # (shr 1 Nm 2)
+  %21 = call i64 @llvm.fshr.i64(i64 1, i64 %19, i64 2)
+  %22 = inttoptr i64 %20 to i64*
+  store i64 %21, i64* %22
+; # (db Exe Sym)
+  tail call void @db(i64 %0, i64 %1)
+  br label %$6
+$6:
+  %23 = phi i64 [%17, %$2], [%19, %$5] ; # Nm
   ret void
 }
 
 define void @dbTouch(i64, i64) {
 $1:
+; # (let (Q (tail Sym) Nm (val Q)) (unless (num? Nm) (setq Nm (& Nm -...
+; # (tail Sym)
+  %2 = add i64 %1, -8
+; # (val Q)
+  %3 = inttoptr i64 %2 to i64*
+  %4 = load i64, i64* %3
+; # (unless (num? Nm) (setq Nm (& Nm -9)) (loop (setq Q (ofs Nm 1)) (...
+; # (num? Nm)
+  %5 = and i64 %4, 6
+  %6 = icmp ne i64 %5, 0
+  br i1 %6, label %$3, label %$2
+$2:
+  %7 = phi i64 [%2, %$1] ; # Q
+  %8 = phi i64 [%4, %$1] ; # Nm
+; # (& Nm -9)
+  %9 = and i64 %8, -9
+; # (loop (setq Q (ofs Nm 1)) (? (num? (setq Nm (car Q)))))
+  br label %$4
+$4:
+  %10 = phi i64 [%7, %$2], [%17, %$5] ; # Q
+  %11 = phi i64 [%9, %$2], [%18, %$5] ; # Nm
+; # (ofs Nm 1)
+  %12 = add i64 %11, 1
+; # (? (num? (setq Nm (car Q))))
+; # (car Q)
+  %13 = inttoptr i64 %12 to i64*
+  %14 = load i64, i64* %13
+; # (num? (setq Nm (car Q)))
+  %15 = and i64 %14, 6
+  %16 = icmp ne i64 %15, 0
+  br i1 %16, label %$6, label %$5
+$5:
+  %17 = phi i64 [%12, %$4] ; # Q
+  %18 = phi i64 [%14, %$4] ; # Nm
+  br label %$4
+$6:
+  %19 = phi i64 [%12, %$4] ; # Q
+  %20 = phi i64 [%14, %$4] ; # Nm
+  %21 = phi i64 [0, %$4] ; # ->
+  br label %$3
+$3:
+  %22 = phi i64 [%2, %$1], [%19, %$6] ; # Q
+  %23 = phi i64 [%4, %$1], [%20, %$6] ; # Nm
+; # (add Nm Nm)
+  %24 = call {i64, i1} @llvm.uadd.with.overflow.i64(i64 %23, i64 %23)
+  %25 = extractvalue {i64, i1} %24, 1
+  %26 = extractvalue {i64, i1} %24, 0
+; # (unless @@ (setq Nm (add Nm Nm)) (set Q (shr 2 Nm 2)) (unless @@ ...
+  br i1 %25, label %$8, label %$7
+$7:
+  %27 = phi i64 [%22, %$3] ; # Q
+  %28 = phi i64 [%26, %$3] ; # Nm
+; # (add Nm Nm)
+  %29 = call {i64, i1} @llvm.uadd.with.overflow.i64(i64 %28, i64 %28)
+  %30 = extractvalue {i64, i1} %29, 1
+  %31 = extractvalue {i64, i1} %29, 0
+; # (set Q (shr 2 Nm 2))
+; # (shr 2 Nm 2)
+  %32 = call i64 @llvm.fshr.i64(i64 2, i64 %31, i64 2)
+  %33 = inttoptr i64 %27 to i64*
+  store i64 %32, i64* %33
+; # (unless @@ (tailcall (db Exe Sym)))
+  br i1 %30, label %$10, label %$9
+$9:
+  %34 = phi i64 [%27, %$7] ; # Q
+  %35 = phi i64 [%31, %$7] ; # Nm
+; # (db Exe Sym)
+  tail call void @db(i64 %0, i64 %1)
+  br label %$10
+$10:
+  %36 = phi i64 [%27, %$7], [%34, %$9] ; # Q
+  %37 = phi i64 [%31, %$7], [%35, %$9] ; # Nm
+  br label %$8
+$8:
+  %38 = phi i64 [%22, %$3], [%36, %$10] ; # Q
+  %39 = phi i64 [%26, %$3], [%37, %$10] ; # Nm
   ret void
 }
 
@@ -87084,8 +87213,7 @@ $16:
 $17:
   %100 = phi i64 [%76, %$15], [%78, %$16] ; # N
   %101 = phi i64 [%77, %$15], [%79, %$16] ; # X
-  %102 = phi i64 [%77, %$15], [%95, %$16] ; # ->
-  ret i64 %102
+  ret i64 void
 }
 
 define i64 @lookup(i64, i64) {
