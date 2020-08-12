@@ -1,4 +1,4 @@
-# 11aug20 Software Lab. Alexander Burger
+# 12aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -60,7 +60,7 @@
          (shl (i32 (val 2 P)) 8)
          (i32 (val P)) )
       (and
-         (> (val $DBs) N)
+         (> (val $DBs) N)  # Local file
          (prog
             (set $DbFile  # Set current file
                (ofs (val $DbFiles) (* N (dbFile T))) )
@@ -230,7 +230,7 @@
          N (objId Nm) )
       (when N
          (cond
-            ((> (val $DBs) (objFile Nm))
+            ((> (val $DBs) (objFile Nm))  # Local file
                (setq Nm (add Nm Nm))
                (when @@  # Dirty
                   (ret YES) )
@@ -571,10 +571,16 @@
 
 (local) (db dbFetch dbTouch dbZap)
 
-(de void db (Exe Sym)
-   Sym
-   #!
-   )
+(de void db (Exe Sym Nm)
+   (save Sym)
+   (let F (objFile Nm)  # Get file number
+      (when (> (val $DBs) F)  # Local file
+         (set $DbFile
+            (ofs (val $DbFiles) (* F (dbFile T))) )
+         (rdLockDb)  # Lock for reading
+         (rdBlock (shl (objId Nm) 6))  # Read first block
+         #!
+         ]
 
 (de void dbFetch (Exe Sym)
    (let Nm (val (tail Sym))
@@ -583,8 +589,8 @@
             (num? Nm)  # No properties
             (prog (setq Nm (add Nm Nm)) (not @@))  # Not dirty
             (prog (setq Nm (add Nm Nm)) (not @@)) )  # Not loaded
-         (set (tail Sym) (shr 1 Nm 2))  # Set "loaded"
-         (tailcall (db Exe Sym)) ) ) )
+         (set (tail Sym) (setq Nm (shr 1 Nm 2)))  # Set "loaded"
+         (tailcall (db Exe Sym Nm)) ) ) )
 
 (de void dbTouch (Exe Sym)
    (let (Q (tail Sym)  Nm (val Q))
@@ -596,9 +602,9 @@
       (setq Nm (add Nm Nm))
       (unless @@  # Not yet dirty
          (setq Nm (add Nm Nm))
-         (set Q (shr 2 Nm 2))  # Set "dirty"
+         (set Q (setq Nm (shr 2 Nm 2)))  # Set "dirty"
          (unless @@  # Not loaded
-            (tailcall (db Exe Sym)) ) ) ) )
+            (tailcall (db Exe Sym Nm)) ) ) ) )
 
 # (touch 'sym) -> sym
 (de _touch (Exe)
@@ -640,8 +646,8 @@
                      (Nm (name (& (val (tail (val P))) -9))  # Get external symbol name
                         N (add Nm Nm) )
                      (when @@  # Dirty or deleted
-                        (let F (objFile Nm)
-                           (when (> (val $DBs) F)
+                        (let F (objFile Nm)  # Get file number
+                           (when (> (val $DBs) F)  # Local file
                               (set $DbFile
                                  (ofs (val $DbFiles) (* F (dbFile T))) )
                               (rdBlock (shl (objId Nm) 6))
@@ -721,12 +727,12 @@
                         (? (num? (setq Nm (car Q)))) ) )  # Find name
                   (let N (add Nm Nm)
                      (when @@  # Dirty or deleted
-                        (let F (objFile Nm)
+                        (let F (objFile Nm)  # Get file number
                            (add N N)
                            (cond
                               (@@  # Deleted
                                  (set Q (shr N 2))  # Set "not loaded"
-                                 (when (> (val $DBs) F)
+                                 (when (> (val $DBs) F)  # Local file
                                     (set $DbFile
                                        (ofs (val $DbFiles) (* F (dbFile T))) )
                                     (cleanUp (shl (i64 F) 6))
@@ -744,10 +750,10 @@
                                        (prTell S) ) ) )  # Send external symbol to 'tell'
                               (T  # Dirty
                                  (set Q (shr 1 N 2))  # Set "loaded"
-                                 (when (> (val $DBs) F)
+                                 (when (> (val $DBs) F)  # Local file
                                     (set $DbFile
                                        (ofs (val $DbFiles) (* F (dbFile T))) )
-                                    (rdBlock (shl (objId Nm) 6))
+                                    (rdBlock (shl (objId Nm) 6))  # Read first block
                                     (let Buf (val $DbBlock)
                                        (set
                                           Buf (| (val Buf) 1)  # First block in object (might be new)

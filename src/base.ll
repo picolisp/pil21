@@ -2470,7 +2470,7 @@ $24:
   %86 = getelementptr i32, i32* @Sig, i32 10
   %87 = load i32, i32* %86
 ; # (fun sig)
-; # (i8* (def (pico~pack "@" (pico~car priv~Args)) (func (; priv~Args...
+; # (i8* (def (pico~pack "@" (pico~car Args)) (func (; Args 1 priv~si...
   %88 = bitcast void(i32)* @sig to i8*
 ; # (iSignal (val SIGTSTP Sig) (fun sig))
   call void @iSignal(i32 %87, i8* %88)
@@ -50151,7 +50151,7 @@ $11:
   %38 = getelementptr i32, i32* @Sig, i32 1
   %39 = load i32, i32* %38
 ; # (fun sig)
-; # (i8* (def (pico~pack "@" (pico~car priv~Args)) (func (; priv~Args...
+; # (i8* (def (pico~pack "@" (pico~car Args)) (func (; Args 1 priv~si...
   %40 = bitcast void(i32)* @sig to i8*
 ; # (iSignal (val SIGINT Sig) (fun sig))
   call void @iSignal(i32 %39, i8* %40)
@@ -53492,8 +53492,54 @@ $12:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([806 x i64]* @SymTab to i8*), i32 184) to i64)
 }
 
-define void @db(i64, i64) {
+define void @db(i64, i64, i64) {
 $1:
+; # (save Sym)
+  %3 = alloca i64, i64 2, align 16
+  %4 = ptrtoint i64* %3 to i64
+  %5 = inttoptr i64 %4 to i64*
+  store i64 %1, i64* %5
+  %6 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %7 = load i64, i64* %6
+  %8 = inttoptr i64 %4 to i64*
+  %9 = getelementptr i64, i64* %8, i32 1
+  store i64 %7, i64* %9
+  %10 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %4, i64* %10
+; # (let F (objFile Nm) (when (> (val $DBs) F) (set $DbFile (ofs (val...
+; # (objFile Nm)
+  %11 = call i32 @objFile(i64 %2)
+; # (when (> (val $DBs) F) (set $DbFile (ofs (val $DbFiles) (* F (dbF...
+; # (val $DBs)
+  %12 = load i32, i32* @$DBs
+; # (> (val $DBs) F)
+  %13 = icmp sgt i32 %12, %11
+  br i1 %13, label %$2, label %$3
+$2:
+; # (set $DbFile (ofs (val $DbFiles) (* F (dbFile T))))
+; # (val $DbFiles)
+  %14 = load i8*, i8** @$DbFiles
+; # (* F (dbFile T))
+  %15 = mul i32 %11, 42
+; # (ofs (val $DbFiles) (* F (dbFile T)))
+  %16 = getelementptr i8, i8* %14, i32 %15
+  store i8* %16, i8** @$DbFile
+; # (rdLockDb)
+  call void @rdLockDb()
+; # (objId Nm)
+  %17 = call i64 @objId(i64 %2)
+; # (shl (objId Nm) 6)
+  %18 = shl i64 %17, 6
+; # (rdBlock (shl (objId Nm) 6))
+  %19 = call i8* @rdBlock(i64 %18)
+  br label %$3
+$3:
+; # (drop *Safe)
+  %20 = inttoptr i64 %4 to i64*
+  %21 = getelementptr i64, i64* %20, i32 1
+  %22 = load i64, i64* %21
+  %23 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %22, i64* %23
   ret void
 }
 
@@ -53535,18 +53581,18 @@ $2:
   br i1 %18, label %$5, label %$6
 $5:
   %19 = phi i64 [%17, %$2] ; # Nm
-; # (set (tail Sym) (shr 1 Nm 2))
+; # (set (tail Sym) (setq Nm (shr 1 Nm 2)))
 ; # (tail Sym)
   %20 = add i64 %1, -8
 ; # (shr 1 Nm 2)
   %21 = call i64 @llvm.fshr.i64(i64 1, i64 %19, i64 2)
   %22 = inttoptr i64 %20 to i64*
   store i64 %21, i64* %22
-; # (db Exe Sym)
-  tail call void @db(i64 %0, i64 %1)
+; # (db Exe Sym Nm)
+  tail call void @db(i64 %0, i64 %1, i64 %21)
   br label %$6
 $6:
-  %23 = phi i64 [%17, %$2], [%19, %$5] ; # Nm
+  %23 = phi i64 [%17, %$2], [%21, %$5] ; # Nm
   ret void
 }
 
@@ -53599,7 +53645,7 @@ $3:
   %24 = call {i64, i1} @llvm.uadd.with.overflow.i64(i64 %23, i64 %23)
   %25 = extractvalue {i64, i1} %24, 1
   %26 = extractvalue {i64, i1} %24, 0
-; # (unless @@ (setq Nm (add Nm Nm)) (set Q (shr 2 Nm 2)) (unless @@ ...
+; # (unless @@ (setq Nm (add Nm Nm)) (set Q (setq Nm (shr 2 Nm 2))) (...
   br i1 %25, label %$8, label %$7
 $7:
   %27 = phi i64 [%22, %$3] ; # Q
@@ -53608,22 +53654,22 @@ $7:
   %29 = call {i64, i1} @llvm.uadd.with.overflow.i64(i64 %28, i64 %28)
   %30 = extractvalue {i64, i1} %29, 1
   %31 = extractvalue {i64, i1} %29, 0
-; # (set Q (shr 2 Nm 2))
+; # (set Q (setq Nm (shr 2 Nm 2)))
 ; # (shr 2 Nm 2)
   %32 = call i64 @llvm.fshr.i64(i64 2, i64 %31, i64 2)
   %33 = inttoptr i64 %27 to i64*
   store i64 %32, i64* %33
-; # (unless @@ (tailcall (db Exe Sym)))
+; # (unless @@ (tailcall (db Exe Sym Nm)))
   br i1 %30, label %$10, label %$9
 $9:
   %34 = phi i64 [%27, %$7] ; # Q
-  %35 = phi i64 [%31, %$7] ; # Nm
-; # (db Exe Sym)
-  tail call void @db(i64 %0, i64 %1)
+  %35 = phi i64 [%32, %$7] ; # Nm
+; # (db Exe Sym Nm)
+  tail call void @db(i64 %0, i64 %1, i64 %35)
   br label %$10
 $10:
   %36 = phi i64 [%27, %$7], [%34, %$9] ; # Q
-  %37 = phi i64 [%31, %$7], [%35, %$9] ; # Nm
+  %37 = phi i64 [%32, %$7], [%35, %$9] ; # Nm
   br label %$8
 $8:
   %38 = phi i64 [%22, %$3], [%36, %$10] ; # Q
@@ -61846,7 +61892,7 @@ $8:
   %17 = inttoptr i64 %1 to i64*
   %18 = load i64, i64* %17
 ; # (fish E (car V) P R)
-  call void @fish(i64 %0, i64 %18, i64 %2, i64 %3)
+  tail call void @fish(i64 %0, i64 %18, i64 %2, i64 %3)
   br label %$2
 $5:
   br label %$2

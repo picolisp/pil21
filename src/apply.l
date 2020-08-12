@@ -1,4 +1,4 @@
-# 27jul20 Software Lab. Alexander Burger
+# 12aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -622,7 +622,7 @@
       ((atom V)
          (unless (nil? (cdr V))
             (fish E @ P R) )
-         (fish E (car V) P R) ) ) )
+         (tailcall (fish E (car V) P R)) ) ) )
 
 # (fish 'fun 'any) -> lst
 (de _fish (Exe)
