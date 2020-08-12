@@ -1,4 +1,4 @@
-# 08aug20 Software Lab. Alexander Burger
+# 12aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -303,8 +303,7 @@
 (de _prog1 (Exe)
    (let X (cdr Exe)
       (prog1
-         (eval (++ X))
-         (set $At @)
+         (set $At (save (eval (++ X))))
          (exec X) ) ) )
 
 # (prog2 'any1 'any2 . prg) -> any2
@@ -312,8 +311,7 @@
    (let X (cdr Exe)
       (prog2
          (eval (++ X))
-         (eval (++ X))
-         (set $At @)
+         (set $At (save (eval (++ X))))
          (exec X) ) ) )
 
 # (if 'any1 any2 . prg) -> any

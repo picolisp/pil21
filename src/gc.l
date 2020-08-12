@@ -1,4 +1,4 @@
-# 19jul20 Software Lab. Alexander Burger
+# 12aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -67,6 +67,7 @@
    (let P (val $Bind)  # Bind frames
       (while P
          (mark (val P))  # Mark saved value
+         (mark (val 2 P))  # Mark symbol
          (setq P (val 3 P)) ) )
    (let Ca (val $Catch)  # Catch frames
       (while Ca
