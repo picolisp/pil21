@@ -1,4 +1,4 @@
-# 08aug20 Software Lab. Alexander Burger
+# 13aug20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -34,4 +34,3 @@
 - Because of readline(3), '*Run' tasks are suspended while typing in the REPL
 
 % Main coroutine has a tag 'T'
-% 'journal' format: Default size '0' instead of '64'

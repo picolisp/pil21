@@ -1,4 +1,4 @@
-# 09aug20 Software Lab. Alexander Burger
+# 13aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1211,7 +1211,7 @@
                      ((nil? Val)
                         (shift L)  # Remove first property
                         (set (tail Sym)
-                           (if (sym? Tail) (| L 8) L) ) )
+                           (if (sym? Tail) (sym L) L) ) )
                      ((<> Val $T)  # Change to cell
                         (set L (cons Val Key)) ) )
                   (ret) )
@@ -1220,7 +1220,7 @@
                      ((nil? Val)
                         (shift L)  # Remove first property
                         (set (tail Sym)
-                           (if (sym? Tail) (| L 8) L) ) )
+                           (if (sym? Tail) (sym L) L) ) )
                      ((t? Val) (set L Key))  # Change to flag
                      (T (set X Val)) )  # Set new value
                   (ret) ) )
@@ -1236,7 +1236,7 @@
                            (ifn (sym? Tail)
                               (set 2 X Tail)
                               (set 2 X (& Tail -9))
-                              (setq X (| X 8)) )
+                              (setq X (sym X)) )
                            (set (tail Sym) X) )
                         (ret) )
                      (when (== Key (cdr Y))
@@ -1249,7 +1249,7 @@
                            (ifn (sym? Tail)
                               (set 2 X Tail)
                               (set 2 X (& Tail -9))
-                              (setq X (| X 8)) )
+                              (setq X (sym X)) )
                            (set (tail Sym) X) )
                         (ret) ) ) )
                   (setq L X) ) ) )
@@ -1258,7 +1258,7 @@
             (if (== $T Val) Key (cons Val Key)) )
          (set (tail Sym)
             (if (sym? Tail)
-               (| (cons Val (& Tail -9)) 8)
+               (sym (cons Val (& Tail -9)))
                (cons Val Tail) ) ) ) ) )
 
 (de void putn (Exe Lst Key Val)
@@ -1299,7 +1299,7 @@
                            (ifn (sym? Tail)
                               (set 2 X Tail)
                               (set 2 X (& Tail -9))
-                              (setq X (| X 8)) )
+                              (setq X (sym X)) )
                            (set (tail Sym) X)
                            (ret $T) )
                         (when (== Key (cdr Y))
@@ -1307,7 +1307,7 @@
                            (ifn (sym? Tail)
                               (set 2 X Tail)
                               (set 2 X (& Tail -9))
-                              (setq X (| X 8)) )
+                              (setq X (sym X)) )
                            (set (tail Sym) X)
                            (ret (car Y)) ) )
                      (setq L X) ) ) ) )
@@ -1348,7 +1348,7 @@
                         (ifn (sym? Tail)
                            (set 2 X Tail)
                            (set 2 X (& Tail -9))
-                           (setq X (| X 8)) )
+                           (setq X (sym X)) )
                         (set (tail Sym) X)
                         (ret Key) )
                      (when (== Key (cdr Y))
@@ -1356,14 +1356,14 @@
                         (ifn (sym? Tail)
                            (set 2 X Tail)
                            (set 2 X (& Tail -9))
-                           (setq X (| X 8)) )
+                           (setq X (sym X)) )
                         (set (tail Sym) X)
                         (ret Y) ) ) )
                (setq L X) ) ) )
       (let R (cons $Nil Key)
          (set (tail Sym)
             (if (sym? Tail)
-               (| (cons R (& Tail -9)) 8)
+               (sym (cons R (& Tail -9)))
                (cons R Tail) ) )
          R ) ) )
 
@@ -1499,7 +1499,7 @@
                         (setq P (cdr P)) )
                      (setq X (cons P X)) ) ) ) )
          (set (tail Y)
-            (if (sym? Tail) (| X 8) X) )
+            (if (sym? Tail) (sym X) X) )
          R ) ) )
 
 # (getl 'sym1|lst1 ['sym2|cnt ..]) -> lst

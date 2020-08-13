@@ -1,4 +1,4 @@
-# 12aug20 Software Lab. Alexander Burger
+# 13aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -689,18 +689,16 @@
    (if (nil? (val $Tab))
       null
       (let
-         (E (push NIL NIL ZERO @ NIL)  # [car cdr name fun link]
-            P (push NIL $Nil ZERO NIL NIL) )
-         (setq Text
+         (V (push NIL $Nil ZERO NIL NIL)  # [car cdr name arg link]
+            E (push NIL V ZERO @ NIL) )  # [car cdr name fun link]
+         (set 4 V
             (nond
                (Text $Nil)
                ((val Text) $T)
                (NIL (mkStr Text)) ) )
          (set
-            E (link (ofs E 3) T)
-            2 E P
-            P (link (ofs P 3))
-            4 P Text )
+            V (link (ofs V 3) T)
+            E (link (ofs E 3)) )
          (if (nil? (evList E))
             null
             (let Nm (name (val (tail (xSym @))))

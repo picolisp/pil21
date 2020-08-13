@@ -1,4 +1,4 @@
-# 10aug20 Software Lab. Alexander Burger
+# 13aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -804,7 +804,7 @@
                               ((sign? (car X))
                                  (let Y (cdr X)
                                     (if (gt0 (- (int (car Y)) Dif))  # Not yet timed out
-                                       (set Y (| (cnt @) 8))   # Store short negative number
+                                       (set Y (sign (cnt @)))   # Store short negative number
                                        (let V (car X)  # Timeout value
                                           (set Y (pos V)  $At V)
                                           (run (cdr Y)) ) ) ) )  # Run body

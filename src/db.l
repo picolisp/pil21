@@ -1,4 +1,4 @@
-# 12aug20 Software Lab. Alexander Burger
+# 13aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -151,7 +151,7 @@
          (dbWrErr) )
       (let Jnl (val $DbJnl)
          (when Jnl
-            (putc_unlocked (if (== Siz (Db: siz)) BLKSIZE Siz) Jnl)
+            (putc_unlocked (if (== Siz (Db: siz)) 0 Siz) Jnl)
             (let P (b8 (+ BLK 2))  # Allocate buffer
                (set P (i8 (Db: db)))  # Store file number
                (set 2 P (i8 (shr (Db: db) 8)))
@@ -324,7 +324,7 @@
                      (setq Tail (& Tail -9))  # Clear 'extern' tag
                      (loop
                         (? (num? (shift Tail))) )  # Find name
-                     (setq Tail (| Tail 8)) )  # Set 'extern' tag
+                     (setq Tail (sym Tail)) )  # Set 'extern' tag
                   (set (tail S) (shr (shl Tail 2) 2))  # Strip status bits
                   (set S $Nil) )  # Clear value
                (let X (cdr P)
@@ -571,16 +571,55 @@
 
 (local) (db dbFetch dbTouch dbZap)
 
-(de void db (Exe Sym Nm)
+(de void db (Exe Sym Tail)
    (save Sym)
-   (let F (objFile Nm)  # Get file number
-      (when (> (val $DBs) F)  # Local file
+   (let F (objFile Tail)  # Get file number
+      (if (>= F (val $DBs))  # Non-local file
+         (let Ext (val $Ext)
+            (if
+               (or
+                  (atom Ext)  # First offset
+                  (> (i32 (int (caar @))) (inc 'F)) )  # too big
+               (dbfErr Exe)
+               (while  # Find DB extension
+                  (and
+                     (pair (cdr Ext))
+                     (>= F (i32 (int (caar @)))) )
+                  (shift Ext) )
+               (let
+                  (V (push NIL $Nil ZERO Sym)  # [car cdr name arg]
+                     E (push NIL V ZERO (cdar Ext)) )  # [car cdr name fun]
+                  (set V (ofs V 3)  E (ofs E 3))
+                  (let X (evList E)
+                     (set Sym (++ X))  # Set value
+                     (if (atom X)
+                        (set (tail Sym) Tail)  # Set status/name
+                        (set (tail Sym) (sym X))  # Set property list
+                        (while (pair (cdr X))  # Find end
+                           (setq X @) )
+                        (set 2 X Tail) ) ) ) ) )  # Set status/name
+         # Local file
          (set $DbFile
             (ofs (val $DbFiles) (* F (dbFile T))) )
          (rdLockDb)  # Lock for reading
-         (rdBlock (shl (objId Nm) 6))  # Read first block
-         #!
-         ]
+         (let Blk (ofs (rdBlock (shl (objId Tail) 6)) (- BLK)) # Read first block
+            (unless (== 1 (& (val Blk) BLKTAG))  # ID-Block
+               (err Exe 0 ($ "Bad ID") null) ) )
+         (set
+            $GetBin (fun (i32) getBlock)
+            $Extn 0 )
+         (set Sym (binRead))  # Read symbol value
+         (if (nil? (binRead))  # First property key
+            (set (tail Sym) Tail)  # Set status/name
+            (set (tail Sym)  # Set tail
+               (sym (setq Tail (cons @ Tail))) )
+            (unless (t? (binRead))  # First property value
+               (set Tail (cons @ (val Tail))) )  # Cons with key
+            (until (nil? (binRead))  # Next property key
+               (set 2 Tail (cons @ (shift Tail)))
+               (unless (t? (binRead))  # Next property value
+                  (set Tail (cons @ (val Tail))) ) ) )  # Cons with key
+         (unLockDb 1) ) ) )  # Unlock
 
 (de void dbFetch (Exe Sym)
    (let Nm (val (tail Sym))
@@ -753,10 +792,9 @@
                                  (when (> (val $DBs) F)  # Local file
                                     (set $DbFile
                                        (ofs (val $DbFiles) (* F (dbFile T))) )
-                                    (rdBlock (shl (objId Nm) 6))  # Read first block
-                                    (let Buf (val $DbBlock)
+                                    (let Blk (ofs (rdBlock (shl (objId Nm) 6)) (- BLK)) # Read first block
                                        (set
-                                          Buf (| (val Buf) 1)  # First block in object (might be new)
+                                          Blk (| (val Blk) 1)  # First block in object (might be new)
                                           $PutBin (fun (void i8) putBlock)
                                           $Extn 0 )
                                        (binPrint (val S))  # Print value
@@ -774,7 +812,7 @@
                                        (putBlock NIX)
                                        (setAdr  # Clear link
                                           (i64 (& (val (val $DbBlock)) BLKTAG))  # Lowest byte of link field
-                                          Buf )
+                                          Blk )
                                        (wrBlock)  # Write block
                                        (when (val $BlkLink)  # More blocks
                                           (cleanUp @) )  # Clean up
