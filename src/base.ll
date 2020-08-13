@@ -54092,6 +54092,57 @@ $10:
 
 define void @dbZap(i64) {
 $1:
+; # (let Tail (val (tail Sym)) (unless (num? Tail) (setq Tail (& Tail...
+; # (tail Sym)
+  %1 = add i64 %0, -8
+; # (val (tail Sym))
+  %2 = inttoptr i64 %1 to i64*
+  %3 = load i64, i64* %2
+; # (unless (num? Tail) (setq Tail (& Tail -9)) (loop (? (num? (shift...
+; # (num? Tail)
+  %4 = and i64 %3, 6
+  %5 = icmp ne i64 %4, 0
+  br i1 %5, label %$3, label %$2
+$2:
+  %6 = phi i64 [%3, %$1] ; # Tail
+; # (& Tail -9)
+  %7 = and i64 %6, -9
+; # (loop (? (num? (shift Tail))))
+  br label %$4
+$4:
+  %8 = phi i64 [%7, %$2], [%14, %$5] ; # Tail
+; # (? (num? (shift Tail)))
+; # (shift Tail)
+  %9 = inttoptr i64 %8 to i64*
+  %10 = getelementptr i64, i64* %9, i32 1
+  %11 = load i64, i64* %10
+; # (num? (shift Tail))
+  %12 = and i64 %11, 6
+  %13 = icmp ne i64 %12, 0
+  br i1 %13, label %$6, label %$5
+$5:
+  %14 = phi i64 [%11, %$4] ; # Tail
+  br label %$4
+$6:
+  %15 = phi i64 [%11, %$4] ; # Tail
+  %16 = phi i64 [0, %$4] ; # ->
+; # (sym Tail)
+  %17 = or i64 %15, 8
+  br label %$3
+$3:
+  %18 = phi i64 [%3, %$1], [%17, %$6] ; # Tail
+; # (set (tail Sym) (shr 3 (shl Tail 2) 2))
+; # (tail Sym)
+  %19 = add i64 %0, -8
+; # (shl Tail 2)
+  %20 = shl i64 %18, 2
+; # (shr 3 (shl Tail 2) 2)
+  %21 = call i64 @llvm.fshr.i64(i64 3, i64 %20, i64 2)
+  %22 = inttoptr i64 %19 to i64*
+  store i64 %21, i64* %22
+; # (set Sym $Nil)
+  %23 = inttoptr i64 %0 to i64*
+  store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([806 x i64]* @SymTab to i8*), i32 8) to i64), i64* %23
   ret void
 }
 

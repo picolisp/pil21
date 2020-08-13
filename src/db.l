@@ -653,8 +653,14 @@
       X ) )
 
 (de void dbZap (Sym)
-   #!
-   Sym )
+   (let Tail (val (tail Sym))  # Get tail
+      (unless (num? Tail)  # Any properties
+         (setq Tail (& Tail -9))  # Clear 'extern' tag
+         (loop
+            (? (num? (shift Tail))) )  # Find name
+         (setq Tail (sym Tail)) )  # Set 'extern' tag
+      (set (tail Sym) (shr 3 (shl Tail 2) 2))  # Set "deleted"
+      (set Sym $Nil) ) )  # Clear value
 
 # (commit ['any] [exe1] [exe2]) -> T
 (de _commit (Exe)
