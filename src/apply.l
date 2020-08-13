@@ -629,12 +629,12 @@
    (let
       (X (cdr Exe)
          R (link (push $Nil NIL) T)
-         E (push NIL $Nil ZERO (eval (++ X)) NIL) )
-      (set E (link (ofs E 3)))
-      (let
-         (V (eval (car X))
-            P (push NIL $Nil ZERO NIL NIL) )
-         (set 2 E P  P (link (ofs P 3)))
+         P (push NIL $Nil ZERO NIL)
+         E (push NIL P ZERO (eval (++ X)) NIL) )
+      (set
+         P (ofs P 3)
+         E (link (ofs E 3)) )
+      (let V (save (eval (car X)))
          (fish E V (ofs P 3) R)
          (val R) ) ) )
 
