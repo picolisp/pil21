@@ -1,4 +1,4 @@
-# 02aug20 Software Lab. Alexander Burger
+# 13aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -898,7 +898,7 @@
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
-         Z (eval (car X))
+         Z (save (eval (car X)))
          P 0
          R (link (push $Nil NIL)) )
       (while (pair Y)
@@ -916,7 +916,7 @@
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
-         Z (eval (car X))
+         Z (save (eval (car X)))
          P 0
          R (link (push $Nil NIL)) )
       (while (pair Y)
