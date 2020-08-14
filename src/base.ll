@@ -4198,11 +4198,21 @@ $9:
   br label %$6
 $5:
   %35 = phi i8* [%9, %$2] ; # Crt
+; # (let N (evCnt Exe X) (set $StkSize (shl N 10)) (cnt N))
+; # (evCnt Exe X)
+  %36 = call i64 @evCnt(i64 %0, i64 %3)
+; # (set $StkSize (shl N 10))
+; # (shl N 10)
+  %37 = shl i64 %36, 10
+  store i64 %37, i64* @$StkSize
+; # (cnt N)
+  %38 = shl i64 %36, 4
+  %39 = or i64 %38, 2
   br label %$6
 $6:
-  %36 = phi i8* [%33, %$9], [%35, %$5] ; # Crt
-  %37 = phi i64 [%34, %$9], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 184) to i64), %$5] ; # ->
-  ret i64 %37
+  %40 = phi i8* [%33, %$9], [%35, %$5] ; # Crt
+  %41 = phi i64 [%34, %$9], [%39, %$5] ; # ->
+  ret i64 %41
 }
 
 define i64 @tmDate(i64, i64, i64) {

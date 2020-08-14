@@ -531,9 +531,9 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                      (setq R (cons @ R)) )
                   (setq Crt (Crt: next)) ) )
             R )
-         $T
-         #!
-         ) ) )
+         (let N (evCnt Exe X)
+            (set $StkSize (shl N 10))
+            (cnt N) ) ) ) )
 
 # Date and time
 (local) (tmDate tmTime)
