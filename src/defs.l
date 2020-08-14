@@ -1,4 +1,4 @@
-# 28apr20 Software Lab. Alexander Burger
+# 14aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -8,7 +8,7 @@
 (setq
    HEAP (*/ 1024 1024 8)      # Heap size (number of pointers)
    CELLS (/ HEAP 2)           # Number of cells in a heap (65536)
-   STACK (- (* 64 1024))      # Default coroutine stack size (64 kB, downwards)
+   STACK (* 64 1024)          # Default coroutine stack size (64 kB)
    TOP (hex "110000")         # Character top
    BUFSIZ 4096                # I/O buffer size
    DB1 (hex "1A")             # Name of '{1}'

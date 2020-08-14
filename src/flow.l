@@ -914,8 +914,8 @@
                (stack P)  # Use free slot
                (stack  # Found no free slot
                   (if (== Crt (val $Coroutines))
-                     (ofs (stack) (* 4 (val $StkSize)))  # First coroutine
-                     (ofs Crt (val $StkSize)) ) )  # Allocate below last
+                     (ofs (stack) (* -4 (val $StkSize)))  # First coroutine
+                     (ofs Crt (- (val $StkSize))) ) )  # Allocate below last
                (setq P (b8 (+ (val JmpBufSize) (coroutine T))))
                ((coroutine Crt) next P)
                ((coroutine P) next null) )

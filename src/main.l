@@ -36,14 +36,14 @@
             (while (and Bnd (<> Bnd (Ca: (env $Bind any))))
                (set (val 2 Bnd) (val Bnd))  # Restore values
                (setq Bnd (val 3 Bnd)) )
-            (until (== (val $InFrames) (Ca: (env $InFrames i8*)))
-               (popInFiles) )
-            (until (== (val $OutFrames) (Ca: (env $OutFrames i8*)))
-               (popOutFiles) )
-            (until (== (val $ErrFrames) (Ca: (env $ErrFrames i8*)))
-               (popErrFiles) )
             (until (== (val $CtlFrames) (Ca: (env $CtlFrames i8*)))
                (popCtlFiles) )
+            (until (== (val $ErrFrames) (Ca: (env $ErrFrames i8*)))
+               (popErrFiles) )
+            (until (== (val $OutFrames) (Ca: (env $OutFrames i8*)))
+               (popOutFiles) )
+            (until (== (val $InFrames) (Ca: (env $InFrames i8*)))
+               (popInFiles) )
             #! $CoFrames
             (memcpy (env) (Ca: (env)) (env T))
             (eval (Ca: fin))  # Evaluate 'finally' expression
@@ -55,14 +55,14 @@
          (set (val 2 Bnd) (val Bnd))  # Restore values
          (setq Bnd (val 3 Bnd)) )
       (set $Bind 0)
-      (while (val $InFrames)
-         (popInFiles) )
-      (while (val $OutFrames)
-         (popOutFiles) )
-      (while (val $ErrFrames)
-         (popErrFiles) )
       (while (val $CtlFrames)
          (popCtlFiles) )
+      (while (val $ErrFrames)
+         (popErrFiles) )
+      (while (val $OutFrames)
+         (popOutFiles) )
+      (while (val $InFrames)
+         (popInFiles) )
       #! $CoFrames
       ) )
 
@@ -522,9 +522,18 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 # (stack ['cnt]) -> cnt | (.. sym . cnt)
 (de _stack (Exe)
-   (let X (cdr Exe)
-      #!
-      X ) )
+   (let (X (cdr Exe)  Crt (val $Coroutines))
+      (if (or (atom X) Crt)
+         (let R (cnt (shr (val $StkSize) 10))
+            (while Crt
+               (let Crt: (coroutine Crt)
+                  (when (Crt: tag)
+                     (setq R (cons @ R)) )
+                  (setq Crt (Crt: next)) ) )
+            R )
+         $T
+         #!
+         ) ) )
 
 # Date and time
 (local) (tmDate tmTime)
@@ -1701,7 +1710,6 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (set $Home H  $HomeLen N)
                   (memcpy H P N)
                   (set (ofs H N) 0) ) ) ) ) )
-   #! Stack0, Stack1, StkLimit
    (heapAlloc)
    (let P $Nil  # Init internal symbols
       (loop
