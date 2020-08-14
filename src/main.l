@@ -1622,8 +1622,8 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (?
                   (and
                      (== $At (val 2 Bnd))
-                     (=0 (dec 'N))
-                     (val 4 Bnd) ) )
+                     (=0 (dec 'N)) )
+                  (if (val 4 Bnd) @ $Nil) )
                (setq Bnd (val 3 Bnd)) )
             $Nil )
          (let Z Y
