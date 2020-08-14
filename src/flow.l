@@ -987,9 +987,9 @@
          (popOutFiles) )
       (setq Exe (val $Up))
       (let P (val $Bind)
-         (set $Up (val P))
-         (setq P (val 3 P))
          (set $Run (val P))
+         (setq P (val 3 P))
+         (set $Up (val P))
          (setq P (val 3 P))
          (set $At (val P))
          (set $Bind (val 3 P)) )
@@ -998,9 +998,10 @@
 
 # (! . exe) -> any
 (de _break (Exe)
-   (unless (nil? (val $Dbg))
-      (setq X (brkLoad Exe)) )
-   (eval (cdr Exe)) )
+   (let X (cdr Exe)
+      (unless (nil? (val $Dbg))
+         (setq X (brkLoad X)) )
+      (eval X) ) )
 
 # (e . prg) -> any
 (de _e (Exe)

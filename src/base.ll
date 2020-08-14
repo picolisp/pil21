@@ -2523,7 +2523,7 @@ $24:
   %86 = getelementptr i32, i32* @Sig, i32 10
   %87 = load i32, i32* %86
 ; # (fun sig)
-; # (i8* (def (pico~pack "@" (pico~car Args)) (func (; Args 1 priv~si...
+; # (i8* (def (pico~pack "@" (pico~car priv~Args)) (func (; priv~Args...
   %88 = bitcast void(i32)* @sig to i8*
 ; # (iSignal (val SIGTSTP Sig) (fun sig))
   call void @iSignal(i32 %87, i8* %88)
@@ -50204,7 +50204,7 @@ $11:
   %38 = getelementptr i32, i32* @Sig, i32 1
   %39 = load i32, i32* %38
 ; # (fun sig)
-; # (i8* (def (pico~pack "@" (pico~car Args)) (func (; Args 1 priv~si...
+; # (i8* (def (pico~pack "@" (pico~car priv~Args)) (func (; priv~Args...
   %40 = bitcast void(i32)* @sig to i8*
 ; # (iSignal (val SIGINT Sig) (fun sig))
   call void @iSignal(i32 %39, i8* %40)
@@ -72262,25 +72262,25 @@ $5:
 ; # (val $Up)
   %54 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 648) to i64) to i64*
   %55 = load i64, i64* %54
-; # (let P (val $Bind) (set $Up (val P)) (setq P (val 3 P)) (set $Run...
+; # (let P (val $Bind) (set $Run (val P)) (setq P (val 3 P)) (set $Up...
 ; # (val $Bind)
   %56 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 8) to i64) to i64*
   %57 = load i64, i64* %56
-; # (set $Up (val P))
+; # (set $Run (val P))
 ; # (val P)
   %58 = inttoptr i64 %57 to i64*
   %59 = load i64, i64* %58
-  %60 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 648) to i64) to i64*
+  %60 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 552) to i64) to i64*
   store i64 %59, i64* %60
 ; # (val 3 P)
   %61 = inttoptr i64 %57 to i64*
   %62 = getelementptr i64, i64* %61, i32 2
   %63 = load i64, i64* %62
-; # (set $Run (val P))
+; # (set $Up (val P))
 ; # (val P)
   %64 = inttoptr i64 %63 to i64*
   %65 = load i64, i64* %64
-  %66 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 552) to i64) to i64*
+  %66 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 648) to i64) to i64*
   store i64 %65, i64* %66
 ; # (val 3 P)
   %67 = inttoptr i64 %63 to i64*
@@ -72310,42 +72310,45 @@ $6:
 
 define i64 @_break(i64) {
 $1:
-; # (unless (nil? (val $Dbg)) (setq X (brkLoad Exe)))
+; # (let X (cdr Exe) (unless (nil? (val $Dbg)) (setq X (brkLoad X))) ...
+; # (cdr Exe)
+  %1 = inttoptr i64 %0 to i64*
+  %2 = getelementptr i64, i64* %1, i32 1
+  %3 = load i64, i64* %2
+; # (unless (nil? (val $Dbg)) (setq X (brkLoad X)))
 ; # (val $Dbg)
-  %1 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 744) to i64) to i64*
-  %2 = load i64, i64* %1
+  %4 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 744) to i64) to i64*
+  %5 = load i64, i64* %4
 ; # (nil? (val $Dbg))
-  %3 = icmp eq i64 %2, ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64)
-  br i1 %3, label %$3, label %$2
+  %6 = icmp eq i64 %5, ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64)
+  br i1 %6, label %$3, label %$2
 $2:
-; # (brkLoad Exe)
-  %4 = call i64 @brkLoad(i64 %0)
+  %7 = phi i64 [%3, %$1] ; # X
+; # (brkLoad X)
+  %8 = call i64 @brkLoad(i64 %7)
   br label %$3
 $3:
-; # (cdr Exe)
-  %5 = inttoptr i64 %0 to i64*
-  %6 = getelementptr i64, i64* %5, i32 1
-  %7 = load i64, i64* %6
-; # (eval (cdr Exe))
-  %8 = and i64 %7, 6
-  %9 = icmp ne i64 %8, 0
-  br i1 %9, label %$6, label %$5
+  %9 = phi i64 [%3, %$1], [%8, %$2] ; # X
+; # (eval X)
+  %10 = and i64 %9, 6
+  %11 = icmp ne i64 %10, 0
+  br i1 %11, label %$6, label %$5
 $6:
   br label %$4
 $5:
-  %10 = and i64 %7, 8
-  %11 = icmp ne i64 %10, 0
-  br i1 %11, label %$8, label %$7
+  %12 = and i64 %9, 8
+  %13 = icmp ne i64 %12, 0
+  br i1 %13, label %$8, label %$7
 $8:
-  %12 = inttoptr i64 %7 to i64*
-  %13 = load i64, i64* %12
+  %14 = inttoptr i64 %9 to i64*
+  %15 = load i64, i64* %14
   br label %$4
 $7:
-  %14 = call i64 @evList(i64 %7)
+  %16 = call i64 @evList(i64 %9)
   br label %$4
 $4:
-  %15 = phi i64 [%7, %$6], [%13, %$8], [%14, %$7] ; # ->
-  ret i64 %15
+  %17 = phi i64 [%9, %$6], [%15, %$8], [%16, %$7] ; # ->
+  ret i64 %17
 }
 
 define i64 @_e(i64) {
