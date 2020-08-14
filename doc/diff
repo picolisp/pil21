@@ -1,4 +1,4 @@
-# 13aug20 Software Lab. Alexander Burger
+# 14aug20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -10,15 +10,20 @@
 + 'with' accepts 'var' instead of 'sym'
 + Map functions accept atomic arguments
 + Standard readline(3) library in REPL
++ 'history' function for readline
 + 'mix' accepts also negative arguments
 + 'native'
    * 'P' and 'W' result specifications
    * (T . any) argument passes direct Lisp value
    * 'T' result spec returns direct Lisp value (no skipped call)
++ '%@' function
 + 'struct'
    * Useful atomic result specifications
 + 'adr' returns a pointer usable by 'native' and 'struct'
 + 'info' returns the file argument in '@@'
++ '\~' marker in namespaces
++ 'plio' function
++ 'buf' function
 
 - '====' is not supported
 - 'lines' is not supported

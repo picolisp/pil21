@@ -1,4 +1,4 @@
-# 12aug20 Software Lab. Alexander Burger
+# 14aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -224,11 +224,52 @@
 
 # (meth 'obj ['any ..]) -> any
 (de _meth (Exe)
+   #!
    Exe )
 
 # (box 'any) -> sym
 (de _box (Exe)
    (consSym ZERO (eval (cadr Exe))) )
+
+# (new ['flg|num] ['typ ['any ..]]) -> obj
+(de _new (Exe)
+   #!
+   Exe )
+
+# (type 'any) -> lst
+(de _type (Exe)
+   #!
+   Exe )
+
+# (isa 'cls|typ 'any) -> obj | NIL
+(de _isa (Exe)
+   #!
+   Exe )
+
+# (method 'msg 'obj) -> fun
+(de _method (Exe)
+   #!
+   Exe )
+
+# (send 'msg 'obj ['any ..]) -> any
+(de _send (Exe)
+   #!
+   Exe )
+
+# (try 'msg 'obj ['any ..]) -> any
+(de _try (Exe)
+   #!
+   Exe )
+
+# (super ['any ..]) -> any
+(de _super (Exe)
+   #!
+   Exe )
+
+# (extra ['any ..]) -> any
+(de _extra (Exe)
+   #!
+   Exe )
 
 # (and 'any ..) -> any
 (de _and (Exe)

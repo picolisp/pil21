@@ -1,4 +1,4 @@
-# 12aug20 Software Lab. Alexander Burger
+# 14aug20 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -6,6 +6,8 @@ CC = clang
 ASM = llvm-as  # opt -O3
 MAIN = -rdynamic -lc -lm -ldl -lffi -lreadline
 SHARED = -shared
+OS = $(shell uname)
+CPU = $(shell uname -m)
 
 BIN = ../bin
 LIB = ../lib
@@ -35,7 +37,7 @@ base.ll: $(INC) $(SRC)
 	../pil lib/llvm.l main.l -bye > base.ll
 
 lib.bc: pico.h lib.c
-	$(CC) -c -O3 `pkg-config --cflags libffi` -emit-llvm lib.c
+	$(CC) -c -O3 -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' `pkg-config --cflags libffi` -emit-llvm lib.c
 
 # Extension library
 $(LIB)/ext.so: ext.bc

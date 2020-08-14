@@ -1,4 +1,4 @@
-# 13aug20 Software Lab. Alexander Burger
+# 14aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -568,6 +568,44 @@
                   (restore Exe) )
                (truncLog Exe)  ) ) ) )
    $T )
+
+# (pool2 'sym . prg) -> any
+(de _pool2 (Exe)
+   #!
+   Exe )
+
+# (journal ['T] 'any ..) -> T
+(de _journal (Exe)
+   #!
+   Exe )
+
+# (id 'num ['num]) -> sym
+# (id 'sym [NIL]) -> num
+# (id 'sym T) -> (num . num)
+(de _id (Exe)
+   #!
+   Exe )
+
+# (blk 'fd 'cnt 'siz ['fd2]) -> lst
+# (blk 'fd 0) -> (cnt . siz)
+(de _blk (Exe)
+   #!
+   Exe )
+
+# (seq 'cnt|sym1) -> sym | NIL
+(de _seq (Exe)
+   #!
+   Exe )
+
+# (lieu 'any) -> sym | NIL
+(de _lieu (Exe)
+   #!
+   Exe )
+
+# (lock ['sym]) -> cnt | NIL
+(de _lock (Exe)
+   #!
+   Exe )
 
 (local) (db dbFetch dbTouch dbZap)
 

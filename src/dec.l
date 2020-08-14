@@ -1,4 +1,4 @@
-# 07aug20 Software Lab. Alexander Burger
+# 14aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -141,8 +141,10 @@ waitpid setjmp longjmp kill exit)
 (de T void clear_history ())
 
 # Glue lib.c
-(local) (PipeBufSize)
+(local) (TgOS TgCPU PipeBufSize)
 
+(var TgOS i8 NIL)  # Target OS
+(var TgCPU i8 NIL)  # Target CPU
 (var PipeBufSize i64 NIL)  # PIPE_BUF
 
 (local) (stderrNum stderrMsg gPrintf strErrno openRd openWr openRdWr

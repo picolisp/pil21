@@ -1,6 +1,9 @@
-// 10aug20 Software Lab. Alexander Burger
+// 14aug20 Software Lab. Alexander Burger
 
 #include "pico.h"
+
+const char TgOS[] = _OS;
+const char TgCPU[] = _CPU;
 
 // I/O
 const int64_t PipeBufSize = PIPE_BUF;

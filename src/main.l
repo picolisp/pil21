@@ -1,4 +1,4 @@
-# 08aug20 Software Lab. Alexander Burger
+# 14aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1695,8 +1695,6 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (set $Home H  $HomeLen N)
                   (memcpy H P N)
                   (set (ofs H N) 0) ) ) ) ) )
-   # Initialize globals
-   (set $Pid (cnt (i64 (getpid))))
    #! Stack0, Stack1, StkLimit
    (heapAlloc)
    (let P $Nil  # Init internal symbols
@@ -1708,7 +1706,11 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (when (big? Nm)  # Max 15 chars
                   (setq P (ofs P 2)) ) ) )
          (setq P (ofs P 2)) ) )
+   # Initialize globals
    (set
+      $OS (mkStr TgOS)
+      $CPU (mkStr TgCPU)
+      $Pid (cnt (i64 (getpid)))
       (tail $Db1) DB1  # Name of external root symbol '{1}'
       $Extern (cons $Db1 $Nil) )  # External symbol tree root node
    (initOutFile 2)  # Standard error

@@ -69,7 +69,7 @@ declare void @llvm.stackrestore(i8*)
 @$DbJnl = external global i8*
 @$DbLog = external global i8*
 @$Signal = external global [15 x i32]
-@SymTab = external global [806 x i64]
+@SymTab = external global [840 x i64]
 @gcData = external global [52 x i64]
 @cbFuns = external global [24 x i64]
 @env = external global [24 x i64]
@@ -138,6 +138,8 @@ declare i8* @readline(i8*)
 declare void @add_history(i8*)
 declare i8*** @history_list()
 declare void @clear_history()
+@TgOS = external global i8
+@TgCPU = external global i8
 @PipeBufSize = external global i64
 declare i64 @stderrNum(i8*, i64)
 declare i8* @stderrMsg(i8*, i8*)
@@ -470,7 +472,7 @@ $1:
 ; # (evSym X)
   %4 = call i64 @evSym(i64 %3)
 ; # (nil? (evSym X))
-  %5 = icmp eq i64 %4, ptrtoint (i8* getelementptr (i8, i8* bitcast ([806 x i64]* @SymTab to i8*), i32 8) to i64)
+  %5 = icmp eq i64 %4, ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64)
   br i1 %5, label %$2, label %$3
 $2:
   %6 = phi i64 [%3, %$1] ; # X
@@ -507,7 +509,7 @@ $8:
   %19 = phi i64 [%15, %$6] ; # X
   %20 = phi i32 [%17, %$6] ; # C
 ; # (ret $Nil)
-  ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([806 x i64]* @SymTab to i8*), i32 8) to i64)
+  ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64)
 $9:
   %21 = phi i64 [%15, %$6] ; # X
   %22 = phi i32 [%17, %$6] ; # C
