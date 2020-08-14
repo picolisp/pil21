@@ -848,7 +848,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (let
       (X (cdr Lst)  # Arguments
          Y (car Exe)  # Parameters
-         P (set $Bind (push (val $At) $At (val $Bind) Lst)) )  # [[@] @ LINK Exe]
+         P (set $Bind (push (val $At) $At (val $Bind) Lst)) )  # [[@] @ LINK Expr]
       (while (pair Y)
          (set $Bind
             (setq P
@@ -1586,13 +1586,19 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 # (trail ['flg]) -> lst
 (de _trail (Exe)
-   (let (F (eval (cadr Exe))  Bnd (val $Bind)  R $Nil)
+   (let
+      (F (not (nil? (eval (cadr Exe))))
+         Bnd (val $Bind)
+         R $Nil )
       (while Bnd
          (let S (val 2 Bnd)
-            (if (== S $At)
-               (setq R (cons (val 4 Bnd) R))
-               (setq R (cons S (cons (val S) R)))
-               (set S (val Bnd)) ) )
+            (cond
+               ((== S $At)
+                  (when (val 4 Bnd)
+                     (setq R (cons @ R)) ) )  # Expr
+               (F
+                  (setq R (cons S (cons (val S) R)))
+                  (set S (val Bnd)) ) ) )
          (setq Bnd (val 3 Bnd)) )
       (let X R
          (until (atom X)
@@ -1616,8 +1622,8 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (?
                   (and
                      (== $At (val 2 Bnd))
-                     (=0 (dec 'N)) )
-                  (val 4 Bnd) )
+                     (=0 (dec 'N))
+                     (val 4 Bnd) ) )
                (setq Bnd (val 3 Bnd)) )
             $Nil )
          (let Z Y

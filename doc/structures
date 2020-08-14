@@ -1,4 +1,4 @@
-# 10jul20 Software Lab. Alexander Burger
+# 14aug20 Software Lab. Alexander Burger
 
    ### Primary data types ###
 
@@ -125,7 +125,7 @@
       Bind frame:
 
                         ^
-               Exe      |
+               Expr     |
                LINK ----+
                 @
          +---> [@]

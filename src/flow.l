@@ -169,7 +169,7 @@
    (let
       (X (cdr Lst)  # Arguments
          Y (car Exe)  # Parameters
-         P (set $Bind (push (val $At) $At (val $Bind) Lst)) )  # [[@] @ LINK Exe]
+         P (set $Bind (push (val $At) $At (val $Bind) Lst)) )  # [[@] @ LINK Expr]
       (set $Bind (setq P (push $This Obj P)))
       (while (pair Y)
          (set $Bind
@@ -972,11 +972,11 @@
 (de brkLoad (Exe)
    (when (and (isatty 0) (isatty 1) (=0 (val $Break)))
       (let P (val $Bind)
+         (setq P (push (val $At) $At P 0))  # [[@] @ LINK Expr]
          (setq P (push (val $Up) $Up P))
          (set $Up Exe)
-         (setq P (push (val $Run) $Run P))
-         (set $Run $Nil)
-         (set $Break (set $Bind (push (val $At) $At P))) )
+         (set $Break (set $Bind (push (val $Run) $Run P)))
+         (set $Run $Nil) )
       (let (Out (b8 (ioFrame T))  Io: (ioFrame Out))
          (Io: fd 1)  # Stdout
          (Io: pid 0)
@@ -987,21 +987,20 @@
          (popOutFiles) )
       (setq Exe (val $Up))
       (let P (val $Bind)
-         (set $At (val P))
+         (set $Up (val P))
          (setq P (val 3 P))
          (set $Run (val P))
          (setq P (val 3 P))
-         (set $Up (val P))
+         (set $At (val P))
          (set $Bind (val 3 P)) )
       (set $Break 0) )
    Exe )
 
 # (! . exe) -> any
 (de _break (Exe)
-   (let X (cdr Exe)
-      (unless (nil? (val $Dbg))
-         (setq X (brkLoad X)) )
-      (eval X) ) )
+   (unless (nil? (val $Dbg))
+      (setq X (brkLoad Exe)) )
+   (eval (cdr Exe)) )
 
 # (e . prg) -> any
 (de _e (Exe)
