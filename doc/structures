@@ -1,4 +1,4 @@
-# 16aug20 Software Lab. Alexander Burger
+# 17aug20 Software Lab. Alexander Burger
 
    ### Primary data types ###
 
@@ -198,30 +198,26 @@
                LINK ----+  <-- Catch
 
 
-      Coroutine frame:
+      Coroutine:
 
-         ^
-         |     crt -----+
-         +---- LINK  <--|-- CoFrames
-                        |
-                        |
-               [rst]    |
-               [env]    |
-               [@]      |
-               lim      |
-               prg      |
-               org      |
-         +---- next     |
-         |     tag   <--|-- Coroutines
-         |     ...      |
-         |     [rst]    |
-         |     [env]    |
-         |     [@]      |
-         |     lim      |
-         |     prg      |
-         |     org      |
-         |     next     |
-         +---> tag   <--+
+               [rst]
+               [env]
+               [@]
+               lim
+               prg
+               org
+         +---- next
+         |     tag   <----- Coroutines
+         |
+         |
+         |     [rst]
+         |     [env]
+         |     [@]
+         |     lim
+         |     prg
+         |     org
+         |     next
+         +---> tag
 
 
       IPC pipes:
