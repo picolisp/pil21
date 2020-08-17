@@ -250,7 +250,6 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (unless (and (isatty 0) (isatty 1))
                (bye 1) )
             (repl 0 ($ "? ") $Nil) )
-         #! Stop coroutines
          (unwind null)
          (set
             $Link 0
