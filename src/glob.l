@@ -1,4 +1,4 @@
-# 14aug20 Software Lab. Alexander Burger
+# 17aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -605,8 +605,8 @@
    ($Link 0)                     # Link register
    ($Bind 0)                     # Bind frames
    ($Break 0)                    # Breakpoint
+   ($Current i8* null)           # Current coroutine
    ($Catch i8* null)             # Catch frames
-   ($CoFrames i8* null)          # Coroutine frames
    ($InFrames i8* null)          # Input frames
    ($OutFrames i8* null)         # Output frames
    ($ErrFrames i8* null)         # Error frames

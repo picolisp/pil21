@@ -1,4 +1,4 @@
-# 14aug20 Software Lab. Alexander Burger
+# 17aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -49,20 +49,17 @@
    (rst 0 i8) )         # Restart jmp_buf (JmpBufSize)
 
 # Coroutines
-(local) (coroutine coFrame)
+(local) coroutine
 
 (struct coroutine
    (tag 8 any)          # Coroutine tag
    (next 8 i8*)         # Next coroutine
+   (org 8 i8*)          # Originator
    (prg 8 any)          # Code body
    (lim 8 i8*)          # Stack limit
    (at 8 any)           # Saved [@]
    (env (env T) i8)     # Saved environment
    (rst 0 i8) )         # Restart jmp_buf (JmpBufSize)
-
-(struct coFrame
-   (link 8 i8*)         # Frame link
-   (crt 8 i8*) )        # Coroutine
 
 # Family IPC
 (local) child

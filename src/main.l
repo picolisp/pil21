@@ -1,4 +1,4 @@
-# 14aug20 Software Lab. Alexander Burger
+# 17aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -44,7 +44,6 @@
                (popOutFiles) )
             (until (== (val $InFrames) (Ca: (env $InFrames i8*)))
                (popInFiles) )
-            #! $CoFrames
             (memcpy (env) (Ca: (env)) (env T))
             (eval (Ca: fin))  # Evaluate 'finally' expression
             (set $Catch (Ca: link))
@@ -62,9 +61,7 @@
       (while (val $OutFrames)
          (popOutFiles) )
       (while (val $InFrames)
-         (popInFiles) )
-      #! $CoFrames
-      ) )
+         (popInFiles) ) ) )
 
 # Exit
 (local) (finish giveup bye execErr)
@@ -253,6 +250,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (unless (and (isatty 0) (isatty 1))
                (bye 1) )
             (repl 0 ($ "? ") $Nil) )
+         #! Stop coroutines
          (unwind null)
          (set
             $Link 0

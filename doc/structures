@@ -1,4 +1,4 @@
-# 14aug20 Software Lab. Alexander Burger
+# 16aug20 Software Lab. Alexander Burger
 
    ### Primary data types ###
 
@@ -208,16 +208,18 @@
                [rst]    |
                [env]    |
                [@]      |
-               prg      |
                lim      |
+               prg      |
+               org      |
          +---- next     |
          |     tag   <--|-- Coroutines
          |     ...      |
          |     [rst]    |
          |     [env]    |
          |     [@]      |
-         |     prg      |
          |     lim      |
+         |     prg      |
+         |     org      |
          |     next     |
          +---> tag   <--+
 
@@ -271,5 +273,6 @@
 
    - 8 bit per byte
    - 64 bit per word
+   - Stack grows downwards
    - sizeof(float) = 4 bytes
    - sizeof(double) = 8 bytes

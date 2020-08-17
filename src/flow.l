@@ -1,4 +1,4 @@
-# 14aug20 Software Lab. Alexander Burger
+# 17aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -849,7 +849,10 @@
          (set $Catch (Ca: link)) ) ) )
 
 # Coroutines
-(local) (saveCoEnv loadCoEnv)
+(local) (reentErr saveCoEnv loadCoEnv)
+
+(de NIL reentErr (Exe Tag)
+   (err Exe Tag ($ "Reentrant coroutine") null) )
 
 (de void saveCoEnv ((i8* . Src))
    (let Src: (coroutine Src)
@@ -870,15 +873,12 @@
          (let Main: (coroutine (alloc null (+ (val JmpBufSize) (coroutine T))))
             (Main: tag $T)  # Tag 'T'
             (Main: next null)
+            (Main: org null)
             (Main: prg $Nil)
-            (Main: lim null)
+            (Main: lim null)  #!
             (Main: at 0)
-            (set $Coroutines (Main:))
-            (let Co: (coFrame (alloc null (coFrame T)))
-               (Co: link null)
-               (Co: crt (Main:))
-               (set $CoFrames (Co:)) ) ) )
-      (if (atom X)
+            (set $Coroutines (set $Current (Main:))) ) )
+      (if (atom X)  # No 'prg'
          (let Crt (val $Coroutines)  # Stop coroutine
             (loop
                (let Crt: (coroutine Crt)
@@ -886,31 +886,25 @@
                      (Crt: tag 0) )
                   (? (=0 (setq Crt (Crt: next)))) ) )
             $Nil )
-         (let
-            (Src ((coFrame (val $CoFrames)) crt)
-               Crt (val $Coroutines)
-               P (i8* null) )
+         (let (Src (val $Current)  Crt (val $Coroutines)  P (i8* null))
             (saveCoEnv Src)
             (loop
                (let Crt: (coroutine Crt)
                   (when (== Tag (Crt: tag))  # Found running coroutine
-                     (unless ((coroutine Crt) at)
-                        (err Exe Tag ($ "Reentrant coroutine") null) )
+                     (unless (Crt: at)
+                        (reentErr Exe Tag) )
                      (when (setjmp ((coroutine Src) (rst)))
-                        (ret
-                           (loadCoEnv
-                              ((coFrame (val (i8** (val $CoFrames)))) crt) ) ) )
+                        (ret (loadCoEnv Src)) )
                      (set $Ret $Nil)
                      (longjmp (Crt: (rst)) 1) )
                   (unless (Crt: tag)
                      (setq P Crt) )  # Remember possible free slot
                   (? (=0 (Crt: next)))
-                  (setq Crt (Crt: next)) ) )
+                  (setq Crt @) ) )
+            # Start new coroutine
             (when (setjmp ((coroutine Src) (rst)))
-               (ret
-                  (loadCoEnv
-                     ((coFrame (val (i8** (val $CoFrames)))) crt) ) ) )
-            (if P  # Start new coroutine
+               (ret (loadCoEnv Src)) )
+            (if P
                (stack P)  # Use free slot
                (stack  # Found no free slot
                   (if (== Crt (val $Coroutines))
@@ -919,25 +913,22 @@
                (setq P (b8 (+ (val JmpBufSize) (coroutine T))))
                ((coroutine Crt) next P)
                ((coroutine P) next null) )
-            (let (Co: (coFrame (b8 (coFrame T)))  Dst: (coroutine P))
-               (Co: link (val $CoFrames))
-               (Co: crt P)
-               (set $CoFrames (Co:))
+            (let Dst: (coroutine P)
                (Dst: tag Tag)
+               (Dst: org (val $Current))
                (Dst: prg X)
-               (Dst: lim null)
+               (Dst: lim null)  #!
                (Dst: at 0)
+               (memcpy (Dst: (env)) (env) (env T))
                (set  # Init local env
                   $Make 0
                   $Yoke 0
-                  #{$StkLimit (- .. 4096 (val $StkSize)))}# )
+                  #!  $StkLimit (- .. 4096 (val $StkSize))
+                  )
+               (set $Current (Dst:))
                (set $Ret (run X))
-               (Dst: tag 0) )  # Mark as unused
-            (longjmp
-               ((coroutine
-                     ((coFrame (val (i8** (val $CoFrames)))) crt) )
-                  (rst) )
-               1 ) ) ) ) )
+               (Dst: tag 0)  # Mark as unused
+               (longjmp ((coroutine (Dst: org)) (rst)) 1) ) ) ) ) )
 
 # (yield 'any ['sym]) -> any
 (de _yield (Exe)
@@ -949,25 +940,49 @@
       (unless Crt
          (err Exe 0 ($ "No coroutines") null) )
       (let
-         (Co: (coFrame (val $CoFrames))
+         (Src: (coroutine (val $Current))
             Dst:
             (coroutine
-               (if (nil? Tag)
-                  (if (Co: link)
-                     ((coFrame (Co: link)) crt)
-                     (err Exe 0 ($ "Tag expected") null) )
-                  (until (== Tag ((coroutine Crt) tag))
-                     (unless (setq Crt ((coroutine Crt) next))
-                        (err Exe Tag ($ "Coroutine not found") null) ) )
-                  (unless ((coroutine Crt) at)
-                     (err Exe Tag ($ "Reentrant coroutine") null) )
-                  Crt ) )
-            Src (Co: crt) )
-         (saveCoEnv Src)
-         (unless (setjmp ((coroutine Src) (rst)))
+               (cond
+                  ((not (nil? Tag))
+                     (loop
+                        (let Crt: (coroutine Crt)
+                           (? (== Tag (Crt: tag))
+                              (unless (Crt: at)
+                                 (reentErr Exe Tag) )
+                              Crt )
+                           (unless (setq Crt (Crt: next))
+                              (err Exe Tag ($ "Coroutine not found") null) ) ) ) )
+                  ((Src: org) @)
+                  (T (err Exe 0 ($ "Tag expected") null)) ) ) )
+         (let B 0
+            (when (Src: org)
+               (let (Bnd (val $Bind)  Q (Src: (env $Bind any)))  # Reverse bindings
+                  (until (== Bnd Q)
+                     (let P Bnd
+                        (xchg (val 2 P) P)
+                        (setq Bnd (val 3 P))
+                        (set 3 P B)
+                        (setq B P) ) ) ) )
+            (set $Bind B) )
+         (saveCoEnv (Src:))
+         (unless (setjmp (Src: (rst)))
             (set $Ret Val)
             (longjmp (Dst: (rst)) 1) )
-         (loadCoEnv Src) ) ) )
+         (let Bnd (val $Bind)
+            (let B (Src: (env $Bind any))  # Restore bindings
+               (Src: (env $Bind any) Bnd)
+               (while B
+                  (let P B
+                     (xchg (val 2 P) P)
+                     (setq B (val 3 P))
+                     (set 3 P Bnd)
+                     (setq Bnd P) ) ) )
+            (memcpy (env) (Src: (env)) (env T))
+            (set $Bind Bnd) )
+         (set $At (Src: at))
+         (Src: at 0)
+         (val $Ret) ) ) )
 
 (de brkLoad (Exe)
    (when (and (isatty 0) (isatty 1) (=0 (val $Break)))
