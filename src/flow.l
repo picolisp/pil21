@@ -861,6 +861,7 @@
 
 (de loadCoEnv ((i8* . Src))
    (let Src: (coroutine (set $Current Src))
+      (set $StkLimit (+ (Src: lim) 4096))
       (memcpy (env) (Src: (env)) (env T))
       (set $At (Src: at))
       (Src: at 0)
@@ -876,7 +877,7 @@
             (Main: nxt null)
             (Main: org null)
             (Main: prg $Nil)
-            (Main: lim null)  #!
+            (Main: lim (ofs (Main:) (* -4 (val $StkSize))))
             (Main: at 0)
             (Main: bnd 0)
             (set $Coroutines (set $Current (Main:))) ) )
@@ -911,10 +912,7 @@
                (ret (loadCoEnv (Src:))) )
             (if P
                (stack P)  # Use free slot
-               (stack  # Found no free slot
-                  (if (== Crt (val $Coroutines))
-                     (ofs (stack) (* -4 (val $StkSize)))  # First coroutine
-                     (ofs Crt (- (val $StkSize))) ) )  # Allocate below last
+               (stack ((coroutine Crt) lim)) # Found no free slot
                (setq P (b8 (+ (val JmpBufSize) (coroutine T))))
                ((coroutine Crt) nxt P)
                ((coroutine P) prv Crt)
@@ -923,16 +921,15 @@
                (Dst: tag Tag)
                (Dst: org (val $Current))
                (Dst: prg X)
-               (Dst: lim null)  #!
+               (Dst: lim (ofs P (- (val $StkSize))))
                (Dst: at 0)
                (Dst: bnd (val $Bind))
                (memcpy (Dst: (env)) (env) (env T))
                (set  # Init local env
                   $Make 0
                   $Yoke 0
-                  #!  $StkLimit (- .. 4096 (val $StkSize))
-                  )
-               (set $Current (Dst:))
+                  $Current (Dst:)
+                  $StkLimit (+ (Dst: lim) 4096) )
                (set $Ret (run X))
                (Dst: tag 0)  # Mark as unused
                (longjmp ((coroutine (Dst: org)) (rst)) 1) ) ) ) ) )
