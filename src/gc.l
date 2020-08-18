@@ -1,4 +1,4 @@
-# 14aug20 Software Lab. Alexander Burger
+# 18aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -85,19 +85,24 @@
                (mark (Crt: prg))
                (mark (Crt: at))
                (mark (Crt: (env $Intern any)))
-               (let P (Crt: (env $Link any))
+               (let P (Crt: (env $Link any))  # Stack(s)
                   (while P
-                     (mark (val P))
+                     (mark (val P))  # Mark item
                      (shift P) ) )
-               (let Ca (Crt: (env $Catch))
+               (let P (Crt: (env $Bind any))  # Bind frames
+                  (while P
+                     (mark (val P))  # Mark saved value
+                     (mark (val 2 P))  # Mark symbol
+                     (setq P (val 3 P)) ) )
+               (let Ca (Crt: (env $Catch i8*))
                   (while Ca
                      (let Ca: (caFrame Ca)
                         (when (Ca: tag)  # Mark 'tag'
                            (mark (Ca: tag)) )
                         (mark (Ca: fin))
                         (mark (Ca: (env $Intern any)))
-                        (setq Ca (Ca: link)) ) ) )
-               (setq Crt (Crt: next)) ) ) ) )
+                        (setq Ca (Ca: link)) ) ) ) )
+            (setq Crt (Crt: nxt)) ) ) )
    (let (Tos 0  P (val $Extern))  # Externals
       (loop
          (loop
@@ -214,11 +219,10 @@
          (let Crt: (coroutine Crt)
             (when
                (and
-                  (Crt: tag)  # In use
                   (Crt: at)  # Running
-                  (& (val (Crt: tag)) 1) )  # 'tag' symbol gone
+                  (& (val (Crt: tag)) 1) )  # In use but 'tag' symbol gone
                (Crt: tag 0) )  # Mark as unused
-            (setq Crt (Crt: next)) ) ) )
+            (setq Crt (Crt: nxt)) ) ) )
    # Sweep
    (let (Avail 0  Heap (val $Heaps)  Cnt (val $GcCount))
       (ifn Cnt

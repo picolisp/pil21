@@ -1,4 +1,4 @@
-# 17aug20 Software Lab. Alexander Burger
+# 18aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -860,7 +860,7 @@
       (memcpy (Src: (env)) (env) (env T)) ) )
 
 (de loadCoEnv ((i8* . Src))
-   (let Src: (coroutine Src)
+   (let Src: (coroutine (set $Current Src))
       (memcpy (env) (Src: (env)) (env T))
       (set $At (Src: at))
       (Src: at 0)
@@ -872,38 +872,43 @@
       (unless (val $Coroutines)  # First call
          (let Main: (coroutine (alloc null (+ (val JmpBufSize) (coroutine T))))
             (Main: tag $T)  # Tag 'T'
-            (Main: next null)
+            (Main: prv null)
+            (Main: nxt null)
             (Main: org null)
             (Main: prg $Nil)
             (Main: lim null)  #!
             (Main: at 0)
+            (Main: bnd 0)
             (set $Coroutines (set $Current (Main:))) ) )
       (if (atom X)  # No 'prg'
          (let Crt (val $Coroutines)  # Stop coroutine
             (loop
                (let Crt: (coroutine Crt)
                   (? (== Tag (Crt: tag))  # Found coroutine
-                     (Crt: tag 0) )
-                  (? (=0 (setq Crt (Crt: next)))) ) )
+                     (Crt: tag 0) )  # Set unused
+                  (? (=0 (setq Crt (Crt: nxt)))) ) )
             $Nil )
-         (let (Src (val $Current)  Crt (val $Coroutines)  P (i8* null))
-            (saveCoEnv Src)
+         (let
+            (Src: (coroutine (val $Current))
+               Crt (val $Coroutines)
+               P (i8* null) )
+            (saveCoEnv (Src:))
             (loop
                (let Crt: (coroutine Crt)
                   (when (== Tag (Crt: tag))  # Found running coroutine
                      (unless (Crt: at)
                         (reentErr Exe Tag) )
-                     (when (setjmp ((coroutine Src) (rst)))
-                        (ret (loadCoEnv Src)) )
+                     (when (setjmp (Src: (rst)))
+                        (ret (loadCoEnv (Src:))) )
                      (set $Ret $Nil)
                      (longjmp (Crt: (rst)) 1) )
-                  (unless (Crt: tag)
+                  (unless (Crt: tag)  # Unused
                      (setq P Crt) )  # Remember possible free slot
-                  (? (=0 (Crt: next)))
+                  (? (=0 (Crt: nxt)))
                   (setq Crt @) ) )
             # Start new coroutine
-            (when (setjmp ((coroutine Src) (rst)))
-               (ret (loadCoEnv Src)) )
+            (when (setjmp (Src: (rst)))
+               (ret (loadCoEnv (Src:))) )
             (if P
                (stack P)  # Use free slot
                (stack  # Found no free slot
@@ -911,14 +916,16 @@
                      (ofs (stack) (* -4 (val $StkSize)))  # First coroutine
                      (ofs Crt (- (val $StkSize))) ) )  # Allocate below last
                (setq P (b8 (+ (val JmpBufSize) (coroutine T))))
-               ((coroutine Crt) next P)
-               ((coroutine P) next null) )
+               ((coroutine Crt) nxt P)
+               ((coroutine P) prv Crt)
+               ((coroutine P) nxt null) )
             (let Dst: (coroutine P)
                (Dst: tag Tag)
                (Dst: org (val $Current))
                (Dst: prg X)
                (Dst: lim null)  #!
                (Dst: at 0)
+               (Dst: bnd (val $Bind))
                (memcpy (Dst: (env)) (env) (env T))
                (set  # Init local env
                   $Make 0
@@ -951,38 +958,35 @@
                               (unless (Crt: at)
                                  (reentErr Exe Tag) )
                               Crt )
-                           (unless (setq Crt (Crt: next))
+                           (unless (setq Crt (Crt: nxt))
                               (err Exe Tag ($ "Coroutine not found") null) ) ) ) )
                   ((Src: org) @)
                   (T (err Exe 0 ($ "Tag expected") null)) ) ) )
-         (let B 0
+         (let B (any 0)
             (when (Src: org)
-               (let (Bnd (val $Bind)  Q (Src: (env $Bind any)))  # Reverse bindings
+               (let (Bnd (val $Bind)  Q (Src: bnd))  # Reverse bindings
                   (until (== Bnd Q)
                      (let P Bnd
                         (xchg (val 2 P) P)
                         (setq Bnd (val 3 P))
                         (set 3 P B)
-                        (setq B P) ) ) ) )
-            (set $Bind B) )
-         (saveCoEnv (Src:))
-         (unless (setjmp (Src: (rst)))
-            (set $Ret Val)
-            (longjmp (Dst: (rst)) 1) )
-         (let Bnd (val $Bind)
-            (let B (Src: (env $Bind any))  # Restore bindings
-               (Src: (env $Bind any) Bnd)
-               (while B
-                  (let P B
-                     (xchg (val 2 P) P)
-                     (setq B (val 3 P))
-                     (set 3 P Bnd)
-                     (setq Bnd P) ) ) )
-            (memcpy (env) (Src: (env)) (env T))
-            (set $Bind Bnd) )
-         (set $At (Src: at))
-         (Src: at 0)
-         (val $Ret) ) ) )
+                        (setq B P) ) ) )
+               (set $Bind B) )
+            (saveCoEnv (Src:))
+            (unless (setjmp (Src: (rst)))
+               (set $Ret Val)
+               (longjmp (Dst: (rst)) 1) )
+            (when (Src: org)
+               (let Bnd (val $Bind)
+                  (Src: bnd Bnd)
+                  (while B  # Restore bindings
+                     (let P B
+                        (xchg (val 2 P) P)
+                        (setq B (val 3 P))
+                        (set 3 P Bnd)
+                        (setq Bnd P) ) )
+                  (Src: (env $Bind any) Bnd) ) ) )
+         (loadCoEnv (Src:)) ) ) )
 
 (de brkLoad (Exe)
    (when (and (isatty 0) (isatty 1) (=0 (val $Break)))
