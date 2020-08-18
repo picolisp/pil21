@@ -877,7 +877,7 @@
             (Main: nxt null)
             (Main: org null)
             (Main: prg $Nil)
-            (Main: lim (ofs (Main:) (* -4 (val $StkSize))))
+            (Main: lim (ofs (stack) (* -4 (val $StkSize))))
             (Main: at 0)
             (Main: bnd 0)
             (set $Coroutines (set $Current (Main:))) ) )
