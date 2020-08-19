@@ -1,4 +1,4 @@
-# 18aug20 Software Lab. Alexander Burger
+# 19aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -219,8 +219,9 @@
          (let Crt: (coroutine Crt)
             (when
                (and
-                  (Crt: at)  # Running
-                  (& (val (Crt: tag)) 1) )  # In use but 'tag' symbol gone
+                  (Crt: at)  # Not running
+                  (Crt: tag)  # In use
+                  (& (val @) 1) )  # 'tag' symbol gone
                (Crt: tag 0) )  # Mark as unused
             (setq Crt (Crt: nxt)) ) ) )
    # Sweep

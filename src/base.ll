@@ -6298,17 +6298,17 @@ $-5:
 ; # (let Crt (val $Coroutines) (while Crt (let Crt: (coroutine Crt) (...
 ; # (val $Coroutines)
   %551 = load i8*, i8** @$Coroutines
-; # (while Crt (let Crt: (coroutine Crt) (when (and (Crt: at) (& (val...
+; # (while Crt (let Crt: (coroutine Crt) (when (and (Crt: at) (Crt: t...
   br label %$98
 $98:
-  %552 = phi i8* [%551, %$-5], [%576, %$104] ; # Crt
+  %552 = phi i8* [%551, %$-5], [%578, %$105] ; # Crt
   %553 = icmp ne i8* %552, null
   br i1 %553, label %$99, label %$100
 $99:
   %554 = phi i8* [%552, %$98] ; # Crt
-; # (let Crt: (coroutine Crt) (when (and (Crt: at) (& (val (Crt: tag)...
-; # (when (and (Crt: at) (& (val (Crt: tag)) 1)) (Crt: tag 0))
-; # (and (Crt: at) (& (val (Crt: tag)) 1))
+; # (let Crt: (coroutine Crt) (when (and (Crt: at) (Crt: tag) (& (val...
+; # (when (and (Crt: at) (Crt: tag) (& (val @) 1)) (Crt: tag 0))
+; # (and (Crt: at) (Crt: tag) (& (val @) 1))
 ; # (Crt: at)
   %555 = getelementptr i8, i8* %554, i32 48
   %556 = ptrtoint i8* %555 to i64
@@ -6322,289 +6322,293 @@ $102:
   %561 = ptrtoint i8* %554 to i64
   %562 = inttoptr i64 %561 to i64*
   %563 = load i64, i64* %562
-; # (val (Crt: tag))
-  %564 = inttoptr i64 %563 to i64*
-  %565 = load i64, i64* %564
-; # (& (val (Crt: tag)) 1)
-  %566 = and i64 %565, 1
-  %567 = icmp ne i64 %566, 0
+  %564 = icmp ne i64 %563, 0
+  br i1 %564, label %$103, label %$101
+$103:
+  %565 = phi i8* [%560, %$102] ; # Crt
+; # (val @)
+  %566 = inttoptr i64 %563 to i64*
+  %567 = load i64, i64* %566
+; # (& (val @) 1)
+  %568 = and i64 %567, 1
+  %569 = icmp ne i64 %568, 0
   br label %$101
 $101:
-  %568 = phi i8* [%554, %$99], [%560, %$102] ; # Crt
-  %569 = phi i1 [0, %$99], [%567, %$102] ; # ->
-  br i1 %569, label %$103, label %$104
-$103:
-  %570 = phi i8* [%568, %$101] ; # Crt
-; # (Crt: tag 0)
-  %571 = ptrtoint i8* %554 to i64
-  %572 = inttoptr i64 %571 to i64*
-  store i64 0, i64* %572
-  br label %$104
+  %570 = phi i8* [%554, %$99], [%560, %$102], [%565, %$103] ; # Crt
+  %571 = phi i1 [0, %$99], [0, %$102], [%569, %$103] ; # ->
+  br i1 %571, label %$104, label %$105
 $104:
-  %573 = phi i8* [%568, %$101], [%570, %$103] ; # Crt
+  %572 = phi i8* [%570, %$101] ; # Crt
+; # (Crt: tag 0)
+  %573 = ptrtoint i8* %554 to i64
+  %574 = inttoptr i64 %573 to i64*
+  store i64 0, i64* %574
+  br label %$105
+$105:
+  %575 = phi i8* [%570, %$101], [%572, %$104] ; # Crt
 ; # (Crt: nxt)
-  %574 = getelementptr i8, i8* %554, i32 16
-  %575 = bitcast i8* %574 to i8**
-  %576 = load i8*, i8** %575
+  %576 = getelementptr i8, i8* %554, i32 16
+  %577 = bitcast i8* %576 to i8**
+  %578 = load i8*, i8** %577
   br label %$98
 $100:
-  %577 = phi i8* [%552, %$98] ; # Crt
+  %579 = phi i8* [%552, %$98] ; # Crt
 ; # (let (Avail 0 Heap (val $Heaps) Cnt (val $GcCount)) (ifn Cnt (let...
 ; # (val $Heaps)
-  %578 = load i64, i64* @$Heaps
+  %580 = load i64, i64* @$Heaps
 ; # (val $GcCount)
-  %579 = load i64, i64* @$GcCount
+  %581 = load i64, i64* @$GcCount
 ; # (ifn Cnt (let H (any $Heaps) (loop (let (A Avail P (ofs Heap (- H...
-  %580 = icmp ne i64 %579, 0
-  br i1 %580, label %$106, label %$105
-$105:
-  %581 = phi i64 [0, %$100] ; # Avail
-  %582 = phi i64 [%578, %$100] ; # Heap
-  %583 = phi i64 [%579, %$100] ; # Cnt
+  %582 = icmp ne i64 %581, 0
+  br i1 %582, label %$107, label %$106
+$106:
+  %583 = phi i64 [0, %$100] ; # Avail
+  %584 = phi i64 [%580, %$100] ; # Heap
+  %585 = phi i64 [%581, %$100] ; # Cnt
 ; # (let H (any $Heaps) (loop (let (A Avail P (ofs Heap (- HEAP 2))) ...
 ; # (any $Heaps)
-  %584 = ptrtoint i64* @$Heaps to i64
+  %586 = ptrtoint i64* @$Heaps to i64
 ; # (loop (let (A Avail P (ofs Heap (- HEAP 2))) (setq Cnt CELLS) (lo...
-  br label %$108
-$108:
-  %585 = phi i64 [%581, %$105], [%653, %$117] ; # Avail
-  %586 = phi i64 [%582, %$105], [%654, %$117] ; # Heap
-  %587 = phi i64 [%583, %$105], [%655, %$117] ; # Cnt
-  %588 = phi i64 [%584, %$105], [%656, %$117] ; # H
+  br label %$109
+$109:
+  %587 = phi i64 [%583, %$106], [%655, %$118] ; # Avail
+  %588 = phi i64 [%584, %$106], [%656, %$118] ; # Heap
+  %589 = phi i64 [%585, %$106], [%657, %$118] ; # Cnt
+  %590 = phi i64 [%586, %$106], [%658, %$118] ; # H
 ; # (let (A Avail P (ofs Heap (- HEAP 2))) (setq Cnt CELLS) (loop (wh...
 ; # (- HEAP 2)
 ; # (ofs Heap (- HEAP 2))
-  %589 = add i64 %586, 1048560
+  %591 = add i64 %588, 1048560
 ; # (loop (when (& (cdr P) 1) (set P Avail) (setq Avail P) (dec 'Cnt)...
-  br label %$109
-$109:
-  %590 = phi i64 [%585, %$108], [%613, %$112] ; # Avail
-  %591 = phi i64 [%586, %$108], [%614, %$112] ; # Heap
-  %592 = phi i64 [65536, %$108], [%615, %$112] ; # Cnt
-  %593 = phi i64 [%588, %$108], [%616, %$112] ; # H
-  %594 = phi i64 [%589, %$108], [%618, %$112] ; # P
+  br label %$110
+$110:
+  %592 = phi i64 [%587, %$109], [%615, %$113] ; # Avail
+  %593 = phi i64 [%588, %$109], [%616, %$113] ; # Heap
+  %594 = phi i64 [65536, %$109], [%617, %$113] ; # Cnt
+  %595 = phi i64 [%590, %$109], [%618, %$113] ; # H
+  %596 = phi i64 [%591, %$109], [%620, %$113] ; # P
 ; # (when (& (cdr P) 1) (set P Avail) (setq Avail P) (dec 'Cnt))
 ; # (cdr P)
-  %595 = inttoptr i64 %594 to i64*
-  %596 = getelementptr i64, i64* %595, i32 1
-  %597 = load i64, i64* %596
+  %597 = inttoptr i64 %596 to i64*
+  %598 = getelementptr i64, i64* %597, i32 1
+  %599 = load i64, i64* %598
 ; # (& (cdr P) 1)
-  %598 = and i64 %597, 1
-  %599 = icmp ne i64 %598, 0
-  br i1 %599, label %$110, label %$111
-$110:
-  %600 = phi i64 [%590, %$109] ; # Avail
-  %601 = phi i64 [%591, %$109] ; # Heap
-  %602 = phi i64 [%592, %$109] ; # Cnt
-  %603 = phi i64 [%593, %$109] ; # H
-  %604 = phi i64 [%594, %$109] ; # P
-; # (set P Avail)
-  %605 = inttoptr i64 %604 to i64*
-  store i64 %600, i64* %605
-; # (dec 'Cnt)
-  %606 = sub i64 %602, 1
-  br label %$111
+  %600 = and i64 %599, 1
+  %601 = icmp ne i64 %600, 0
+  br i1 %601, label %$111, label %$112
 $111:
-  %607 = phi i64 [%590, %$109], [%604, %$110] ; # Avail
-  %608 = phi i64 [%591, %$109], [%601, %$110] ; # Heap
-  %609 = phi i64 [%592, %$109], [%606, %$110] ; # Cnt
-  %610 = phi i64 [%593, %$109], [%603, %$110] ; # H
-  %611 = phi i64 [%594, %$109], [%604, %$110] ; # P
+  %602 = phi i64 [%592, %$110] ; # Avail
+  %603 = phi i64 [%593, %$110] ; # Heap
+  %604 = phi i64 [%594, %$110] ; # Cnt
+  %605 = phi i64 [%595, %$110] ; # H
+  %606 = phi i64 [%596, %$110] ; # P
+; # (set P Avail)
+  %607 = inttoptr i64 %606 to i64*
+  store i64 %602, i64* %607
+; # (dec 'Cnt)
+  %608 = sub i64 %604, 1
+  br label %$112
+$112:
+  %609 = phi i64 [%592, %$110], [%606, %$111] ; # Avail
+  %610 = phi i64 [%593, %$110], [%603, %$111] ; # Heap
+  %611 = phi i64 [%594, %$110], [%608, %$111] ; # Cnt
+  %612 = phi i64 [%595, %$110], [%605, %$111] ; # H
+  %613 = phi i64 [%596, %$110], [%606, %$111] ; # P
 ; # (? (== P Heap))
 ; # (== P Heap)
-  %612 = icmp eq i64 %611, %608
-  br i1 %612, label %$113, label %$112
-$112:
-  %613 = phi i64 [%607, %$111] ; # Avail
-  %614 = phi i64 [%608, %$111] ; # Heap
-  %615 = phi i64 [%609, %$111] ; # Cnt
-  %616 = phi i64 [%610, %$111] ; # H
-  %617 = phi i64 [%611, %$111] ; # P
-; # (ofs P -2)
-  %618 = add i64 %617, -16
-  br label %$109
+  %614 = icmp eq i64 %613, %610
+  br i1 %614, label %$114, label %$113
 $113:
-  %619 = phi i64 [%607, %$111] ; # Avail
-  %620 = phi i64 [%608, %$111] ; # Heap
-  %621 = phi i64 [%609, %$111] ; # Cnt
-  %622 = phi i64 [%610, %$111] ; # H
-  %623 = phi i64 [%611, %$111] ; # P
-  %624 = phi i64 [0, %$111] ; # ->
-; # (if Cnt (setq Heap (val (setq H (ofs Heap HEAP)))) (setq Avail A ...
-  %625 = icmp ne i64 %621, 0
-  br i1 %625, label %$114, label %$115
+  %615 = phi i64 [%609, %$112] ; # Avail
+  %616 = phi i64 [%610, %$112] ; # Heap
+  %617 = phi i64 [%611, %$112] ; # Cnt
+  %618 = phi i64 [%612, %$112] ; # H
+  %619 = phi i64 [%613, %$112] ; # P
+; # (ofs P -2)
+  %620 = add i64 %619, -16
+  br label %$110
 $114:
-  %626 = phi i64 [%619, %$113] ; # Avail
-  %627 = phi i64 [%620, %$113] ; # Heap
-  %628 = phi i64 [%621, %$113] ; # Cnt
-  %629 = phi i64 [%622, %$113] ; # H
-  %630 = phi i64 [%623, %$113] ; # P
-; # (ofs Heap HEAP)
-  %631 = add i64 %627, 1048576
-; # (val (setq H (ofs Heap HEAP)))
-  %632 = inttoptr i64 %631 to i64*
-  %633 = load i64, i64* %632
-  br label %$116
+  %621 = phi i64 [%609, %$112] ; # Avail
+  %622 = phi i64 [%610, %$112] ; # Heap
+  %623 = phi i64 [%611, %$112] ; # Cnt
+  %624 = phi i64 [%612, %$112] ; # H
+  %625 = phi i64 [%613, %$112] ; # P
+  %626 = phi i64 [0, %$112] ; # ->
+; # (if Cnt (setq Heap (val (setq H (ofs Heap HEAP)))) (setq Avail A ...
+  %627 = icmp ne i64 %623, 0
+  br i1 %627, label %$115, label %$116
 $115:
-  %634 = phi i64 [%619, %$113] ; # Avail
-  %635 = phi i64 [%620, %$113] ; # Heap
-  %636 = phi i64 [%621, %$113] ; # Cnt
-  %637 = phi i64 [%622, %$113] ; # H
-  %638 = phi i64 [%623, %$113] ; # P
+  %628 = phi i64 [%621, %$114] ; # Avail
+  %629 = phi i64 [%622, %$114] ; # Heap
+  %630 = phi i64 [%623, %$114] ; # Cnt
+  %631 = phi i64 [%624, %$114] ; # H
+  %632 = phi i64 [%625, %$114] ; # P
+; # (ofs Heap HEAP)
+  %633 = add i64 %629, 1048576
+; # (val (setq H (ofs Heap HEAP)))
+  %634 = inttoptr i64 %633 to i64*
+  %635 = load i64, i64* %634
+  br label %$117
+$116:
+  %636 = phi i64 [%621, %$114] ; # Avail
+  %637 = phi i64 [%622, %$114] ; # Heap
+  %638 = phi i64 [%623, %$114] ; # Cnt
+  %639 = phi i64 [%624, %$114] ; # H
+  %640 = phi i64 [%625, %$114] ; # P
 ; # (inc HEAP)
 ; # (val (inc HEAP) Heap)
-  %639 = inttoptr i64 %635 to i64*
-  %640 = getelementptr i64, i64* %639, i32 131072
-  %641 = load i64, i64* %640
-; # (val H)
-  %642 = inttoptr i64 %637 to i64*
+  %641 = inttoptr i64 %637 to i64*
+  %642 = getelementptr i64, i64* %641, i32 131072
   %643 = load i64, i64* %642
+; # (val H)
+  %644 = inttoptr i64 %639 to i64*
+  %645 = load i64, i64* %644
 ; # (i8* (val H))
-  %644 = inttoptr i64 %643 to i8*
+  %646 = inttoptr i64 %645 to i8*
 ; # (free (i8* (val H)))
-  call void @free(i8* %644)
+  call void @free(i8* %646)
 ; # (set H Heap)
-  %645 = inttoptr i64 %637 to i64*
-  store i64 %641, i64* %645
-  br label %$116
-$116:
-  %646 = phi i64 [%626, %$114], [%585, %$115] ; # Avail
-  %647 = phi i64 [%633, %$114], [%641, %$115] ; # Heap
-  %648 = phi i64 [%628, %$114], [%636, %$115] ; # Cnt
-  %649 = phi i64 [%631, %$114], [%637, %$115] ; # H
-  %650 = phi i64 [%630, %$114], [%638, %$115] ; # P
-  %651 = phi i64 [%633, %$114], [%641, %$115] ; # ->
+  %647 = inttoptr i64 %639 to i64*
+  store i64 %643, i64* %647
+  br label %$117
+$117:
+  %648 = phi i64 [%628, %$115], [%587, %$116] ; # Avail
+  %649 = phi i64 [%635, %$115], [%643, %$116] ; # Heap
+  %650 = phi i64 [%630, %$115], [%638, %$116] ; # Cnt
+  %651 = phi i64 [%633, %$115], [%639, %$116] ; # H
+  %652 = phi i64 [%632, %$115], [%640, %$116] ; # P
+  %653 = phi i64 [%635, %$115], [%643, %$116] ; # ->
 ; # (? (=0 Heap))
 ; # (=0 Heap)
-  %652 = icmp eq i64 %647, 0
-  br i1 %652, label %$118, label %$117
-$117:
-  %653 = phi i64 [%646, %$116] ; # Avail
-  %654 = phi i64 [%647, %$116] ; # Heap
-  %655 = phi i64 [%648, %$116] ; # Cnt
-  %656 = phi i64 [%649, %$116] ; # H
-  br label %$108
+  %654 = icmp eq i64 %649, 0
+  br i1 %654, label %$119, label %$118
 $118:
-  %657 = phi i64 [%646, %$116] ; # Avail
-  %658 = phi i64 [%647, %$116] ; # Heap
-  %659 = phi i64 [%648, %$116] ; # Cnt
-  %660 = phi i64 [%649, %$116] ; # H
-  %661 = phi i64 [0, %$116] ; # ->
-; # (set $Avail Avail)
-  store i64 %657, i64* @$Avail
-  br label %$107
-$106:
-  %662 = phi i64 [0, %$100] ; # Avail
-  %663 = phi i64 [%578, %$100] ; # Heap
-  %664 = phi i64 [%579, %$100] ; # Cnt
-; # (loop (let P (ofs Heap (- HEAP 2)) (loop (when (& (cdr P) 1) (set...
-  br label %$119
+  %655 = phi i64 [%648, %$117] ; # Avail
+  %656 = phi i64 [%649, %$117] ; # Heap
+  %657 = phi i64 [%650, %$117] ; # Cnt
+  %658 = phi i64 [%651, %$117] ; # H
+  br label %$109
 $119:
-  %665 = phi i64 [%662, %$106], [%703, %$125] ; # Avail
-  %666 = phi i64 [%663, %$106], [%704, %$125] ; # Heap
-  %667 = phi i64 [%664, %$106], [%705, %$125] ; # Cnt
+  %659 = phi i64 [%648, %$117] ; # Avail
+  %660 = phi i64 [%649, %$117] ; # Heap
+  %661 = phi i64 [%650, %$117] ; # Cnt
+  %662 = phi i64 [%651, %$117] ; # H
+  %663 = phi i64 [0, %$117] ; # ->
+; # (set $Avail Avail)
+  store i64 %659, i64* @$Avail
+  br label %$108
+$107:
+  %664 = phi i64 [0, %$100] ; # Avail
+  %665 = phi i64 [%580, %$100] ; # Heap
+  %666 = phi i64 [%581, %$100] ; # Cnt
+; # (loop (let P (ofs Heap (- HEAP 2)) (loop (when (& (cdr P) 1) (set...
+  br label %$120
+$120:
+  %667 = phi i64 [%664, %$107], [%705, %$126] ; # Avail
+  %668 = phi i64 [%665, %$107], [%706, %$126] ; # Heap
+  %669 = phi i64 [%666, %$107], [%707, %$126] ; # Cnt
 ; # (let P (ofs Heap (- HEAP 2)) (loop (when (& (cdr P) 1) (set P Ava...
 ; # (- HEAP 2)
 ; # (ofs Heap (- HEAP 2))
-  %668 = add i64 %666, 1048560
+  %670 = add i64 %668, 1048560
 ; # (loop (when (& (cdr P) 1) (set P Avail) (setq Avail P) (dec 'Cnt)...
-  br label %$120
-$120:
-  %669 = phi i64 [%665, %$119], [%689, %$123] ; # Avail
-  %670 = phi i64 [%666, %$119], [%690, %$123] ; # Heap
-  %671 = phi i64 [%667, %$119], [%691, %$123] ; # Cnt
-  %672 = phi i64 [%668, %$119], [%693, %$123] ; # P
+  br label %$121
+$121:
+  %671 = phi i64 [%667, %$120], [%691, %$124] ; # Avail
+  %672 = phi i64 [%668, %$120], [%692, %$124] ; # Heap
+  %673 = phi i64 [%669, %$120], [%693, %$124] ; # Cnt
+  %674 = phi i64 [%670, %$120], [%695, %$124] ; # P
 ; # (when (& (cdr P) 1) (set P Avail) (setq Avail P) (dec 'Cnt))
 ; # (cdr P)
-  %673 = inttoptr i64 %672 to i64*
-  %674 = getelementptr i64, i64* %673, i32 1
-  %675 = load i64, i64* %674
+  %675 = inttoptr i64 %674 to i64*
+  %676 = getelementptr i64, i64* %675, i32 1
+  %677 = load i64, i64* %676
 ; # (& (cdr P) 1)
-  %676 = and i64 %675, 1
-  %677 = icmp ne i64 %676, 0
-  br i1 %677, label %$121, label %$122
-$121:
-  %678 = phi i64 [%669, %$120] ; # Avail
-  %679 = phi i64 [%670, %$120] ; # Heap
-  %680 = phi i64 [%671, %$120] ; # Cnt
-  %681 = phi i64 [%672, %$120] ; # P
-; # (set P Avail)
-  %682 = inttoptr i64 %681 to i64*
-  store i64 %678, i64* %682
-; # (dec 'Cnt)
-  %683 = sub i64 %680, 1
-  br label %$122
+  %678 = and i64 %677, 1
+  %679 = icmp ne i64 %678, 0
+  br i1 %679, label %$122, label %$123
 $122:
-  %684 = phi i64 [%669, %$120], [%681, %$121] ; # Avail
-  %685 = phi i64 [%670, %$120], [%679, %$121] ; # Heap
-  %686 = phi i64 [%671, %$120], [%683, %$121] ; # Cnt
-  %687 = phi i64 [%672, %$120], [%681, %$121] ; # P
+  %680 = phi i64 [%671, %$121] ; # Avail
+  %681 = phi i64 [%672, %$121] ; # Heap
+  %682 = phi i64 [%673, %$121] ; # Cnt
+  %683 = phi i64 [%674, %$121] ; # P
+; # (set P Avail)
+  %684 = inttoptr i64 %683 to i64*
+  store i64 %680, i64* %684
+; # (dec 'Cnt)
+  %685 = sub i64 %682, 1
+  br label %$123
+$123:
+  %686 = phi i64 [%671, %$121], [%683, %$122] ; # Avail
+  %687 = phi i64 [%672, %$121], [%681, %$122] ; # Heap
+  %688 = phi i64 [%673, %$121], [%685, %$122] ; # Cnt
+  %689 = phi i64 [%674, %$121], [%683, %$122] ; # P
 ; # (? (== P Heap))
 ; # (== P Heap)
-  %688 = icmp eq i64 %687, %685
-  br i1 %688, label %$124, label %$123
-$123:
-  %689 = phi i64 [%684, %$122] ; # Avail
-  %690 = phi i64 [%685, %$122] ; # Heap
-  %691 = phi i64 [%686, %$122] ; # Cnt
-  %692 = phi i64 [%687, %$122] ; # P
-; # (ofs P -2)
-  %693 = add i64 %692, -16
-  br label %$120
+  %690 = icmp eq i64 %689, %687
+  br i1 %690, label %$125, label %$124
 $124:
-  %694 = phi i64 [%684, %$122] ; # Avail
-  %695 = phi i64 [%685, %$122] ; # Heap
-  %696 = phi i64 [%686, %$122] ; # Cnt
-  %697 = phi i64 [%687, %$122] ; # P
-  %698 = phi i64 [0, %$122] ; # ->
+  %691 = phi i64 [%686, %$123] ; # Avail
+  %692 = phi i64 [%687, %$123] ; # Heap
+  %693 = phi i64 [%688, %$123] ; # Cnt
+  %694 = phi i64 [%689, %$123] ; # P
+; # (ofs P -2)
+  %695 = add i64 %694, -16
+  br label %$121
+$125:
+  %696 = phi i64 [%686, %$123] ; # Avail
+  %697 = phi i64 [%687, %$123] ; # Heap
+  %698 = phi i64 [%688, %$123] ; # Cnt
+  %699 = phi i64 [%689, %$123] ; # P
+  %700 = phi i64 [0, %$123] ; # ->
 ; # (? (=0 (setq Heap (val (inc HEAP) Heap))))
 ; # (inc HEAP)
 ; # (val (inc HEAP) Heap)
-  %699 = inttoptr i64 %695 to i64*
-  %700 = getelementptr i64, i64* %699, i32 131072
-  %701 = load i64, i64* %700
+  %701 = inttoptr i64 %697 to i64*
+  %702 = getelementptr i64, i64* %701, i32 131072
+  %703 = load i64, i64* %702
 ; # (=0 (setq Heap (val (inc HEAP) Heap)))
-  %702 = icmp eq i64 %701, 0
-  br i1 %702, label %$126, label %$125
-$125:
-  %703 = phi i64 [%694, %$124] ; # Avail
-  %704 = phi i64 [%701, %$124] ; # Heap
-  %705 = phi i64 [%696, %$124] ; # Cnt
-  br label %$119
+  %704 = icmp eq i64 %703, 0
+  br i1 %704, label %$127, label %$126
 $126:
-  %706 = phi i64 [%694, %$124] ; # Avail
-  %707 = phi i64 [%701, %$124] ; # Heap
-  %708 = phi i64 [%696, %$124] ; # Cnt
-  %709 = phi i64 [0, %$124] ; # ->
-; # (set $Avail Avail)
-  store i64 %706, i64* @$Avail
-; # (while (ge0 Cnt) (heapAlloc) (dec 'Cnt CELLS))
-  br label %$127
+  %705 = phi i64 [%696, %$125] ; # Avail
+  %706 = phi i64 [%703, %$125] ; # Heap
+  %707 = phi i64 [%698, %$125] ; # Cnt
+  br label %$120
 $127:
-  %710 = phi i64 [%706, %$126], [%714, %$128] ; # Avail
-  %711 = phi i64 [%707, %$126], [%715, %$128] ; # Heap
-  %712 = phi i64 [%708, %$126], [%717, %$128] ; # Cnt
-; # (ge0 Cnt)
-  %713 = icmp sge i64 %712, 0
-  br i1 %713, label %$128, label %$129
+  %708 = phi i64 [%696, %$125] ; # Avail
+  %709 = phi i64 [%703, %$125] ; # Heap
+  %710 = phi i64 [%698, %$125] ; # Cnt
+  %711 = phi i64 [0, %$125] ; # ->
+; # (set $Avail Avail)
+  store i64 %708, i64* @$Avail
+; # (while (ge0 Cnt) (heapAlloc) (dec 'Cnt CELLS))
+  br label %$128
 $128:
-  %714 = phi i64 [%710, %$127] ; # Avail
-  %715 = phi i64 [%711, %$127] ; # Heap
-  %716 = phi i64 [%712, %$127] ; # Cnt
+  %712 = phi i64 [%708, %$127], [%716, %$129] ; # Avail
+  %713 = phi i64 [%709, %$127], [%717, %$129] ; # Heap
+  %714 = phi i64 [%710, %$127], [%719, %$129] ; # Cnt
+; # (ge0 Cnt)
+  %715 = icmp sge i64 %714, 0
+  br i1 %715, label %$129, label %$130
+$129:
+  %716 = phi i64 [%712, %$128] ; # Avail
+  %717 = phi i64 [%713, %$128] ; # Heap
+  %718 = phi i64 [%714, %$128] ; # Cnt
 ; # (heapAlloc)
   call void @heapAlloc()
 ; # (dec 'Cnt CELLS)
-  %717 = sub i64 %716, 65536
-  br label %$127
-$129:
-  %718 = phi i64 [%710, %$127] ; # Avail
-  %719 = phi i64 [%711, %$127] ; # Heap
-  %720 = phi i64 [%712, %$127] ; # Cnt
-  br label %$107
-$107:
-  %721 = phi i64 [%657, %$118], [%718, %$129] ; # Avail
-  %722 = phi i64 [%658, %$118], [%719, %$129] ; # Heap
-  %723 = phi i64 [%659, %$118], [%720, %$129] ; # Cnt
+  %719 = sub i64 %718, 65536
+  br label %$128
+$130:
+  %720 = phi i64 [%712, %$128] ; # Avail
+  %721 = phi i64 [%713, %$128] ; # Heap
+  %722 = phi i64 [%714, %$128] ; # Cnt
+  br label %$108
+$108:
+  %723 = phi i64 [%659, %$119], [%720, %$130] ; # Avail
+  %724 = phi i64 [%660, %$119], [%721, %$130] ; # Heap
+  %725 = phi i64 [%661, %$119], [%722, %$130] ; # Cnt
   ret void
 }
 

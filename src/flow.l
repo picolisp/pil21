@@ -856,7 +856,7 @@
 
 (de void saveCoEnv ((i8* . Crt))
    (let Crt: (coroutine Crt)
-      (Crt: at (val $At))
+      (Crt: at (val $At))  # Not running
       (memcpy (Crt: (env)) (env) (env T)) ) )
 
 (de loadCoEnv ((i8* . Crt))
@@ -864,7 +864,7 @@
       (set $StkLimit (+ (Crt: lim) 4096))
       (memcpy (env) (Crt: (env)) (env T))
       (set $At (Crt: at))
-      (Crt: at 0)
+      (Crt: at 0)  # Running
       (val $Ret) ) )
 
 (de void stop ((i8* . Crt))
