@@ -520,18 +520,22 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 # (stack ['cnt]) -> cnt | (.. sym . cnt)
 (de _stack (Exe)
    (let (X (cdr Exe)  Crt (val $Coroutines))
-      (if (or (atom X) Crt)
+      (if (or (atom X) (and Crt ((coroutine Crt) nxt)))
          (let R (cnt (shr (val $StkSize) 10))
             (while Crt
                (let Crt: (coroutine Crt)
                   (when (Crt: tag)  # In use
                      (setq R (cons @ R)) )
-   (unless (Crt: tag)
-      (setq R (cons ZERO R)) )
                   (setq Crt (Crt: nxt)) ) )
             R )
-         (let N (evCnt Exe X)
-            (set $StkSize (shl N 10))
+         (let
+            (N (evCnt Exe X)
+               Old (val $StkSize)
+               New (shl N 10) )
+            (set $StkSize New)
+            (when Crt
+               ((coroutine Crt) lim
+                  (ofs ((coroutine Crt) lim) (- Old New)) ) )
             (cnt N) ) ) ) )
 
 # Date and time

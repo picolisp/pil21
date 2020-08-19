@@ -889,60 +889,64 @@
             (Main: at 0)
             (Main: bnd 0)
             (set $Coroutines (set $Current (Main:))) ) )
-      (if (atom X)  # No 'prg'
-         (let Crt (val $Coroutines)  # Stop coroutine
-            (loop
-               (let Crt: (coroutine Crt)
-                  (? (== Tag (Crt: tag))  # Found coroutine
-                     (stop (Crt:)) )  # Stop it
-                  (? (=0 (setq Crt (Crt: nxt)))) ) )
-            $Nil )
-         (let
-            (Src: (coroutine (val $Current))
-               Crt (val $Coroutines)
-               P (i8* null) )
-            (saveCoEnv (Src:))
-            (loop
-               (let Crt: (coroutine Crt)
-                  (when (== Tag (Crt: tag))  # Found running coroutine
-                     (unless (Crt: at)
-                        (reentErr Exe Tag) )
-                     (when (setjmp (Src: (rst)))
-                        (ret (loadCoEnv (Src:))) )
-                     (set $Ret $Nil)
-                     (longjmp (Crt: (rst)) 1) )
-                  (or P
-                     (Crt: tag)  # Unused
-                     (setq P Crt) )  # Remember next free slot
-                  (? (=0 (Crt: nxt)))
-                  (setq Crt @) ) )
-            # Start new coroutine
-            (when (setjmp (Src: (rst)))
-               (ret (loadCoEnv (Src:))) )
-            (if P
-               (stack P)  # Use free slot
-               (stack ((coroutine Crt) lim)) # Found no free slot
-               (setq P (b8 (+ (val JmpBufSize) (coroutine T))))
-               ((coroutine Crt) nxt P)
-               ((coroutine P) prv Crt)
-               ((coroutine P) nxt null) )
-            (let Dst: (coroutine P)
-               (Dst: tag Tag)
-               (Dst: org (val $Current))
-               (Dst: prg X)
-               (Dst: lim (ofs P (- (val $StkSize))))
-               (Dst: at 0)
-               (Dst: bnd (val $Bind))
-               (set $Bind (push ZERO $At (val $Bind) Exe))  # [0 @ LINK exe]
-               (memcpy (Dst: (env)) (env) (env T))
-               (set  # Init local env
-                  $Make 0
-                  $Yoke 0
-                  $Current (Dst:)
-                  $StkLimit (+ (Dst: lim) 4096) )
-               (set $Ret (run X))
-               (stop (Dst:))  # Stop coroutine
-               (longjmp ((coroutine (Dst: org)) (rst)) 1) ) ) ) ) )
+      (cond
+         ((pair X)  # 'prg'
+            (let
+               (Src: (coroutine (val $Current))
+                  Crt (val $Coroutines)
+                  P (i8* null) )
+               (saveCoEnv (Src:))
+               (loop
+                  (let Crt: (coroutine Crt)
+                     (when (== Tag (Crt: tag))  # Found running coroutine
+                        (unless (Crt: at)
+                           (reentErr Exe Tag) )
+                        (when (setjmp (Src: (rst)))
+                           (ret (loadCoEnv (Src:))) )
+                        (set $Ret $Nil)
+                        (longjmp (Crt: (rst)) 1) )
+                     (or P
+                        (Crt: tag)  # Unused
+                        (setq P Crt) )  # Remember next free slot
+                     (? (=0 (Crt: nxt)))
+                     (setq Crt @) ) )
+               # Start new coroutine
+               (when (setjmp (Src: (rst)))
+                  (ret (loadCoEnv (Src:))) )
+               (if P
+                  (stack P)  # Use free slot
+                  (stack ((coroutine Crt) lim)) # Found no free slot
+                  (setq P (b8 (+ (val JmpBufSize) (coroutine T))))
+                  ((coroutine Crt) nxt P)
+                  ((coroutine P) prv Crt)
+                  ((coroutine P) nxt null) )
+               (let Dst: (coroutine P)
+                  (Dst: tag Tag)
+                  (Dst: org (val $Current))
+                  (Dst: prg X)
+                  (Dst: lim (ofs P (- (val $StkSize))))
+                  (Dst: at 0)
+                  (Dst: bnd (val $Bind))
+                  (set $Bind (push ZERO $At (val $Bind) Exe))  # [0 @ LINK exe]
+                  (memcpy (Dst: (env)) (env) (env T))
+                  (set  # Init local env
+                     $Make 0
+                     $Yoke 0
+                     $Current (Dst:)
+                     $StkLimit (+ (Dst: lim) 4096) )
+                  (set $Ret (run X))
+                  (stop (Dst:))  # Stop coroutine
+                  (longjmp ((coroutine (Dst: org)) (rst)) 1) ) ) )
+         ((t? Tag)
+            (err Exe 0 ($ "Can't stop main routine") null) )
+         (T
+            (let Crt (val $Coroutines)  # Stop coroutine
+               (loop
+                  (let Crt: (coroutine Crt)
+                     (? (== Tag (Crt: tag))  # Found coroutine
+                        (stop (Crt:)) )  # Stop it
+                     (? (=0 (setq Crt (Crt: nxt)))) ) )
+               $Nil ) ) ) ) )
 
 # (yield 'any ['sym]) -> any
 (de _yield (Exe)
