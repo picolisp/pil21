@@ -80,10 +80,11 @@
    (let Crt (val $Coroutines)
       (while Crt
          (let Crt: (coroutine Crt)
-            (when (and (Crt: tag) (Crt: at))
-               (mark (Crt: tag))
+            (when (Crt: tag)
+               (mark @)
                (mark (Crt: prg))
-               (mark (Crt: at))
+               (when (Crt: at)
+                  (mark @) )
                (mark (Crt: (env $Intern any)))
                (let P (Crt: (env $Link any))  # Stack(s)
                   (while P
@@ -213,17 +214,6 @@
                         (set Y P)
                         (setq P X) ) ) ) ) ) )
       (: 5 (set $Extern P)) )
-   # Clean up
-   (let Crt (val $Coroutines)
-      (while Crt
-         (let Crt: (coroutine Crt)
-            (when
-               (and
-                  (Crt: at)  # Not running
-                  (Crt: tag)  # In use
-                  (& (val @) 1) )  # 'tag' symbol gone
-               (Crt: tag 0) )  # Mark as unused
-            (setq Crt (Crt: nxt)) ) ) )
    # Sweep
    (let (Avail 0  Heap (val $Heaps)  Cnt (val $GcCount))
       (ifn Cnt
