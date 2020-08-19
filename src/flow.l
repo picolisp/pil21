@@ -1,4 +1,4 @@
-# 18aug20 Software Lab. Alexander Burger
+# 19aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -849,23 +849,31 @@
          (set $Catch (Ca: link)) ) ) )
 
 # Coroutines
-(local) (reentErr saveCoEnv loadCoEnv)
+(local) (reentErr saveCoEnv loadCoEnv stop)
 
 (de NIL reentErr (Exe Tag)
    (err Exe Tag ($ "Reentrant coroutine") null) )
 
-(de void saveCoEnv ((i8* . Src))
-   (let Src: (coroutine Src)
-      (Src: at (val $At))
-      (memcpy (Src: (env)) (env) (env T)) ) )
+(de void saveCoEnv ((i8* . Crt))
+   (let Crt: (coroutine Crt)
+      (Crt: at (val $At))
+      (memcpy (Crt: (env)) (env) (env T)) ) )
 
-(de loadCoEnv ((i8* . Src))
-   (let Src: (coroutine (set $Current Src))
-      (set $StkLimit (+ (Src: lim) 4096))
-      (memcpy (env) (Src: (env)) (env T))
-      (set $At (Src: at))
-      (Src: at 0)
+(de loadCoEnv ((i8* . Crt))
+   (let Crt: (coroutine (set $Current Crt))
+      (set $StkLimit (+ (Crt: lim) 4096))
+      (memcpy (env) (Crt: (env)) (env T))
+      (set $At (Crt: at))
+      (Crt: at 0)
       (val $Ret) ) )
+
+(de void stop ((i8* . Crt))
+   ((coroutine Crt) tag 0)  # Set unused
+   (while ((coroutine Crt) nxt)  # Find bottom
+      (setq Crt @) )
+   (until ((coroutine Crt) tag)  # Free stack space
+      (setq Crt ((coroutine Crt) prv))
+      ((coroutine Crt) nxt null) ) )
 
 # (co 'sym [. prg]) -> any
 (de _co (Exe)
@@ -886,7 +894,7 @@
             (loop
                (let Crt: (coroutine Crt)
                   (? (== Tag (Crt: tag))  # Found coroutine
-                     (Crt: tag 0) )  # Set unused
+                     (stop (Crt:)) )  # Stop it
                   (? (=0 (setq Crt (Crt: nxt)))) ) )
             $Nil )
          (let
@@ -903,8 +911,9 @@
                         (ret (loadCoEnv (Src:))) )
                      (set $Ret $Nil)
                      (longjmp (Crt: (rst)) 1) )
-                  (unless (Crt: tag)  # Unused
-                     (setq P Crt) )  # Remember possible free slot
+                  (or P
+                     (Crt: tag)  # Unused
+                     (setq P Crt) )  # Remember next free slot
                   (? (=0 (Crt: nxt)))
                   (setq Crt @) ) )
             # Start new coroutine
@@ -924,6 +933,7 @@
                (Dst: lim (ofs P (- (val $StkSize))))
                (Dst: at 0)
                (Dst: bnd (val $Bind))
+               (set $Bind (push ZERO $At (val $Bind) Exe))  # [0 @ LINK exe]
                (memcpy (Dst: (env)) (env) (env T))
                (set  # Init local env
                   $Make 0
@@ -931,7 +941,7 @@
                   $Current (Dst:)
                   $StkLimit (+ (Dst: lim) 4096) )
                (set $Ret (run X))
-               (Dst: tag 0)  # Mark as unused
+               (stop (Dst:))  # Stop coroutine
                (longjmp ((coroutine (Dst: org)) (rst)) 1) ) ) ) ) )
 
 # (yield 'any ['sym]) -> any

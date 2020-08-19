@@ -1,4 +1,4 @@
-# 18aug20 Software Lab. Alexander Burger
+# 19aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -526,6 +526,8 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (let Crt: (coroutine Crt)
                   (when (Crt: tag)  # In use
                      (setq R (cons @ R)) )
+   (unless (Crt: tag)
+      (setq R (cons ZERO R)) )
                   (setq Crt (Crt: nxt)) ) )
             R )
          (let N (evCnt Exe X)
