@@ -21,15 +21,27 @@
 (de wrnl ()
    (write 1 ($ "\n") 1) )
 
-# Unwind stack
-(local) (popInFiles popOutFiles popErrFiles popCtlFiles unwind)
+(local) (popInFiles popOutFiles popErrFiles popCtlFiles stop unwind)
 
 (de void popInFiles ())
 (de void popOutFiles ())
 (de void popErrFiles ())
 (de void popCtlFiles ())
 
+# Stop coroutine
+(de void stop ((i8* . Crt))
+   ((coroutine Crt) tag 0)  # Set unused
+   (while ((coroutine Crt) nxt)  # Find bottom
+      (setq Crt @) )
+   (until ((coroutine Crt) tag)  # Free stack space
+      (setq Crt ((coroutine Crt) prv))
+      ((coroutine Crt) nxt null) ) )
+
+# Unwind stack
 (de void unwind ((i8* . Catch))
+   (when (and (val $Current) (<> @ (val $Coroutines)))
+      (stop @)
+      (set $Current (val $Coroutines)) )
    (let (Ca (val $Catch)  Bnd (val $Bind))
       (while Ca
          (let Ca: (caFrame Ca)

@@ -849,7 +849,7 @@
          (set $Catch (Ca: link)) ) ) )
 
 # Coroutines
-(local) (reentErr saveCoEnv loadCoEnv stop)
+(local) (reentErr saveCoEnv loadCoEnv)
 
 (de NIL reentErr (Exe Tag)
    (err Exe Tag ($ "Reentrant coroutine") null) )
@@ -866,14 +866,6 @@
       (set $At (Crt: at))
       (Crt: at 0)  # Running
       (val $Ret) ) )
-
-(de void stop ((i8* . Crt))
-   ((coroutine Crt) tag 0)  # Set unused
-   (while ((coroutine Crt) nxt)  # Find bottom
-      (setq Crt @) )
-   (until ((coroutine Crt) tag)  # Free stack space
-      (setq Crt ((coroutine Crt) prv))
-      ((coroutine Crt) nxt null) ) )
 
 # (co 'sym [. prg]) -> any
 (de _co (Exe)
