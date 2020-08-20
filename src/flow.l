@@ -1,4 +1,4 @@
-# 19aug20 Software Lab. Alexander Burger
+# 20aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -849,7 +849,7 @@
          (set $Catch (Ca: link)) ) ) )
 
 # Coroutines
-(local) (reentErr saveCoEnv loadCoEnv)
+(local) (reentErr saveCoEnv loadCo)
 
 (de NIL reentErr (Exe Tag)
    (err Exe Tag ($ "Reentrant coroutine") null) )
@@ -859,10 +859,9 @@
       (Crt: at (val $At))  # Not running
       (memcpy (Crt: (env)) (env) (env T)) ) )
 
-(de loadCoEnv ((i8* . Crt))
+(de loadCo ((i8* . Crt))
    (let Crt: (coroutine (set $Current Crt))
       (set $StkLimit (+ (Crt: lim) 4096))
-      (memcpy (env) (Crt: (env)) (env T))
       (set $At (Crt: at))
       (Crt: at 0)  # Running
       (val $Ret) ) )
@@ -870,19 +869,18 @@
 # (co 'sym [. prg]) -> any
 (de _co (Exe)
    (let (X (cdr Exe)  Tag (eval (++ X)))
-      (unless (val $Coroutines)  # First call
-         (let Main: (coroutine (alloc null (+ (val JmpBufSize) (coroutine T))))
-            (Main: tag $T)  # Tag 'T'
-            (Main: prv null)
-            (Main: nxt null)
-            (Main: org null)
-            (Main: prg $Nil)
-            (Main: lim (ofs (stack) (* -4 (val $StkSize))))
-            (Main: at 0)
-            (Main: bnd 0)
-            (set $Coroutines (set $Current (Main:))) ) )
       (cond
          ((pair X)  # 'prg'
+            (unless (val $Coroutines)  # First call
+               (let Main: (coroutine (alloc null (+ (val JmpBufSize) (coroutine T))))
+                  (Main: tag $T)  # Tag 'T'
+                  (Main: prv null)
+                  (Main: nxt null)
+                  (Main: org null)
+                  (Main: prg $Nil)
+                  (Main: lim (ofs (stack) (* -4 (val $StkSize))))
+                  (Main: at 0)
+                  (set $Coroutines (set $Current (Main:))) ) )
             (let
                (Src: (coroutine (val $Current))
                   Crt (val $Coroutines)
@@ -894,7 +892,8 @@
                         (unless (Crt: at)
                            (reentErr Exe Tag) )
                         (when (setjmp (Src: (rst)))
-                           (ret (loadCoEnv (Src:))) )
+                           (memcpy (env) (Src: (env)) (env T))
+                           (ret (loadCo (Src:))) )
                         (set $Ret $Nil)
                         (longjmp (Crt: (rst)) 1) )
                      (or P
@@ -904,7 +903,8 @@
                      (setq Crt @) ) )
                # Start new coroutine
                (when (setjmp (Src: (rst)))
-                  (ret (loadCoEnv (Src:))) )
+                  (memcpy (env) (Src: (env)) (env T))
+                  (ret (loadCo (Src:))) )
                (if P
                   (stack P)  # Use free slot
                   (stack ((coroutine Crt) lim)) # Found no free slot
@@ -918,7 +918,6 @@
                   (Dst: prg X)
                   (Dst: lim (ofs P (- (val $StkSize))))
                   (Dst: at 0)
-                  (Dst: bnd (val $Bind))
                   (set $Bind (push ZERO $At (val $Bind) Exe))  # [0 @ LINK exe]
                   (memcpy (Dst: (env)) (env) (env T))
                   (set  # Init local env
@@ -965,31 +964,59 @@
                               (err Exe Tag ($ "Coroutine not found") null) ) ) ) )
                   ((Src: org) @)
                   (T (err Exe 0 ($ "Tag expected") null)) ) ) )
-         (let B (any 0)
-            (when (Src: org)
-               (let (Bnd (val $Bind)  Q (Src: bnd))  # Reverse bindings
-                  (until (== Bnd Q)
-                     (let P Bnd
-                        (xchg (val 2 P) P)
-                        (setq Bnd (val 3 P))
-                        (set 3 P B)
-                        (setq B P) ) ) )
-               (set $Bind B) )
+         (if (Src: org)
+            (let
+               (L (any 0)
+                  Lnk (val $Link)
+                  LnkR (Src: (env $Link any))
+                  B (any 0)
+                  Bnd (val $Bind)
+                  BndR (Src: (env $Bind any)) )
+               (saveCoEnv (Src:))
+               (until (== Lnk LnkR)  # Reverse Stack(s)
+                  (let P Lnk
+                     (setq Lnk (val 2 P))
+                     (set 2 P L)
+                     (setq L P) ) )
+               (Src: (env $Link any) L)
+               (until (== Bnd BndR)  # Reverse bindings
+                  (let P Bnd
+                     (xchg (val 2 P) P)
+                     (setq Bnd (val 3 P))
+                     (set 3 P B)
+                     (setq B P) ) )
+               (set 3 BndR B)
+               (Src: (env $Bind any) BndR)
+               (unless (setjmp (Src: (rst)))
+                  (set $Ret Val)
+                  (longjmp (Dst: (rst)) 1) )
+               (setq
+                  Bnd (val $Bind)
+                  Lnk (val $Link) )
+               (memcpy (env) (Src: (env)) (env T))
+               (set 3 BndR Bnd)
+               (setq Bnd BndR)
+               (while B  # Restore bindings
+                  (let P B
+                     (xchg (val 2 P) P)
+                     (setq B (val 3 P))
+                     (set 3 P Bnd)
+                     (setq Bnd P) ) )
+               (Src: (env $Link any) Lnk)
+               (while L  # Restore Stack(s)
+                  (let P L
+                     (setq L (val 2 P))
+                     (set 2 P Lnk)
+                     (setq Lnk P) ) )
+               (set $Bind Bnd)
+               (set $Link Lnk) )
+            # Entry from top level
             (saveCoEnv (Src:))
             (unless (setjmp (Src: (rst)))
                (set $Ret Val)
                (longjmp (Dst: (rst)) 1) )
-            (when (Src: org)
-               (let Bnd (val $Bind)
-                  (Src: bnd Bnd)
-                  (while B  # Restore bindings
-                     (let P B
-                        (xchg (val 2 P) P)
-                        (setq B (val 3 P))
-                        (set 3 P Bnd)
-                        (setq Bnd P) ) )
-                  (Src: (env $Bind any) Bnd) ) ) )
-         (loadCoEnv (Src:)) ) ) )
+            (memcpy (env) (Src: (env)) (env T)) )
+         (loadCo (Src:)) ) ) )
 
 (de brkLoad (Exe)
    (when (and (isatty 0) (isatty 1) (=0 (val $Break)))

@@ -1,4 +1,4 @@
-# 19aug20 Software Lab. Alexander Burger
+# 20aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -80,11 +80,10 @@
    (let Crt (val $Coroutines)
       (while Crt
          (let Crt: (coroutine Crt)
-            (when (Crt: tag)
-               (mark @)
+            (when (and (Crt: tag) (Crt: at))
+               (mark (Crt: tag))
                (mark (Crt: prg))
-               (when (Crt: at)
-                  (mark @) )
+               (mark (Crt: at))
                (mark (Crt: (env $Intern any)))
                (let P (Crt: (env $Link any))  # Stack(s)
                   (while P
