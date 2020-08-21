@@ -1,11 +1,11 @@
-# 19aug20 Software Lab. Alexander Burger
+# 21aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
 (begin "base" NIL
    "vers.l" "defs.l" "glob.l" "dec.l" )
 
-(local) (execAt runAt wrnl)
+(local) (execAt runAt wrnl dbg)
 
 (de execAt (Prg)
    (let At (save (val $At))
@@ -20,6 +20,21 @@
 
 (de wrnl ()
    (write 1 ($ "\n") 1) )
+
+(de dbg ((i64 . N) X)
+   (let (Out (val $OutFile)  Put (val (i8** $Put)))
+      (set
+         $OutFile (val 3 (val $OutFiles))  # Stderr
+         $Put (fun (void i8) _putStdout) )
+      (when N
+         (outWord @) )
+      (when X
+         (space)
+         (print X) )
+      (newline)
+      (set (i8** $Put) Put  $OutFile Out) )
+   X )
+
 
 (local) (popInFiles popOutFiles popErrFiles popCtlFiles stop unwind)
 

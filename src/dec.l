@@ -1,4 +1,4 @@
-# 20aug20 Software Lab. Alexander Burger
+# 21aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -59,6 +59,9 @@
    (prg 8 any)          # Code body
    (lim 8 i8*)          # Stack limit
    (at 8 any)           # Saved [@]
+   (lnk 8 any)          # Link marker
+   (bnd 8 any)          # Bind marker
+   #! in out ...
    (env (env T) i8)     # Saved environment
    (rst 0 i8) )         # Restart jmp_buf (JmpBufSize)
 
