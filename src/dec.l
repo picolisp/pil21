@@ -447,7 +447,7 @@ box64 eval run)
 
 (inline noCoChk (Exe)
    (when (val $Current)
-      (unless (t? ((coroutine @) tag))
+      (unless (== @ (val $Coroutines))
          (noCoErr Exe) ) ) )
 
 # Argument checks
