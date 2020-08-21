@@ -61,7 +61,8 @@
    (at 8 any)           # Saved [@]
    (lnk 8 any)          # Link marker
    (bnd 8 any)          # Bind marker
-   #! in out ...
+   (in 8 i8*)           # InFrames marker
+   (out 8 i8*)          # OutFrames marker
    (env (env T) i8)     # Saved environment
    (rst 0 i8) )         # Restart jmp_buf (JmpBufSize)
 
@@ -270,11 +271,12 @@ truncate0 socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 ### Forward references ###
 
 # main.l
-(local) (err stkErr argErr cntErr numErr symErr extErr atomErr pairErr lstErr
-varErr protErr xCnt evCnt evLst evSym xName equal compare evList)
+(local) (err stkErr noCoErr argErr cntErr numErr symErr extErr atomErr pairErr
+lstErr varErr protErr xCnt evCnt evLst evSym xName equal compare evList)
 
 (de NIL err (any any i8* i8*))
 (de NIL stkErr (any))
+(de NIL noCoErr (any))
 (de NIL argErr (any any))
 (de NIL cntErr (any any))
 (de NIL numErr (any any))
@@ -431,3 +433,68 @@ box64 eval run)
          (let X (++ Prg)
             (? (atom Prg) (eval X))
             (and (pair X) (evList X)) ) ) ) )
+
+# Runtime checks
+(local) (stkChk sigChk noCoChk)
+
+(inline stkChk (Exe)
+   (when (> (val $StkLimit) (stack))
+      (stkErr Exe) ) )
+
+(inline sigChk (Exe)
+   (when (val $Signal)
+      (sighandler Exe) ) )
+
+(inline noCoChk (Exe)
+   (when (val $Current)
+      (unless (t? ((coroutine @) tag))
+         (noCoErr Exe) ) ) )
+
+# Argument checks
+(local) (needCnt needNum needSymb needPair needLst needVar chkVar needChkVar needNsp)
+
+(inline needCnt (Exe X)
+   (unless (cnt? X)
+      (cntErr Exe X) )
+   X )
+
+(inline needNum (Exe X)
+   (unless (num? X)
+      (numErr Exe X) )
+   X )
+
+(inline needSymb (Exe X)
+   (unless (symb? X)
+      (symErr Exe X) )
+   X )
+
+(inline needPair (Exe X)
+   (when (atom X)
+      (pairErr Exe X) )
+   X )
+
+(inline needLst (Exe X)
+   (unless (or (pair X) (nil? X))
+      (lstErr Exe X) )
+   X )
+
+(inline needVar (Exe X)
+   (when (num? X)
+      (varErr Exe X) )
+   X )
+
+(inline chkVar (Exe X)
+   (when (and (>= X $Nil) (>= $T X))
+      (protErr Exe X) )
+   X )
+
+(inline needChkVar (Exe X)
+   (when (num? X)
+      (varErr Exe X) )
+   (chkVar Exe X)
+   X )
+
+(inline needNsp (Exe X)
+   (unless (and (pair (val X)) (== $Tilde (car @)))
+      (symNspErr 0 X) )
+   X )

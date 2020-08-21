@@ -216,8 +216,8 @@
       (set $Protect 0) ) )
 
 # Error handling
-(local) (pushOutFiles err stkErr argErr cntErr numErr symErr extErr nameErr
-atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
+(local) (pushOutFiles err stkErr noCoErr argErr cntErr numErr symErr extErr
+nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de void pushOutFiles (i8*))
 
@@ -294,6 +294,9 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (set $StkLimit null)
    (err Exe 0 ($ "Stack overflow") null) )
 
+(de NIL noCoErr (Exe)
+   (err Exe 0 ($ "Not allowed in coroutines") null) )
+
 (de NIL argErr (Exe X)
    (err Exe X ($ "Bad argument") null) )
 
@@ -338,66 +341,6 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de NIL symNspErr (Exe X)
    (err Exe X ($ "Bad symbol namespace") null) )
-
-# Runtime checks
-(local) (stkChk sigChk)
-
-(inline stkChk (Exe)
-   (when (> (val $StkLimit) (stack))
-      (stkErr Exe) ) )
-
-(inline sigChk (Exe)
-   (when (val $Signal)
-      (sighandler Exe) ) )
-
-# Argument checks
-(local) (needCnt needNum needSymb needPair needLst needVar chkVar needChkVar needNsp)
-
-(inline needCnt (Exe X)
-   (unless (cnt? X)
-      (cntErr Exe X) )
-   X )
-
-(inline needNum (Exe X)
-   (unless (num? X)
-      (numErr Exe X) )
-   X )
-
-(inline needSymb (Exe X)
-   (unless (symb? X)
-      (symErr Exe X) )
-   X )
-
-(inline needPair (Exe X)
-   (when (atom X)
-      (pairErr Exe X) )
-   X )
-
-(inline needLst (Exe X)
-   (unless (or (pair X) (nil? X))
-      (lstErr Exe X) )
-   X )
-
-(inline needVar (Exe X)
-   (when (num? X)
-      (varErr Exe X) )
-   X )
-
-(inline chkVar (Exe X)
-   (when (and (>= X $Nil) (>= $T X))
-      (protErr Exe X) )
-   X )
-
-(inline needChkVar (Exe X)
-   (when (num? X)
-      (varErr Exe X) )
-   (chkVar Exe X)
-   X )
-
-(inline needNsp (Exe X)
-   (unless (and (pair (val X)) (== $Tilde (car @)))
-      (symNspErr 0 X) )
-   X )
 
 # Value access
 (local) (xCnt evCnt evLst xSym evSym xName)

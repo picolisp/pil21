@@ -806,6 +806,7 @@
 
 # (catch 'any . prg) -> any
 (de _catch (Exe)
+   (noCoChk Exe)
    (let
       (X (cdr Exe)
          Ca: (caFrame (b8 (+ (val JmpBufSize) (caFrame T)))) )
@@ -881,8 +882,6 @@
                   (Main: prg $Nil)
                   (Main: lim (ofs (stack) (* -4 (val $StkSize))))
                   (Main: at 0)
-                  (Main: lnk 0)
-                  (Main: bnd 0)
                   (set $Coroutines (set $Current (Main:))) ) )
             (let
                (Src: (coroutine (val $Current))
@@ -922,6 +921,8 @@
                   (Dst: lnk (val $Link))
                   (Dst: bnd
                      (set $Bind (push ZERO $At (val $Bind) Exe)) )  # [0 @ LINK exe]
+                  (Dst: in (val $InFrames))
+                  (Dst: out (val $OutFrames))
                   (memcpy (Dst: (env)) (env) (env T))
                   (set  # Init local env
                      $Make 0
@@ -967,7 +968,7 @@
                               (err Exe Tag ($ "Coroutine not found") null) ) ) ) )
                   ((Src: org) @)
                   (T (err Exe 0 ($ "Tag expected") null)) ) ) )
-         (let (L (any 0)  B (any 0))
+         (let (L (any 0)  B (any 0)  I (i8* null)  O (i8* null))
             (unless (t? (Src: tag))
                (let Lnk (val $Link)  # Reverse Stack(s)
                   (until (== Lnk (Src: lnk))
@@ -985,12 +986,42 @@
                         (setq B P) ) )
                   (let P (Src: bnd)
                      (set 3 P B)
-                     (set $Bind P) ) ) )
+                     (set $Bind P) ) )
+               (let In (val $InFrames)  # Reverse InFrames
+                  (until (== In (Src: in))
+                     (let P In
+                        (setq In ((ioFrame P) link))
+                        ((ioFrame P) link I)
+                        (setq I P) ) )
+                  (set $InFrames I) )
+               (let Out (val $OutFrames)  # Reverse OutFrames
+                  (until (== Out (Src: out))
+                     (let P Out
+                        (setq Out ((ioFrame P) link))
+                        ((ioFrame P) link O)
+                        (setq O P) ) )
+                  (set $OutFrames O) ) )
             (saveCoEnv (Src:))
             (unless (setjmp (Src: (rst)))
                (set $Ret Val)
                (longjmp (Dst: (rst)) 1) )
             (unless (t? (Src: tag))
+               (let Out (val $OutFrames)  # Restore OutFrames
+                  (Src: out Out)
+                  (while O
+                     (let P O
+                        (setq O ((ioFrame P) link))
+                        ((ioFrame P) link Out)
+                        (setq Out P) ) )
+                  (Src: (env $OutFrames i8*) Out) )
+               (let In (val $InFrames)  # Restore InFrames
+                  (Src: in In)
+                  (while I
+                     (let P I
+                        (setq I ((ioFrame P) link))
+                        ((ioFrame P) link In)
+                        (setq In P) ) )
+                  (Src: (env $InFrames i8*) In) )
                (let Bnd (val $Bind)  # Restore bindings
                   (set 3 (Src: bnd) Bnd)
                   (setq Bnd (Src: bnd))
@@ -1003,7 +1034,7 @@
                         (setq Bnd P) ) )
                   (Src: (env $Bind any) Bnd) )
                (let Lnk (val $Link)  # Restore Stack(s)
-                  (Src: lnk (set $Link Lnk))
+                  (Src: lnk Lnk)
                   (while L
                      (let P L
                         (setq L (val 2 P))
