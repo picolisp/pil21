@@ -1,4 +1,4 @@
-# 21aug20 Software Lab. Alexander Burger
+# 22aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -61,8 +61,11 @@
    (at 8 any)           # Saved [@]
    (lnk 8 any)          # Link marker
    (bnd 8 any)          # Bind marker
+   (ca 8 i8*)           # Catch marker
    (in 8 i8*)           # InFrames marker
    (out 8 i8*)          # OutFrames marker
+   (err 8 i8*)          # ErrFrames marker
+   (ctl 8 i8*)          # CtlFrames marker
    (env (env T) i8)     # Saved environment
    (rst 0 i8) )         # Restart jmp_buf (JmpBufSize)
 
@@ -271,12 +274,11 @@ truncate0 socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 ### Forward references ###
 
 # main.l
-(local) (err stkErr noCoErr argErr cntErr numErr symErr extErr atomErr pairErr
-lstErr varErr protErr xCnt evCnt evLst evSym xName equal compare evList)
+(local) (err stkErr argErr cntErr numErr symErr extErr atomErr pairErr lstErr
+varErr protErr xCnt evCnt evLst evSym xName equal compare evList)
 
 (de NIL err (any any i8* i8*))
 (de NIL stkErr (any))
-(de NIL noCoErr (any))
 (de NIL argErr (any any))
 (de NIL cntErr (any any))
 (de NIL numErr (any any))
@@ -435,7 +437,7 @@ box64 eval run)
             (and (pair X) (evList X)) ) ) ) )
 
 # Runtime checks
-(local) (stkChk sigChk noCoChk)
+(local) (stkChk sigChk)
 
 (inline stkChk (Exe)
    (when (> (val $StkLimit) (stack))
@@ -444,11 +446,6 @@ box64 eval run)
 (inline sigChk (Exe)
    (when (val $Signal)
       (sighandler Exe) ) )
-
-(inline noCoChk (Exe)
-   (when (val $Current)
-      (unless (== @ (val $Coroutines))
-         (noCoErr Exe) ) ) )
 
 # Argument checks
 (local) (needCnt needNum needSymb needPair needLst needVar chkVar needChkVar needNsp)

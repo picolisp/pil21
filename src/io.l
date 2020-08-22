@@ -1,4 +1,4 @@
-# 21aug20 Software Lab. Alexander Burger
+# 13aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1804,7 +1804,6 @@
 
 # (err 'sym . prg) -> any
 (de _err (Exe)
-   (noCoChk Exe)
    (let (X (cdr Exe)  Err (b8 (ioFrame T)))
       (erOpen Exe (eval (++ X)) Err)
       (pushErrFiles Err)
@@ -1814,7 +1813,6 @@
 
 # (ctl 'sym . prg) -> any
 (de _ctl (Exe)
-   (noCoChk Exe)
    (let (X (cdr Exe)  Ctl (b8 (ioFrame T)))
       (ctOpen Exe (eval (++ X)) Ctl)
       (pushCtlFiles Ctl)

@@ -1,4 +1,4 @@
-# 21aug20 Software Lab. Alexander Burger
+# 22aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -806,7 +806,6 @@
 
 # (catch 'any . prg) -> any
 (de _catch (Exe)
-   (noCoChk Exe)
    (let
       (X (cdr Exe)
          Ca: (caFrame (b8 (+ (val JmpBufSize) (caFrame T)))) )
@@ -921,8 +920,11 @@
                   (Dst: lnk (val $Link))
                   (Dst: bnd
                      (set $Bind (push ZERO $At (val $Bind) Exe)) )  # [0 @ LINK exe]
+                  (Dst: ca (val $Catch))
                   (Dst: in (val $InFrames))
                   (Dst: out (val $OutFrames))
+                  (Dst: err (val $ErrFrames))
+                  (Dst: ctl (val $CtlFrames))
                   (memcpy (Dst: (env)) (env) (env T))
                   (set  # Init local env
                      $Make 0
@@ -968,79 +970,131 @@
                               (err Exe Tag ($ "Coroutine not found") null) ) ) ) )
                   ((Src: org) @)
                   (T (err Exe 0 ($ "Tag expected") null)) ) ) )
-         (let (L (any 0)  B (any 0)  I (i8* null)  O (i8* null))
+         (let
+            (Lnk (any 0)
+               Bnd (any 0)
+               Ca (i8* null)
+               In (i8* null)
+               Out (i8* null)
+               Err (i8* null)
+               Ctl (i8* null) )
             (unless (t? (Src: tag))
-               (let Lnk (val $Link)  # Reverse Stack(s)
-                  (until (== Lnk (Src: lnk))
-                     (let P Lnk
-                        (setq Lnk (val 2 P))
-                        (set 2 P L)
-                        (setq L P) ) )
-                  (set $Link L) )
-               (let Bnd (val $Bind)  # Reverse bindings
-                  (until (== Bnd (Src: bnd))
-                     (let P Bnd
-                        (xchg (val 2 P) P)
-                        (setq Bnd (val 3 P))
-                        (set 3 P B)
-                        (setq B P) ) )
-                  (let P (Src: bnd)
-                     (set 3 P B)
-                     (set $Bind P) ) )
-               (let In (val $InFrames)  # Reverse InFrames
-                  (until (== In (Src: in))
-                     (let P In
-                        (setq In ((ioFrame P) link))
-                        ((ioFrame P) link I)
-                        (setq I P) ) )
-                  (set $InFrames I) )
-               (let Out (val $OutFrames)  # Reverse OutFrames
-                  (until (== Out (Src: out))
-                     (let P Out
-                        (setq Out ((ioFrame P) link))
-                        ((ioFrame P) link O)
-                        (setq O P) ) )
-                  (set $OutFrames O) ) )
+               (let P (val $Link)  # Reverse Stack(s)
+                  (until (== P (Src: lnk))
+                     (let Q P
+                        (setq P (val 2 Q))
+                        (set 2 Q Lnk)
+                        (setq Lnk Q) ) )
+                  (set $Link Lnk) )
+               (let P (val $Bind)  # Reverse bindings
+                  (until (== P (Src: bnd))
+                     (let Q P
+                        (xchg (val 2 Q) Q)
+                        (setq P (val 3 Q))
+                        (set 3 Q Bnd)
+                        (setq Bnd Q) ) )
+                  (let Q (Src: bnd)
+                     (set 3 Q Bnd)
+                     (set $Bind Q) ) )
+               (let P (val $Catch)  # Reverse CaFrames
+                  (until (== P (Src: ca))
+                     (let Ca: (caFrame P)
+                        (setq P (Ca: link))
+                        (Ca: link Ca)
+                        (setq Ca (Ca:)) ) )
+                  (set $Catch Ca) )
+               (let P (val $InFrames)  # Reverse InFrames
+                  (until (== P (Src: in))
+                     (let In: (ioFrame P)
+                        (setq P (In: link))
+                        (In: link In)
+                        (setq In (In:)) ) )
+                  (set $InFrames In) )
+               (let P (val $OutFrames)  # Reverse OutFrames
+                  (until (== P (Src: out))
+                     (let Out: (ioFrame P)
+                        (setq P (Out: link))
+                        (Out: link Out)
+                        (setq Out (Out:)) ) )
+                  (set $OutFrames Out) )
+               (let P (val $ErrFrames)  # Reverse ErrFrames
+                  (until (== P (Src: out))
+                     (let Err: (ioFrame P)
+                        (setq P (Err: link))
+                        (Err: link Err)
+                        (setq Err (Err:)) ) )
+                  (set $ErrFrames Err) )
+               (let P (val $CtlFrames)  # Reverse CtlFrames
+                  (until (== P (Src: out))
+                     (let Ctl: (ioFrame P)
+                        (setq P (Ctl: link))
+                        (Ctl: link Ctl)
+                        (setq Ctl (Ctl:)) ) )
+                  (set $CtlFrames Ctl) ) )
             (saveCoEnv (Src:))
             (unless (setjmp (Src: (rst)))
                (set $Ret Val)
                (longjmp (Dst: (rst)) 1) )
             (unless (t? (Src: tag))
-               (let Out (val $OutFrames)  # Restore OutFrames
-                  (Src: out Out)
-                  (while O
-                     (let P O
-                        (setq O ((ioFrame P) link))
-                        ((ioFrame P) link Out)
-                        (setq Out P) ) )
-                  (Src: (env $OutFrames i8*) Out) )
-               (let In (val $InFrames)  # Restore InFrames
-                  (Src: in In)
-                  (while I
-                     (let P I
-                        (setq I ((ioFrame P) link))
-                        ((ioFrame P) link In)
-                        (setq In P) ) )
-                  (Src: (env $InFrames i8*) In) )
-               (let Bnd (val $Bind)  # Restore bindings
-                  (set 3 (Src: bnd) Bnd)
-                  (setq Bnd (Src: bnd))
-                  (Src: bnd Bnd)
-                  (while B
-                     (let P B
-                        (xchg (val 2 P) P)
-                        (setq B (val 3 P))
-                        (set 3 P Bnd)
-                        (setq Bnd P) ) )
-                  (Src: (env $Bind any) Bnd) )
-               (let Lnk (val $Link)  # Restore Stack(s)
-                  (Src: lnk Lnk)
-                  (while L
-                     (let P L
-                        (setq L (val 2 P))
-                        (set 2 P Lnk)
-                        (setq Lnk P) ) )
-                  (Src: (env $Link any) Lnk) ) ) )
+               (let P (val $CtlFrames)  # Restore CtlFrames
+                  (Src: out P)
+                  (while Ctl
+                     (let Ctl: (ioFrame Ctl)
+                        (setq Ctl (Ctl: link))
+                        (Ctl: link P)
+                        (setq P (Ctl:)) ) )
+                  (Src: (env $CtlFrames i8*) P) )
+               (let P (val $ErrFrames)  # Restore ErrFrames
+                  (Src: out P)
+                  (while Err
+                     (let Err: (ioFrame Err)
+                        (setq Err (Err: link))
+                        (Err: link P)
+                        (setq P (Err:)) ) )
+                  (Src: (env $ErrFrames i8*) P) )
+               (let P (val $OutFrames)  # Restore OutFrames
+                  (Src: out P)
+                  (while Out
+                     (let Out: (ioFrame Out)
+                        (setq Out (Out: link))
+                        (Out: link P)
+                        (setq P (Out:)) ) )
+                  (Src: (env $OutFrames i8*) P) )
+               (let P (val $InFrames)  # Restore InFrames
+                  (Src: in P)
+                  (while In
+                     (let In: (ioFrame In)
+                        (setq In (In: link))
+                        (In: link P)
+                        (setq P (In:)) ) )
+                  (Src: (env $InFrames i8*) P) )
+               (let P (val $Catch)  # Restore CaFrames
+                  (Src: ca P)
+                  (while Ca
+                     (let Ca: (caFrame Ca)
+                        (setq Ca (Ca: link))
+                        (Ca: link P)
+                        (setq P (Ca:)) ) )
+                  (Src: (env $Catch i8*) P) )
+               (let P (val $Bind)  # Restore bindings
+                  (set 3 (Src: bnd) P)
+                  (setq P (Src: bnd))
+                  (Src: bnd P)
+                  (while Bnd
+                     (let Q Bnd
+                        (xchg (val 2 Q) Q)
+                        (setq Bnd (val 3 Q))
+                        (set 3 Q P)
+                        (setq P Q) ) )
+                  (Src: (env $Bind any) P) )
+               (let P (val $Link)  # Restore Stack(s)
+                  (Src: lnk P)
+                  (while Lnk
+                     (let Q Lnk
+                        (setq Lnk (val 2 Q))
+                        (set 2 Q P)
+                        (setq P Q) ) )
+                  (Src: (env $Link any) P) ) ) )
          (loadCoEnv (Src:)) ) ) )
 
 (de brkLoad (Exe)

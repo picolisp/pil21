@@ -217,8 +217,8 @@
       (set $Protect 0) ) )
 
 # Error handling
-(local) (pushOutFiles err stkErr noCoErr argErr cntErr numErr symErr extErr
-nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
+(local) (pushOutFiles err stkErr argErr cntErr numErr symErr extErr nameErr
+atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de void pushOutFiles (i8*))
 
@@ -294,9 +294,6 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de NIL stkErr (Exe)
    (set $StkLimit null)
    (err Exe 0 ($ "Stack overflow") null) )
-
-(de NIL noCoErr (Exe)
-   (err Exe 0 ($ "Not allowed in coroutines") null) )
 
 (de NIL argErr (Exe X)
    (err Exe X ($ "Bad argument") null) )
