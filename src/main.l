@@ -1,4 +1,4 @@
-# 21aug20 Software Lab. Alexander Burger
+# 23aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -834,7 +834,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (setq P
                (push  # [val sym LINK]
                   (eval (++ X))  # Evaluate next argument
-                  (++ Y)  # Next parameter
+                  (needChkVar Exe (++ Y))  # Next parameter
                   P ) ) ) )
       (prog1
          (if (== Y $At)  # VarArgs
@@ -857,6 +857,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (run (cdr Exe))  # Run body
                   (set $Next Next  $Link Link) ) )
             (unless (== Y $Nil)
+               (needChkVar Exe Y)
                (set
                   $Bind (push (val Y) Y P)  # Last parameter
                   Y X ) )  # Set to unevaluated argument(s)

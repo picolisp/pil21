@@ -1,4 +1,4 @@
-# 14aug20 Software Lab. Alexander Burger
+# 23aug20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -24,6 +24,7 @@
 + '\~' marker in namespaces
 + 'plio' function
 + 'buf' function
++ More checks for protected symbols
 
 - '====' is not supported
 - 'lines' is not supported
