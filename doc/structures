@@ -1,4 +1,4 @@
-# 17aug20 Software Lab. Alexander Burger
+# 24aug20 Software Lab. Alexander Burger
 
    ### Primary data types ###
 
@@ -145,7 +145,7 @@
             [Bind frame]
          ^
          |
-         +~~~- LINK
+         +---- LINK
                arg1 <------------+
          +-------   <-- Next     |
          |                       |

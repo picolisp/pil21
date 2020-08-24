@@ -1,4 +1,4 @@
-# 13aug20 Software Lab. Alexander Burger
+# 24aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1629,19 +1629,29 @@
 
 # (from 'any ..) -> sym
 (de _from (Exe)
-   (let (X (cdr Exe)  Link (val $Link)  N 1  P T)
-      (loop
-         (let (Y (evSym X)  Nm (xName Exe Y))
-            (setq P
-               (link
-                  (push Y NIL 0  # [sym link ix str]
-                     (any (bufString Nm (b8 (bufSize Nm)))) ) ) ) )
-         (? (atom (shift X)))
+   (let
+      (X (cdr Exe)
+         N 1
+         Y (evSym X)
+         Nm (xName Exe Y)
+         L
+         (link
+            (push Y NIL 0  # [sym link ix str]
+               (any (bufString Nm (b8 (bufSize Nm)))) ) )
+         P L )
+      (while (pair (shift X))
+         (setq
+            Y (evSym X)
+            Nm (xName Exe Y)
+            L
+            (link
+               (push Y NIL 0  # [sym link ix str]
+                  (any (bufString Nm (b8 (bufSize Nm)))) ) ) )
          (inc 'N) )
       (unless (val $Chr)
          (call $Get) )
       (while (ge0 (val $Chr))
-         (let (B (i8 @)  Q (i64* P)  I N)
+         (let (B (i8 @)  Q (i64* L)  I N)
             (loop
                (loop
                   (let S (ofs (i8* (val 4 Q)) (val 3 Q))
@@ -1649,7 +1659,7 @@
                         (set 3 Q (inc (val 3 Q)))  # Increment index
                         (? (val 2 S))  # Not end of string
                         (call $Get) # Skip next input byte
-                        (set $Link Link)
+                        (drop P)
                         (ret (val Q)) ) )  # Return matched symbol
                   (? (=0 (val 3 Q)))  # Still at beginning of string
                   (let S (ofs (i8* (val 4 Q)) 1)  # Pointer to second byte
@@ -1659,7 +1669,7 @@
                (? (=0 (dec 'I)))
                (setq Q (i64* (val 2 Q))) ) )
          (call $Get) )
-      (set $Link Link)
+      (drop P)
       $Nil ) )
 
 # (till 'any ['flg]) -> lst|sym
@@ -2022,22 +2032,30 @@
                $T ) )
          ((pair Y) (argErr Exe Y))
          (T  # sym
-            (let (Link (val $Link)  M (i64* null)  N 1  P T)
-               (loop
-                  (let Nm (xName Exe Y)
-                     (setq P
-                        (link
-                           (push Y NIL 0  # [sym link ix str]
-                              (any (bufString Nm (b8 (bufSize Nm)))) ) ) ) )
-                  (? (atom X))
-                  (setq Y (evSym (++ X)))
+            (let
+               (M (i64* null)
+                  N 1
+                  Nm (xName Exe Y)
+                  L
+                  (link
+                     (push Y NIL 0  # [sym link ix str]
+                        (any (bufString Nm (b8 (bufSize Nm)))) ) )
+                  P L )
+               (while (pair X)
+                  (setq
+                     Y (evSym (++ X))
+                     Nm (xName Exe Y)
+                     L
+                     (link
+                        (push Y NIL 0  # [sym link ix str]
+                           (any (bufString Nm (b8 (bufSize Nm)))) ) ) )
                   (inc 'N) )
                (unless (val $Chr)
                   (call $Get) )
                (while (ge0 (val $Chr))
                   (let
                      (B (i8 @)
-                        Q (i64* P)
+                        Q (i64* L)
                         I N
                         OutM M
                         OutC (if M (val 3 M) 0) )
@@ -2057,7 +2075,7 @@
                                        (inc 'S)
                                        (dec 'OutC) ) )
                                  (set $Chr 0)  # Clear look ahead
-                                 (set $Link Link)
+                                 (drop P)
                                  (ret (val Q)) ) )  # Return matched symbol
                            (? (=0 (val 3 Q)))  # Still at beginning of string
                            (let S (ofs (i8* (val 4 Q)) 1)  # Pointer to second byte
@@ -2066,7 +2084,7 @@
                                  (inc 'S) ) )
                            (when (== Q M)  # On current max
                               (setq M (i64* null))
-                              (let (Z (i64* P)  J N)
+                              (let (Z (i64* L)  J N)
                                  (loop
                                     (when (val 3 Z)
                                        (unless (and M (>= (val 3 M) (val 3 Z)))
@@ -2092,7 +2110,7 @@
                                  (inc 'S)
                                  (dec 'OutC) ) ) ) ) )
                   (call $Get) )
-               (set $Link Link)
+               (drop P)
                $Nil ) ) ) ) )
 
 (de void _putStdout ((i8 . B))

@@ -1,4 +1,4 @@
-# 23aug20 Software Lab. Alexander Burger
+# 24aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -838,24 +838,33 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   P ) ) ) )
       (prog1
          (if (== Y $At)  # VarArgs
-            (let (Link (val $Link)  Next (val $Next))
-               (if (atom X)
-                  (set $Next $Nil)
-                  (let (L (push NIL (eval (++ X)) NIL)  Q L)
+            (let Next (val $Next)
+               (if (pair X)
+                  (let (L (push NIL (eval (car X)) NIL)  Q L)
                      (link (ofs L 1))
-                     (while (pair X)
+                     (while (pair (shift X))
                         (setq L
-                           (set L (push NIL (eval (++ X)) NIL)) )
+                           (set L (push NIL (eval (car X)) NIL)) )
                         (link (ofs L 1)) )
-                     (set L $Nil  $Next Q) ) )
-               (loop
-                  (let Sym (val 2 P)
-                     (xchg Sym P)  # Exchange symbol value
-                     (? (== $At Sym))
-                     (setq P (val 3 P)) ) )
-               (prog1
-                  (run (cdr Exe))  # Run body
-                  (set $Next Next  $Link Link) ) )
+                     (set L $Nil  $Next Q)
+                     (loop
+                        (let Sym (val 2 P)
+                           (xchg Sym P)  # Exchange symbol value
+                           (? (== $At Sym))
+                           (setq P (val 3 P)) ) )
+                     (prog1
+                        (run (cdr Exe))  # Run body
+                        (set $Next Next)
+                        (drop (ofs Q 1)) ) )
+                  (set $Next $Nil)
+                  (loop
+                     (let Sym (val 2 P)
+                        (xchg Sym P)  # Exchange symbol value
+                        (? (== $At Sym))
+                        (setq P (val 3 P)) ) )
+                  (prog1
+                     (run (cdr Exe))  # Run body
+                     (set $Next Next) ) ) )
             (unless (== Y $Nil)
                (needChkVar Exe Y)
                (set
