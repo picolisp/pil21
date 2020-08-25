@@ -253,8 +253,7 @@
                (ret 0) ) )
          (stkChk 0)
          (loop
-            (set $Ret L)  # Set class list
-            (when (method (car L) Key)
+            (when (method (car (set $Ret L)) Key)  # Set class list
                (ret @) )
             (? (atom (shift L))) ) ) )
    0 )
@@ -306,8 +305,27 @@
 
 # (super ['any ..]) -> any
 (de _super (Exe)
+   (let
+      (Cls (val (if (val $Cls) (car @) (val $This)))
+         Key (val $Key) )
+      (while (pair (car Cls))  # Skip methods
+         (shift Cls) )
+      (while (pair Cls)  # Classes
+         (when (method (car (set $Ret Cls)) Key)
+            (let (C (val $Cls)  K (val $Key))
+               (set $Cls Cls)
+               (set $Key Key)
+               (prog1
+                  (evExpr @ Exe)
+                  (set $Key K  $Cls C) ) ) )
+         (shift Cls) )
+      (err Exe Key ($ "Bad super") null) ) )
+
+(local) extra
+
+(de extra (X)
    #!
-   Exe )
+   )
 
 # (extra ['any ..]) -> any
 (de _extra (Exe)

@@ -814,8 +814,6 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (? (and (== X A) (== Y B)) 0)
                (sigChk 0) ) ) ) ) )
 
-(load "io.l" "db.l" "apply.l" "flow.l" "subr.l")
-
 # Evaluation
 (local) (undefined evExpr evList)
 
@@ -921,6 +919,8 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                            (subr (val F) Exe)
                            (undefined F Exe) ) )
                      (setq F V) ) ) ) ) ) ) )
+
+(load "io.l" "db.l" "apply.l" "flow.l" "subr.l")
 
 # (quit ['any ['any]])
 (de _quit (Exe)
