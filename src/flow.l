@@ -163,7 +163,7 @@
    $Nil )
 
 # Apply METH to CDR of list
-(local) evMethod
+(local) (evMethod method)
 
 (de evMethod (Obj Cls Key Exe Lst)
    (let
@@ -242,10 +242,33 @@
                (setq P (val 3 P)) ) )
          (set $Bind (val 3 P)) ) ) )
 
+(de method (Obj Key)
+   (when (pair (val Obj))  # Class definition (methods and superclasses)
+      (let L @
+         (while (pair (car L))  # Method definition
+            (let Y @
+               (when (== Key (car Y))  # Found
+                  (ret (cdr Y)) ) )
+            (when (atom (shift L))
+               (ret 0) ) )
+         (stkChk 0)
+         (loop
+            (set $Ret L)  # Set class list
+            (when (method (car L) Key)
+               (ret @) )
+            (? (atom (shift L))) ) ) )
+   0 )
+
 # (meth 'obj ['any ..]) -> any
 (de _meth (Exe)
-   #!
-   Exe )
+   (let (X (cdr Exe)  Obj (save (eval (car X))))
+      (when (sym? (val (tail (needSymb Exe Obj))))
+         (dbFetch Exe Obj) )
+      (let Key (car Exe)  # Message symbol
+         (set $Ret 0)  # Preset to "No classes"
+         (if (method Obj Key)
+            (evMethod Obj (val $Ret) Key @ (cdr X))
+            (err Exe Key ($ "Bad message") null) ) ) ) )
 
 # (box 'any) -> sym
 (de _box (Exe)
@@ -859,13 +882,16 @@
 
 # (throw 'sym 'any)
 (de _throw (Exe)
-   (let (X (cdr Exe)  Tag (eval (++ X)))
-      (set $Ret (eval (car X)))
+   (let
+      (X (cdr Exe)
+         Tag (save (eval (++ X)))
+         R (save (eval (car X))) )
       (let Ca (val $Catch)
          (while Ca
             (let Ca: (caFrame Ca)
                (when (or (t? (Ca: tag)) (== Tag (Ca: tag)))
                   (unwind Ca)
+                  (set $Ret R)
                   (longjmp (Ca: (rst)) 1) )
                (setq Ca (Ca: link)) ) ) )
       (err Exe Tag ($ "Tag not found") null) ) )

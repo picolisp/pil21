@@ -237,11 +237,11 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                      (when Tag
                         (while (pair Tag)
                            (when (subStr (car Tag) (val $Msg))
+                              (unwind (Ca:))
                               (set $Ret
                                  (if (nil? (car Tag))
                                     (val $Msg)
-                                    (car Tag) ) )
-                              (unwind (Ca:))
+                                    @ ) )
                               (longjmp (Ca: (rst)) 1) )
                            (shift Tag) ) ) )
                   (setq Ca (Ca: link)) ) ) ) )
