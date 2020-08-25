@@ -1,4 +1,4 @@
-# 13aug20 Software Lab. Alexander Burger
+# 25aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -753,7 +753,7 @@
 
 # (=T 'any) -> flg
 (de _eqT (Exe)
-   (if (== (eval (cadr Exe)) $T) @ $Nil) )
+   (if (t? (eval (cadr Exe))) @ $Nil) )
 
 # (n0 'any) -> flg
 (de _neq0 (Exe)
@@ -761,7 +761,7 @@
 
 # (nT 'any) -> flg
 (de _neqT (Exe)
-   (if (== (eval (cadr Exe)) $T) $Nil $T) )
+   (if (t? (eval (cadr Exe))) $Nil $T) )
 
 # (< 'any ..) -> flg
 (de _lt (Exe)

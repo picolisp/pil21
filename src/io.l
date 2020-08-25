@@ -1,4 +1,4 @@
-# 24aug20 Software Lab. Alexander Burger
+# 25aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -406,7 +406,7 @@
             (ifn P
                (loop  # Non-circular
                   (binPrint (car X))
-                  (? (== $Nil (shift X))
+                  (? (nil? (shift X))
                      (call $PutBin END) )
                   (? (atom X)
                      (call $PutBin DOT)
@@ -1395,7 +1395,7 @@
          ((== C (char ","))
             (call $Get)
             (let X (read0 Top)
-               (if (== $T (val $Uni))
+               (if (t? (val $Uni))
                   X
                   (save X
                      (if (pair (idxPut $Uni X))
@@ -2261,7 +2261,7 @@
             (ifn P
                (loop  # Non-circular
                   (print (car X))
-                  (? (== $Nil (shift X)))
+                  (? (nil? (shift X)))
                   (? (atom X)
                      (outString ($ " . "))
                      (print X) )
@@ -2299,7 +2299,7 @@
             (stkChk 0)
             (loop
                (prin (car X))
-               (? (== $Nil (shift X)))
+               (? (nil? (shift X)))
                (? (atom X) (prin X)) ) ) ) ) )
 
 # (prin 'any ..) -> any

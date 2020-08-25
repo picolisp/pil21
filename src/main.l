@@ -1,4 +1,4 @@
-# 24aug20 Software Lab. Alexander Burger
+# 25aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -425,7 +425,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (if (pair Z)
                      (if (num? (car Z))
                         (? (pair Y) 0)
-                        (? (or (nil? (car Z)) (== $T (car Z)))
+                        (? (or (nil? (car Z)) (t? (car Z)))
                            0 ) )
                      (? (not (nil? Y)) 0) ) ) ) ) ) ) )
 
@@ -830,12 +830,21 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          Y (car Exe)  # Parameters
          P (set $Bind (push (val $At) $At (val $Bind) Lst)) )  # [[@] @ LINK Expr]
       (while (pair Y)
-         (set $Bind
-            (setq P
-               (push  # [val sym LINK]
-                  (eval (++ X))  # Evaluate next argument
-                  (needChkVar Exe (++ Y))  # Next parameter
-                  P ) ) ) )
+         (let (V (eval (++ X))  Z (++ Y))  # Evaluate next argument
+            (if (atom Z)
+               (set $Bind
+                  (setq P (push V (needChkVar Exe Z) P)) )  # [val sym LINK]
+               (loop
+                  (set $Bind
+                     (setq P
+                        (push  # [val sym LINK]
+                           (if (pair V) (++ V) $Nil)
+                           (needChkVar Exe (++ Z))
+                           P ) ) )
+                  (? (atom Z)) )
+               (unless (nil? Z)
+                  (set $Bind
+                     (setq P (push V (needChkVar Exe Z) P)) ) ) ) ) )  # [val sym LINK]
       (prog1
          (if (== Y $At)  # VarArgs
             (let Next (val $Next)
@@ -865,7 +874,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (prog1
                      (run (cdr Exe))  # Run body
                      (set $Next Next) ) ) )
-            (unless (== Y $Nil)
+            (unless (nil? Y)
                (needChkVar Exe Y)
                (set
                   $Bind (push (val Y) Y P)  # Last parameter
@@ -1187,7 +1196,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de natRetBuf (Spec (i8** . Ptr))
    (cond
-      ((== Spec $T)  # 'T' Direct Lisp value
+      ((t? Spec)  # 'T' Direct Lisp value
          (let P (i64* (val Ptr))
             (set Ptr (i8* (inc P)))
             (val P) ) )

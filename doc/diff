@@ -1,4 +1,4 @@
-# 23aug20 Software Lab. Alexander Burger
+# 25aug20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -25,6 +25,7 @@
 + 'plio' function
 + 'buf' function
 + More checks for protected symbols
++ Lists of symbols as function parameters (destructuring, one-dimensional)
 
 - '====' is not supported
 - 'lines' is not supported

@@ -1,4 +1,4 @@
-# 14aug20 Software Lab. Alexander Burger
+# 25aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -70,7 +70,7 @@
 (local) (rdLockDb wrLockDb unLockDb tryLock lockJnl unLockJnl)
 
 (de void rdLockDb ()
-   (unless (== $T (val $Solo))  # Not already locked whole DB
+   (unless (t? (val $Solo))  # Not already locked whole DB
       (while
          (lt0
             (rdLock ((dbFile (val $DbFiles)) fd) 0 1 YES) )  # Descriptor of first file
@@ -78,13 +78,13 @@
             (lockErr) ) ) ) )
 
 (de void wrLockDb ()
-   (unless (== $T (val $Solo))  # Not already locked whole DB
+   (unless (t? (val $Solo))  # Not already locked whole DB
       (while (lt0 (wrLock ((dbFile (val $DbFiles)) fd) 0 1 YES))  # Descriptor of first file
          (unless (== (gErrno) EINTR)
             (lockErr) ) ) ) )
 
 (de void unLockDb ((i64 . Len))
-   (unless (== $T (val $Solo))  # Not already locked whole DB
+   (unless (t? (val $Solo))  # Not already locked whole DB
       (unless Len
          (let (P (val $DbFiles)  C (val $DBs))
             (while (dec 'C)
@@ -102,7 +102,7 @@
             (Db: lck YES)  # Set lock flag
             (cond
                ((=0 N) (set $Solo $T))  # Set solo mode
-               ((== $T (val $Solo)) (set $Solo $Nil)) )  # Clear solo mode
+               ((t? (val $Solo)) (set $Solo $Nil)) )  # Clear solo mode
             (ret 0) )
          (unless
             (or

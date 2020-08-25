@@ -1,4 +1,4 @@
-# 13aug20 Software Lab. Alexander Burger
+# 25aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -581,7 +581,7 @@
                      (setq X
                         (consTree (car Z) (consTree (cdr Z) X)) ) )
                   (? (atom Y) X) ) ) )
-         ((== $T X)  # Transient symbols
+         ((t? X)  # Transient symbols
             (consTree (val $Transient) (consTree (val 2 $Transient) $Nil)) )
          ((num? X)  # External symbols
             (consTree (val $Extern) $Nil) )
@@ -595,7 +595,7 @@
                (if (nil? (cdr X))
                   (val Y)
                   (val 2 Y) ) ) )
-         ((== $T (car X))  # Direct transient trees
+         ((t? (car X))  # Direct transient trees
             (if (nil? (cdr X))
                (val $Transient)
                (val 2 $Transient) ) )
@@ -1143,7 +1143,7 @@
                (loop
                   (let Y (car P)
                      (cond
-                        ((== $T Y) (setq P (cadr P)))
+                        ((t? Y) (setq P (cadr P)))
                         ((atom Y) (setq P (cddr P)))
                         (T
                            (? (=0 (compare (car Y) Key)) (car P))
@@ -1162,7 +1162,7 @@
                         (let Y (cdr (setq X (cdr P)))  # Right subtree
                            (? (atom Y))
                            (let Z (car P)
-                              (? (== $T Z))
+                              (? (t? Z))
                               (? (and (pair Z) (gt0 (compare (car Z) Key2)))) )
                            (let Z P  # Go right
                               (setq P Y)  # Invert tree
@@ -1230,7 +1230,7 @@
                      (when (== Key Y)
                         (if (nil? Val)
                            (set 2 L (cdr X))  # Remove cell
-                           (unless (== $T Val)
+                           (unless (t? Val)
                               (set X (cons Val Key)) )
                            (set 2 L (cdr X))  # Unlink cell
                            (ifn (sym? Tail)
@@ -1242,7 +1242,7 @@
                      (when (== Key (cdr Y))
                         (if (nil? Val)
                            (set 2 L (cdr X))  # Remove cell
-                           (if (== $T Val)
+                           (if (t? Val)
                               (set X Key)  # Change to flag
                               (set Y Val) )  # Set new value
                            (set 2 L (cdr X))  # Unlink cell
@@ -1255,7 +1255,7 @@
                   (setq L X) ) ) )
       (unless (nil? Val)  # Non-NIL value
          (setq Val
-            (if (== $T Val) Key (cons Val Key)) )
+            (if (t? Val) Key (cons Val Key)) )
          (set (tail Sym)
             (if (sym? Tail)
                (sym (cons Val (& Tail -9)))
@@ -1495,7 +1495,7 @@
                (if (atom P)
                   (setq X (cons P X))
                   (unless (nil? (car P))
-                     (when (== $T (car P))
+                     (when (t? (car P))
                         (setq P (cdr P)) )
                      (setq X (cons P X)) ) ) ) )
          (set (tail Y)
