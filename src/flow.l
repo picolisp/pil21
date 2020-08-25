@@ -1,4 +1,4 @@
-# 24aug20 Software Lab. Alexander Burger
+# 25aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -763,7 +763,7 @@
                                     (setq Z @)  # Invert tree
                                     (set 2 U Tos)
                                     (setq Tos (| U 8)) ) )
-                              (unless (nil? (car Z))  # Dotted structure symbol
+                              (unless (nil? @)  # Dotted structure symbol
                                  (let S (needChkVar Exe @)
                                     (set $Bind (setq P (push (val S) S P))) ) )
                               (loop
