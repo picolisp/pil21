@@ -1,4 +1,4 @@
-# 25aug20 Software Lab. Alexander Burger
+# 28aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -165,7 +165,7 @@
 # Apply METH to CDR of list
 (local) (evMethod method)
 
-(de evMethod (Obj Cls Key Exe Lst)
+(de evMethod (Obj Typ Key Exe Lst)
    (let
       (X (cdr Lst)  # Arguments
          Y (car Exe)  # Parameters
@@ -203,10 +203,10 @@
                            (xchg Sym P)  # Exchange symbol value
                            (? (== $At Sym))
                            (setq P (val 3 P)) ) )
-                     (let (C (val $Cls)  K (val $Key))
+                     (let (TypS (val $Typ)  KeyS (val $Key))
                         (prog1
                            (run (cdr Exe))  # Run body
-                           (set $Key K  $Cls C  $Next Next)
+                           (set $Key KeyS  $Typ TypS  $Next Next)
                            (drop (ofs Q 1)) ) ) )
                   (set $Next $Nil)
                   (loop
@@ -214,10 +214,10 @@
                         (xchg Sym P)  # Exchange symbol value
                         (? (== $At Sym))
                         (setq P (val 3 P)) ) )
-                  (let (C (val $Cls)  K (val $Key))
+                  (let (TypS (val $Typ)  KeyS (val $Key))
                      (prog1
                         (run (cdr Exe))  # Run body
-                        (set $Key K  $Cls C  $Next Next) ) ) ) )
+                        (set $Key KeyS  $Typ TypS  $Next Next) ) ) ) )
             (unless (nil? Y)
                (needChkVar Exe Y)
                (set
@@ -228,12 +228,12 @@
                   (xchg Sym P)  # Exchange symbol value
                   (? (== $At Sym))
                   (setq P (val 3 P)) ) )
-            (let (C (val $Cls)  K (val $Key))
-               (set $Cls Cls)
+            (let (TypS (val $Typ)  KeyS (val $Key))
+               (set $Typ Typ)
                (set $Key Key)
                (prog1
                   (run (cdr Exe))  # Run body
-                  (set $Key K  $Cls C) ) ) )
+                  (set $Key KeyS  $Typ TypS) ) ) )
          (setq P (val $Bind))
          (loop
             (let Sym (val 2 P)
@@ -275,62 +275,175 @@
 
 # (new ['flg|num] ['typ ['any ..]]) -> obj
 (de _new (Exe)
-   #!
-   Exe )
+   (let
+      (X (cdr Exe)
+         Y (eval (++ X))
+         Obj
+         (save
+            (cond
+               ((pair Y) (consSym ZERO Y))  # Anonymous with type
+               ((nil? Y) (consSym ZERO ZERO))  # Anonymous with placeholder
+               (T
+                  (let Nm
+                     (newId Exe  # External
+                        (if (cnt? Y) (i32 (int @)) 1) )
+                     (extern (shr 1 (add Nm Nm) 1)) ) ) ) ) )  # Set "dirty"
+      (unless (pair Y)
+         (set Obj (eval (++ X))) )
+      (set $Ret 0)  # Preset to "No classes"
+      (cond
+         ((method Obj $T)
+            (evMethod Obj (val $Ret) $T @ X) )
+         ((pair X)
+            (let K (link (push NIL NIL))
+               (loop
+                  (put Obj
+                     (set K (eval (++ X)))
+                     (eval (++ X)) )
+                  (? (atom X)) ) ) ) )
+      Obj ) )
 
 # (type 'any) -> lst
 (de _type (Exe)
-   #!
-   Exe )
+   (let (X (cdr Exe)  Y (eval (car X)))
+      (ifn (symb? Y)
+         $Nil
+         (when (sym? (val (tail Y)))
+            (dbFetch Exe Y) )
+         (let (V (val Y)  Z V)
+            (loop
+               (? (atom V) $Nil)
+               (? (atom (car V))  # Class
+                  (let R V
+                     (loop
+                        (? (not (symb? (car V))) $Nil)
+                        (? (atom (shift V))
+                           (if (nil? V) R $Nil) )
+                        (? (== Z V) $Nil) ) ) )
+               (? (== Z (shift V)) $Nil) ) ) ) ) )
+
+(local) isa
+
+(de i1 isa (Cls Obj)
+   (let (V (val Obj)  Z V)
+      (loop
+         (? (atom V) NO)
+         (? (atom (car V))  # Class
+            (stkChk 0)
+            (loop
+               (? (not (symb? (car V))) NO)
+               (? (== @ Cls) YES)
+               (? (isa Cls @) YES)
+               (? (atom (shift V)) NO)
+               (? (== Z V) NO) ) )
+         (? (== Z (shift V)) NO) ) ) )
 
 # (isa 'cls|typ 'any) -> obj | NIL
 (de _isa (Exe)
-   #!
-   Exe )
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         Z (eval (car X)) )
+      (ifn (symb? Z)
+         $Nil
+         (when (sym? (val (tail Z)))
+            (dbFetch Exe Z) )
+         (cond
+            ((pair Y)
+               (loop
+                  (? (not (isa (car Y) Z)) $Nil)
+                  (? (atom (shift Y)) Z) ) )
+            ((isa Y Z) Z)
+            (T $Nil) ) ) ) )
 
 # (method 'msg 'obj) -> fun
 (de _method (Exe)
-   #!
-   Exe )
+   (let
+      (X (cdr Exe)
+         Msg (save (eval (++ X)))
+         Obj (needSymb Exe (eval (car X))) )
+      (when (sym? (val (tail Obj)))
+         (dbFetch Exe Obj) )
+      (if (method Obj Msg) @ $Nil) ) )
 
 # (send 'msg 'obj ['any ..]) -> any
 (de _send (Exe)
-   #!
-   Exe )
+   (let
+      (X (cdr Exe)
+         Msg (save (eval (++ X)))
+         Obj (save (needSymb Exe (eval (car X)))) )
+      (when (sym? (val (tail Obj)))
+         (dbFetch Exe Obj) )
+      (set $Ret 0)  # Preset to "No classes"
+      (if (method Obj Msg)
+         (evMethod Obj (val $Ret) Msg @ (cdr X))
+         (err Exe Msg ($ "Bad message") null) ) ) )
 
 # (try 'msg 'obj ['any ..]) -> any
 (de _try (Exe)
-   #!
-   Exe )
+   (let
+      (X (cdr Exe)
+         Msg (save (eval (++ X)))
+         Obj (save (eval (car X))) )
+      (ifn (symb? Obj)
+         $Nil
+         (when (sym? (val (tail Obj)))
+            (unless (isLife Obj)
+               (goto 1) )
+            (dbFetch Exe Obj) )
+         (set $Ret 0)  # Preset to "No classes"
+         (if (method Obj Msg)
+            (evMethod Obj (val $Ret) Msg @ (cdr X))
+            (: 1 $Nil) ) ) ) )
 
 # (super ['any ..]) -> any
 (de _super (Exe)
    (let
-      (Cls (val (if (val $Cls) (car @) (val $This)))
+      (Lst (val (if (val $Typ) (car @) (val $This)))
          Key (val $Key) )
-      (while (pair (car Cls))  # Skip methods
-         (shift Cls) )
-      (while (pair Cls)  # Classes
-         (when (method (car (set $Ret Cls)) Key)
-            (let (C (val $Cls)  K (val $Key))
-               (set $Cls Cls)
-               (set $Key Key)
+      (while (pair (car Lst))  # Skip methods
+         (shift Lst) )
+      (loop
+         (when (atom Lst)  # No classes
+            (err Exe Key ($ "Bad super") null) )
+         (? (method (car (set $Ret Lst)) Key)  # Found
+            (let (TypS (val $Typ)  KeyS (val $Key))
+               (set $Typ (val $Ret)  $Key Key)  # Set class and key
                (prog1
-                  (evExpr @ Exe)
-                  (set $Key K  $Cls C) ) ) )
-         (shift Cls) )
-      (err Exe Key ($ "Bad super") null) ) )
+                  (evExpr @ Exe)  # Evaluate expression
+                  (set $Key KeyS  $Typ TypS) ) ) )  # Restore class and key
+         (shift Lst) ) ) )
 
 (local) extra
 
-(de extra (X)
-   #!
-   )
+(de extra (Obj Key)
+   (let Lst (val Obj)
+      (while (pair (car Lst))  # Skip methods
+         (shift Lst) )
+      (loop  # Classes
+         (? (atom Lst) -1)  # Not found on this level
+         (? (== Lst (val $Typ))  # Hit current class list
+            (loop  # Locate method in extra classes
+               (? (atom (shift Lst)) 0)  # Try further
+               (? (method (car (set $Ret Lst)) Key) @) ) )  # Found in superclass
+         (stkChk 0)
+         (? (gt0 (extra (car Lst) Key)) @)  # Found on this level
+         (? (=0 @)
+            (loop
+               (? (atom (shift Lst)) 0)
+               (? (method (car (set $Ret Lst)) Key) @) ) )  # Found in superclass
+         (shift Lst) ) ) )  # Try next in class list
 
 # (extra ['any ..]) -> any
 (de _extra (Exe)
-   #!
-   Exe )
+   (let Key (val $Key)
+      (when (le0 (extra (val $This) Key))
+         (err Exe Key ($ "Bad extra") null) )
+      (let (TypS (val $Typ)  KeyS (val $Key))
+         (set $Typ (val $Ret)  $Key Key)  # Set class and key
+         (prog1
+            (evExpr @ Exe)  # Evaluate expression
+            (set $Key KeyS  $Typ TypS) ) ) ) )  # Restore class and key
 
 # (and 'any ..) -> any
 (de _and (Exe)

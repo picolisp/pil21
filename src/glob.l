@@ -1,4 +1,4 @@
-# 17aug20 Software Lab. Alexander Burger
+# 28aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -619,7 +619,7 @@
    ($Parser i64* null)           # String parser
    ($Intern $Pico1)              # Current namespaces of internal symbols
    ($Next $Nil)                  # Next vararg
-   ($Cls 0)                      # Method class
+   ($Typ 0)                      # Method type
    ($Key 0)                      # Method key
    ($Make 0)                     # 'make' environment
    ($Yoke 0)
