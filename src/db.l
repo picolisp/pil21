@@ -1,4 +1,4 @@
-# 25aug20 Software Lab. Alexander Burger
+# 29aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -950,5 +950,30 @@
 
 # (dbck ['cnt] 'flg) -> any
 (de _dbck (Exe)
-   #!
-   Exe )
+   (let
+      (X (cdr Exe)
+         Y (eval (car X))
+         Jnl (val $DbJnl)
+         Buf (b8 (* BLK 2))
+         Cnt BLKSIZE
+         Blks 0
+         Syms 0 )
+      (if (cnt? Y)
+         (let N (int Y)
+            (when (>= (i32 (dec 'N)) (val $DBs))
+               (dbfErr Exe) )
+            (set $DbFile
+               (ofs (val $DbFiles) (* N (dbFile T))) )
+            (setq Y (eval (cadr X))) )
+         (set $DbFile (val $DbFiles)) )
+      (set $Protect (inc (val $Protect)))
+      (wrLockDb)
+      (when Jnl
+         (lockJnl) )
+      (blkPeek 0 Buf (* 2 BLK))  # Read 'free' and 'next' from block zero
+      #!
+      (when (set $DbJnl Jnl)
+         (unLockJnl) )
+      (unLockDb 1)  # Unlock
+      (set $Protect (dec (val $Protect)))
+      $Nil ) )

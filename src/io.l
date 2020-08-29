@@ -1,4 +1,4 @@
-# 25aug20 Software Lab. Alexander Burger
+# 29aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1575,9 +1575,7 @@
    (let Chr (val $Chr)
       (unless Chr
          (setq Chr (call $Get)) )
-      (if (lt0 Chr)
-         $Nil
-         (mkChar (getChar Chr)) ) ) )
+      (if (lt0 Chr) $Nil (mkChar Chr)) ) )
 
 # (char) -> sym
 # (char 'cnt) -> sym

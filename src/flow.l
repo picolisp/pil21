@@ -207,12 +207,11 @@
 # Apply METH to CDR of list
 (local) (evMethod method)
 
-(de evMethod (Obj Typ Key Exe Lst)
+(de evMethod (Obj Typ Key Exe X)
    (let
-      (X (cdr Lst)  # Arguments
-         Y (car Exe)  # Parameters
-         P (set $Bind (push (val $At) $At (val $Bind) Lst)) )  # [[@] @ LINK Expr]
-      (set $Bind (setq P (push $This Obj P)))
+      (Y (car Exe)  # Parameters
+         P (set $Bind (push (val $At) $At (val $Bind) Exe)) )  # [[@] @ LINK Expr]
+      (set $Bind (setq P (push Obj $This P)))
       (while (pair Y)
          (let (V (eval (++ X))  Z (++ Y))  # Evaluate next argument
             (if (atom Z)
