@@ -1,4 +1,4 @@
-# 28aug20 Software Lab. Alexander Burger
+# 29aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -160,7 +160,49 @@
 # (dm (sym . cls) . fun|cls2) -> sym
 # (dm (sym sym2 [. cls]) . fun|cls2) -> sym
 (de _dm (Exe)
-   $Nil )
+   (let
+      (X (cdr Exe)
+         Y (car X)
+         Fun (cdr X)
+         Msg (if (atom Y) Y (car Y))
+         Cls
+         (cond
+            ((atom Y) (val $Class))
+            ((atom (cdr Y)) @)
+            (T
+               (let Z @
+                  (get
+                     (if (nil? (cdr Z)) (val $Class) @)
+                     (car Z) ) ) ) ) )
+      (unless (t? Msg)
+         (redefine Exe Msg (val $Meth)) )
+      (when (symb? Fun)
+         (let L (val Fun)
+            (loop
+               (when (or (atom L) (atom (car L)))
+                  (err Exe Msg ($ "Bad message") null) )
+               (? (== Msg (caar L))  # Found in 'cls2'
+                  (setq
+                     X (car L)
+                     Fun (cdr X) ) )
+               (shift L) ) ) )
+      (let (V (val Cls)  L V)
+         (loop
+            (? (or (atom L) (atom (car L)))  # New method
+               (set Cls
+                  (cons
+                     (if (atom (car X))
+                        X
+                        (cons Msg Fun) )
+                     V ) ) )
+            (? (== Msg (caar L))  # Redefine method
+               (let Z (car L)
+                  (unless (equal Fun (cdr Z))
+                     (redefMsg Msg Cls) )
+                  (set 2 Z Fun) ) )
+            (shift L) ) )
+      (putSrc Cls Msg)
+      Msg ) )
 
 # Apply METH to CDR of list
 (local) (evMethod method)
