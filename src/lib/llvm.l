@@ -1,4 +1,4 @@
-# 28jul20 Software Lab. Alexander Burger
+# 30aug20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -1246,7 +1246,12 @@ False Beg End Safe *Safe)
 (asm ()
    (Lst
       (use llvm~@
-         (let (Var (box)  True (+lbl)  End (if (asoq T Lst) (+lbl) True)  X (eval (++ Lst)))
+         (let
+            (Var (box)
+               True (+lbl)
+               Flg (asoq T Lst)
+               End (if Flg (+lbl) True)
+               X (eval (++ Lst)) )
             (link
                (pack
                   "switch " (type (val X)) " " X
@@ -1267,7 +1272,7 @@ False Beg End Safe *Safe)
                (for Prg Lst
                   (label (if (=T (++ Prg)) True (++ Lbl)))
                   (when (set Var (if Prg (run @) 0))
-                     (phi End Var)
+                     (and Flg (phi End Var))
                      (br End) ) ) )
             (label End) ) ) )
    (llvm~case) )

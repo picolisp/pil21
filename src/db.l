@@ -1,4 +1,4 @@
-# 29aug20 Software Lab. Alexander Burger
+# 30aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -143,7 +143,7 @@
       (set
          $BlkLink (& (getAdr Blk) BLKMASK)
          $BlkEnd (ofs Blk (+ (Db: siz) BLK))
-         $BlkPtr (ofs Blk BLK) ) ) )  # Point to block data
+         $BlkPtr Blk ) ) )  # Pointer to block
 
 (de void blkPoke ((i64 . Pos) (i8* . Buf) (i32 . Siz))
    (let Db: (dbFile (val $DbFile))
@@ -283,7 +283,7 @@
       (when (== P (val $BlkEnd))
          (unless (val $BlkLink)
             (ret 0) )
-         (setq P (rdBlock @)) )
+         (setq P (ofs (rdBlock @) BLK)) )
       (set $BlkPtr (inc P))
       (i32 (val P)) ) )
 
@@ -301,7 +301,7 @@
                      (setq P (val $DbBlock)) )
                   (setq P (ofs P BLK)) )
                (wrBlock)  # Write current block
-               (setq P (rdBlock Link)) ) ) )  # Read next block
+               (setq P (ofs (rdBlock Link) BLK)) ) ) )  # Read next block
       (set P B)
       (set $BlkPtr (inc P)) ) )
 
@@ -640,7 +640,7 @@
          (set $DbFile
             (ofs (val $DbFiles) (* F (dbFile T))) )
          (rdLockDb)  # Lock for reading
-         (let Blk (ofs (rdBlock (shl (objId Tail) 6)) (- BLK)) # Read first block
+         (let Blk (rdBlock (shl (objId Tail) 6))  # Read first block
             (unless (== 1 (& (val Blk) BLKTAG))  # ID-Block
                (err Exe 0 ($ "Bad ID") null) ) )
          (set
@@ -836,7 +836,7 @@
                                  (when (> (val $DBs) F)  # Local file
                                     (set $DbFile
                                        (ofs (val $DbFiles) (* F (dbFile T))) )
-                                    (let Blk (ofs (rdBlock (shl (objId Nm) 6)) (- BLK)) # Read first block
+                                    (let Blk (rdBlock (shl (objId Nm) 6))  # Read first block
                                        (set
                                           Blk (| (val Blk) 1)  # First block in object (might be new)
                                           $PutBin (fun (void i8) putBlock)
@@ -956,8 +956,8 @@
          Jnl (val $DbJnl)
          Buf (b8 (* BLK 2))
          Cnt BLKSIZE
-         Blks 0
-         Syms 0 )
+         Syms 0
+         Blks 0 )
       (if (cnt? Y)
          (let N (int Y)
             (when (>= (i32 (dec 'N)) (val $DBs))
@@ -969,11 +969,59 @@
       (set $Protect (inc (val $Protect)))
       (wrLockDb)
       (when Jnl
-         (lockJnl) )
+         (lockJnl)  # Write lock journal
+         (set $DbJnl null) )  # Disable Journal
       (blkPeek 0 Buf (* 2 BLK))  # Read 'free' and 'next' from block zero
-      #!
-      (when (set $DbJnl Jnl)
-         (unLockJnl) )
-      (unLockDb 1)  # Unlock
-      (set $Protect (dec (val $Protect)))
-      $Nil ) )
+      (set $BlkLink (getAdr Buf))  # free' as next block
+      (let Next (getAdr (ofs Buf BLK))  # Get 'next'
+         (while (val $BlkLink)  # Check free list
+            (let Blk (rdBlock @)
+               (set Blk (| (val Blk) BLKTAG)) )  # Mark free list
+            (when (> (inc 'Cnt BLKSIZE) Next)
+               (setq Y (mkStr ($ "Circular free list")))
+               (goto 9) )
+            (wrBlock) )
+         (set $DbJnl Jnl)  # Restore Journal
+         (let P BLKSIZE
+            (until (== P Next)  # Check all chains
+               (let Blk (rdBlock P)
+                  (case (& (val Blk) BLKTAG)
+                     (0  # Free block
+                        (inc 'Cnt BLKSIZE)
+                        (memcpy Blk Buf BLK)
+                        (wrBlock)
+                        (setAdr P Buf)
+                        (blkPoke 0 Buf BLK) )
+                     (1  # ID-block of symbol
+                        (inc 'Syms)
+                        (let I (i8 2)
+                           (loop  # Check chains
+                              (inc 'Blks)
+                              (inc 'Cnt BLKSIZE)
+                              (? (=0 (val $BlkLink)))
+                              (unless
+                                 (== I
+                                    (& (val (rdBlock @)) BLKTAG) )
+                                 (setq Y (mkStr ($ "Bad chain")))
+                                 (goto 9) )
+                              (when (> BLKTAG I)
+                                 (inc 'I) ) ) ) ) ) )
+               (inc 'P BLKSIZE) ) )
+         (set $BlkLink (getAdr Buf))
+         (set $DbJnl null)  # Disable Journal
+         (while (val $BlkLink)  # Unmark free list
+            (let Blk (rdBlock @)
+               (when (& (val Blk) BLKTAG)
+                  (set Blk (& (val Blk) BLKMASK))
+                  (wrBlock) ) ) )
+         (nond
+            ((== Cnt Next)
+               (setq Y (mkStr ($ "Bad count"))) )
+            ((nil? Y)
+               (setq Y (cons (cnt Blks) (cnt Syms))) ) ) )
+      (: 9
+         (when (set $DbJnl Jnl)
+            (unLockJnl) )
+         (unLockDb 1)  # Unlock
+         (set $Protect (dec (val $Protect)))
+         Y ) ) )
