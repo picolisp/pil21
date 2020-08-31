@@ -1,4 +1,4 @@
-# 22aug20 Software Lab. Alexander Burger
+# 31aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -83,9 +83,9 @@
 # libc
 (local) (malloc realloc free fork getenv setenv getpid getpgrp setsid alarm
 setpgid execvp isatty tcgetattr read write pread pwrite fread fwrite
-putc_unlocked fopen fflush feof fclose fileno fsync pipe memcmp strlen strcpy
-strdup strcmp strchr strrchr dlsym dlerror dup dup2 close signal tcsetpgrp
-waitpid setjmp longjmp kill exit)
+putc_unlocked getc_unlocked fopen fflush feof fclose fileno fsync pipe memcmp
+strlen strcpy strdup strcmp strchr strrchr dlsym dlerror dup dup2 close signal
+tcsetpgrp waitpid setjmp longjmp kill exit)
 
 (de T i8* malloc (i64))
 (de T i8* realloc (i8* i64))
@@ -110,6 +110,7 @@ waitpid setjmp longjmp kill exit)
 (de T i32 fread (i8* i32 i32 i8*))
 (de T i32 fwrite (i8* i32 i32 i8*))
 (de T i32 putc_unlocked (i32 i8*))
+(de T i32 getc_unlocked (i8*))
 (de T i8* fopen (i8* i8*))
 (de T i32 fflush (i8*))
 (de T i32 feof (i8*))

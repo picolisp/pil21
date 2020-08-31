@@ -1,4 +1,4 @@
-# 30aug20 Software Lab. Alexander Burger
+# 31aug20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -19,7 +19,7 @@
 (de NIL dbSyncErr (Exe)
    (err Exe 0 ($ "DB fsync error: %s") (strErrno)) )
 
-(local) (getAdr setAdr)
+(local) (getAdr setAdr dbfBuf)
 
 # 6 bytes in little endian format
 # Get block address from buffer
@@ -86,7 +86,7 @@
 (de void unLockDb ((i64 . Len))
    (unless (t? (val $Solo))  # Not already locked whole DB
       (unless Len
-         (let (P (val $DbFiles)  C (val $DBs))
+         (let (P (val $DbFiles)  C (val $DBs))  # Iterate DB files
             (while (dec 'C)
                (let Db: (dbFile (setq P (ofs P (dbFile T))))  # Skip first, increment by size of dbFile
                   (when (Db: lck)
@@ -95,8 +95,8 @@
          (set $Solo ZERO) )
       (unLock ((dbFile (val $DbFiles)) fd) 0 Len) ) )  # Descriptor of first file
 
-(de i32 tryLock ((i64 . N) (i64 . Len))
-   (let Db: (dbFile (val $DbFile))
+(de i32 tryLock ((i8* . DbFile) (i64 . N) (i64 . Len))
+   (let Db: (dbFile DbFile)
       (loop
          (when (ge0 (wrLock (Db: fd) N Len NO))  # Try to lock
             (Db: lck YES)  # Set lock flag
@@ -227,10 +227,11 @@
 (de i1 isLife (Sym)
    (let
       (Nm (name (& (val (tail Sym)) -9))
+         F (objFile Nm)
          N (objId Nm) )
       (when N
          (cond
-            ((> (val $DBs) (objFile Nm))  # Local file
+            ((> (val $DBs) F)  # Local file
                (setq Nm (add Nm Nm))
                (when @@  # Dirty
                   (ret YES) )
@@ -241,7 +242,7 @@
                   (Db:
                      (dbFile
                         (set $DbFile  # Set current file
-                           (ofs (val $DbFiles) (* N (dbFile T))) ) )
+                           (ofs (val $DbFiles) (* F (dbFile T))) ) )
                      P (b8 (* BLK 2)) )
                   (blkPeek BLK P BLK)  # Read 'next'
                   (when (> (getAdr P) N)
@@ -396,17 +397,17 @@
 
 # Test for existing transaction
 (de i1 transaction ()
-   (let (Log (val $DbLog)  A (b8 BLK))
+   (let (Log (val $DbLog)  Blk (b8 BLK))
       (fseek0 Log)
-      (if (fread A 2 1 Log)  # Read first file number
+      (if (fread Blk 2 1 Log)  # Read first file number
          (loop
-            (? (== (val (i16* A)) (hex "FFFF")) YES)  # Byte order doesn't matter
+            (? (== (val (i16* Blk)) (hex "FFFF")) YES)  # Byte order doesn't matter
             (?
                (or
-                  (not (dbfBuf A))
-                  (<> (fread A BLK 1 Log) 1)
+                  (not (dbfBuf Blk))
+                  (<> (fread Blk BLK 1 Log) 1)
                   (not (fseekOfs Log ((dbFile (val $DbFile)) siz)))
-                  (<> (fread A 2 1 Log) 1) )
+                  (<> (fread Blk 2 1 Log) 1) )
                (ignLog)
                NO ) )
          (unless (feof Log)
@@ -414,7 +415,7 @@
          NO ) ) )
 
 (de void fsyncDB (Exe)
-   (let (P (val $DbFiles)  C (val $DBs))
+   (let (P (val $DbFiles)  C (val $DBs))  # Iterate DB files
       (loop
          (let Db: (dbFile P)
             (when (and (Db: drt) (lt0 (fsync (Db: fd))))
@@ -426,22 +427,22 @@
    (stderrMsg ($ "Last transaction not completed: Rollback\n") null)
    (let Log (val $DbLog)
       (fseek0 Log)
-      (let (P (val $DbFiles)  C (val $DBs))
+      (let (P (val $DbFiles)  C (val $DBs))  # Iterate DB files
          (loop
             ((dbFile P) drt NO)
             (? (=0 (dec 'C)))
             (setq P (ofs P (dbFile T))) ) )
-      (let (A (b8 BLK)  Buf (b8 (i64 (val $MaxBlkSize))))
+      (let (Blk (b8 BLK)  Buf (b8 (i64 (val $MaxBlkSize))))
          (loop
-            (unless (== (fread A 2 1 Log) 1)  # Get file number
+            (unless (== (fread Blk 2 1 Log) 1)  # Get file number
                (jnlErr Exe) )
-            (? (== (val (i16* A)) (hex "FFFF")))  # Byte order doesn't matter
-            (unless (dbfBuf A)
+            (? (== (val (i16* Blk)) (hex "FFFF")))  # Byte order doesn't matter
+            (unless (dbfBuf Blk)
                (jnlErr Exe) )
             (let Db: (dbFile (val $DbFile))
                (unless
                   (and
-                     (== (fread A BLK 1 Log) 1)
+                     (== (fread Blk BLK 1 Log) 1)
                      (== (fread Buf (Db: siz) 1 Log) 1) )
                   (jnlErr Exe) )
                (unless
@@ -450,7 +451,7 @@
                         (Db: fd)
                         Buf
                         (i64 (Db: siz))
-                        (shl (getAdr A) (i64 (Db: sh))) )
+                        (shl (getAdr Blk) (i64 (Db: sh))) )
                      (i64 (Db: siz)) )
                   (dbWrErr) )
                (Db: drt YES) ) )
@@ -472,7 +473,7 @@
       (set $Solo ZERO)  # Reset solo mode
       (when (val $DBs)
          (_rollback ZERO)
-         (let (P (val $DbFiles)  C @)
+         (let (P (val $DbFiles)  C @)  # Iterate DB files
             (loop
                (let Db: (dbFile P)
                   (close (Db: fd))
@@ -576,15 +577,65 @@
 
 # (journal ['T] 'any ..) -> T
 (de _journal (Exe)
-   #!
-   Exe )
+   (let
+      (X (cdr Exe)
+         Sym (evSym X)
+         Jnl (val $DbJnl)
+         Log (val $DbLog)
+         Buf (b8 (i64 (val $MaxBlkSize)))
+         Blk (b8 BLK) )
+      (stkChk Exe)
+      (when (t? Sym)
+         (set $DbJnl null  $DbLog null)  # Stop journal and transaction log
+         (setq Sym (evSym (shift X))) )
+      (loop
+         (let
+            (Nm (xName Exe Sym)  # Journal name
+               Fp (fopen (pathString Nm (b8 (pathSize Nm))) ($ "r")) )
+            (unless Fp
+               (openErr Exe Sym) )
+            (while (ge0 (getc_unlocked Fp))
+               (let Siz @
+                  (unless (== (fread Blk 2 1 Fp) 1)  # Read file number
+                     (jnlErr Exe) )
+                  (unless (dbfBuf Blk)  # Get file number from 'Buf' to 'DbFile'
+                     (dbfErr Exe) )  # No local file
+                  (let Db: (dbFile (val $DbFile))
+                     (unless Siz
+                        (setq Siz (Db: siz)) )
+                     (unless
+                        (and
+                           (== (fread Blk BLK 1 Fp) 1)
+                           (== (fread Buf Siz 1 Fp) 1) )
+                        (jnlErr Exe) )
+                     (blkPoke (getAdr Blk) Blk Siz) ) ) )
+            (fclose Fp)
+            (? (atom (shift X)))
+            (setq Sym (evSym X)) ) )
+      (set $DbLog Log  $DbJnl Jnl)
+      $T ) )
 
 # (id 'num ['num]) -> sym
 # (id 'sym [NIL]) -> num
 # (id 'sym T) -> (num . num)
 (de _id (Exe)
-   #!
-   Exe )
+   (let (X (cdr Exe)  Y (eval (++ X)))
+      (if (cnt? Y)  # File number or object ID
+         (extern
+            (if (nil? (eval (car X)))
+               (extNm 0 (int Y))
+               (extNm (dec (i32 (int Y))) (xCnt Exe @)) ) )
+         (needSymb Exe Y)
+         (unless (sym? (val (tail (needSymb Exe Y))))
+            (extErr Exe Y) )
+         (let
+            (Nm (name (& (val (tail Y)) -9))
+               Z (cnt (objId Nm)) )
+            (if (nil? (eval (car X)))  # Return only object ID
+               Z
+               (cons
+                  (cnt (i64 (inc (objFile Nm))))
+                  Z ) ) ) ) ) )
 
 # (blk 'fd 'cnt 'siz ['fd2]) -> lst
 # (blk 'fd 0) -> (cnt . siz)
@@ -594,18 +645,70 @@
 
 # (seq 'cnt|sym1) -> sym | NIL
 (de _seq (Exe)
-   #!
-   Exe )
+   (let
+      (X (eval (cadr Exe))
+         F (dec (i32 (int X)))
+         N 0
+         Buf (b8 BLK) )
+      (unless (cnt? X)
+         (unless (sym? (val (tail (needSymb Exe X))))
+            (extErr Exe X) )
+         (let Nm (name (& (val (tail X)) -9))
+            (setq
+               F (objFile Nm)
+               N (objId Nm) ) ) )
+      (when (>= F (val $DBs))
+         (dbfErr Exe) )
+      (let Db:
+         (dbFile
+            (set $DbFile
+               (ofs (val $DbFiles) (* F (dbFile T))) ) )
+         (rdLockDb)  # Lock for reading
+         (blkPeek BLK Buf BLK)  # Read 'next' from block zero
+         (let Next (getAdr Buf)
+            (prog1
+               (loop
+                  (? (>= (inc 'N BLKSIZE) Next) $Nil)
+                  (blkPeek (shl N (i64 (Db: sh))) Buf BLK)  # Read link field
+                  (? (== 1 (& (val Buf) BLKTAG))  # ID-Block
+                     (extern (extNm F (shr N 6))) ) )
+               (unLockDb 1) ) ) ) ) )  # Unlock
 
 # (lieu 'any) -> sym | NIL
 (de _lieu (Exe)
-   #!
-   Exe )
+   (let X (eval (cadr Exe))
+      (nond
+         ((symb? X) $Nil)
+         ((sym? (val (tail X))) $Nil)
+         (NIL
+            (let Nm (name (& (val (tail X)) -9))
+               (setq Nm (add Nm Nm))
+               (cond
+                  (@@  # Dirty
+                     (setq Nm (add Nm Nm))
+                     (if @@ $Nil X) )  # Deleted
+                  (T
+                     (setq Nm (add Nm Nm))
+                     (if @@ X $Nil) ) ) ) ) ) ) )  # Loaded
 
 # (lock ['sym]) -> cnt | NIL
 (de _lock (Exe)
-   #!
-   Exe )
+   (if
+      (if (nil? (eval (cadr Exe)))
+         (tryLock (val $DbFiles) 0 0)  # Use first dbFile
+         (let X (needSymb Exe @)
+            (unless (sym? (val (tail (needSymb Exe X))))
+               (extErr Exe X) )
+            (let
+               (Nm (name (& (val (tail X)) -9))
+                  F (objFile Nm)
+                  N (objId Nm) )
+               (when (>= F (val $DBs))
+                  (dbfErr Exe) )
+               (let Db: (dbFile (ofs (val $DbFiles) (* F (dbFile T))))
+                  (tryLock (Db:) (* N (i64 (Db: siz))) 1) ) ) ) )
+      (cnt (i64 @))
+      $Nil ) )
 
 (local) (db dbFetch dbTouch dbZap)
 
@@ -709,7 +812,7 @@
       (when (val $DbJnl)
          (lockJnl) )
       (when (val $DbLog)
-         (let (P (val $DbFiles)  C (val $DBs))
+         (let (P (val $DbFiles)  C (val $DBs))  # Iterate DB files
             (loop
                ((dbFile P) drt NO)  # Clear dirty flag
                ((dbFile P) flu 0)  # and free list use count
@@ -763,7 +866,7 @@
                         (set 2 Y P)
                         (setq P X) ) ) ) ) )
          (: 1
-            (let (P (val $DbFiles)  C (val $DBs))
+            (let (P (val $DbFiles)  C (val $DBs))  # Iterate DB files
                (loop
                   (when ((dbFile P) flu)
                      (let N @
@@ -931,7 +1034,7 @@
       (unsync)
       (unless (val $DbLog)
          (set $Protect (dec (val $Protect))) )
-      (let (P (val $DbFiles)  C (val $DBs))
+      (let (P (val $DbFiles)  C (val $DBs))  # Iterate DB files
          (loop
             ((dbFile P) flu -1)  # Init free list use count
             (? (=0 (dec 'C)))
@@ -940,13 +1043,76 @@
 
 # (mark 'sym|0 [NIL | T | 0]) -> flg
 (de _mark (Exe)
-   #!
-   Exe )
+   (let (X (cdr Exe)  Y (eval (++ X)))
+      (if (=0 Y)  # Clear all marks
+         (let (P (val $DbFiles)  C (val $DBs))  # Iterate DB files
+            (while (dec 'C)
+               (let Db: (dbFile P)
+                  (Db: mrks 0)  # Set mark vector size to zero
+                  (free (Db: mark))  # Free mark bit vector
+                  (Db: mark null) )  # and set to null
+               (setq P (ofs P (dbFile T))) )
+            $Nil )
+         (unless (sym? (val (tail (needSymb Exe Y))))
+            (extErr Exe Y) )
+         (let
+            (Nm (name (& (val (tail Y)) -9))
+               F (objFile Nm)
+               N (objId Nm) )
+            (if (>= F (val $DBs))
+               $T  # Non-local file
+               (let
+                  (Flg (eval (car X))  # Second arg
+                     Db: (dbFile (ofs (val $DbFiles) (* F (dbFile T))))
+                     P (Db: mark)  # Mark bit vector
+                     I (shr N 3) )  # Byte index
+                  (when (>= I (Db: mrks))  # Greater or equal to mark vector size
+                     (let J (inc I)
+                        (memset
+                           (setq P (Db: mark (alloc P J)))  # Increase mark bit vector
+                           0  # Clear new area
+                           (- J (Db: mrks)) )
+                        (Db: mrks J) ) )  # New mark vector size
+                  (setq
+                     P (ofs P I)  # Byte position in bit vector
+                     N (i8 (shl 1 (& N 7))) )  # Bit position
+                  (let B (val P)  # Old value
+                     (cond
+                        ((& B N)  # Bit is set
+                           (when (== ZERO Flg)
+                              (set P (& B (x| N -1))) )  # Clear mark
+                           $T )  # Return T
+                        (T  # Bit is not set
+                           (when (== $T Flg)
+                              (set P (| B N)) )  # Set mark
+                           $Nil ) ) ) ) ) ) ) ) )  # Return NIL
 
 # (free 'cnt) -> (sym . lst)
 (de _free (Exe)
-   #!
-   Exe )
+   (let
+      (X (cdr Exe)
+         F (dec (i32 (evCnt Exe X)))
+         Buf (b8 (* BLK 2)) )
+      (when (>= F (val $DBs))
+         (dbfErr Exe) )
+      (set $DbFile
+         (ofs (val $DbFiles) (* F (dbFile T))) )
+      (rdLockDb)  # Lock for reading
+      (blkPeek 0 Buf (* 2 BLK))  # Read 'free' and 'next' from block zero
+      (set $BlkLink (getAdr Buf))  # free' as next block
+      (let
+         (Y
+            (cons  # CAR of result list
+               (extern (extNm F (getAdr (ofs Buf BLK))))  # 'next' symbol
+               $Nil )
+            R (save Y) )
+         (while (val $BlkLink)  # Collect free list
+            (setq Y
+               (set 2 Y
+                  (cons (extern (extNm F (shr @ 6))) $Nil) ) )
+            (rdBlock @) )
+         (unLockDb 1)  # Unlock
+         R ) ) )
 
 # (dbck ['cnt] 'flg) -> any
 (de _dbck (Exe)
@@ -959,12 +1125,12 @@
          Syms 0
          Blks 0 )
       (if (cnt? Y)
-         (let N (int Y)
-            (when (>= (i32 (dec 'N)) (val $DBs))
+         (let F (dec (i32 (int Y)))
+            (when (>= F (val $DBs))
                (dbfErr Exe) )
             (set $DbFile
-               (ofs (val $DbFiles) (* N (dbFile T))) )
-            (setq Y (eval (cadr X))) )
+               (ofs (val $DbFiles) (* F (dbFile T))) )
+            (setq Y (eval (cadr X))) )  # Use first dbFile
          (set $DbFile (val $DbFiles)) )
       (set $Protect (inc (val $Protect)))
       (wrLockDb)
