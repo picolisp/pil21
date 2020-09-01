@@ -1,4 +1,4 @@
-# 31aug20 Software Lab. Alexander Burger
+# 01sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -275,54 +275,30 @@ truncate0 socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 ### Forward references ###
 
 # main.l
-(local) (err stkErr argErr cntErr numErr symErr extErr atomErr pairErr lstErr
-varErr protErr xCnt evCnt evLst evSym xName equal compare evList)
+(local) (equal compare evList)
 
-(de NIL err (any any i8* i8*))
-(de NIL stkErr (any))
-(de NIL argErr (any any))
-(de NIL cntErr (any any))
-(de NIL numErr (any any))
-(de NIL symErr (any any))
-(de NIL extErr (any any))
-(de NIL atomErr (any any))
-(de NIL pairErr (any any))
-(de NIL lstErr (any any))
-(de NIL varErr (any any))
-(de NIL protErr (any any))
-(de i64 xCnt (any any))
-(de i64 evCnt (any any))
-(de evLst (any))
-(de evSym (any))
-(de xName (any any))
 (de i1 equal (any any))
 (de i64 compare (any any))
 (de evList (any))
 
 # gc.l
-(local) (cons consSym consStr)
+(local) (cons consStr)
 
 (de cons (any any))
-(de consSym (any any))
 (de consStr (any))
 
 # sym.l
-(local) (bufSize pathSize bufString pathString mkStr firstByte firstChar pack
-xSym subStr)
+(local) (bufSize bufString mkStr firstByte pack xSym subStr)
 
 (de i64 bufSize (any))
-(de i64 pathSize (any))
 (de i8* bufString (any i8*))
-(de i8* pathString (any i8*))
 (de mkStr (i8*))
 (de i8 firstByte (any))
-(de i32 firstChar (any))
 (de void pack (any i64*))
-(de xSym (any))
 (de i1 subStr (any any))
 
 # io.l
-(local) (flushAll newline space outWord outString print begString endString repl)
+(local) (flushAll newline space outWord outString print repl)
 
 (de void flushAll ())
 (de void newline ())
@@ -330,8 +306,6 @@ xSym subStr)
 (de void outWord (i64))
 (de void outString (i8*))
 (de void print (any))
-(de void begString (i64*))
-(de endString ())
 (de repl (any i8* any))
 
 # db.l

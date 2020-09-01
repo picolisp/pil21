@@ -1,4 +1,4 @@
-# 14aug20 Software Lab. Alexander Burger
+# 01sep20 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -15,7 +15,7 @@ LIB = ../lib
 INC = lib/llvm.l vers.l defs.l glob.l dec.l
 SRC = main.l gc.l big.l sym.l io.l db.l apply.l flow.l subr.l
 
-all: $(LIB)/sysdefs $(BIN)/picolisp $(LIB)/ext.so
+all: $(LIB)/sysdefs $(BIN)/picolisp $(LIB)/ext.so $(LIB)/ht.so
 
 # System definitions
 $(LIB)/sysdefs: sysdefs.c
@@ -39,7 +39,7 @@ base.ll: $(INC) $(SRC)
 lib.bc: pico.h lib.c
 	$(CC) -c -O3 -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' `pkg-config --cflags libffi` -emit-llvm lib.c
 
-# Extension library
+# Extension libraries
 $(LIB)/ext.so: ext.bc
 	llc ext.bc -relocation-model=pic -o ext.s
 	$(CC) ext.s -o $(LIB)/ext.so $(SHARED)
@@ -49,6 +49,16 @@ ext.bc: ext.ll
 
 ext.ll: $(INC) ext.l
 	../pil lib/llvm.l ext.l -bye > ext.ll
+
+$(LIB)/ht.so: ht.bc
+	llc ht.bc -relocation-model=pic -o ht.s
+	$(CC) ht.s -o $(LIB)/ht.so $(SHARED)
+
+ht.bc: ht.ll
+	$(ASM) -o ht.bc ht.ll
+
+ht.ll: $(INC) ht.l
+	../pil lib/llvm.l ht.l -bye > ht.ll
 
 # Clean up
 clean:

@@ -1,21 +1,25 @@
-# 19jul20 Software Lab. Alexander Burger
+# 01sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
 (begin "ext" T
    "vers.l" "defs.l" "glob.l" "dec.l" )
 
-# External declarations
-(local) (symChar charSym initInFile initOutFile)
+(local) (SNXBASE SNXSIZE Snx FD)
 
+# External declarations
+(local) (xCnt evCnt evSym xName symChar charSym initInFile initOutFile)
+
+(de T i64 xCnt (any any))
+(de T i64 evCnt (any any))
+(de T evSym (any))
+(de T xName (any any))
 (de T i32 symChar (i64*))
 (de T void charSym (i32 i64*))
 (de T i8* initInFile (i32 i8*))
 (de T i8* initOutFile (i32))
 
 # Soundex Algorithm
-(local) (SNXBASE SNXSIZE Snx)
-
 (array $SnxTab i8
    (char "0") (char "1") (char "2") (char "3") (char "4") (char "5") (char "6") (char "7")  # 48
    (char "8") (char "9")        0          0          0          0          0          0
@@ -86,8 +90,6 @@
                   (consStr (val 3 R)) ) ) ) ) ) )
 
 # File Descriptor
-(local) FD
-
 # (ext:FD 'cnt) -> fd
 (de FD (Exe)
    (prog1
