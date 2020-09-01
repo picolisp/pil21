@@ -1,4 +1,4 @@
-# 08aug20 Software Lab. Alexander Burger
+# 01sep20 Software Lab. Alexander Burger
 
 (symbols 'net 'pico)
 
@@ -93,7 +93,7 @@
                   (%@ "initOutFile" NIL Sd2)
                   Sd2 ) )
             (NIL (and (== (errno) EAGAIN) (gt0 (dec 'N)))
-               (%@ "fcntlSetFl" 'I Sd Flg) )
+               (%@ "fcntlSetFl" NIL Sd Flg) )
             (%@ "usleep" NIL 99999) ) ) ) )
 
 # (listen 'cnt1 ['cnt2]) -> cnt | NIL
