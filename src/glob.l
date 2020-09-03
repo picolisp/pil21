@@ -1,4 +1,4 @@
-# 28aug20 Software Lab. Alexander Burger
+# 03sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -657,4 +657,4 @@
 # Strings
 (str $Empty "")
 (str $Indent "   ")
-(str $Delim " \t\n\r\"'(),[]`~{}")
+(str $Delim " \t\n\r\"'(),[]`{}~")

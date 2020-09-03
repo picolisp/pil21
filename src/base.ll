@@ -1485,7 +1485,7 @@ declare void @llvm.stackrestore(i8*)
 @$Sync = global i1 0
 @$Empty = constant [1 x i8] c"\00"
 @$Indent = constant [4 x i8] c"   \00"
-@$Delim = constant [16 x i8] c" \09\0A\0D\22'(),[]`~{}\00"
+@$Delim = constant [16 x i8] c" \09\0A\0D\22'(),[]`{}~\00"
 declare i8* @malloc(i64)
 declare i8* @realloc(i8*, i64)
 declare void @free(i8*)
@@ -49937,7 +49937,7 @@ $3:
   br i1 %3, label %$5, label %$4
 $4:
   %4 = phi i64 [%0, %$3] ; # X
-; # (cond ((cnt? X) (outNum X)) ((big? X) (fmtNum X -1 0 0 null)) ((s...
+; # (cond ((cnt? X) (outNum X)) ((big? X) (fmtNum X -1 0 0 null)) ((p...
 ; # (cnt? X)
   %5 = and i64 %4, 2
   %6 = icmp ne i64 %5, 0
@@ -49960,124 +49960,120 @@ $10:
   br label %$6
 $9:
   %13 = phi i64 [%8, %$7] ; # X
-; # (sym? X)
-  %14 = and i64 %13, 8
-  %15 = icmp ne i64 %14, 0
+; # (pair X)
+  %14 = and i64 %13, 15
+  %15 = icmp eq i64 %14, 0
   br i1 %15, label %$12, label %$11
 $12:
   %16 = phi i64 [%13, %$9] ; # X
-; # (ifn (sym? (val (tail X))) (prName (name @)) (call $Put (char "{"...
-; # (tail X)
-  %17 = add i64 %16, -8
-; # (val (tail X))
-  %18 = inttoptr i64 %17 to i64*
-  %19 = load i64, i64* %18
-; # (sym? (val (tail X)))
-  %20 = and i64 %19, 8
-  %21 = icmp ne i64 %20, 0
-  br i1 %21, label %$14, label %$13
-$13:
-  %22 = phi i64 [%16, %$12] ; # X
-; # (name @)
-  br label %$16
-$16:
-  %23 = phi i64 [%19, %$13], [%29, %$17] ; # Tail
-  %24 = and i64 %23, 6
-  %25 = icmp ne i64 %24, 0
-  br i1 %25, label %$18, label %$17
-$17:
-  %26 = phi i64 [%23, %$16] ; # Tail
-  %27 = inttoptr i64 %26 to i64*
-  %28 = getelementptr i64, i64* %27, i32 1
-  %29 = load i64, i64* %28
-  br label %$16
-$18:
-  %30 = phi i64 [%23, %$16] ; # Tail
-; # (prName (name @))
-  call void @prName(i64 %30)
-  br label %$15
-$14:
-  %31 = phi i64 [%16, %$12] ; # X
-; # (call $Put (char "{"))
-  %32 = load void(i8)*, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 80) to void(i8)**)
-  call void %32(i8 123)
-; # (& @ -9)
-  %33 = and i64 %19, -9
-; # (name (& @ -9))
-  br label %$19
-$19:
-  %34 = phi i64 [%33, %$14], [%40, %$20] ; # Tail
-  %35 = and i64 %34, 6
-  %36 = icmp ne i64 %35, 0
-  br i1 %36, label %$21, label %$20
-$20:
-  %37 = phi i64 [%34, %$19] ; # Tail
-  %38 = inttoptr i64 %37 to i64*
-  %39 = getelementptr i64, i64* %38, i32 1
-  %40 = load i64, i64* %39
-  br label %$19
-$21:
-  %41 = phi i64 [%34, %$19] ; # Tail
-; # (prExt (name (& @ -9)))
-  call void @prExt(i64 %41)
-; # (call $Put (char "}"))
-  %42 = load void(i8)*, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 80) to void(i8)**)
-  call void %42(i8 125)
-  br label %$15
-$15:
-  %43 = phi i64 [%22, %$18], [%31, %$21] ; # X
-  br label %$6
-$11:
-  %44 = phi i64 [%13, %$9] ; # X
 ; # (stkChk 0)
-  %45 = load i8*, i8** @$StkLimit
-  %46 = call i8* @llvm.stacksave()
-  %47 = icmp ugt i8* %45, %46
-  br i1 %47, label %$22, label %$23
-$22:
+  %17 = load i8*, i8** @$StkLimit
+  %18 = call i8* @llvm.stacksave()
+  %19 = icmp ugt i8* %17, %18
+  br i1 %19, label %$13, label %$14
+$13:
   call void @stkErr(i64 0)
   unreachable
-$23:
+$14:
 ; # (loop (prin (car X)) (? (nil? (shift X))) (? (atom X) (prin X)))
-  br label %$24
-$24:
-  %48 = phi i64 [%44, %$23], [%59, %$27] ; # X
+  br label %$15
+$15:
+  %20 = phi i64 [%16, %$14], [%31, %$18] ; # X
 ; # (car X)
-  %49 = inttoptr i64 %48 to i64*
-  %50 = load i64, i64* %49
+  %21 = inttoptr i64 %20 to i64*
+  %22 = load i64, i64* %21
 ; # (prin (car X))
-  call void @prin(i64 %50)
+  call void @prin(i64 %22)
 ; # (? (nil? (shift X)))
 ; # (shift X)
-  %51 = inttoptr i64 %48 to i64*
-  %52 = getelementptr i64, i64* %51, i32 1
-  %53 = load i64, i64* %52
+  %23 = inttoptr i64 %20 to i64*
+  %24 = getelementptr i64, i64* %23, i32 1
+  %25 = load i64, i64* %24
 ; # (nil? (shift X))
-  %54 = icmp eq i64 %53, ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64)
-  br i1 %54, label %$26, label %$25
-$25:
-  %55 = phi i64 [%53, %$24] ; # X
+  %26 = icmp eq i64 %25, ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64)
+  br i1 %26, label %$17, label %$16
+$16:
+  %27 = phi i64 [%25, %$15] ; # X
 ; # (? (atom X) (prin X))
 ; # (atom X)
-  %56 = and i64 %55, 15
-  %57 = icmp ne i64 %56, 0
-  br i1 %57, label %$28, label %$27
-$28:
-  %58 = phi i64 [%55, %$25] ; # X
+  %28 = and i64 %27, 15
+  %29 = icmp ne i64 %28, 0
+  br i1 %29, label %$19, label %$18
+$19:
+  %30 = phi i64 [%27, %$16] ; # X
 ; # (prin X)
-  call void @prin(i64 %58)
-  br label %$26
-$27:
-  %59 = phi i64 [%55, %$25] ; # X
-  br label %$24
+  call void @prin(i64 %30)
+  br label %$17
+$18:
+  %31 = phi i64 [%27, %$16] ; # X
+  br label %$15
+$17:
+  %32 = phi i64 [%25, %$15], [%30, %$19] ; # X
+  br label %$6
+$11:
+  %33 = phi i64 [%13, %$9] ; # X
+; # (tail X)
+  %34 = add i64 %33, -8
+; # (val (tail X))
+  %35 = inttoptr i64 %34 to i64*
+  %36 = load i64, i64* %35
+; # (sym? (val (tail X)))
+  %37 = and i64 %36, 8
+  %38 = icmp ne i64 %37, 0
+  br i1 %38, label %$21, label %$20
+$21:
+  %39 = phi i64 [%33, %$11] ; # X
+; # (call $Put (char "{"))
+  %40 = load void(i8)*, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 80) to void(i8)**)
+  call void %40(i8 123)
+; # (& @ -9)
+  %41 = and i64 %36, -9
+; # (name (& @ -9))
+  br label %$22
+$22:
+  %42 = phi i64 [%41, %$21], [%48, %$23] ; # Tail
+  %43 = and i64 %42, 6
+  %44 = icmp ne i64 %43, 0
+  br i1 %44, label %$24, label %$23
+$23:
+  %45 = phi i64 [%42, %$22] ; # Tail
+  %46 = inttoptr i64 %45 to i64*
+  %47 = getelementptr i64, i64* %46, i32 1
+  %48 = load i64, i64* %47
+  br label %$22
+$24:
+  %49 = phi i64 [%42, %$22] ; # Tail
+; # (prExt (name (& @ -9)))
+  call void @prExt(i64 %49)
+; # (call $Put (char "}"))
+  %50 = load void(i8)*, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 80) to void(i8)**)
+  call void %50(i8 125)
+  br label %$6
+$20:
+  %51 = phi i64 [%33, %$11] ; # X
+; # (name @)
+  br label %$25
+$25:
+  %52 = phi i64 [%36, %$20], [%58, %$26] ; # Tail
+  %53 = and i64 %52, 6
+  %54 = icmp ne i64 %53, 0
+  br i1 %54, label %$27, label %$26
 $26:
-  %60 = phi i64 [%53, %$24], [%58, %$28] ; # X
+  %55 = phi i64 [%52, %$25] ; # Tail
+  %56 = inttoptr i64 %55 to i64*
+  %57 = getelementptr i64, i64* %56, i32 1
+  %58 = load i64, i64* %57
+  br label %$25
+$27:
+  %59 = phi i64 [%52, %$25] ; # Tail
+; # (prName (name @))
+  call void @prName(i64 %59)
   br label %$6
 $6:
-  %61 = phi i64 [%7, %$8], [%11, %$10], [%43, %$15], [%60, %$26] ; # X
+  %60 = phi i64 [%7, %$8], [%11, %$10], [%32, %$17], [%39, %$24], [%51, %$27] ; # X
   br label %$5
 $5:
-  %62 = phi i64 [%0, %$3], [%61, %$6] ; # X
+  %61 = phi i64 [%0, %$3], [%60, %$6] ; # X
   ret void
 }
 
@@ -51209,6 +51205,26 @@ $1:
   store i64 %9, i64* %10
 ; # (fun (void i8) putString)
   store void(i8)* @putString, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 80) to void(i8)**)
+  ret void
+}
+
+define void @tglString(i64*) {
+$1:
+; # (ofs P 4)
+  %1 = getelementptr i64, i64* %0, i32 4
+; # (any (ofs P 4))
+  %2 = ptrtoint i64* %1 to i64
+; # (i64* $Put)
+  %3 = bitcast void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 80) to void(i8)**) to i64*
+; # (any (i64* $Put))
+  %4 = ptrtoint i64* %3 to i64
+; # (xchg (any (ofs P 4)) (any (i64* $Put)))
+  %5 = inttoptr i64 %2 to i64*
+  %6 = load i64, i64* %5
+  %7 = inttoptr i64 %4 to i64*
+  %8 = load i64, i64* %7
+  store i64 %8, i64* %5
+  store i64 %6, i64* %7
   ret void
 }
 

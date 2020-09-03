@@ -1,4 +1,4 @@
-# 29aug20 Software Lab. Alexander Burger
+# 03sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2287,18 +2287,17 @@
       (cond
          ((cnt? X) (outNum X))
          ((big? X) (fmtNum X -1 0 0 null))
-         ((sym? X)
-            (ifn (sym? (val (tail X)))
-               (prName (name @))
-               (call $Put (char "{"))
-               (prExt (name (& @ -9)))
-               (call $Put (char "}")) ) )
-         (T
+         ((pair X)
             (stkChk 0)
             (loop
                (prin (car X))
                (? (nil? (shift X)))
-               (? (atom X) (prin X)) ) ) ) ) )
+               (? (atom X) (prin X)) ) )
+         ((sym? (val (tail X)))
+            (call $Put (char "{"))
+            (prExt (name (& @ -9)))
+            (call $Put (char "}")) )
+         (T (prName (name @))) ) ) )
 
 # (prin 'any ..) -> any
 (de _prin (Exe)
@@ -2507,6 +2506,9 @@
    (set
       5 P (val (i64* $Put))
       $Put (fun (void i8) putString) ) )
+
+(de void tglString ((i64* . P))
+   (xchg (any (ofs P 4)) (any (i64* $Put))) )
 
 (de endString ()
    (let (P (val $StrP)  Q (ofs P 2))
