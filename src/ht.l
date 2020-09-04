@@ -1,4 +1,4 @@
-# 03sep20 Software Lab. Alexander Burger
+# 04sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -8,7 +8,8 @@
 (local) (Prin Fmt Pack Read In Out)
 
 # External declarations
-(local) (prin symByte prExt begString tglString endString isLstIntern)
+(local) (prin symByte prExt begString tglString endString isLstIntern outName
+mkChar)
 
 (de T void prin (any))
 (de T i8 symByte (i64*))
@@ -17,6 +18,8 @@
 (de T void tglString (i64*))
 (de T endString ())
 (de T isLstIntern (any any))
+(de T void outName (any))
+(de T mkChar (i32))
 
 # (ht:Prin 'sym ..) -> sym
 (de Prin (Exe)
@@ -52,7 +55,7 @@
                                        (call $Put (symByte P)) ) ) ) ) ) ) ) ) )  # Fourth byte
             (? (atom (shift X)) Y) ) ) ) )
 
-(local) (putHex htFmt)
+(local) (putHex htEncode htFmt)
 
 (de void putHex ((i8 . B))
    (call $Put (char "%"))  # Prefix with "%"
@@ -68,6 +71,19 @@
             (+ @ 7)
             @ )
          (char "0") ) ) )
+
+(de void htEncode ((i8 . B) (i64* . P))
+   (while B
+      (if (strchr ($ " \"#%&:;<=>?\\_") (i32 B))
+         (putHex B)
+         (call $Put B)
+         (when (& B (hex "80"))  # Multi-byte
+            (call $Put (symByte P))  # Second byte
+            (when (& B (hex "20"))
+               (call $Put (symByte P))  # Third byte
+               (when (& B (hex "10"))
+                  (call $Put (symByte P)) ) ) ) )  # Fourth byte
+      (setq B (symByte P)) ) )
 
 (de void htFmt (X)
    (cond
@@ -86,27 +102,17 @@
       ((== (name @) ZERO))
       (T
          (let (Nm @  P (push 0 Nm)  B (symByte P))  # [cnt name]
-            (if (== X (isLstIntern Nm (val $Intern)))  # Internal symbol
-               (call $Put (char "$"))  # Prefix with "$"
-               (if
-                  (or  # Special
+            (cond
+               ((== X (isLstIntern Nm (val $Intern)))  # Internal symbol
+                  (call $Put (char "$"))  # Prefix with "$"
+                  (htEncode B P) )
+               ((or  # Special
                      (== B (char "$"))
                      (== B (char "+"))
                      (== B (char "-")) )
                   (putHex B)
-                  (call $Put B) )
-               (setq B (symByte P)) )
-            (while B
-               (if (strchr ($ " \"#%&:;<=>?\\_") (i32 B))
-                  (putHex B)
-                  (call $Put B)
-                  (when (& B (hex "80"))  # Multi-byte
-                     (call $Put (symByte P))  # Second byte
-                     (when (& B (hex "20"))
-                        (call $Put (symByte P))  # Third byte
-                        (when (& B (hex "10"))
-                           (call $Put (symByte P)) ) ) ) )  # Fourth byte
-               (setq B (symByte P)) ) ) ) ) )
+                  (htEncode (symByte P) P) )
+               (T (htEncode B P)) ) ) ) ) )
 
 # (ht:Fmt 'any ..) -> sym
 (de Fmt (Exe)
@@ -122,10 +128,73 @@
          (call $Put (char "&")) )
       (endString) ) )
 
+(local) (getHex head)
+
+(de i8 getHex (Sym)
+   (if (> (- (firstByte Sym) (char "0")) 9)
+      (- (& @ (hex "DF")) 7)
+      @ ) )
+
+(de head ((i8* . S) Lst)
+   (let B (val S)
+      (loop
+         (? (<> B (firstByte (++ Lst))) 0)
+         (? (=0 (setq B (val (inc 'S)))) Lst) ) ) )
+
 # (ht:Pack 'lst ['flg']) -> sym
 (de Pack (Exe)
-   #!
-   Exe )
+   (let
+      (X (cdr Exe)
+         Lst (save (eval (++ X)))
+         Flg (nil? (eval (car X))) )
+      (begString (push 4 NIL ZERO NIL NIL))  # [cnt last name link fun]
+      (while (pair Lst)
+         (let (C (++ Lst)  B (firstByte C))
+            (cond
+               ((== B (char "%"))  # Hex-escaped
+                  (call $Put
+                     (if Flg
+                        B
+                        (|
+                           (shl (getHex (++ Lst)) 4)  # Upper nibble
+                           (getHex (++ Lst)) ) ) ) )  # Lower nibble
+               ((<> B (char "&")) (outName C))  # Normal character
+               ((head ($ "lt;") Lst)
+                  (call $Put (char "<"))
+                  (setq Lst @) )
+               ((head ($ "gt;") Lst)
+                  (call $Put (char ">"))
+                  (setq Lst @) )
+               ((head ($ "amp;") Lst)
+                  (call $Put (char "&"))
+                  (setq Lst @) )
+               ((head ($ "quot;") Lst)
+                  (call $Put (char "\""))
+                  (setq Lst @) )
+               ((head ($ "nbsp;") Lst)
+                  (call $Put (char " "))
+                  (setq Lst @) )
+               ((== (firstByte (car Lst)) (char "#"))
+                  (let
+                     (L (shift Lst)
+                        D (firstByte (++ L))  # Digit
+                        N (i32 (- D (char "0"))) )  # Character
+                     (loop
+                        (?
+                           (or
+                              (> (char "0") D)
+                              (> D (char "9")) )
+                           (call $Put (char "&"))
+                           (call $Put (char "#")) )
+                        (? (== (setq D (firstByte (++ L))) (char ";"))
+                           (outName (mkChar N))
+                           (setq Lst L) )
+                        (setq N
+                           (+
+                              (* N 10)
+                              (i32 (- D (char "0"))) ) ) ) ) )
+               (T (call $Put (char "&"))) ) ) )
+      (endString) ) )
 
 # Read content length bytes
 # (ht:Read 'cnt) -> lst
