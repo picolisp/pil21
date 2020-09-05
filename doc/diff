@@ -1,4 +1,4 @@
-# 25aug20 Software Lab. Alexander Burger
+# 05sep20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -40,4 +40,5 @@
    * 'T' changed (no skipped call)
 - Because of readline(3), '*Run' tasks are suspended while typing in the REPL
 
+% '*Run' cleared in children after (fork)
 % Main coroutine has a tag 'T'

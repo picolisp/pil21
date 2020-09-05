@@ -1878,6 +1878,9 @@
                (when (val $Tell)  # Telling
                   (close @) )
                (set $Tell (val 2 Tell))  # Write end of 'tell'
+               (set $Nfds 0)   # Clear poll entries
+               (free (i8* (val $Poll)))
+               (set $Poll (i64* null))
                (let Cld (val $Child)
                   (while (ge0 (dec 'N))  # Close children
                      (let Cld: (child Cld)
@@ -1906,6 +1909,7 @@
                         (setq Ca (Ca: link)) ) ) )
                (free (val Termio))  # Give up terminal control
                (set Termio null)
+               (set $Run $Nil)
                (set
                   $PRepl (val $Repl)  # Set parent REPL flag
                   $PPid (val $Pid) )  # Set parent process ID
