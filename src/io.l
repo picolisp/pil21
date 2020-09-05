@@ -1,4 +1,4 @@
-# 03sep20 Software Lab. Alexander Burger
+# 05sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -647,7 +647,22 @@
    (let Nm (xName Exe (evSym (cdr Exe)))
       (mkStr (pathString Nm (b8 (pathSize Nm)))) ) )
 
-(local) (hasData waitFd)
+(local) (pollfd hasData waitFd)
+
+(de i64* pollfd ((i32 . Fd))
+   (let I (val $Nfds)
+      (when (>= Fd I)
+         (let P
+            (set $Poll
+               (i64*
+                  (alloc
+                     (i8* (val $Poll))
+                     (* 8 (i64 (set $Nfds (+ Fd 1)))) ) ) )
+            (loop
+               (pollIgn (ofs P I))
+               (? (== I Fd))
+               (inc 'I) ) ) ) )
+   (ofs (val $Poll) Fd) )
 
 (de i1 hasData ((i32 . Fd))
    (and
@@ -666,16 +681,11 @@
          Tim (getMsec) )
       (stkChk Exe)
       (loop
-         (let
-            (Stk (stack)
-               Poll (b64 (+ (length (val $Run)) (val $Children) 3))
-               Nfds 0
-               Dly Ms )
+         (let Dly Ms
             (when (ge0 Fd)
                (if (hasData Fd)
                   (setq Dly 0)
-                  (pollIn Fd Poll)  # First 'pollfd' struct
-                  (inc 'Nfds) ) )
+                  (pollIn Fd (pollfd Fd)) ) )
             (let R (val Run)  # '*Run' elements
                (while (pair R)
                   (let X (++ R)
@@ -689,32 +699,25 @@
                               (let N @
                                  (if (hasData N)
                                     (setq Dly 0)
-                                    (pollIn N (ofs Poll Nfds))
-                                    (inc 'Nfds) ) ) ) ) ) ) ) )
-            (and
-               (val $Hear)  # RPC listener
-               (<> @ Fd)
+                                    (pollIn N (pollfd N)) ) ) ) ) ) ) ) )
+            (when (and (val $Hear) (<> @ Fd))  # RPC listener
                (let N @
                   (if (hasData N)
                      (setq Dly 0)
-                     (pollIn N (ofs Poll Nfds))
-                     (inc 'Nfds) ) ) )
+                     (pollIn N (pollfd N)) ) ) )
             (when (val $Spkr)  # RPC speaker
-               (pollIn @ (ofs Poll Nfds))
-               (inc 'Nfds)
+               (pollIn @ (pollfd @))
                (let
                   (Cld (val $Child)  # Iterate children
                      <Cld (ofs Cld (* (val $Children) (child T))) )
                   (until (== Cld <Cld)
                      (let Cld: (child Cld)
                         (when (Cld: pid)
-                           (pollIn (Cld: hear) (ofs Poll Nfds))
-                           (inc 'Nfds)
+                           (pollIn (Cld: hear) (pollfd (Cld: hear)))
                            (when (Cld: cnt)
-                              (pollIn (Cld: tell) (ofs Poll Nfds))
-                              (inc 'Nfds) ) ) )
+                              (pollOut (Cld: tell) (pollfd (Cld: tell))) ) ) )
                      (setq Cld (ofs Cld (child T))) ) ) )
-            (while (lt0 (gPoll Poll Nfds Dly))
+            (while (lt0 (gPoll (val $Poll) (i64 (val $Nfds)) Dly))
                (unless (== (gErrno) EINTR)
                   (set $Run $Nil)
                   (selectErr Exe) )
@@ -728,7 +731,7 @@
                      (until (== Cld <Cld)
                         (let Cld: (child Cld)
                            (when (Cld: pid)
-                              (when (readyIn Poll (Cld: hear))
+                              (when (readyIn (pollfd (Cld: hear)))
                                  (cond
                                     ((=0 (rdBytesNb (Cld: hear) (i8* Pn) (* 2 4)))
                                        (clsChild Cld)
@@ -754,7 +757,7 @@
                                           (T
                                              (clsChild Cld)
                                              (goto 1) ) ) ) ) )
-                              (when (readyOut Poll (Cld: tell))
+                              (when (readyOut (pollfd (Cld: tell)))
                                  (let N
                                     (+
                                        (i64 (val (i32* (Cld: buf))))
@@ -779,7 +782,7 @@
                   (when
                      (and
                         (=0 (val $Talking))
-                        (readyIn Poll (val $Spkr))
+                        (readyIn (pollfd (val $Spkr)))
                         (gt0 (rdBytesNb (val $Spkr) (i8* Pn) 4)) )
                      (let Cld (ofs (val $Child) (* (val Pn) (child T)))
                         (when ((child Cld) pid)
@@ -787,7 +790,7 @@
                            (wrChild Cld $TBuf 2) ) ) )
                   (set $Protect (dec (val $Protect))) )
                (let N (val $Hear)  # RPC listener
-                  (when (and N (<> N Fd) (readyIn Poll N))
+                  (when (and N (<> N Fd) (readyIn (pollfd N)))
                      (cond
                         ((=0 (rdHear))
                            (close N)
@@ -809,7 +812,7 @@
                                           (set Y (pos V)  $At V)
                                           (run (cdr Y)) ) ) ) )  # Run body
                               ((<> (i32 (int @)) Fd)
-                                 (when (readyIn Poll @)
+                                 (when (readyIn (pollfd @))
                                     (set $At (car X))  # File descriptor
                                     (run (cdr X)) ) ) ) ) ) ) )  # Run body
                (and
@@ -818,8 +821,11 @@
                   (setq Ms 0) )
                (setq Tim Now) )
             (sigChk Exe)
-            (? (or (=0 Ms) (lt0 Fd) (readyIn Poll Fd)))
-            (stack Stk)
+            (?
+               (or
+                  (=0 Ms)
+                  (lt0 Fd)
+                  (readyIn (pollfd Fd)) ) )
             (set Run (set $Task (val $Run))) ) )
       (set $Task Task  $At At)
       Ms ) )
@@ -925,7 +931,7 @@
                   (while (lt0 (gPoll Poll 1 0))
                      (unless (== (gErrno) EINTR)
                         (selectErr Exe) ) )
-                  (? (not (readyIn Poll Fd)) $Nil)
+                  (? (not (readyIn Poll)) $Nil)
                   (? (ge0 (slowNb (In:)))) ) ) ) ) ) )
 
 (local) (rdOpen wrOpen erOpen ctOpen)

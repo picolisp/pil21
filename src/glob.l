@@ -1,4 +1,4 @@
-# 03sep20 Software Lab. Alexander Burger
+# 05sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -21,9 +21,11 @@
 (var $Ret 0)                           # Secondary return value
 (var $TtyPid i32 0)                    # Terminal process ID
 (var $InFiles i8** null)               # Input files
-(var $OutFiles i8** null)              # Output files
 (var $InFDs i32 0)                     # Number of input files
+(var $OutFiles i8** null)              # Output files
 (var $OutFDs i32 0)                    # Number of ourput files
+(var $Poll i64* null)                  # Poll entries
+(var $Nfds i32 0)                      # Number of poll entries
 (var $PutBin (void i8) null)           # Binary output function
 (var $GetBin (i32) null)               # Binary input function
 (var $SeedL i64 0)                     # Random seed low

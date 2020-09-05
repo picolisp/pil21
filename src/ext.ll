@@ -28,9 +28,11 @@ declare void @llvm.stackrestore(i8*)
 @$Ret = external global i64
 @$TtyPid = external global i32
 @$InFiles = external global i8**
-@$OutFiles = external global i8**
 @$InFDs = external global i32
+@$OutFiles = external global i8**
 @$OutFDs = external global i32
+@$Poll = external global i64*
+@$Nfds = external global i32
 @$PutBin = external global void(i8)*
 @$GetBin = external global i32()*
 @$SeedL = external global i64
@@ -194,9 +196,10 @@ declare i64 @getGmTime()
 declare i64 @fileInfo(i1, i8*, i64*)
 declare void @pollIn(i32, i64*)
 declare void @pollOut(i32, i64*)
+declare void @pollIgn(i64*)
 declare i32 @gPoll(i64*, i64, i64)
-declare i1 @readyIn(i64*, i32)
-declare i1 @readyOut(i64*, i32)
+declare i1 @readyIn(i64*)
+declare i1 @readyOut(i64*)
 declare i32 @rdLock(i32, i64, i64)
 declare i32 @wrLock(i32, i64, i64, i32)
 declare i32 @unLock(i32, i64, i64)

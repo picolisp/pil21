@@ -9,7 +9,7 @@
 
 # External declarations
 (local) (prin symByte prExt begString tglString endString isLstIntern outName
-mkChar)
+mkChar evCnt getChar)
 
 (de T void prin (any))
 (de T i8 symByte (i64*))
@@ -20,6 +20,8 @@ mkChar)
 (de T isLstIntern (any any))
 (de T void outName (any))
 (de T mkChar (i32))
+(de T i64 evCnt (any any))
+(de T i32 getChar (i32))
 
 # (ht:Prin 'sym ..) -> sym
 (de Prin (Exe)
@@ -199,8 +201,17 @@ mkChar)
 # Read content length bytes
 # (ht:Read 'cnt) -> lst
 (de Read (Exe)
-   #!
-   Exe )
+   (let (N (evCnt Exe (cdr Exe))  C (val $Chr))
+      (if
+         (or
+            (le0 N)
+            (and
+               (=0 C)
+               (lt0 (setq C (call $Get))) ) )
+         $Nil
+         (mkChar (getChar C))
+         #!
+         ) ) )
 
 # (ht:In 'flg . prg) -> any
 (de In (Exe)

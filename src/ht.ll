@@ -28,9 +28,11 @@ declare void @llvm.stackrestore(i8*)
 @$Ret = external global i64
 @$TtyPid = external global i32
 @$InFiles = external global i8**
-@$OutFiles = external global i8**
 @$InFDs = external global i32
+@$OutFiles = external global i8**
 @$OutFDs = external global i32
+@$Poll = external global i64*
+@$Nfds = external global i32
 @$PutBin = external global void(i8)*
 @$GetBin = external global i32()*
 @$SeedL = external global i64
@@ -194,9 +196,10 @@ declare i64 @getGmTime()
 declare i64 @fileInfo(i1, i8*, i64*)
 declare void @pollIn(i32, i64*)
 declare void @pollOut(i32, i64*)
+declare void @pollIgn(i64*)
 declare i32 @gPoll(i64*, i64, i64)
-declare i1 @readyIn(i64*, i32)
-declare i1 @readyOut(i64*, i32)
+declare i1 @readyIn(i64*)
+declare i1 @readyOut(i64*)
 declare i32 @rdLock(i32, i64, i64)
 declare i32 @wrLock(i32, i64, i64, i32)
 declare i32 @unLock(i32, i64, i64)
@@ -246,6 +249,8 @@ declare i64 @endString()
 declare i64 @isLstIntern(i64, i64)
 declare void @outName(i64)
 declare i64 @mkChar(i32)
+declare i64 @evCnt(i64, i64)
+declare i32 @getChar(i32)
 
 define i64 @Prin(i64) {
 $1:
@@ -1273,7 +1278,56 @@ $14:
 
 define i64 @Read(i64) {
 $1:
-  ret i64 %0
+; # (let (N (evCnt Exe (cdr Exe)) C (val $Chr)) (if (or (le0 N) (and ...
+; # (cdr Exe)
+  %1 = inttoptr i64 %0 to i64*
+  %2 = getelementptr i64, i64* %1, i32 1
+  %3 = load i64, i64* %2
+; # (evCnt Exe (cdr Exe))
+  %4 = call i64 @evCnt(i64 %0, i64 %3)
+; # (val $Chr)
+  %5 = load i32, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 72) to i32*)
+; # (if (or (le0 N) (and (=0 C) (lt0 (setq C (call $Get))))) $Nil (mk...
+; # (or (le0 N) (and (=0 C) (lt0 (setq C (call $Get)))))
+; # (le0 N)
+  %6 = icmp sle i64 %4, 0
+  br i1 %6, label %$2, label %$3
+$3:
+  %7 = phi i32 [%5, %$1] ; # C
+; # (and (=0 C) (lt0 (setq C (call $Get))))
+; # (=0 C)
+  %8 = icmp eq i32 %7, 0
+  br i1 %8, label %$5, label %$4
+$5:
+  %9 = phi i32 [%7, %$3] ; # C
+; # (call $Get)
+  %10 = load i32()*, i32()** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 88) to i32()**)
+  %11 = call i32 %10()
+; # (lt0 (setq C (call $Get)))
+  %12 = icmp slt i32 %11, 0
+  br label %$4
+$4:
+  %13 = phi i32 [%7, %$3], [%11, %$5] ; # C
+  %14 = phi i1 [0, %$3], [%12, %$5] ; # ->
+  br label %$2
+$2:
+  %15 = phi i32 [%5, %$1], [%13, %$4] ; # C
+  %16 = phi i1 [1, %$1], [%14, %$4] ; # ->
+  br i1 %16, label %$6, label %$7
+$6:
+  %17 = phi i32 [%15, %$2] ; # C
+  br label %$8
+$7:
+  %18 = phi i32 [%15, %$2] ; # C
+; # (getChar C)
+  %19 = call i32 @getChar(i32 %18)
+; # (mkChar (getChar C))
+  %20 = call i64 @mkChar(i32 %19)
+  br label %$8
+$8:
+  %21 = phi i32 [%17, %$6], [%18, %$7] ; # C
+  %22 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64), %$6], [%20, %$7] ; # ->
+  ret i64 %22
 }
 
 define i64 @In(i64) {

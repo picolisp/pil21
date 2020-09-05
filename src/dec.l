@@ -1,4 +1,4 @@
-# 01sep20 Software Lab. Alexander Burger
+# 05sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -230,13 +230,14 @@ truncate0 socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (de T i64 fileInfo (i1 i8* i64*))
 
 # Polling
-(local) (pollIn pollOut gPoll readyIn readyOut)
+(local) (pollIn pollOut pollIgn gPoll readyIn readyOut)
 
 (de T void pollIn (i32 i64*))
 (de T void pollOut (i32 i64*))
+(de T void pollIgn (i64*))
 (de T i32 gPoll (i64* i64 i64))
-(de T i1 readyIn (i64* i32))
-(de T i1 readyOut (i64* i32))
+(de T i1 readyIn (i64*))
+(de T i1 readyOut (i64*))
 
 # Locking
 (local) (rdLock wrLock unLock getLock)

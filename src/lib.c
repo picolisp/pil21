@@ -1,4 +1,4 @@
-// 01sep20 Software Lab. Alexander Burger
+// 05sep20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -344,19 +344,25 @@ void pollOut(int32_t fd, struct pollfd *p) {
    p->events = POLLOUT;
 }
 
+void pollIgn(struct pollfd *p) {
+   p->fd = -1;
+}
+
 int32_t gPoll(struct pollfd *fds, int64_t nfds, int64_t timeout) {
    return (int32_t)poll(fds, (nfds_t)nfds, (int)timeout);
 }
 
-int readyIn(struct pollfd *p, int32_t fd) {
-   while (p->fd != fd)
-      ++p;
-   return p->revents != 0;  // POLLIN or POLLHUP or POLLERR
+int readyIn(struct pollfd *p) {
+   if (p->fd < 0)
+      return 0;
+   p->fd = -1;
+   return (p->revents & (POLLIN | POLLHUP | POLLERR)) != 0;
 }
 
-int readyOut(struct pollfd *p, int32_t fd) {
-   while (p->fd != fd)
-      ++p;
+int readyOut(struct pollfd *p) {
+   if (p->fd < 0)
+      return 0;
+   p->fd = -1;
    return (p->revents & POLLOUT) != 0;
 }
 
