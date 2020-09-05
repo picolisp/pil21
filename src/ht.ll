@@ -1528,6 +1528,92 @@ $8:
   %129 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64), %$6], [%126, %$17] ; # ->
   ret i64 %129
 }
+@$CnkCnt = global i32 0
+@$CnkGet = global i32()* null
+@$CnkPut = global void(i8)* null
+@$CnkBuf = global [4000 x i8] zeroinitializer
+
+define i32 @chrHex() {
+$1:
+; # (let C (val $Chr) (cond ((and (>= C (char "0")) (>= (char "9") C)...
+; # (val $Chr)
+  %0 = load i32, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 72) to i32*)
+; # (cond ((and (>= C (char "0")) (>= (char "9") C)) (- C 48)) ((and ...
+; # (and (>= C (char "0")) (>= (char "9") C))
+; # (>= C (char "0"))
+  %1 = icmp sge i32 %0, 48
+  br i1 %1, label %$4, label %$3
+$4:
+  %2 = phi i32 [%0, %$1] ; # C
+; # (>= (char "9") C)
+  %3 = icmp sge i32 57, %2
+  br label %$3
+$3:
+  %4 = phi i32 [%0, %$1], [%2, %$4] ; # C
+  %5 = phi i1 [0, %$1], [%3, %$4] ; # ->
+  br i1 %5, label %$6, label %$5
+$6:
+  %6 = phi i32 [%4, %$3] ; # C
+; # (- C 48)
+  %7 = sub i32 %6, 48
+  br label %$2
+$5:
+  %8 = phi i32 [%4, %$3] ; # C
+; # (and (>= (setq C (& C (hex "DF"))) (char "A")) (>= (char "F") C))...
+; # (& C (hex "DF"))
+  %9 = and i32 %8, 223
+; # (>= (setq C (& C (hex "DF"))) (char "A"))
+  %10 = icmp sge i32 %9, 65
+  br i1 %10, label %$8, label %$7
+$8:
+  %11 = phi i32 [%9, %$5] ; # C
+; # (>= (char "F") C)
+  %12 = icmp sge i32 70, %11
+  br label %$7
+$7:
+  %13 = phi i32 [%9, %$5], [%11, %$8] ; # C
+  %14 = phi i1 [0, %$5], [%12, %$8] ; # ->
+  br i1 %14, label %$10, label %$9
+$10:
+  %15 = phi i32 [%13, %$7] ; # C
+; # (- C 55)
+  %16 = sub i32 %15, 55
+  br label %$2
+$9:
+  %17 = phi i32 [%13, %$7] ; # C
+  br label %$2
+$2:
+  %18 = phi i32 [%6, %$6], [%15, %$10], [%17, %$9] ; # C
+  %19 = phi i32 [%7, %$6], [%16, %$10], [-1, %$9] ; # ->
+  ret i32 %19
+}
+
+define void @chunkSize() {
+$1:
+; # (unless (val $Chr) (call $Get))
+; # (val $Chr)
+  %0 = load i32, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 72) to i32*)
+  %1 = icmp ne i32 %0, 0
+  br i1 %1, label %$3, label %$2
+$2:
+; # (call $Get)
+  %2 = load i32()*, i32()** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 88) to i32()**)
+  %3 = call i32 %2()
+  br label %$3
+$3:
+; # (when (ge0 (set $CnkCnt (chrHex))) 0)
+; # (set $CnkCnt (chrHex))
+; # (chrHex)
+  %4 = call i32 @chrHex()
+  store i32 %4, i32* @$CnkCnt
+; # (ge0 (set $CnkCnt (chrHex)))
+  %5 = icmp sge i32 %4, 0
+  br i1 %5, label %$4, label %$5
+$4:
+  br label %$5
+$5:
+  ret void
+}
 
 define i64 @In(i64) {
 $1:

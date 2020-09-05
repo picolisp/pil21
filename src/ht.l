@@ -233,6 +233,41 @@ mkChar evCnt getChar)
                      (setq X
                         (set 2 X (cons (mkChar C) $Nil)) ) ) ) ) ) ) ) )
 
+# Chunked Encoding
+(local) (CHUNK $CnkCnt $CnkGet $CnkPut $CnkBuf chrHex chunkSize getChunked)
+
+(setq CHUNK 4000)
+(var $CnkCnt i32 0)  # Chunk size count
+(var $CnkGet (i32) null)  # Saved $Get function
+(var $CnkPut (void i8) null)  # Saved $Put function
+(array $CnkBuf i8 . CHUNK)  # Chunk buffer
+
+(de i32 chrHex ()
+   (let C (val $Chr)
+      (cond
+         ((and
+               (>= C (char "0"))
+               (>= (char "9") C) )
+            (- C 48) )  # Decimal digit
+         ((and
+               (>=
+                  (setq C (& C (hex "DF")))
+                  (char "A") )
+               (>= (char "F") C) )
+            (- C 55) )  # Hex letter
+         (T -1) ) ) )
+
+(de void chunkSize ()
+   (unless (val $Chr)
+      (call $Get) )
+   (when (ge0 (set $CnkCnt (chrHex)))
+      #!
+      0 ) )
+
+(de void getChunked ()
+   #!
+   )
+
 # (ht:In 'flg . prg) -> any
 (de In (Exe)
    #!

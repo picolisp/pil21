@@ -1,4 +1,4 @@
-# 03sep20 Software Lab. Alexander Burger
+# 05sep20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -308,7 +308,10 @@ False Beg End Safe *Safe)
          (prin "  i64 " (eval Val)) ) ) )
 
 (de array Lst
-   (let (Sym (++ Lst)  Typ (++ Lst)  Len (length Lst))
+   (let
+      (Sym (++ Lst)
+         Typ (++ Lst)
+         Len (if (pair Lst) (length Lst) (eval Lst)) )
       (def Sym
          (def
             (pack
@@ -316,15 +319,19 @@ False Beg End Safe *Safe)
                Len " x " (setq Typ (type Typ))
                "]* @" Sym " to " (ptr Typ) ")" )
             (ptr Typ) ) )
-      (prinl
+      (prin
          "@" Sym " = " (when *Shared "external ")
-         "global [" Len " x " Typ "]" (unless *Shared " [") )
-      (unless *Shared
-         (for (I . X) Lst
-            (prinl
-               "  " Typ " " (eval X)
-               (unless (== I Len) ",") ) )
-         (prinl "]") ) ) )
+         "global [" Len " x " Typ "]" )
+      (cond
+         (*Shared (prinl))
+         ((atom Lst) (prinl " zeroinitializer"))
+         (T
+            (prinl *Shared " [")
+            (for (I . X) Lst
+               (prinl
+                  "  " Typ " " (eval X)
+                  (unless (== I Len) ",") ) )
+            (prinl "]") ) ) ) )
 
 (de table Args
    (let
