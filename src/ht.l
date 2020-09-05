@@ -1,4 +1,4 @@
-# 04sep20 Software Lab. Alexander Burger
+# 05sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -209,9 +209,29 @@ mkChar evCnt getChar)
                (=0 C)
                (lt0 (setq C (call $Get))) ) )
          $Nil
-         (mkChar (getChar C))
-         #!
-         ) ) )
+         (let C (getChar C)
+            (when (>= C (hex "80"))  # Multi-byte
+               (dec 'N)
+               (when (>= C (hex "800"))
+                  (dec 'N)
+                  (when (>= C (hex "10000"))
+                     (dec 'N) ) ) )
+            (if (lt0 (dec 'N))
+               $Nil
+               (let (X (cons (mkChar C) $Nil)  R (save X))
+                  (loop
+                     (? (=0 N) (set $Chr 0) R)
+                     (? (lt0 (setq C (call $Get))) $Nil)
+                     (setq C (getChar C))
+                     (when (>= C (hex "80"))  # Multi-byte
+                        (dec 'N)
+                        (when (>= C (hex "800"))
+                           (dec 'N)
+                           (when (>= C (hex "10000"))
+                              (dec 'N) ) ) )
+                     (? (lt0 (dec 'N)) $Nil)
+                     (setq X
+                        (set 2 X (cons (mkChar C) $Nil)) ) ) ) ) ) ) ) )
 
 # (ht:In 'flg . prg) -> any
 (de In (Exe)

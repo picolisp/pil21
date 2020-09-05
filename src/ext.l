@@ -1,4 +1,4 @@
-# 01sep20 Software Lab. Alexander Burger
+# 05sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -97,5 +97,13 @@
       (when (ge0 (i32 (xCnt Exe @)))
          (initInFile @ null)
          (initOutFile @) ) ) )
+
+# Base64 Encoding
+
+# (ext:Base64) -> num|NIL
+# (ext:Base64 'num1|NIL ['num2|NIL ['num3|NIL]]) -> flg
+(de Base64 (Exe)
+   #!
+   Exe )
 
 (end)

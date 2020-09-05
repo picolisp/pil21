@@ -1,4 +1,4 @@
-# 25aug20 Software Lab. Alexander Burger
+# 05sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -718,18 +718,16 @@
 
 # (glue 'any 'lst) -> sym
 (de _glue (Exe)
-   (let
-      (X (cdr Exe)
-         Y (save (eval (++ X)))  # 'any'
-         Z (save (eval (++ X)))  # 'lst'
-         P (push 4 NIL ZERO NIL) )  # [cnt last name link]
-      (link (ofs P 2))
-      (when (pair Z)
-         (loop
-            (pack (++ Z) P)
-            (? (atom Z))
-            (pack Y P) ) )
-      (consStr (val 3 P)) ) )
+   (let (X (cdr Exe)  Y (save (eval (++ X))))  # 'any'
+      (if (atom (eval (++ X)))  # 'lst'
+         @
+         (let (Z (save @)  P (push 4 NIL ZERO NIL))  # [cnt last name link]
+            (link (ofs P 2))
+            (loop
+               (pack (++ Z) P)
+               (? (atom Z))
+               (pack Y P) )
+            (consStr (val 3 P)) ) ) ) )
 
 # (text 'any1 'any ..) -> sym
 (de _text (Exe)
