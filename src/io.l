@@ -1,4 +1,4 @@
-# 05sep20 Software Lab. Alexander Burger
+# 06sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -874,20 +874,20 @@
 # (hear 'cnt) -> cnt
 (de _hear (Exe)
    (let
-      (C (eval (cadr Exe))
-         Fd (i32 (xCnt Exe C)) )
+      (X (eval (cadr Exe))
+         Fd (i32 (xCnt Exe X)) )
       (when
          (or
             (lt0 Fd)
             (>= Fd (val $InFDs))
             (=0 (val (ofs (val $InFiles) Fd))) )
-         (badFd Exe C) )
+         (badFd Exe X) )
       (when (val $Hear)
          (close @)
          (closeInFile @)
          (closeOutFile @) )
       (set $Hear Fd)
-      C ) )
+      X ) )
 
 # (tell ['cnt] 'sym ['any ..]) -> any
 (de _tell (Exe)
@@ -1907,9 +1907,17 @@
                      (let Ca: (caFrame Ca)
                         (Ca: fin ZERO)
                         (setq Ca (Ca: link)) ) ) )
+               (let R (val $Run)  # Switch off all tasks
+                  (while (pair R)
+                     (let X (++ R)
+                        (unless (sign? (car X))
+                           (let Fd (i32 (int @))
+                              (close Fd)
+                              (closeInFile Fd)
+                              (closeOutFile Fd) ) ) ) ) )
+               (set $Run $Nil)
                (free (val Termio))  # Give up terminal control
                (set Termio null)
-               (set $Run $Nil)
                (set
                   $PRepl (val $Repl)  # Set parent REPL flag
                   $PPid (val $Pid) )  # Set parent process ID
@@ -1964,8 +1972,7 @@
             (Io: fd 1)  # fd = stdout
             (pushOutFiles (Io:))
             ((outFile (val $OutFile)) tty NO)  # Clear 'tty'
-            (set $Run $Nil)  # Switch off all tasks and line editor
-            (set $LinePtr null)
+            (set $LinePtr null)  # Switch off line editor
             (when (pair E)  # Evaluate 'exe'
                (evList E) )
             (bye 0) )
@@ -2004,13 +2011,13 @@
 # (close 'cnt) -> cnt | NIL
 (de _close (Exe)
    (let
-      (C (eval (cadr Exe))
-         Fd (i32 (xCnt Exe C)) )
+      (X (eval (cadr Exe))
+         Fd (i32 (xCnt Exe X)) )
       (loop
          (? (=0 (close Fd))
             (closeInFile Fd)
             (closeOutFile Fd)
-            C )
+            X )
          (? (<> (gErrno) EINTR) $Nil)
          (sigChk Exe) ) ) )
 

@@ -1,4 +1,4 @@
-# 08aug20 Software Lab. Alexander Burger
+# 06sep20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -22,12 +22,6 @@
                                        (cons (++ Prg) (eval (++ Prg) 1)) ) ) ) )
                            Prg ) ) ) ) ) ) )
       (NIL (quit "Key conflict" Key)) ) )
-
-(de forked ()
-   (let N (caar *Run)
-      (when (gt0 N)
-         (push '*Fork (list 'close N)) )
-      (push '*Fork (list 'task N)) ) )
 
 (de timeout (N)
    (if2 N (assoc -1 *Run)
