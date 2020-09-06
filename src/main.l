@@ -1,4 +1,4 @@
-# 25aug20 Software Lab. Alexander Burger
+# 06sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -282,7 +282,6 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (set
             $Link 0
             $Protect 0
-            $Task $Nil
             $Next $Nil
             $Make 0
             $Yoke 0

@@ -674,8 +674,7 @@
 (de i64 waitFd (Exe (i32 . Fd) (i64 . Ms))
    (let
       (At (save (val $At))
-         Task (val $Task)
-         Run (link (push (set $Task (val $Run)) NIL))
+         Run (link (push (val $Run) NIL))
          Buf (b8 (val PipeBufSize))
          Pn (b32 2)
          Tim (getMsec) )
@@ -689,17 +688,16 @@
             (let R (val Run)  # '*Run' elements
                (while (pair R)
                   (let X (++ R)
-                     (unless (memq X Task)
-                        (cond
-                           ((sign? (car X))
-                              (let N (int (cadr X))
-                                 (when (> Dly N)
-                                    (setq Dly N) ) ) )
-                           ((<> (i32 (int @)) Fd)
-                              (let N @
-                                 (if (hasData N)
-                                    (setq Dly 0)
-                                    (pollIn N (pollfd N)) ) ) ) ) ) ) ) )
+                     (cond
+                        ((sign? (car X))
+                           (let N (int (cadr X))
+                              (when (> Dly N)
+                                 (setq Dly N) ) ) )
+                        ((<> (i32 (int @)) Fd)
+                           (let N @
+                              (if (hasData N)
+                                 (setq Dly 0)
+                                 (pollIn N (pollfd N)) ) ) ) ) ) ) )
             (when (and (val $Hear) (<> @ Fd))  # RPC listener
                (let N @
                   (if (hasData N)
@@ -802,19 +800,18 @@
                (let R (val Run)
                   (while (pair R)
                      (let X (++ R)
-                        (unless (memq X Task)
-                           (cond
-                              ((sign? (car X))
-                                 (let Y (cdr X)
-                                    (if (gt0 (- (int (car Y)) Dif))  # Not yet timed out
-                                       (set Y (sign (cnt @)))   # Store short negative number
-                                       (let V (car X)  # Timeout value
-                                          (set Y (pos V)  $At V)
-                                          (run (cdr Y)) ) ) ) )  # Run body
-                              ((<> (i32 (int @)) Fd)
-                                 (when (readyIn (pollfd @))
-                                    (set $At (car X))  # File descriptor
-                                    (run (cdr X)) ) ) ) ) ) ) )  # Run body
+                        (cond
+                           ((sign? (car X))
+                              (let Y (cdr X)
+                                 (if (gt0 (- (int (car Y)) Dif))  # Not yet timed out
+                                    (set Y (sign (cnt @)))   # Store short negative number
+                                    (let V (car X)  # Timeout value
+                                       (set Y (pos V)  $At V)
+                                       (run (cdr Y)) ) ) ) )  # Run body
+                           ((<> (i32 (int @)) Fd)
+                              (when (readyIn (pollfd @))
+                                 (set $At (car X))  # File descriptor
+                                 (run (cdr X)) ) ) ) ) ) )  # Run body
                (and
                   (gt0 Ms)
                   (lt0 (dec 'Ms Dif))
@@ -826,8 +823,8 @@
                   (=0 Ms)
                   (lt0 Fd)
                   (readyIn (pollfd Fd)) ) )
-            (set Run (set $Task (val $Run))) ) )
-      (set $Task Task  $At At)
+            (set Run (val $Run)) ) )
+      (set $At At)
       Ms ) )
 
 # (wait 'cnt|NIL . prg) -> any

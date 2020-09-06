@@ -1,4 +1,4 @@
-# 05sep20 Software Lab. Alexander Burger
+# 06sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -625,7 +625,6 @@
    ($Key 0)                      # Method key
    ($Make 0)                     # 'make' environment
    ($Yoke 0)
-   ($Task $Nil)                  # Task list
    ($Protect i32 0)              # Signal protection
    ($Trace i32 0) )              # Trace level
 
