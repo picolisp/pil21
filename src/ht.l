@@ -1,4 +1,4 @@
-# 05sep20 Software Lab. Alexander Burger
+# 09sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -22,6 +22,7 @@ mkChar evCnt getChar)
 (de T mkChar (i32))
 (de T i64 evCnt (any any))
 (de T i32 getChar (i32))
+(de T i1 flush (i8*))
 
 # (ht:Prin 'sym ..) -> sym
 (de Prin (Exe)
@@ -234,48 +235,116 @@ mkChar evCnt getChar)
                         (set 2 X (cons (mkChar C) $Nil)) ) ) ) ) ) ) ) )
 
 # Chunked Encoding
-(local) (CHUNK $CnkCnt $CnkGet $CnkPut $CnkBuf chrHex chunkSize getChunked)
+(local) (CHUNK $CnkCnt $SvGet $SvPut $CnkBuf)
 
 (setq CHUNK 4000)
 (var $CnkCnt i32 0)  # Chunk size count
-(var $CnkGet (i32) null)  # Saved $Get function
-(var $CnkPut (void i8) null)  # Saved $Put function
+(var $SvGet (i32) null)  # Saved $Get function
+(var $SvPut (void i8) null)  # Saved $Put function
 (array $CnkBuf i8 . CHUNK)  # Chunk buffer
 
-(de i32 chrHex ()
-   (let C (val $Chr)
-      (cond
-         ((and
-               (>= C (char "0"))
-               (>= (char "9") C) )
-            (- C 48) )  # Decimal digit
-         ((and
-               (>=
-                  (setq C (& C (hex "DF")))
-                  (char "A") )
-               (>= (char "F") C) )
-            (- C 55) )  # Hex letter
-         (T -1) ) ) )
+(local) (chrHex chunkSize getChunked)
+
+(de i32 chrHex ((i32 . C))
+   (cond
+      ((and
+            (>= C (char "0"))
+            (>= (char "9") C) )
+         (- C 48) )  # Decimal digit
+      ((and
+            (>=
+               (setq C (& C (hex "DF")))
+               (char "A") )
+            (>= (char "F") C) )
+         (- C 55) )  # Hex letter
+      (T -1) ) )
 
 (de void chunkSize ()
-   (unless (val $Chr)
-      (call $Get) )
-   (when (ge0 (set $CnkCnt (chrHex)))
-      #!
-      0 ) )
+   (let C (val $Chr)
+      (unless C
+         (setq C (call $SvGet)) )
+      (when (ge0 (set $CnkCnt (chrHex C)))
+         (while (ge0 (chrHex (setq C (call $SvGet))))
+            (set $CnkCnt (| @ (shl (val $CnkCnt) 4))) )
+         (loop
+            (? (== C (char "\n"))
+               (call $SvGet)
+               (when (=0 (val $CnkCnt))
+                  (call $SvGet)  # Skip '\r' of empty line
+                  (set $Chr 0) ) )
+            (? (lt0 C))
+            (setq C (call $SvGet)) ) ) ) )
 
-(de void getChunked ()
-   #!
-   )
+(de i32 getChunked ()
+   (if (le0 (val $CnkCnt))
+      (set $Chr -1)  # Return EOF
+      (call $SvGet)
+      (when (=0 (set $CnkCnt (dec @)))  # Decrement count
+         (call $SvGet)  # Skip '\n' and '\r'
+         (call $SvGet)
+         (chunkSize) )
+      (val $Chr) ) )
 
 # (ht:In 'flg . prg) -> any
 (de In (Exe)
-   #!
-   Exe )
+   (let X (cdr Exe)
+      (if (nil? (eval (++ X)))  # 'flg'
+         (run X)  # 'prg'
+         (set
+            (i8** $SvGet) (val (i8** $Get))
+            $Get (fun (i32) getChunked) )
+         (chunkSize)
+         (prog1
+            (run X)  # 'prg'
+            (set (i8** $Get) (val (i8** $SvGet)))
+            (set $Chr 0) ) ) ) )
+
+(local) (outHex wrChunk putChunked)
+
+(de void outHex ((i32 . N))
+   (when (> N 15)
+      (outHex (shr N 4))
+      (setq N (& N 15)) )
+   (when (> N 9)
+      (setq N (+ N 39)) )  # Make lower case letter
+   (call $SvPut (+ (i8 N) (char "0"))) )
+
+(de void wrChunk ((i32 . Cnt))
+   (outHex Cnt)  # Print count as hex
+   (call $SvPut (char "\r"))
+   (call $SvPut (char "\n"))
+   (let P $CnkBuf  # Output chunk buffer
+      (loop
+         (call $SvPut (val P))
+         (? (=0 (dec 'Cnt)))
+         (inc 'P) ) )
+   (call $SvPut (char "\r"))
+   (call $SvPut (char "\n")) )
+
+(de void putChunked ((i8 . B))
+   (let I (val $CnkCnt)
+      (set (ofs $CnkBuf I) B)
+      (ifn (== (inc I) CHUNK)
+         (set $CnkCnt @)
+         (wrChunk @)
+         (set $CnkCnt 0) ) ) )
 
 # (ht:Out 'flg . prg) -> any
 (de Out (Exe)
-   #!
-   Exe )
+   (let (X (cdr Exe)  F (eval (++ X)))
+      (if (nil? F)  # 'flg'
+         (setq X (run X))  # 'prg'
+         (set
+            $CnkCnt 0  # Clear count
+            (i8** $SvPut) (val (i8** $Put))
+            $Put (fun (void i8) putChunked) )
+         (setq X (run X))  # 'prg'
+         (when (val $CnkCnt)
+            (wrChunk @) )
+         (set (i8** $Put) (val (i8** $SvPut)))
+         (unless (t? F)
+            (outString ($ "0\r\n\r\n")) ) )
+      (flush (val $OutFile))
+      X ) )
 
 (end)

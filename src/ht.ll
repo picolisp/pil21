@@ -251,6 +251,7 @@ declare void @outName(i64)
 declare i64 @mkChar(i32)
 declare i64 @evCnt(i64, i64)
 declare i32 @getChar(i32)
+declare i1 @flush(i8*)
 
 define i64 @Prin(i64) {
 $1:
@@ -1529,15 +1530,12 @@ $8:
   ret i64 %129
 }
 @$CnkCnt = global i32 0
-@$CnkGet = global i32()* null
-@$CnkPut = global void(i8)* null
+@$SvGet = global i32()* null
+@$SvPut = global void(i8)* null
 @$CnkBuf = global [4000 x i8] zeroinitializer
 
-define i32 @chrHex() {
+define i32 @chrHex(i32) {
 $1:
-; # (let C (val $Chr) (cond ((and (>= C (char "0")) (>= (char "9") C)...
-; # (val $Chr)
-  %0 = load i32, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 72) to i32*)
 ; # (cond ((and (>= C (char "0")) (>= (char "9") C)) (- C 48)) ((and ...
 ; # (and (>= C (char "0")) (>= (char "9") C))
 ; # (>= C (char "0"))
@@ -1590,41 +1588,621 @@ $2:
 
 define void @chunkSize() {
 $1:
-; # (unless (val $Chr) (call $Get))
+; # (let C (val $Chr) (unless C (setq C (call $SvGet))) (when (ge0 (s...
 ; # (val $Chr)
   %0 = load i32, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 72) to i32*)
+; # (unless C (setq C (call $SvGet)))
   %1 = icmp ne i32 %0, 0
   br i1 %1, label %$3, label %$2
 $2:
-; # (call $Get)
-  %2 = load i32()*, i32()** bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 88) to i32()**)
-  %3 = call i32 %2()
+  %2 = phi i32 [%0, %$1] ; # C
+; # (call $SvGet)
+  %3 = load i32()*, i32()** @$SvGet
+  %4 = call i32 %3()
   br label %$3
 $3:
-; # (when (ge0 (set $CnkCnt (chrHex))) 0)
-; # (set $CnkCnt (chrHex))
-; # (chrHex)
-  %4 = call i32 @chrHex()
-  store i32 %4, i32* @$CnkCnt
-; # (ge0 (set $CnkCnt (chrHex)))
-  %5 = icmp sge i32 %4, 0
-  br i1 %5, label %$4, label %$5
+  %5 = phi i32 [%0, %$1], [%4, %$2] ; # C
+; # (when (ge0 (set $CnkCnt (chrHex C))) (while (ge0 (chrHex (setq C ...
+; # (set $CnkCnt (chrHex C))
+; # (chrHex C)
+  %6 = call i32 @chrHex(i32 %5)
+  store i32 %6, i32* @$CnkCnt
+; # (ge0 (set $CnkCnt (chrHex C)))
+  %7 = icmp sge i32 %6, 0
+  br i1 %7, label %$4, label %$5
 $4:
+  %8 = phi i32 [%5, %$3] ; # C
+; # (while (ge0 (chrHex (setq C (call $SvGet)))) (set $CnkCnt (| @ (s...
+  br label %$6
+$6:
+  %9 = phi i32 [%8, %$4], [%14, %$7] ; # C
+; # (call $SvGet)
+  %10 = load i32()*, i32()** @$SvGet
+  %11 = call i32 %10()
+; # (chrHex (setq C (call $SvGet)))
+  %12 = call i32 @chrHex(i32 %11)
+; # (ge0 (chrHex (setq C (call $SvGet))))
+  %13 = icmp sge i32 %12, 0
+  br i1 %13, label %$7, label %$8
+$7:
+  %14 = phi i32 [%11, %$6] ; # C
+; # (set $CnkCnt (| @ (shl (val $CnkCnt) 4)))
+; # (val $CnkCnt)
+  %15 = load i32, i32* @$CnkCnt
+; # (shl (val $CnkCnt) 4)
+  %16 = shl i32 %15, 4
+; # (| @ (shl (val $CnkCnt) 4))
+  %17 = or i32 %12, %16
+  store i32 %17, i32* @$CnkCnt
+  br label %$6
+$8:
+  %18 = phi i32 [%11, %$6] ; # C
+; # (loop (? (== C (char "^J")) (call $SvGet) (when (=0 (val $CnkCnt)...
+  br label %$9
+$9:
+  %19 = phi i32 [%18, %$8], [%34, %$15] ; # C
+; # (? (== C (char "^J")) (call $SvGet) (when (=0 (val $CnkCnt)) (cal...
+; # (== C (char "^J"))
+  %20 = icmp eq i32 %19, 10
+  br i1 %20, label %$12, label %$10
+$12:
+  %21 = phi i32 [%19, %$9] ; # C
+; # (call $SvGet)
+  %22 = load i32()*, i32()** @$SvGet
+  %23 = call i32 %22()
+; # (when (=0 (val $CnkCnt)) (call $SvGet) (set $Chr 0))
+; # (val $CnkCnt)
+  %24 = load i32, i32* @$CnkCnt
+; # (=0 (val $CnkCnt))
+  %25 = icmp eq i32 %24, 0
+  br i1 %25, label %$13, label %$14
+$13:
+  %26 = phi i32 [%21, %$12] ; # C
+; # (call $SvGet)
+  %27 = load i32()*, i32()** @$SvGet
+  %28 = call i32 %27()
+; # (set $Chr 0)
+  store i32 0, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 72) to i32*)
+  br label %$14
+$14:
+  %29 = phi i32 [%21, %$12], [%26, %$13] ; # C
+  br label %$11
+$10:
+  %30 = phi i32 [%19, %$9] ; # C
+; # (? (lt0 C))
+; # (lt0 C)
+  %31 = icmp slt i32 %30, 0
+  br i1 %31, label %$11, label %$15
+$15:
+  %32 = phi i32 [%30, %$10] ; # C
+; # (call $SvGet)
+  %33 = load i32()*, i32()** @$SvGet
+  %34 = call i32 %33()
+  br label %$9
+$11:
+  %35 = phi i32 [%29, %$14], [%30, %$10] ; # C
   br label %$5
 $5:
+  %36 = phi i32 [%5, %$3], [%35, %$11] ; # C
   ret void
+}
+
+define i32 @getChunked() {
+$1:
+; # (if (le0 (val $CnkCnt)) (set $Chr -1) (call $SvGet) (when (=0 (se...
+; # (val $CnkCnt)
+  %0 = load i32, i32* @$CnkCnt
+; # (le0 (val $CnkCnt))
+  %1 = icmp sle i32 %0, 0
+  br i1 %1, label %$2, label %$3
+$2:
+; # (set $Chr -1)
+  store i32 -1, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 72) to i32*)
+  br label %$4
+$3:
+; # (call $SvGet)
+  %2 = load i32()*, i32()** @$SvGet
+  %3 = call i32 %2()
+; # (when (=0 (set $CnkCnt (dec @))) (call $SvGet) (call $SvGet) (chu...
+; # (set $CnkCnt (dec @))
+; # (dec @)
+  %4 = sub i32 %0, 1
+  store i32 %4, i32* @$CnkCnt
+; # (=0 (set $CnkCnt (dec @)))
+  %5 = icmp eq i32 %4, 0
+  br i1 %5, label %$5, label %$6
+$5:
+; # (call $SvGet)
+  %6 = load i32()*, i32()** @$SvGet
+  %7 = call i32 %6()
+; # (call $SvGet)
+  %8 = load i32()*, i32()** @$SvGet
+  %9 = call i32 %8()
+; # (chunkSize)
+  call void @chunkSize()
+  br label %$6
+$6:
+; # (val $Chr)
+  %10 = load i32, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 72) to i32*)
+  br label %$4
+$4:
+  %11 = phi i32 [-1, %$2], [%10, %$6] ; # ->
+  ret i32 %11
 }
 
 define i64 @In(i64) {
 $1:
-  ret i64 %0
+; # (let X (cdr Exe) (if (nil? (eval (++ X))) (run X) (set (i8** $SvG...
+; # (cdr Exe)
+  %1 = inttoptr i64 %0 to i64*
+  %2 = getelementptr i64, i64* %1, i32 1
+  %3 = load i64, i64* %2
+; # (if (nil? (eval (++ X))) (run X) (set (i8** $SvGet) (val (i8** $G...
+; # (++ X)
+  %4 = inttoptr i64 %3 to i64*
+  %5 = load i64, i64* %4
+  %6 = getelementptr i64, i64* %4, i32 1
+  %7 = load i64, i64* %6
+; # (eval (++ X))
+  %8 = and i64 %5, 6
+  %9 = icmp ne i64 %8, 0
+  br i1 %9, label %$4, label %$3
+$4:
+  br label %$2
+$3:
+  %10 = and i64 %5, 8
+  %11 = icmp ne i64 %10, 0
+  br i1 %11, label %$6, label %$5
+$6:
+  %12 = inttoptr i64 %5 to i64*
+  %13 = load i64, i64* %12
+  br label %$2
+$5:
+  %14 = call i64 @evList(i64 %5)
+  br label %$2
+$2:
+  %15 = phi i64 [%5, %$4], [%13, %$6], [%14, %$5] ; # ->
+; # (nil? (eval (++ X)))
+  %16 = icmp eq i64 %15, ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64)
+  br i1 %16, label %$7, label %$8
+$7:
+  %17 = phi i64 [%7, %$2] ; # X
+; # (run X)
+  br label %$10
+$10:
+  %18 = phi i64 [%17, %$7], [%40, %$19] ; # Prg
+  %19 = inttoptr i64 %18 to i64*
+  %20 = load i64, i64* %19
+  %21 = getelementptr i64, i64* %19, i32 1
+  %22 = load i64, i64* %21
+  %23 = and i64 %22, 15
+  %24 = icmp ne i64 %23, 0
+  br i1 %24, label %$13, label %$11
+$13:
+  %25 = phi i64 [%22, %$10] ; # Prg
+  %26 = and i64 %20, 6
+  %27 = icmp ne i64 %26, 0
+  br i1 %27, label %$16, label %$15
+$16:
+  br label %$14
+$15:
+  %28 = and i64 %20, 8
+  %29 = icmp ne i64 %28, 0
+  br i1 %29, label %$18, label %$17
+$18:
+  %30 = inttoptr i64 %20 to i64*
+  %31 = load i64, i64* %30
+  br label %$14
+$17:
+  %32 = call i64 @evList(i64 %20)
+  br label %$14
+$14:
+  %33 = phi i64 [%20, %$16], [%31, %$18], [%32, %$17] ; # ->
+  br label %$12
+$11:
+  %34 = phi i64 [%22, %$10] ; # Prg
+  %35 = and i64 %20, 15
+  %36 = icmp eq i64 %35, 0
+  br i1 %36, label %$20, label %$19
+$20:
+  %37 = phi i64 [%34, %$11] ; # Prg
+  %38 = call i64 @evList(i64 %20)
+  %39 = icmp ne i64 %38, 0
+  br label %$19
+$19:
+  %40 = phi i64 [%34, %$11], [%37, %$20] ; # Prg
+  %41 = phi i1 [0, %$11], [%39, %$20] ; # ->
+  br label %$10
+$12:
+  %42 = phi i64 [%25, %$14] ; # Prg
+  %43 = phi i64 [%33, %$14] ; # ->
+  br label %$9
+$8:
+  %44 = phi i64 [%7, %$2] ; # X
+; # (set (i8** $SvGet) (val (i8** $Get)) $Get (fun (i32) getChunked))...
+; # (i8** $SvGet)
+  %45 = bitcast i32()** @$SvGet to i8**
+; # (i8** $Get)
+  %46 = bitcast i32()** bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 88) to i32()**) to i8**
+; # (val (i8** $Get))
+  %47 = load i8*, i8** %46
+  store i8* %47, i8** %45
+; # (fun (i32) getChunked)
+  store i32()* @getChunked, i32()** bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 88) to i32()**)
+; # (chunkSize)
+  call void @chunkSize()
+; # (prog1 (run X) (set (i8** $Get) (val (i8** $SvGet))) (set $Chr 0)...
+; # (run X)
+  br label %$21
+$21:
+  %48 = phi i64 [%44, %$8], [%70, %$30] ; # Prg
+  %49 = inttoptr i64 %48 to i64*
+  %50 = load i64, i64* %49
+  %51 = getelementptr i64, i64* %49, i32 1
+  %52 = load i64, i64* %51
+  %53 = and i64 %52, 15
+  %54 = icmp ne i64 %53, 0
+  br i1 %54, label %$24, label %$22
+$24:
+  %55 = phi i64 [%52, %$21] ; # Prg
+  %56 = and i64 %50, 6
+  %57 = icmp ne i64 %56, 0
+  br i1 %57, label %$27, label %$26
+$27:
+  br label %$25
+$26:
+  %58 = and i64 %50, 8
+  %59 = icmp ne i64 %58, 0
+  br i1 %59, label %$29, label %$28
+$29:
+  %60 = inttoptr i64 %50 to i64*
+  %61 = load i64, i64* %60
+  br label %$25
+$28:
+  %62 = call i64 @evList(i64 %50)
+  br label %$25
+$25:
+  %63 = phi i64 [%50, %$27], [%61, %$29], [%62, %$28] ; # ->
+  br label %$23
+$22:
+  %64 = phi i64 [%52, %$21] ; # Prg
+  %65 = and i64 %50, 15
+  %66 = icmp eq i64 %65, 0
+  br i1 %66, label %$31, label %$30
+$31:
+  %67 = phi i64 [%64, %$22] ; # Prg
+  %68 = call i64 @evList(i64 %50)
+  %69 = icmp ne i64 %68, 0
+  br label %$30
+$30:
+  %70 = phi i64 [%64, %$22], [%67, %$31] ; # Prg
+  %71 = phi i1 [0, %$22], [%69, %$31] ; # ->
+  br label %$21
+$23:
+  %72 = phi i64 [%55, %$25] ; # Prg
+  %73 = phi i64 [%63, %$25] ; # ->
+; # (set (i8** $Get) (val (i8** $SvGet)))
+; # (i8** $Get)
+  %74 = bitcast i32()** bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 88) to i32()**) to i8**
+; # (i8** $SvGet)
+  %75 = bitcast i32()** @$SvGet to i8**
+; # (val (i8** $SvGet))
+  %76 = load i8*, i8** %75
+  store i8* %76, i8** %74
+; # (set $Chr 0)
+  store i32 0, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 72) to i32*)
+  br label %$9
+$9:
+  %77 = phi i64 [%17, %$12], [%44, %$23] ; # X
+  %78 = phi i64 [%43, %$12], [%73, %$23] ; # ->
+  ret i64 %78
+}
+
+define void @outHex(i32) {
+$1:
+; # (when (> N 15) (outHex (shr N 4)) (setq N (& N 15)))
+; # (> N 15)
+  %1 = icmp sgt i32 %0, 15
+  br i1 %1, label %$2, label %$3
+$2:
+  %2 = phi i32 [%0, %$1] ; # N
+; # (shr N 4)
+  %3 = lshr i32 %2, 4
+; # (outHex (shr N 4))
+  call void @outHex(i32 %3)
+; # (& N 15)
+  %4 = and i32 %2, 15
+  br label %$3
+$3:
+  %5 = phi i32 [%0, %$1], [%4, %$2] ; # N
+; # (when (> N 9) (setq N (+ N 39)))
+; # (> N 9)
+  %6 = icmp sgt i32 %5, 9
+  br i1 %6, label %$4, label %$5
+$4:
+  %7 = phi i32 [%5, %$3] ; # N
+; # (+ N 39)
+  %8 = add i32 %7, 39
+  br label %$5
+$5:
+  %9 = phi i32 [%5, %$3], [%8, %$4] ; # N
+; # (i8 N)
+  %10 = trunc i32 %9 to i8
+; # (+ (i8 N) (char "0"))
+  %11 = add i8 %10, 48
+; # (call $SvPut (+ (i8 N) (char "0")))
+  %12 = load void(i8)*, void(i8)** @$SvPut
+  call void %12(i8 %11)
+  ret void
+}
+
+define void @wrChunk(i32) {
+$1:
+; # (outHex Cnt)
+  call void @outHex(i32 %0)
+; # (call $SvPut (char "^M"))
+  %1 = load void(i8)*, void(i8)** @$SvPut
+  call void %1(i8 13)
+; # (call $SvPut (char "^J"))
+  %2 = load void(i8)*, void(i8)** @$SvPut
+  call void %2(i8 10)
+; # (let P $CnkBuf (loop (call $SvPut (val P)) (? (=0 (dec 'Cnt))) (i...
+; # (loop (call $SvPut (val P)) (? (=0 (dec 'Cnt))) (inc 'P))
+  br label %$2
+$2:
+  %3 = phi i32 [%0, %$1], [%9, %$3] ; # Cnt
+  %4 = phi i8* [bitcast ([4000 x i8]* @$CnkBuf to i8*), %$1], [%11, %$3] ; # P
+; # (val P)
+  %5 = load i8, i8* %4
+; # (call $SvPut (val P))
+  %6 = load void(i8)*, void(i8)** @$SvPut
+  call void %6(i8 %5)
+; # (? (=0 (dec 'Cnt)))
+; # (dec 'Cnt)
+  %7 = sub i32 %3, 1
+; # (=0 (dec 'Cnt))
+  %8 = icmp eq i32 %7, 0
+  br i1 %8, label %$4, label %$3
+$3:
+  %9 = phi i32 [%7, %$2] ; # Cnt
+  %10 = phi i8* [%4, %$2] ; # P
+; # (inc 'P)
+  %11 = getelementptr i8, i8* %10, i32 1
+  br label %$2
+$4:
+  %12 = phi i32 [%7, %$2] ; # Cnt
+  %13 = phi i8* [%4, %$2] ; # P
+  %14 = phi i64 [0, %$2] ; # ->
+; # (call $SvPut (char "^M"))
+  %15 = load void(i8)*, void(i8)** @$SvPut
+  call void %15(i8 13)
+; # (call $SvPut (char "^J"))
+  %16 = load void(i8)*, void(i8)** @$SvPut
+  call void %16(i8 10)
+  ret void
+}
+
+define void @putChunked(i8) {
+$1:
+; # (let I (val $CnkCnt) (set (ofs $CnkBuf I) B) (ifn (== (inc I) CHU...
+; # (val $CnkCnt)
+  %1 = load i32, i32* @$CnkCnt
+; # (set (ofs $CnkBuf I) B)
+; # (ofs $CnkBuf I)
+  %2 = getelementptr i8, i8* bitcast ([4000 x i8]* @$CnkBuf to i8*), i32 %1
+  store i8 %0, i8* %2
+; # (ifn (== (inc I) CHUNK) (set $CnkCnt @) (wrChunk @) (set $CnkCnt ...
+; # (inc I)
+  %3 = add i32 %1, 1
+; # (== (inc I) CHUNK)
+  %4 = icmp eq i32 %3, 4000
+  br i1 %4, label %$3, label %$2
+$2:
+; # (set $CnkCnt @)
+  store i32 %3, i32* @$CnkCnt
+  br label %$4
+$3:
+; # (wrChunk @)
+  call void @wrChunk(i32 %3)
+; # (set $CnkCnt 0)
+  store i32 0, i32* @$CnkCnt
+  br label %$4
+$4:
+  %5 = phi i32 [%3, %$2], [0, %$3] ; # ->
+  ret void
 }
 
 define i64 @Out(i64) {
 $1:
-  ret i64 %0
+; # (let (X (cdr Exe) F (eval (++ X))) (if (nil? F) (setq X (run X)) ...
+; # (cdr Exe)
+  %1 = inttoptr i64 %0 to i64*
+  %2 = getelementptr i64, i64* %1, i32 1
+  %3 = load i64, i64* %2
+; # (++ X)
+  %4 = inttoptr i64 %3 to i64*
+  %5 = load i64, i64* %4
+  %6 = getelementptr i64, i64* %4, i32 1
+  %7 = load i64, i64* %6
+; # (eval (++ X))
+  %8 = and i64 %5, 6
+  %9 = icmp ne i64 %8, 0
+  br i1 %9, label %$4, label %$3
+$4:
+  br label %$2
+$3:
+  %10 = and i64 %5, 8
+  %11 = icmp ne i64 %10, 0
+  br i1 %11, label %$6, label %$5
+$6:
+  %12 = inttoptr i64 %5 to i64*
+  %13 = load i64, i64* %12
+  br label %$2
+$5:
+  %14 = call i64 @evList(i64 %5)
+  br label %$2
+$2:
+  %15 = phi i64 [%5, %$4], [%13, %$6], [%14, %$5] ; # ->
+; # (if (nil? F) (setq X (run X)) (set $CnkCnt 0 (i8** $SvPut) (val (...
+; # (nil? F)
+  %16 = icmp eq i64 %15, ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64)
+  br i1 %16, label %$7, label %$8
+$7:
+  %17 = phi i64 [%7, %$2] ; # X
+; # (run X)
+  br label %$10
+$10:
+  %18 = phi i64 [%17, %$7], [%40, %$19] ; # Prg
+  %19 = inttoptr i64 %18 to i64*
+  %20 = load i64, i64* %19
+  %21 = getelementptr i64, i64* %19, i32 1
+  %22 = load i64, i64* %21
+  %23 = and i64 %22, 15
+  %24 = icmp ne i64 %23, 0
+  br i1 %24, label %$13, label %$11
+$13:
+  %25 = phi i64 [%22, %$10] ; # Prg
+  %26 = and i64 %20, 6
+  %27 = icmp ne i64 %26, 0
+  br i1 %27, label %$16, label %$15
+$16:
+  br label %$14
+$15:
+  %28 = and i64 %20, 8
+  %29 = icmp ne i64 %28, 0
+  br i1 %29, label %$18, label %$17
+$18:
+  %30 = inttoptr i64 %20 to i64*
+  %31 = load i64, i64* %30
+  br label %$14
+$17:
+  %32 = call i64 @evList(i64 %20)
+  br label %$14
+$14:
+  %33 = phi i64 [%20, %$16], [%31, %$18], [%32, %$17] ; # ->
+  br label %$12
+$11:
+  %34 = phi i64 [%22, %$10] ; # Prg
+  %35 = and i64 %20, 15
+  %36 = icmp eq i64 %35, 0
+  br i1 %36, label %$20, label %$19
+$20:
+  %37 = phi i64 [%34, %$11] ; # Prg
+  %38 = call i64 @evList(i64 %20)
+  %39 = icmp ne i64 %38, 0
+  br label %$19
+$19:
+  %40 = phi i64 [%34, %$11], [%37, %$20] ; # Prg
+  %41 = phi i1 [0, %$11], [%39, %$20] ; # ->
+  br label %$10
+$12:
+  %42 = phi i64 [%25, %$14] ; # Prg
+  %43 = phi i64 [%33, %$14] ; # ->
+  br label %$9
+$8:
+  %44 = phi i64 [%7, %$2] ; # X
+; # (set $CnkCnt 0 (i8** $SvPut) (val (i8** $Put)) $Put (fun (void i8...
+  store i32 0, i32* @$CnkCnt
+; # (i8** $SvPut)
+  %45 = bitcast void(i8)** @$SvPut to i8**
+; # (i8** $Put)
+  %46 = bitcast void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 80) to void(i8)**) to i8**
+; # (val (i8** $Put))
+  %47 = load i8*, i8** %46
+  store i8* %47, i8** %45
+; # (fun (void i8) putChunked)
+  store void(i8)* @putChunked, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 80) to void(i8)**)
+; # (run X)
+  br label %$21
+$21:
+  %48 = phi i64 [%44, %$8], [%70, %$30] ; # Prg
+  %49 = inttoptr i64 %48 to i64*
+  %50 = load i64, i64* %49
+  %51 = getelementptr i64, i64* %49, i32 1
+  %52 = load i64, i64* %51
+  %53 = and i64 %52, 15
+  %54 = icmp ne i64 %53, 0
+  br i1 %54, label %$24, label %$22
+$24:
+  %55 = phi i64 [%52, %$21] ; # Prg
+  %56 = and i64 %50, 6
+  %57 = icmp ne i64 %56, 0
+  br i1 %57, label %$27, label %$26
+$27:
+  br label %$25
+$26:
+  %58 = and i64 %50, 8
+  %59 = icmp ne i64 %58, 0
+  br i1 %59, label %$29, label %$28
+$29:
+  %60 = inttoptr i64 %50 to i64*
+  %61 = load i64, i64* %60
+  br label %$25
+$28:
+  %62 = call i64 @evList(i64 %50)
+  br label %$25
+$25:
+  %63 = phi i64 [%50, %$27], [%61, %$29], [%62, %$28] ; # ->
+  br label %$23
+$22:
+  %64 = phi i64 [%52, %$21] ; # Prg
+  %65 = and i64 %50, 15
+  %66 = icmp eq i64 %65, 0
+  br i1 %66, label %$31, label %$30
+$31:
+  %67 = phi i64 [%64, %$22] ; # Prg
+  %68 = call i64 @evList(i64 %50)
+  %69 = icmp ne i64 %68, 0
+  br label %$30
+$30:
+  %70 = phi i64 [%64, %$22], [%67, %$31] ; # Prg
+  %71 = phi i1 [0, %$22], [%69, %$31] ; # ->
+  br label %$21
+$23:
+  %72 = phi i64 [%55, %$25] ; # Prg
+  %73 = phi i64 [%63, %$25] ; # ->
+; # (when (val $CnkCnt) (wrChunk @))
+; # (val $CnkCnt)
+  %74 = load i32, i32* @$CnkCnt
+  %75 = icmp ne i32 %74, 0
+  br i1 %75, label %$32, label %$33
+$32:
+  %76 = phi i64 [%73, %$23] ; # X
+; # (wrChunk @)
+  call void @wrChunk(i32 %74)
+  br label %$33
+$33:
+  %77 = phi i64 [%73, %$23], [%76, %$32] ; # X
+; # (set (i8** $Put) (val (i8** $SvPut)))
+; # (i8** $Put)
+  %78 = bitcast void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 80) to void(i8)**) to i8**
+; # (i8** $SvPut)
+  %79 = bitcast void(i8)** @$SvPut to i8**
+; # (val (i8** $SvPut))
+  %80 = load i8*, i8** %79
+  store i8* %80, i8** %78
+; # (unless (t? F) (outString ($ "0^M^J^M^J")))
+; # (t? F)
+  %81 = icmp eq i64 %15, ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 184) to i64)
+  br i1 %81, label %$35, label %$34
+$34:
+  %82 = phi i64 [%77, %$33] ; # X
+; # (outString ($ "0^M^J^M^J"))
+  call void @outString(i8* bitcast ([6 x i8]* @$11 to i8*))
+  br label %$35
+$35:
+  %83 = phi i64 [%77, %$33], [%82, %$34] ; # X
+  br label %$9
+$9:
+  %84 = phi i64 [%43, %$12], [%83, %$35] ; # X
+; # (val $OutFile)
+  %85 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 104) to i8**)
+; # (flush (val $OutFile))
+  %86 = call i1 @flush(i8* %85)
+  ret i64 %84
 }
 
+@$11 = private constant [6 x i8] c"0\0D\0A\0D\0A\00"
 @$10 = private constant [6 x i8] c"nbsp;\00"
 @$9 = private constant [6 x i8] c"quot;\00"
 @$8 = private constant [5 x i8] c"amp;\00"
