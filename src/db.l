@@ -1,4 +1,4 @@
-# 31aug20 Software Lab. Alexander Burger
+# 10sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -191,7 +191,7 @@
    (let
       (Db: (dbFile (val $DbFile))
          Siz (Db: siz)
-         P (b8 (i64 Siz)) )
+         P (b8 Siz) )
       (blkPeek 0 P (* 2 BLK))  # Read 'free' and 'next' from block zero
       (let N (getAdr P)
          (cond
@@ -432,7 +432,7 @@
             ((dbFile P) drt NO)
             (? (=0 (dec 'C)))
             (setq P (ofs P (dbFile T))) ) )
-      (let (Blk (b8 BLK)  Buf (b8 (i64 (val $MaxBlkSize))))
+      (let (Blk (b8 BLK)  Buf (b8 (val $MaxBlkSize)))
          (loop
             (unless (== (fread Blk 2 1 Log) 1)  # Get file number
                (jnlErr Exe) )
@@ -523,7 +523,7 @@
                         (let
                            (N (shl (i32 BLKSIZE) (Db: sh))
                               Stk (stack)
-                              Blk (b8 (i64 (Db: siz N))) )
+                              Blk (b8 (Db: siz N)) )
                            (memset Blk 0 (i64 N))  # 'free' is null
                            (setAdr
                               (if (== (Db:) (val $DbFiles))  # First file
@@ -572,8 +572,30 @@
 
 # (pool2 'sym . prg) -> any
 (de _pool2 (Exe)
-   #!
-   Exe )
+   (let
+      (X (cdr Exe)
+         Sym (evSym X)
+         Jnl (val $DbJnl)
+         Log (val $DbLog)
+         C (val $DBs)
+         FDs (b32 C) )
+      (set $DbJnl null  $DbLog null)  # Stop journal and transaction log
+      (let (P (val $DbFiles)  I C)
+         (loop  # Iterate DB files
+            (let Db: (dbFile P)
+               (set (ofs FDs (dec 'I)) (Db: fd)) )  # Save file descriptor
+            (? (=0 I))
+            (setq P (ofs P (dbFile T))) ) )
+      #!
+      (let (P (val $DbFiles)  I C)
+         (loop  # Iterate DB files
+            (let Db: (dbFile P)
+               (close (Db: fd))  # Close file
+               (Db: fd (val (ofs FDs (dec 'I)))) )  # Restore file descriptor
+            (? (=0 I))
+            (setq P (ofs P (dbFile T))) ) )
+      (set $DbLog Log  $DbJnl Jnl)
+      $T ) )
 
 # (journal ['T] 'any ..) -> T
 (de _journal (Exe)
@@ -582,7 +604,7 @@
          Sym (evSym X)
          Jnl (val $DbJnl)
          Log (val $DbLog)
-         Buf (b8 (i64 (val $MaxBlkSize)))
+         Buf (b8 (val $MaxBlkSize))
          Blk (b8 BLK) )
       (stkChk Exe)
       (when (t? Sym)
