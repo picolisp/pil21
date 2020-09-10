@@ -1,4 +1,4 @@
-# 05sep20 Software Lab. Alexander Burger
+# 10sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -99,11 +99,82 @@
          (initOutFile @) ) ) )
 
 # Base64 Encoding
+(local) ($Chr64 $Stat64 $Next64)
+
+(str $Chr64 "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/")
+(var $Stat64 i32 0)  # State
+(var $Next64 i32 0)  # Next value
 
 # (ext:Base64) -> num|NIL
 # (ext:Base64 'num1|NIL ['num2|NIL ['num3|NIL]]) -> flg
 (de Base64 (Exe)
-   #!
-   Exe )
+   (let X (cdr Exe)
+      (cond
+         ((atom X)  # No arguments
+            (let C (val $Chr)
+               (while (and (ge0 C) (>= (char " ") C))
+                  (setq C (call $Get)) )
+               (if (strchr $Chr64 C)
+                  (let N (i32 (- @ $Chr64))  # Legal character
+                     (setq C (call $Get))
+                     (case (val $Stat64)  # Initial state
+                        (0
+                           (unless (strchr $Chr64 C)
+                              (set $Stat64 0)
+                              (ret $Nil) )
+                           (set $Next64 (i32 (- @ $Chr64)))
+                           (call $Get)
+                           (set $Stat64 (inc (val $Stat64)))
+                           (cnt
+                              (i64
+                                 (| (shl N 2) (shr (val $Next64) 4)) ) ) )
+                        (1
+                           (prog1
+                              (cnt
+                                 (i64
+                                    (|
+                                       (shl (& (val $Next64) 15) 4)
+                                       (shr N 2) ) ) )
+                              (set
+                                 $Next64 N
+                                 $Stat64 (inc (val $Stat64)) ) ) )
+                        (T
+                           (set $Stat64 0)
+                           (cnt
+                              (i64
+                                 (| (shl (& (val $Next64) 3) 6) N) ) ) ) ) )
+                  (when (== C (char "="))  # Filler
+                     (call $Get)
+                     (when (== (val $Stat64) 1)
+                        (call $Get) ) )
+                  (set $Stat64 0)
+                  $Nil ) ) )
+         ((nil? (eval (car X))) @)
+         (T
+            (let N (xCnt Exe @)
+               (call $Put (val (ofs $Chr64 (shr N 2))))
+               (when (nil? (eval (car (shift X))))
+                  (call $Put
+                     (val (ofs $Chr64 (shl (& N 3) 4))) )
+                  (call $Put (char "="))
+                  (call $Put (char "="))
+                  (ret $Nil) )
+               (let M (xCnt Exe @)
+                  (call $Put
+                     (val
+                        (ofs $Chr64
+                           (| (shl (& N 3) 4) (shr M 4)) ) ) )
+                  (when (nil? (eval (cadr X)))
+                     (call $Put
+                        (val (ofs $Chr64 (shl (& M 15) 2))) )
+                     (call $Put (char "="))
+                     (ret $Nil) )
+                  (setq N (xCnt Exe @))
+                  (call $Put
+                     (val
+                        (ofs $Chr64
+                           (| (shl (& M 15) 2) (shr N 6)) ) ) )
+                  (call $Put (val (ofs $Chr64 (& N 63))))
+                  $T ) ) ) ) ) )
 
 (end)
