@@ -1,4 +1,4 @@
-# 29aug20 Software Lab. Alexander Burger
+# 11sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -762,8 +762,7 @@
 
 # (loop ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any
 (de _loop (Exe)
-   (tailcall
-      (loop2 (cdr Exe)) ) )
+   (tailcall (loop2 (cdr Exe))) )
 
 # (for sym 'cnt ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any
 # (for sym|(sym2 . sym) 'lst ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any
@@ -1254,14 +1253,14 @@
                         (setq Out (Out:)) ) )
                   (set $OutFrames Out) )
                (let P (val $ErrFrames)  # Reverse ErrFrames
-                  (until (== P (Src: out))
+                  (until (== P (Src: err))
                      (let Err: (ioFrame P)
                         (setq P (Err: link))
                         (Err: link Err)
                         (setq Err (Err:)) ) )
                   (set $ErrFrames Err) )
                (let P (val $CtlFrames)  # Reverse CtlFrames
-                  (until (== P (Src: out))
+                  (until (== P (Src: ctl))
                      (let Ctl: (ioFrame P)
                         (setq P (Ctl: link))
                         (Ctl: link Ctl)
@@ -1273,7 +1272,7 @@
                (longjmp (Dst: (rst)) 1) )
             (unless (t? (Src: tag))
                (let P (val $CtlFrames)  # Restore CtlFrames
-                  (Src: out P)
+                  (Src: ctl P)
                   (while Ctl
                      (let Ctl: (ioFrame Ctl)
                         (setq Ctl (Ctl: link))
@@ -1281,7 +1280,7 @@
                         (setq P (Ctl:)) ) )
                   (Src: (env $CtlFrames i8*) P) )
                (let P (val $ErrFrames)  # Restore ErrFrames
-                  (Src: out P)
+                  (Src: err P)
                   (while Err
                      (let Err: (ioFrame Err)
                         (setq Err (Err: link))

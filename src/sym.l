@@ -1,4 +1,4 @@
-# 05sep20 Software Lab. Alexander Burger
+# 11sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1326,8 +1326,7 @@
          (NIL $Nil) )
       (when (sym? (val (tail X)))
          (dbFetch Exe X) )
-      (tailcall
-         (get X Key) ) ) )
+      (tailcall (get X Key)) ) )
 
 (de prop (Sym Key)
    (let Tail (val (tail Sym))
