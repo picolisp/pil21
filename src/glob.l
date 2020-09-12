@@ -100,7 +100,7 @@
    ($DB "*DB" 0)           # Database root constant
    ($Meth "meth" _meth)
    ($Quote "quote" _quote)
-   ## Sync src/pico.h 'T' (11*2+1)
+   ## Sync src/pico.h 'T' (14*2+1)
    ($T "T" $T)
    ($N "N" $Nil)
    ($C "C" $Nil)
