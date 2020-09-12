@@ -54593,12 +54593,12 @@ $24:
 ; # (+ BLK BLK 1)
 ; # (blkPeek 0 P (+ BLK BLK 1))
   call void @blkPeek(i64 0, i8* %116, i32 13)
-; # (Db: siz (shl (i32 BLKSIZE) (Db: sh (i32 (val (+ BLK BLK) P)))))
+; # (Db: siz (shl (i32 BLKSIZE) (Db: sh (i32 (val (+ BLK BLK 1) P))))...
   %155 = getelementptr i8, i8* %115, i32 12
   %156 = bitcast i8* %155 to i32*
   %157 = getelementptr i8, i8* %115, i32 8
   %158 = bitcast i8* %157 to i32*
-  %159 = getelementptr i8, i8* %116, i32 11
+  %159 = getelementptr i8, i8* %116, i32 12
   %160 = load i8, i8* %159
   %161 = zext i8 %160 to i32
   store i32 %161, i32* %158

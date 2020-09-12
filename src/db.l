@@ -519,7 +519,7 @@
                         (Db: siz
                            (shl
                               (i32 BLKSIZE)
-                              (Db: sh (i32 (val (+ BLK BLK) P))) ) ) )  # Override block shift from 'Dbs'
+                              (Db: sh (i32 (val (+ BLK BLK 1) P))) ) ) )  # Override block shift from 'Dbs'
                      ((and
                            (== (gErrno) ENOENT)
                            (ge0 (Db: fd (openRdWrExcl Buf))) )

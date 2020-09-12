@@ -1,4 +1,4 @@
-# 21jun20 Software Lab. Alexander Burger
+# 12sep20 Software Lab. Alexander Burger
 
 (symbols "priv" 'pico)
 
@@ -262,4 +262,5 @@ _lintq lintFun A C Lst X Y *L *X *Var *Dup *Def *Bnd *Use)
                ((and (not (global? X)) (pair (getd X)) (lint X))
                   (link (cons X @)) ) ) )
          (while (args)
-            (and (lint (next)) (link (cons (arg) @))) ) ) ) )
+            (let A (next)
+               (and (lint A) (link (cons A @))) ) ) ) ) )
