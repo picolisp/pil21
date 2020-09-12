@@ -2183,7 +2183,7 @@ $33:
   store i8* %80, i8** %78
 ; # (unless (t? F) (outString ($ "0^M^J^M^J")))
 ; # (t? F)
-  %81 = icmp eq i64 %15, ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 184) to i64)
+  %81 = icmp eq i64 %15, ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 232) to i64)
   br i1 %81, label %$35, label %$34
 $34:
   %82 = phi i64 [%77, %$33] ; # X

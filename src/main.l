@@ -1,4 +1,4 @@
-# 06sep20 Software Lab. Alexander Burger
+# 12sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -245,6 +245,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                               (longjmp (Ca: (rst)) 1) )
                            (shift Tag) ) ) )
                   (setq Ca (Ca: link)) ) ) ) )
+      (flushAll)
       (set $Chr (set $ExtN 0))
       (set $Break 0)
       (set $LinePtr null)
@@ -328,7 +329,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (err Exe X ($ "Item not found") null) )
 
 (de NIL protErr (Exe X)
-   (err Exe X ($ "Protected symbol") null) )
+   (err Exe X ($ "Protected") null) )
 
 (de NIL lockErr ()
    (err 0 0 ($ "File lock: %s") (strErrno)) )
@@ -1714,6 +1715,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       $OS (mkStr TgOS)
       $CPU (mkStr TgCPU)
       $Pid (cnt (i64 (getpid)))
+      $DB $Db1  # Database root constant
       (tail $Db1) DB1  # Name of external root symbol '{1}'
       $Extern (cons $Db1 $Nil) )  # External symbol tree root node
    (initOutFile 2)  # Standard error

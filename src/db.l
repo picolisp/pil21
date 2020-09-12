@@ -1,4 +1,4 @@
-# 11sep20 Software Lab. Alexander Burger
+# 12sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -828,7 +828,7 @@
          (rdLockDb1)  # Lock for reading
          (let Blk (rdBlock (shl (objId Tail) 6))  # Read first block
             (unless (== 1 (& (val Blk) BLKTAG))  # ID-Block
-               (err Exe 0 ($ "Bad ID") null) ) )
+               (err Exe Sym ($ "Bad ID") null) ) )
          (set
             $GetBin (fun (i32) getBlock)
             $Extn 0 )

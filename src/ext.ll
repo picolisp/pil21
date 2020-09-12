@@ -1216,7 +1216,7 @@ $43:
   br label %$2
 $2:
   %189 = phi i64 [%98, %$12], [%113, %$29], [%175, %$43] ; # X
-  %190 = phi i64 [%100, %$12], [%111, %$29], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 184) to i64), %$43] ; # ->
+  %190 = phi i64 [%100, %$12], [%111, %$29], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 232) to i64), %$43] ; # ->
   ret i64 %190
 }
 
