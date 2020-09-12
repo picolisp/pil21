@@ -1303,12 +1303,12 @@ declare void @llvm.stackrestore(i8*)
   ; # [6480] opt
   i64 122095346,
   i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_opt to i8*), i32 2) to i64),
-  ; # [6496] %@
-  i64 262738,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_nat to i8*), i32 2) to i64),
-  ; # [6512] errno
+  ; # [6496] errno
   i64 7657509824082,
   i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_errno to i8*), i32 2) to i64),
+  ; # [6512] %@
+  i64 262738,
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_nat to i8*), i32 2) to i64),
   ; # [6528] native
   i64 1784947996497634,
   i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_native to i8*), i32 2) to i64),
@@ -56680,13 +56680,13 @@ $6:
 
 define void @dbTouch(i64, i64) {
 $1:
-; # (let (Q (tail Sym) Nm (val Q)) (unless (num? Nm) (setq Nm (& Nm -...
+; # (let (Q (tail Sym) Nm (val Q)) (unless (num? Nm) (setq Nm (any (&...
 ; # (tail Sym)
   %2 = add i64 %1, -8
 ; # (val Q)
   %3 = inttoptr i64 %2 to i64*
   %4 = load i64, i64* %3
-; # (unless (num? Nm) (setq Nm (& Nm -9)) (loop (setq Q (ofs Nm 1)) (...
+; # (unless (num? Nm) (setq Nm (any (& Nm -9))) (loop (setq Q (ofs Nm...
 ; # (num? Nm)
   %5 = and i64 %4, 6
   %6 = icmp ne i64 %5, 0
@@ -56696,18 +56696,19 @@ $2:
   %8 = phi i64 [%4, %$1] ; # Nm
 ; # (& Nm -9)
   %9 = and i64 %8, -9
-; # (loop (setq Q (ofs Nm 1)) (? (num? (setq Nm (car Q)))))
+; # (any (& Nm -9))
+; # (loop (setq Q (ofs Nm 1)) (? (num? (setq Nm (val Q)))))
   br label %$4
 $4:
   %10 = phi i64 [%7, %$2], [%17, %$5] ; # Q
   %11 = phi i64 [%9, %$2], [%18, %$5] ; # Nm
 ; # (ofs Nm 1)
-  %12 = add i64 %11, 1
-; # (? (num? (setq Nm (car Q))))
-; # (car Q)
+  %12 = add i64 %11, 8
+; # (? (num? (setq Nm (val Q))))
+; # (val Q)
   %13 = inttoptr i64 %12 to i64*
   %14 = load i64, i64* %13
-; # (num? (setq Nm (car Q)))
+; # (num? (setq Nm (val Q)))
   %15 = and i64 %14, 6
   %16 = icmp ne i64 %15, 0
   br i1 %16, label %$6, label %$5
@@ -57643,7 +57644,7 @@ $71:
 ; # (val Q)
   %440 = inttoptr i64 %439 to i64*
   %441 = load i64, i64* %440
-; # (unless (num? Nm) (setq Nm (& Nm -9)) (loop (setq Q (ofs Nm 1)) (...
+; # (unless (num? Nm) (setq Nm (any (& Nm -9))) (loop (setq Q (ofs Nm...
 ; # (num? Nm)
   %442 = and i64 %441, 6
   %443 = icmp ne i64 %442, 0
@@ -57658,7 +57659,8 @@ $72:
   %450 = phi i64 [%441, %$71] ; # Nm
 ; # (& Nm -9)
   %451 = and i64 %450, -9
-; # (loop (setq Q (ofs Nm 1)) (? (num? (setq Nm (car Q)))))
+; # (any (& Nm -9))
+; # (loop (setq Q (ofs Nm 1)) (? (num? (setq Nm (val Q)))))
   br label %$74
 $74:
   %452 = phi i64 [%444, %$72], [%464, %$75] ; # X
@@ -57669,12 +57671,12 @@ $74:
   %457 = phi i64 [%449, %$72], [%469, %$75] ; # Q
   %458 = phi i64 [%451, %$72], [%470, %$75] ; # Nm
 ; # (ofs Nm 1)
-  %459 = add i64 %458, 1
-; # (? (num? (setq Nm (car Q))))
-; # (car Q)
+  %459 = add i64 %458, 8
+; # (? (num? (setq Nm (val Q))))
+; # (val Q)
   %460 = inttoptr i64 %459 to i64*
   %461 = load i64, i64* %460
-; # (num? (setq Nm (car Q)))
+; # (num? (setq Nm (val Q)))
   %462 = and i64 %461, 6
   %463 = icmp ne i64 %462, 0
   br i1 %463, label %$76, label %$75

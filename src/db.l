@@ -858,10 +858,10 @@
 (de void dbTouch (Exe Sym)
    (let (Q (tail Sym)  Nm (val Q))
       (unless (num? Nm)  # Has properties
-         (setq Nm (& Nm -9))  # Clear 'extern' tag
+         (setq Nm (any (& Nm -9)))  # Clear 'extern' tag
          (loop
             (setq Q (ofs Nm 1))  # Skip property
-            (? (num? (setq Nm (car Q)))) ) )  # Find name
+            (? (num? (setq Nm (val Q)))) ) )  # Find name
       (setq Nm (add Nm Nm))
       (unless @@  # Not yet dirty
          (setq Nm (add Nm Nm))
@@ -990,10 +990,10 @@
             (loop
                (let (S (val P)  Q (tail S)  Nm (val Q))  # Get external symbol
                   (unless (num? Nm)  # Any properties
-                     (setq Nm (& Nm -9))  # Clear 'extern' tag
+                     (setq Nm (any (& Nm -9)))  # Clear 'extern' tag
                      (loop
                         (setq Q (ofs Nm 1))  # Skip property
-                        (? (num? (setq Nm (car Q)))) ) )  # Find name
+                        (? (num? (setq Nm (val Q)))) ) )  # Find name
                   (let N (add Nm Nm)
                      (when @@  # Dirty or deleted
                         (let F (objFile Nm)  # Get file number
