@@ -1,4 +1,4 @@
-# 12sep20 Software Lab. Alexander Burger
+# 13sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -997,7 +997,7 @@
                   (let N (add Nm Nm)
                      (when @@  # Dirty or deleted
                         (let F (objFile Nm)  # Get file number
-                           (add N N)
+                           (setq N (add N N))
                            (cond
                               (@@  # Deleted
                                  (set Q (shr N 2))  # Set "not loaded"
