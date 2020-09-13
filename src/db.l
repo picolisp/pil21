@@ -220,7 +220,9 @@
    (when (val $DbJnl)
       (lockJnl) )
    (prog1
-      (extNm ((dbFile (val $DbFile)) db) (newBlock))
+      (extNm
+         ((dbFile (val $DbFile)) db)
+         (shr (newBlock) 6) )
       (when (val $DbJnl)
          (unLockJnl) )
       (unLockDb 1)

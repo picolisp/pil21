@@ -53017,7 +53017,7 @@ $6:
   br label %$7
 $7:
   %19 = phi i32 [%15, %$5], [%18, %$6] ; # N
-; # (prog1 (extNm ((dbFile (val $DbFile)) db) (newBlock)) (when (val ...
+; # (prog1 (extNm ((dbFile (val $DbFile)) db) (shr (newBlock) 6)) (wh...
 ; # (val $DbFile)
   %20 = load i8*, i8** @$DbFile
 ; # ((dbFile (val $DbFile)) db)
@@ -53026,39 +53026,41 @@ $7:
   %23 = load i32, i32* %22
 ; # (newBlock)
   %24 = call i64 @newBlock()
-; # (extNm ((dbFile (val $DbFile)) db) (newBlock))
-  %25 = call i64 @extNm(i32 %23, i64 %24)
+; # (shr (newBlock) 6)
+  %25 = lshr i64 %24, 6
+; # (extNm ((dbFile (val $DbFile)) db) (shr (newBlock) 6))
+  %26 = call i64 @extNm(i32 %23, i64 %25)
 ; # (when (val $DbJnl) (unLockJnl))
 ; # (val $DbJnl)
-  %26 = load i8*, i8** @$DbJnl
-  %27 = icmp ne i8* %26, null
-  br i1 %27, label %$8, label %$9
+  %27 = load i8*, i8** @$DbJnl
+  %28 = icmp ne i8* %27, null
+  br i1 %28, label %$8, label %$9
 $8:
-  %28 = phi i32 [%19, %$7] ; # N
+  %29 = phi i32 [%19, %$7] ; # N
 ; # (unLockJnl)
   call void @unLockJnl()
   br label %$9
 $9:
-  %29 = phi i32 [%19, %$7], [%28, %$8] ; # N
+  %30 = phi i32 [%19, %$7], [%29, %$8] ; # N
 ; # (unLockDb 1)
   call void @unLockDb(i64 1)
 ; # (unless (val $DbLog) (set $Protect (dec (val $Protect))))
 ; # (val $DbLog)
-  %30 = load i8*, i8** @$DbLog
-  %31 = icmp ne i8* %30, null
-  br i1 %31, label %$11, label %$10
+  %31 = load i8*, i8** @$DbLog
+  %32 = icmp ne i8* %31, null
+  br i1 %32, label %$11, label %$10
 $10:
-  %32 = phi i32 [%29, %$9] ; # N
+  %33 = phi i32 [%30, %$9] ; # N
 ; # (set $Protect (dec (val $Protect)))
 ; # (val $Protect)
-  %33 = load i32, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 168) to i32*)
+  %34 = load i32, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 168) to i32*)
 ; # (dec (val $Protect))
-  %34 = sub i32 %33, 1
-  store i32 %34, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 168) to i32*)
+  %35 = sub i32 %34, 1
+  store i32 %35, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 168) to i32*)
   br label %$11
 $11:
-  %35 = phi i32 [%29, %$9], [%32, %$10] ; # N
-  ret i64 %25
+  %36 = phi i32 [%30, %$9], [%33, %$10] ; # N
+  ret i64 %26
 }
 
 define i1 @isLife(i64) {
