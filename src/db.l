@@ -1,4 +1,4 @@
-# 13sep20 Software Lab. Alexander Burger
+# 14sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -741,7 +741,7 @@
          (let Nm (name (& (val (tail X)) -9))
             (setq
                F (objFile Nm)
-               N (objId Nm) ) ) )
+               N (shl (objId Nm) 6) ) ) )
       (when (>= F (val $DBs))
          (dbfErr Exe) )
       (let Db:
@@ -1188,7 +1188,8 @@
       (let
          (Y
             (cons  # CAR of result list
-               (extern (extNm F (getAdr (ofs Buf BLK))))  # 'next' symbol
+               (extern  # 'next' symbol
+                  (extNm F (shr (getAdr (ofs Buf BLK)) 6)) )
                $Nil )
             R (save Y) )
          (while (val $BlkLink)  # Collect free list
