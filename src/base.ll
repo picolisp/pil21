@@ -57773,11 +57773,11 @@ $82:
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
   %523 = getelementptr i8, i8* %521, i32 %522
   store i8* %523, i8** @$DbFile
-; # (i64 F)
-  %524 = sext i32 %497 to i64
-; # (shl (i64 F) 6)
+; # (objId Nm)
+  %524 = call i64 @objId(i64 %519)
+; # (shl (objId Nm) 6)
   %525 = shl i64 %524, 6
-; # (cleanUp (shl (i64 F) 6))
+; # (cleanUp (shl (objId Nm) 6))
   call void @cleanUp(i64 %525)
 ; # (when Notify (let P (val $TellBuf) (when (>= (val $Ptr) (ofs P (-...
   br i1 %515, label %$84, label %$85

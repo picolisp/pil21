@@ -1006,7 +1006,7 @@
                                  (when (> (val $DBs) F)  # Local file
                                     (set $DbFile
                                        (ofs (val $DbFiles) (* F (dbFile T))) )
-                                    (cleanUp (shl (i64 F) 6))
+                                    (cleanUp (shl (objId Nm) 6))
                                     (when Notify
                                        (let P (val $TellBuf)
                                           (when
