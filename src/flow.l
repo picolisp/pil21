@@ -1,4 +1,4 @@
-# 11sep20 Software Lab. Alexander Burger
+# 15sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1340,14 +1340,19 @@
          (set $Up Exe)
          (set $Break (set $Bind (push (val $Run) $Run P)))
          (set $Run $Nil) )
-      (let (Out (b8 (ioFrame T))  Io: (ioFrame Out))
-         (Io: fd 1)  # Stdout
-         (Io: pid 0)
-         (pushOutFiles Out)
-         (print Exe)
-         (newline)
-         (repl 0 ($ "! ") $Nil)
-         (popOutFiles) )
+      (let Term (val Termio)
+         (when Term
+            (setCooked) )
+         (let (Out (b8 (ioFrame T))  Io: (ioFrame Out))
+            (Io: fd 1)  # Stdout
+            (Io: pid 0)
+            (pushOutFiles Out)
+            (print Exe)
+            (newline)
+            (repl 0 ($ "! ") $Nil)
+            (popOutFiles) )
+         (when Term
+            (setRaw) ) )
       (setq Exe (val $Up))
       (let P (val $Bind)
          (set $Run (val P))
@@ -1485,20 +1490,20 @@
       # In parent
       (let (Pid @  Res (b32 1))
          (setpgid Pid 0)  # Set process group
-         (when Termio  # Raw mode
+         (when (val Termio)  # Raw mode
             (tcsetpgrp 0 Pid) )
          (loop
             (while (lt0 (waitWuntraced Pid Res))
                (unless (== (gErrno) EINTR)
                   (err Exe 0 ($ "wait pid") null) )
                (sigChk Exe) )
-         (when Termio
+         (when (val Termio)
             (tcsetpgrp 0 (getpgrp)) )
          (? (=0 (wifStopped Res))
             (set $At2 (cnt (i64 (val Res))))
             (if (val Res) $Nil $T) )
          (repl 0 ($ "+ ") $Nil)
-         (when Termio
+         (when (val Termio)
             (tcsetpgrp 0 Pid) )
          (kill Pid (val SIGCONT Sig)) ) ) ) )
 

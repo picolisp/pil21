@@ -79361,74 +79361,97 @@ $5:
 ; # (set $Run $Nil)
   %47 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 552) to i64) to i64*
   store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64), i64* %47
+; # (let Term (val Termio) (when Term (setCooked)) (let (Out (b8 (ioF...
+; # (val Termio)
+  %48 = load i8*, i8** @Termio
+; # (when Term (setCooked))
+  %49 = icmp ne i8* %48, null
+  br i1 %49, label %$7, label %$8
+$7:
+  %50 = phi i64 [%12, %$5] ; # Exe
+; # (setCooked)
+  call void @setCooked()
+  br label %$8
+$8:
+  %51 = phi i64 [%12, %$5], [%50, %$7] ; # Exe
 ; # (let (Out (b8 (ioFrame T)) Io: (ioFrame Out)) (Io: fd 1) (Io: pid...
 ; # (b8 (ioFrame T))
-  %48 = alloca i8, i64 24
+  %52 = alloca i8, i64 24
 ; # (Io: fd 1)
-  %49 = getelementptr i8, i8* %48, i32 8
-  %50 = bitcast i8* %49 to i32*
-  store i32 1, i32* %50
+  %53 = getelementptr i8, i8* %52, i32 8
+  %54 = bitcast i8* %53 to i32*
+  store i32 1, i32* %54
 ; # (Io: pid 0)
-  %51 = getelementptr i8, i8* %48, i32 12
-  %52 = bitcast i8* %51 to i32*
-  store i32 0, i32* %52
+  %55 = getelementptr i8, i8* %52, i32 12
+  %56 = bitcast i8* %55 to i32*
+  store i32 0, i32* %56
 ; # (pushOutFiles Out)
-  call void @pushOutFiles(i8* %48)
+  call void @pushOutFiles(i8* %52)
 ; # (print Exe)
-  call void @print(i64 %12)
+  call void @print(i64 %51)
 ; # (newline)
   call void @newline()
 ; # (repl 0 ($ "! ") $Nil)
-  %53 = call i64 @repl(i64 0, i8* bitcast ([3 x i8]* @$76 to i8*), i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64))
+  %57 = call i64 @repl(i64 0, i8* bitcast ([3 x i8]* @$76 to i8*), i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64))
 ; # (popOutFiles)
   call void @popOutFiles()
+; # (when Term (setRaw))
+  %58 = icmp ne i8* %48, null
+  br i1 %58, label %$9, label %$10
+$9:
+  %59 = phi i64 [%51, %$8] ; # Exe
+; # (setRaw)
+  call void @setRaw()
+  br label %$10
+$10:
+  %60 = phi i64 [%51, %$8], [%59, %$9] ; # Exe
 ; # (val $Up)
-  %54 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 648) to i64) to i64*
-  %55 = load i64, i64* %54
+  %61 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 648) to i64) to i64*
+  %62 = load i64, i64* %61
 ; # (let P (val $Bind) (set $Run (val P)) (setq P (val 3 P)) (set $Up...
 ; # (val $Bind)
-  %56 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 8) to i64) to i64*
-  %57 = load i64, i64* %56
+  %63 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 8) to i64) to i64*
+  %64 = load i64, i64* %63
 ; # (set $Run (val P))
 ; # (val P)
-  %58 = inttoptr i64 %57 to i64*
-  %59 = load i64, i64* %58
-  %60 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 552) to i64) to i64*
-  store i64 %59, i64* %60
+  %65 = inttoptr i64 %64 to i64*
+  %66 = load i64, i64* %65
+  %67 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 552) to i64) to i64*
+  store i64 %66, i64* %67
 ; # (val 3 P)
-  %61 = inttoptr i64 %57 to i64*
-  %62 = getelementptr i64, i64* %61, i32 2
-  %63 = load i64, i64* %62
+  %68 = inttoptr i64 %64 to i64*
+  %69 = getelementptr i64, i64* %68, i32 2
+  %70 = load i64, i64* %69
 ; # (set $Up (val P))
 ; # (val P)
-  %64 = inttoptr i64 %63 to i64*
-  %65 = load i64, i64* %64
-  %66 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 648) to i64) to i64*
-  store i64 %65, i64* %66
+  %71 = inttoptr i64 %70 to i64*
+  %72 = load i64, i64* %71
+  %73 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 648) to i64) to i64*
+  store i64 %72, i64* %73
 ; # (val 3 P)
-  %67 = inttoptr i64 %63 to i64*
-  %68 = getelementptr i64, i64* %67, i32 2
-  %69 = load i64, i64* %68
+  %74 = inttoptr i64 %70 to i64*
+  %75 = getelementptr i64, i64* %74, i32 2
+  %76 = load i64, i64* %75
 ; # (set $At (val P))
 ; # (val P)
-  %70 = inttoptr i64 %69 to i64*
-  %71 = load i64, i64* %70
-  %72 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 392) to i64) to i64*
-  store i64 %71, i64* %72
+  %77 = inttoptr i64 %76 to i64*
+  %78 = load i64, i64* %77
+  %79 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 392) to i64) to i64*
+  store i64 %78, i64* %79
 ; # (set $Bind (val 3 P))
 ; # (val 3 P)
-  %73 = inttoptr i64 %69 to i64*
-  %74 = getelementptr i64, i64* %73, i32 2
-  %75 = load i64, i64* %74
-  %76 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 8) to i64) to i64*
-  store i64 %75, i64* %76
+  %80 = inttoptr i64 %76 to i64*
+  %81 = getelementptr i64, i64* %80, i32 2
+  %82 = load i64, i64* %81
+  %83 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 8) to i64) to i64*
+  store i64 %82, i64* %83
 ; # (set $Break 0)
-  %77 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 16) to i64) to i64*
-  store i64 0, i64* %77
+  %84 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 16) to i64) to i64*
+  store i64 0, i64* %84
   br label %$6
 $6:
-  %78 = phi i64 [%10, %$2], [%55, %$5] ; # Exe
-  ret i64 %78
+  %85 = phi i64 [%10, %$2], [%62, %$10] ; # Exe
+  ret i64 %85
 }
 
 define i64 @_break(i64) {
@@ -80243,129 +80266,135 @@ $11:
 $8:
   %52 = phi i64 [%51, %$11] ; # X
   %53 = phi i64 [0, %$11] ; # ->
-; # (let (Pid @ Res (b32 1)) (setpgid Pid 0) (when Termio (tcsetpgrp ...
+; # (let (Pid @ Res (b32 1)) (setpgid Pid 0) (when (val Termio) (tcse...
 ; # (b32 1)
   %54 = alloca i32, i64 1
 ; # (setpgid Pid 0)
   %55 = call i32 @setpgid(i32 %41, i32 0)
-; # (when Termio (tcsetpgrp 0 Pid))
-  %56 = icmp ne i8** @Termio, null
-  br i1 %56, label %$13, label %$14
+; # (when (val Termio) (tcsetpgrp 0 Pid))
+; # (val Termio)
+  %56 = load i8*, i8** @Termio
+  %57 = icmp ne i8* %56, null
+  br i1 %57, label %$13, label %$14
 $13:
-  %57 = phi i64 [%52, %$8] ; # X
+  %58 = phi i64 [%52, %$8] ; # X
 ; # (tcsetpgrp 0 Pid)
-  %58 = call i32 @tcsetpgrp(i32 0, i32 %41)
+  %59 = call i32 @tcsetpgrp(i32 0, i32 %41)
   br label %$14
 $14:
-  %59 = phi i64 [%52, %$8], [%57, %$13] ; # X
+  %60 = phi i64 [%52, %$8], [%58, %$13] ; # X
 ; # (loop (while (lt0 (waitWuntraced Pid Res)) (unless (== (gErrno) E...
   br label %$15
 $15:
-  %60 = phi i64 [%59, %$14], [%96, %$32] ; # X
+  %61 = phi i64 [%60, %$14], [%99, %$32] ; # X
 ; # (while (lt0 (waitWuntraced Pid Res)) (unless (== (gErrno) EINTR) ...
   br label %$16
 $16:
-  %61 = phi i64 [%60, %$15], [%68, %$22] ; # X
+  %62 = phi i64 [%61, %$15], [%69, %$22] ; # X
 ; # (waitWuntraced Pid Res)
-  %62 = call i32 @waitWuntraced(i32 %41, i32* %54)
+  %63 = call i32 @waitWuntraced(i32 %41, i32* %54)
 ; # (lt0 (waitWuntraced Pid Res))
-  %63 = icmp slt i32 %62, 0
-  br i1 %63, label %$17, label %$18
+  %64 = icmp slt i32 %63, 0
+  br i1 %64, label %$17, label %$18
 $17:
-  %64 = phi i64 [%61, %$16] ; # X
+  %65 = phi i64 [%62, %$16] ; # X
 ; # (unless (== (gErrno) EINTR) (err Exe 0 ($ "wait pid") null))
 ; # (gErrno)
-  %65 = call i32 @gErrno()
+  %66 = call i32 @gErrno()
 ; # (== (gErrno) EINTR)
-  %66 = icmp eq i32 %65, 2
-  br i1 %66, label %$20, label %$19
+  %67 = icmp eq i32 %66, 2
+  br i1 %67, label %$20, label %$19
 $19:
-  %67 = phi i64 [%64, %$17] ; # X
+  %68 = phi i64 [%65, %$17] ; # X
 ; # (err Exe 0 ($ "wait pid") null)
   call void @err(i64 %0, i64 0, i8* bitcast ([9 x i8]* @$80 to i8*), i8* null)
   unreachable
 $20:
-  %68 = phi i64 [%64, %$17] ; # X
+  %69 = phi i64 [%65, %$17] ; # X
 ; # (sigChk Exe)
-  %69 = load i32, i32* bitcast ([15 x i32]* @$Signal to i32*)
-  %70 = icmp ne i32 %69, 0
-  br i1 %70, label %$21, label %$22
+  %70 = load i32, i32* bitcast ([15 x i32]* @$Signal to i32*)
+  %71 = icmp ne i32 %70, 0
+  br i1 %71, label %$21, label %$22
 $21:
   call void @sighandler(i64 %0)
   br label %$22
 $22:
   br label %$16
 $18:
-  %71 = phi i64 [%61, %$16] ; # X
-; # (when Termio (tcsetpgrp 0 (getpgrp)))
-  %72 = icmp ne i8** @Termio, null
-  br i1 %72, label %$23, label %$24
+  %72 = phi i64 [%62, %$16] ; # X
+; # (when (val Termio) (tcsetpgrp 0 (getpgrp)))
+; # (val Termio)
+  %73 = load i8*, i8** @Termio
+  %74 = icmp ne i8* %73, null
+  br i1 %74, label %$23, label %$24
 $23:
-  %73 = phi i64 [%71, %$18] ; # X
+  %75 = phi i64 [%72, %$18] ; # X
 ; # (getpgrp)
-  %74 = call i32 @getpgrp()
+  %76 = call i32 @getpgrp()
 ; # (tcsetpgrp 0 (getpgrp))
-  %75 = call i32 @tcsetpgrp(i32 0, i32 %74)
+  %77 = call i32 @tcsetpgrp(i32 0, i32 %76)
   br label %$24
 $24:
-  %76 = phi i64 [%71, %$18], [%73, %$23] ; # X
+  %78 = phi i64 [%72, %$18], [%75, %$23] ; # X
 ; # (? (=0 (wifStopped Res)) (set $At2 (cnt (i64 (val Res)))) (if (va...
 ; # (wifStopped Res)
-  %77 = call i32 @wifStopped(i32* %54)
+  %79 = call i32 @wifStopped(i32* %54)
 ; # (=0 (wifStopped Res))
-  %78 = icmp eq i32 %77, 0
-  br i1 %78, label %$27, label %$25
+  %80 = icmp eq i32 %79, 0
+  br i1 %80, label %$27, label %$25
 $27:
-  %79 = phi i64 [%76, %$24] ; # X
+  %81 = phi i64 [%78, %$24] ; # X
 ; # (set $At2 (cnt (i64 (val Res))))
 ; # (val Res)
-  %80 = load i32, i32* %54
+  %82 = load i32, i32* %54
 ; # (i64 (val Res))
-  %81 = sext i32 %80 to i64
+  %83 = sext i32 %82 to i64
 ; # (cnt (i64 (val Res)))
-  %82 = shl i64 %81, 4
-  %83 = or i64 %82, 2
-  %84 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 408) to i64) to i64*
-  store i64 %83, i64* %84
+  %84 = shl i64 %83, 4
+  %85 = or i64 %84, 2
+  %86 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 408) to i64) to i64*
+  store i64 %85, i64* %86
 ; # (if (val Res) $Nil $T)
 ; # (val Res)
-  %85 = load i32, i32* %54
-  %86 = icmp ne i32 %85, 0
-  br i1 %86, label %$28, label %$29
+  %87 = load i32, i32* %54
+  %88 = icmp ne i32 %87, 0
+  br i1 %88, label %$28, label %$29
 $28:
-  %87 = phi i64 [%79, %$27] ; # X
+  %89 = phi i64 [%81, %$27] ; # X
   br label %$30
 $29:
-  %88 = phi i64 [%79, %$27] ; # X
+  %90 = phi i64 [%81, %$27] ; # X
   br label %$30
 $30:
-  %89 = phi i64 [%87, %$28], [%88, %$29] ; # X
-  %90 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64), %$28], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 232) to i64), %$29] ; # ->
+  %91 = phi i64 [%89, %$28], [%90, %$29] ; # X
+  %92 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64), %$28], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 232) to i64), %$29] ; # ->
   br label %$26
 $25:
-  %91 = phi i64 [%76, %$24] ; # X
+  %93 = phi i64 [%78, %$24] ; # X
 ; # (repl 0 ($ "+ ") $Nil)
-  %92 = call i64 @repl(i64 0, i8* bitcast ([3 x i8]* @$81 to i8*), i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64))
-; # (when Termio (tcsetpgrp 0 Pid))
-  %93 = icmp ne i8** @Termio, null
-  br i1 %93, label %$31, label %$32
+  %94 = call i64 @repl(i64 0, i8* bitcast ([3 x i8]* @$81 to i8*), i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64))
+; # (when (val Termio) (tcsetpgrp 0 Pid))
+; # (val Termio)
+  %95 = load i8*, i8** @Termio
+  %96 = icmp ne i8* %95, null
+  br i1 %96, label %$31, label %$32
 $31:
-  %94 = phi i64 [%91, %$25] ; # X
+  %97 = phi i64 [%93, %$25] ; # X
 ; # (tcsetpgrp 0 Pid)
-  %95 = call i32 @tcsetpgrp(i32 0, i32 %41)
+  %98 = call i32 @tcsetpgrp(i32 0, i32 %41)
   br label %$32
 $32:
-  %96 = phi i64 [%91, %$25], [%94, %$31] ; # X
+  %99 = phi i64 [%93, %$25], [%97, %$31] ; # X
 ; # (val SIGCONT Sig)
-  %97 = getelementptr i32, i32* @Sig, i32 8
-  %98 = load i32, i32* %97
+  %100 = getelementptr i32, i32* @Sig, i32 8
+  %101 = load i32, i32* %100
 ; # (kill Pid (val SIGCONT Sig))
-  %99 = call i32 @kill(i32 %41, i32 %98)
+  %102 = call i32 @kill(i32 %41, i32 %101)
   br label %$15
 $26:
-  %100 = phi i64 [%89, %$30] ; # X
-  %101 = phi i64 [%90, %$30] ; # ->
-  ret i64 %101
+  %103 = phi i64 [%91, %$30] ; # X
+  %104 = phi i64 [%92, %$30] ; # ->
+  ret i64 %104
 }
 
 define i64 @_ipid(i64) {

@@ -1,4 +1,4 @@
-# 06sep20 Software Lab. Alexander Burger
+# 15sep20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -53,8 +53,7 @@
                (ifn P
                   (task N)
                   (set L P)
-                  (push '*Fork (list 'close P) (list 'task P)) ) ) ) ) )
-   (forked) )
+                  (push '*Fork (list 'close P) (list 'task P)) ) ) ) ) ) )
 
 (de abort ("N" . "Prg")
    (catch 'abort
@@ -562,9 +561,7 @@
 
 (and (info (pil "rc")) (load @@))
 
-(load "@lib/debug.l" "@lib/lint.l")
+(load "@lib/debug.l" "@lib/lint.l" "@lib/vip.l")
 
-#{
 (noLint 'pretty 'Z)
 (noLint '_pretty 'Z)
-}#

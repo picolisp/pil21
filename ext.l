@@ -1,3 +1,3 @@
-# 25jul20 Software Lab. Alexander Burger
+# 15sep20 Software Lab. Alexander Burger
 
-(load "@lib/net.l" "@lib/misc.l" #{"@lib/btree.l" "@lib/db.l"}# "@lib/pilog.l")
+(load "@lib/net.l" "@lib/misc.l" "@lib/btree.l" "@lib/db.l" "@lib/pilog.l")
