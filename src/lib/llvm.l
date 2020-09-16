@@ -1,4 +1,4 @@
-# 12sep20 Software Lab. Alexander Burger
+# 16sep20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -23,10 +23,10 @@ struct $Nil $T $Link drop)
 ### Cross-compiler private ###
 (symbols 'priv 'llvm 'pico)
 
-(local) (*Shared *Strings *Ssa *Lbl *Log *Curr *Exit *Bind *Phi *Call *Ret log
-asm ssa phi +phi br label +lbl +bind type func ptr pointee store A B C I L M N P
-Q V X Y Exe Prg Typ Sym Ret Args Ext Table Body Var Val Lst Lbl Flg Skip True
-False Beg End Safe *Safe)
+(local) (*Shared *Strings *Map *Ssa *Lbl *Log *Curr *Exit *Bind *Phi *Call *Ret
+log asm ssa phi +phi br label +lbl +bind type func ptr pointee store A B C I L M
+N P Q V X Y Exe Prg Typ Sym Ret Args Ext Table Body Var Val Lst Lbl Flg Skip
+True False Beg End Safe *Safe)
 
 (import any inc dec ++ #{shift}#)
 
@@ -38,7 +38,7 @@ False Beg End Safe *Safe)
 
 # Generate LLVM-IR
 (de begin (Name Flg . pico~@)
-   (off *Strings)
+   (off *Strings *Map)
    (prinl "source_filename = \"" Name ".l\"")
    (prinl)
    (prinl "declare {i64, i1} @llvm.uadd.with.overflow.i64(i64, i64)")
@@ -53,10 +53,24 @@ False Beg End Safe *Safe)
    (let *Shared Flg
       (pass load) ) )
 
-(de end ()
+(de end (Map)
    (prinl)
    (for L *Strings
-      (prinl (caddr L) " = " (cdddr L)) ) )
+      (prinl (caddr L) " = " (cdddr L)) )
+   (when Map
+      (out Map
+         (for Sym (idx '*Map)
+            (let? X
+               (cond
+                  ((pair (val Sym))
+                     (prin "pico~dbg~")
+                     pico~@ )
+                  ((val (car (idx '*Map (val Sym))))
+                     (prin "pico~")
+                     pico~@ ) )
+               (prinl
+                  Sym
+                  " (" (cddr X) " . \"@src/" (cadr X) "\")" ) ) ) ) ) )
 
 (de log ()
    (when *Log
@@ -407,7 +421,7 @@ False Beg End Safe *Safe)
             (let Name
                (when (str? (cadr Lst))
                   (prinl "  ; # [" I "] " pico~@)
-                  (let L (chop (cadr Lst))
+                  (let L (chop pico~@)
                      (make
                         (when (nth L 8)  # Max 15 ASCII characters
                            (let (D 0  N 0)
@@ -436,6 +450,10 @@ False Beg End Safe *Safe)
                         (+ I 16 4)
                         ") to i64)," ) ) )
                (const (caddr Lst))  # Value
+               (and
+                  (cadr Lst)
+                  (pre? "_" (caddr Lst))
+                  (idx '*Map (def (cadr Lst) (caddr Lst)) T) )
                (when (cdr Name)  # Long name
                   (prinl ",")
                   (inc 'I 16)
@@ -531,6 +549,7 @@ False Beg End Safe *Safe)
                            (== void *Ret)
                            (list 'def '(pack "%" *Ssa) (lit Ret)) ) ) ) ) ) ) )
       (when Body
+         (idx '*Map (def (name Sym) (file)) T)
          (let (*Lbl 1  *Log T)
             (for X
                (make

@@ -1,4 +1,4 @@
-# 11sep20 Software Lab. Alexander Burger
+# 16sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -84,7 +84,7 @@
                      24 ) ) ) ) ) ) )
 
 (de mkStr ((i8* . Str))
-   (if Str
+   (if (and Str (val Str))
       (let P (push 4 NIL ZERO NIL)  # [cnt last name link]
          (link (ofs P 2) T)
          (while (val Str)

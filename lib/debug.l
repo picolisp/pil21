@@ -1,11 +1,11 @@
-# 15sep20 Software Lab. Alexander Burger
+# 16sep20 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
    (unless (== 'pico (car (symbols)))
       (or (name (car (symbols))) "$") ) )
 
-(symbols "priv" 'pico)
+(symbols 'dbg 'pico)
 
 (export) (help docs doc more less what who has can dep methods)
 (local) (_who _match nest nst1 nst2 C D M S X Y Z Fun Prg Who dep1 dep2)
@@ -196,7 +196,7 @@
             (put Sym '*Dbg (cons (read))) ) ) ) )
 
 (export) (d debug u unbug trace untrace *NoTrace traceAll)
-(local) (_dbg _dbg2 dbg ubg traced?)
+(local) (_dbg _dbg2 debg unbg traced?)
 
 # Single-Stepping
 (de _dbg (Lst)
@@ -215,7 +215,7 @@
             (_dbg L) ) )
       Lst ) )
 
-(de dbg (Lst)
+(de debg (Lst)
    (when (pair Lst)
       (casq (++ Lst)
          ((case casq state)
@@ -241,7 +241,7 @@
          (T (map _dbg Lst)) )
       T ) )
 
-(de d () (let *Dbg NIL (dbg ^)))
+(de d () (let *Dbg NIL (debg ^)))
 
 (de debug (X C)
    (ifn (traced? X C)
@@ -249,31 +249,31 @@
          (when (pair X)
             (setq C (cdr X)  X (car X)) )
          (or
-            (dbg (if C (method X C) (getd X)))
+            (debg (if C (method X C) (getd X)))
             (quit "Can't debug" X) ) )
       (untrace X C)
       (debug X C)
       (trace X C) ) )
 
-(de ubg (Lst)
+(de unbg (Lst)
    (when (pair Lst)
       (map
          '((L)
             (when (pair (car L))
                (when (== '! (caar L))
                   (set L (cdar L)) )
-               (ubg (car L)) ) )
+               (unbg (car L)) ) )
          Lst )
       T ) )
 
-(de u () (let *Dbg NIL (ubg ^)))
+(de u () (let *Dbg NIL (unbg ^)))
 
 (de unbug (X C)
    (let *Dbg NIL
       (when (pair X)
          (setq C (cdr X)  X (car X)) )
       (or
-         (ubg (if C (method X C) (getd X)))
+         (unbg (if C (method X C) (getd X)))
          (quit "Can't unbug" X) ) ) )
 
 # Tracing

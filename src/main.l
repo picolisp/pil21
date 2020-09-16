@@ -1,4 +1,4 @@
-# 12sep20 Software Lab. Alexander Burger
+# 16sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1742,4 +1742,4 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (loop
       (repl 0 ($ ": ") $Nil) ) )
 
-(end)
+(end "base.map")

@@ -19872,64 +19872,75 @@ $2:
 
 define i64 @mkStr(i8*) {
 $1:
-; # (if Str (let P (push 4 NIL ZERO NIL) (link (ofs P 2) T) (while (v...
+; # (if (and Str (val Str)) (let P (push 4 NIL ZERO NIL) (link (ofs P...
+; # (and Str (val Str))
   %1 = icmp ne i8* %0, null
-  br i1 %1, label %$2, label %$3
-$2:
+  br i1 %1, label %$3, label %$2
+$3:
   %2 = phi i8* [%0, %$1] ; # Str
+; # (val Str)
+  %3 = load i8, i8* %2
+  %4 = icmp ne i8 %3, 0
+  br label %$2
+$2:
+  %5 = phi i8* [%0, %$1], [%2, %$3] ; # Str
+  %6 = phi i1 [0, %$1], [%4, %$3] ; # ->
+  br i1 %6, label %$4, label %$5
+$4:
+  %7 = phi i8* [%5, %$2] ; # Str
 ; # (let P (push 4 NIL ZERO NIL) (link (ofs P 2) T) (while (val Str) ...
 ; # (push 4 NIL ZERO NIL)
-  %3 = alloca i64, i64 4, align 16
-  store i64 4, i64* %3
-  %4 = getelementptr i64, i64* %3, i32 2
-  store i64 2, i64* %4
+  %8 = alloca i64, i64 4, align 16
+  store i64 4, i64* %8
+  %9 = getelementptr i64, i64* %8, i32 2
+  store i64 2, i64* %9
 ; # (ofs P 2)
-  %5 = getelementptr i64, i64* %3, i32 2
+  %10 = getelementptr i64, i64* %8, i32 2
 ; # (link (ofs P 2) T)
-  %6 = ptrtoint i64* %5 to i64
-  %7 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 0) to i64) to i64*
-  %8 = load i64, i64* %7
-  %9 = inttoptr i64 %6 to i64*
-  %10 = getelementptr i64, i64* %9, i32 1
-  store i64 %8, i64* %10
-  %11 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %6, i64* %11
+  %11 = ptrtoint i64* %10 to i64
+  %12 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %13 = load i64, i64* %12
+  %14 = inttoptr i64 %11 to i64*
+  %15 = getelementptr i64, i64* %14, i32 1
+  store i64 %13, i64* %15
+  %16 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %11, i64* %16
 ; # (while (val Str) (byteSym @ P) (inc 'Str))
-  br label %$5
-$5:
-  %12 = phi i8* [%2, %$2], [%16, %$6] ; # Str
-; # (val Str)
-  %13 = load i8, i8* %12
-  %14 = icmp ne i8 %13, 0
-  br i1 %14, label %$6, label %$7
-$6:
-  %15 = phi i8* [%12, %$5] ; # Str
-; # (byteSym @ P)
-  call void @byteSym(i8 %13, i64* %3)
-; # (inc 'Str)
-  %16 = getelementptr i8, i8* %15, i32 1
-  br label %$5
+  br label %$7
 $7:
-  %17 = phi i8* [%12, %$5] ; # Str
+  %17 = phi i8* [%7, %$4], [%21, %$8] ; # Str
+; # (val Str)
+  %18 = load i8, i8* %17
+  %19 = icmp ne i8 %18, 0
+  br i1 %19, label %$8, label %$9
+$8:
+  %20 = phi i8* [%17, %$7] ; # Str
+; # (byteSym @ P)
+  call void @byteSym(i8 %18, i64* %8)
+; # (inc 'Str)
+  %21 = getelementptr i8, i8* %20, i32 1
+  br label %$7
+$9:
+  %22 = phi i8* [%17, %$7] ; # Str
 ; # (val 3 P)
-  %18 = getelementptr i64, i64* %3, i32 2
-  %19 = load i64, i64* %18
+  %23 = getelementptr i64, i64* %8, i32 2
+  %24 = load i64, i64* %23
 ; # (consStr (val 3 P))
-  %20 = call i64 @consStr(i64 %19)
+  %25 = call i64 @consStr(i64 %24)
 ; # (drop *Safe)
-  %21 = inttoptr i64 %6 to i64*
-  %22 = getelementptr i64, i64* %21, i32 1
-  %23 = load i64, i64* %22
-  %24 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %23, i64* %24
-  br label %$4
-$3:
-  %25 = phi i8* [%0, %$1] ; # Str
-  br label %$4
-$4:
-  %26 = phi i8* [%17, %$7], [%25, %$3] ; # Str
-  %27 = phi i64 [%20, %$7], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64), %$3] ; # ->
-  ret i64 %27
+  %26 = inttoptr i64 %11 to i64*
+  %27 = getelementptr i64, i64* %26, i32 1
+  %28 = load i64, i64* %27
+  %29 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %28, i64* %29
+  br label %$6
+$5:
+  %30 = phi i8* [%5, %$2] ; # Str
+  br label %$6
+$6:
+  %31 = phi i8* [%22, %$9], [%30, %$5] ; # Str
+  %32 = phi i64 [%25, %$9], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 8) to i64), %$5] ; # ->
+  ret i64 %32
 }
 
 define i64 @mkStrE(i8*, i8*) {
