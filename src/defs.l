@@ -1,11 +1,11 @@
-# 14aug20 Software Lab. Alexander Burger
+# 16sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
 # Constants
 (local) (HEAP CELLS STACK TOP BUFSIZ DB1)
 
-(setq
+(equ
    HEAP (*/ 1024 1024 8)      # Heap size (number of pointers)
    CELLS (/ HEAP 2)           # Number of cells in a heap (65536)
    STACK (* 64 1024)          # Default coroutine stack size (64 kB)
@@ -17,7 +17,7 @@
 # PLIO Tokens
 (local) (NIX BEG DOT END NUMBER INTERN TRANSIENT EXTERN)
 
-(setq
+(equ
    NIX 0        # NIL
    BEG 1        # Begin list
    DOT 2        # Dotted pair
@@ -30,22 +30,17 @@
 # DB-I/O
 (local) (BLK BLKSIZE BLKMASK BLKTAG)
 
-(setq
+(equ
    BLK 6        # Block address size
    BLKSIZE 64   # DB block unit size
    BLKMASK -64  # Block address mask
    BLKTAG 63 )  # Block tag mask
 
-# Networking
-(local) UDPMAX
-
-(setq UDPMAX 4096)  # UDP buffer size
-
 ## Sync src/lib.c 'gSignal' and src/glob.l '$Signal'
 (local) (SIGHUP SIGINT SIGUSR1 SIGUSR2 SIGPIPE SIGALRM SIGTERM SIGCHLD SIGCONT
 SIGSTOP SIGTSTP SIGTTIN SIGTTOU SIGIO)
 
-(setq
+(equ
    SIGHUP    1
    SIGINT    2
    SIGUSR1   3
@@ -64,7 +59,7 @@ SIGSTOP SIGTSTP SIGTTIN SIGTTOU SIGIO)
 ## Sync src/lib.c 'gErrno'
 (local) (ENOENT EINTR EBADF EAGAIN EACCES EPIPE ECONNRESET)
 
-(setq
+(equ
    ENOENT     1      # No such file or directory
    EINTR      2      # Interrupted system call
    EBADF      3      # Bad file number

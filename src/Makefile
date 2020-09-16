@@ -3,7 +3,7 @@
 .SILENT:
 
 CC = clang
-ASM = llvm-as  # opt -O3
+ASM = opt -O3  # llvm-as
 MAIN = -rdynamic -lc -lm -ldl -lffi -lreadline
 SHARED = -shared
 OS = $(shell uname)

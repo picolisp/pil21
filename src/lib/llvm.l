@@ -5,7 +5,7 @@
 
 (local) (@ @@ @@@ priv void null i1 i1* i1** i8 i8* i8** i8*** i16 i16* i16**
 i32 i32* i32** i64 i64* i64** any YES NO ZERO -ZERO ONE SymTab begin end $ ?
-short global var str const globals array table symTab inline tailcall define
+short equ global var str const globals array table symTab inline tailcall define
 struct $Nil $T $Link drop)
 
 (import pico llvm symbols local T NIL load use setq prog */ ** >> char hex)
@@ -24,9 +24,9 @@ struct $Nil $T $Link drop)
 (symbols 'priv 'llvm 'pico)
 
 (local) (*Shared *Strings *Map *Ssa *Lbl *Log *Curr *Exit *Bind *Phi *Call *Ret
-log asm ssa phi +phi br label +lbl +bind type func ptr pointee store A B C I L M
-N P Q V X Y Exe Prg Typ Sym Ret Args Ext Table Body Var Val Lst Lbl Flg Skip
-True False Beg End Safe *Safe)
+putMap log asm ssa phi +phi br label +lbl +bind type func ptr pointee store A B
+C I L M N P Q V X Y Exe Prg Typ Sym Ret Args Ext Table Body Var Val Lst Lbl Flg
+Skip True False Beg End Safe *Safe)
 
 (import any inc dec ++ #{shift}#)
 
@@ -71,6 +71,12 @@ True False Beg End Safe *Safe)
                (prinl
                   Sym
                   " (" (cddr X) " . \"@src/" (cadr X) "\")" ) ) ) ) ) )
+
+(de putMap (Sym X)
+   (idx '*Map
+      (def (name Sym) (or X (file)))
+      T )
+   Sym )
 
 (de log ()
    (when *Log
@@ -256,9 +262,13 @@ True False Beg End Safe *Safe)
 (de short (N)
    (| 2 (>> -4 N)) )
 
+(de equ Lst
+   (while Lst
+      (set (putMap (++ Lst)) (eval (++ Lst))) ) )
+
 (de global (Sym Typ Val)
    (prin
-      "@" Sym " = "
+      "@" (putMap Sym) " = "
       (unless (and Val (not *Shared)) "external ")
       "global " (type Typ) )
    (cond
@@ -291,7 +301,7 @@ True False Beg End Safe *Safe)
 
 (de str Lst
    (let ((Sym Val) Lst  Arr (pack "[" (inc (size Val)) " x i8]"))
-      (def Sym
+      (def (putMap Sym)
          (def (pack "bitcast (" Arr "* @" Sym " to i8*)") 'i8*) )
       (prin "@" Sym " = constant " Arr " c\"")
       (for C (chop Val)
@@ -326,7 +336,7 @@ True False Beg End Safe *Safe)
       (Sym (++ Lst)
          Typ (++ Lst)
          Len (if (pair Lst) (length Lst) (eval Lst)) )
-      (def Sym
+      (def (putMap Sym)
          (def
             (pack
                "bitcast (["
@@ -353,7 +363,7 @@ True False Beg End Safe *Safe)
          I 0
          @N (* 8 (put Table 'length (length Args)))
          @S (caar Args) )
-      (def Table
+      (def (putMap Table)
          (curry (@N @S) A
             (if A @N (i8* @S)) ) )
       (prinl
@@ -453,7 +463,7 @@ True False Beg End Safe *Safe)
                (and
                   (cadr Lst)
                   (pre? "_" (caddr Lst))
-                  (idx '*Map (def (cadr Lst) (caddr Lst)) T) )
+                  (putMap (cadr Lst) (caddr Lst)) )
                (when (cdr Name)  # Long name
                   (prinl ",")
                   (inc 'I 16)
@@ -467,7 +477,7 @@ True False Beg End Safe *Safe)
 (de inline Lst
    (let L (and (lst? (car Lst)) (++ Lst))
       (put
-         (def (++ Lst)
+         (def (putMap (++ Lst))
             (let ((@Args . @Body) Lst)
                (bind
                   (mapcar
@@ -549,7 +559,7 @@ True False Beg End Safe *Safe)
                            (== void *Ret)
                            (list 'def '(pack "%" *Ssa) (lit Ret)) ) ) ) ) ) ) )
       (when Body
-         (idx '*Map (def (name Sym) (file)) T)
+         (putMap Sym)
          (let (*Lbl 1  *Log T)
             (for X
                (make
@@ -577,7 +587,7 @@ True False Beg End Safe *Safe)
          (prinl "}") ) ) )
 
 (de struct Lst
-   (def (car Lst)
+   (def (putMap (car Lst))
       (let
          (@N 0
             @L

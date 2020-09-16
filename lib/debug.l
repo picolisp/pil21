@@ -187,14 +187,6 @@
                      (link (cons (car X) Obj))
                      (push 'Mark (car X)) ) ) ) ) ) ) )
 
-# Source code
-(in "@lib/map"
-   (while (read)
-      (let Sym @
-         (if (get Sym '*Dbg)
-            (set @ (read))
-            (put Sym '*Dbg (cons (read))) ) ) ) )
-
 (export) (d debug u unbug trace untrace *NoTrace traceAll)
 (local) (_dbg _dbg2 debg unbg traced?)
 
@@ -406,3 +398,11 @@
             (space 3)
             (println (caar L) (less (cdr (++ L)))) )
          (T (and (not Flg) (line)) T) ) ) )
+
+# Source code
+(in "@lib/map"
+   (while (read)
+      (let Sym @
+         (if (get Sym '*Dbg)
+            (set @ (read))
+            (put Sym '*Dbg (cons (read))) ) ) ) )
