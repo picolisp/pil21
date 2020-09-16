@@ -1520,7 +1520,7 @@ shell shFile prCmd reset command vi)
 
 (de pico~vi ("X" C)
    (and
-      (symbols (conc (symbols) '(pico~dbg))
+      (symbols (append (symbols) '(pico~dbg))
          (vi
             (list
                (cond
