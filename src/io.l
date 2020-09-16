@@ -1,4 +1,4 @@
-# 06sep20 Software Lab. Alexander Burger
+# 16sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -671,6 +671,20 @@
       (let In: (inFile @)
          (> (In: cnt) (In: ix)) ) ) )
 
+(de i1 inReady ((i32 . Fd))
+   (let P (pollfd Fd)
+      (cond
+         ((>= Fd (val $InFDs))
+            (readyIn P) )
+         ((=0 (val (ofs (val $InFiles) Fd)))
+            (readyIn P) )
+         (T
+            (let In: (inFile @)
+               (or
+                  (> (In: cnt) (In: ix))
+                  (readyIn P)
+                  (ge0 (slowNb (In:))) ) ) ) ) ) )
+
 (de i64 waitFd (Exe (i32 . Fd) (i64 . Ms))
    (let
       (At (save (val $At))
@@ -788,7 +802,7 @@
                            (wrChild Cld $TBuf 2) ) ) )
                   (set $Protect (dec (val $Protect))) )
                (let N (val $Hear)  # RPC listener
-                  (when (and N (<> N Fd) (readyIn (pollfd N)))
+                  (when (and N (<> N Fd) (inReady N))
                      (cond
                         ((=0 (rdHear))
                            (close N)
@@ -809,7 +823,7 @@
                                        (set Y (pos V)  $At V)
                                        (run (cdr Y)) ) ) ) )  # Run body
                            ((<> (i32 (int @)) Fd)
-                              (when (readyIn (pollfd @))
+                              (when (inReady @)
                                  (set $At (car X))  # File descriptor
                                  (run (cdr X)) ) ) ) ) ) )  # Run body
                (and
@@ -818,11 +832,7 @@
                   (setq Ms 0) )
                (setq Tim Now) )
             (sigChk Exe)
-            (?
-               (or
-                  (=0 Ms)
-                  (lt0 Fd)
-                  (readyIn (pollfd Fd)) ) )
+            (? (or (=0 Ms) (lt0 Fd) (inReady Fd)))
             (set Run (val $Run)) ) )
       (set $At At)
       Ms ) )
@@ -1548,30 +1558,35 @@
 # (key ['cnt]) -> sym
 (de _key (Exe)
    (flushAll)
-   (setRaw)
-   (ifn
-      (waitFd Exe 0
-         (if (nil? (eval (cadr Exe)))
-            292MY
-            (xCnt Exe @) ) )
-      $Nil
-      (let C (stdinByte)
-         (mkChar
-            (cond
-               ((>= 127 C) C)  # Single byte
-               ((== C (hex "FF")) (i32 TOP))  # Infinite
-               (T
-                  (let B
-                     (ifn (& C (hex "20"))  # Two bytes
-                        (& C (hex "1F"))  # First byte 110xxxxx
-                        (let A
-                           (ifn (& C (hex "10"))  # Three bytes
-                              (& C (hex "0F"))  # First byte 1110xxxx
-                              (|  # Four bytes
-                                 (shl (& C 7) 6)  # First byte 11110xxx
-                                 (& (stdinByte) (hex "3F")) ) )  # 10xxxxxx
-                           (| (shl A 6) (& (stdinByte) (hex "3F"))) ) )
-                     (| (shl B 6) (& (stdinByte) (hex "3F"))) ) ) ) ) ) ) )
+   (let Term (val Termio)
+      (prog2
+         (unless Term
+            (setRaw) )
+         (if
+            (waitFd Exe 0
+               (if (nil? (eval (cadr Exe)))
+                  292MY
+                  (xCnt Exe @) ) )
+            (let C (stdinByte)
+               (mkChar
+                  (cond
+                     ((>= 127 C) C)  # Single byte
+                     ((== C (hex "FF")) (i32 TOP))  # Infinite
+                     (T
+                        (let B
+                           (ifn (& C (hex "20"))  # Two bytes
+                              (& C (hex "1F"))  # First byte 110xxxxx
+                              (let A
+                                 (ifn (& C (hex "10"))  # Three bytes
+                                    (& C (hex "0F"))  # First byte 1110xxxx
+                                    (|  # Four bytes
+                                       (shl (& C 7) 6)  # First byte 11110xxx
+                                       (& (stdinByte) (hex "3F")) ) )  # 10xxxxxx
+                                 (| (shl A 6) (& (stdinByte) (hex "3F"))) ) )
+                           (| (shl B 6) (& (stdinByte) (hex "3F"))) ) ) ) ) )
+            $Nil )
+         (unless Term
+            (setCooked) ) ) ) )
 
 # (peek) -> sym
 (de _peek (Exe)
