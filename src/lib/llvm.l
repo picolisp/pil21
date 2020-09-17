@@ -1,4 +1,4 @@
-# 16sep20 Software Lab. Alexander Burger
+# 17sep20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -63,7 +63,7 @@ Skip True False Beg End Safe *Safe)
             (let? X
                (cond
                   ((pair (val Sym))
-                     (prin "pico~dbg~")
+                     (prin "dbg~")
                      pico~@ )
                   ((val (car (idx '*Map (val Sym))))
                      (prin "pico~")

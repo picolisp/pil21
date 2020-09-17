@@ -1,4 +1,4 @@
-# 16sep20 Software Lab. Alexander Burger
+# 17sep20 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -400,6 +400,8 @@
          (T (and (not Flg) (line)) T) ) ) )
 
 # Source code
+(symbols '(pico dbg))
+
 (in "@lib/map"
    (while (read)
       (let Sym @
