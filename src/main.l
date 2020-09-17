@@ -1,4 +1,4 @@
-# 16sep20 Software Lab. Alexander Burger
+# 17sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1175,6 +1175,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                            (2 (set (i16* Ptr) (i16 N)))
                            (4 (set (i32* Ptr) (i32 N)))
                            (T (set (i64* Ptr) N)) ) ) )
+                  ((nil? X) (set Ptr (i8 0)))
                   ((sym? X)  # (sym . cnt)
                      (setq X (name (val (tail X))))
                      (bufString X Ptr) ) )

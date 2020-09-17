@@ -1,4 +1,4 @@
-// 05sep20 Software Lab. Alexander Burger
+// 17sep20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -504,8 +504,12 @@ int64_t ffiCall(ffi *p, int64_t lst) {
       if (num(x))  // Number
          value[i] = number(x);
       else if (sym(x)) {  // String
-         int64_t nm = name(val(tail(x)));
-         bufString(nm, (char*)(value[i] = (int64_t)alloca(bufSize(nm))));
+         if (x == (int64_t)(SymTab + Nil))
+            value[i] = (int64_t)"";
+         else {
+            int64_t nm = name(val(tail(x)));
+            bufString(nm, (char*)(value[i] = (int64_t)alloca(bufSize(nm))));
+         }
       }
       else if (car(x) == (int64_t)(SymTab + T))  // Direct Lisp value
          value[i] = cdr(x);

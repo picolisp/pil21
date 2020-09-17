@@ -1,4 +1,4 @@
-# 16sep20 Software Lab. Alexander Burger
+# 17sep20 Software Lab. Alexander Burger
 # https://picolisp.com/wiki/?vip
 
 (symbols 'vip 'pico)
@@ -1225,7 +1225,7 @@ shell shFile prCmd reset command vi)
       (T (beep)) ) )
 
 ### VIP Entry Point ###
-(de vi (Lst)  # ("file.l" (pat) (99 . "file.l") (T . "file.l"))
+(de vi (Lst)  # (file (pat . file) (99 . file) (T . file) (sym [sym ..])
    (unless
       (and
          (setq *Columns (format (sys "COLUMNS")))
@@ -1240,7 +1240,9 @@ shell shFile prCmd reset command vi)
       (cond
          ((not X))
          ((atom X) (fileBuffer X))
-         ((not (cdr X)) (wordFun (car X)))
+         ((pair (car X))
+            (wordFun @)
+            (fileBuffer (cdr X)) )
          (T
             (fileBuffer
                (cdr X)
