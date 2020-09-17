@@ -1,4 +1,4 @@
-# 19apr20 Software Lab. Alexander Burger
+# 17sep20 Software Lab. Alexander Burger
 
 # *Allow
 
@@ -423,7 +423,7 @@
             (from "\r\n\r\n")
             (out F (echo))
             (= Size (car (info F)))
-            (=0 (native "@" "rename" 'I F Dst)) ) ) ) )
+            (=0 (%@ "rename" 'I F Dst)) ) ) ) )
 
 # Print or eval
 (de prEval (Prg Ofs)

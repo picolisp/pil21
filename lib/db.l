@@ -1,4 +1,4 @@
-# 15sep20 Software Lab. Alexander Burger
+# 17sep20 Software Lab. Alexander Burger
 
 # *Dbs *Jnl *Blob upd
 
@@ -1048,13 +1048,9 @@
 (de blob+ (Obj Var)
    (when *Jnl
       (chdir *Blob
-         `(if (== 64 64)
-            '(native "@" "symlink" 'I
-               (pack (glue "/" (chop Obj)) "." Var)
-               (pack "=" (name Obj) "." Var) )
-            '(call "ln" "-sf"
-               (pack (glue "/" (chop Obj)) "." Var)
-               (pack "=" (name Obj) "." Var) ) ) ) ) )
+         (%@ "symlink" 'I
+            (pack (glue "/" (chop Obj)) "." Var)
+            (pack "=" (name Obj) "." Var) ) ) ) )
 
 (de incECnt (Obj)
    (let M NIL
@@ -1480,7 +1476,7 @@
                         (while (setq Key (rd))
                            (out (cddr (rank Key V))
                               (pr Key (rd)) ) ) )
-                     (native "@" "unlink" 'I File)
+                     (%@ "unlink" 'I File)
                      (let (Dbf (meta Typ Var 'dbf)  Tree (cons Var (new T)))
                         (for R V
                            (close (cddr R))
@@ -1494,7 +1490,7 @@
                               (at (0 . 1000) (prune 2)) )
                            (commit)
                            (prune 2)
-                           (native "@" "unlink" 'I (cadr R)) )
+                           (%@ "unlink" 'I (cadr R)) )
                         (commit)
                         Tree ) ) ) ) )
          Vars )
