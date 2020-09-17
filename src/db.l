@@ -1,4 +1,4 @@
-# 14sep20 Software Lab. Alexander Burger
+# 17sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -497,7 +497,7 @@
             (Nm (xName Exe Sym1)  # DB name
                Len (pathSize Nm)
                Buf (pathString Nm (b8 (+ Len 4)))  # 4 bytes for AO file number
-               End (ofs Buf Len)
+               End (ofs Buf (dec Len))
                Siz (dbFile T) )  # Default to single dbFile
             (when (pair Dbs)
                (let L Dbs
@@ -595,7 +595,7 @@
       (let
          (Len (pathSize Nm)
             Buf (pathString Nm (b8 (+ Len 4)))  # 4 bytes for AO file number
-            End (ofs Buf Len) )
+            End (ofs Buf (dec Len)) )
          (let (P (val $DbFiles)  I (i32 0))
             (loop  # Iterate DB files
                (let Db: (dbFile P)

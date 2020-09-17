@@ -59,7 +59,7 @@ showCsr screen1 screen2)
 markup min1 beep undo redo evCmd dirty> load> save> view> status)
 
 (class +Buffer)
-# text file key undo redo dirt posX posY lastX lastY flat fmt <c>
+# text file key undo redo dirt posX posY lastX lastY flat fmt syms <c>
 
 (dm T (File Y)
    (and (=: file File) (queue '*Buffers This))
@@ -239,7 +239,13 @@ markup min1 beep undo redo evCmd dirty> load> save> view> status)
             (out (: file) (mapc prinl (: text))) ) )
       (=: dirt (: undo))
       (for (This *CmdWin (setq This (: next)))
-         (status) ) )
+         (status) )
+      (when (: syms)
+         (in (: file)
+            (while (and (setq "*X" (read)) (atom "*X"))
+               (def "*X" (read))
+               (until (= '(=======) (setq "*K" (read)))
+                  (def "*X" "*K" (read)) ) ) ) ) )
    (on *StatNm) )
 
 (dm view> (Win)
@@ -271,12 +277,12 @@ markup min1 beep undo redo evCmd dirty> load> save> view> status)
 
 
 (local) (delwin cursor addLine chgLine unmark redraw repaint scLeft scRight goto
-chgwin eqwin getch getch2 reload scratch done change jmp@@ cnt@@ goCol goLeft
-goRight goUp goDown goAbs goFind tword word lword end lend getWord _forward
-goForward _backward goBackward goPFore goPBack shift shiftY indent cutX cutN
-paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe evRpt
-move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN nextBuf
-shell shFile prCmd reset command vi)
+chgwin eqwin getch getch2 reload scratch syms done change jmp@@ cnt@@ goCol
+goLeft goRight goUp goDown goAbs goFind tword word lword end lend getWord
+_forward goForward _backward goBackward goPFore goPBack shift shiftY indent cutX
+cutN paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe
+evRpt move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN
+nextBuf shell shFile prCmd reset command vi)
 
 (de delwin ()
    (when (=: prev next (: next))
@@ -465,6 +471,29 @@ shell shFile prCmd reset command vi)
          Lst ) )
    (goto 1 (: buffer posY))
    (repaint) )
+
+(de syms (Lst)  #!
+   (for "S" Lst
+      (printsp "S")
+      (val "S")
+      (pretty (val "S"))
+      (prinl)
+      (for "X" (sort (getl "S"))
+         (space 3)
+         (if (atom "X")
+            (println "X" T)
+            (printsp (cdr "X"))
+            (pretty (setq "X" (car "X")) -3)
+            (cond
+               ((type "X")
+                  (prin "  # ")
+                  (print @) )
+               ((>= 799999 "X" 700000)
+                  (prin "  # " (datStr "X")) ) )
+            (prinl) ) )
+      (prinl)
+      (println '(=======))
+      (prinl) ) )
 
 (de done (Flg)
    (and Flg
@@ -1239,14 +1268,16 @@ shell shFile prCmd reset command vi)
    (for X Lst
       (cond
          ((not X))
-         ((atom X) (fileBuffer X))
-         ((pair (car X))
+         ((atom X) (fileBuffer X))  # Path name
+         ((pair (car X))  # Pattern
             (wordFun @)
             (fileBuffer (cdr X)) )
-         (T
-            (fileBuffer
-               (cdr X)
-               (or (num? (car X)) T) ) ) ) )
+         ((or (num? (car X)) (=T (car X)))  # Line number
+            (fileBuffer (cdr X) @) )
+         (T  # List of symbols
+            (with (fileBuffer (tmp "syms"))
+               (out (: file)
+                  (syms (=: syms X)) ) ) ) ) )
    (unless *Buffers
       (fileBuffer (tmp "empty")) )
    (finally (screen1)
@@ -1526,8 +1557,7 @@ shell shFile prCmd reset command vi)
          (vi
             (list
                (cond
-                  ((pair "X")
-                     #{!}# )
+                  ((pair "X") @)
                   (C (get C '*Dbg -1 "X"))
                   (T (or (get "X" '*Dbg 1) "X")) ) ) ) )
       "X" ) )
