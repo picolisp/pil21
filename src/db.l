@@ -88,9 +88,9 @@
 (de void unLockDb ((i64 . Len))
    (unless (t? (val $Solo))  # Not already locked whole DB
       (unless Len
-         (let (P (val $DbFiles)  C (val $DBs))  # Iterate DB files
+         (let (Db (val $DbFiles)  C (val $DBs))  # Iterate DB files
             (while (dec 'C)
-               (let Db: (dbFile (setq P (ofs P (dbFile T))))  # Skip first, increment by size of dbFile
+               (let Db: (dbFile (setq Db (ofs Db (dbFile T))))  # Skip first, increment by size of dbFile
                   (when (Db: lck)
                      (unLock (Db: fd) 0 0)
                      (Db: lck NO) ) ) ) )
@@ -420,23 +420,23 @@
          NO ) ) )
 
 (de void fsyncDB (Exe)
-   (let (P (val $DbFiles)  C (val $DBs))  # Iterate DB files
+   (let (Db (val $DbFiles)  C (val $DBs))  # Iterate DB files
       (loop
-         (let Db: (dbFile P)
+         (let Db: (dbFile Db)
             (when (and (Db: drt) (lt0 (fsync (Db: fd))))
                (dbSyncErr Exe) ) )
          (? (=0 (dec 'C)))
-         (setq P (ofs P (dbFile T))) ) ) )
+         (setq Db (ofs Db (dbFile T))) ) ) )
 
 (de void restore (Exe)
    (stderrMsg ($ "Last transaction not completed: Rollback\n") null)
    (let Log (val $DbLog)
       (fseek0 Log)
-      (let (P (val $DbFiles)  C (val $DBs))  # Iterate DB files
+      (let (Db (val $DbFiles)  C (val $DBs))  # Iterate DB files
          (loop
-            ((dbFile P) drt NO)
+            ((dbFile Db) drt NO)
             (? (=0 (dec 'C)))
-            (setq P (ofs P (dbFile T))) ) )
+            (setq Db (ofs Db (dbFile T))) ) )
       (let (Blk (b8 BLK)  Buf (b8 (val $MaxBlkSize)))
          (loop
             (unless (== (fread Blk 2 1 Log) 1)  # Get file number
@@ -478,13 +478,13 @@
       (set $Solo ZERO)  # Reset solo mode
       (when (val $DBs)
          (_rollback ZERO)
-         (let (P (val $DbFiles)  C @)  # Iterate DB files
+         (let (Db (val $DbFiles)  C @)  # Iterate DB files
             (loop
-               (let Db: (dbFile P)
+               (let Db: (dbFile Db)
                   (close (Db: fd))
                   (free (Db: mark)) )
                (? (=0 (dec 'C)))
-               (setq P (ofs P (dbFile T))) ) )
+               (setq Db (ofs Db (dbFile T))) ) )
          (set $DBs 0)
          (when (val $DbJnl)
             (fclose @)
@@ -587,34 +587,34 @@
          C (val $DBs)
          FDs (b32 C) )
       (set $DbJnl null  $DbLog null)  # Stop journal and transaction log
-      (let (P (val $DbFiles)  I (i32 0))
-         (loop  # Iterate DB files
-            (let Db: (dbFile P)
+      (let (Db (val $DbFiles)  I (i32 0))  # Iterate DB files
+         (loop
+            (let Db: (dbFile Db)
                (set (ofs FDs I) (Db: fd)) )  # Save file descriptor
             (? (== C (inc 'I)))
-            (setq P (ofs P (dbFile T))) ) )
+            (setq Db (ofs Db (dbFile T))) ) )
       (let
          (Len (pathSize Nm)
             Buf (pathString Nm (b8 (+ Len 4)))  # 4 bytes for AO file number
             End (ofs Buf (dec Len)) )
-         (let (P (val $DbFiles)  I (i32 0))
-            (loop  # Iterate DB files
-               (let Db: (dbFile P)
+         (let (Db (val $DbFiles)  I (i32 0))  # Iterate DB files
+            (loop
+               (let Db: (dbFile Db)
                   (set (bufAo End (Db: db)) 0)
                   (when (lt0 (Db: fd (openRdWr Buf)))  # Try to open
                      (openErr Exe Sym) )
                   (closeOnExec Exe @) )
                (? (== C (inc 'I)))
-               (setq P (ofs P (dbFile T))) ) ) )
+               (setq Db (ofs Db (dbFile T))) ) ) )
       (prog1
          (run (cdr X)
-            (let (P (val $DbFiles)  I (i32 0))
-               (loop  # Iterate DB files
-                  (let Db: (dbFile P)
+            (let (Db (val $DbFiles)  I (i32 0))  # Iterate DB files
+               (loop
+                  (let Db: (dbFile Db)
                      (close (Db: fd))  # Close file
                      (Db: fd (val (ofs FDs I))) )  # Restore file descriptor
                   (? (== C (inc 'I)))
-                  (setq P (ofs P (dbFile T))) ) )
+                  (setq Db (ofs Db (dbFile T))) ) )
             (set $DbLog Log  $DbJnl Jnl) ) ) ) )
 
 # (journal ['T] 'any ..) -> T
@@ -899,12 +899,13 @@
       (when (val $DbJnl)
          (lockJnl) )
       (when (val $DbLog)
-         (let (P (val $DbFiles)  C (val $DBs))  # Iterate DB files
+         (let (Db (val $DbFiles)  C (val $DBs))  # Iterate DB files
             (loop
-               ((dbFile P) drt NO)  # Clear dirty flag
-               ((dbFile P) flu 0)  # and free list use count
+               (let Db: (dbFile Db)
+                  (Db: drt NO)  # Clear dirty flag
+                  (Db: flu 0) )  # and free list use count
                (? (=0 (dec 'C)))
-               (setq P (ofs P (dbFile T))) ) )
+               (setq Db (ofs Db (dbFile T))) ) )
          (let (Tos 0  P (val $Extern))  # Iterate external symbol tree
             (loop
                (loop
@@ -1131,14 +1132,14 @@
 # (mark 'sym|0 [NIL | T | 0]) -> flg
 (de _mark (Exe)
    (let (X (cdr Exe)  Y (eval (++ X)))
-      (if (=0 Y)  # Clear all marks
-         (let (P (val $DbFiles)  C (val $DBs))  # Iterate DB files
-            (while (dec 'C)
-               (let Db: (dbFile P)
+      (if (== Y ZERO)  # Clear all marks
+         (let (Db (val $DbFiles)  C (val $DBs))  # Iterate DB files
+            (while (ge0 (dec 'C))
+               (let Db: (dbFile Db)
                   (Db: mrks 0)  # Set mark vector size to zero
                   (free (Db: mark))  # Free mark bit vector
                   (Db: mark null) )  # and set to null
-               (setq P (ofs P (dbFile T))) )
+               (setq Db (ofs Db (dbFile T))) )
             $Nil )
          (unless (sym? (val (tail (needSymb Exe Y))))
             (extErr Exe Y) )

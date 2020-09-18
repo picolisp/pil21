@@ -52424,7 +52424,7 @@ $3:
 
 define void @unLockDb(i64) {
 $1:
-; # (unless (t? (val $Solo)) (unless Len (let (P (val $DbFiles) C (va...
+; # (unless (t? (val $Solo)) (unless Len (let (Db (val $DbFiles) C (v...
 ; # (val $Solo)
   %1 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 376) to i64) to i64*
   %2 = load i64, i64* %1
@@ -52432,29 +52432,29 @@ $1:
   %3 = icmp eq i64 %2, ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 232) to i64)
   br i1 %3, label %$3, label %$2
 $2:
-; # (unless Len (let (P (val $DbFiles) C (val $DBs)) (while (dec 'C) ...
+; # (unless Len (let (Db (val $DbFiles) C (val $DBs)) (while (dec 'C)...
   %4 = icmp ne i64 %0, 0
   br i1 %4, label %$5, label %$4
 $4:
-; # (let (P (val $DbFiles) C (val $DBs)) (while (dec 'C) (let Db: (db...
+; # (let (Db (val $DbFiles) C (val $DBs)) (while (dec 'C) (let Db: (d...
 ; # (val $DbFiles)
   %5 = load i8*, i8** @$DbFiles
 ; # (val $DBs)
   %6 = load i32, i32* @$DBs
-; # (while (dec 'C) (let Db: (dbFile (setq P (ofs P (dbFile T)))) (wh...
+; # (while (dec 'C) (let Db: (dbFile (setq Db (ofs Db (dbFile T)))) (...
   br label %$6
 $6:
-  %7 = phi i8* [%5, %$4], [%24, %$10] ; # P
+  %7 = phi i8* [%5, %$4], [%24, %$10] ; # Db
   %8 = phi i32 [%6, %$4], [%25, %$10] ; # C
 ; # (dec 'C)
   %9 = sub i32 %8, 1
   %10 = icmp ne i32 %9, 0
   br i1 %10, label %$7, label %$8
 $7:
-  %11 = phi i8* [%7, %$6] ; # P
+  %11 = phi i8* [%7, %$6] ; # Db
   %12 = phi i32 [%9, %$6] ; # C
-; # (let Db: (dbFile (setq P (ofs P (dbFile T)))) (when (Db: lck) (un...
-; # (ofs P (dbFile T))
+; # (let Db: (dbFile (setq Db (ofs Db (dbFile T)))) (when (Db: lck) (...
+; # (ofs Db (dbFile T))
   %13 = getelementptr i8, i8* %11, i32 42
 ; # (when (Db: lck) (unLock (Db: fd) 0 0) (Db: lck NO))
 ; # (Db: lck)
@@ -52463,7 +52463,7 @@ $7:
   %16 = load i1, i1* %15
   br i1 %16, label %$9, label %$10
 $9:
-  %17 = phi i8* [%13, %$7] ; # P
+  %17 = phi i8* [%13, %$7] ; # Db
   %18 = phi i32 [%12, %$7] ; # C
 ; # (Db: fd)
   %19 = bitcast i8* %13 to i32*
@@ -52476,11 +52476,11 @@ $9:
   store i1 0, i1* %23
   br label %$10
 $10:
-  %24 = phi i8* [%13, %$7], [%17, %$9] ; # P
+  %24 = phi i8* [%13, %$7], [%17, %$9] ; # Db
   %25 = phi i32 [%12, %$7], [%18, %$9] ; # C
   br label %$6
 $8:
-  %26 = phi i8* [%7, %$6] ; # P
+  %26 = phi i8* [%7, %$6] ; # Db
   %27 = phi i32 [%9, %$6] ; # C
 ; # (set $Solo ZERO)
   %28 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 376) to i64) to i64*
@@ -54117,17 +54117,17 @@ $4:
 
 define void @fsyncDB(i64) {
 $1:
-; # (let (P (val $DbFiles) C (val $DBs)) (loop (let Db: (dbFile P) (w...
+; # (let (Db (val $DbFiles) C (val $DBs)) (loop (let Db: (dbFile Db) ...
 ; # (val $DbFiles)
   %1 = load i8*, i8** @$DbFiles
 ; # (val $DBs)
   %2 = load i32, i32* @$DBs
-; # (loop (let Db: (dbFile P) (when (and (Db: drt) (lt0 (fsync (Db: f...
+; # (loop (let Db: (dbFile Db) (when (and (Db: drt) (lt0 (fsync (Db: ...
   br label %$2
 $2:
-  %3 = phi i8* [%1, %$1], [%25, %$7] ; # P
+  %3 = phi i8* [%1, %$1], [%25, %$7] ; # Db
   %4 = phi i32 [%2, %$1], [%24, %$7] ; # C
-; # (let Db: (dbFile P) (when (and (Db: drt) (lt0 (fsync (Db: fd)))) ...
+; # (let Db: (dbFile Db) (when (and (Db: drt) (lt0 (fsync (Db: fd))))...
 ; # (when (and (Db: drt) (lt0 (fsync (Db: fd)))) (dbSyncErr Exe))
 ; # (and (Db: drt) (lt0 (fsync (Db: fd))))
 ; # (Db: drt)
@@ -54136,7 +54136,7 @@ $2:
   %7 = load i1, i1* %6
   br i1 %7, label %$4, label %$3
 $4:
-  %8 = phi i8* [%3, %$2] ; # P
+  %8 = phi i8* [%3, %$2] ; # Db
   %9 = phi i32 [%4, %$2] ; # C
 ; # (Db: fd)
   %10 = bitcast i8* %3 to i32*
@@ -54147,18 +54147,18 @@ $4:
   %13 = icmp slt i32 %12, 0
   br label %$3
 $3:
-  %14 = phi i8* [%3, %$2], [%8, %$4] ; # P
+  %14 = phi i8* [%3, %$2], [%8, %$4] ; # Db
   %15 = phi i32 [%4, %$2], [%9, %$4] ; # C
   %16 = phi i1 [0, %$2], [%13, %$4] ; # ->
   br i1 %16, label %$5, label %$6
 $5:
-  %17 = phi i8* [%14, %$3] ; # P
+  %17 = phi i8* [%14, %$3] ; # Db
   %18 = phi i32 [%15, %$3] ; # C
 ; # (dbSyncErr Exe)
   call void @dbSyncErr(i64 %0)
   unreachable
 $6:
-  %19 = phi i8* [%14, %$3] ; # P
+  %19 = phi i8* [%14, %$3] ; # Db
   %20 = phi i32 [%15, %$3] ; # C
 ; # (? (=0 (dec 'C)))
 ; # (dec 'C)
@@ -54167,13 +54167,13 @@ $6:
   %22 = icmp eq i32 %21, 0
   br i1 %22, label %$8, label %$7
 $7:
-  %23 = phi i8* [%19, %$6] ; # P
+  %23 = phi i8* [%19, %$6] ; # Db
   %24 = phi i32 [%21, %$6] ; # C
-; # (ofs P (dbFile T))
+; # (ofs Db (dbFile T))
   %25 = getelementptr i8, i8* %23, i32 42
   br label %$2
 $8:
-  %26 = phi i8* [%19, %$6] ; # P
+  %26 = phi i8* [%19, %$6] ; # Db
   %27 = phi i32 [%21, %$6] ; # C
   %28 = phi i64 [0, %$6] ; # ->
   ret void
@@ -54183,22 +54183,22 @@ define void @restore(i64) {
 $1:
 ; # (stderrMsg ($ "Last transaction not completed: Rollback^J") null)...
   %1 = call i8* @stderrMsg(i8* bitcast ([42 x i8]* @$55 to i8*), i8* null)
-; # (let Log (val $DbLog) (fseek0 Log) (let (P (val $DbFiles) C (val ...
+; # (let Log (val $DbLog) (fseek0 Log) (let (Db (val $DbFiles) C (val...
 ; # (val $DbLog)
   %2 = load i8*, i8** @$DbLog
 ; # (fseek0 Log)
   %3 = call i1 @fseek0(i8* %2)
-; # (let (P (val $DbFiles) C (val $DBs)) (loop ((dbFile P) drt NO) (?...
+; # (let (Db (val $DbFiles) C (val $DBs)) (loop ((dbFile Db) drt NO) ...
 ; # (val $DbFiles)
   %4 = load i8*, i8** @$DbFiles
 ; # (val $DBs)
   %5 = load i32, i32* @$DBs
-; # (loop ((dbFile P) drt NO) (? (=0 (dec 'C))) (setq P (ofs P (dbFil...
+; # (loop ((dbFile Db) drt NO) (? (=0 (dec 'C))) (setq Db (ofs Db (db...
   br label %$2
 $2:
-  %6 = phi i8* [%4, %$1], [%14, %$3] ; # P
+  %6 = phi i8* [%4, %$1], [%14, %$3] ; # Db
   %7 = phi i32 [%5, %$1], [%13, %$3] ; # C
-; # ((dbFile P) drt NO)
+; # ((dbFile Db) drt NO)
   %8 = getelementptr i8, i8* %6, i32 41
   %9 = bitcast i8* %8 to i1*
   store i1 0, i1* %9
@@ -54209,13 +54209,13 @@ $2:
   %11 = icmp eq i32 %10, 0
   br i1 %11, label %$4, label %$3
 $3:
-  %12 = phi i8* [%6, %$2] ; # P
+  %12 = phi i8* [%6, %$2] ; # Db
   %13 = phi i32 [%10, %$2] ; # C
-; # (ofs P (dbFile T))
+; # (ofs Db (dbFile T))
   %14 = getelementptr i8, i8* %12, i32 42
   br label %$2
 $4:
-  %15 = phi i8* [%6, %$2] ; # P
+  %15 = phi i8* [%6, %$2] ; # Db
   %16 = phi i32 [%10, %$2] ; # C
   %17 = phi i64 [0, %$2] ; # ->
 ; # (let (Blk (b8 BLK) Buf (b8 (val $MaxBlkSize))) (loop (unless (== ...
@@ -54440,7 +54440,7 @@ $1:
 ; # (set $Solo ZERO)
   %49 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([840 x i64]* @SymTab to i8*), i32 376) to i64) to i64*
   store i64 2, i64* %49
-; # (when (val $DBs) (_rollback ZERO) (let (P (val $DbFiles) C @) (lo...
+; # (when (val $DBs) (_rollback ZERO) (let (Db (val $DbFiles) C @) (l...
 ; # (val $DBs)
   %50 = load i32, i32* @$DBs
   %51 = icmp ne i32 %50, 0
@@ -54449,16 +54449,16 @@ $2:
   %52 = phi i64 [%16, %$1] ; # Dbs
 ; # (_rollback ZERO)
   %53 = call i64 @_rollback(i64 2)
-; # (let (P (val $DbFiles) C @) (loop (let Db: (dbFile P) (close (Db:...
+; # (let (Db (val $DbFiles) C @) (loop (let Db: (dbFile Db) (close (D...
 ; # (val $DbFiles)
   %54 = load i8*, i8** @$DbFiles
-; # (loop (let Db: (dbFile P) (close (Db: fd)) (free (Db: mark))) (? ...
+; # (loop (let Db: (dbFile Db) (close (Db: fd)) (free (Db: mark))) (?...
   br label %$4
 $4:
   %55 = phi i64 [%52, %$2], [%66, %$5] ; # Dbs
-  %56 = phi i8* [%54, %$2], [%69, %$5] ; # P
+  %56 = phi i8* [%54, %$2], [%69, %$5] ; # Db
   %57 = phi i32 [%50, %$2], [%68, %$5] ; # C
-; # (let Db: (dbFile P) (close (Db: fd)) (free (Db: mark)))
+; # (let Db: (dbFile Db) (close (Db: fd)) (free (Db: mark)))
 ; # (Db: fd)
   %58 = bitcast i8* %56 to i32*
   %59 = load i32, i32* %58
@@ -54478,14 +54478,14 @@ $4:
   br i1 %65, label %$6, label %$5
 $5:
   %66 = phi i64 [%55, %$4] ; # Dbs
-  %67 = phi i8* [%56, %$4] ; # P
+  %67 = phi i8* [%56, %$4] ; # Db
   %68 = phi i32 [%64, %$4] ; # C
-; # (ofs P (dbFile T))
+; # (ofs Db (dbFile T))
   %69 = getelementptr i8, i8* %67, i32 42
   br label %$4
 $6:
   %70 = phi i64 [%55, %$4] ; # Dbs
-  %71 = phi i8* [%56, %$4] ; # P
+  %71 = phi i8* [%56, %$4] ; # Db
   %72 = phi i32 [%64, %$4] ; # C
   %73 = phi i64 [0, %$4] ; # ->
 ; # (set $DBs 0)
@@ -55032,16 +55032,16 @@ $1:
 ; # (set $DbJnl null $DbLog null)
   store i8* null, i8** @$DbJnl
   store i8* null, i8** @$DbLog
-; # (let (P (val $DbFiles) I (i32 0)) (loop (let Db: (dbFile P) (set ...
+; # (let (Db (val $DbFiles) I (i32 0)) (loop (let Db: (dbFile Db) (se...
 ; # (val $DbFiles)
   %10 = load i8*, i8** @$DbFiles
 ; # (i32 0)
-; # (loop (let Db: (dbFile P) (set (ofs FDs I) (Db: fd))) (? (== C (i...
+; # (loop (let Db: (dbFile Db) (set (ofs FDs I) (Db: fd))) (? (== C (...
   br label %$2
 $2:
-  %11 = phi i8* [%10, %$1], [%20, %$3] ; # P
+  %11 = phi i8* [%10, %$1], [%20, %$3] ; # Db
   %12 = phi i32 [0, %$1], [%19, %$3] ; # I
-; # (let Db: (dbFile P) (set (ofs FDs I) (Db: fd)))
+; # (let Db: (dbFile Db) (set (ofs FDs I) (Db: fd)))
 ; # (set (ofs FDs I) (Db: fd))
 ; # (ofs FDs I)
   %13 = getelementptr i32, i32* %9, i32 %12
@@ -55056,13 +55056,13 @@ $2:
   %17 = icmp eq i32 %8, %16
   br i1 %17, label %$4, label %$3
 $3:
-  %18 = phi i8* [%11, %$2] ; # P
+  %18 = phi i8* [%11, %$2] ; # Db
   %19 = phi i32 [%16, %$2] ; # I
-; # (ofs P (dbFile T))
+; # (ofs Db (dbFile T))
   %20 = getelementptr i8, i8* %18, i32 42
   br label %$2
 $4:
-  %21 = phi i8* [%11, %$2] ; # P
+  %21 = phi i8* [%11, %$2] ; # Db
   %22 = phi i32 [%16, %$2] ; # I
   %23 = phi i64 [0, %$2] ; # ->
 ; # (let (Len (pathSize Nm) Buf (pathString Nm (b8 (+ Len 4))) End (o...
@@ -55078,16 +55078,16 @@ $4:
   %28 = sub i64 %24, 1
 ; # (ofs Buf (dec Len))
   %29 = getelementptr i8, i8* %27, i64 %28
-; # (let (P (val $DbFiles) I (i32 0)) (loop (let Db: (dbFile P) (set ...
+; # (let (Db (val $DbFiles) I (i32 0)) (loop (let Db: (dbFile Db) (se...
 ; # (val $DbFiles)
   %30 = load i8*, i8** @$DbFiles
 ; # (i32 0)
-; # (loop (let Db: (dbFile P) (set (bufAo End (Db: db)) 0) (when (lt0...
+; # (loop (let Db: (dbFile Db) (set (bufAo End (Db: db)) 0) (when (lt...
   br label %$5
 $5:
-  %31 = phi i8* [%30, %$4], [%48, %$8] ; # P
+  %31 = phi i8* [%30, %$4], [%48, %$8] ; # Db
   %32 = phi i32 [0, %$4], [%47, %$8] ; # I
-; # (let Db: (dbFile P) (set (bufAo End (Db: db)) 0) (when (lt0 (Db: ...
+; # (let Db: (dbFile Db) (set (bufAo End (Db: db)) 0) (when (lt0 (Db:...
 ; # (set (bufAo End (Db: db)) 0)
 ; # (Db: db)
   %33 = getelementptr i8, i8* %31, i32 4
@@ -55105,13 +55105,13 @@ $5:
   %39 = icmp slt i32 %38, 0
   br i1 %39, label %$6, label %$7
 $6:
-  %40 = phi i8* [%31, %$5] ; # P
+  %40 = phi i8* [%31, %$5] ; # Db
   %41 = phi i32 [%32, %$5] ; # I
 ; # (openErr Exe Sym)
   call void @openErr(i64 %0, i64 %4)
   unreachable
 $7:
-  %42 = phi i8* [%31, %$5] ; # P
+  %42 = phi i8* [%31, %$5] ; # Db
   %43 = phi i32 [%32, %$5] ; # I
 ; # (closeOnExec Exe @)
   call void @closeOnExec(i64 %0, i32 %38)
@@ -55122,21 +55122,21 @@ $7:
   %45 = icmp eq i32 %8, %44
   br i1 %45, label %$9, label %$8
 $8:
-  %46 = phi i8* [%42, %$7] ; # P
+  %46 = phi i8* [%42, %$7] ; # Db
   %47 = phi i32 [%44, %$7] ; # I
-; # (ofs P (dbFile T))
+; # (ofs Db (dbFile T))
   %48 = getelementptr i8, i8* %46, i32 42
   br label %$5
 $9:
-  %49 = phi i8* [%42, %$7] ; # P
+  %49 = phi i8* [%42, %$7] ; # Db
   %50 = phi i32 [%44, %$7] ; # I
   %51 = phi i64 [0, %$7] ; # ->
-; # (prog1 (run (cdr X) (let (P (val $DbFiles) I (i32 0)) (loop (let ...
+; # (prog1 (run (cdr X) (let (Db (val $DbFiles) I (i32 0)) (loop (let...
 ; # (cdr X)
   %52 = inttoptr i64 %3 to i64*
   %53 = getelementptr i64, i64* %52, i32 1
   %54 = load i64, i64* %53
-; # (run (cdr X) (let (P (val $DbFiles) I (i32 0)) (loop (let Db: (db...
+; # (run (cdr X) (let (Db (val $DbFiles) I (i32 0)) (loop (let Db: (d...
   br label %$10
 $10:
   %55 = phi i64 [%54, %$9], [%77, %$19] ; # Prg
@@ -57053,7 +57053,7 @@ $10:
   %39 = phi i64 [%31, %$8], [%36, %$9] ; # X
   %40 = phi i64 [%32, %$8], [%37, %$9] ; # Y
   %41 = phi i1 [%33, %$8], [%38, %$9] ; # Notify
-; # (when (val $DbLog) (let (P (val $DbFiles) C (val $DBs)) (loop ((d...
+; # (when (val $DbLog) (let (Db (val $DbFiles) C (val $DBs)) (loop (l...
 ; # (val $DbLog)
   %42 = load i8*, i8** @$DbLog
   %43 = icmp ne i8* %42, null
@@ -57062,24 +57062,25 @@ $11:
   %44 = phi i64 [%39, %$10] ; # X
   %45 = phi i64 [%40, %$10] ; # Y
   %46 = phi i1 [%41, %$10] ; # Notify
-; # (let (P (val $DbFiles) C (val $DBs)) (loop ((dbFile P) drt NO) ((...
+; # (let (Db (val $DbFiles) C (val $DBs)) (loop (let Db: (dbFile Db) ...
 ; # (val $DbFiles)
   %47 = load i8*, i8** @$DbFiles
 ; # (val $DBs)
   %48 = load i32, i32* @$DBs
-; # (loop ((dbFile P) drt NO) ((dbFile P) flu 0) (? (=0 (dec 'C))) (s...
+; # (loop (let Db: (dbFile Db) (Db: drt NO) (Db: flu 0)) (? (=0 (dec ...
   br label %$13
 $13:
   %49 = phi i64 [%44, %$11], [%60, %$14] ; # X
   %50 = phi i64 [%45, %$11], [%61, %$14] ; # Y
   %51 = phi i1 [%46, %$11], [%62, %$14] ; # Notify
-  %52 = phi i8* [%47, %$11], [%65, %$14] ; # P
+  %52 = phi i8* [%47, %$11], [%65, %$14] ; # Db
   %53 = phi i32 [%48, %$11], [%64, %$14] ; # C
-; # ((dbFile P) drt NO)
+; # (let Db: (dbFile Db) (Db: drt NO) (Db: flu 0))
+; # (Db: drt NO)
   %54 = getelementptr i8, i8* %52, i32 41
   %55 = bitcast i8* %54 to i1*
   store i1 0, i1* %55
-; # ((dbFile P) flu 0)
+; # (Db: flu 0)
   %56 = getelementptr i8, i8* %52, i32 32
   %57 = bitcast i8* %56 to i64*
   store i64 0, i64* %57
@@ -57093,16 +57094,16 @@ $14:
   %60 = phi i64 [%49, %$13] ; # X
   %61 = phi i64 [%50, %$13] ; # Y
   %62 = phi i1 [%51, %$13] ; # Notify
-  %63 = phi i8* [%52, %$13] ; # P
+  %63 = phi i8* [%52, %$13] ; # Db
   %64 = phi i32 [%58, %$13] ; # C
-; # (ofs P (dbFile T))
+; # (ofs Db (dbFile T))
   %65 = getelementptr i8, i8* %63, i32 42
   br label %$13
 $15:
   %66 = phi i64 [%49, %$13] ; # X
   %67 = phi i64 [%50, %$13] ; # Y
   %68 = phi i1 [%51, %$13] ; # Notify
-  %69 = phi i8* [%52, %$13] ; # P
+  %69 = phi i8* [%52, %$13] ; # Db
   %70 = phi i32 [%58, %$13] ; # C
   %71 = phi i64 [0, %$13] ; # ->
 ; # (let (Tos 0 P (val $Extern)) (loop (loop (let X (cdr P) (? (atom ...
@@ -58699,7 +58700,7 @@ $138:
 
 define i64 @_mark(i64) {
 $1:
-; # (let (X (cdr Exe) Y (eval (++ X))) (if (=0 Y) (let (P (val $DbFil...
+; # (let (X (cdr Exe) Y (eval (++ X))) (if (== Y ZERO) (let (Db (val ...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
@@ -58728,29 +58729,30 @@ $5:
   br label %$2
 $2:
   %15 = phi i64 [%5, %$4], [%13, %$6], [%14, %$5] ; # ->
-; # (if (=0 Y) (let (P (val $DbFiles) C (val $DBs)) (while (dec 'C) (...
-; # (=0 Y)
-  %16 = icmp eq i64 %15, 0
+; # (if (== Y ZERO) (let (Db (val $DbFiles) C (val $DBs)) (while (ge0...
+; # (== Y ZERO)
+  %16 = icmp eq i64 %15, 2
   br i1 %16, label %$7, label %$8
 $7:
-; # (let (P (val $DbFiles) C (val $DBs)) (while (dec 'C) (let Db: (db...
+; # (let (Db (val $DbFiles) C (val $DBs)) (while (ge0 (dec 'C)) (let ...
 ; # (val $DbFiles)
   %17 = load i8*, i8** @$DbFiles
 ; # (val $DBs)
   %18 = load i32, i32* @$DBs
-; # (while (dec 'C) (let Db: (dbFile P) (Db: mrks 0) (free (Db: mark)...
+; # (while (ge0 (dec 'C)) (let Db: (dbFile Db) (Db: mrks 0) (free (Db...
   br label %$10
 $10:
-  %19 = phi i8* [%17, %$7], [%32, %$11] ; # P
+  %19 = phi i8* [%17, %$7], [%32, %$11] ; # Db
   %20 = phi i32 [%18, %$7], [%24, %$11] ; # C
 ; # (dec 'C)
   %21 = sub i32 %20, 1
-  %22 = icmp ne i32 %21, 0
+; # (ge0 (dec 'C))
+  %22 = icmp sge i32 %21, 0
   br i1 %22, label %$11, label %$12
 $11:
-  %23 = phi i8* [%19, %$10] ; # P
+  %23 = phi i8* [%19, %$10] ; # Db
   %24 = phi i32 [%21, %$10] ; # C
-; # (let Db: (dbFile P) (Db: mrks 0) (free (Db: mark)) (Db: mark null...
+; # (let Db: (dbFile Db) (Db: mrks 0) (free (Db: mark)) (Db: mark nul...
 ; # (Db: mrks 0)
   %25 = getelementptr i8, i8* %23, i32 24
   %26 = bitcast i8* %25 to i64*
@@ -58765,11 +58767,11 @@ $11:
   %30 = getelementptr i8, i8* %23, i32 16
   %31 = bitcast i8* %30 to i8**
   store i8* null, i8** %31
-; # (ofs P (dbFile T))
+; # (ofs Db (dbFile T))
   %32 = getelementptr i8, i8* %23, i32 42
   br label %$10
 $12:
-  %33 = phi i8* [%19, %$10] ; # P
+  %33 = phi i8* [%19, %$10] ; # Db
   %34 = phi i32 [%21, %$10] ; # C
   br label %$9
 $8:
