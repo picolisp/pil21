@@ -843,7 +843,8 @@
             (unless (t? (binRead))  # First property value
                (set Tail (cons @ (val Tail))) )  # Cons with key
             (until (nil? (binRead))  # Next property key
-               (set 2 Tail (cons @ (shift Tail)))
+               (set 2 Tail (cons @ (cdr Tail)))
+               (shift Tail)
                (unless (t? (binRead))  # Next property value
                   (set Tail (cons @ (val Tail))) ) ) )  # Cons with key
          (unLockDb 1) ) ) )  # Unlock
