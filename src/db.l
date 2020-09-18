@@ -1,4 +1,4 @@
-# 17sep20 Software Lab. Alexander Burger
+# 18sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -504,56 +504,57 @@
                   (while (pair (shift L))
                      (inc 'Siz (dbFile T)) ) ) )
             (let
-               (Db: (dbFile (set $DbFiles (alloc (val $DbFiles) Siz)))
+               (Db (set $DbFiles (alloc (val $DbFiles) Siz))
                   P (b8 (+ BLK BLK 1))
                   Fnr (i32 0)
                   Max (i32 0) )
                (loop
-                  (Db: db Fnr)
-                  (if (atom Dbs)
-                     (Db: sh 2)
-                     (set (bufAo End Fnr) 0)
-                     (Db: sh (i32 (++ Dbs))) )
-                  (set $DbFile (Db:))  # Set current file
-                  (cond
-                     ((ge0 (Db: fd (openRdWr Buf)))  # Exists
-                        (blkPeek 0 P (+ BLK BLK 1))  # Read block shift from block zero
-                        (Db: siz
-                           (shl
-                              (i32 BLKSIZE)
-                              (Db: sh (i32 (val (+ BLK BLK 1) P))) ) ) )  # Override block shift from 'Dbs'
-                     ((and
-                           (== (gErrno) ENOENT)
-                           (ge0 (Db: fd (openRdWrExcl Buf))) )
-                        (let
-                           (N (shl (i32 BLKSIZE) (Db: sh))
-                              Stk (stack)
-                              Blk (b8 (Db: siz N)) )
-                           (memset Blk 0 (i64 N))  # 'free' is null
-                           (setAdr
-                              (if (== (Db:) (val $DbFiles))  # First file
-                                 (* 2 BLKSIZE)  # Block zero plus DB root
-                                 BLKSIZE )
-                              (ofs Blk BLK) )  # Address of 'next' in buffer
-                           (set  # Set block shift in block zero
-                              (inc (* 2 BLK)) Blk
-                              (i8 (Db: sh)) )
-                           (blkPoke 0 Blk N)  # Write DB block zero
-                           (when (== (Db:) (val $DbFiles))  # First file
-                              (memset Blk 0 16)  # Clear 'next' link in buffer
-                              (setAdr 1 Blk)  # First block for DB root into link field
-                              (blkPoke (i64 (Db: siz)) Blk N) )  # has block size position
-                           (stack Stk) ) )
-                     (T (openErr Exe Sym1)) )
-                  (closeOnExec Exe (Db: fd))
-                  (when (> (Db: siz) Max)
-                     (setq Max @) )
-                  (Db: mark null)
-                  (Db: mrks 0)
-                  (Db: flu -1)
-                  (Db: lck (Db: drt NO))
-                  (inc 'Fnr)
-                  (? (atom Dbs)) )
+                  (let Db: (dbFile (set $DbFile Db))  # Set current file
+                     (Db: db Fnr)
+                     (if (atom Dbs)
+                        (Db: sh 2)
+                        (set (bufAo End Fnr) 0)
+                        (Db: sh (i32 (int (++ Dbs)))) )
+                     (cond
+                        ((ge0 (Db: fd (openRdWr Buf)))  # Exists
+                           (blkPeek 0 P (+ BLK BLK 1))  # Read block shift from block zero
+                           (Db: siz
+                              (shl
+                                 (i32 BLKSIZE)
+                                 (Db: sh (i32 (val (+ BLK BLK 1) P))) ) ) )  # Override block shift from 'Dbs'
+                        ((and
+                              (== (gErrno) ENOENT)
+                              (ge0 (Db: fd (openRdWrExcl Buf))) )
+                           (let
+                              (N (shl (i32 BLKSIZE) (Db: sh))
+                                 Stk (stack)
+                                 Blk (b8 (Db: siz N)) )
+                              (memset Blk 0 (i64 N))  # 'free' is null
+                              (setAdr
+                                 (if (== (Db:) (val $DbFiles))  # First file
+                                    (* 2 BLKSIZE)  # Block zero plus DB root
+                                    BLKSIZE )
+                                 (ofs Blk BLK) )  # Address of 'next' in buffer
+                              (set  # Set block shift in block zero
+                                 (inc (* 2 BLK)) Blk
+                                 (i8 (Db: sh)) )
+                              (blkPoke 0 Blk N)  # Write DB block zero
+                              (when (== (Db:) (val $DbFiles))  # First file
+                                 (memset Blk 0 16)  # Clear 'next' link in buffer
+                                 (setAdr 1 Blk)  # First block for DB root into link field
+                                 (blkPoke (i64 (Db: siz)) Blk N) )  # has block size position
+                              (stack Stk) ) )
+                        (T (openErr Exe Sym1)) )
+                     (closeOnExec Exe (Db: fd))
+                     (when (> (Db: siz) Max)
+                        (setq Max @) )
+                     (Db: mark null)
+                     (Db: mrks 0)
+                     (Db: flu -1)
+                     (Db: lck (Db: drt NO))
+                     (inc 'Fnr)
+                     (? (atom Dbs))
+                     (setq Db (ofs Db (dbFile T))) ) )
                (set
                   $DBs Fnr
                   $MaxBlkSize Max

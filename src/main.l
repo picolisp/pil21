@@ -26,8 +26,7 @@
       (set
          $OutFile (val 3 (val $OutFiles))  # Stderr
          $Put (fun (void i8) _putStdout) )
-      (when N
-         (outWord @) )
+      (outWord N)
       (when X
          (space)
          (print X) )
