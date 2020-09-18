@@ -1,4 +1,4 @@
-# 17sep20 Software Lab. Alexander Burger
+# 18sep20 Software Lab. Alexander Burger
 # https://picolisp.com/wiki/?vip
 
 (symbols 'vip 'pico)
@@ -56,7 +56,7 @@ showCsr screen1 screen2)
 
 ### VIP Editor ###
 (local) (*Buffers +Buffer mkLoc fName prName rplFile fileBuffer rdLines delim?
-markup min1 beep undo redo evCmd dirty> load> save> view> status)
+arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
 
 (class +Buffer)
 # text file key undo redo dirt posX posY lastX lastY flat fmt syms <c>
@@ -104,7 +104,7 @@ markup min1 beep undo redo evCmd dirty> load> save> view> status)
 
 (de delim? (C Str)
    (or
-      (member C '`(cons NIL (chop " \t\n\r\"'(),[]`{}")))
+      (member C '`(cons NIL (chop " \t\n\r\"'(),[]`")))
       (sub? C Str) ) )
 
 (de markup (Lst)
@@ -248,6 +248,29 @@ markup min1 beep undo redo evCmd dirty> load> save> view> status)
                   (def "*X" "*K" (read)) ) ) ) ) )
    (on *StatNm) )
 
+(dm syms> (Lst)
+   (out (: file)
+      (for "S" (=: syms Lst)
+         (printsp "S")
+         (pretty (val "S"))
+         (prinl)
+         (for "X" (sort (getl "S"))
+            (space 3)
+            (if (atom "X")
+               (println "X" T)
+               (printsp (cdr "X"))
+               (pretty (setq "X" (car "X")) -3)
+               (cond
+                  ((type "X")
+                     (prin "  # ")
+                     (print @) )
+                  ((>= 799999 "X" 700000)
+                     (prin "  # " (datStr "X")) ) )
+               (prinl) ) )
+         (prinl)
+         (println '(=======))
+         (prinl) ) ) )
+
 (dm view> (Win)
    (beep) )
 
@@ -277,12 +300,12 @@ markup min1 beep undo redo evCmd dirty> load> save> view> status)
 
 
 (local) (delwin cursor addLine chgLine unmark redraw repaint scLeft scRight goto
-chgwin eqwin getch getch2 reload scratch syms done change jmp@@ cnt@@ goCol
-goLeft goRight goUp goDown goAbs goFind tword word lword end lend getWord
-_forward goForward _backward goBackward goPFore goPBack shift shiftY indent cutX
-cutN paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe
-evRpt move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN
-nextBuf shell shFile prCmd reset command vi)
+chgwin eqwin getch getch2 reload scratch done change jmp@@ cnt@@ goCol goLeft
+goRight goUp goDown goAbs goFind tword word lword end lend getWord _forward
+goForward _backward goBackward goPFore goPBack shift shiftY indent cutX cutN
+paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe evRpt
+move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN nextBuf
+shell shFile prCmd reset command vi)
 
 (de delwin ()
    (when (=: prev next (: next))
@@ -471,29 +494,6 @@ nextBuf shell shFile prCmd reset command vi)
          Lst ) )
    (goto 1 (: buffer posY))
    (repaint) )
-
-(de syms (Lst)  #!
-   (for "S" Lst
-      (printsp "S")
-      (val "S")
-      (pretty (val "S"))
-      (prinl)
-      (for "X" (sort (getl "S"))
-         (space 3)
-         (if (atom "X")
-            (println "X" T)
-            (printsp (cdr "X"))
-            (pretty (setq "X" (car "X")) -3)
-            (cond
-               ((type "X")
-                  (prin "  # ")
-                  (print @) )
-               ((>= 799999 "X" 700000)
-                  (prin "  # " (datStr "X")) ) )
-            (prinl) ) )
-      (prinl)
-      (println '(=======))
-      (prinl) ) )
 
 (de done (Flg)
    (and Flg
@@ -1275,9 +1275,7 @@ nextBuf shell shFile prCmd reset command vi)
          ((or (num? (car X)) (=T (car X)))  # Line number
             (fileBuffer (cdr X) @) )
          (T  # List of symbols
-            (with (fileBuffer (tmp "syms"))
-               (out (: file)
-                  (syms (=: syms X)) ) ) ) ) )
+            (syms> (fileBuffer (tmp "syms")) X) ) ) )
    (unless *Buffers
       (fileBuffer (tmp "empty")) )
    (finally (screen1)
@@ -1474,14 +1472,24 @@ nextBuf shell shFile prCmd reset command vi)
                                        (chgwin (inc (: lines))) ) ) ) )
                            ("=" (eqwin))  # Set all windows to equal size
                            (("K" "^]")  # Edit symbol
-                              (ifn (get (any (pack (getWord T))) '*Dbg 1)
-                                 (beep)
-                                 (push '*TagStack (: posY) (: buffer file))
-                                 (reload (cdr @) (car @)) ) )
+                              (let S (any (pack (getWord T)))
+                                 (cond
+                                    ((: buffer syms)
+                                       (push '*TagStack (: posY) @)
+                                       (syms> (: buffer) (cons S @))
+                                       (reload (: buffer file) 1) )
+                                    ((get S '*Dbg 1)
+                                       (push '*TagStack (: posY) (: buffer file))
+                                       (reload (cdr @) (car @)) )
+                                    (T (beep)) ) ) )
                            (("Q" "^T")  # Pop tag stack
-                              (if *TagStack
-                                 (reload (++ *TagStack) (++ *TagStack))
-                                 (beep) ) )
+                              (nond
+                                 (*TagStack (beep))
+                                 ((pair (car *TagStack))
+                                    (reload (++ *TagStack) (++ *TagStack)) )
+                                 (NIL
+                                    (syms> (: buffer) (++ *TagStack))
+                                    (reload (: buffer file) (++ *TagStack)) ) ) )
                            (("^[OP" "^[[[A")  # [F1] Highlight on/off
                               (=: buffer flat (not (: buffer flat)))
                               (repaint) )
