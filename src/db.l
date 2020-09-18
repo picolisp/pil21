@@ -144,7 +144,7 @@
          (Db: siz) )
       (set
          $BlkLink (& (getAdr Blk) BLKMASK)
-         $BlkEnd (ofs Blk (+ (Db: siz) BLK))
+         $BlkEnd (ofs Blk (Db: siz))
          $BlkPtr (ofs Blk BLK) )  # Pointer to data
       Blk ) )  # Pointer to block
 

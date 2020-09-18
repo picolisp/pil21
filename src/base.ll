@@ -52705,7 +52705,7 @@ $1:
   %10 = load i32, i32* %9
 ; # (blkPeek (shl (set $BlkIndex N) (i64 (Db: sh))) Blk (Db: siz))
   call void @blkPeek(i64 %7, i8* %2, i32 %10)
-; # (set $BlkLink (& (getAdr Blk) BLKMASK) $BlkEnd (ofs Blk (+ (Db: s...
+; # (set $BlkLink (& (getAdr Blk) BLKMASK) $BlkEnd (ofs Blk (Db: siz)...
 ; # (getAdr Blk)
   %11 = call i64 @getAdr(i8* %2)
 ; # (& (getAdr Blk) BLKMASK)
@@ -52715,14 +52715,12 @@ $1:
   %13 = getelementptr i8, i8* %1, i32 12
   %14 = bitcast i8* %13 to i32*
   %15 = load i32, i32* %14
-; # (+ (Db: siz) BLK)
-  %16 = add i32 %15, 6
-; # (ofs Blk (+ (Db: siz) BLK))
-  %17 = getelementptr i8, i8* %2, i32 %16
-  store i8* %17, i8** @$BlkEnd
+; # (ofs Blk (Db: siz))
+  %16 = getelementptr i8, i8* %2, i32 %15
+  store i8* %16, i8** @$BlkEnd
 ; # (ofs Blk BLK)
-  %18 = getelementptr i8, i8* %2, i32 6
-  store i8* %18, i8** @$BlkPtr
+  %17 = getelementptr i8, i8* %2, i32 6
+  store i8* %17, i8** @$BlkPtr
   ret i8* %2
 }
 
