@@ -1,4 +1,4 @@
-# 11sep20 Software Lab. Alexander Burger
+# 19sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1481,7 +1481,9 @@
          (setq Z (eval (++ X)))
          (? (atom X))
          (setq Y (safe (getn Exe Y Z))) )
-      (let (R (save Z)  Tail (val (tail Y)))
+      (let
+         (R (save Z)
+            Tail (val (tail (needSymb Exe Y))) )
          (when (sym? (setq X Tail))
             (dbTouch Exe Y)
             (setq X (& (val (tail Y)) -9)) )
@@ -1523,13 +1525,17 @@
    (let
       (Tail (val (tail (needSymb Exe X)))
          Nm (name (& Tail -9)) )
-      (if (sym? Tail)  # External symbol
-         (let N (add Nm Nm)  # Get carry
-            (unless @@  # Not dirty
-               (add N N)
-               (when @@  # and loaded
-                  (set X $Nil  (tail X) Nm) ) ) )
-         (set X $Nil  (tail X) Nm) ) ) )  # Clear value and properties
+      (ifn (sym? Tail)  # External symbol
+         (set
+            X $Nil  # Clear value
+            (tail X) Nm )  # and properties
+         (setq Nm (add Nm Nm))  # Get carry
+         (unless @@  # Not dirty
+            (setq Nm (add Nm Nm))
+            (when @@  # and loaded
+               (set
+                  X $Nil
+                  (tail X) (shr Nm 2) ) ) ) ) ) )  # Set "not loaded"
 
 # (wipe 'sym|lst) -> sym|lst
 (de _wipe (Exe)

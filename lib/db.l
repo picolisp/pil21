@@ -1,4 +1,4 @@
-# 17sep20 Software Lab. Alexander Burger
+# 19sep20 Software Lab. Alexander Burger
 
 # *Dbs *Jnl *Blob upd
 
@@ -70,7 +70,7 @@
    (when (isa Cls Obj)
       (loop
          (NIL (next) Obj)
-         (NIL (has> Obj (arg) (next))) ) ) )
+         (NIL (has> Obj @ (next))) ) ) )
 
 
 # (aux 'var 'cls ['hook] 'any ..) -> sym
@@ -1081,10 +1081,11 @@
 (dm T @
    (incECnt This)
    (while (args)
-      (cond
-         ((=T (next)) (put This T T))
-         ((atom (arg)) (put> This (arg) (next)))
-         (T (put> This (car (arg)) (eval (cdr (arg))))) ) )
+      (let A (next)
+         (cond
+            ((=T A) (put This T T))
+            ((atom A) (put> This A (next)))
+            (T (put> This (car A) (eval (cdr A)))) ) ) )
    (upd> This (val This)) )
 
 (dm zap> ()
@@ -1438,7 +1439,7 @@
                   NIL 0 1000000 )
                Var ) )
          Vars ) )
-   (while (run Prg 1)  # (val ..)
+   (while (run Prg)  # (val ..)
       (let (Lst @  Obj (or (fin Lst) (new (meta Typ 'Dbf 1) Typ)))
          (and Key (++ Lst) (put> Obj Key @))
          (let store '((Tree Key Val Dbf) (link Key))
