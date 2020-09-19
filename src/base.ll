@@ -42305,7 +42305,7 @@ $16:
 ; # (let P (val $LinePtr) (unless P (initReadline) (free (val $LineBu...
 ; # (val $LinePtr)
   %37 = load i8*, i8** @$LinePtr
-; # (unless P (initReadline) (free (val $LineBuf)) (unless (setq P (s...
+; # (unless P (initReadline) (free (val $LineBuf)) (flushAll) (unless...
   %38 = icmp ne i8* %37, null
   br i1 %38, label %$19, label %$18
 $18:
@@ -42316,6 +42316,8 @@ $18:
   %40 = load i8*, i8** @$LineBuf
 ; # (free (val $LineBuf))
   call void @free(i8* %40)
+; # (flushAll)
+  call void @flushAll()
 ; # (unless (setq P (set $LineBuf (readline (val $LinePrmt)))) (wrnl)...
 ; # (set $LineBuf (readline (val $LinePrmt)))
 ; # (val $LinePrmt)

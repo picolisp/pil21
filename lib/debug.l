@@ -1,4 +1,4 @@
-# 17sep20 Software Lab. Alexander Burger
+# 19sep20 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -87,6 +87,8 @@
 (de who (X . Prg)
    (let (*Dbg NIL  Who '(Who @ @@ @@@))
       (make (mapc _who (all))) ) )
+
+(noLint 'who 'Prg)
 
 (de _who (Y)
    (unless (or (ext? Y) (memq Y Who))

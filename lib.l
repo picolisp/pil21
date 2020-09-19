@@ -1,4 +1,4 @@
-# 15sep20 Software Lab. Alexander Burger
+# 19sep20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -561,7 +561,7 @@
 
 (and (info (pil "rc")) (load @@))
 
-(load "@lib/debug.l" "@lib/lint.l" "@lib/vip.l")
+(load "@lib/lint.l" "@lib/debug.l" "@lib/vip.l")
 
 (noLint 'pretty 'Z)
 (noLint '_pretty 'Z)

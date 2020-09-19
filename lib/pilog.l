@@ -1,4 +1,4 @@
-# 25jul20 Software Lab. Alexander Burger
+# 19sep20 Software Lab. Alexander Burger
 
 (symbols "priv" 'pico)
 
@@ -688,8 +688,7 @@
 ### Debug ###
 `*Dbg
 
-#{
-(load "@lib/sq.l")
+(symbols '(pico)
+   (load "@lib/sq.l") )
 
-(docs "@doc/")
-}#
+## (docs "@doc/")

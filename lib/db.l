@@ -1,38 +1,8 @@
 # 19sep20 Software Lab. Alexander Burger
 
-# *Dbs *Jnl *Blob upd
+(symbols "priv" 'pico)
 
-### DB Sizes ###
-(de dbs Lst
-   (default *Dbs (_dbs 1)) )
-
-(de dbs+ (N . Lst)
-   (unless (cdr (nth *Dbs N))
-      (conc *Dbs (_dbs N)) ) )
-
-(de _dbs (N)
-   (mapcar
-      '((L)
-         (let Dbf (cons N (>> (- (car L)) 64))
-            (for Cls (cdr L)
-               (if (atom Cls)
-                  (put Cls 'Dbf Dbf)
-                  (for Var (cdr Cls)
-                     (let Rel (get Cls 1 Var)
-                        (unless Rel
-                           (quit "Bad relation" (cons Var (car Cls))) )
-                        (when (or (isa '+index Rel) (isa '+Swap Rel))
-                           (put @ 'dbf Dbf) )
-                        (for B (; Rel bag)
-                           (when (or (isa '+index B) (isa '+Swap B))
-                              (put @ 'dbf Dbf)) ) ) ) ) ) )
-         (inc 'N)
-         (car L) )
-      Lst ) )
-
-(de db: Typ
-   (or (meta Typ 'Dbf 1) 1) )
-
+(export) (*Jnl *Blob tree genKey useKey genStrKey ubZval upd)
 
 ### Tree Access ###
 (de tree (Var Cls Hook)
@@ -40,85 +10,6 @@
       (if Hook
          (cons Cls Hook)
          Cls ) ) )
-
-(de treeRel (Var Cls)
-   (with (or (get Cls Var) (meta Cls Var))
-      (or
-         (find '((B) (isa '+index B)) (: bag))
-         This ) ) )
-
-# (db 'var 'cls ['hook] 'any ['var 'any ..]) -> sym
-(de db (Var Cls . @)
-   (with (treeRel Var Cls)
-      (let (Tree (tree (: var) (: cls) (and (: hook) (next)))  Val (next))
-         (if (isa '+Key This)
-            (if (args)
-               (and (fetch Tree Val) (pass _db @))
-               (fetch Tree Val) )
-            (let Key (cons (if (isa '+Fold This) (fold Val) Val))
-               (let? A (: aux)
-                  (while (and (args) (== (++ A) (arg 1)))
-                     (next)
-                     (queue 'Key (next)) )
-                  (and (: ub) (setq Key (ubZval Key))) )
-               (let Q (init Tree Key (append Key T))
-                  (loop
-                     (NIL (step Q T))
-                     (T (pass _db @ Var Val) @) ) ) ) ) ) ) )
-
-(de _db (Obj . @)
-   (when (isa Cls Obj)
-      (loop
-         (NIL (next) Obj)
-         (NIL (has> Obj @ (next))) ) ) )
-
-
-# (aux 'var 'cls ['hook] 'any ..) -> sym
-(de aux (Var Cls . @)
-   (with (treeRel Var Cls)
-      (let Key (if (: ub) (ubZval (rest)) (rest))
-         (step
-            (init (tree (: var) (: cls) (and (: hook) (next)))
-               Key
-               (append Key T) ) ) ) ) )
-
-
-# (collect 'var 'cls ['hook] ['any|beg ['end [var ..]]]) -> lst
-(de collect (Var Cls . @)
-   (with (treeRel Var Cls)
-      (let
-         (Tree (tree (: var) (: cls) (and (: hook) (next)))
-            X1 (next)
-            X2 (if (args) (next) (or X1 T)) )
-         (make
-            (cond
-               ((isa '+Key This)
-                  (iter Tree
-                     '((X) (and (isa Cls X) (link (pass get X))))
-                     X1 X2 ) )
-               ((: ub)
-                  (if X1
-                     (ubIter Tree (inc (length (: aux)))
-                        '((X) (and (isa Cls X) (link (pass get X))))
-                        X1 X2 )
-                     (iter Tree
-                        '((X) (and (isa Cls X) (link (pass get X)))) ) ) )
-               (T
-                  (when (isa '+Fold This)
-                     (setq X1 (fold X1)  X2 (or (=T X2) (fold X2))) )
-                  (if (>= X2 X1)
-                     (if (pair X1)
-                        (setq X2 (append X2 T))
-                        (setq X1 (cons X1)  X2 (cons X2 T)) )
-                     (if (pair X1)
-                        (setq X1 (append X1 T))
-                        (setq X1 (cons X1 T)  X2 (cons X2)) ) )
-                  (iter Tree
-                     '((X)
-                        (and (isa Cls X) (link (pass get X))) )
-                     X1 X2
-                     (or (isa '+Idx This) (isa '+IdxFold This)) ) ) ) ) ) ) )
-
 
 (de genKey (Var Cls Hook Min Max)
    (if (lt0 Max)
@@ -137,10 +28,24 @@
       (setq Str (pack "# " Str)) )
    Str )
 
+(de ubZval (Lst X)
+   (let (Res 0  P 1  Q 1)
+      (while (find '((N) (>= N Q)) Lst)
+         (for N Lst
+            (and
+               N
+               (bit? Q N)
+               (setq Res (| Res P)) )
+            (setq P (>> -1 P)) )
+         (setq Q (>> -1 Q)) )
+      (cons Res X) ) )
+
 
 ### Relations ###
+(export) (+relation mis> ele> has> put> del> rel> rel?> lose> keep> zap>)
+
 (class +relation)
-# cls var
+(export) (cls var)
 
 (dm T (Var Lst)
    (=: cls *Class)
@@ -175,13 +80,13 @@
 # Finalizer
 (dm zap> (Obj Val))
 
+(export) (+Any +Bag +Bool +Number +Date +Time +Symbol +String)
 
 (class +Any +relation)
 
-
 # (+Bag) (cls ..) (..) (..)
 (class +Bag +relation)
-# bag
+(export) (bag hook)
 
 (dm T (Var Lst)
    (=: bag
@@ -282,7 +187,7 @@
 
 # (+Number) [num]
 (class +Number +relation)
-# scl
+(export) scl
 
 (dm T (Var Lst)
    (=: scl (car Lst))
@@ -320,10 +225,12 @@
 (dm mis> (Val Obj)
    (and Val (not (str? Val)) ,"String type expected") )
 
+(export) (+Link +Joint +Hook +Hook2 +Blob blob)
+(local) canQuery
 
 # (+Link) typ
 (class +Link +relation)
-# type
+(export) type
 
 (dm T (Var Lst)
    (unless (=: type (car Lst))
@@ -354,7 +261,7 @@
 
 # (+Joint) var typ
 (class +Joint +Link)
-# slot
+(export) slot
 
 (dm T (Var Lst)
    (=: slot (car Lst))
@@ -458,8 +365,11 @@
 
 
 ### Index classes ###
+(export) (+index +Key +Ref +Ref2 +Idx +Sn +Fold +IdxFold +Aux +UB)
+(local) (idxRel? relAux)
+
 (class +index)
-# hook dbf
+(export) dbf
 
 (dm T (Var Lst)
    (=: hook (car Lst))
@@ -513,7 +423,7 @@
 
 # (+Ref +relation) [hook]
 (class +Ref +index)
-# aux ub
+(export) (aux ub Dbf Aux)
 
 (dm rel> (Obj Old New Hook)
    (let
@@ -610,7 +520,7 @@
 
 # (+Idx +relation) [cnt [hook]]
 (class +Idx +Ref)
-# min
+(export) min
 
 (dm T (Var Lst)
    (=: min (or (car Lst) 3))
@@ -822,18 +732,6 @@
    (=: ub T)
    (extra Var Lst) )
 
-(de ubZval (Lst X)
-   (let (Res 0  P 1  Q 1)
-      (while (find '((N) (>= N Q)) Lst)
-         (for N Lst
-            (and
-               N
-               (bit? Q N)
-               (setq Res (| Res P)) )
-            (setq P (>> -1 P)) )
-         (setq Q (>> -1 Q)) )
-      (cons Res X) ) )
-
 (dm has> (Val X)
    (and Val
       (or
@@ -848,8 +746,10 @@
 
 
 ### Relation prefix classes ###
+(export) (+Dep +List +Need +Mis +Alt +Swap)
+
 (class +Dep)
-# dep
+(export) dep
 
 (dm T (Var Lst)
    (=: dep (car Lst))
@@ -944,7 +844,7 @@
 
 
 (class +Mis)
-# mis
+(export) mis
 
 (dm T (Var Lst)
    (=: mis (car Lst))
@@ -962,7 +862,7 @@
 
 
 (class +Swap)
-# dbf
+(export) dbf
 
 (dm has> (Val X)
    (or (extra Val X) (extra Val (val X))) )
@@ -1002,10 +902,7 @@
 
 
 ### Entities ###
-(class +Entity)
-
-(var Dbf)
-(var Aux)
+(export) (dbSync +Entity incECnt decECnt)
 
 (de dbSync (Obj)
    (let *Run NIL
@@ -1013,44 +910,10 @@
          (wait 40) )
       (sync) ) )
 
-(de new! ("Typ" . @)
-   (prog2
-      (dbSync)
-      (pass new (or (meta "Typ" 'Dbf 1) 1) "Typ")
-      (commit 'upd) ) )
+(class +Entity)
 
-(de set! (Obj Val)
-   (unless (= Val (val Obj))
-      (dbSync)
-      (set Obj Val)
-      (commit 'upd) )
-   Val )
-
-(de put! (Obj Var Val)
-   (unless (= Val (get Obj Var))
-      (dbSync)
-      (put Obj Var Val)
-      (commit 'upd) )
-   Val )
-
-(de inc! (Obj Var Val)
-   (when (num? (get Obj Var))
-      (prog2
-         (dbSync)
-         (inc (prop Obj Var) (or Val 1))
-         (commit 'upd) ) ) )
-
-(de blob! (Obj Var File)
-   (put!> Obj Var File)
-   (blob+ Obj Var)
-   File )
-
-(de blob+ (Obj Var)
-   (when *Jnl
-      (chdir *Blob
-         (%@ "symlink" 'I
-            (pack (glue "/" (chop Obj)) "." Var)
-            (pack "=" (name Obj) "." Var) ) ) ) )
+(var Dbf)
+(var Aux)
 
 (de incECnt (Obj)
    (let M NIL
@@ -1078,6 +941,10 @@
                     (recurse C) )
                  (and (get *DB Cls) (dec @)) ) ) ) ) ) )
 
+(export) (upd> put!> del!> inc> inc!> dec> dec!>)
+
+(local) cloneKey
+
 (dm T @
    (incECnt This)
    (while (args)
@@ -1093,6 +960,8 @@
       (let V (or (atom X) (++ X))
          (and (meta This X) (zap> @ This V)) ) )
    (unless (: T) (decECnt This)) )
+
+(export) (url> url1> url2> url3> url4> url5> url6> url7> url8> url9> gui>)
 
 (dm url> (Tab Fld))
 
@@ -1214,6 +1083,8 @@
 (dm mis> (Var Val)
    (mis> (meta This Var) Val This) )
 
+(export) (lose1> lose!> lose keep1> keep?> keep!> keep)
+
 (dm lose1> (Var)
    (when (meta This Var)
       (lose> @ This (get This Var)) ) )
@@ -1278,6 +1149,8 @@
       (run "Prg")
       (=: T "Flg") ) )
 
+(export) (set> set!>)
+
 (dm set> (Val)
    (unless (= Val (val This))
       (decECnt This)
@@ -1317,6 +1190,8 @@
       (upd> This (val This) Val)
       (commit 'upd) )
    (val This) )
+
+(export) (clone> clone!>)
 
 (dm clone> (Lst)
    (let Obj (new (or (var: Dbf 1) 1) (val This))
@@ -1379,12 +1254,171 @@
       (clone> This)
       (commit 'upd) ) )
 
+(export) (new! set! put! inc! blob! blob+)
+
+(de new! ("Typ" . @)
+   (prog2
+      (dbSync)
+      (pass new (or (meta "Typ" 'Dbf 1) 1) "Typ")
+      (commit 'upd) ) )
+
+(de set! (Obj Val)
+   (unless (= Val (val Obj))
+      (dbSync)
+      (set Obj Val)
+      (commit 'upd) )
+   Val )
+
+(de put! (Obj Var Val)
+   (unless (= Val (get Obj Var))
+      (dbSync)
+      (put Obj Var Val)
+      (commit 'upd) )
+   Val )
+
+(de inc! (Obj Var Val)
+   (when (num? (get Obj Var))
+      (prog2
+         (dbSync)
+         (inc (prop Obj Var) (or Val 1))
+         (commit 'upd) ) ) )
+
+(de blob! (Obj Var File)
+   (put!> Obj Var File)
+   (blob+ Obj Var)
+   File )
+
+(de blob+ (Obj Var)
+   (when *Jnl
+      (chdir *Blob
+         (%@ "symlink" 'I
+            (pack (glue "/" (chop Obj)) "." Var)
+            (pack "=" (name Obj) "." Var) ) ) ) )
+
+
 # Default syncronization function
 (de upd Lst
    (wipe Lst) )
 
+### DB Sizes ###
+(export) (*Dbs dbs dbs+ db:)
+(local) _dbs
+
+(de dbs Lst
+   (default *Dbs (_dbs 1)) )
+
+(de dbs+ (N . Lst)
+   (unless (cdr (nth *Dbs N))
+      (conc *Dbs (_dbs N)) ) )
+
+(de _dbs (N)
+   (mapcar
+      '((L)
+         (let Dbf (cons N (>> (- (car L)) 64))
+            (for Cls (cdr L)
+               (if (atom Cls)
+                  (put Cls 'Dbf Dbf)
+                  (for Var (cdr Cls)
+                     (let Rel (get Cls 1 Var)
+                        (unless Rel
+                           (quit "Bad relation" (cons Var (car Cls))) )
+                        (when (or (isa '+index Rel) (isa '+Swap Rel))
+                           (put @ 'dbf Dbf) )
+                        (for B (; Rel bag)
+                           (when (or (isa '+index B) (isa '+Swap B))
+                              (put @ 'dbf Dbf)) ) ) ) ) ) )
+         (inc 'N)
+         (car L) )
+      Lst ) )
+
+(de db: Typ
+   (or (meta Typ 'Dbf 1) 1) )
 
 ### Utilities ###
+(export) (treeRel db aux collect)
+(local) _db
+
+(de treeRel (Var Cls)
+   (with (or (get Cls Var) (meta Cls Var))
+      (or
+         (find '((B) (isa '+index B)) (: bag))
+         This ) ) )
+
+# (db 'var 'cls ['hook] 'any ['var 'any ..]) -> sym
+(de db (Var Cls . @)
+   (with (treeRel Var Cls)
+      (let (Tree (tree (: var) (: cls) (and (: hook) (next)))  Val (next))
+         (if (isa '+Key This)
+            (if (args)
+               (and (fetch Tree Val) (pass _db @))
+               (fetch Tree Val) )
+            (let Key (cons (if (isa '+Fold This) (fold Val) Val))
+               (let? A (: aux)
+                  (while (and (args) (== (++ A) (arg 1)))
+                     (next)
+                     (queue 'Key (next)) )
+                  (and (: ub) (setq Key (ubZval Key))) )
+               (let Q (init Tree Key (append Key T))
+                  (loop
+                     (NIL (step Q T))
+                     (T (pass _db @ Var Val) @) ) ) ) ) ) ) )
+
+(de _db (Obj . @)
+   (when (isa Cls Obj)
+      (loop
+         (NIL (next) Obj)
+         (NIL (has> Obj @ (next))) ) ) )
+
+
+# (aux 'var 'cls ['hook] 'any ..) -> sym
+(de aux (Var Cls . @)
+   (with (treeRel Var Cls)
+      (let Key (if (: ub) (ubZval (rest)) (rest))
+         (step
+            (init (tree (: var) (: cls) (and (: hook) (next)))
+               Key
+               (append Key T) ) ) ) ) )
+
+
+# (collect 'var 'cls ['hook] ['any|beg ['end [var ..]]]) -> lst
+(de collect (Var Cls . @)
+   (with (treeRel Var Cls)
+      (let
+         (Tree (tree (: var) (: cls) (and (: hook) (next)))
+            X1 (next)
+            X2 (if (args) (next) (or X1 T)) )
+         (make
+            (cond
+               ((isa '+Key This)
+                  (iter Tree
+                     '((X) (and (isa Cls X) (link (pass get X))))
+                     X1 X2 ) )
+               ((: ub)
+                  (if X1
+                     (ubIter Tree (inc (length (: aux)))
+                        '((X) (and (isa Cls X) (link (pass get X))))
+                        X1 X2 )
+                     (iter Tree
+                        '((X) (and (isa Cls X) (link (pass get X)))) ) ) )
+               (T
+                  (when (isa '+Fold This)
+                     (setq X1 (fold X1)  X2 (or (=T X2) (fold X2))) )
+                  (if (>= X2 X1)
+                     (if (pair X1)
+                        (setq X2 (append X2 T))
+                        (setq X1 (cons X1)  X2 (cons X2 T)) )
+                     (if (pair X1)
+                        (setq X1 (append X1 T))
+                        (setq X1 (cons X1 T)  X2 (cons X2)) ) )
+                  (iter Tree
+                     '((X)
+                        (and (isa Cls X) (link (pass get X))) )
+                     X1 X2
+                     (or (isa '+Idx This) (isa '+IdxFold This)) ) ) ) ) ) ) )
+
+
+(export) (rel request request! obj create)
+
 # Define object variables as relations
 (de rel Lst
    (def *Class
@@ -1410,7 +1444,7 @@
       (commit 'upd) ) )
 
 # Create or update object
-# *ObjIdx
+(local) *ObjIdx
 
 (de obj Lst
    (let Obj

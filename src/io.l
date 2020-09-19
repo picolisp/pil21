@@ -1,4 +1,4 @@
-# 16sep20 Software Lab. Alexander Burger
+# 19sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1154,6 +1154,7 @@
                   (unless P
                      (initReadline)
                      (free (val $LineBuf))
+                     (flushAll)
                      (unless (setq P (set $LineBuf (readline (val $LinePrmt))))
                         (wrnl)
                         (when (or (val $Bind) (== (val $LinePrmt) $Indent))
