@@ -1,9 +1,8 @@
-# 19sep20 Software Lab. Alexander Burger
+# 21sep20 Software Lab. Alexander Burger
 
-(symbols "priv" 'pico)
+# *Prune
 
-(export) (root fetch store)
-(local) (*Prune _store _put _splitBt _del zap_)
+(private) (_store _put _splitBt _del zap_)
 
 (de root (Tree)
    (cond
@@ -169,8 +168,6 @@
                (call "rm" Z) ) )
          ((info F) (call "mv" F Z)) ) ) )
 
-(export) (count leaf)
-
 # Tree node count
 (de count (Tree)
    (or (car (root Tree)) 0) )
@@ -182,8 +179,7 @@
          (setq X (cadr @)  Node (car @)) )
       (cddr X) ) )
 
-(export) (minKey maxKey)
-(local) revNode
+(private) revNode
 
 # Reverse node
 (de revNode (Node)
@@ -238,8 +234,6 @@
                (when (>= (caadr V) Min)
                   (setq K (caadr V)) )
                (setq Node (car V)) ) ) ) ) )
-
-(export) (init step)
 
 # Step
 (de init (Tree Beg End)
@@ -311,8 +305,7 @@
                   (setq @@ (caar X))
                   (throw NIL (fin (car X))) ) ) ) ) ) )
 
-(export) (scan iter)
-(local) (_scan _nacs _iter _reti)
+(private) (_scan _nacs _iter _reti)
 
 # Scan tree nodes
 (de scan ("Tree" "Fun" "Beg" "End" "Flg")
@@ -396,8 +389,6 @@
             ("Fun" (or (cddr "X") (fin (car "X")))) )
          (_reti (cadr "X")) ) ) )
 
-(export) (ub>= ubIter)
-
 # UB-Trees
 (de ub>= (Dim End Val Beg)
    (let (D (>> (- 1 Dim) 1)  Pat D)
@@ -470,8 +461,6 @@
                      (if "Lst"
                         (setq "Left" (cadr "X"))
                         (setq "Left" (; "X" 2 0 1)  "Lst" (; "X" 2 0 -1)) ) ) ) ) ) ) ) )
-
-(export) (prune zapTree chkTree)
 
 (de prune (N)
    (for Node (idx '*Prune)

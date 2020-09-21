@@ -1,4 +1,4 @@
-# 12sep20 Software Lab. Alexander Burger
+# 21sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -89,10 +89,13 @@
    ($Nil "NIL" $Nil)       # NIL symbol
    (NIL $Nil 0)            # CDR of NIL as empty list
    ($Tilde "~" $Tilde)     # Tilde symbol
-   ($PT $Nil $Nil 0)       # Pico trees
-   ($Pico $Tilde $PT 0)    # Initial namespace
+   ($PiT $Nil $Nil 0)      # Pico trees
+   ($Pico $Tilde $PiT 0)   # Initial namespace
    ($pico "pico" $Pico)
    ($Pico1 $pico $Nil 0)
+   ($PrT $Nil $Nil 0)      # Private trees
+   ($Priv $Tilde $PrT 0)   # Private namespace
+   ($priv "priv" $Priv)
    ($OS "*OS" 0)
    ($CPU "*CPU" 0)
    ($Pid "*Pid" 0)
@@ -100,7 +103,7 @@
    ($DB "*DB" 0)           # Database root constant
    ($Meth "meth" _meth)
    ($Quote "quote" _quote)
-   ## Sync src/pico.h 'T' (14*2+1)
+   ## Sync src/pico.h 'T' (17*2+1)
    ($T "T" $T)
    ($N "N" $Nil)
    ($C "C" $Nil)

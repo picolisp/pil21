@@ -1,4 +1,4 @@
-# 18sep20 Software Lab. Alexander Burger
+# 21sep20 Software Lab. Alexander Burger
 # https://picolisp.com/wiki/?vip
 
 (symbols 'vip 'pico)
@@ -1562,17 +1562,15 @@ shell shFile prCmd reset command vi)
 
 (de pico~vi ("X" C)
    (and
-      (symbols (append (symbols) '(pico~dbg))
-         (vi
-            (list
-               (cond
-                  ((pair "X") @)
-                  (C (get C '*Dbg -1 "X"))
-                  (T (or (get "X" '*Dbg 1) "X")) ) ) ) )
+      (vi
+         (list
+            (cond
+               ((pair "X") @)
+               (C (get C '*Dbg -1 "X"))
+               (T (or (get "X" '*Dbg 1) "X")) ) ) )
       "X" ) )
 
 (de pico~v Lst
    (and
-      (symbols (append (symbols) '(pico~dbg))
-         (vi (list Lst)) )
+      (vi (list Lst))
       Lst ) )

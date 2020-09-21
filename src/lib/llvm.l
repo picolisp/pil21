@@ -1,9 +1,9 @@
-# 17sep20 Software Lab. Alexander Burger
+# 21sep20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
 
-(local) (@ @@ @@@ priv void null i1 i1* i1** i8 i8* i8** i8*** i16 i16* i16**
+(local) (@ @@ @@@ cross void null i1 i1* i1** i8 i8* i8** i8*** i16 i16* i16**
 i32 i32* i32** i64 i64* i64** any YES NO ZERO -ZERO ONE SymTab begin end $ ?
 short equ global var str const globals array table symTab inline tailcall define
 struct $Nil $T $Link drop)
@@ -21,7 +21,7 @@ struct $Nil $T $Link drop)
 
 
 ### Cross-compiler private ###
-(symbols 'priv 'llvm 'pico)
+(symbols 'cross 'llvm 'pico)
 
 (local) (*Shared *Strings *Map *Ssa *Lbl *Log *Curr *Exit *Bind *Phi *Call *Ret
 putMap log asm ssa phi +phi br label +lbl +bind type func ptr pointee store A B
@@ -31,7 +31,7 @@ Skip True False Beg End Safe *Safe)
 (import any inc dec ++ #{shift}#)
 
 (de *Err
-   (and *Dbg (symbols '(priv llvm pico))) )
+   (and *Dbg (symbols '(cross llvm pico))) )
 
 (de *Call . "call")
 
@@ -61,13 +61,9 @@ Skip True False Beg End Safe *Safe)
       (out Map
          (for Sym (idx '*Map)
             (let? X
-               (cond
-                  ((pair (val Sym))
-                     (prin "dbg~")
-                     pico~@ )
-                  ((val (car (idx '*Map (val Sym))))
-                     (prin "pico~")
-                     pico~@ ) )
+               (or
+                  (pair (val Sym))
+                  (val (car (idx '*Map (val Sym)))) )
                (prinl
                   Sym
                   " (" (cddr X) " . \"@src/" (cadr X) "\")" ) ) ) ) ) )
@@ -80,7 +76,7 @@ Skip True False Beg End Safe *Safe)
 
 (de log ()
    (when *Log
-      (let L (chop (symbols '(llvm pico priv) (sym (up 2))))
+      (let L (chop (symbols '(llvm pico cross) (sym (up 2))))
          (and (nth L 65) (con pico~@ "..."))
          (link (cons NIL L)) ) ) )
 
@@ -634,7 +630,7 @@ Skip True False Beg End Safe *Safe)
 
 
 ### Cross compiler overridden ###
-(symbols '(priv pico llvm))
+(symbols '(cross pico llvm))
 
 (de llvm~de Lst
    (define
@@ -1409,7 +1405,7 @@ Skip True False Beg End Safe *Safe)
 
 
 ### Composite ###
-(symbols '(llvm priv pico))
+(symbols '(llvm cross pico))
 
 (local) (link drop pop save save2 safe)
 

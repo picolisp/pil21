@@ -1,14 +1,11 @@
-# 19sep20 Software Lab. Alexander Burger
+# 21sep20 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
    (unless (== 'pico (car (symbols)))
       (or (name (car (symbols))) "$") ) )
 
-(symbols 'dbg 'pico)
-
-(export) (help docs doc more less what who has can dep methods)
-(local) (_who _match nest nst1 nst2 C D M S X Y Z Fun Prg Who dep1 dep2)
+(private) (_who _match nest nst1 nst2 C D M S X Y Z Fun Prg Who dep1 dep2)
 
 # Browsing
 (de help (Sym Ex)
@@ -189,8 +186,7 @@
                      (link (cons (car X) Obj))
                      (push 'Mark (car X)) ) ) ) ) ) ) )
 
-(export) (d debug u unbug trace untrace *NoTrace traceAll)
-(local) (_dbg _dbg2 debg unbg traced?)
+(private) (_dbg _dbg2 debg unbg traced?)
 
 # Single-Stepping
 (de _dbg (Lst)
@@ -209,7 +205,7 @@
             (_dbg L) ) )
       Lst ) )
 
-(de debg (Lst)
+(de dbg (Lst)
    (when (pair Lst)
       (casq (++ Lst)
          ((case casq state)
@@ -235,7 +231,9 @@
          (T (map _dbg Lst)) )
       T ) )
 
-(de d () (let *Dbg NIL (debg ^)))
+(de d ()
+   (let *Dbg NIL
+      (dbg ^) ) )
 
 (de debug (X C)
    (ifn (traced? X C)
@@ -243,31 +241,33 @@
          (when (pair X)
             (setq C (cdr X)  X (car X)) )
          (or
-            (debg (if C (method X C) (getd X)))
+            (dbg (if C (method X C) (getd X)))
             (quit "Can't debug" X) ) )
       (untrace X C)
       (debug X C)
       (trace X C) ) )
 
-(de unbg (Lst)
+(de ubg (Lst)
    (when (pair Lst)
       (map
          '((L)
             (when (pair (car L))
                (when (== '! (caar L))
                   (set L (cdar L)) )
-               (unbg (car L)) ) )
+               (ubg (car L)) ) )
          Lst )
       T ) )
 
-(de u () (let *Dbg NIL (unbg ^)))
+(de u ()
+   (let *Dbg NIL
+      (ubg ^) ) )
 
 (de unbug (X C)
    (let *Dbg NIL
       (when (pair X)
          (setq C (cdr X)  X (car X)) )
       (or
-         (unbg (if C (method X C) (getd X)))
+         (ubg (if C (method X C) (getd X)))
          (quit "Can't unbug" X) ) ) )
 
 # Tracing
@@ -350,8 +350,6 @@
                   (trace X) ) ) ) ) ) )
 
 # Process Listing
-(export) proc
-
 (when (member *OS '("Android" "Linux"))
    (de proc @
       (apply call
@@ -359,8 +357,6 @@
          "ps" "-H" "-o" "pid,ppid,start,size,pcpu,cmd" ) ) )
 
 # Benchmarking
-(export) bench
-
 (de bench Prg
    (let U (usec)
       (prog1
@@ -371,8 +367,6 @@
                " sec" ) ) ) ) )
 
 # Backtrace
-(export) bt
-
 (de bt (Flg)
    (let (S NIL  *Dbg)
       (for (L (trail T) L)
@@ -402,8 +396,6 @@
          (T (and (not Flg) (line)) T) ) ) )
 
 # Source code
-(symbols '(pico dbg))
-
 (in "@lib/map"
    (while (read)
       (let Sym @

@@ -1,8 +1,6 @@
-# 19sep20 Software Lab. Alexander Burger
+# 21sep20 Software Lab. Alexander Burger
 
-(symbols "priv" 'pico)
-
-(export) (*Jnl *Blob tree genKey useKey genStrKey ubZval upd)
+# *Jnl *Blob
 
 ### Tree Access ###
 (de tree (Var Cls Hook)
@@ -42,10 +40,7 @@
 
 
 ### Relations ###
-(export) (+relation mis> ele> has> put> del> rel> rel?> lose> keep> zap>)
-
 (class +relation)
-(export) (cls var)
 
 (dm T (Var Lst)
    (=: cls *Class)
@@ -80,13 +75,10 @@
 # Finalizer
 (dm zap> (Obj Val))
 
-(export) (+Any +Bag +Bool +Number +Date +Time +Symbol +String)
-
 (class +Any +relation)
 
 # (+Bag) (cls ..) (..) (..)
 (class +Bag +relation)
-(export) (bag hook)
 
 (dm T (Var Lst)
    (=: bag
@@ -187,7 +179,6 @@
 
 # (+Number) [num]
 (class +Number +relation)
-(export) scl
 
 (dm T (Var Lst)
    (=: scl (car Lst))
@@ -225,12 +216,10 @@
 (dm mis> (Val Obj)
    (and Val (not (str? Val)) ,"String type expected") )
 
-(export) (+Link +Joint +Hook +Hook2 +Blob blob)
-(local) canQuery
+(private) canQuery
 
 # (+Link) typ
 (class +Link +relation)
-(export) type
 
 (dm T (Var Lst)
    (unless (=: type (car Lst))
@@ -261,7 +250,6 @@
 
 # (+Joint) var typ
 (class +Joint +Link)
-(export) slot
 
 (dm T (Var Lst)
    (=: slot (car Lst))
@@ -365,11 +353,9 @@
 
 
 ### Index classes ###
-(export) (+index +Key +Ref +Ref2 +Idx +Sn +Fold +IdxFold +Aux +UB)
-(local) (idxRel? relAux)
+(private) (idxRel? relAux)
 
 (class +index)
-(export) dbf
 
 (dm T (Var Lst)
    (=: hook (car Lst))
@@ -423,7 +409,6 @@
 
 # (+Ref +relation) [hook]
 (class +Ref +index)
-(export) (aux ub Dbf Aux)
 
 (dm rel> (Obj Old New Hook)
    (let
@@ -520,7 +505,6 @@
 
 # (+Idx +relation) [cnt [hook]]
 (class +Idx +Ref)
-(export) min
 
 (dm T (Var Lst)
    (=: min (or (car Lst) 3))
@@ -746,10 +730,7 @@
 
 
 ### Relation prefix classes ###
-(export) (+Dep +List +Need +Mis +Alt +Swap)
-
 (class +Dep)
-(export) dep
 
 (dm T (Var Lst)
    (=: dep (car Lst))
@@ -844,7 +825,6 @@
 
 
 (class +Mis)
-(export) mis
 
 (dm T (Var Lst)
    (=: mis (car Lst))
@@ -862,7 +842,6 @@
 
 
 (class +Swap)
-(export) dbf
 
 (dm has> (Val X)
    (or (extra Val X) (extra Val (val X))) )
@@ -902,8 +881,6 @@
 
 
 ### Entities ###
-(export) (dbSync +Entity incECnt decECnt)
-
 (de dbSync (Obj)
    (let *Run NIL
       (while (lock (or Obj *DB))
@@ -941,9 +918,7 @@
                     (recurse C) )
                  (and (get *DB Cls) (dec @)) ) ) ) ) ) )
 
-(export) (upd> put!> del!> inc> inc!> dec> dec!>)
-
-(local) cloneKey
+(private) cloneKey
 
 (dm T @
    (incECnt This)
@@ -960,8 +935,6 @@
       (let V (or (atom X) (++ X))
          (and (meta This X) (zap> @ This V)) ) )
    (unless (: T) (decECnt This)) )
-
-(export) (url> url1> url2> url3> url4> url5> url6> url7> url8> url9> gui>)
 
 (dm url> (Tab Fld))
 
@@ -1083,8 +1056,6 @@
 (dm mis> (Var Val)
    (mis> (meta This Var) Val This) )
 
-(export) (lose1> lose!> lose keep1> keep?> keep!> keep)
-
 (dm lose1> (Var)
    (when (meta This Var)
       (lose> @ This (get This Var)) ) )
@@ -1149,8 +1120,6 @@
       (run "Prg")
       (=: T "Flg") ) )
 
-(export) (set> set!>)
-
 (dm set> (Val)
    (unless (= Val (val This))
       (decECnt This)
@@ -1190,8 +1159,6 @@
       (upd> This (val This) Val)
       (commit 'upd) )
    (val This) )
-
-(export) (clone> clone!>)
 
 (dm clone> (Lst)
    (let Obj (new (or (var: Dbf 1) 1) (val This))
@@ -1254,8 +1221,6 @@
       (clone> This)
       (commit 'upd) ) )
 
-(export) (new! set! put! inc! blob! blob+)
-
 (de new! ("Typ" . @)
    (prog2
       (dbSync)
@@ -1301,8 +1266,7 @@
    (wipe Lst) )
 
 ### DB Sizes ###
-(export) (*Dbs dbs dbs+ db:)
-(local) _dbs
+(private) _dbs
 
 (de dbs Lst
    (default *Dbs (_dbs 1)) )
@@ -1335,8 +1299,7 @@
    (or (meta Typ 'Dbf 1) 1) )
 
 ### Utilities ###
-(export) (treeRel db aux collect)
-(local) _db
+(private) _db
 
 (de treeRel (Var Cls)
    (with (or (get Cls Var) (meta Cls Var))
@@ -1417,8 +1380,6 @@
                      (or (isa '+Idx This) (isa '+IdxFold This)) ) ) ) ) ) ) )
 
 
-(export) (rel request request! obj create)
-
 # Define object variables as relations
 (de rel Lst
    (def *Class
@@ -1444,7 +1405,7 @@
       (commit 'upd) ) )
 
 # Create or update object
-(local) *ObjIdx
+(private) *ObjIdx
 
 (de obj Lst
    (let Obj

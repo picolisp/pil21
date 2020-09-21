@@ -1,9 +1,8 @@
-# 12sep20 Software Lab. Alexander Burger
+# 21sep20 Software Lab. Alexander Burger
 
-(symbols "priv" 'pico)
+# *NoLint
 
-(export) (noLint lint lintAll)
-(local) (*NoLint global? local? dlsym? lint1 lint2 lintVar lintDup lintLoop
+(private) (global? local? dlsym? lint1 lint2 lintVar lintDup lintLoop
 _lintq lintFun A C Lst X Y *L *X *Var *Dup *Def *Bnd *Use)
 
 (de noLint (X V)
@@ -72,7 +71,7 @@ _lintq lintFun A C Lst X Y *L *X *Var *Dup *Def *Bnd *Use)
                      (mapc lint1 Y) ) ) )
             (macro
                (lint2 (cdr X)) )
-            (let?
+            ((let? buf)
                (use *L
                   (lintVar (cadr X))
                   (mapc lint1 (cddr X)) ) )

@@ -1,18 +1,12 @@
-# 01sep20 Software Lab. Alexander Burger
-
-(symbols 'net 'pico)
-
-(export) (*Adr *SPort port accept listen host connect udp)
+# 21sep20 Software Lab. Alexander Burger
 
 (sysdefs "Errno")
 (sysdefs "Networking")
 
-(local) ipErr
+(private) (ipErr A Type Sd Addr Port Var)
 
 (de ipErr (Msg)
    (quit Msg (%@ "strErrno" 'S)) )
-
-(private) (A Type Sd Addr Port Var)
 
 # (port ['T] 'cnt|(cnt . cnt) ['var]) -> cnt
 (de port (A . @)
@@ -124,9 +118,9 @@
                         (=0 (setq P (struct (+ P ai_next) 'P))) ) ) )
                (%@ "freeaddrinfo" 'I Lst) ) ) ) ) )
 
-(local) server
+(private) server
 
-(de server(Type Node Service)
+(de server (Type Node Service)
    (use Lst
       (and
          (=0
@@ -167,7 +161,7 @@
                   (=0 (setq P (struct (+ P ai_next) 'P))) ) ) )
          (%@ "freeaddrinfo" 'I Lst) ) ) )
 
-(local) UDPMAX
+(private) UDPMAX
 
 (de UDPMAX . 4096)
 

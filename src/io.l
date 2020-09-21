@@ -1,4 +1,4 @@
-# 19sep20 Software Lab. Alexander Burger
+# 21sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1314,6 +1314,8 @@
          (let Nm (val 3 P)
             (cond
                ((== Nm ZERO) (badInput))
+               ((== (val $Intern) (any $Cell))
+                  (intern 0 $Nil Nm (cdar (car @)) $Nil) )
                ((symToNum Nm (int (val $Scl)) (char ".") 0) @)
                ((anonymous Nm) @)
                (T (requestSym Nm)) ) )
@@ -2594,11 +2596,16 @@
          (iSignal (val SIGINT Sig) (fun sig)) )
       (let
          (Int (save (val $Intern))
+            Pr1 (save (val $PrT))
+            Pr2 (save (val 2 $PrT))
+            Tr1 (save (val $Transient))
+            Tr2 (save (val 2 $Transient))
             P (b8 (ioFrame T))
             V (link (push -ZERO NIL))
             At (link (push -ZERO NIL)) )
          (rdOpen Exe X P)
          (pushInFiles P)
+         (set $PrT (set 2 $PrT $Nil))
          (set $Transient (set 2 $Transient $Nil))
          (setq X $Nil)
          (loop
@@ -2653,7 +2660,10 @@
                   (print X)
                   (newline) ) ) )
          (popInFiles)
-         (set $Transient (set 2 $Transient $Nil))
+         (set 2 $Transient Tr2)
+         (set $Transient Tr1)
+         (set 2 $PrT Pr2)
+         (set $PrT Pr1)
          (set $Intern Int)
          X ) ) )
 

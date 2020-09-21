@@ -1,9 +1,8 @@
-# 19sep20 Software Lab. Alexander Burger
+# 21sep20 Software Lab. Alexander Burger
 
-(symbols "priv" 'pico)
+# *Rule
 
-(export) (*Rule be clause repeat asserta assertz retract rules)
-(local) CL
+(private) CL
 
 (de be CL
    (clause CL) )
@@ -46,8 +45,7 @@
          S ) ) )
 
 ### Pilog Interpreter ###
-(export) (goal fail pilog solve query ?)
-(local) (Env Prg Q Dbg R L @H @A @B @Obj @X @Lst @CL @P @C *R)
+(private) (Env Prg Q Dbg R L @H @A @B @Obj @X @Lst @CL @P @C *R)
 
 (de goal (CL . @)
    (let Env '(T)
@@ -99,8 +97,7 @@
       (query (goal CL) L) ) )
 
 ### Basic Rules ###
-(export) (repeat true not call or nil)
-(local) (_or _for)
+(private) (_or _for)
 
 (be repeat)
 (repeat)
@@ -121,8 +118,6 @@
 
 (be nil (@X) (^ @ (not (-> @X))))
 
-
-(export) (equal different append member delete permute uniq)
 
 (be equal (@X @X))
 
@@ -149,8 +144,6 @@
       (let X (-> @X)
          (not (idx (-> @B) (cons (hash X) X) T)) ) ) )
 
-
-(export) (asserta assertz retract clause show for)
 
 (be asserta (@C) (^ @ (asserta (-> @C))))
 
@@ -188,8 +181,6 @@
 
 
 ### DB ###
-(export) initQuery
-
 (de initQuery (Var Cls Hook Val)
    (let (Tree (tree Var Cls Hook)  Rel (get Cls Var))
       (when (find '((B) (isa '+index B)) (get Rel 'bag))
@@ -237,8 +228,7 @@
          (T (init Tree (cons Val) (cons (pack Val `(char T)) T))) ) ) )
 
 
-(export) db
-(local) _db
+(private) _db
 
 # (db var cls obj)
 (be db (@Var @Cls @Obj)
@@ -280,8 +270,7 @@
 (repeat)
 
 
-(export) (val lst map)
-(local) (_lst _map)
+(private) (_lst _map)
 
 (be val (@V . @L)
    (^ @V (apply get (-> @L)))
@@ -304,8 +293,7 @@
 (repeat)
 
 
-(export) (isa same bool ub range head hold fold part tolr)
-(local) (_same _range _head _hold _fold _part _tolr)
+(private) (_same _range _head _hold _fold _part _tolr)
 
 (be isa (@Typ . @L)
    (^ @
@@ -498,8 +486,7 @@
       (T (_tolr (apply get (car L) X) (cdr L))) ) )
 
 
-(export) select
-(local) (_select _initSel _gen _sel)
+(private) (_select _initSel _gen _sel)
 
 (de _select (Lst Flg)
    (let? X
@@ -623,8 +610,6 @@
    (fail) )
 
 ### Remote queries ###
-(export) (rqry remote revolve)
-
 (de rqry Args
    (for (Q (goal (cdr Args)) (prove Q))
       (pr (get @ (car Args)))
@@ -688,7 +673,6 @@
 ### Debug ###
 `*Dbg
 
-(symbols '(pico)
-   (load "@lib/sq.l") )
+(load "@lib/sq.l")
 
 ## (docs "@doc/")

@@ -1,4 +1,4 @@
-# 19sep20 Software Lab. Alexander Burger
+# 20sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -348,9 +348,11 @@
             (intern2 Sym Val Name Tree More) ) ) ) )
 
 (de requestSym (Name)
-   (intern 0 $Nil Name
-      (cdar (car (val $Intern)))
-      (cdr (val $Intern)) ) )
+   (if (isIntern Name (cdr $Priv))
+      @
+      (intern 0 $Nil Name
+         (cdar (car (val $Intern)))
+         (cdr (val $Intern)) ) ) )
 
 # Intern an external symbol
 (de extern (Name)

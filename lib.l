@@ -1,4 +1,4 @@
-# 19sep20 Software Lab. Alexander Burger
+# 21sep20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -239,21 +239,14 @@
             (loc S (cdr X)) ) ) ) )
 
 (de private ()
-   (let (S (intern (name "priv") T)  L (symbols S))
-      (read)
-      (symbols (cons (car L) S (cdr L))) ) )
+   (symbols '(priv) (read)) )
 
 (de local ()
    (symbols (list (car (symbols)))
       (read) ) )
 
 (de export (Sym)
-   (symbols
-      (list
-         (or
-            Sym
-            (let L (symbols)
-               ((if (= "priv" (cadr L)) caddr cadr) L) ) ) )
+   (symbols (list (or Sym (cadr (symbols))))
       (read) ) )
 
 (de import Lst
