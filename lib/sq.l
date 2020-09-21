@@ -1,4 +1,4 @@
-# 24nov16 Software Lab. Alexander Burger
+# 21sep20 Software Lab. Alexander Burger
 
 # (select [var ..] cls [hook|T] [var val ..])
 (de select Lst
@@ -85,50 +85,8 @@
 
 
 # (update 'obj ['var])
-(de update (Obj Var)
-   (let *Dbg NIL
-      (printsp Obj)
-      (if Var
-         (_update (get Obj Var) Var)
-         (set!> Obj
-            (any (revise (sym (val Obj)))) )
-         (for X (getl Obj)
-            (_update (or (atom X) (++ X)) X) ) )
-      Obj ) )
-
-(de _update (Val Var)
-   (printsp Var)
-   (let New
-      (if (meta Obj Var)
-         (revise> @ Val)
-         (any (revise (sym Val))) )
-      (unless (= New Val)
-         (if (mis> Obj Var New)
-            (quit "mismatch" @)
-            (put!> Obj Var New) ) ) ) )
-
-
-(dm (revise> . +relation) (Val)
-   (any (revise (sym Val))) )
-
-(dm (revise> . +Bag) (Lst)
-   (mapcar
-      '((V B) (space 6) (revise> B V))
-      (any (revise (sym Lst)))
-      (: bag) ) )
-
-(dm (revise> . +Number) (Val)
-   (format
-      (revise (format Val (: scl)))
-      (: scl) ) )
-
-(dm (revise> . +Date) (Val)
-   (expDat
-      (revise
-         (datStr Val)
-         '((S) (list (datStr (expDat S)))) ) ) )
-
-(dm (revise> . +List) (Val)
-   (mapcar
-      '((X) (space 3) (extra X))
-      (any (revise (sym Val))) ) )
+(de update (Var Obj)
+   (bind Var
+      (set Var (get Obj Var))
+      (when (vi (list Var))
+         (put!> Obj Var (val Var)) ) ) )

@@ -2,7 +2,7 @@
 
 # *Rule
 
-(private) CL
+(private) (CL Q R L Prg)
 
 (de be CL
    (clause CL) )
@@ -45,7 +45,7 @@
          S ) ) )
 
 ### Pilog Interpreter ###
-(private) (Env Prg Q Dbg R L @H @A @B @Obj @X @Lst @CL @P @C *R)
+(private) (Env Dbg @H @A @B @Obj @X @Lst @CL @P @C *R)
 
 (de goal (CL . @)
    (let Env '(T)

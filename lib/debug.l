@@ -186,7 +186,7 @@
                      (link (cons (car X) Obj))
                      (push 'Mark (car X)) ) ) ) ) ) ) )
 
-(private) (_dbg _dbg2 debg unbg traced?)
+(private) (_dbg _dbg2 dbg ubg traced?)
 
 # Single-Stepping
 (de _dbg (Lst)

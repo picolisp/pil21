@@ -1,4 +1,4 @@
-// 17sep20 Software Lab. Alexander Burger
+// 21sep20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -120,6 +120,7 @@ void initReadline(void) {
    rl_catch_signals = 0;
    rl_pre_input_hook = (int (*)(void))waitTty;
    rl_completion_entry_function = tabEntry;
+   rl_special_prefixes = "$%&*+-<=>?@";
    rl_basic_quote_characters = NULL;
 }
 
