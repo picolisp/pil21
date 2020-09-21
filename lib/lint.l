@@ -3,7 +3,7 @@
 # *NoLint
 
 (private) (global? local? dlsym? lint1 lint2 lintVar lintDup lintLoop
-_lintq lintFun A C Lst X Y *L *X *Var *Dup *Def *Bnd *Use)
+_lintq lintFun A C Lst S X Y *L *X *Var *Dup *Def *Bnd *Use)
 
 (de noLint (X V)
    (if V
@@ -14,6 +14,7 @@ _lintq lintFun A C Lst X Y *L *X *Var *Dup *Def *Bnd *Use)
    (or
       (memq S '(NIL ^ @ @@ @@@ This T))
       (member (char S) '(`(char '*) `(char '+)))
+      (== '\~ (car (pair (val S))))
       (and
          (>= (length S) 4)
          (fully upp? (chop S)) ) ) )
@@ -221,7 +222,7 @@ _lintq lintFun A C Lst X Y *L *X *Var *Dup *Def *Bnd *Use)
 (de lint (X C)
    (let (*L NIL  *Var NIL  *Dup NIL  *Def NIL  *Bnd NIL  *Use NIL)
       (when (pair X)
-         (setq  C (cdr w)  X (car X)) )
+         (setq  C (cdr X)  X (car X)) )
       (cond
          (C  # Method
             (let *X (cons X C)
