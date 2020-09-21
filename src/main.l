@@ -1,4 +1,4 @@
-# 17sep20 Software Lab. Alexander Burger
+# 21sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -407,6 +407,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (cond
                      ((not (nil? Y)) 0)
                      ((nil? (setq X (car X))) $T)
+                     ((== X $Tilde) 0)
                      ((circ (setq Y X)) 0)
                      (T
                         (loop
