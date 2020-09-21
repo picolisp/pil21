@@ -31945,28 +31945,30 @@ $10:
   %28 = call {i64, i1} @llvm.uadd.with.overflow.i64(i64 %27, i64 %27)
   %29 = extractvalue {i64, i1} %28, 1
   %30 = extractvalue {i64, i1} %28, 0
-; # (when @@ (set X $Nil (tail X) (shr Nm 2)))
+; # (when @@ (set X $Nil (tail X) (sym (shr Nm 2))))
   br i1 %29, label %$12, label %$13
 $12:
   %31 = phi i64 [%30, %$10] ; # Nm
-; # (set X $Nil (tail X) (shr Nm 2))
+; # (set X $Nil (tail X) (sym (shr Nm 2)))
   %32 = inttoptr i64 %1 to i64*
   store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([846 x i64]* @SymTab to i8*), i32 8) to i64), i64* %32
 ; # (tail X)
   %33 = add i64 %1, -8
 ; # (shr Nm 2)
   %34 = lshr i64 %31, 2
-  %35 = inttoptr i64 %33 to i64*
-  store i64 %34, i64* %35
+; # (sym (shr Nm 2))
+  %35 = or i64 %34, 8
+  %36 = inttoptr i64 %33 to i64*
+  store i64 %35, i64* %36
   br label %$13
 $13:
-  %36 = phi i64 [%30, %$10], [%31, %$12] ; # Nm
+  %37 = phi i64 [%30, %$10], [%31, %$12] ; # Nm
   br label %$11
 $11:
-  %37 = phi i64 [%26, %$8], [%36, %$13] ; # Nm
+  %38 = phi i64 [%26, %$8], [%37, %$13] ; # Nm
   br label %$9
 $9:
-  %38 = phi i64 [%19, %$7], [%37, %$11] ; # Nm
+  %39 = phi i64 [%19, %$7], [%38, %$11] ; # Nm
   ret void
 }
 
@@ -53271,7 +53273,7 @@ $11:
 
 define i1 @isLife(i64) {
 $1:
-; # (let (Nm (name (& (val (tail Sym)) -9)) F (objFile Nm) N (objId N...
+; # (let (Nm (name (& (val (tail Sym)) -9)) F (objFile Nm) N (shl (ob...
 ; # (tail Sym)
   %1 = add i64 %0, -8
 ; # (val (tail Sym))
@@ -53298,114 +53300,116 @@ $4:
   %13 = call i32 @objFile(i64 %12)
 ; # (objId Nm)
   %14 = call i64 @objId(i64 %12)
+; # (shl (objId Nm) 6)
+  %15 = shl i64 %14, 6
 ; # (when N (cond ((> (val $DBs) F) (setq Nm (add Nm Nm)) (when @@ (r...
-  %15 = icmp ne i64 %14, 0
-  br i1 %15, label %$5, label %$6
+  %16 = icmp ne i64 %15, 0
+  br i1 %16, label %$5, label %$6
 $5:
-  %16 = phi i64 [%12, %$4] ; # Nm
+  %17 = phi i64 [%12, %$4] ; # Nm
 ; # (cond ((> (val $DBs) F) (setq Nm (add Nm Nm)) (when @@ (ret YES))...
 ; # (val $DBs)
-  %17 = load i32, i32* @$DBs
+  %18 = load i32, i32* @$DBs
 ; # (> (val $DBs) F)
-  %18 = icmp sgt i32 %17, %13
-  br i1 %18, label %$9, label %$8
+  %19 = icmp sgt i32 %18, %13
+  br i1 %19, label %$9, label %$8
 $9:
-  %19 = phi i64 [%16, %$5] ; # Nm
+  %20 = phi i64 [%17, %$5] ; # Nm
 ; # (add Nm Nm)
-  %20 = call {i64, i1} @llvm.uadd.with.overflow.i64(i64 %19, i64 %19)
-  %21 = extractvalue {i64, i1} %20, 1
-  %22 = extractvalue {i64, i1} %20, 0
+  %21 = call {i64, i1} @llvm.uadd.with.overflow.i64(i64 %20, i64 %20)
+  %22 = extractvalue {i64, i1} %21, 1
+  %23 = extractvalue {i64, i1} %21, 0
 ; # (when @@ (ret YES))
-  br i1 %21, label %$10, label %$11
+  br i1 %22, label %$10, label %$11
 $10:
-  %23 = phi i64 [%22, %$9] ; # Nm
+  %24 = phi i64 [%23, %$9] ; # Nm
 ; # (ret YES)
   ret i1 1
 $11:
-  %24 = phi i64 [%22, %$9] ; # Nm
+  %25 = phi i64 [%23, %$9] ; # Nm
 ; # (add Nm Nm)
-  %25 = call {i64, i1} @llvm.uadd.with.overflow.i64(i64 %24, i64 %24)
-  %26 = extractvalue {i64, i1} %25, 1
-  %27 = extractvalue {i64, i1} %25, 0
+  %26 = call {i64, i1} @llvm.uadd.with.overflow.i64(i64 %25, i64 %25)
+  %27 = extractvalue {i64, i1} %26, 1
+  %28 = extractvalue {i64, i1} %26, 0
 ; # (when @@ (ret YES))
-  br i1 %26, label %$12, label %$13
+  br i1 %27, label %$12, label %$13
 $12:
-  %28 = phi i64 [%24, %$11] ; # Nm
+  %29 = phi i64 [%25, %$11] ; # Nm
 ; # (ret YES)
   ret i1 1
 $13:
-  %29 = phi i64 [%24, %$11] ; # Nm
+  %30 = phi i64 [%25, %$11] ; # Nm
 ; # (let (Db: (dbFile (set $DbFile (ofs (val $DbFiles) (* F (dbFile T...
 ; # (set $DbFile (ofs (val $DbFiles) (* F (dbFile T))))
 ; # (val $DbFiles)
-  %30 = load i8*, i8** @$DbFiles
+  %31 = load i8*, i8** @$DbFiles
 ; # (* F (dbFile T))
-  %31 = mul i32 %13, 42
+  %32 = mul i32 %13, 42
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
-  %32 = getelementptr i8, i8* %30, i32 %31
-  store i8* %32, i8** @$DbFile
+  %33 = getelementptr i8, i8* %31, i32 %32
+  store i8* %33, i8** @$DbFile
 ; # (* BLK 2)
 ; # (b8 (* BLK 2))
-  %33 = alloca i8, i64 12
+  %34 = alloca i8, i64 12
 ; # (blkPeek BLK P BLK)
-  call void @blkPeek(i64 6, i8* %33, i32 6)
+  call void @blkPeek(i64 6, i8* %34, i32 6)
 ; # (when (> (getAdr P) N) (blkPeek (shl N (i64 (Db: sh))) P BLK) (wh...
 ; # (getAdr P)
-  %34 = call i64 @getAdr(i8* %33)
+  %35 = call i64 @getAdr(i8* %34)
 ; # (> (getAdr P) N)
-  %35 = icmp ugt i64 %34, %14
-  br i1 %35, label %$14, label %$15
+  %36 = icmp ugt i64 %35, %15
+  br i1 %36, label %$14, label %$15
 $14:
-  %36 = phi i64 [%29, %$13] ; # Nm
+  %37 = phi i64 [%30, %$13] ; # Nm
 ; # (Db: sh)
-  %37 = getelementptr i8, i8* %32, i32 8
-  %38 = bitcast i8* %37 to i32*
-  %39 = load i32, i32* %38
+  %38 = getelementptr i8, i8* %33, i32 8
+  %39 = bitcast i8* %38 to i32*
+  %40 = load i32, i32* %39
 ; # (i64 (Db: sh))
-  %40 = sext i32 %39 to i64
+  %41 = sext i32 %40 to i64
 ; # (shl N (i64 (Db: sh)))
-  %41 = shl i64 %14, %40
+  %42 = shl i64 %15, %41
 ; # (blkPeek (shl N (i64 (Db: sh))) P BLK)
-  call void @blkPeek(i64 %41, i8* %33, i32 6)
+  call void @blkPeek(i64 %42, i8* %34, i32 6)
 ; # (when (== 1 (& (val P) BLKTAG)) (ret YES))
 ; # (val P)
-  %42 = load i8, i8* %33
+  %43 = load i8, i8* %34
 ; # (& (val P) BLKTAG)
-  %43 = and i8 %42, 63
+  %44 = and i8 %43, 63
 ; # (== 1 (& (val P) BLKTAG))
-  %44 = icmp eq i8 1, %43
-  br i1 %44, label %$16, label %$17
+  %45 = icmp eq i8 1, %44
+  br i1 %45, label %$16, label %$17
 $16:
-  %45 = phi i64 [%36, %$14] ; # Nm
+  %46 = phi i64 [%37, %$14] ; # Nm
 ; # (ret YES)
   ret i1 1
 $17:
-  %46 = phi i64 [%36, %$14] ; # Nm
+  %47 = phi i64 [%37, %$14] ; # Nm
   br label %$15
 $15:
-  %47 = phi i64 [%29, %$13], [%46, %$17] ; # Nm
+  %48 = phi i64 [%30, %$13], [%47, %$17] ; # Nm
   br label %$7
 $8:
-  %48 = phi i64 [%16, %$5] ; # Nm
+  %49 = phi i64 [%17, %$5] ; # Nm
 ; # (val $Ext)
-  %49 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([846 x i64]* @SymTab to i8*), i32 552) to i64) to i64*
-  %50 = load i64, i64* %49
+  %50 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([846 x i64]* @SymTab to i8*), i32 552) to i64) to i64*
+  %51 = load i64, i64* %50
 ; # (pair (val $Ext))
-  %51 = and i64 %50, 15
-  %52 = icmp eq i64 %51, 0
-  br i1 %52, label %$19, label %$18
+  %52 = and i64 %51, 15
+  %53 = icmp eq i64 %52, 0
+  br i1 %53, label %$19, label %$18
 $19:
-  %53 = phi i64 [%48, %$8] ; # Nm
+  %54 = phi i64 [%49, %$8] ; # Nm
 ; # (ret YES)
   ret i1 1
 $18:
-  %54 = phi i64 [%48, %$8] ; # Nm
+  %55 = phi i64 [%49, %$8] ; # Nm
   br label %$7
 $7:
-  %55 = phi i64 [%47, %$15], [%54, %$18] ; # Nm
+  %56 = phi i64 [%48, %$15], [%55, %$18] ; # Nm
   br label %$6
 $6:
-  %56 = phi i64 [%12, %$4], [%55, %$7] ; # Nm
+  %57 = phi i64 [%12, %$4], [%56, %$7] ; # Nm
   ret i1 0
 }
 

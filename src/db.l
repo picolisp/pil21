@@ -1,4 +1,4 @@
-# 18sep20 Software Lab. Alexander Burger
+# 21sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -233,7 +233,7 @@
    (let
       (Nm (name (& (val (tail Sym)) -9))
          F (objFile Nm)
-         N (objId Nm) )
+         N (shl (objId Nm) 6) )
       (when N
          (cond
             ((> (val $DBs) F)  # Local file

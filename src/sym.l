@@ -1,4 +1,4 @@
-# 20sep20 Software Lab. Alexander Burger
+# 21sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1537,7 +1537,7 @@
             (when @@  # and loaded
                (set
                   X $Nil
-                  (tail X) (shr Nm 2) ) ) ) ) ) )  # Set "not loaded"
+                  (tail X) (sym (shr Nm 2)) ) ) ) ) ) )  # Set "not loaded"
 
 # (wipe 'sym|lst) -> sym|lst
 (de _wipe (Exe)
