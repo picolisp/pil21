@@ -59027,7 +59027,7 @@ $23:
   %76 = load i8*, i8** %75
 ; # (shr N 3)
   %77 = lshr i64 %60, 3
-; # (when (>= I (Db: mrks)) (let J (inc I) (memset (setq P (Db: mark ...
+; # (when (>= I (Db: mrks)) (let J (inc I) (memset (ofs (setq P (Db: ...
 ; # (Db: mrks)
   %78 = getelementptr i8, i8* %73, i32 24
   %79 = bitcast i8* %78 to i64*
@@ -59038,7 +59038,7 @@ $23:
 $28:
   %82 = phi i64 [%60, %$23] ; # N
   %83 = phi i8* [%76, %$23] ; # P
-; # (let J (inc I) (memset (setq P (Db: mark (alloc P J))) 0 (- J (Db...
+; # (let J (inc I) (memset (ofs (setq P (Db: mark (alloc P J))) (Db: ...
 ; # (inc I)
   %84 = add i64 %77, 1
 ; # (Db: mark (alloc P J))
@@ -59050,85 +59050,91 @@ $28:
   %88 = getelementptr i8, i8* %73, i32 24
   %89 = bitcast i8* %88 to i64*
   %90 = load i64, i64* %89
-; # (- J (Db: mrks))
-  %91 = sub i64 %84, %90
-; # (memset (setq P (Db: mark (alloc P J))) 0 (- J (Db: mrks)))
-  call void @llvm.memset.p0i8.p0i8.i64(i8* %87, i8 0, i64 %91, i1 0)
-; # (Db: mrks J)
+; # (ofs (setq P (Db: mark (alloc P J))) (Db: mrks))
+  %91 = getelementptr i8, i8* %87, i64 %90
+; # (Db: mrks)
   %92 = getelementptr i8, i8* %73, i32 24
   %93 = bitcast i8* %92 to i64*
-  store i64 %84, i64* %93
+  %94 = load i64, i64* %93
+; # (- J (Db: mrks))
+  %95 = sub i64 %84, %94
+; # (memset (ofs (setq P (Db: mark (alloc P J))) (Db: mrks)) 0 (- J (...
+  call void @llvm.memset.p0i8.p0i8.i64(i8* %91, i8 0, i64 %95, i1 0)
+; # (Db: mrks J)
+  %96 = getelementptr i8, i8* %73, i32 24
+  %97 = bitcast i8* %96 to i64*
+  store i64 %84, i64* %97
   br label %$29
 $29:
-  %94 = phi i64 [%60, %$23], [%82, %$28] ; # N
-  %95 = phi i8* [%76, %$23], [%87, %$28] ; # P
+  %98 = phi i64 [%60, %$23], [%82, %$28] ; # N
+  %99 = phi i8* [%76, %$23], [%87, %$28] ; # P
 ; # (ofs P I)
-  %96 = getelementptr i8, i8* %95, i64 %77
+  %100 = getelementptr i8, i8* %99, i64 %77
 ; # (& N 7)
-  %97 = and i64 %94, 7
+  %101 = and i64 %98, 7
 ; # (shl 1 (& N 7))
-  %98 = shl i64 1, %97
+  %102 = shl i64 1, %101
 ; # (i8 (shl 1 (& N 7)))
-  %99 = trunc i64 %98 to i8
+  %103 = trunc i64 %102 to i8
 ; # (let B (val P) (cond ((& B N) (when (== ZERO Flg) (set P (& B (x|...
 ; # (val P)
-  %100 = load i8, i8* %96
+  %104 = load i8, i8* %100
 ; # (cond ((& B N) (when (== ZERO Flg) (set P (& B (x| N -1)))) $T) (...
 ; # (& B N)
-  %101 = and i8 %100, %99
-  %102 = icmp ne i8 %101, 0
-  br i1 %102, label %$32, label %$31
+  %105 = and i8 %104, %103
+  %106 = icmp ne i8 %105, 0
+  br i1 %106, label %$32, label %$31
 $32:
-  %103 = phi i8 [%99, %$29] ; # N
-  %104 = phi i8* [%96, %$29] ; # P
+  %107 = phi i8 [%103, %$29] ; # N
+  %108 = phi i8* [%100, %$29] ; # P
 ; # (when (== ZERO Flg) (set P (& B (x| N -1))))
 ; # (== ZERO Flg)
-  %105 = icmp eq i64 2, %70
-  br i1 %105, label %$33, label %$34
+  %109 = icmp eq i64 2, %70
+  br i1 %109, label %$33, label %$34
 $33:
-  %106 = phi i8 [%103, %$32] ; # N
-  %107 = phi i8* [%104, %$32] ; # P
+  %110 = phi i8 [%107, %$32] ; # N
+  %111 = phi i8* [%108, %$32] ; # P
 ; # (set P (& B (x| N -1)))
 ; # (x| N -1)
-  %108 = xor i8 %106, -1
+  %112 = xor i8 %110, -1
 ; # (& B (x| N -1))
-  %109 = and i8 %100, %108
-  store i8 %109, i8* %107
+  %113 = and i8 %104, %112
+  store i8 %113, i8* %111
   br label %$34
 $34:
-  %110 = phi i8 [%103, %$32], [%106, %$33] ; # N
-  %111 = phi i8* [%104, %$32], [%107, %$33] ; # P
+  %114 = phi i8 [%107, %$32], [%110, %$33] ; # N
+  %115 = phi i8* [%108, %$32], [%111, %$33] ; # P
   br label %$30
 $31:
-  %112 = phi i8 [%99, %$29] ; # N
-  %113 = phi i8* [%96, %$29] ; # P
+  %116 = phi i8 [%103, %$29] ; # N
+  %117 = phi i8* [%100, %$29] ; # P
 ; # (when (== $T Flg) (set P (| B N)))
 ; # (== $T Flg)
-  %114 = icmp eq i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([846 x i64]* @SymTab to i8*), i32 280) to i64), %70
-  br i1 %114, label %$35, label %$36
+  %118 = icmp eq i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([846 x i64]* @SymTab to i8*), i32 280) to i64), %70
+  br i1 %118, label %$35, label %$36
 $35:
-  %115 = phi i8 [%112, %$31] ; # N
-  %116 = phi i8* [%113, %$31] ; # P
+  %119 = phi i8 [%116, %$31] ; # N
+  %120 = phi i8* [%117, %$31] ; # P
 ; # (set P (| B N))
 ; # (| B N)
-  %117 = or i8 %100, %115
-  store i8 %117, i8* %116
+  %121 = or i8 %104, %119
+  store i8 %121, i8* %120
   br label %$36
 $36:
-  %118 = phi i8 [%112, %$31], [%115, %$35] ; # N
-  %119 = phi i8* [%113, %$31], [%116, %$35] ; # P
+  %122 = phi i8 [%116, %$31], [%119, %$35] ; # N
+  %123 = phi i8* [%117, %$31], [%120, %$35] ; # P
   br label %$30
 $30:
-  %120 = phi i8 [%110, %$34], [%118, %$36] ; # N
-  %121 = phi i8* [%111, %$34], [%119, %$36] ; # P
-  %122 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([846 x i64]* @SymTab to i8*), i32 280) to i64), %$34], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([846 x i64]* @SymTab to i8*), i32 8) to i64), %$36] ; # ->
+  %124 = phi i8 [%114, %$34], [%122, %$36] ; # N
+  %125 = phi i8* [%115, %$34], [%123, %$36] ; # P
+  %126 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([846 x i64]* @SymTab to i8*), i32 280) to i64), %$34], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([846 x i64]* @SymTab to i8*), i32 8) to i64), %$36] ; # ->
   br label %$22
 $22:
-  %123 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([846 x i64]* @SymTab to i8*), i32 280) to i64), %$20], [%122, %$30] ; # ->
+  %127 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([846 x i64]* @SymTab to i8*), i32 280) to i64), %$20], [%126, %$30] ; # ->
   br label %$9
 $9:
-  %124 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([846 x i64]* @SymTab to i8*), i32 8) to i64), %$12], [%123, %$22] ; # ->
-  ret i64 %124
+  %128 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([846 x i64]* @SymTab to i8*), i32 8) to i64), %$12], [%127, %$22] ; # ->
+  ret i64 %128
 }
 
 define i64 @_free(i64) {

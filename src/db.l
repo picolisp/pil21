@@ -1,4 +1,4 @@
-# 21sep20 Software Lab. Alexander Burger
+# 22sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1157,7 +1157,9 @@
                   (when (>= I (Db: mrks))  # Greater or equal to mark vector size
                      (let J (inc I)
                         (memset
-                           (setq P (Db: mark (alloc P J)))  # Increase mark bit vector
+                           (ofs
+                              (setq P (Db: mark (alloc P J)))  # Increase mark bit vector
+                              (Db: mrks) )
                            0  # Clear new area
                            (- J (Db: mrks)) )
                         (Db: mrks J) ) )  # New mark vector size
