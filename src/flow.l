@@ -1,4 +1,4 @@
-# 15sep20 Software Lab. Alexander Burger
+# 22sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -245,7 +245,8 @@
                            (? (== $At Sym))
                            (setq P (val 3 P)) ) )
                      (let (TypS (val $Typ)  KeyS (val $Key))
-                        (prog1
+                        (prog2
+                           (set $Typ Typ  $Key Key)
                            (run (cdr Exe))  # Run body
                            (set $Key KeyS  $Typ TypS  $Next Next)
                            (drop (ofs Q 1)) ) ) )
@@ -256,7 +257,8 @@
                         (? (== $At Sym))
                         (setq P (val 3 P)) ) )
                   (let (TypS (val $Typ)  KeyS (val $Key))
-                     (prog1
+                     (prog2
+                        (set $Typ Typ  $Key Key)
                         (run (cdr Exe))  # Run body
                         (set $Key KeyS  $Typ TypS  $Next Next) ) ) ) )
             (unless (nil? Y)
@@ -270,9 +272,8 @@
                   (? (== $At Sym))
                   (setq P (val 3 P)) ) )
             (let (TypS (val $Typ)  KeyS (val $Key))
-               (set $Typ Typ)
-               (set $Key Key)
-               (prog1
+               (prog2
+                  (set $Typ Typ  $Key Key)
                   (run (cdr Exe))  # Run body
                   (set $Key KeyS  $Typ TypS) ) ) )
          (setq P (val $Bind))
