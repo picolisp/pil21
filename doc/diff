@@ -1,4 +1,4 @@
-# 06sep20 Software Lab. Alexander Burger
+# 22sep20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -22,6 +22,7 @@
 + 'adr' returns a pointer usable by 'native' and 'struct'
 + 'info' returns the file argument in '@@'
 + '\~' marker in namespaces
++ Special 'priv' namespace
 + 'plio' function
 + 'buf' function
 + More checks for protected symbols
