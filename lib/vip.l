@@ -1,4 +1,4 @@
-# 22sep20 Software Lab. Alexander Burger
+# 23sep20 Software Lab. Alexander Burger
 # https://picolisp.com/wiki/?vip
 
 (symbols 'vip 'pico)
@@ -252,6 +252,15 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
    (out (: file)
       (for "S" (=: syms Lst)
          (printsp "S")
+         (fish
+            '(("X")
+               (and
+                  (str? "X")
+                  (val "X")
+                  (n== @ "X")
+                  (intern "X" 'priv) )
+               NIL )
+            (val "S") )
          (pretty (val "S"))
          (prinl)
          (for "X" (sort (getl "S"))
