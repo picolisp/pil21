@@ -119,7 +119,7 @@
    ($At3 "@@@" $Nil)
    ($This "This" $Nil)
    ($Prompt "*Prompt" $Nil)
-   ($Tab "*Tab" $Nil)
+   ($Complete "*Complete" $Nil)
    ($Zap "*Zap" $Nil)
    ($Ext "*Ext" $Nil)
    ($Scl "*Scl" ZERO)

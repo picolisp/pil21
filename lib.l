@@ -1,4 +1,4 @@
-# 21sep20 Software Lab. Alexander Burger
+# 23sep20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -309,7 +309,7 @@
          (push "Var" (cons Key Val)) ) ) )
 
 ### REPL ###
-(de *Tab (S)
+(de *Complete (S)
    (when S
       (setq "*Tabs"
          (if (=T S)

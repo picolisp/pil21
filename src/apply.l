@@ -1,4 +1,4 @@
-# 13aug20 Software Lab. Alexander Burger
+# 23sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -686,7 +686,7 @@
 (local) tabComplete
 
 (de i8* tabComplete ((i8* . Text))
-   (if (nil? (val $Tab))
+   (if (nil? (val $Complete))
       null
       (let
          (V (push NIL $Nil ZERO NIL NIL)  # [car cdr name arg link]
