@@ -247,7 +247,7 @@ declare void @begString(i64*)
 declare void @tglString(i64*)
 declare i64 @endString()
 declare i64 @isLstIntern(i64, i64)
-declare void @outName(i64)
+declare void @prSym(i64)
 declare i64 @mkChar(i32)
 declare i64 @evCnt(i64, i64)
 declare i32 @getChar(i32)
@@ -1079,8 +1079,8 @@ $16:
   br i1 %66, label %$22, label %$21
 $22:
   %67 = phi i64 [%65, %$16] ; # Lst
-; # (outName C)
-  call void @outName(i64 %42)
+; # (prSym C)
+  call void @prSym(i64 %42)
   br label %$15
 $21:
   %68 = phi i64 [%65, %$16] ; # Lst
@@ -1214,7 +1214,7 @@ $38:
   %131 = phi i64 [%120, %$36] ; # L
   %132 = phi i8 [%121, %$36] ; # D
   %133 = phi i32 [%122, %$36] ; # N
-; # (? (== (setq D (firstByte (++ L))) (char ";")) (outName (mkChar N...
+; # (? (== (setq D (firstByte (++ L))) (char ";")) (prSym (mkChar N))...
 ; # (++ L)
   %134 = inttoptr i64 %131 to i64*
   %135 = load i64, i64* %134
@@ -1232,8 +1232,8 @@ $42:
   %143 = phi i32 [%133, %$38] ; # N
 ; # (mkChar N)
   %144 = call i64 @mkChar(i32 %143)
-; # (outName (mkChar N))
-  call void @outName(i64 %144)
+; # (prSym (mkChar N))
+  call void @prSym(i64 %144)
   br label %$39
 $41:
   %145 = phi i64 [%130, %$38] ; # Lst

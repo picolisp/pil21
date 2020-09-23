@@ -1,4 +1,4 @@
-# 21sep20 Software Lab. Alexander Burger
+# 23sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -86,21 +86,21 @@
 
 # Symbol Table
 (symTab
-   ($Nil "NIL" $Nil)       # NIL symbol
-   (NIL $Nil 0)            # CDR of NIL as empty list
-   ($Tilde "~" $Tilde)     # Tilde symbol
-   ($PiT $Nil $Nil 0)      # Pico trees
-   ($Pico $Tilde $PiT 0)   # Initial namespace
+   ($Nil "NIL" $Nil)          # NIL symbol
+   (NIL $Nil 0)               # CDR of NIL as empty list
+   ($Tilde "~" $Tilde)        # Tilde symbol
+   ($PicoT $Nil $Nil 0)       # Pico trees
+   ($Pico $Tilde $PicoT 0)    # Initial namespace
    ($pico "pico" $Pico)
    ($Pico1 $pico $Nil 0)
-   ($PrT $Nil $Nil 0)      # Private trees
-   ($Priv $Tilde $PrT 0)   # Private namespace
+   ($PrivT $Nil $Nil 0)       # Private trees
+   ($Priv $Tilde $PrivT 0)    # Private namespace
    ($priv "priv" $Priv)
    ($OS "*OS" 0)
    ($CPU "*CPU" 0)
    ($Pid "*Pid" 0)
    ($PPid "*PPid" $Nil)
-   ($DB "*DB" 0)           # Database root constant
+   ($DB "*DB" 0)              # Database root constant
    ($Meth "meth" _meth)
    ($Quote "quote" _quote)
    ## Sync src/pico.h 'T' (17*2+1)
@@ -112,7 +112,7 @@
    ($I "I" $Nil)
    ($P "P" $Nil)
    ($W "W" $Nil)
-   ($Db1 0 $Nil)           # Database root symbol '{1}'
+   ($Db1 0 $Nil)              # Database root symbol '{1}'
    ($Solo "*Solo" ZERO)
    ($At "@" $Nil)
    ($At2 "@@" $Nil)

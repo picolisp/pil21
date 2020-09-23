@@ -1,4 +1,4 @@
-# 21sep20 Software Lab. Alexander Burger
+# 23sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -348,7 +348,7 @@
             (intern2 Sym Val Name Tree More) ) ) ) )
 
 (de requestSym (Name)
-   (if (isIntern Name (cdr $Priv))
+   (if (isIntern Name $PrivT)
       @
       (intern 0 $Nil Name
          (cdar (car (val $Intern)))
@@ -645,7 +645,7 @@
                      (val $Intern)
                      (set $Intern R) ) ) ) ) ) ) )
 
-# (intern 'sym ['flg]) -> sym
+# (intern 'sym ['nsp]) -> sym
 (de _intern (Exe)
    (let
       (X (cdr Exe)
@@ -654,10 +654,14 @@
          ((sym? (val (tail Sym))) $Nil)
          ((== (name @) ZERO) $Nil)
          (T
-            (let (Nm @  L (val $Intern)  F (nil? (eval (car X))))
-               (intern (if F 0 Sym) 0 Nm
-                  (cdar (car L))
-                  (if F (cdr L) $Nil) ) ) ) ) ) )
+            (let Nm @
+               (cond
+                  ((nil? (eval (car X)))
+                     (let L (val $Intern)
+                        (intern 0 0 Nm (cdar (car L)) (cdr L)) ) )
+                  ((t? @)
+                     (intern Sym 0 Nm (cdar (car (val $Intern))) $Nil) )
+                  (T (intern Sym 0 Nm (cdar @) $Nil)) ) ) ) ) ) )
 
 # (box? 'any) -> sym | NIL
 (de _boxQ (Exe)

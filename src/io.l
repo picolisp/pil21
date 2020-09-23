@@ -1,4 +1,4 @@
-# 21sep20 Software Lab. Alexander Burger
+# 23sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2164,7 +2164,7 @@
 (de void space ()
    (call $Put (char " ")) )
 
-(local) (outWord outNum outOct outAo bufAo prExt outString prName outName)
+(local) (outWord outNum outOct outAo bufAo prExt)
 
 # Output decimal number
 (de void outWord ((i64 . N))
@@ -2207,19 +2207,40 @@
       (outAo @) )
    (outOct (objId Nm)) )
 
+(local) (outString prName prSym printName printSym)
+
 # Output string
 (de void outString ((i8* . S))
    (while (val S)
       (call $Put @)
       (inc 'S) ) )
 
-(de void prName (Name)
-   (let P (push 0 Name)  # [cnt name]
+(de void prName (Nm)
+   (let P (push 0 Nm)  # [cnt name]
       (while (symByte P)
          (call $Put @) ) ) )
 
-(de void outName (Sym)
+(de void prSym (Sym)
    (prName (name (val (tail Sym)))) )
+
+(de void printName (Nm)
+   (ifn (== Nm (hex "2E2"))  # Dot
+      (let (P (push 0 Nm)  B (symByte P))  # [cnt name]
+         (when (== B (char "#"))
+            (call $Put (char "\\")) )  # Escape leading hash
+         (loop
+            (when
+               (or
+                  (== B (char "\\"))
+                  (strchr $Delim (i32 B)) )
+               (call $Put (char "\\")) )  # Escape backslash and delimiters
+            (call $Put B)
+            (? (=0 (setq B (symByte P))) ) ) )
+      (call $Put (char "\\"))
+      (call $Put (char ".")) ) )
+
+(de void printSym (Sym)
+   (printName (name (val (tail Sym)))) )
 
 (local) (print prin)
 
@@ -2238,49 +2259,40 @@
                (call $Put (char "$"))
                (outOct (int X)) )
             (T
-               (let (Nm @  Lst (val $Intern)  F NO)  # Search namespaces
-                  (loop
-                     (? (atom Lst) # Transient
-                        (call $Put (char "\""))
-                        (let (P (push 0 Nm)  B (symByte P))  # [cnt name]
-                           (loop
-                              (cond
-                                 ((or
-                                       (== B (char "\\"))
-                                       (== B (char "\^"))
-                                       (== B (char "\"")) )
-                                    (call $Put (char "\\")) )
-                                 ((== B 127)  # DEL
-                                    (call $Put (char "\^"))  # Print ^?
-                                    (setq B (char "?")) )
-                                 ((> 32 B)  # White space
-                                    (call $Put (char "\^"))  # Escape with caret
-                                    (setq B (| B 64)) ) )
-                              (call $Put B)
-                              (? (=0 (setq B (symByte P))) ) ) )
-                        (call $Put (char "\"")) )
-                     (let Nsp (car Lst)
-                        (when (isIntern Nm (cdar Nsp))
-                           (? (== @ X)  # Internal
-                              (when F  # Found in other namespace
-                                 (outName Nsp)
-                                 (call $Put (char "~")) )
-                              (ifn (== Nm (hex "2E2"))  # Dot
-                                 (let (P (push 0 Nm)  B (symByte P))  # [cnt name]
-                                    (when (== B (char "#"))
-                                       (call $Put (char "\\")) )  # Escape leading hash
-                                    (loop
-                                       (when
-                                          (or
+               (let Nm @
+                  (ifn (== X (isIntern Nm $PrivT))
+                     (let (Lst (val $Intern)  F NO)  # Search namespaces
+                        (loop
+                           (? (atom Lst) # Transient
+                              (call $Put (char "\""))
+                              (let (P (push 0 Nm)  B (symByte P))  # [cnt name]
+                                 (loop
+                                    (cond
+                                       ((or
                                              (== B (char "\\"))
-                                             (strchr $Delim (i32 B)) )
-                                          (call $Put (char "\\")) )  # Escape backslash and delimiters
-                                       (call $Put B)
-                                       (? (=0 (setq B (symByte P))) ) ) )
-                                 (call $Put (char "\\"))
-                                 (call $Put (char ".")) ) )
-                           (setq F YES) ) )
-                     (shift Lst) ) ) ) ) )
+                                             (== B (char "\^"))
+                                             (== B (char "\"")) )
+                                          (call $Put (char "\\")) )
+                                       ((== B 127)  # DEL
+                                          (call $Put (char "\^"))  # Print ^?
+                                          (setq B (char "?")) )
+                                       ((> 32 B)  # White space
+                                          (call $Put (char "\^"))  # Escape with caret
+                                          (setq B (| B 64)) ) )
+                                    (call $Put B)
+                                    (? (=0 (setq B (symByte P))) ) ) )
+                              (call $Put (char "\"")) )
+                           (let Nsp (car Lst)
+                              (when (isIntern Nm (cdar Nsp))
+                                 (? (== @ X)  # Internal
+                                    (when F  # Found in other namespace
+                                       (printSym Nsp)
+                                       (call $Put (char "~")) )
+                                    (printName Nm) )
+                                 (setq F YES) ) )
+                           (shift Lst) ) )
+                     (outString ($ "priv~"))  # Found in 'priv'
+                     (printName Nm) ) ) ) ) )
       ((and (== (car X) $Quote) (<> X (cdr X)))
          (call $Put (char "'"))
          (print (cdr X)) )
@@ -2596,8 +2608,8 @@
          (iSignal (val SIGINT Sig) (fun sig)) )
       (let
          (Int (save (val $Intern))
-            Pr1 (save (val $PrT))
-            Pr2 (save (val 2 $PrT))
+            Pr1 (save (val $PrivT))
+            Pr2 (save (val 2 $PrivT))
             Tr1 (save (val $Transient))
             Tr2 (save (val 2 $Transient))
             P (b8 (ioFrame T))
@@ -2605,7 +2617,7 @@
             At (link (push -ZERO NIL)) )
          (rdOpen Exe X P)
          (pushInFiles P)
-         (set $PrT (set 2 $PrT $Nil))
+         (set $PrivT (set 2 $PrivT $Nil))
          (set $Transient (set 2 $Transient $Nil))
          (setq X $Nil)
          (loop
@@ -2662,8 +2674,8 @@
          (popInFiles)
          (set 2 $Transient Tr2)
          (set $Transient Tr1)
-         (set 2 $PrT Pr2)
-         (set $PrT Pr1)
+         (set 2 $PrivT Pr2)
+         (set $PrivT Pr1)
          (set $Intern Int)
          X ) ) )
 

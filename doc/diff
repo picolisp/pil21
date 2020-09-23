@@ -1,4 +1,4 @@
-# 22sep20 Software Lab. Alexander Burger
+# 23sep20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -23,6 +23,7 @@
 + 'info' returns the file argument in '@@'
 + '\~' marker in namespaces
 + Special 'priv' namespace
++ 'intern' accepts namespace argument
 + 'plio' function
 + 'buf' function
 + More checks for protected symbols
