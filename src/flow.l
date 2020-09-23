@@ -1,4 +1,4 @@
-# 22sep20 Software Lab. Alexander Burger
+# 23sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -306,6 +306,8 @@
       (when (sym? (val (tail (needSymb Exe Obj))))
          (dbFetch Exe Obj) )
       (let Key (car Exe)  # Message symbol
+         (until (num? (val Key))
+            (setq Key @) )
          (set $Ret 0)  # Preset to "No classes"
          (if (method Obj Key)
             (evMethod Obj (val $Ret) Key @ (cdr X))

@@ -69452,40 +69452,59 @@ $9:
   call void @dbFetch(i64 %0, i64 %13)
   br label %$10
 $10:
-; # (let Key (car Exe) (set $Ret 0) (if (method Obj Key) (evMethod Ob...
+; # (let Key (car Exe) (until (num? (val Key)) (setq Key @)) (set $Re...
 ; # (car Exe)
   %30 = inttoptr i64 %0 to i64*
   %31 = load i64, i64* %30
+; # (until (num? (val Key)) (setq Key @))
+  br label %$11
+$11:
+  %32 = phi i64 [%31, %$10], [%34, %$12] ; # Key
+; # (val Key)
+  %33 = inttoptr i64 %32 to i64*
+  %34 = load i64, i64* %33
+; # (num? (val Key))
+  %35 = and i64 %34, 6
+  %36 = icmp ne i64 %35, 0
+  br i1 %36, label %$13, label %$12
+$12:
+  %37 = phi i64 [%32, %$11] ; # Key
+  br label %$11
+$13:
+  %38 = phi i64 [%32, %$11] ; # Key
 ; # (set $Ret 0)
   store i64 0, i64* @$Ret
 ; # (if (method Obj Key) (evMethod Obj (val $Ret) Key @ (cdr X)) (err...
 ; # (method Obj Key)
-  %32 = call i64 @method(i64 %13, i64 %31)
-  %33 = icmp ne i64 %32, 0
-  br i1 %33, label %$11, label %$12
-$11:
+  %39 = call i64 @method(i64 %13, i64 %38)
+  %40 = icmp ne i64 %39, 0
+  br i1 %40, label %$14, label %$15
+$14:
+  %41 = phi i64 [%38, %$13] ; # Key
 ; # (val $Ret)
-  %34 = load i64, i64* @$Ret
+  %42 = load i64, i64* @$Ret
 ; # (cdr X)
-  %35 = inttoptr i64 %3 to i64*
-  %36 = getelementptr i64, i64* %35, i32 1
-  %37 = load i64, i64* %36
+  %43 = inttoptr i64 %3 to i64*
+  %44 = getelementptr i64, i64* %43, i32 1
+  %45 = load i64, i64* %44
 ; # (evMethod Obj (val $Ret) Key @ (cdr X))
-  %38 = call i64 @evMethod(i64 %13, i64 %34, i64 %31, i64 %32, i64 %37)
-  br label %$13
-$12:
+  %46 = call i64 @evMethod(i64 %13, i64 %42, i64 %41, i64 %39, i64 %45)
+  br label %$16
+$15:
+  %47 = phi i64 [%38, %$13] ; # Key
 ; # (err Exe Key ($ "Bad message") null)
-  call void @err(i64 %0, i64 %31, i8* bitcast ([12 x i8]* @$68 to i8*), i8* null)
+  call void @err(i64 %0, i64 %47, i8* bitcast ([12 x i8]* @$68 to i8*), i8* null)
   unreachable
-$13:
-  %39 = phi i64 [%38, %$11] ; # ->
+$16:
+  %48 = phi i64 [%41, %$14] ; # Key
+  %49 = phi i64 [%46, %$14] ; # ->
 ; # (drop *Safe)
-  %40 = inttoptr i64 %15 to i64*
-  %41 = getelementptr i64, i64* %40, i32 1
-  %42 = load i64, i64* %41
-  %43 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %42, i64* %43
-  ret i64 %39
+  %50 = inttoptr i64 %15 to i64*
+  %51 = getelementptr i64, i64* %50, i32 1
+  %52 = load i64, i64* %51
+  %53 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %52, i64* %53
+  ret i64 %49
 }
 
 define i64 @_box(i64) {
