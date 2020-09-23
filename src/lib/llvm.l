@@ -1,4 +1,4 @@
-# 21sep20 Software Lab. Alexander Burger
+# 23sep20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -310,7 +310,9 @@ Skip True False Beg End Safe *Safe)
    (cond
       ((pre? "_" Val)
          (prin
-            "  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @"
+            "  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast "
+            (if (pre? "__" Val) "(i64(i64,i64)*" "(i64(i64)*")
+            " @"
             pico~@
             " to i8*), i32 2) to i64)" ) )
       ((pre? "$" Val)
@@ -1175,10 +1177,10 @@ Skip True False Beg End Safe *Safe)
 
 # Flow
 (asm ()
-   ((Fun X)
+   ((Fun X Y)
       (ssa (inc '*Ssa) "and i64 " Fun ", -3")
-      (ssa (inc '*Ssa) "inttoptr i64 %" (dec *Ssa) " to i64(i64)*")
-      (ssa (inc '*Ssa) "call i64 %" (dec *Ssa) "(i64 " X ")")
+      (ssa (inc '*Ssa) "inttoptr i64 %" (dec *Ssa) " to i64(i64,i64)*")
+      (ssa (inc '*Ssa) "call i64 %" (dec *Ssa) "(i64 " X "," "i64 " Y ")")
       (def (pack "%" *Ssa) 'any) )
    (llvm~subr) )
 

@@ -301,17 +301,14 @@
    0 )
 
 # (meth 'obj ['any ..]) -> any
-(de _meth (Exe)
+(de __meth (Exe Key)
    (let (X (cdr Exe)  Obj (save (eval (car X))))
       (when (sym? (val (tail (needSymb Exe Obj))))
          (dbFetch Exe Obj) )
-      (let Key (car Exe)  # Message symbol
-         (until (num? (val Key))
-            (setq Key @) )
-         (set $Ret 0)  # Preset to "No classes"
-         (if (method Obj Key)
-            (evMethod Obj (val $Ret) Key @ (cdr X))
-            (err Exe Key ($ "Bad message") null) ) ) ) )
+      (set $Ret 0)  # Preset to "No classes"
+      (if (method Obj Key)
+         (evMethod Obj (val $Ret) Key @ (cdr X))
+         (err Exe Key ($ "Bad message") null) ) ) )
 
 # (box 'any) -> sym
 (de _box (Exe)

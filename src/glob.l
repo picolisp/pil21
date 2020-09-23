@@ -101,7 +101,7 @@
    ($Pid "*Pid" 0)
    ($PPid "*PPid" $Nil)
    ($DB "*DB" 0)              # Database root constant
-   ($Meth "meth" _meth)
+   ($Meth "meth" __meth)
    ($Quote "quote" _quote)
    ## Sync src/pico.h 'T' (17*2+1)
    ($T "T" $T)

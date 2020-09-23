@@ -1,4 +1,4 @@
-# 21sep20 Software Lab. Alexander Burger
+# 23sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -899,11 +899,11 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (loop
                (sigChk Exe)
                (let V (val Fun)  # Get VAL
-                  (? (num? V) (subr V Exe))
+                  (? (num? V) (subr V Exe Fun))
                   (? (pair V) (evExpr V Exe))
                   (? (== V (val V))
                      (if (sharedLib Fun)
-                        (subr (val Fun) Exe)
+                        (subr (val Fun) Exe Fun)
                         (undefined Fun Exe) ) )
                   (setq Fun V) ) ) )
          (T  # List: Evaluate
@@ -911,14 +911,14 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (let F (save (evList Fun))  # Save computed function
                (loop
                   (sigChk Exe)
-                  (? (num? F) (subr F Exe))
+                  (? (num? F) (subr F Exe Fun))
                   (? (pair F) (evExpr F Exe))
                   (let V (val F)
                      (? (== V (val V))
                         (if (sharedLib F)
-                           (subr (val F) Exe)
+                           (subr (val F) Exe F)
                            (undefined F Exe) ) )
-                     (setq F V) ) ) ) ) ) ) )
+                     (setq Fun F  F V) ) ) ) ) ) ) )
 
 (load "io.l" "db.l" "apply.l" "flow.l" "subr.l")
 
