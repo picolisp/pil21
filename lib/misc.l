@@ -426,12 +426,12 @@
             (=0 (%@ "rename" 'I F Dst)) ) ) ) )
 
 # Print or eval
-(de prEval (Prg Ofs)
-   (default Ofs 1)
-   (for X Prg
-      (if (atom X)
-         (prinl (eval X Ofs))
-         (eval X Ofs) ) ) )
+(de prEval ("Prg" "Ofs")
+   (default "Ofs" 1)
+   (for "X" "Prg"
+      (if (atom "X")
+         (prinl (eval "X" "Ofs"))
+         (eval "X" "Ofs") ) ) )
 
 # Echo here-documents
 (de here (S)

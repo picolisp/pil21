@@ -1,0 +1,340 @@
+/* 23feb19abu
+ * 17nov12jk
+ * (c) Software Lab. Alexander Burger
+ */
+
+/* Lib */
+.left {float: left}
+.right {float: right}
+.nofloat {float: none}
+.clr {clear: both}
+.norm {text-align: left}
+.align {text-align: right}
+.center {text-align: center}
+.black {color: black}
+.red {color: red}
+.green {color: green}
+.blue {color: blue}
+.yellow {color: yellow}
+.bold {font-weight: bold}
+.mono {font-family: monospace}
+.wrap {white-space: normal}
+.hidden {display: none}
+
+.em1 {width: 1em}
+.em2 {width: 2em}
+.em3 {width: 3em}
+.em5 {width: 5em}
+.em7 {width: 7em}
+.em10 {width: 10em}
+.em15 {width: 15em}
+.em20 {width: 20em}
+.em25 {width: 25em}
+.em30 {width: 30em}
+.em40 {width: 40em}
+.em50 {width: 50em}
+.em60 {width: 60em}
+.em70 {width: 70em}
+
+.rel10 {width: 10%}
+.rel20 {width: 20%}
+.rel25 {width: 25%}
+.rel30 {width: 30%}
+.rel40 {width: 40%}
+.rel50 {width: 50%}
+.rel60 {width: 60%}
+.rel70 {width: 70%}
+.rel75 {width: 75%}
+.rel80 {width: 80%}
+.rel90 {width: 90%}
+.rel96 {width: 96%}
+.rel100 {width: 100%}
+
+/* Defaults */
+body {
+   font-family: Arial, Helvetica, sans-serif;
+   background-color: #f0f0f0;
+   font-size: small;
+   margin: 0;
+}
+
+img {
+   border: 0;
+}
+
+fieldset {
+   border-style: none;
+}
+
+input, textarea, select {
+   border: 0;
+   font-size: small;
+   background-color: white;
+}
+
+caption {
+   padding: 0 1em;
+   text-align: left;
+   margin-top: 2ex;
+   background-color: #d0d0d0;
+}
+
+td {
+   white-space: nowrap;
+}
+
+a {
+   text-decoration: none;
+}
+
+.step a {
+   border-radius: 6px;
+   background-color: #d0d0d0;
+   padding: 2px 3px;
+}
+
+a:hover {
+   background-color: white;
+}
+
+/* Navigation */
+.menu {
+   padding-top: 2ex;
+   background-color: #d0d0d0;
+}
+
+.menu ul {
+   list-style: none;
+   padding: 0;
+   margin: 0;
+}
+
+.menu .cmd1, .act1, .cmd2, .act2, .cmd3, .act3, .cmd4, .act4 {
+   list-style-position: inside;
+   list-style-type: circle;
+   padding: 0 0 0 2em;
+}
+
+.menu .act1, .act2, .act3, .act4 {
+   list-style-type: disc;
+}
+
+.menu .sub1, .top1, .sub2, .top2, .sub3, .top3, .sub4, .top4 {
+   list-style-position: inside;
+   padding: 0 0 0 1em;
+}
+
+.bar {
+   white-space: nowrap;
+}
+
+.bar ul {
+   list-style: none;
+   padding: 0;
+   margin: 0;
+}
+
+.bar li {
+   float: left;
+   position: relative;
+   background-color: #d0d0d0;
+}
+
+.bar li ul {
+   position: absolute;
+}
+
+.bar li ul li {
+   clear: both;
+   width: 100%;
+   border-left: 1px solid;
+   border-right: 1px solid;
+   border-bottom: 1px solid;
+}
+
+.bar .cmd, .act, .sub, .top {
+   z-index: 9999;
+   padding: 6px;
+}
+
+.bar .act {
+   list-style-position: inside;
+   list-style-type: disc;
+}
+
+#expires {
+   position: absolute;
+   top: 0;
+   right: 3px;
+   color: red;
+}
+
+/* Tabulators */
+.tab {
+   margin-bottom: 1ex;
+}
+
+.tab td {
+   padding: 3px 1em;
+   border-radius: 6px 6px 0 0;
+}
+
+.tab .top {
+   font-weight: bold;
+   border-top: 1px solid;
+   border-left: 1px solid;
+   border-right: 1px solid;
+}
+
+.tab .sub {
+   background-color: #d0d0d0;
+   border-bottom: 1px solid;
+}
+
+/* Main area */
+.main {
+   padding: 1ex 0 0 2ex;
+}
+
+/* Charts */
+.chart {
+   width: 100%;
+   white-space: nowrap;
+}
+
+.chart td {
+   background-color: #e0e0e0;
+}
+
+.chart td.T, th.T {
+   background-color: #d0d0d0;
+}
+
+.chart td.nil, th.nil {
+   background-color: white;
+}
+
+.chart td.body, th.body {
+   background-color: #f0f0f0;
+}
+
+.btn {
+   width: 1em;
+}
+
+/* Buttons */
+.submit {
+   font-weight: bold;
+   font-size: smaller;
+   background-color: #eee;
+   background-image: -moz-linear-gradient(top, #eee, #ccc);
+   background-image: -o-linear-gradient(top, #eee, #ccc);
+   background-image: -webkit-linear-gradient(top, #eee, #ccc);
+   background-image: linear-gradient(top, #eee, #ccc);
+   border: 1px solid #707070;
+   border-radius: 3px;
+   box-shadow: 0 0 1px 1px rgba(255,255,255,.8) inset, 0 1px 0 rgba(0,0,0,.3);
+}
+
+.submit:hover {
+   background-image: -moz-linear-gradient(top, #fafafa, #ddd);
+   background-image: -o-linear-gradient(top, #fafafa, #ddd);
+   background-image: -webkit-linear-gradient(top, #fafafa, #ddd);
+   background-image: linear-gradient(top, #fafafa, #ddd);
+}
+
+.submit[disabled='disabled'] {
+   background-image: -moz-linear-gradient(top, #eee, #ccc);
+   background-image: -o-linear-gradient(top, #eee, #ccc);
+   background-image: -webkit-linear-gradient(top, #eee, #ccc);
+   background-image: linear-gradient(top, #eee, #ccc);
+}
+
+.edit {
+   background-color: #66ff66;
+   background-image: -moz-linear-gradient(top, #8f8, #6f6);
+   background-image: -o-linear-gradient(top, #8f8, #6f6);
+   background-image: -webkit-linear-gradient(top, #8f8, #6f6);
+   background-image: linear-gradient(top, #8f8, #6f6);
+}
+
+.edit:hover {
+   background-color: #88ff88;
+   background-image: -moz-linear-gradient(top, #cfc, #afa);
+   background-image: -o-linear-gradient(top, #cfc, #afa);
+   background-image: -webkit-linear-gradient(top, #cfc, #afa);
+   background-image: linear-gradient(top, #cfc, #afa);
+}
+
+/* Errors */
+.error {
+   color: red;
+   background-color: yellow;
+}
+
+/* Fonts */
+.tiny {
+   border: 0;
+   padding: 0;
+   font-size: small;
+}
+
+.note, .ask {
+   font-weight: bold;
+}
+
+/* Alerts */
+.alert {
+   display: inline;
+   padding: 1ex;
+   margin: 1ex 0 1ex 5em;
+   background-color: yellow;
+   border: 1px solid #888;
+   border-radius: 6px;
+}
+
+.alert input {
+   margin-top: 1ex;
+}
+
+/* Dialogs */
+.dialog {
+   padding: 1ex;
+   margin: 1ex 5em 1ex 1em;
+   border: 1px solid #888;
+   border-radius: 6px;
+}
+
+/* Hints */
+.hint {
+   font-size: small;
+   background-color: #777;
+}
+
+.hints {
+   font-size: small;
+   color: black;
+   padding-left: 3px;
+   padding-top: 3px;
+   border: 1px solid;
+   background-color: white;
+}
+
+/* Buttons */
+.button {
+   width: 80%;
+   background-color: lightgrey;
+   border: 1px solid black;
+   border-radius: 3ex;
+   text-align: center;
+   display: table;
+   padding: 2ex;
+   margin: auto;
+}
+
+.button2 {
+   display: table-cell;
+   vertical-align: middle;
+   font-weight: bold;
+   font-size: larger;
+}
