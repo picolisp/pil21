@@ -1,4 +1,4 @@
-# 23sep20 Software Lab. Alexander Burger
+# 24sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1311,13 +1311,15 @@
             (charSym Chr P) )
          (setq Chr (call $Get)) )
       (prog1
-         (let Nm (val 3 P)
+         (let (Nm (val 3 P)  L (val $Intern))
             (cond
                ((== Nm ZERO) (badInput))
-               ((== (val $Intern) (any $Cell))
+               ((== L (any $Cell))
                   (intern 0 $Nil Nm (cdar (car @)) $Nil) )
                ((symToNum Nm (int (val $Scl)) (char ".") 0) @)
                ((anonymous Nm) @)
+               ((and (== (car L) $priv) (nil? (cdr L)))
+                  (intern (consSym Nm $Nil) 0 Nm $PrivT $Nil) )
                (T (requestSym Nm)) ) )
          (set $Intern Int) ) ) )
 

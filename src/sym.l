@@ -1,4 +1,4 @@
-# 23sep20 Software Lab. Alexander Burger
+# 24sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -225,7 +225,7 @@
       (pop R) ) )
 
 ### Interning ###
-(local) (cmpLong isIntern isLstIntern intern requestSym extern delNode unintern)
+(local) (cmpLong isIntern isLstIntern)
 
 # Compare long names
 (de i64 cmpLong (X Y)
@@ -270,6 +270,8 @@
       (? (isIntern Name (cdar (car Lst))) @)
       (shift Lst) ) )
 
+(local) (intern1 intern2 internRight internLeft)
+
 (inline intern1 (Sym Val Name Node More)
    (let Found (isLstIntern Name More)
       (if (and Found (or (=0 Sym) (== Found Sym)))
@@ -306,6 +308,8 @@
          (set 2 Node (cons (cons Sym $Nil) $Nil))
          Sym ) ) )
 
+(local) (intern requestSym extern delNode unintern)
+
 # Intern a symbol/name
 (de intern (Sym Val Name Tree More)
    (if (cnt? Name)  # Short name
@@ -313,7 +317,10 @@
          (if (pair X)  # Not empty
             (loop
                (let (S (car X)  Nm (name (val (tail S))))
-                  (? (== Name Nm) S)  # Found symbol
+                  (? (== Name Nm)  # Found name
+                     (if (=0 Sym)
+                        S  # Found symbol
+                        (set X Sym) ) )  # Store argument symbol
                   (let Y (cdr X)  # Get link cell
                      (cond
                         ((> Name Nm)  # Symbol is smaller
@@ -332,7 +339,10 @@
          (if (pair X)  # Not empty
             (loop
                (let (S (car X)  Nm (name (val (tail S))))
-                  (? (=0 (cmpLong Nm Name)) S)  # Found symbol
+                  (? (=0 (cmpLong Nm Name))
+                     (if (=0 Sym)
+                        S  # Found symbol
+                        (set X Sym) ) )  # Store argument symbol
                   (let Y (cdr X)  # Get link cell
                      (cond
                         ((lt0 @)  # Symbol is smaller

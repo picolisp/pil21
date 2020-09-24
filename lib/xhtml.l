@@ -127,7 +127,7 @@
       ##    (javascript NIL
       ##       "document.addEventListener('visibilitychange', function() {if (!document.hidden) window.location.replace(location.href)})" ) )
       (prinl "</head>")
-      (tag 'body Attr 2 Prg)
+      (tag "body" Attr 2 Prg)
       (prinl "</html>") ) )
 
 (de css (Css)
@@ -181,11 +181,11 @@
    (javascript NIL "onload=ping(" Min ")") )
 
 (de <div> (Attr . Prg)
-   (tag 'div Attr 2 Prg)
+   (tag "div" Attr 2 Prg)
    (prinl) )
 
 (de <span> (Attr . Prg)
-   (tag 'span Attr 2 Prg) )
+   (tag "span" Attr 2 Prg) )
 
 (de <br> Prg
    (htPrin Prg 2)
@@ -204,71 +204,71 @@
    (do (or N 1) (prin "&nbsp;")) )
 
 (de <small> Prg
-   (tag 'small NIL 2 Prg) )
+   (tag "small" NIL 2 Prg) )
 
 (de <big> Prg
-   (tag 'big NIL 2 Prg) )
+   (tag "big" NIL 2 Prg) )
 
 (de <em> Prg
-   (tag 'em NIL 2 Prg) )
+   (tag "em" NIL 2 Prg) )
 
 (de <strong> Prg
-   (tag 'strong NIL 2 Prg) )
+   (tag "strong" NIL 2 Prg) )
 
 (de <h1> (Attr . Prg)
-   (tag 'h1 Attr 2 Prg)
+   (tag "h1" Attr 2 Prg)
    (prinl) )
 
 (de <h2> (Attr . Prg)
-   (tag 'h2 Attr 2 Prg)
+   (tag "h2" Attr 2 Prg)
    (prinl) )
 
 (de <h3> (Attr . Prg)
-   (tag 'h3 Attr 2 Prg)
+   (tag "h3" Attr 2 Prg)
    (prinl) )
 
 (de <h4> (Attr . Prg)
-   (tag 'h4 Attr 2 Prg)
+   (tag "h4" Attr 2 Prg)
    (prinl) )
 
 (de <h5> (Attr . Prg)
-   (tag 'h5 Attr 2 Prg)
+   (tag "h5" Attr 2 Prg)
    (prinl) )
 
 (de <h6> (Attr . Prg)
-   (tag 'h6 Attr 2 Prg)
+   (tag "h6" Attr 2 Prg)
    (prinl) )
 
 (de <p> (Attr . Prg)
-   (tag 'p Attr 2 Prg)
+   (tag "p" Attr 2 Prg)
    (prinl) )
 
 (de <pre> (Attr . Prg)
-   (tag 'pre Attr 2 Prg)
+   (tag "pre" Attr 2 Prg)
    (prinl) )
 
 (de <ol> (Attr . Prg)
-   (tag 'ol Attr 2 Prg)
+   (tag "ol" Attr 2 Prg)
    (prinl) )
 
 (de <ul> (Attr . Prg)
-   (tag 'ul Attr 2 Prg)
+   (tag "ul" Attr 2 Prg)
    (prinl) )
 
 (de <li> (Attr . Prg)
-   (tag 'li Attr 2 Prg)
+   (tag "li" Attr 2 Prg)
    (prinl) )
 
 (de <dl> (Attr . Prg)
-   (tag 'dl Attr 2 Prg)
+   (tag "dl" Attr 2 Prg)
    (prinl) )
 
 (de <dt> (Attr . Prg)
-   (tag 'dt Attr 2 Prg)
+   (tag "dt" Attr 2 Prg)
    (prinl) )
 
 (de <dd> (Attr . Prg)
-   (tag 'dd Attr 2 Prg)
+   (tag "dd" Attr 2 Prg)
    (prinl) )
 
 (de <href> (Str Url Tar)
@@ -356,19 +356,19 @@
                      (eval Y 3) ) ) ) ) ) ) )
 
 (de <th> (Attr . Prg)
-   (tag 'th Attr 2 Prg) )
+   (tag "th" Attr 2 Prg) )
 
 (de <tr> (Attr . Prg)
-   (tag 'tr Attr 2 Prg) )
+   (tag "tr" Attr 2 Prg) )
 
 (de <td> (Attr . Prg)
-   (tag 'td Attr 2 Prg) )
+   (tag "td" Attr 2 Prg) )
 
 (de <thead> (Attr . Prg)
-   (tag 'thead Attr 2 Prg) )
+   (tag "thead" Attr 2 Prg) )
 
 (de <tbody> (Attr . Prg)
-   (tag 'tbody Attr 2 Prg) )
+   (tag "tbody" Attr 2 Prg) )
 
 (private) (Lst C E N)
 
@@ -543,7 +543,7 @@
 # Update link
 (de updLink ()
    (<tip> ,"Update"
-      (<span> 'step (<href> "@" (urlMT *Url *Menu *Tab *ID))) ) )
+      (<span> "step" (<href> "@" (urlMT *Url *Menu *Tab *ID))) ) )
 
 # Tabs
 (de <tab> Lst
@@ -575,11 +575,13 @@
          (<href> Str (mkUrl @)) )
       (T (ht:Prin Str)) ) )
 
+(private) X
+
 # Links to previous and next object
 # (stepBtn 'lst ['msg])
 # (stepBtn 'var 'cls [['hook] 'msg])
 (de stepBtn (X . @)
-   (<span> 'step
+   (<span> "step"
       (use (S1 S2)
          (if (pair X)
             (setq S1 (car X)  S2 (cdr X))
@@ -679,7 +681,7 @@
          " target=\"_blank\"" )
       ">" )
    (prin "<noscript><input type=\"hidden\" name=\"*JS\" value=\"\"/></noscript>")
-   (tag 'fieldset Attr 2 Prg)
+   (tag "fieldset" Attr 2 Prg)
    (prinl "</form>") )
 
 (de htmlVar ("Var")
@@ -695,7 +697,7 @@
       (val "Var") ) )
 
 (de <label> (Attr . Prg)
-   (tag 'label Attr 2 Prg) )
+   (tag "label" Attr 2 Prg) )
 
 (de <field> (N "Var" Max Flg)
    (prin "<input type=\"text\" ")
