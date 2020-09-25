@@ -298,7 +298,7 @@
                         (sym? A)
                         (= `(char '*) (char A))
                         (link A "=")
-                        (next) )
+                        (setq A (next)) )
                      (link (ht:Fmt A)) )
                   (NIL (args))
                   (link "&") ) ) ) )
