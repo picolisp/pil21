@@ -1,4 +1,4 @@
-# 24sep20 Software Lab. Alexander Burger
+# 25sep20 Software Lab. Alexander Burger
 
 # *JS "*JS" *Style *SsEvts *Menu *Tab *ID
 
@@ -6,7 +6,7 @@
 (setq *Menu 0  *Tab 1)
 (off "*JS")
 
-(private) (Prg Ofs Attr Cls Nm JS X Y)
+(private) (Prg Ofs X Attr Cls Var Val Nm JS)
 
 (de htPrin (Prg Ofs)
    (default Ofs 1)
@@ -165,6 +165,8 @@
          (httpHead "text/event-stream" 0)
          (run Prg) ) ) )
 
+(private) Sock
+
 (de serverSend (Sock . Prg)
    (when Sock
       (out @
@@ -304,8 +306,6 @@
    (prin "/>")
    (and Url (prin "</a>")) )
 
-(private) (Var Val)
-
 (de <this> (Var Val . Prg)
    (prin "<a href=\""
       (urlMT (sesId *Url) *Menu *Tab *ID
@@ -315,45 +315,7 @@
    (htPrin Prg 2)
    (prin "</a>") )
 
-(private) (Attr2 Head Prg2 rowF H L)
-
-(default *Table 0)
-
-(de <table> (Attr2 Ttl Head . Prg2)
-   (on rowF)
-   (<tag> "table"
-      (list
-         (cons 'id (inc '*Table))
-         '("ontouchstart" . "return tblTouch(event)")
-         '("ontouchmove" . "return tblMove(this,event)")
-         Attr2 )
-      (and Ttl (<tag> "caption" NIL Ttl))
-      (when (find cdr Head)
-         (<tr> NIL
-            (for H Head
-               (<th> (car H) (ht:Prin (cdr H))) ) ) )
-      (htPrin Prg2 3) ) )
-
-(de alternating ()
-   (onOff rowF) )
-
-(de <row> (Attr2 . Prg2)
-   (<tr> NIL
-      (let (L Prg2  H (up Head))
-         (while L
-            (let (Y (++ L)  A (car (++ H))  N 1)
-              (while (== '- (car L))
-                  (inc 'N)
-                  (++ L)
-                  (++ H) )
-               (<td>
-                  (style Attr2
-                     (style
-                        (and (> N 1) (cons "colspan" N))
-                        (if (== 'align A) '(align (align . right)) A) ) )
-                  (if (atom Y)
-                     (ht:Prin (eval Y 3))
-                     (eval Y 3) ) ) ) ) ) ) )
+(private) (Attr Prg)
 
 (de <th> (Attr . Prg)
    (tag "th" Attr 2 Prg) )
@@ -370,7 +332,36 @@
 (de <tbody> (Attr . Prg)
    (tag "tbody" Attr 2 Prg) )
 
-(private) (Lst C E N)
+(private) (Attr Ttl Head Prg H L Y A N)
+
+(de <table> (Attr Ttl Head . Prg)
+   (<tag> "table" Attr
+      (and Ttl (<tag> "caption" NIL Ttl))
+      (when (find cdr Head)
+         (<tr> NIL
+            (for H Head
+               (<th> (car H) (ht:Prin (cdr H))) ) ) )
+      (htPrin Prg 3) ) )
+
+(de <row> (Attr . Prg)
+   (<tr> NIL
+      (let (L Prg  H (up Head))
+         (while L
+            (let (Y (++ L)  A (car (++ H))  N 1)
+              (while (== '- (car L))
+                  (inc 'N)
+                  (++ L)
+                  (++ H) )
+               (<td>
+                  (style Attr
+                     (style
+                        (and (> N 1) (cons "colspan" N))
+                        (if (== 'align A) '(align (align . right)) A) ) )
+                  (if (atom Y)
+                     (ht:Prin (eval Y 3))
+                     (eval Y 3) ) ) ) ) ) ) )
+
+(private) (Y Lst L C E N)
 
 (de <grid> (Y . Lst)
    (<tag> "table" "grid"
@@ -413,6 +404,8 @@
          (eval (car Lst) 1)
          (run (cdr Lst) 1) ) ) )
 
+(private) (X Txt Prg)
+
 (de tip (X Txt)
    (<span> (cons 'title (glue "^J" X)) Txt) )
 
@@ -420,38 +413,42 @@
    (let *Style (style (cons 'title (glue "^J" X)) *Style)
       (run Prg) ) )
 
-# Layout
-(zero "LayX" "LayY")
+(private) (Lst P LayX LayY L Args DX DY Cls Style)
 
-(de <layout> "Lst"
-   (let P (and (=T (car "Lst")) (++ "Lst"))
-      (recur ("Lst" "LayX")
-         (use ("LayX" "LayY")
-            (for "L" "Lst"
+# Layout
+(zero LayX LayY)
+
+(de <layout> Lst
+   (let P (and (=T (car Lst)) (++ Lst))
+      (recur (Lst LayX)
+         (use (LayX LayY)
+            (for L Lst
                (let
-                  ("Args" (mapcar eval (cddar "L"))
-                     "DX" (eval (caar "L"))
-                     "DY" (eval (cadar "L"))
-                     "Cls" (unless (sub? ":" (car "Args")) (++ "Args"))
-                     "Style"
+                  (Args (mapcar eval (cddar L))
+                     DX (eval (caar L))
+                     DY (eval (cadar L))
+                     Cls (unless (sub? ":" (car Args)) (++ Args))
+                     Style
                      (cons 'style
                         (glue "; "
                            (cons
                               "position:absolute"
-                              (pack "top:" "LayY" (if P "%" "px"))
-                              (pack "left:" "LayX" (if P "%" "px"))
+                              (pack "top:" LayY (if P "%" "px"))
+                              (pack "left:" LayX (if P "%" "px"))
                               (cond
-                                 ((=0 "DX") "min-width:100%")
-                                 ("DX" (pack "width:" "DX" (if P "%" "px"))) )
+                                 ((=0 DX) "min-width:100%")
+                                 (DX (pack "width:" DX (if P "%" "px"))) )
                               (cond
-                                 ((=0 "DY") "min-height:100%")
-                                 ("DY" (pack "height:" "DY" (if P "%" "px"))) )
-                              "Args" ) ) ) )
+                                 ((=0 DY) "min-height:100%")
+                                 (DY (pack "height:" DY (if P "%" "px"))) )
+                              Args ) ) ) )
                   (prog1
-                     (if "Cls" (list "Cls" "Style") "Style")  # -> '@'
-                     (eval (cadr "L")) )
-                  (recurse (cddr "L") (+ "LayX" "DX"))
-                  (inc '"LayY" "DY") ) ) ) ) ) )
+                     (if Cls (list Cls Style) Style)  # -> '@'
+                     (eval (cadr L)) )
+                  (recurse (cddr L) (+ LayX DX))
+                  (inc 'LayY DY) ) ) ) ) ) )
+
+(private) (Url Str)
 
 (de <button> (Url Str)
    (<div> "button"
@@ -464,6 +461,8 @@
 # Menus
 (de urlMT (Url Menu Tab Id Str)
    (pack Url "?"  "*Menu=+" Menu  "&*Tab=+" Tab  "&*ID=" (ht:Fmt Id) Str) )
+
+(private) (Lst M N E U L)
 
 (de <menu> Lst
    (let (M 1  N 1  E 2  U)
@@ -507,43 +506,12 @@
                         (setq M (>> -1 M))
                         (recurse (cddr L) (inc N) (inc E)) ) ) ) ) ) ) ) )
 
-(de <bar> Lst
-   (use U
-      (<ul> NIL
-         (for (I . M) Lst
-            (if (= I *Menu)
-               (<li> "top"
-                  (<href>
-                     (eval (car M) 1)
-                     (urlMT *Url 0 *Tab *ID) )
-                  (<ul> NIL
-                     (for L (cdr M)
-                        (if (setq U (eval (cadr L) 1))
-                           (<li> (if (= U *Url) "act" "cmd")
-                              (<href> (eval (car L) 1)
-                                 (urlMT U 0 (if (= U *Url) *Tab 1)
-                                    (eval (caddr L))
-                                    (eval (cadddr L)) ) ) )
-                           (<li> "cmd"
-                              (ht:Prin (eval (car L) 1)) ) ) ) ) )
-               (<li> "sub"
-                  (<href>
-                     (eval (car M) 1)
-                     (urlMT *Url I *Tab *ID) ) ) ) ) ) ) )
-
-(de bar? (Attr)
-   (ifn (and *JS (gt0 *Menu))
-      Attr
-      (cons
-         (cons
-            "onclick"
-            (pack "if (!Btn.length) window.location.href='" (urlMT (sesId *Url) 0 *Tab *ID) "'") )
-         (if (pair (cdr Attr)) Attr (cons Attr)) ) ) )
-
 # Update link
 (de updLink ()
    (<tip> ,"Update"
       (<span> "step" (<href> "@" (urlMT *Url *Menu *Tab *ID))) ) )
+
+(private) (Lst N L)
 
 # Tabs
 (de <tab> Lst
@@ -575,7 +543,7 @@
          (<href> Str (mkUrl @)) )
       (T (ht:Prin Str)) ) )
 
-(private) X
+(private) (X S1 S2 Rel K Cls Hook Q1 Q2 Msg)
 
 # Links to previous and next object
 # (stepBtn 'lst ['msg])

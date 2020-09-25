@@ -1,10 +1,10 @@
-# 24sep20 Software Lab. Alexander Burger
+# 25sep20 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *Evt *Lock *Spans
 # "*Cnt" "*Lst" "*App" "*Err" "*Foc" "*Post2" "*Stat" "*Ix" "*Chart" "*Cho"
 
 (allow "@img/" T)
-(push1 '*JS (allow "lib/form.js"))  #! @lib
+(push1 '*JS (allow "@lib/form.js"))  #! @lib
 (mapc allow
    (quote
       *Gui *Get *Got *Form "!jsForm" *Evt *Drop
@@ -335,6 +335,9 @@
 
 (daemon '<table>
    (on "rowF") )
+
+(de alternating ()
+   (onOff "rowF") )
 
 # REPL form
 (de repl (Attr DX DY)
