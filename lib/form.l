@@ -327,22 +327,6 @@
 (de chart @
    (pass get *Chart) )
 
-# Table extensions
-(patch (cdr <table>)
-   'Attr
-   '(if *Chart
-      (list
-         '("ontouchstart" . "return tblTouch(event)")
-         '("ontouchmove" . "return tblMove(this,event)")
-         Attr )
-      Attr ) )
-
-(daemon '<table>
-   (on "rowF") )
-
-(de alternating ()
-   (onOff "rowF") )
-
 # REPL form
 (de repl (Attr DX DY)
    (default DX 80  DY 25)

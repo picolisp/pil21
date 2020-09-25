@@ -110,7 +110,7 @@
       (prinl "<html lang=\"" (or *Lang "en") "\">")
       (prinl "<head>")
       (prinl "<meta name=\"viewport\" content=\"width=device-width\"/>")
-      (and (fin Ttl) (<tag> 'title NIL @) (prinl))
+      (and (fin Ttl) (<tag> "title" NIL @) (prinl))
       (mapc prinl Ttl)
       (and *Host *Port (prinl "<base href=\"" (baseHRef) "\"/>"))
       (when Css
@@ -332,10 +332,15 @@
 (de <tbody> (Attr . Prg)
    (tag "tbody" Attr 2 Prg) )
 
-(private) (Attr Ttl Head Prg H L Y A N)
+(private) (Attr Ttl Head Prg *RowF H L Y A N)
 
 (de <table> (Attr Ttl Head . Prg)
-   (<tag> "table" Attr
+   (on *RowF)
+   (<tag> "table"
+      (list
+         '("ontouchstart" . "return tblTouch(event)")
+         '("ontouchmove" . "return tblMove(this,event)")
+         Attr )
       (and Ttl (<tag> "caption" NIL Ttl))
       (when (find cdr Head)
          (<tr> NIL
@@ -343,9 +348,12 @@
                (<th> (car H) (ht:Prin (cdr H))) ) ) )
       (htPrin Prg 3) ) )
 
+(de alternating ()
+   (onOff *RowF) )
+
 (de <row> (Attr . Prg)
    (<tr> NIL
-      (let (L Prg  H (up Head))
+      (let (L Prg  H Head)
          (while L
             (let (Y (++ L)  A (car (++ H))  N 1)
               (while (== '- (car L))
@@ -401,8 +409,8 @@
 (de <spread> Lst
    (<table> '(width . "100%") NIL '((norm) (align))
       (<row> NIL
-         (eval (car Lst) 1)
-         (run (cdr Lst) 1) ) ) )
+         (eval (car Lst) 5)
+         (run (cdr Lst) 5) ) ) )
 
 (private) (X Txt Prg)
 
