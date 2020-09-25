@@ -802,13 +802,13 @@ $2:
 
 define i64 @Fmt(i64) {
 $1:
-; # (let (X (cdr Exe) P (push 4 NIL ZERO NIL NIL)) (begString P) (loo...
+; # (let (X (cdr Exe) P (push 4 NIL ZERO NIL NIL NIL)) (begString P) ...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
-; # (push 4 NIL ZERO NIL NIL)
-  %4 = alloca i64, i64 5, align 16
+; # (push 4 NIL ZERO NIL NIL NIL)
+  %4 = alloca i64, i64 6, align 16
   store i64 4, i64* %4
   %5 = getelementptr i64, i64* %4, i32 2
   store i64 2, i64* %5
@@ -1017,12 +1017,12 @@ $7:
   %33 = phi i64 [%25, %$9], [%31, %$11], [%32, %$10] ; # ->
 ; # (nil? (eval (car X)))
   %34 = icmp eq i64 %33, ptrtoint (i8* getelementptr (i8, i8* bitcast ([848 x i64]* @SymTab to i8*), i32 8) to i64)
-; # (push 4 NIL ZERO NIL NIL)
-  %35 = alloca i64, i64 5, align 16
+; # (push 4 NIL ZERO NIL NIL NIL)
+  %35 = alloca i64, i64 6, align 16
   store i64 4, i64* %35
   %36 = getelementptr i64, i64* %35, i32 2
   store i64 2, i64* %36
-; # (begString (push 4 NIL ZERO NIL NIL))
+; # (begString (push 4 NIL ZERO NIL NIL NIL))
   call void @begString(i64* %35)
 ; # (while (pair Lst) (let (C (++ Lst) B (firstByte C)) (cond ((== B ...
   br label %$12

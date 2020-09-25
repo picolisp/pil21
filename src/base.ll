@@ -51335,26 +51335,33 @@ $1:
 
 define void @begString(i64*) {
 $1:
+; # (set 6 P (i64 (val $StrP)))
+; # (val $StrP)
+  %1 = load i64*, i64** @$StrP
+; # (i64 (val $StrP))
+  %2 = ptrtoint i64* %1 to i64
+  %3 = getelementptr i64, i64* %0, i32 5
+  store i64 %2, i64* %3
 ; # (set $StrP P)
   store i64* %0, i64** @$StrP
 ; # (ofs (set $StrP P) 2)
-  %1 = getelementptr i64, i64* %0, i32 2
+  %4 = getelementptr i64, i64* %0, i32 2
 ; # (link (ofs (set $StrP P) 2))
-  %2 = ptrtoint i64* %1 to i64
-  %3 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 0) to i64) to i64*
-  %4 = load i64, i64* %3
-  %5 = inttoptr i64 %2 to i64*
-  %6 = getelementptr i64, i64* %5, i32 1
-  store i64 %4, i64* %6
-  %7 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %2, i64* %7
+  %5 = ptrtoint i64* %4 to i64
+  %6 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %7 = load i64, i64* %6
+  %8 = inttoptr i64 %5 to i64*
+  %9 = getelementptr i64, i64* %8, i32 1
+  store i64 %7, i64* %9
+  %10 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %5, i64* %10
 ; # (set 5 P (val (i64* $Put)) $Put (fun (void i8) putString))
 ; # (i64* $Put)
-  %8 = bitcast void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 80) to void(i8)**) to i64*
+  %11 = bitcast void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 80) to void(i8)**) to i64*
 ; # (val (i64* $Put))
-  %9 = load i64, i64* %8
-  %10 = getelementptr i64, i64* %0, i32 4
-  store i64 %9, i64* %10
+  %12 = load i64, i64* %11
+  %13 = getelementptr i64, i64* %0, i32 4
+  store i64 %12, i64* %13
 ; # (fun (void i8) putString)
   store void(i8)* @putString, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 80) to void(i8)**)
   ret void
@@ -51382,30 +51389,36 @@ $1:
 
 define i64 @endString() {
 $1:
-; # (let (P (val $StrP) Q (ofs P 2)) (set (i64* $Put) (val 5 P)) (dro...
+; # (let (P (val $StrP) Q (ofs P 2)) (set (i64* $Put) (val 5 P) $StrP...
 ; # (val $StrP)
   %0 = load i64*, i64** @$StrP
 ; # (ofs P 2)
   %1 = getelementptr i64, i64* %0, i32 2
-; # (set (i64* $Put) (val 5 P))
+; # (set (i64* $Put) (val 5 P) $StrP (i64* (val 6 P)))
 ; # (i64* $Put)
   %2 = bitcast void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 80) to void(i8)**) to i64*
 ; # (val 5 P)
   %3 = getelementptr i64, i64* %0, i32 4
   %4 = load i64, i64* %3
   store i64 %4, i64* %2
+; # (val 6 P)
+  %5 = getelementptr i64, i64* %0, i32 5
+  %6 = load i64, i64* %5
+; # (i64* (val 6 P))
+  %7 = inttoptr i64 %6 to i64*
+  store i64* %7, i64** @$StrP
 ; # (drop Q (consStr (val Q)))
-  %5 = ptrtoint i64* %1 to i64
+  %8 = ptrtoint i64* %1 to i64
 ; # (val Q)
-  %6 = load i64, i64* %1
+  %9 = load i64, i64* %1
 ; # (consStr (val Q))
-  %7 = call i64 @consStr(i64 %6)
-  %8 = inttoptr i64 %5 to i64*
-  %9 = getelementptr i64, i64* %8, i32 1
-  %10 = load i64, i64* %9
-  %11 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %10, i64* %11
-  ret i64 %7
+  %10 = call i64 @consStr(i64 %9)
+  %11 = inttoptr i64 %8 to i64*
+  %12 = getelementptr i64, i64* %11, i32 1
+  %13 = load i64, i64* %12
+  %14 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %13, i64* %14
+  ret i64 %10
 }
 
 define i64 @_any(i64) {
@@ -51488,7 +51501,7 @@ $2:
 
 define i64 @_sym(i64) {
 $1:
-; # (let X (eval (cadr Exe)) (begString (push 4 NIL ZERO NIL NIL)) (p...
+; # (let X (eval (cadr Exe)) (begString (push 4 NIL ZERO NIL NIL NIL)...
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
@@ -51514,12 +51527,12 @@ $5:
   br label %$2
 $2:
   %13 = phi i64 [%5, %$4], [%11, %$6], [%12, %$5] ; # ->
-; # (push 4 NIL ZERO NIL NIL)
-  %14 = alloca i64, i64 5, align 16
+; # (push 4 NIL ZERO NIL NIL NIL)
+  %14 = alloca i64, i64 6, align 16
   store i64 4, i64* %14
   %15 = getelementptr i64, i64* %14, i32 2
   store i64 2, i64* %15
-; # (begString (push 4 NIL ZERO NIL NIL))
+; # (begString (push 4 NIL ZERO NIL NIL NIL))
   call void @begString(i64* %14)
 ; # (print X)
   call void @print(i64 %13)
@@ -51588,12 +51601,12 @@ $10:
 $13:
   %27 = phi i64 [%23, %$10] ; # X
   %28 = phi i64 [%24, %$10] ; # Y
-; # (push 4 NIL ZERO NIL NIL)
-  %29 = alloca i64, i64 5, align 16
+; # (push 4 NIL ZERO NIL NIL NIL)
+  %29 = alloca i64, i64 6, align 16
   store i64 4, i64* %29
   %30 = getelementptr i64, i64* %29, i32 2
   store i64 2, i64* %30
-; # (begString (push 4 NIL ZERO NIL NIL))
+; # (begString (push 4 NIL ZERO NIL NIL NIL))
   call void @begString(i64* %29)
 ; # (loop (print (++ Y)) (? (atom Y)) (space))
   br label %$14

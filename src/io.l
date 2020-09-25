@@ -1,4 +1,4 @@
-# 24sep20 Software Lab. Alexander Burger
+# 25sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2547,7 +2547,8 @@
 (de void putString ((i8 . B))
    (byteSym B (val $StrP)) )
 
-(de void begString ((i64* . P))  # [cnt last name link fun]
+(de void begString ((i64* . P))  # [cnt last name link fun ptr]
+   (set 6 P (i64 (val $StrP)))
    (link (ofs (set $StrP P) 2))
    (set
       5 P (val (i64* $Put))
@@ -2558,7 +2559,9 @@
 
 (de endString ()
    (let (P (val $StrP)  Q (ofs P 2))
-      (set (i64* $Put) (val 5 P))
+      (set
+         (i64* $Put) (val 5 P)
+         $StrP (i64* (val 6 P)) )
       (drop Q
          (consStr (val Q)) ) ) )
 
@@ -2572,7 +2575,7 @@
 # (sym 'any) -> sym
 (de _sym (Exe)
    (let X (eval (cadr Exe))
-      (begString (push 4 NIL ZERO NIL NIL))  # [cnt last name link fun]
+      (begString (push 4 NIL ZERO NIL NIL NIL))  # [cnt last name link fun ptr]
       (print X)
       (endString) ) )
 
@@ -2584,7 +2587,7 @@
          ((nil? Y) Y)
          ((num? Y) (argErr Exe Y))
          ((pair Y)
-            (begString (push 4 NIL ZERO NIL NIL))  # [cnt last name link fun]
+            (begString (push 4 NIL ZERO NIL NIL NIL))  # [cnt last name link fun ptr]
             (loop
                (print (++ Y))
                (? (atom Y))

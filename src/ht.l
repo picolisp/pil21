@@ -1,4 +1,4 @@
-# 24sep20 Software Lab. Alexander Burger
+# 25sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -120,7 +120,7 @@ mkChar evCnt getChar)
 
 # (ht:Fmt 'any ..) -> sym
 (de Fmt (Exe)
-   (let (X (cdr Exe)  P (push 4 NIL ZERO NIL NIL))  # [cnt last name link fun]
+   (let (X (cdr Exe)  P (push 4 NIL ZERO NIL NIL NIL))  # [cnt last name link fun ptr]
       (begString P)
       (loop
          (htFmt
@@ -151,7 +151,7 @@ mkChar evCnt getChar)
       (X (cdr Exe)
          Lst (save (eval (++ X)))
          Flg (nil? (eval (car X))) )
-      (begString (push 4 NIL ZERO NIL NIL))  # [cnt last name link fun]
+      (begString (push 4 NIL ZERO NIL NIL NIL))  # [cnt last name link fun ptr]
       (while (pair Lst)
          (let (C (++ Lst)  B (firstByte C))
             (cond
