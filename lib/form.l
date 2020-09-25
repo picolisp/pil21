@@ -1,7 +1,8 @@
 # 25sep20 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *Evt *Lock *Spans
-# "*Cnt" "*Lst" "*App" "*Err" "*Foc" "*Post2" "*Stat" "*Ix" "*Chart" "*Cho"
+
+(private) (*Chart *App *Ix *Cnt *Lst *Err *Foc *Post2 *Stat *Cho *TZO)
 
 (allow "@img/" T)
 (push1 '*JS (allow "@lib/form.js"))  #! @lib
@@ -10,79 +11,80 @@
       *Gui *Get *Got *Form "!jsForm" *Evt *Drop
       *JsHint "!jsHint" jsUp jsDn *JsArgs "!tzOffs" ) )
 
-(one "*Cnt")
-(off "*Lst" "*Post2" "*Chart" "*Cho" "*TZO")
+(one *Cnt)
 
 (de *Throbber
    ("+---" "-+--" "--+-" "---+" "--+-" "-+--" .) )
 
 (de tzOffs (Min)
-   (setq "*TZO" (* Min 60))
+   (setq *TZO (* Min 60))
    (respond) )
 
+(private) (Attr Prg App Lst F L)
+
 # Define GUI form
-(de form ("Attr" . "Prg")
+(de form (Attr . Prg)
    (inc '*Form)
-   (let "App"
+   (let App
       (if *PRG
-         (get "*Lst" (- "*Cnt" *Get) *Form)
+         (get *Lst (- *Cnt *Get) *Form)
          (prog1
             (setq *Top (new NIL NIL 'able T 'evt 0))
             ~(as *Dbg
                (when (file)
                   (put *Top '*Dbg
                      (list (cons (cddr @) (pack (car @) (cadr @)))) ) ) )
-            (queue (nth "*Lst" (- "*Cnt" *Get)) *Top) ) )
-      (let "Lst" (get "*Lst" (- "*Cnt" *Get) 1)
-         (for ("F" . "L") "Lst"
-            (let *Form (- "F" (length "Lst"))
+            (queue (nth *Lst (- *Cnt *Get)) *Top) ) )
+      (let Lst (get *Lst (- *Cnt *Get) 1)
+         (for (F . L) Lst
+            (let *Form (- F (length Lst))
                (cond
-                  ((and (== *PRG (car "L")) (memq "App" (get *PRG 'top)))
-                     (apply "form" "L") )
-                  ((or (== *PRG "App") (memq "App" (get *PRG 'top)))
-                     (if (get "L" 1 'top)
-                        (apply "form" "L")
-                        (put (car "L") 'top (cons *PRG (get *PRG 'top)))
-                        (let *PRG NIL (apply "form" "L")) ) ) ) ) ) )
-      ("form" "App" "Attr" "Prg") ) )
+                  ((and (== *PRG (car L)) (memq App (get *PRG 'top)))
+                     (apply "form" L) )
+                  ((or (== *PRG App) (memq App (get *PRG 'top)))
+                     (if (get L 1 'top)
+                        (apply "form" L)
+                        (put (car L) 'top (cons *PRG (get *PRG 'top)))
+                        (let *PRG NIL (apply "form" L)) ) ) ) ) ) )
+      ("form" App Attr Prg) ) )
 
-(de "form" ("*App" "Attr" "Prg")
-   (with "*App"
+(de "form" (*App Attr Prg)
+   (with *App
       (job (: env)
-         (<post> "Attr" (urlMT *Url *Menu *Tab *ID)
+         (<post> Attr (urlMT *Url *Menu *Tab *ID)
             (<hidden> '*Get *Get)
             (<hidden> '*Form *Form)
             (<hidden> '*Evt (: evt))
-            (zero "*Ix")
+            (zero *Ix)
             (if *PRG
                (let gui
                   '(()
-                     (with (get "*App" 'gui (inc '"*Ix"))
-                        (for E "*Err"
+                     (with (get *App 'gui (inc '*Ix))
+                        (for E *Err
                            (when (== This (car E))
                               (<div> 'error
                                  (if (atom (cdr E))
                                     (ht:Prin (eval (cdr E) 1))
                                     (eval (cdr E) 1) ) ) ) )
                         (if (: id)
-                           (let *Gui (val "*App")
+                           (let *Gui (val *App)
                               (show> This (cons '*Gui @)) )
-                           (setq "*Chart" This) )
+                           (setq *Chart This) )
                         This ) )
-                  (and (== *PRG "*App") (setq *Top "*App"))
-                  (htPrin "Prg") )
-               (set "*App")
+                  (and (== *PRG *App) (setq *Top *App))
+                  (htPrin Prg) )
+               (set *App)
                (let gui
                   '((X . @)
-                     (inc '"*Ix")
+                     (inc '*Ix)
                      (with
                         (cond
                            ((pair X) (pass new X))
                            ((not X) (pass new))
                            ((num? X)
-                              (ifn "*Chart"
+                              (ifn *Chart
                                  (quit "no chart" (rest))
-                                 (with "*Chart"
+                                 (with *Chart
                                     (let L (last (: gui))
                                        (when (get L X)
                                           (inc (:: rows))
@@ -99,16 +101,16 @@
                                                 X )
                                              T )
                                           Fld ) ) ) ) )
-                           ((get "*App" X) (quit "gui conflict" X))
-                           (T (put "*App" X (pass new))) )
+                           ((get *App X) (quit "gui conflict" X))
+                           (T (put *App X (pass new))) )
                         (queue (:: home gui) This)
                         (unless (: chart) (init> This))
                         (when (: id)
-                           (let *Gui (val "*App")
+                           (let *Gui (val *App)
                               (show> This (cons '*Gui (: id))) ) )
                         This ) )
-                  (htPrin "Prg") ) ) )
-         (off "*Chart")
+                  (htPrin Prg) ) ) )
+         (off *Chart)
          (--)
          (and
             (: show)
@@ -119,10 +121,12 @@
 (de disable (Flg)
    (and Flg (=: able)) )
 
+(private) (Prg)
+
 # Handle form actions
-(de action "Prg"
-   (off "*Chart" "*Foc")
-   (or *PRG "*Post2" (off "*Err"))
+(de action Prg
+   (off *Chart *Foc)
+   (or *PRG *Post2 (off *Err))
    (catch 'stop
       (nond
          (*Post
@@ -149,18 +153,18 @@
             (_doForm) ) ) ) )
 
 (de pushForm (L)
-   (push '"*Lst" L)
-   (and (nth "*Lst" 99) (con @))
-   (setq *Get "*Cnt")
-   (inc '"*Cnt") )
+   (push '*Lst L)
+   (and (nth *Lst 99) (con @))
+   (setq *Get *Cnt)
+   (inc '*Cnt) )
 
 (de _doForm ()
    (one *Form)
-   (run "Prg")
-   (setq "*Stat"
+   (run Prg)
+   (setq *Stat
       (cons
-         (pair "*Err")
-         (copy (get "*Lst" (- "*Cnt" *Get))) ) ) )
+         (pair *Err)
+         (copy (get *Lst (- *Cnt *Get))) ) ) )
 
 (de jsForm (Url)
    (if (or *PRG (not *Post))
@@ -168,15 +172,15 @@
       (setq *Url Url  Url (chop Url))
       (let action
          '(Prg
-            (off "*Err")
+            (off *Err)
             (with (postForm)
                (catch 'stop
                   (postGui)
                   (httpHead "text/plain; charset=utf-8")
                   (if
                      (and
-                        (= (car "*Stat") "*Err")
-                        (= (cdr "*Stat") (get "*Lst" (- "*Cnt" *Get))) )
+                        (= (car *Stat) *Err)
+                        (= (cdr *Stat) (get *Lst (- *Cnt *Get))) )
                      (ht:Out *Chunked
                         (when (: auto)
                            (prin "i" *Form "-" (: auto 1 id) ":" (: auto -1))
@@ -186,8 +190,8 @@
                         (for This (: gui)
                            (if (: id)
                               (prin "&i" *Form "-" @ "&" (js> This))
-                              (setq "*Chart" This) ) ) )
-                     (setq "*Post2" (cons *Get *Form *PRG))
+                              (setq *Chart This) ) ) )
+                     (setq *Post2 (cons *Get *Form *PRG))
                      (ht:Out *Chunked (prin T)) ) ) )
             (off *PRG) )
          (use @X
@@ -204,25 +208,25 @@
 
 (de postForm ()
    (when (num? (format *Get))
-      (let? Lst (get "*Lst" (- "*Cnt" (setq *Get @)))
+      (let? Lst (get *Lst (- *Cnt (setq *Get @)))
          (and
             (setq *Form (format *Form))
             (setq *Evt (format *Evt))
             (setq *PRG
                (cond
                   ((and
-                        (= *Get (car "*Post2"))
-                        (= *Form (cadr "*Post2")) )
-                     (cddr "*Post2") )
-                  ((off "*Post2"))
+                        (= *Get (car *Post2))
+                        (= *Form (cadr *Post2)) )
+                     (cddr *Post2) )
+                  ((off *Post2))
                   ((gt0 *Form) (get Lst *Form))
                   (T (get Lst 1 (+ (length (car Lst)) *Form) 1)) ) )
             (val *PRG)
             *PRG ) ) ) )
 
 (de postGui ()
-   (if "*Post2"
-      (off *Gui "*Post2")
+   (if *Post2
+      (off *Gui *Post2)
       (let ("Fun" NIL *Btn NIL)
          (for G *Gui
             (if (=0 (car G))
@@ -233,19 +237,19 @@
          (job (: env)
             (for This (: gui)
                (cond
-                  ((not (: id)) (setq "*Chart" This))
+                  ((not (: id)) (setq *Chart This))
                   ((chk> This) (error @))
                   ((or (: rid) (: home able))
                      (set> This (val> This) T) ) ) )
-            (unless "*Err"
+            (unless *Err
                (for This (: gui)
                   (cond
                      ((: id))
-                     ((chk> (setq "*Chart" This)) (error @))
+                     ((chk> (setq *Chart This)) (error @))
                      ((or (: rid) (: home able))
                         (set> This (val> This)) ) ) ) )
-            (if (pair "*Err")
-               (and *Lock (with (caar "*Err") (tryLock *Lock)))
+            (if (pair *Err)
+               (and *Lock (with (caar *Err) (tryLock *Lock)))
                (finally
                   (when *Lock
                      (if (lock @)
@@ -264,20 +268,20 @@
                            *JsArgs ) ) )
                   (for This (: gui)
                      (nond
-                        ((: id) (setq "*Chart" This))
+                        ((: id) (setq *Chart This))
                         ((ge0 (: id))
                            (let? A (assoc (: id) (val *PRG))
                               (when (cdr A)
                                  (con A)
                                  (act> This) ) ) ) ) ) )
                (for This (: gui)
-                  (or (: id) (setq "*Chart" This))
+                  (or (: id) (setq *Chart This))
                   (upd> This) ) ) ) ) ) )
 
 (de error (Exe)
    (cond
-      ((=T Exe) (on "*Err"))
-      ((nT "*Err") (queue '"*Err" (cons This Exe))) ) )
+      ((=T Exe) (on *Err))
+      ((nT *Err) (queue '*Err (cons This Exe))) ) )
 
 (de url (Url . @)
    (when Url
@@ -313,7 +317,7 @@
    (pack
       `(char 8230)  # Ellipsis
       (let Tim (+ (time T) (/ (cadr (assoc -1 *Run)) 1000))
-         (if "*TZO"
+         (if *TZO
             (tim$ (% (- Tim -86400 @) 86400))
             (javascript NIL
                "lisp(null, 'tzOffs', (new Date()).getTimezoneOffset())" )
@@ -321,12 +325,12 @@
 
 # Return chart property
 (de chart @
-   (pass get "*Chart") )
+   (pass get *Chart) )
 
 # Table extensions
 (patch (cdr <table>)
    'Attr
-   '(if "*Chart"
+   '(if *Chart
       (list
          '("ontouchstart" . "return tblTouch(event)")
          '("ontouchmove" . "return tblMove(this,event)")
@@ -391,7 +395,7 @@
 
 # Dialogs
 (de _dlg (Attr Env)
-   (let L (get "*Lst" (- "*Cnt" *Get))
+   (let L (get *Lst (- *Cnt *Get))
       (while (and (car L) (n== *PRG (caar @)))
          (pop L) )
       (push L
@@ -421,6 +425,8 @@
       (yesButton (cons 'prog Prg))
       (noButton) ) )
 
+(private) (Lst Prg)
+
 (de diaform (Lst . Prg)
    (cond
       ((num? (caar Lst))  # Dst
@@ -441,17 +447,17 @@
    (gui '(+Button) ,"Save" Exe) )
 
 (de closeButton (Lbl Exe)
-   (when (get "*App" 'top)
+   (when (get *App 'top)
       (gui '(+Rid +Close +Button) Lbl Exe) ) )
 
 (de okButton (Exe)
-   (when (get "*App" 'top)
+   (when (get *App 'top)
       (if (=T Exe)
          (gui '(+Force +Close +Button) T "OK")
          (gui '(+Close +Button) "OK" Exe) ) ) )
 
 (de cancelButton ()
-   (when (get "*App" 'top)
+   (when (get *App 'top)
       (gui '(+Force +Close +Button) T ',"Cancel") ) )
 
 (de yesButton (Exe)
@@ -491,7 +497,7 @@
 (dm act> ()
    (when (able)
       (and
-         (get "*Lst" (- "*Cnt" *Get))
+         (get *Lst (- *Cnt *Get))
          (pushForm
             (cons
                (filter
@@ -501,7 +507,7 @@
       (extra)
       (for This (: home top)
          (for This (: gui)
-            (or (: id) (setq "*Chart" This))
+            (or (: id) (setq *Chart This))
             (upd> This) ) ) ) )
 
 
@@ -542,9 +548,9 @@
          (pack "@&+" (ht:Fmt (sesId (mkUrl @)))) )
       (T "@") ) )
 
-(dm show> ("Var")
+(dm show> (Var)
    (if (: act)
-      (super "Var")
+      (super Var)
       (<style> (cons 'id (pack "i" *Form "-" (: id)))
          (if (try (: msg) (: obj) 1 This)
             (<tip> "-->" (<href> "@" (mkUrl @)))
@@ -588,7 +594,7 @@
 (class +hint)
 # tok coy
 
-(dm show> ("Var")
+(dm show> (Var)
    (<js>
       (list
          '("autocomplete" . "off")
@@ -599,7 +605,7 @@
                "return hintKey(this,event"
                (if2 (: tok) (: coy) ",true,true" ",true" ",false,true")
                ")" ) ) )
-      (extra "Var") ) )
+      (extra Var) ) )
 
 (de jsHint (I)
    (when I
@@ -608,7 +614,7 @@
          (let? L
             (if (sym? I)
                ((; I hint) *JsHint)
-               (let? Lst (get "*Lst" (- "*Cnt" (format *Get)))
+               (let? Lst (get *Lst (- *Cnt (format *Get)))
                   (pair
                      (hint>
                         (get
@@ -796,10 +802,10 @@
    (=: cue (pack "<" Str ">"))
    (pass extra) )
 
-(dm show> ("Var")
+(dm show> (Var)
    (<js>
       (cons (cons "placeholder" (: cue)))
-      (extra "Var") ) )
+      (extra Var) ) )
 
 
 (class +Trim)
@@ -965,8 +971,8 @@
       (=: tip Exe) )
    (pass extra) )
 
-(dm show> ("Var")
-   (<tip> (eval (: tip)) (extra "Var")) )
+(dm show> (Var)
+   (<tip> (eval (: tip)) (extra Var)) )
 
 (dm js> ()
    (pack (extra) "&?" (ht:Fmt (glue "^J" (eval (: tip))))) )
@@ -974,8 +980,8 @@
 
 (class +Tiny)
 
-(dm show> ("Var")
-   (<style> 'tiny (extra "Var")) )
+(dm show> (Var)
+   (<style> 'tiny (extra Var)) )
 
 
 (class +Click)
@@ -985,10 +991,10 @@
    (=: clk Exe)
    (pass extra) )
 
-(dm show> ("Var")
-   (extra "Var")
+(dm show> (Var)
+   (extra Var)
    (and
-      (atom "*Err")
+      (atom *Err)
       (eval (: clk))
       (javascript NIL
          "window.setTimeout(\"document.getElementById('"
@@ -1000,10 +1006,10 @@
 
 (class +Focus)
 
-(dm show> ("Var")
-   (extra "Var")
-   (when (and (able) (not "*Foc"))
-      (on "*Foc")
+(dm show> (Var)
+   (extra Var)
+   (when (and (able) (not *Foc))
+      (on *Foc)
       (javascript NIL "idFocus('" "i" *Form "-" (: id) "')") ) )
 
 
@@ -1015,8 +1021,8 @@
    (=: style Exe)
    (pass extra) )
 
-(dm show> ("Var")
-   (<style> (pack (eval (: style)) " ") (extra "Var")) )
+(dm show> (Var)
+   (<style> (pack (eval (: style)) " ") (extra Var)) )
 
 (dm js> ()
    (pack (extra) "&#" (eval (: style))) )
@@ -1025,8 +1031,8 @@
 # Monospace font
 (class +Mono)
 
-(dm show> ("Var")
-   (<style> "mono" (extra "Var")) )
+(dm show> (Var)
+   (<style> "mono" (extra Var)) )
 
 (dm js> ()
    (pack (extra) "&#mono") )
@@ -1035,8 +1041,8 @@
 # Signum field
 (class +Sgn)
 
-(dm show> ("Var")
-   (<style> (and (lt0 (val> This)) "red") (extra "Var")) )
+(dm show> (Var)
+   (<style> (and (lt0 (val> This)) "red") (extra Var)) )
 
 (dm js> ()
    (pack (extra) "&#" (and (lt0 (val> This)) "red")) )
@@ -1055,7 +1061,7 @@
 # home id chg able chart
 
 (dm T ()
-   (push (=: home "*App") (cons (=: id "*Ix")))
+   (push (=: home *App) (cons (=: id *Ix)))
    (=: able T) )
 
 (dm txt> (Val))
@@ -1134,7 +1140,7 @@
          (=: act (next)) ) )
    (super)
    (set
-      (car (val "*App"))
+      (car (val *App))
       (=: id (- (: id))) ) )
 
 (dm js> ()
@@ -1144,15 +1150,15 @@
       (let Str (ht:Fmt (or (eval (: alt)) (eval (: lbl))))
          (pack (if (: img) (sesId Str) Str) "&=") ) ) )
 
-(dm show> ("Var")
+(dm show> (Var)
    (<style> (cons 'id (pack "i" *Form "-" (: id)))
       (if (able)
          ((if (: img) <image> <submit>)
             (eval (: lbl))
-            "Var" NIL (: js) )
+            Var NIL (: js) )
          ((if (: img) <image> <submit>)
             (or (eval (: alt)) (eval (: lbl)))
-            "Var" T (: js) ) ) ) )
+            Var T (: js) ) ) ) )
 
 (dm act> ()
    (and (able) (eval (: act))) )
@@ -1165,9 +1171,9 @@
    (=: onclick Exe)
    (pass extra) )
 
-(dm show> ("Var")
+(dm show> (Var)
    (<js> (list (cons 'onclick (eval (: onclick))))
-      (extra "Var") ) )
+      (extra Var) ) )
 
 
 (class +Drop)
@@ -1177,13 +1183,13 @@
    (=: "drop" Fld)
    (pass extra) )
 
-(dm show> ("Var")
+(dm show> (Var)
    (<js>
       (quote
          ("ondragenter" . "doDrag(event)")
          ("ondragover" . "doDrag(event)")
          ("ondrop" . "doDrop(this,event)") )
-      (extra "Var") ) )
+      (extra Var) ) )
 
 (dm act> ()
    (when (able)
@@ -1233,11 +1239,11 @@
    (super
       '(> (length (chart 'data)) (chart 'ofs))
       (or Lbl ">")
-      (list 'scroll> (lit "*Chart") Exe) ) )
+      (list 'scroll> (lit *Chart) Exe) ) )
 
 (de jsDn ()
-   (when (> (length (; "*Chart" data)) (; "*Chart" ofs))
-      (scroll> "*Chart" 1) ) )
+   (when (> (length (; *Chart data)) (; *Chart ofs))
+      (scroll> *Chart 1) ) )
 
 (class +UpButton +Tiny +Rid +JS +Able +Button)
 
@@ -1245,11 +1251,11 @@
    (super
       '(> (chart 'ofs) 1)
       (or Lbl "<")
-      (list 'scroll> (lit "*Chart") (list '- Exe)) ) )
+      (list 'scroll> (lit *Chart) (list '- Exe)) ) )
 
 (de jsUp ()
-   (when (> (; "*Chart" ofs) 1)
-      (scroll> "*Chart" -1) ) )
+   (when (> (; *Chart ofs) 1)
+      (scroll> *Chart -1) ) )
 
 (class +GoButton +Tiny +Rid +JS +Able +Button)
 
@@ -1259,7 +1265,7 @@
          (list '>= '(length (chart 'data)) Exe)
          (list '<> '(chart 'ofs) Exe) )
       Lbl
-      (list 'goto> (lit "*Chart") Exe) ) )
+      (list 'goto> (lit *Chart) Exe) ) )
 
 (de scroll (N Flg)
    (when Flg
@@ -1366,8 +1372,8 @@
 (dm txt> (Val)
    (if Val ,"Yes" ,"No") )
 
-(dm show> ("Var")
-   (showFld (<check> "Var" (not (able)))) )
+(dm show> (Var)
+   (showFld (<check> Var (not (able)))) )
 
 (dm set> (Val Dn)
    (super (bool Val) Dn) )
@@ -1386,7 +1392,7 @@
    (=: rad Rad)
    (=: lbl Lbl) )
 
-(dm show> ("Var")
+(dm show> (Var)
    (showFld
       (<radio>
          (cons '*Gui (: grp id))
@@ -1424,15 +1430,15 @@
    (super)
    (or (: dx) (: lst) (=: chg)) )
 
-(dm show> ("Var")
+(dm show> (Var)
    (showFld
       (cond
          ((: dy)
-            (<area> (: dx) (: dy) "Var" (not (able))) )
+            (<area> (: dx) (: dy) Var (not (able))) )
          ((: dx)
             (<field>
                (if (: align) (- (: dx)) (: dx))
-               "Var"
+               Var
                (eval (: lim))
                (not (able)) ) )
          ((: lst)
@@ -1454,7 +1460,7 @@
                   (if (or (member S L) (assoc S L))
                      L
                      (cons S L) )
-                  "Var"
+                  Var
                   (not (able)) ) ) )
          (T
             (<style> (cons 'id (pack "i" *Form "-" (: id)))
@@ -1490,25 +1496,25 @@
 # Password field
 (class +PwField +TextField)
 
-(dm show> ("Var")
+(dm show> (Var)
    (showFld
-      (<passwd> (: dx) "Var" (eval (: lim)) (not (able))) ) )
+      (<passwd> (: dx) Var (eval (: lim)) (not (able))) ) )
 
 
 # Upload field
 (class +UpField +TextField)
 
-(dm show> ("Var")
+(dm show> (Var)
    (showFld
-      (<upload> (: dx) "Var" (not (able))) ) )
+      (<upload> (: dx) Var (not (able))) ) )
 
 
 # Color picker
 (class +RgbPicker +field)
 
-(dm show> ("Var")
+(dm show> (Var)
    (showFld
-      (<rgb> "Var" (not (able))) ) )
+      (<rgb> Var (not (able))) ) )
 
 
 # Symbol fields
@@ -1631,7 +1637,7 @@
       (eval (: alt)) "&"
       (and (eval (: url)) (ht:Fmt (sesId @))) ) )
 
-(dm show> ("Var")
+(dm show> (Var)
    (showFld
       (<img>
          (or (: img) "@img/no.png")
@@ -1660,9 +1666,9 @@
       (ht:Fmt (sesId (eval (: icon)))) "&"
       (and (eval (: url)) (ht:Fmt (sesId @))) ) )
 
-(dm show> ("Var")
+(dm show> (Var)
    (prin "<table cellspacing=\"0\" cellpadding=\"0\"><td>")
-   (extra "Var")
+   (extra Var)
    (prin "</td><td>")
    (<img> (eval (: icon)) 'icon (eval (: url)))
    (prinl "</td></table>") )
@@ -1710,11 +1716,11 @@
       (pack @ "&+" (ht:Fmt (sesId ((: url) @))))
       (extra) ) )
 
-(dm show> ("Var")
+(dm show> (Var)
    (cond
       ((or (: dx) (: lst))
          (prin "<table cellspacing=\"0\" cellpadding=\"0\"><td>")
-         (extra "Var")
+         (extra Var)
          (prin "</td><td title=\"-->\">")
          (if (txt> This (val> This))
             (<img> "@img/go.png" 'url ((: url) @))
@@ -1722,7 +1728,7 @@
          (prinl "</td></table>") )
       ((txt> This (val> This))
          (showFld (<href> @ ((: url) @))) )
-      (T (extra "Var")) ) )
+      (T (extra Var)) ) )
 
 
 (class +HttpField +Url +TextField)
@@ -1775,7 +1781,7 @@
    (super)
    (=: js Nm) )
 
-(dm show> ("Var"))
+(dm show> (Var))
 
 (dm js> ()
    (pack (ht:Fmt NIL (: str) (: js))) )
@@ -1790,8 +1796,8 @@
 
 # (cols [put [get]])
 (dm T (N Put Get)
-   (setq "*Chart" This)
-   (queue (prop (=: home "*App") 'chart) This)
+   (setq *Chart This)
+   (queue (prop (=: home *App) 'chart) This)
    (=: rows 1)
    (when N
       (=: gui (list (need (=: cols N)))) )
@@ -1928,7 +1934,7 @@
          (apply gui
             (cons
                (cons '+Focus '+Var (car Fld))
-               (cdr (or (assoc Rel "*Cho") (push '"*Cho" (list Rel NIL))))
+               (cdr (or (assoc Rel *Cho) (push '*Cho (list Rel NIL))))
                (cdr Fld) ) )
          (searchButton '(init> (: home query)))
          (gui 'query '(+QueryChart) (cho)
@@ -2003,7 +2009,7 @@
       '(if (: home able)
          (when (able)
             (eval (: save))
-            (unless (pair "*Err")
+            (unless (pair *Err)
                (rollback)
                (off *Lock) ) )
          (tryLock (: home obj)) ) )
@@ -2212,12 +2218,12 @@
          (pack (ht:Fmt (nonblank (str> This))) "&+" (ht:Fmt (sesId (mkUrl @))))
          (extra) ) ) )
 
-(dm show> ("Var")
+(dm show> (Var)
    (cond
-      ((=T (: msg)) (extra "Var"))
+      ((=T (: msg)) (extra Var))
       ((or (: dx) (: lst))
          (prin "<table cellspacing=\"0\" cellpadding=\"0\"><td>")
-         (extra "Var")
+         (extra Var)
          (prin "</td><td title=\"-->\">")
          (if (try (: msg) (: obj) 1 This)
             (<img> "@img/go.png" 'obj (mkUrl @))
@@ -2225,7 +2231,7 @@
          (prinl "</td></table>") )
       ((try (: msg) (: obj) 1 This)
          (showFld (<href> (nonblank (str> This)) (mkUrl @))) )
-      (T (extra "Var")) ) )
+      (T (extra Var)) ) )
 
 
 (class +Obj +hint +obj)
@@ -2462,6 +2468,7 @@
       (for (Q (eval (: iniQ)) (step Q))
          (link (cons @@ @)) ) ) )
 
+(private) (Attr Var H1 Rows Gui Sep H2 Cols Put Get Prg Len R)
 
 # 3D-Chart (list of bags with list of bags)
 (de bagBag (Attr Var H1 Rows Gui Sep H2 Cols Put Get . Prg)
@@ -2528,25 +2535,29 @@
                Get )
             (run Prg) ) ) ) )
 
-# Form object
-(de <id> "Lst"
-   (idObj "Lst") )
+(private) (Lst X)
 
-(de idObj ("Lst")
+# Form object
+(de <id> Lst
+   (idObj Lst) )
+
+(de idObj (Lst)
    (with (if *PRG (: obj) (=: obj *ID))
       (and (: T) (prin "["))
-      (for "X" (if (=T (car "Lst")) (cdr "Lst") "Lst")
-         (if (pair (setq "X" (eval "X")))
-            (<$> (cdr "X") (car "X"))
-            (ht:Prin "X") ) )
+      (for X (if (=T (car Lst)) (cdr Lst) Lst)
+         (if (pair (setq X (eval X)))
+            (<$> (cdr X) (car X))
+            (ht:Prin X) ) )
       (and (: T) (prin "]")) )
    (=: able
       (cond
          ((: obj T))
          ((not (: obj)))
-         ((=T (car "Lst")) T)
+         ((=T (car Lst)) T)
          ((== *Lock (: obj)) T)
          (*Lock (rollback) (off *Lock)) ) ) )
+
+(private) (Able Txt Del Dlg Var X Hook Msg Exe Prg)
 
 (de panel (Able Txt Del Dlg Var X Hook Msg Exe . Prg)
    (<spread>
@@ -2568,37 +2579,40 @@
             (stepBtn (fin Var) X Hook Msg) ) ) )
    (--) )
 
+(private) (Entity Cho Var X Able Del Lst Prg)
+
 # Standard ID form
-(de idForm ("Entity" "Cho" "Var" "X" "Able" "Del" "Lst" . "Prg")
+(de idForm (Entity Cho Var X Able Del Lst . Prg)
    (ifn *ID
       (prog
-         (<h3> NIL ,"Select" " " "Entity")
+         (<h3> NIL ,"Select" " " Entity)
          (form 'dialog
-            (if (pair "Cho")
+            (if (pair Cho)
                (eval @)
-               (choDlg NIL "Cho" (list (fin "Var") "X")) ) ) )
+               (choDlg NIL Cho (list (fin Var) X)) ) ) )
       (form NIL
-         (<h3> NIL "Entity" ": " (idObj "Lst"))
-         (panel "Able" (pack "Entity" " '@1'") "Del"
+         (<h3> NIL Entity ": " (idObj Lst))
+         (panel Able (pack Entity " '@1'") Del
             (or
-               (pair "Cho")
-               (list 'choDlg NIL (lit "Cho") (lit (list (fin "Var") "X"))) )
-            "Var" "X"
+               (pair Cho)
+               (list 'choDlg NIL (lit Cho) (lit (list (fin Var) X))) )
+            Var X
             (and
-               (atom "X")
-               (or (get "X" (fin "Var") 'hook) (meta "X" (fin "Var") 'hook))
+               (atom X)
+               (or (get X (fin Var) 'hook) (meta X (fin Var) 'hook))
                (get (: obj) @) ) )
-         (run "Prg") ) ) )
+         (run Prg) ) ) )
 
+(private) (Msg Env X)
 
 ### Undo / Redo ###
-(de change ("Msg" "Env" . "X")
+(de change (Msg Env . X)
    (set> (: home undo)
       (cons
-         (cons "Msg" "Env" "X")
+         (cons Msg Env X)
          (val> (: home undo)) ) )
    (set> (: home redo))
-   (bind "Env" (run (cdr "X"))) )
+   (bind Env (run (cdr X))) )
 
 
 (class +todoButton +Able +Tip +Button)

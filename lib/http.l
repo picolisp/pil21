@@ -1,4 +1,4 @@
-# 22sep20 Software Lab. Alexander Burger
+# 25sep20 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -110,8 +110,7 @@
          (cond
             (*Adr (off *Adr) (set X (cadr X)))
             ((diff (kids) *Retire) (set X (cadr X)))
-            ((=0 (dec X)) (run (cddr X)) (bye)) ) )
-      (forked) ) )
+            ((=0 (dec X)) (run (cddr X)) (bye)) ) ) ) )
 
 (de baseHRef (Port . @)
    (pass pack
