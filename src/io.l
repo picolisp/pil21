@@ -1,4 +1,4 @@
-# 25sep20 Software Lab. Alexander Burger
+# 26sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -753,7 +753,7 @@
                                           ((=0 (val (i64* Pn)))  # PID and size are zero
                                              (when (== (Cld: pid) (val $Talking))
                                                 (set $Talking 0) ) )
-                                          ((rdBytes (Cld: hear) Buf (i64 (val 1 Pn)))
+                                          ((rdBytes (Cld: hear) Buf (i64 (val 2 Pn)))
                                              (let
                                                 (Cld2 (val $Child)  # Iterate children
                                                    <Cld2 (ofs Cld2 (* (val $Children) (child T))) )
@@ -795,7 +795,7 @@
                      (and
                         (=0 (val $Talking))
                         (readyIn (pollfd (val $Spkr)))
-                        (gt0 (rdBytesNb (val $Spkr) (i8* Pn) 4)) )
+                        (gt0 (rdBytesNb (val $Spkr) (i8* Pn) 8)) )  # Slot
                      (let Cld (ofs (val $Child) (* (val Pn) (child T)))
                         (when ((child Cld) pid)
                            (set $Talking @)

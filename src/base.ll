@@ -39592,12 +39592,12 @@ $61:
   %325 = getelementptr i8, i8* %264, i32 28
   %326 = bitcast i8* %325 to i32*
   %327 = load i32, i32* %326
-; # (val 1 Pn)
-  %328 = getelementptr i32, i32* %25, i32 0
+; # (val 2 Pn)
+  %328 = getelementptr i32, i32* %25, i32 1
   %329 = load i32, i32* %328
-; # (i64 (val 1 Pn))
+; # (i64 (val 2 Pn))
   %330 = sext i32 %329 to i64
-; # (rdBytes (Cld: hear) Buf (i64 (val 1 Pn)))
+; # (rdBytes (Cld: hear) Buf (i64 (val 2 Pn)))
   %331 = call i1 @rdBytes(i32 %327, i8* %24, i64 %330)
   br i1 %331, label %$66, label %$65
 $66:
@@ -39967,9 +39967,9 @@ $88:
   %561 = load i32, i32* @$Spkr
 ; # (i8* Pn)
   %562 = bitcast i32* %25 to i8*
-; # (rdBytesNb (val $Spkr) (i8* Pn) 4)
-  %563 = call i64 @rdBytesNb(i32 %561, i8* %562, i64 4)
-; # (gt0 (rdBytesNb (val $Spkr) (i8* Pn) 4))
+; # (rdBytesNb (val $Spkr) (i8* Pn) 8)
+  %563 = call i64 @rdBytesNb(i32 %561, i8* %562, i64 8)
+; # (gt0 (rdBytesNb (val $Spkr) (i8* Pn) 8))
   %564 = icmp sgt i64 %563, 0
   br label %$86
 $86:
