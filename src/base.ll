@@ -1599,6 +1599,7 @@ declare i32 @gErrno()
 declare void @stopTerm()
 declare void @setRaw()
 declare void @setCooked()
+declare void @setTermSize()
 declare i1 @reopenTty(i8*)
 declare i64 @getUsec(i1)
 declare i64 @getMsec()
@@ -2636,6 +2637,8 @@ $24:
 ; # (dec (val $Signal))
   %82 = sub i32 %81, 1
   store i32 %82, i32* bitcast ([16 x i32]* @$Signal to i32*)
+; # (setTermSize)
+  call void @setTermSize()
 ; # (val $Winch)
   %83 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 680) to i64) to i64*
   %84 = load i64, i64* %83

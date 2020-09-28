@@ -1,4 +1,4 @@
-// 28jul20 Software Lab. Alexander Burger
+// 28sep20 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdint.h>
@@ -13,6 +13,7 @@
 #include <time.h>
 #include <poll.h>
 #include <termios.h>
+#include <sys/ioctl.h>
 #include <sys/types.h>
 #include <sys/wait.h>
 #include <sys/stat.h>
@@ -36,6 +37,7 @@ static void str(char *sym, char *val) {
 }
 
 int main(void) {
+   struct winsize term;
    struct sockaddr_in6 addr;
    struct addrinfo ai;
 
@@ -45,6 +47,12 @@ int main(void) {
    num("EINTR", EINTR);
    num("EAGAIN", EAGAIN);
    num("EACCES", EACCES);
+
+   ttl("Terminal");
+   num("TIOCGWINSZ", TIOCGWINSZ);
+   num("winsize", sizeof(struct winsize));
+   num("ws_row", (char*)&term.ws_row - (char*)&term);
+   num("ws_col", (char*)&term.ws_col - (char*)&term);
 
    ttl("Networking");
    num("SOCK_STREAM", SOCK_STREAM);
