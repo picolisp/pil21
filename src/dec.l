@@ -1,4 +1,4 @@
-# 05sep20 Software Lab. Alexander Burger
+# 27sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -276,8 +276,9 @@ truncate0 socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 ### Forward references ###
 
 # main.l
-(local) (equal compare evList)
+(local) (dbg equal compare evList)
 
+(de dbg (i64 any))
 (de i1 equal (any any))
 (de i64 compare (any any))
 (de evList (any))

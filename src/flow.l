@@ -1,4 +1,4 @@
-# 25sep20 Software Lab. Alexander Burger
+# 28sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -329,7 +329,10 @@
                   (let Nm
                      (newId Exe  # External
                         (if (cnt? Y) (i32 (int @)) 1) )
-                     (extern (shr 1 (add Nm Nm) 1)) ) ) ) ) )  # Set "dirty"
+                     (prog1
+                        (extern Nm)
+                        (set (tail @)
+                           (sign (shr 1 (add Nm Nm) 1)) ) ) ) ) ) ) )  # Set "dirty"
       (unless (pair Y)
          (set Obj (eval (++ X))) )
       (set $Ret 0)  # Preset to "No classes"

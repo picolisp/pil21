@@ -1,4 +1,4 @@
-# 26sep20 Software Lab. Alexander Burger
+# 27sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -687,8 +687,8 @@
 
 (de i64 waitFd (Exe (i32 . Fd) (i64 . Ms))
    (let
-      (At (save (val $At))
-         Run (link (push (val $Run) NIL))
+      (Run (save (val $Run))
+         At (save (val $At))
          Buf (b8 (val PipeBufSize))
          Pn (b32 2)
          Tim (getMsec) )
@@ -699,7 +699,7 @@
                (if (hasData Fd)
                   (setq Dly 0)
                   (pollIn Fd (pollfd Fd)) ) )
-            (let R (val Run)  # '*Run' elements
+            (let R Run  # '*Run' elements
                (while (pair R)
                   (let X (++ R)
                      (cond
@@ -811,7 +811,7 @@
                            (set $Hear 0) )
                         ((t? @) (set $Sync YES))
                         (T (save @ (evList @))) ) ) )
-               (let R (val Run)
+               (let R Run
                   (while (pair R)
                      (let X (++ R)
                         (cond
@@ -833,7 +833,7 @@
                (setq Tim Now) )
             (sigChk Exe)
             (? (or (=0 Ms) (lt0 Fd) (inReady Fd)))
-            (set Run (val $Run)) ) )
+            (setq Run (safe (val $Run))) ) )
       (set $At At)
       Ms ) )
 

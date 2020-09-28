@@ -1,4 +1,4 @@
-# 25sep20 Software Lab. Alexander Burger
+# 28sep20 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *Evt *Lock *Spans
 
@@ -121,7 +121,7 @@
 (de disable (Flg)
    (and Flg (=: able)) )
 
-(private) (Prg)
+(private) Prg
 
 # Handle form actions
 (de action Prg
@@ -376,9 +376,10 @@
                (clr> (: home line))
                (: home repl) ) ) ) ) )
 
+(private) (dlg Attr Env Lst Prg)
 
 # Dialogs
-(de _dlg (Attr Env)
+(de dlg (Attr Env Prg)
    (let L (get *Lst (- *Cnt *Get))
       (while (and (car L) (n== *PRG (caar @)))
          (pop L) )
@@ -390,10 +391,10 @@
       (pushForm L) ) )
 
 (de dialog (Env . Prg)
-   (_dlg 'dialog Env) )
+   (dlg 'dialog Env Prg) )
 
 (de alert (Env . Prg)
-   (_dlg 'alert Env) )
+   (dlg 'alert Env Prg) )
 
 (de note (Str Lst)
    (alert (env '(Str Lst))
@@ -409,8 +410,6 @@
       (yesButton (cons 'prog Prg))
       (noButton) ) )
 
-(private) (Lst Prg)
-
 (de diaform (Lst . Prg)
    (cond
       ((num? (caar Lst))  # Dst
@@ -421,7 +420,7 @@
                   (lit (env (cdr Lst))) )
                Prg ) ) )
       ((and *PRG (not (: diaform)))
-         (_dlg 'dialog (env Lst)) )
+         (dlg 'dialog (env Lst) Prg) )
       (T
          (=: env (env Lst))
          (=: diaform T)
@@ -1038,7 +1037,7 @@
       (ht:Prin (eval @))
       (<nbsp>) )
    (let *Style (style (cons 'id (pack "i" *Form "-" (: id))) *Style)
-      (run Prg 1 '(*Style)) ) )
+      (run Prg 1) ) )
 
 
 (class +gui)
