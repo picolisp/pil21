@@ -1,10 +1,21 @@
-# 23sep20 Software Lab. Alexander Burger
+# 28sep20 Software Lab. Alexander Burger
 # https://picolisp.com/wiki/?vip
 
 (symbols 'vip 'pico)
 
 (local) (*Shell *CmdWin *StatNm *Chr *Complete *Repeat *Change *Count *Cnt
 *Search *Clip *Lines *Columns *TagStack *Spell *F8 *F9 *F10 *F11 *F12 *@)
+
+(local) (TIOCGWINSZ winsize ws_row ws_col setTermSize)
+
+(sysdefs "Terminal")
+
+(de setTermSize ()
+   (use L
+      (%@ "ioctl" NIL 1 TIOCGWINSZ '(L (`winsize W W)))
+      (setq
+         *Columns (car L)
+         *Lines (cadr L) ) ) )
 
 ### ANSI Terminal ###
 (local) (xterm ULINE U-OFF REVERS CYAN RED *AttrA *AttrU attr cup clreol hideCsr
@@ -1265,11 +1276,7 @@ shell shFile prCmd reset command vi)
 
 ### VIP Entry Point ###
 (de vi (Lst)  # (file (pat . file) (99 . file) (T . file) (sym [sym ..])
-   (unless
-      (and
-         (setq *Columns (format (sys "COLUMNS")))
-         (setq *Lines (format (sys "LINES"))) )
-      (quit "COLUMNS or LINES not set") )
+   (setTermSize)
    (off *Buffers)
    (when (=0 (%@ "isatty" 'I 0))
       (with (fileBuffer (tmp "stdin"))
