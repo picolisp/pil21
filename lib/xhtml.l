@@ -1,4 +1,4 @@
-# 25sep20 Software Lab. Alexander Burger
+# 28sep20 Software Lab. Alexander Burger
 
 # *JS "*JS" *Style *SsEvts *Menu *Tab *ID
 
@@ -600,7 +600,7 @@
 (off "*CSV")
 
 (de csv ("Nm" . "Prg")
-   (call "rm" "-f" (tmp "Nm" ".csv"))
+   (%@ "unlink" NIL (tmp "Nm" ".csv"))
    (let "*CSV" (pack "+" (tmp "Nm" ".csv"))
       (run "Prg") )
    (<href> "CSV" (tmp "Nm" ".csv")) )

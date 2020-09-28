@@ -1,4 +1,4 @@
-# 21sep20 Software Lab. Alexander Burger
+# 28sep20 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -349,7 +349,7 @@
       T ) )
 
 (dm zap> (Obj Val)
-   (and Val (call "rm" "-f" (blob Obj (: var)))) )
+   (and Val (%@ "unlink" NIL (blob Obj (: var)))) )
 
 
 ### Index classes ###
@@ -1472,7 +1472,7 @@
                         (while (setq Key (rd))
                            (out (cddr (rank Key V))
                               (pr Key (rd)) ) ) )
-                     (%@ "unlink" 'I File)
+                     (%@ "unlink" NIL File)
                      (let (Dbf (meta Typ Var 'dbf)  Tree (cons Var (new T)))
                         (for R V
                            (close (cddr R))
@@ -1486,7 +1486,7 @@
                               (at (0 . 1000) (prune 2)) )
                            (commit)
                            (prune 2)
-                           (%@ "unlink" 'I (cadr R)) )
+                           (%@ "unlink" NIL (cadr R)) )
                         (commit)
                         Tree ) ) ) ) )
          Vars )

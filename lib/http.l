@@ -1,4 +1,4 @@
-# 25sep20 Software Lab. Alexander Burger
+# 28sep20 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -179,7 +179,7 @@
                                     (cddr L)
                                     (format (car @))
                                     (unless (out (tmp S) (echo @))
-                                       (call "rm" "-f" (tmp S)) ) ) ) ) ) )
+                                       (%@ "unlink" NIL (tmp S)) ) ) ) ) ) )
                      (T (throw 'http)) ) )
                (T
                   (and @ (out *HtSock (httpStat 501 "Not Implemented")))
@@ -306,7 +306,7 @@
                   (if (_htSet Var (pack (stem L "/" "\\")))
                      (let F (tmp @)
                         (unless (out F (echo (pack "^M^J" *MPartLim)))
-                           (call "rm" "-f" F) ) )
+                           (%@ "unlink" NIL F) ) )
                      (out "/dev/null" (echo (pack "^M^J" *MPartLim))) )
                   (setq L (if (= "-" (car (line))) *MPartEnd *MPartLim)) ) ) ) ) ) )
 

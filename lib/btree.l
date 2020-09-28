@@ -165,7 +165,7 @@
             (in Z (while (rd) (zap @)))
             (if (info F)
                (call "mv" F Z)
-               (call "rm" Z) ) )
+               (%@ "unlink" NIL Z) ) )
          ((info F) (call "mv" F Z)) ) ) )
 
 # Tree node count
