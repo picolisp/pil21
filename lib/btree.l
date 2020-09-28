@@ -1,4 +1,4 @@
-# 21sep20 Software Lab. Alexander Burger
+# 28sep20 Software Lab. Alexander Burger
 
 # *Prune
 
@@ -306,88 +306,89 @@
                   (throw NIL (fin (car X))) ) ) ) ) ) )
 
 (private) (_scan _nacs _iter _reti)
+(private) (Tree Fun Beg End Flg Node R X V)
 
 # Scan tree nodes
-(de scan ("Tree" "Fun" "Beg" "End" "Flg")
-   (default "Fun" println)
-   (or "Beg" "End" (on "End"))
-   (let "Node" (cdr (root "Tree"))
-      ((if (>= "End" "Beg") _scan _nacs) "Node") ) )
+(de scan (Tree Fun Beg End Flg)
+   (default Fun println)
+   (or Beg End (on End))
+   (let Node (cdr (root Tree))
+      ((if (>= End Beg) _scan _nacs) Node) ) )
 
-(de _scan ("Node")
-   (let? "V" (val "Node")
-      (for "X"
-         (if (rank "Beg" (cdr "V"))
-            (let "R" @
-               (if (= "Beg" (car "R"))
-                  (memq "R" (cdr "V"))
-                  (_scan (cadr "R"))
-                  (cdr (memq "R" (cdr "V"))) ) )
-            (_scan (car "V"))
-            (cdr "V") )
-         (T (> (car "X") "End"))
-         (unless (and "Flg" (flg? (fin (car "X"))))
-            ("Fun"
-               (car "X")
-               (or (cddr "X") (fin (car "X"))) ) )
-         (_scan (cadr "X")) ) ) )
+(de _scan (Node)
+   (let? V (val Node)
+      (for X
+         (if (rank Beg (cdr V))
+            (let R @
+               (if (= Beg (car R))
+                  (memq R (cdr V))
+                  (_scan (cadr R))
+                  (cdr (memq R (cdr V))) ) )
+            (_scan (car V))
+            (cdr V) )
+         (T (> (car X) End))
+         (unless (and Flg (flg? (fin (car X))))
+            (Fun
+               (car X)
+               (or (cddr X) (fin (car X))) ) )
+         (_scan (cadr X)) ) ) )
 
-(de _nacs ("Node")
-   (let? "V" (revNode "Node")
-      (for "X"
-         (if (rank "Beg" (cdr "V") T)
-            (let "R" @
-               (if (= "Beg" (car "R"))
-                  (memq "R" (cdr "V"))
-                  (_nacs (cadr "R"))
-                  (cdr (memq "R" (cdr "V"))) ) )
-            (_nacs (car "V"))
-            (cdr "V") )
-         (T (> "End" (car "X")))
-         (unless (and "Flg" (flg? (fin (car "X"))))
-            ("Fun"
-               (car "X")
-               (or (cddr "X") (fin (car "X"))) ) )
-         (_nacs (cadr "X")) ) ) )
+(de _nacs (Node)
+   (let? V (revNode Node)
+      (for X
+         (if (rank Beg (cdr V) T)
+            (let R @
+               (if (= Beg (car R))
+                  (memq R (cdr V))
+                  (_nacs (cadr R))
+                  (cdr (memq R (cdr V))) ) )
+            (_nacs (car V))
+            (cdr V) )
+         (T (> End (car X)))
+         (unless (and Flg (flg? (fin (car X))))
+            (Fun
+               (car X)
+               (or (cddr X) (fin (car X))) ) )
+         (_nacs (cadr X)) ) ) )
 
 # Iterate tree values
-(de iter ("Tree" "Fun" "Beg" "End" "Flg")
-   (default "Fun" println)
-   (or "Beg" "End" (on "End"))
-   (let "Node" (cdr (root "Tree"))
-      ((if (>= "End" "Beg") _iter _reti) "Node") ) )
+(de iter (Tree Fun Beg End Flg)
+   (default Fun println)
+   (or Beg End (on End))
+   (let Node (cdr (root Tree))
+      ((if (>= End Beg) _iter _reti) Node) ) )
 
-(de _iter ("Node")
-   (let? "V" (val "Node")
-      (for "X"
-         (if (rank "Beg" (cdr "V"))
-            (let "R" @
-               (if (= "Beg" (car "R"))
-                  (memq "R" (cdr "V"))
-                  (_iter (cadr "R"))
-                  (cdr (memq "R" (cdr "V"))) ) )
-            (_iter (car "V"))
-            (cdr "V") )
-         (T (> (car "X") "End"))
-         (unless (and "Flg" (flg? (fin (car "X"))))
-            ("Fun" (or (cddr "X") (fin (car "X")))) )
-         (_iter (cadr "X")) ) ) )
+(de _iter (Node)
+   (let? V (val Node)
+      (for X
+         (if (rank Beg (cdr V))
+            (let R @
+               (if (= Beg (car R))
+                  (memq R (cdr V))
+                  (_iter (cadr R))
+                  (cdr (memq R (cdr V))) ) )
+            (_iter (car V))
+            (cdr V) )
+         (T (> (car X) End))
+         (unless (and Flg (flg? (fin (car X))))
+            (Fun (or (cddr X) (fin (car X)))) )
+         (_iter (cadr X)) ) ) )
 
-(de _reti ("Node")
-   (let? "V" (revNode "Node")
-      (for "X"
-         (if (rank "Beg" (cdr "V") T)
-            (let "R" @
-               (if (= "Beg" (car "R"))
-                  (memq "R" (cdr "V"))
-                  (_reti (cadr "R"))
-                  (cdr (memq "R" (cdr "V"))) ) )
-            (_reti (car "V"))
-            (cdr "V") )
-         (T (> "End" (car "X")))
-         (unless (and "Flg" (flg? (fin (car "X"))))
-            ("Fun" (or (cddr "X") (fin (car "X")))) )
-         (_reti (cadr "X")) ) ) )
+(de _reti (Node)
+   (let? V (revNode Node)
+      (for X
+         (if (rank Beg (cdr V) T)
+            (let R @
+               (if (= Beg (car R))
+                  (memq R (cdr V))
+                  (_reti (cadr R))
+                  (cdr (memq R (cdr V))) ) )
+            (_reti (car V))
+            (cdr V) )
+         (T (> End (car X)))
+         (unless (and Flg (flg? (fin (car X))))
+            (Fun (or (cddr X) (fin (car X)))) )
+         (_reti (cadr X)) ) ) )
 
 # UB-Trees
 (de ub>= (Dim End Val Beg)
@@ -402,65 +403,67 @@
                (& Pat Beg) ) )
          (setq Pat (>> 1 Pat)) ) ) )
 
-(de ubIter ("Tree" "Dim" "Fun" "X1" "X2")
+(private) (Tree Dim Fun X1 X2 Node Lst Left Beg End B E X Msb Pat N Min Max Lo Hi)
+
+(de ubIter (Tree Dim Fun X1 X2)
    (let
-      ("Node" (cdr (root "Tree"))
-         "Lst" (val "Node")
-         "Left" (++ "Lst")
-         "Beg" (ubZval (copy "X1"))
-         "End" (ubZval (copy "X2") T)
-         "B" (car "Beg")
-         "E" (car "End") )
-      (recur ("Left" "Lst" "Beg" "End"  "X")
-         (while (setq "X" (++ "Lst"))
+      (Node (cdr (root Tree))
+         Lst (val Node)
+         Left (++ Lst)
+         Beg (ubZval (copy X1))
+         End (ubZval (copy X2) T)
+         B (car Beg)
+         E (car End) )
+      (recur (Left Lst Beg End  X)
+         (while (setq X (++ Lst))
             (cond
-               ((> (car "X") "End")
-                  (setq "Lst" (; "Left" 0 -1)  "Left" (; "Left" 0 1)) )
-               ((> "Beg" (car "X"))
-                  (if "Lst"
-                     (setq "Left" (cadr "X"))
-                     (setq "Left" (; "X" 2 0 1)  "Lst" (; "X" 2 0 -1)) ) )
-               ((ub>= "Dim" "E" (caar "X") "B")
-                  ("Fun" (cdar "X"))
-                  (recurse (; "Left" 0 1) (; "Left" 0 -1) "Beg" (car "X"))
-                  (setq "Beg" (car "X"))
-                  (if "Lst"
-                     (setq "Left" (cadr "X"))
-                     (setq "Left" (; "X" 2 0 1)  "Lst" (; "X" 2 0 -1)) ) )
+               ((> (car X) End)
+                  (setq Lst (; Left 0 -1)  Left (; Left 0 1)) )
+               ((> Beg (car X))
+                  (if Lst
+                     (setq Left (cadr X))
+                     (setq Left (; X 2 0 1)  Lst (; X 2 0 -1)) ) )
+               ((ub>= Dim E (caar X) B)
+                  (Fun (cdar X))
+                  (recurse (; Left 0 1) (; Left 0 -1) Beg (car X))
+                  (setq Beg (car X))
+                  (if Lst
+                     (setq Left (cadr X))
+                     (setq Left (; X 2 0 1)  Lst (; X 2 0 -1)) ) )
                (T
-                  (let ("Msb" 1  "Pat" 0  "N" 0  "Min" "B"  "Max" "E"  "Lo" (caar "X")  "Hi" "Lo")
-                     (while (>= "Max" "Msb")
-                        (setq "Msb" (>> -1 "Msb")  "Pat" (>> -1 "Pat"))  # Msb 100000000
-                        (when (= "Dim" (inc '"N"))                       # Pat 000100100
-                           (inc '"Pat")
-                           (zero "N") ) )
+                  (let (Msb 1  Pat 0  N 0  Min B  Max E  Lo (caar X)  Hi Lo)
+                     (while (>= Max Msb)
+                        (setq Msb (>> -1 Msb)  Pat (>> -1 Pat))  # Msb 100000000
+                        (when (= Dim (inc 'N))                           # Pat 000100100
+                           (inc 'Pat)
+                           (zero N) ) )
                      (catch "ub"                                    # Clr 111..111011011
-                        (let (Top "Msb"   Clr (| Top (x| "Pat" (dec "Msb"))))
+                        (let (Top Msb   Clr (| Top (x| Pat (dec Msb))))
                            (loop
-                              (T (=0 (setq "Msb" (>> 1 "Msb"))))
+                              (T (=0 (setq Msb (>> 1 Msb))))
                               (setq
-                                 "Pat" (>> 1 "Pat")
+                                 Pat (>> 1 Pat)
                                  Clr (| Top (>> 1 Clr)) )
-                              (ifn (bit? "Msb" (caar "X"))
-                                 (when (bit? "Msb" "Max")
-                                    (ifn (bit? "Msb" "Min")  # 001
+                              (ifn (bit? Msb (caar X))
+                                 (when (bit? Msb Max)
+                                    (ifn (bit? Msb Min)  # 001
                                        (setq
-                                          "Max" (- (| "Pat" "Max") "Msb")  # 0111(Max)
-                                          "Lo" (| "Msb" (& "Min" Clr)) )   # 1000(Min)
-                                       (setq "Lo" "Min")     # 011
+                                          Max (- (| Pat Max) Msb)  # 0111(Max)
+                                          Lo (| Msb (& Min Clr)) )   # 1000(Min)
+                                       (setq Lo Min)     # 011
                                        (throw "ub") ) )
-                                 (unless (bit? "Msb" "Min")
-                                    (if (bit? "Msb" "Max")   # 101
+                                 (unless (bit? Msb Min)
+                                    (if (bit? Msb Max)   # 101
                                        (setq
-                                          "Hi" (- (| "Pat" "Max") "Msb")   # 0111(Max)
-                                          "Min" (| "Msb" (& "Min" Clr)) )  # 1000(Min)
-                                       (setq "Hi" "Max")     # 100
+                                          Hi (- (| Pat Max) Msb)   # 0111(Max)
+                                          Min (| Msb (& Min Clr)) )  # 1000(Min)
+                                       (setq Hi Max)     # 100
                                        (throw "ub") ) ) ) ) ) )
-                     (recurse (; "Left" 0 1) (; "Left" 0 -1) "Beg" (cons "Hi" T))
-                     (setq "Beg" (cons "Lo"))
-                     (if "Lst"
-                        (setq "Left" (cadr "X"))
-                        (setq "Left" (; "X" 2 0 1)  "Lst" (; "X" 2 0 -1)) ) ) ) ) ) ) ) )
+                     (recurse (; Left 0 1) (; Left 0 -1) Beg (cons Hi T))
+                     (setq Beg (cons Lo))
+                     (if Lst
+                        (setq Left (cadr X))
+                        (setq Left (; X 2 0 1)  Lst (; X 2 0 -1)) ) ) ) ) ) ) ) )
 
 (de prune (N)
    (for Node (idx '*Prune)
@@ -481,27 +484,29 @@
          (zapTree (cadr L)) )
       (zap Node) ) )
 
+(private) (Node Fun N L V X Y)
+
 # Check tree structure
-(de chkTree ("Node" "Fun")
-   (let ("N" 0  "X")
-      (when "Node"
-         (recur ("Node")
-            (let "V" (val "Node")
-               (let "L" (car "V")
-                  (for "Y" (cdr "V")
-                     (when "L"
-                        (unless (ext? "L")
-                           (quit "Bad node link" "Node") )
-                        (recurse "L") )
-                     (when (>= "X" (car "Y"))
-                        (quit "Bad sequence" "Node") )
-                     (setq "X" (car "Y"))
-                     (inc '"N")
+(de chkTree (Node Fun)
+   (let (N 0  X)
+      (when Node
+         (recur (Node)
+            (let V (val Node)
+               (let L (car V)
+                  (for Y (cdr V)
+                     (when L
+                        (unless (ext? L)
+                           (quit "Bad node link" Node) )
+                        (recurse L) )
+                     (when (>= X (car Y))
+                        (quit "Bad sequence" Node) )
+                     (setq X (car Y))
+                     (inc 'N)
                      (and
-                        "Fun"
-                        (not ("Fun" (car "Y") (cddr "Y")))
-                        (quit "Check fail" "Node") )
-                     (setq "L" (cadr "Y")) )
-                  (and "L" (recurse "L")) ) )
-            (wipe "Node") ) )
-      "N" ) )
+                        Fun
+                        (not (Fun (car Y) (cddr Y)))
+                        (quit "Check fail" Node) )
+                     (setq L (cadr Y)) )
+                  (and L (recurse L)) ) )
+            (wipe Node) ) )
+      N ) )
