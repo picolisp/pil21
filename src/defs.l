@@ -1,4 +1,4 @@
-# 16sep20 Software Lab. Alexander Burger
+# 28sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -38,7 +38,7 @@
 
 ## Sync src/lib.c 'gSignal' and src/glob.l '$Signal'
 (local) (SIGHUP SIGINT SIGUSR1 SIGUSR2 SIGPIPE SIGALRM SIGTERM SIGCHLD SIGCONT
-SIGSTOP SIGTSTP SIGTTIN SIGTTOU SIGIO)
+SIGSTOP SIGTSTP SIGTTIN SIGTTOU SIGWINCH SIGIO)
 
 (equ
    SIGHUP    1
@@ -54,7 +54,8 @@ SIGSTOP SIGTSTP SIGTTIN SIGTTOU SIGIO)
    SIGTSTP  11
    SIGTTIN  12
    SIGTTOU  13
-   SIGIO    14 )
+   SIGWINCH 14
+   SIGIO    15 )
 
 ## Sync src/lib.c 'gErrno'
 (local) (ENOENT EINTR EBADF EAGAIN EACCES EPIPE ECONNRESET)

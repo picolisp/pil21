@@ -1,4 +1,4 @@
-# 23sep20 Software Lab. Alexander Burger
+# 28sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -186,6 +186,10 @@
                      (rlSigBeg)
                      (brkLoad (if Exe @ $Nil))
                      (rlSigEnd) ) )
+               ((val (setq P (ofs $Signal SIGWINCH)))
+                  (set P (dec @))
+                  (set $Signal (dec (val $Signal)))
+                  (execAt (val $Winch)) )
                ((val (setq P (ofs $Signal SIGTSTP)))
                   (set P (dec @))
                   (set $Signal (dec (val $Signal)))
@@ -1729,6 +1733,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (iSignal (val SIGUSR2 Sig) (fun sig))
    (iSignal (val SIGALRM Sig) (fun sig))
    (iSignal (val SIGTERM Sig) (fun sig))
+   (iSignal (val SIGWINCH Sig) (fun sig))
    (iSignal (val SIGIO Sig) (fun sig))
    (when (== (signal (val SIGTSTP Sig) (val SigIgn)) (val SigDfl))
       (iSignal (val SIGTSTP Sig) (fun sig)) )

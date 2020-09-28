@@ -1,4 +1,4 @@
-# 23sep20 Software Lab. Alexander Burger
+# 28sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -67,7 +67,7 @@
 (var $DbLog i8* null)                  # Transaction log file
 
 # Signals
-(array $Signal i32  # Sync src/lib.c 'gErrno'
+(array $Signal i32  # Sync src/lib.c 'gSignal'
    0    # Count
    0    # SIGHUP
    0    # SIGINT
@@ -82,6 +82,7 @@
    0    # SIGTSTP
    0    # SIGTTIN
    0    # SIGTTOU
+   0    # SIGWINCH
    0 )  # SIGIO
 
 # Symbol Table
@@ -128,6 +129,7 @@
    ($Hup "*Hup" $Nil)
    ($Sig1 "*Sig1" $Nil)
    ($Sig2 "*Sig2" $Nil)
+   ($Winch "*Winch" $Nil)
    ($TStp1 "*TStp1" $Nil)
    ($TStp2 "*TStp2" $Nil)
    ($Up "\^" $Nil)

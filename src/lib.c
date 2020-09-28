@@ -1,4 +1,4 @@
-// 21sep20 Software Lab. Alexander Burger
+// 28sep20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -142,7 +142,7 @@ char *currentLine() {
 // Signals
 const int32_t Sig[] = {
    SIGHUP, SIGINT, SIGUSR1, SIGUSR2, SIGPIPE, SIGALRM, SIGTERM, SIGCHLD,
-   SIGCONT, SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU, SIGIO
+   SIGCONT, SIGSTOP, SIGTSTP, SIGTTIN, SIGTTOU, SIGWINCH, SIGIO
 };
 
 const sighandler_t SigDfl = SIG_DFL;
@@ -151,20 +151,21 @@ const sighandler_t SigIgn = SIG_IGN;
 // Sync src/defs.l 'SIGHUP' and src/glob.l '$Signal'
 int32_t gSignal(int32_t n) {
    switch (n) {
-   case SIGHUP:  return 1;
-   case SIGINT:  return 2;
-   case SIGUSR1: return 3;
-   case SIGUSR2: return 4;
-   case SIGPIPE: return 5;
-   case SIGALRM: return 6;
-   case SIGTERM: return 7;
-   case SIGCHLD: return 8;
-   case SIGCONT: return 9;
-   case SIGSTOP: return 10;
-   case SIGTSTP: return 11;
-   case SIGTTIN: return 12;
-   case SIGTTOU: return 13;
-   case SIGIO:   return 14;
+   case SIGHUP:   return 1;
+   case SIGINT:   return 2;
+   case SIGUSR1:  return 3;
+   case SIGUSR2:  return 4;
+   case SIGPIPE:  return 5;
+   case SIGALRM:  return 6;
+   case SIGTERM:  return 7;
+   case SIGCHLD:  return 8;
+   case SIGCONT:  return 9;
+   case SIGSTOP:  return 10;
+   case SIGTSTP:  return 11;
+   case SIGTTIN:  return 12;
+   case SIGTTOU:  return 13;
+   case SIGWINCH: return 14;
+   case SIGIO:    return 15;
    }
    return 0;
 }

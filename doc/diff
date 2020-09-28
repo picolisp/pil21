@@ -1,4 +1,4 @@
-# 23sep20 Software Lab. Alexander Burger
+# 28sep20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -28,6 +28,7 @@
 + 'buf' function
 + More checks for protected symbols
 + Lists of symbols as function parameters (destructuring, one-dimensional)
+* '*Winch' global SIGWINCH handler
 
 - '====' is not supported
 - 'lines' is not supported
