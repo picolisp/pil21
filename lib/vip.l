@@ -1,4 +1,4 @@
-# 28sep20 Software Lab. Alexander Burger
+# 29sep20 Software Lab. Alexander Burger
 # https://picolisp.com/wiki/?vip
 
 (symbols 'vip 'pico)
@@ -14,8 +14,8 @@
    (use L
       (%@ "ioctl" NIL 1 TIOCGWINSZ '(L (`winsize W W)))
       (setq
-         *Columns (car L)
-         *Lines (cadr L) ) ) )
+         *Lines (car L)
+         *Columns (cadr L) ) ) )
 
 ### ANSI Terminal ###
 (local) (xterm ULINE U-OFF REVERS CYAN RED *AttrA *AttrU attr cup clreol hideCsr
@@ -1297,7 +1297,10 @@ shell shFile prCmd reset command vi)
       (fileBuffer (tmp "empty")) )
    (finally (screen1)
       (screen2)
-      (let (*TStp1 '((screen1))  *TStp2 '((screen2) (repaint) (cursor) (flush)))
+      (let
+         (*Winch '((setTermSize) (eqwin))
+            *TStp1 '((screen1))
+            *TStp2 '((screen2) (repaint) (cursor) (flush)) )
          (reset)
          (setq *CmdWin
             (new '(+Window) (new '(+Buffer)) (dec *Lines) 1 1 1 1 1) )
