@@ -1298,7 +1298,7 @@ shell shFile prCmd reset command vi)
    (finally (screen1)
       (screen2)
       (let
-         (*Winch '((setTermSize) (eqwin))
+         (*Winch '((setTermSize) (eqwin) (flush))
             *TStp1 '((screen1))
             *TStp2 '((screen2) (repaint) (cursor) (flush)) )
          (reset)
