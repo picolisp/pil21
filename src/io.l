@@ -1,4 +1,4 @@
-# 27sep20 Software Lab. Alexander Burger
+# 29sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1136,7 +1136,7 @@
       (set $Chr
          (cond
             ((=0 (In:)) -1)  # EOF
-            ((In: fd)  # Not stdin
+            ((or (In: fd) (=0 (isatty 0)))  # Not stdin
                (if
                   (and
                      (== (In: ix) (In: cnt))
@@ -1148,7 +1148,6 @@
                         (when (== @ (char "\n"))
                            (In: line (+ (In: line) 1)) )
                         (In: ix (+ I 1)) ) ) ) )
-            ((=0 (isatty 0)) (bye 0))
             (T
                (let P (val $LinePtr)
                   (unless P

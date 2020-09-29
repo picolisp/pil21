@@ -1,4 +1,4 @@
-# 28sep20 Software Lab. Alexander Burger
+# 29sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -982,22 +982,21 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          ((cnt? X)
             (set $TtyPid (i32 (int @)))
             $T )
-         ((not (sym? X)) (argErr Exe X))
          ((nil? X) $T)
          (T
-            (let
-               (Nm (xName Exe X)
-                  In: (inFile (val (val $InFiles)))  # Stdin
-                  Out: (outFile (val 2 (val $OutFiles))) )  # Stdout
-               (ifn (reopenTty (bufString Nm (b8 (bufSize Nm))))
-                  $Nil
-                  (In: ix (In: cnt 0))
-                  (In: next 0)
-                  (set Tio (=0 (tcgetattr 0 OrgTermio)))  # Save terminal I/O
-                  (Out: ix 0)
-                  (Out: tty YES)
-                  ((outFile (val 3 (val $OutFiles))) tty YES)  # Stderr
-                  $T ) ) ) ) ) )
+            (let Nm (xName Exe (xSym X))
+               (if (reopenTty (bufString Nm (b8 (bufSize Nm))))
+                  (let
+                     (In: (inFile (val (val $InFiles)))  # Stdin
+                        Out: (outFile (val 2 (val $OutFiles))) )  # Stdout
+                     (In: ix (In: cnt 0))
+                     (In: next 0)
+                     (set Tio (=0 (tcgetattr 0 OrgTermio)))  # Save terminal I/O
+                     (Out: ix 0)
+                     (Out: tty YES)
+                     ((outFile (val 3 (val $OutFiles))) tty YES)  # Stderr
+                     $T )
+                  $Nil ) ) ) ) ) )
 
 # (cmd ['any]) -> sym
 (de _cmd (Exe)
