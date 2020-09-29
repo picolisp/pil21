@@ -1595,7 +1595,7 @@ declare i32 @nErrno()
 declare i32 @gErrno()
 @Tio = external global i1
 @OrgTermio = external global i8
-@Termio = global i8* null
+@Termio = external global i8*
 declare void @stopTerm()
 declare void @setRaw()
 declare void @setCooked()

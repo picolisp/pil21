@@ -1,4 +1,4 @@
-# 27sep20 Software Lab. Alexander Burger
+# 29sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -211,7 +211,7 @@ truncate0 socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 
 (var Tio i1 NIL)
 (var OrgTermio i8 NIL)
-(var Termio i8* null)
+(var Termio i8* NIL)
 
 (de T void stopTerm ())
 (de T void setRaw ())

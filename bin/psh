@@ -1,0 +1,15 @@
+#!bin/picolisp lib.l
+# 29sep20 Software Lab. Alexander Burger
+
+(load "@lib/net.l" "@lib/misc.l" "@lib/http.l")
+
+(let Arg (opt)
+   (client "localhost"
+      (or
+         (format Arg)
+         (client "localhost" 80 (pack Arg "/!psh") (read)) )
+      (pack (opt) "!psh?" (pw) "&" (in '("tty") (line T)))
+      (ctty (read))
+      (line)
+      (line) ) )
+(bye)
