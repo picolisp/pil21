@@ -1,4 +1,4 @@
-# 28sep20 Software Lab. Alexander Burger
+# 30sep20 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -68,14 +68,17 @@
 # Local Password
 (de pw (N)
    (if N
-      (out ".pw" (prinl (in "/dev/urandom" (rd N))))
-      (in ".pw" (line T)) ) )
+      (out (pil ".pw")
+         (prinl (in "/dev/urandom" (rd N))) )
+      (in (pil ".pw")
+         (line T) ) ) )
 
 # PicoLisp Shell
 (de psh (Pw Tty)
-   (nond
-      (Pw (println *Port) (bye))
-      ((nand (= Pw (pw)) (ctty Tty))
+   (cond
+      ((not Pw) (println *Port) (bye))
+      ((<> Pw (pw)) (quit "Bad pw"))
+      ((ctty Tty)
          (or *SesId (off *Run))
          (println *Pid)
          (load (if *Dbg "@lib/too.l" "@dbg.l"))
