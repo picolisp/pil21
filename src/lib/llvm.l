@@ -10,25 +10,16 @@ struct $Nil $T $Link drop)
 
 (import pico llvm symbols local T NIL load use setq prog */ ** >> char hex)
 
-(def 'void 'void)
-(def 'null 'null)
-
-(def 'NO (def "0" 'i1))  # Booleans
-(def 'YES (def "1" 'i1))
-(def 'ZERO (def "2" 'any))  # Short number '0'
-(def '-ZERO (def "10" 'any))  # Placeholder '-0'
-(def 'ONE (def "18" 'any))  # Short number '1'
-
 
 ### Cross-compiler private ###
 (symbols 'cross 'llvm 'pico)
 
-(local) (*Shared *Strings *Map *Map2 *Ssa *Lbl *Log *Curr *Exit *Bind *Phi *Call
-*Ret putMap log asm ssa phi +phi br label +lbl +bind type func ptr pointee store
-A B C I L M N P Q V X Y Exe Prg Typ Sym Ret Args Ext Table Body Var Val Lst Lbl
-Flg Skip True False Beg End Safe *Safe)
-
 (import any inc dec ++ #{shift}#)
+
+(local) (*Map *Map2 putMap *Shared *Strings *Ssa *Lbl *Log *Curr *Exit *Bind
+*Phi *Call *Ret log asm ssa phi +phi br label +lbl +bind type func ptr pointee
+store A B C I L M N P Q V X Y Exe Prg Typ Sym Ret Args Ext Table Body Var Val
+Lst Lbl Flg Skip True False Beg End Safe *Safe)
 
 (off *Map *Map2)
 
@@ -37,6 +28,30 @@ Flg Skip True False Beg End Safe *Safe)
 
 (de *Call . "call")
 
+(de putMap (Sym N)
+   (let F (file)
+      (idx '*Map
+         (def (name Sym)
+            (cons
+               (+ (cddr F) (or N 0))
+               (pack (car F) (cadr F)) ) )
+         T ) )
+   Sym )
+
+(local) de
+
+(pico~de de Prg
+   (def (putMap (car Prg)) (cdr Prg)) )
+
+# Constant primitives
+(de void . void)
+(de null . null)
+
+(de NO . `(def "0" 'i1))  # Booleans
+(de YES . `(def "1" 'i1))
+(de ZERO . `(def "2" 'any))  # Short number '0'
+(de -ZERO . `(def "10" 'any))  # Placeholder '-0'
+(de ONE . `(def "18" 'any))  # Short number '1'
 
 # Generate LLVM-IR
 (de begin (Name Flg . pico~@)
@@ -67,16 +82,6 @@ Flg Skip True False Beg End Safe *Safe)
          (for Sym (idx '*Map2)
             (let X (val (car (idx '*Map (val Sym))))
                (prinl "pico~" Sym " (" (car X) " \"@src/" (cdr X) "\" llvm pico)") ) ) ) ) )
-
-(de putMap (Sym N)
-   (let F (file)
-      (idx '*Map
-         (def (name Sym)
-            (cons
-               (+ (cddr F) (or N 0))
-               (pack (car F) (cadr F)) ) )
-         T ) )
-   Sym )
 
 (de log ()
    (when *Log
@@ -1415,7 +1420,7 @@ Flg Skip True False Beg End Safe *Safe)
 
 (local) (link drop pop save save2 safe)
 
-(pico~de link (P Top)
+(cross~de link (P Top)
    (log)
    (pico~let *Log NIL
       (pico~when (pico~== 'i64* (pico~val P))
@@ -1425,7 +1430,7 @@ Flg Skip True False Beg End Safe *Safe)
       (set 2 P (val $Link))
       (set $Link P) ) )
 
-(pico~de drop (P . Prg)
+(cross~de drop (P . Prg)
    (log)
    (pico~let *Log NIL
       (pico~when (pico~== 'i64* (pico~val P))
@@ -1437,14 +1442,14 @@ Flg Skip True False Beg End Safe *Safe)
             (set $Link (cdr P)) )
          (set $Link (cdr P)) ) ) )
 
-(pico~de pop (P)
+(cross~de pop (P)
    (log)
    (pico~let *Log NIL
       (prog1
          (val P)
          (set $Link (cdr P)) ) ) )
 
-(pico~de save (X . Prg)
+(cross~de save (X . Prg)
    (log)
    (pico~let (*Log NIL  Safe *Safe  P (push X NIL))
       (default *Safe P)
@@ -1459,7 +1464,7 @@ Flg Skip True False Beg End Safe *Safe)
                (setq *Safe Safe) ) )
          X ) ) )
 
-(pico~de save2 (X Y . Prg)
+(cross~de save2 (X Y . Prg)
    (log)
    (pico~let (*Log NIL  Safe *Safe  P (push X NIL))
       (default *Safe P)
@@ -1474,7 +1479,7 @@ Flg Skip True False Beg End Safe *Safe)
                (setq *Safe Safe) ) )
          Y ) ) )
 
-(pico~de safe (V)
+(cross~de safe (V)
    (log)
    (pico~let *Log NIL
       (store V *Safe) ) )
