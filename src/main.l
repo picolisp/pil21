@@ -1,4 +1,4 @@
-# 29sep20 Software Lab. Alexander Burger
+# 30sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1065,9 +1065,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (cons
                   (mkStrE S (inc 'P))
                   (cons (mkStr P) N) )
-               (cons
-                  (consSym (hex "2F2E2") 0)  # "./"
-                  (cons (mkStr S) N) ) ) ) ) ) )
+               (cons $Nil (cons (mkStr S) N)) ) ) ) ) )
 
 # (argv [var ..] [. sym]) -> lst|sym
 (de _argv (Exe)

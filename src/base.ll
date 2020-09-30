@@ -99482,7 +99482,7 @@ $5:
   %16 = load i8*, i8** %15
 ; # (strrchr S (char "/"))
   %17 = call i8* @strrchr(i8* %16, i32 47)
-; # (if P (cons (mkStrE S (inc 'P)) (cons (mkStr P) N)) (cons (consSy...
+; # (if P (cons (mkStrE S (inc 'P)) (cons (mkStr P) N)) (cons $Nil (c...
   %18 = icmp ne i8* %17, null
   br i1 %18, label %$7, label %$8
 $7:
@@ -99500,22 +99500,20 @@ $7:
   br label %$9
 $8:
   %25 = phi i8* [%17, %$5] ; # P
-; # (consSym (hex "2F2E2") 0)
-  %26 = call i64 @consSym(i64 193250, i64 0)
 ; # (mkStr S)
-  %27 = call i64 @mkStr(i8* %16)
+  %26 = call i64 @mkStr(i8* %16)
 ; # (cons (mkStr S) N)
-  %28 = call i64 @cons(i64 %27, i64 %13)
-; # (cons (consSym (hex "2F2E2") 0) (cons (mkStr S) N))
-  %29 = call i64 @cons(i64 %26, i64 %28)
+  %27 = call i64 @cons(i64 %26, i64 %13)
+; # (cons $Nil (cons (mkStr S) N))
+  %28 = call i64 @cons(i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), i64 %27)
   br label %$9
 $9:
-  %30 = phi i8* [%20, %$7], [%25, %$8] ; # P
-  %31 = phi i64 [%24, %$7], [%29, %$8] ; # ->
+  %29 = phi i8* [%20, %$7], [%25, %$8] ; # P
+  %30 = phi i64 [%24, %$7], [%28, %$8] ; # ->
   br label %$6
 $6:
-  %32 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), %$4], [%31, %$9] ; # ->
-  ret i64 %32
+  %31 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), %$4], [%30, %$9] ; # ->
+  ret i64 %31
 }
 
 define i64 @_argv(i64) {

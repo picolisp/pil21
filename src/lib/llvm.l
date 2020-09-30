@@ -1,7 +1,7 @@
 # 30sep20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
-(symbols 'llvm 'pico)
+(zap 'llvm) (symbols 'llvm 'pico)
 
 (local) (@ @@ @@@ cross void null i1 i1* i1** i8 i8* i8** i8*** i16 i16* i16**
 i32 i32* i32** i64 i64* i64** any YES NO ZERO -ZERO ONE SymTab begin end $ ?
@@ -30,6 +30,8 @@ Flg Skip True False Beg End Safe *Safe)
 
 (import any inc dec ++ #{shift}#)
 
+(off *Map *Map2)
+
 (de *Err
    (and *Dbg (symbols '(cross llvm pico))) )
 
@@ -38,7 +40,7 @@ Flg Skip True False Beg End Safe *Safe)
 
 # Generate LLVM-IR
 (de begin (Name Flg . pico~@)
-   (off *Strings *Map *Map2)
+   (off *Strings)
    (prinl "source_filename = \"" Name ".l\"")
    (prinl)
    (prinl "declare {i64, i1} @llvm.uadd.with.overflow.i64(i64, i64)")
@@ -72,7 +74,7 @@ Flg Skip True False Beg End Safe *Safe)
          (def (name Sym)
             (cons
                (+ (cddr F) (or N 0))
-               (cadr F) ) )
+               (pack (car F) (cadr F)) ) )
          T ) )
    Sym )
 
@@ -84,7 +86,7 @@ Flg Skip True False Beg End Safe *Safe)
 
 (de asm Lst
    (for L (cddr Lst)
-      (def (car L)
+      (def (putMap (car L))
          (bind (car Lst)
             (mapc set (car Lst) (cdr L))
             (cons (caadr Lst)
