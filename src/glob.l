@@ -1,4 +1,4 @@
-# 28sep20 Software Lab. Alexander Burger
+# 30sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -104,8 +104,7 @@
    ($DB "*DB" 0)              # Database root constant
    ($Meth "meth" __meth)
    ($Quote "quote" _quote)
-   ## Sync src/pico.h 'T' (17*2+1)
-   ($T "T" $T)
+   ($T "T" $T)  ### Sync src/pico.h 'T' (17*2+1) ###
    ($N "N" $Nil)
    ($C "C" $Nil)
    ($S "S" $Nil)

@@ -68,9 +68,9 @@
 # Local Password
 (de pw (N)
    (if N
-      (out (pil ".pw")
+      (out (pil "pw")
          (prinl (in "/dev/urandom" (rd N))) )
-      (in (pil ".pw")
+      (in (pil "pw")
          (line T) ) ) )
 
 # PicoLisp Shell

@@ -1,4 +1,4 @@
-# 23sep20 Software Lab. Alexander Burger
+# 30sep20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (symbols 'llvm 'pico)
@@ -23,10 +23,10 @@ struct $Nil $T $Link drop)
 ### Cross-compiler private ###
 (symbols 'cross 'llvm 'pico)
 
-(local) (*Shared *Strings *Map *Ssa *Lbl *Log *Curr *Exit *Bind *Phi *Call *Ret
-putMap log asm ssa phi +phi br label +lbl +bind type func ptr pointee store A B
-C I L M N P Q V X Y Exe Prg Typ Sym Ret Args Ext Table Body Var Val Lst Lbl Flg
-Skip True False Beg End Safe *Safe)
+(local) (*Shared *Strings *Map *Map2 *Ssa *Lbl *Log *Curr *Exit *Bind *Phi *Call
+*Ret putMap log asm ssa phi +phi br label +lbl +bind type func ptr pointee store
+A B C I L M N P Q V X Y Exe Prg Typ Sym Ret Args Ext Table Body Var Val Lst Lbl
+Flg Skip True False Beg End Safe *Safe)
 
 (import any inc dec ++ #{shift}#)
 
@@ -38,7 +38,7 @@ Skip True False Beg End Safe *Safe)
 
 # Generate LLVM-IR
 (de begin (Name Flg . pico~@)
-   (off *Strings *Map)
+   (off *Strings *Map *Map2)
    (prinl "source_filename = \"" Name ".l\"")
    (prinl)
    (prinl "declare {i64, i1} @llvm.uadd.with.overflow.i64(i64, i64)")
@@ -60,18 +60,20 @@ Skip True False Beg End Safe *Safe)
    (when Map
       (out Map
          (for Sym (idx '*Map)
-            (let? X
-               (or
-                  (pair (val Sym))
-                  (val (car (idx '*Map (val Sym)))) )
-               (prinl
-                  Sym
-                  " (" (cddr X) " . \"@src/" (cadr X) "\")" ) ) ) ) ) )
+            (let X (val Sym)
+               (prinl "llvm~" Sym " (" (car X) " \"@src/" (cdr X) "\" llvm pico)") ) )
+         (for Sym (idx '*Map2)
+            (let X (val (car (idx '*Map (val Sym))))
+               (prinl "pico~" Sym " (" (car X) " \"@src/" (cdr X) "\" llvm pico)") ) ) ) ) )
 
-(de putMap (Sym X)
-   (idx '*Map
-      (def (name Sym) (or X (file)))
-      T )
+(de putMap (Sym N)
+   (let F (file)
+      (idx '*Map
+         (def (name Sym)
+            (cons
+               (+ (cddr F) (or N 0))
+               (cadr F) ) )
+         T ) )
    Sym )
 
 (de log ()
@@ -370,7 +372,7 @@ Skip True False Beg End Safe *Safe)
       (for (I . Lst) Args
          (let Typ (if (caddr Lst) (cadr Lst) 'any)
             (let? Sym (car Lst)
-               (put Sym 'table Table)
+               (put (putMap Sym I) 'table Table)
                (put Sym 'offset (* 8 (dec I)))
                (def Sym
                   (def
@@ -412,9 +414,9 @@ Skip True False Beg End Safe *Safe)
       (prinl
          "@" Table " = " (when *Shared "external ")
          "global [" (; Table length) " x i64]" (unless *Shared " [") )
-      (for Lst Args
+      (for (J . Lst) Args
          (let? Sym (car Lst)
-            (put Sym 'table Table)
+            (put (putMap Sym J) 'table Table)
             (put Sym 'offset (+ I (or (cadddr Lst) 8)))
             (def Sym
                (def
@@ -461,7 +463,7 @@ Skip True False Beg End Safe *Safe)
                (and
                   (cadr Lst)
                   (pre? "_" (caddr Lst))
-                  (putMap (cadr Lst) (caddr Lst)) )
+                  (idx '*Map2 (def (cadr Lst) (caddr Lst)) T) )
                (when (cdr Name)  # Long name
                   (prinl ",")
                   (inc 'I 16)

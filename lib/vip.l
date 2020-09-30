@@ -1,4 +1,4 @@
-# 29sep20 Software Lab. Alexander Burger
+# 30sep20 Software Lab. Alexander Burger
 # https://picolisp.com/wiki/?vip
 
 (symbols 'vip 'pico)
@@ -1495,19 +1495,20 @@ shell shFile prCmd reset command vi)
                               (let S (any (pack (getWord T)))
                                  (cond
                                     ((: buffer syms)
-                                       (push '*TagStack (: posY) @)
+                                       (push '*TagStack (: posY) @ (symbols))
                                        (syms> (: buffer) (cons S @))
                                        (reload (: buffer file) 1) )
                                     ((get S '*Dbg 1)
-                                       (push '*TagStack (: posY) (: buffer file))
-                                       (reload (cdr @) (car @)) )
+                                       (push '*TagStack (: posY) (: buffer file) (symbols))
+                                       (apply symbols (cddr @))
+                                       (reload (cadr @) (car @)) )
                                     (T (beep)) ) ) )
                            (("Q" "^T")  # Pop tag stack
-                              (nond
-                                 (*TagStack (beep))
-                                 ((pair (car *TagStack))
-                                    (reload (++ *TagStack) (++ *TagStack)) )
-                                 (NIL
+                              (ifn *TagStack
+                                 (beep)
+                                 (symbols (++ *TagStack))
+                                 (if (atom (car *TagStack))
+                                    (reload (++ *TagStack) (++ *TagStack))
                                     (syms> (: buffer) (++ *TagStack))
                                     (reload (: buffer file) (++ *TagStack)) ) ) )
                            (("^[OP" "^[[[A")  # [F1] Highlight on/off
@@ -1585,8 +1586,12 @@ shell shFile prCmd reset command vi)
          (list
             (cond
                ((pair "X") @)
-               (C (get C '*Dbg -1 "X"))
-               (T (or (get "X" '*Dbg 1) "X")) ) ) )
+               ((if C
+                     (get @ '*Dbg -1 "X")
+                     (get "X" '*Dbg 1) )
+                  (apply symbols (cddr @))
+                  (cons (car @) (cadr @)) )
+               (T "X") ) ) )
       "X" ) )
 
 (de pico~v Lst

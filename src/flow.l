@@ -1,4 +1,4 @@
-# 28sep20 Software Lab. Alexander Burger
+# 30sep20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -29,7 +29,7 @@
                   Src
                   (cons
                      (cnt (i64 (In: src)))
-                     (mkStr (In: name)) ) )
+                     (cons (mkStr (In: name)) (val $Intern)) ) )
                (cond
                   ((=0 Key)
                      (if (nil? Dbg)

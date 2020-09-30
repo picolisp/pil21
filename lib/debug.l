@@ -1,4 +1,4 @@
-# 21sep20 Software Lab. Alexander Burger
+# 30sep20 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -397,6 +397,7 @@
 
 # Source code
 (in "@lib/map"
+   (symbols 'llvm 'pico)
    (while (read)
       (let Sym @
          (if (get Sym '*Dbg)
