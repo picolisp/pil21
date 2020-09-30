@@ -1,7 +1,8 @@
 #!/usr/bin/picolisp /usr/lib/picolisp/lib.l
-# 17sep20abu
+# 30sep20abu
 
-(load "@lib/misc.l" "@lib/vip.l")
+(unless *Dbg
+   (load "@lib/vip.l") )
 
 (bye
    (if

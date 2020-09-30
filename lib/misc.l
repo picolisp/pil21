@@ -1,10 +1,9 @@
-# 17sep20 Software Lab. Alexander Burger
+# 30sep20 Software Lab. Alexander Burger
 
 # *Allow
 
 (de *Day . (Mon Tue Wed Thu Fri Sat Sun .))
 (de *Mon . (Jan Feb Mar Apr May Jun Jul Aug Sep Oct Nov Dec .))
-(de *mon . (jan feb mar apr may jun jul aug sep oct nov dec .))
 
 ### Locale ###
 (de *Ctry)
@@ -82,9 +81,6 @@
                (and Lst (link "\n")) ) ) ) ) )
 
 ### Number ###
-(de pad (N Val)
-   (pack (need N (chop Val) "0")) )
-
 (de money (N Cur)
    (if Cur
       (pack (format N 2 *Sep0 *Sep3) " " Cur)
@@ -255,10 +251,6 @@
 
 ### Date ###
 # ISO date
-(de dat$ (Dat C)
-   (when (date Dat)
-      (pack (car @) C (pad 2 (cadr @)) C (pad 2 (caddr @))) ) )
-
 (de $dat (S C)
    (if C
       (and
@@ -274,13 +266,6 @@
             (/ @ 10000)       # Year
             (% (/ @ 100) 100) # Month
             (% @ 100) ) ) ) )
-
-(de datSym (Dat)
-   (when (date Dat)
-      (pack
-         (pad 2 (caddr @))
-         (get *mon (cadr @))
-         (pad 2 (% (car @) 100)) ) ) )
 
 # Localized
 (de datStr (D F)
@@ -363,13 +348,6 @@
          (date Y (inc M) 1) ) ) )
 
 ### Time ###
-(de tim$ (Tim F)
-   (when Tim
-      (setq Tim (time Tim))
-      (pack (pad 2 (car Tim)) ":" (pad 2 (cadr Tim))
-         (and F ":")
-         (and F (pad 2 (caddr Tim))) ) ) )
-
 (de $tim (S)
    (setq S (split (chop S) ":"))
    (unless (or (cdr S) (>= 2 (length (car S))))

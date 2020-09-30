@@ -1,4 +1,4 @@
-# 23sep20 Software Lab. Alexander Burger
+# 30sep20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -217,6 +217,10 @@
       (call "mkdir" "-p" (setq *Tmp (pil "tmp/" *Pid "/"))) )
    (pass pack *Tmp) )
 
+### Number ###
+(de pad (N Val)
+   (pack (need N (chop Val) "0")) )
+
 ### List ###
 (de uniq (Lst)
    (let R NIL
@@ -254,6 +258,26 @@
       (unless (== Sym (intern Sym T))
          (quit "Import conflict" Sym) ) )
    Lst )
+
+### Date/Time ###
+(de *mon . (jan feb mar apr may jun jul aug sep oct nov dec .))
+
+(de dat$ (Dat C)
+   (when (date Dat)
+      (pack (car @) C (pad 2 (cadr @)) C (pad 2 (caddr @))) ) )
+
+(de tim$ (Tim F)
+   (when (setq Tim (time Tim))
+      (pack (pad 2 (car Tim)) ":" (pad 2 (cadr Tim))
+         (and F ":")
+         (and F (pad 2 (caddr Tim))) ) ) )
+
+(de datSym (Dat)
+   (when (date Dat)
+      (pack
+         (pad 2 (caddr @))
+         (get *mon (cadr @))
+         (pad 2 (% (car @) 100)) ) ) )
 
 ### OOP ###
 (de class Lst
