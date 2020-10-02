@@ -1613,8 +1613,8 @@ declare void @pollIgn(i64*)
 declare i32 @gPoll(i64*, i64, i64)
 declare i1 @readyIn(i64*)
 declare i1 @readyOut(i64*)
-declare i32 @rdLock(i32, i64, i64)
-declare i32 @wrLock(i32, i64, i64, i32)
+declare i32 @rdLock(i32, i64, i64, i1)
+declare i32 @wrLock(i32, i64, i64, i1)
 declare i32 @unLock(i32, i64, i64)
 declare i32 @getLock(i32, i64, i64)
 @JmpBufSize = external global i64
@@ -35473,6 +35473,60 @@ $3:
   ret void
 }
 
+define void @rdLockWait(i32, i64) {
+$1:
+; # (while (lt0 (rdLock Fd 0 Len YES)) (unless (== (gErrno) EINTR) (l...
+  br label %$2
+$2:
+; # (rdLock Fd 0 Len YES)
+  %2 = call i32 @rdLock(i32 %0, i64 0, i64 %1, i1 1)
+; # (lt0 (rdLock Fd 0 Len YES))
+  %3 = icmp slt i32 %2, 0
+  br i1 %3, label %$3, label %$4
+$3:
+; # (unless (== (gErrno) EINTR) (lockErr))
+; # (gErrno)
+  %4 = call i32 @gErrno()
+; # (== (gErrno) EINTR)
+  %5 = icmp eq i32 %4, 2
+  br i1 %5, label %$6, label %$5
+$5:
+; # (lockErr)
+  call void @lockErr()
+  unreachable
+$6:
+  br label %$2
+$4:
+  ret void
+}
+
+define void @wrLockWait(i32, i64) {
+$1:
+; # (while (lt0 (wrLock Fd 0 Len YES)) (unless (== (gErrno) EINTR) (l...
+  br label %$2
+$2:
+; # (wrLock Fd 0 Len YES)
+  %2 = call i32 @wrLock(i32 %0, i64 0, i64 %1, i1 1)
+; # (lt0 (wrLock Fd 0 Len YES))
+  %3 = icmp slt i32 %2, 0
+  br i1 %3, label %$3, label %$4
+$3:
+; # (unless (== (gErrno) EINTR) (lockErr))
+; # (gErrno)
+  %4 = call i32 @gErrno()
+; # (== (gErrno) EINTR)
+  %5 = icmp eq i32 %4, 2
+  br i1 %5, label %$6, label %$5
+$5:
+; # (lockErr)
+  call void @lockErr()
+  unreachable
+$6:
+  br label %$2
+$4:
+  ret void
+}
+
 define i8* @initInFile(i32, i8*) {
 $1:
 ; # (let I (val $InFDs) (when (>= Fd I) (let P (set $InFiles (i8** (a...
@@ -42296,7 +42350,7 @@ $6:
 define void @ctOpen(i64, i64, i8*) {
 $1:
 ; # (let Io: (ioFrame P) (cond ((nil? (needSymb Exe X)) (Io: fd -1) (...
-; # (cond ((nil? (needSymb Exe X)) (Io: fd -1) (rdLock (currFd Exe) 0...
+; # (cond ((nil? (needSymb Exe X)) (Io: fd -1) (rdLockWait (currFd Ex...
 ; # (needSymb Exe X)
   %3 = xor i64 %1, 8
   %4 = and i64 %3, 14
@@ -42316,103 +42370,102 @@ $6:
   store i32 -1, i32* %8
 ; # (currFd Exe)
   %9 = call i32 @currFd(i64 %0)
-; # (rdLock (currFd Exe) 0 0 YES)
-  %10 = call i32 @rdLock(i32 %9, i64 0, i64 0)
+; # (rdLockWait (currFd Exe) 0)
+  call void @rdLockWait(i32 %9, i64 0)
   br label %$2
 $5:
 ; # (t? X)
-  %11 = icmp eq i64 %1, ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 280) to i64)
-  br i1 %11, label %$8, label %$7
+  %10 = icmp eq i64 %1, ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 280) to i64)
+  br i1 %10, label %$8, label %$7
 $8:
 ; # (Io: fd -1)
-  %12 = getelementptr i8, i8* %2, i32 8
-  %13 = bitcast i8* %12 to i32*
-  store i32 -1, i32* %13
+  %11 = getelementptr i8, i8* %2, i32 8
+  %12 = bitcast i8* %11 to i32*
+  store i32 -1, i32* %12
 ; # (currFd Exe)
-  %14 = call i32 @currFd(i64 %0)
-; # (wrLock (currFd Exe) 0 0 YES)
-  %15 = call i32 @wrLock(i32 %14, i64 0, i64 0, i32 1)
+  %13 = call i32 @currFd(i64 %0)
+; # (wrLockWait (currFd Exe) 0)
+  call void @wrLockWait(i32 %13, i64 0)
   br label %$2
 $7:
 ; # (let (Nm (xName Exe X) S (pathString Nm (b8 (pathSize Nm))) Flg (...
 ; # (xName Exe X)
-  %16 = call i64 @xName(i64 %0, i64 %1)
+  %14 = call i64 @xName(i64 %0, i64 %1)
 ; # (pathSize Nm)
-  %17 = call i64 @pathSize(i64 %16)
+  %15 = call i64 @pathSize(i64 %14)
 ; # (b8 (pathSize Nm))
-  %18 = alloca i8, i64 %17
+  %16 = alloca i8, i64 %15
 ; # (pathString Nm (b8 (pathSize Nm)))
-  %19 = call i8* @pathString(i64 %16, i8* %18)
+  %17 = call i8* @pathString(i64 %14, i8* %16)
 ; # (val S)
-  %20 = load i8, i8* %19
+  %18 = load i8, i8* %17
 ; # (== (val S) (char "+"))
-  %21 = icmp eq i8 %20, 43
+  %19 = icmp eq i8 %18, 43
 ; # (when Flg (setq S (ofs S 1)))
-  br i1 %21, label %$9, label %$10
+  br i1 %19, label %$9, label %$10
 $9:
-  %22 = phi i8* [%19, %$7] ; # S
+  %20 = phi i8* [%17, %$7] ; # S
 ; # (ofs S 1)
-  %23 = getelementptr i8, i8* %22, i32 1
+  %21 = getelementptr i8, i8* %20, i32 1
   br label %$10
 $10:
-  %24 = phi i8* [%19, %$7], [%23, %$9] ; # S
+  %22 = phi i8* [%17, %$7], [%21, %$9] ; # S
 ; # (while (lt0 (openRdWrCreate S)) (unless (== (gErrno) EINTR) (open...
   br label %$11
 $11:
-  %25 = phi i8* [%24, %$10], [%32, %$17] ; # S
+  %23 = phi i8* [%22, %$10], [%30, %$17] ; # S
 ; # (openRdWrCreate S)
-  %26 = call i32 @openRdWrCreate(i8* %25)
+  %24 = call i32 @openRdWrCreate(i8* %23)
 ; # (lt0 (openRdWrCreate S))
-  %27 = icmp slt i32 %26, 0
-  br i1 %27, label %$12, label %$13
+  %25 = icmp slt i32 %24, 0
+  br i1 %25, label %$12, label %$13
 $12:
-  %28 = phi i8* [%25, %$11] ; # S
+  %26 = phi i8* [%23, %$11] ; # S
 ; # (unless (== (gErrno) EINTR) (openErr Exe X))
 ; # (gErrno)
-  %29 = call i32 @gErrno()
+  %27 = call i32 @gErrno()
 ; # (== (gErrno) EINTR)
-  %30 = icmp eq i32 %29, 2
-  br i1 %30, label %$15, label %$14
+  %28 = icmp eq i32 %27, 2
+  br i1 %28, label %$15, label %$14
 $14:
-  %31 = phi i8* [%28, %$12] ; # S
+  %29 = phi i8* [%26, %$12] ; # S
 ; # (openErr Exe X)
   call void @openErr(i64 %0, i64 %1)
   unreachable
 $15:
-  %32 = phi i8* [%28, %$12] ; # S
+  %30 = phi i8* [%26, %$12] ; # S
 ; # (sigChk Exe)
-  %33 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
-  %34 = icmp ne i32 %33, 0
-  br i1 %34, label %$16, label %$17
+  %31 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %32 = icmp ne i32 %31, 0
+  br i1 %32, label %$16, label %$17
 $16:
   call void @sighandler(i64 %0)
   br label %$17
 $17:
   br label %$11
 $13:
-  %35 = phi i8* [%25, %$11] ; # S
-; # (let Fd (Io: fd @) (if Flg (rdLock Fd 0 0 YES) (wrLock Fd 0 0 YES...
+  %33 = phi i8* [%23, %$11] ; # S
+; # (let Fd (Io: fd @) (if Flg (rdLockWait Fd 0) (wrLockWait Fd 0)) (...
 ; # (Io: fd @)
-  %36 = getelementptr i8, i8* %2, i32 8
-  %37 = bitcast i8* %36 to i32*
-  store i32 %26, i32* %37
-; # (if Flg (rdLock Fd 0 0 YES) (wrLock Fd 0 0 YES))
-  br i1 %21, label %$18, label %$19
+  %34 = getelementptr i8, i8* %2, i32 8
+  %35 = bitcast i8* %34 to i32*
+  store i32 %24, i32* %35
+; # (if Flg (rdLockWait Fd 0) (wrLockWait Fd 0))
+  br i1 %19, label %$18, label %$19
 $18:
-  %38 = phi i8* [%35, %$13] ; # S
-; # (rdLock Fd 0 0 YES)
-  %39 = call i32 @rdLock(i32 %26, i64 0, i64 0)
+  %36 = phi i8* [%33, %$13] ; # S
+; # (rdLockWait Fd 0)
+  call void @rdLockWait(i32 %24, i64 0)
   br label %$20
 $19:
-  %40 = phi i8* [%35, %$13] ; # S
-; # (wrLock Fd 0 0 YES)
-  %41 = call i32 @wrLock(i32 %26, i64 0, i64 0, i32 1)
+  %37 = phi i8* [%33, %$13] ; # S
+; # (wrLockWait Fd 0)
+  call void @wrLockWait(i32 %24, i64 0)
   br label %$20
 $20:
-  %42 = phi i8* [%38, %$18], [%40, %$19] ; # S
-  %43 = phi i32 [%39, %$18], [%41, %$19] ; # ->
+  %38 = phi i8* [%36, %$18], [%37, %$19] ; # S
 ; # (closeOnExec Exe Fd)
-  call void @closeOnExec(i64 %0, i32 %26)
+  call void @closeOnExec(i64 %0, i32 %24)
   br label %$2
 $2:
   ret void
@@ -52736,36 +52789,9 @@ $2:
   ret i1 %13
 }
 
-define void @rdLockDb(i32) {
+define void @rdLockDb() {
 $1:
-; # (while (lt0 (rdLock Fd 0 1 YES)) (unless (== (gErrno) EINTR) (loc...
-  br label %$2
-$2:
-; # (rdLock Fd 0 1 YES)
-  %1 = call i32 @rdLock(i32 %0, i64 0, i64 1)
-; # (lt0 (rdLock Fd 0 1 YES))
-  %2 = icmp slt i32 %1, 0
-  br i1 %2, label %$3, label %$4
-$3:
-; # (unless (== (gErrno) EINTR) (lockErr))
-; # (gErrno)
-  %3 = call i32 @gErrno()
-; # (== (gErrno) EINTR)
-  %4 = icmp eq i32 %3, 2
-  br i1 %4, label %$6, label %$5
-$5:
-; # (lockErr)
-  call void @lockErr()
-  unreachable
-$6:
-  br label %$2
-$4:
-  ret void
-}
-
-define void @rdLockDb1() {
-$1:
-; # (unless (t? (val $Solo)) (tailcall (rdLockDb ((dbFile (val $DbFil...
+; # (unless (t? (val $Solo)) (rdLockWait ((dbFile (val $DbFiles)) fd)...
 ; # (val $Solo)
   %0 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 424) to i64) to i64*
   %1 = load i64, i64* %0
@@ -52778,8 +52804,8 @@ $2:
 ; # ((dbFile (val $DbFiles)) fd)
   %4 = bitcast i8* %3 to i32*
   %5 = load i32, i32* %4
-; # (rdLockDb ((dbFile (val $DbFiles)) fd) 0 1 YES)
-  tail call void @rdLockDb(i32 %5)
+; # (rdLockWait ((dbFile (val $DbFiles)) fd) 1)
+  call void @rdLockWait(i32 %5, i64 1)
   br label %$3
 $3:
   ret void
@@ -52787,7 +52813,7 @@ $3:
 
 define void @wrLockDb() {
 $1:
-; # (unless (t? (val $Solo)) (while (lt0 (wrLock ((dbFile (val $DbFil...
+; # (unless (t? (val $Solo)) (wrLockWait ((dbFile (val $DbFiles)) fd)...
 ; # (val $Solo)
   %0 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 424) to i64) to i64*
   %1 = load i64, i64* %0
@@ -52795,33 +52821,13 @@ $1:
   %2 = icmp eq i64 %1, ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 280) to i64)
   br i1 %2, label %$3, label %$2
 $2:
-; # (while (lt0 (wrLock ((dbFile (val $DbFiles)) fd) 0 1 YES)) (unles...
-  br label %$4
-$4:
 ; # (val $DbFiles)
   %3 = load i8*, i8** @$DbFiles
 ; # ((dbFile (val $DbFiles)) fd)
   %4 = bitcast i8* %3 to i32*
   %5 = load i32, i32* %4
-; # (wrLock ((dbFile (val $DbFiles)) fd) 0 1 YES)
-  %6 = call i32 @wrLock(i32 %5, i64 0, i64 1, i32 1)
-; # (lt0 (wrLock ((dbFile (val $DbFiles)) fd) 0 1 YES))
-  %7 = icmp slt i32 %6, 0
-  br i1 %7, label %$5, label %$6
-$5:
-; # (unless (== (gErrno) EINTR) (lockErr))
-; # (gErrno)
-  %8 = call i32 @gErrno()
-; # (== (gErrno) EINTR)
-  %9 = icmp eq i32 %8, 2
-  br i1 %9, label %$8, label %$7
-$7:
-; # (lockErr)
-  call void @lockErr()
-  unreachable
-$8:
-  br label %$4
-$6:
+; # (wrLockWait ((dbFile (val $DbFiles)) fd) 1)
+  call void @wrLockWait(i32 %5, i64 1)
   br label %$3
 $3:
   ret void
@@ -52915,7 +52921,7 @@ $2:
   %3 = bitcast i8* %0 to i32*
   %4 = load i32, i32* %3
 ; # (wrLock (Db: fd) N Len NO)
-  %5 = call i32 @wrLock(i32 %4, i64 %1, i64 %2, i32 0)
+  %5 = call i32 @wrLock(i32 %4, i64 %1, i64 %2, i1 0)
 ; # (ge0 (wrLock (Db: fd) N Len NO))
   %6 = icmp sge i32 %5, 0
   br i1 %6, label %$3, label %$4
@@ -53020,32 +53026,12 @@ $21:
 
 define void @lockJnl() {
 $1:
-; # (while (lt0 (wrLock (fileno (val $DbJnl)) 0 0 YES)) (unless (== (...
-  br label %$2
-$2:
 ; # (val $DbJnl)
   %0 = load i8*, i8** @$DbJnl
 ; # (fileno (val $DbJnl))
   %1 = call i32 @fileno(i8* %0)
-; # (wrLock (fileno (val $DbJnl)) 0 0 YES)
-  %2 = call i32 @wrLock(i32 %1, i64 0, i64 0, i32 1)
-; # (lt0 (wrLock (fileno (val $DbJnl)) 0 0 YES))
-  %3 = icmp slt i32 %2, 0
-  br i1 %3, label %$3, label %$4
-$3:
-; # (unless (== (gErrno) EINTR) (lockErr))
-; # (gErrno)
-  %4 = call i32 @gErrno()
-; # (== (gErrno) EINTR)
-  %5 = icmp eq i32 %4, 2
-  br i1 %5, label %$6, label %$5
-$5:
-; # (lockErr)
-  call void @lockErr()
-  unreachable
-$6:
-  br label %$2
-$4:
+; # (wrLockWait (fileno (val $DbJnl)) 0)
+  call void @wrLockWait(i32 %1, i64 0)
   ret void
 }
 
@@ -56111,14 +56097,14 @@ $11:
 ; # (set $DbFile (Db:))
 ; # (Db:)
   store i8* %4, i8** @$DbFile
-; # (when (ge0 Fd) (rdLockDb Fd))
+; # (when (ge0 Fd) (rdLockWait Fd 1))
 ; # (ge0 Fd)
   %61 = icmp sge i32 %52, 0
   br i1 %61, label %$12, label %$13
 $12:
   %62 = phi i64 [%60, %$11] ; # X
-; # (rdLockDb Fd)
-  call void @rdLockDb(i32 %52)
+; # (rdLockWait Fd 1)
+  call void @rdLockWait(i32 %52, i64 1)
   br label %$13
 $13:
   %63 = phi i64 [%60, %$11], [%62, %$12] ; # X
@@ -56363,8 +56349,8 @@ $17:
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
   %59 = getelementptr i8, i8* %57, i32 %58
   store i8* %59, i8** @$DbFile
-; # (rdLockDb1)
-  call void @rdLockDb1()
+; # (rdLockDb)
+  call void @rdLockDb()
 ; # (blkPeek BLK Buf BLK)
   call void @blkPeek(i64 6, i8* %17, i32 6)
 ; # (let Next (getAdr Buf) (prog1 (loop (? (>= (inc 'N BLKSIZE) Next)...
@@ -56956,8 +56942,8 @@ $3:
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
   %150 = getelementptr i8, i8* %148, i32 %149
   store i8* %150, i8** @$DbFile
-; # (rdLockDb1)
-  call void @rdLockDb1()
+; # (rdLockDb)
+  call void @rdLockDb()
 ; # (let Blk (rdBlock (shl (objId Tail) 6)) (unless (== 1 (& (val Blk...
 ; # (objId Tail)
   %151 = call i64 @objId(i64 %146)
@@ -59374,8 +59360,8 @@ $3:
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
   %12 = getelementptr i8, i8* %10, i32 %11
   store i8* %12, i8** @$DbFile
-; # (rdLockDb1)
-  call void @rdLockDb1()
+; # (rdLockDb)
+  call void @rdLockDb()
 ; # (* 2 BLK)
 ; # (blkPeek 0 Buf (* 2 BLK))
   call void @blkPeek(i64 0, i8* %7, i32 12)

@@ -1,4 +1,4 @@
-// 28sep20 Software Lab. Alexander Burger
+// 02oct20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -369,7 +369,7 @@ int readyOut(struct pollfd *p) {
 }
 
 // Locking
-int32_t rdLock(int32_t fd, off_t n, off_t len, int32_t wait) {
+int32_t rdLock(int32_t fd, off_t n, off_t len, int wait) {
    struct flock fl;
 
    fl.l_type = F_RDLCK;
@@ -379,7 +379,7 @@ int32_t rdLock(int32_t fd, off_t n, off_t len, int32_t wait) {
    return (int32_t)fcntl(fd, wait? F_SETLKW : F_SETLK, &fl);
 }
 
-int32_t wrLock(int32_t fd, off_t n, off_t len, int32_t wait) {
+int32_t wrLock(int32_t fd, off_t n, off_t len, int wait) {
    struct flock fl;
 
    fl.l_type = F_WRLCK;

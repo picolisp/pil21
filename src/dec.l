@@ -1,4 +1,4 @@
-# 29sep20 Software Lab. Alexander Burger
+# 02oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -242,8 +242,8 @@ truncate0 socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 # Locking
 (local) (rdLock wrLock unLock getLock)
 
-(de T i32 rdLock (i32 i64 i64))
-(de T i32 wrLock (i32 i64 i64 i32))
+(de T i32 rdLock (i32 i64 i64 i1))
+(de T i32 wrLock (i32 i64 i64 i1))
 (de T i32 unLock (i32 i64 i64))
 (de T i32 getLock (i32 i64 i64))
 

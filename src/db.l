@@ -67,23 +67,15 @@
             YES ) ) ) )
 
 # Locking
-(local) (rdLockDb rdLockDb1 wrLockDb unLockDb tryLock lockJnl unLockJnl)
+(local) (rdLockDb wrLockDb unLockDb tryLock lockJnl unLockJnl)
 
-(de void rdLockDb ((i32 . Fd))
-   (while (lt0 (rdLock Fd 0 1 YES))
-      (unless (== (gErrno) EINTR)
-         (lockErr) ) ) )
-
-(de void rdLockDb1 ()
+(de void rdLockDb ()
    (unless (t? (val $Solo))  # Not already locked whole DB
-      (tailcall
-         (rdLockDb ((dbFile (val $DbFiles)) fd) 0 1 YES) ) ) )  # Descriptor of first file
+      (rdLockWait ((dbFile (val $DbFiles)) fd) 1) ) )  # Descriptor of first file
 
 (de void wrLockDb ()
    (unless (t? (val $Solo))  # Not already locked whole DB
-      (while (lt0 (wrLock ((dbFile (val $DbFiles)) fd) 0 1 YES))  # Descriptor of first file
-         (unless (== (gErrno) EINTR)
-            (lockErr) ) ) ) )
+      (wrLockWait ((dbFile (val $DbFiles)) fd) 1) ) )  # Descriptor of first file
 
 (de void unLockDb ((i64 . Len))
    (unless (t? (val $Solo))  # Not already locked whole DB
@@ -120,9 +112,7 @@
                (ret Pid) ) ) ) ) )
 
 (de void lockJnl ()
-   (while (lt0 (wrLock (fileno (val $DbJnl)) 0 0 YES))
-      (unless (== (gErrno) EINTR)
-         (lockErr) ) ) )
+   (wrLockWait (fileno (val $DbJnl)) 0) )
 
 (de void unLockJnl ()
    (let Jnl (val $DbJnl)
@@ -708,7 +698,7 @@
                (set $MaxBlkSize Siz  $DbBlock (alloc P (i64 Siz))) )
             (set $DbFile (Db:))
             (when (ge0 Fd)
-               (rdLockDb Fd) )  # Lock for reading
+               (rdLockWait Fd 1) )  # Lock for reading
             (prog1
                (let Blk (rdBlock N)  # Read first block
                   (if (<> 1 (& (val Blk) BLKTAG))  # ID-Block
@@ -747,7 +737,7 @@
          (dbFile
             (set $DbFile
                (ofs (val $DbFiles) (* F (dbFile T))) ) )
-         (rdLockDb1)  # Lock for reading
+         (rdLockDb)  # Lock for reading
          (blkPeek BLK Buf BLK)  # Read 'next' from block zero
          (let Next (getAdr Buf)
             (prog1
@@ -826,7 +816,7 @@
          # Local file
          (set $DbFile
             (ofs (val $DbFiles) (* F (dbFile T))) )
-         (rdLockDb1)  # Lock for reading
+         (rdLockDb)  # Lock for reading
          (let Blk (rdBlock (shl (objId Tail) 6))  # Read first block
             (unless (== 1 (& (val Blk) BLKTAG))  # ID-Block
                (err Exe Sym ($ "Bad ID") null) ) )
@@ -1183,7 +1173,7 @@
          (dbfErr Exe) )
       (set $DbFile
          (ofs (val $DbFiles) (* F (dbFile T))) )
-      (rdLockDb1)  # Lock for reading
+      (rdLockDb)  # Lock for reading
       (blkPeek 0 Buf (* 2 BLK))  # Read 'free' and 'next' from block zero
       (set $BlkLink (getAdr Buf))  # free' as next block
       (let

@@ -1,4 +1,4 @@
-# 29sep20 Software Lab. Alexander Burger
+# 02oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -31,11 +31,23 @@
 (de NIL selectErr (Exe)
    (err Exe 0 ($ "Select error: %s") (strErrno)) )
 
-(local) (closeOnExec initInFile initOutFile closeInFile closeOutFile)
+(local) (closeOnExec rdLockWait wrLockWait)
 
 (de void closeOnExec (Exe (i32 . Fd))
    (when (lt0 (fcntlCloExec Fd))
       (err Exe 0 ($ "SETFD %s") (strErrno)) ) )
+
+(de void rdLockWait ((i32 . Fd) (i64 . Len))
+   (while (lt0 (rdLock Fd 0 Len YES))
+      (unless (== (gErrno) EINTR)
+         (lockErr) ) ) )
+
+(de void wrLockWait ((i32 . Fd) (i64 . Len))
+   (while (lt0 (wrLock Fd 0 Len YES))
+      (unless (== (gErrno) EINTR)
+         (lockErr) ) ) )
+
+(local) (initInFile initOutFile closeInFile closeOutFile)
 
 (de i8* initInFile ((i32 . Fd) (i8* . Nm))
    (let I (val $InFDs)
@@ -1102,10 +1114,10 @@
       (cond
          ((nil? (needSymb Exe X))
             (Io: fd -1)
-            (rdLock (currFd Exe) 0 0 YES) )
+            (rdLockWait (currFd Exe) 0) )
          ((t? X)
             (Io: fd -1)
-            (wrLock (currFd Exe) 0 0 YES) )
+            (wrLockWait (currFd Exe) 0) )
          (T
             (let
                (Nm (xName Exe X)
@@ -1119,8 +1131,8 @@
                   (sigChk Exe) )
                (let Fd (Io: fd @)
                   (if Flg
-                     (rdLock Fd 0 0 YES)
-                     (wrLock Fd 0 0 YES) )
+                     (rdLockWait Fd 0)
+                     (wrLockWait Fd 0) )
                   (closeOnExec Exe Fd) ) ) ) ) ) )
 
 (local) (read0 getChar skipc comment skip testEsc anonymous rdAtom rdList)
