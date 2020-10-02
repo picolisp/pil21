@@ -1,4 +1,4 @@
-# 30sep20 Software Lab. Alexander Burger
+# 01oct20 Software Lab. Alexander Burger
 
 # *Allow
 
@@ -41,28 +41,6 @@
                   (set (link @) (name (read))) ) ) ) ) ) )
 
 ### String ###
-(de align (X . @)
-   (pack
-      (if (pair X)
-         (mapcar
-            '((X) (need X (chop (next)) " "))
-            X )
-         (need X (chop (next)) " ") ) ) )
-
-(de center (X . @)
-   (pack
-      (if (pair X)
-         (let R 0
-            (mapcar
-               '((X)
-                  (let (S (chop (next))  N (>> 1 (+ X (length S))))
-                     (prog1
-                        (need (+ N R) S " ")
-                        (setq R (- X N)) ) ) )
-               X ) )
-         (let S (chop (next))
-            (need (>> 1 (+ X (length S))) S " ") ) ) ) )
-
 (de wrap (Max Lst)
    (setq Lst (split Lst " " "\n"))
    (pack

@@ -1,4 +1,4 @@
-# 28sep20 Software Lab. Alexander Burger
+# 01oct20 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *Evt *Lock *Spans
 
@@ -12,6 +12,9 @@
       *JsHint "!jsHint" jsUp jsDn *JsArgs "!tzOffs" ) )
 
 (one *Cnt)
+
+(de *Go.png . "@img/go.png")
+(de *No.png . "@img/no.png")
 
 (de *Throbber
    ("+---" "-+--" "--+-" "---+" "--+-" "-+--" .) )
@@ -1616,14 +1619,14 @@
 
 (dm js> ()
    (pack
-      (ht:Fmt (sesId (or (: img) "@img/no.png"))) "&"
+      (ht:Fmt (sesId (or (: img) *No.png))) "&"
       (eval (: alt)) "&"
       (and (eval (: url)) (ht:Fmt (sesId @))) ) )
 
 (dm show> (Var)
    (showFld
       (<img>
-         (or (: img) "@img/no.png")
+         (or (: img) *No.png)
          (eval (: alt))
          (eval (: url))
          (: dx)
@@ -1694,8 +1697,8 @@
 
 (dm js> ()
    (if2 (or (: dx) (: lst)) (txt> This (val> This))
-      (pack (extra) "&*" (ht:Fmt (sesId "@img/go.png")) "&" (ht:Fmt (sesId ((: url) @))))
-      (pack (extra) "&*" (ht:Fmt (sesId "@img/no.png")) "&")
+      (pack (extra) "&*" (ht:Fmt (sesId *Go.png)) "&" (ht:Fmt (sesId ((: url) @))))
+      (pack (extra) "&*" (ht:Fmt (sesId *No.png)) "&")
       (pack @ "&+" (ht:Fmt (sesId ((: url) @))))
       (extra) ) )
 
@@ -1706,8 +1709,8 @@
          (extra Var)
          (prin "</td><td title=\"-->\">")
          (if (txt> This (val> This))
-            (<img> "@img/go.png" 'url ((: url) @))
-            (<img> "@img/no.png") )
+            (<img> *Go.png 'url ((: url) @))
+            (<img> *No.png) )
          (prinl "</td></table>") )
       ((txt> This (val> This))
          (showFld (<href> @ ((: url) @))) )
@@ -2196,8 +2199,8 @@
    (if (=T (: msg))
       (extra)
       (if2 (or (: dx) (: lst)) (try (: msg) (: obj) 1 This)
-         (pack (extra) "&*" (ht:Fmt (sesId "@img/go.png")) "&" (ht:Fmt (sesId (mkUrl @))))
-         (pack (extra) "&*" (ht:Fmt (sesId "@img/no.png")) "&")
+         (pack (extra) "&*" (ht:Fmt (sesId *Go.png)) "&" (ht:Fmt (sesId (mkUrl @))))
+         (pack (extra) "&*" (ht:Fmt (sesId *No.png)) "&")
          (pack (ht:Fmt (nonblank (str> This))) "&+" (ht:Fmt (sesId (mkUrl @))))
          (extra) ) ) )
 
@@ -2209,8 +2212,8 @@
          (extra Var)
          (prin "</td><td title=\"-->\">")
          (if (try (: msg) (: obj) 1 This)
-            (<img> "@img/go.png" 'obj (mkUrl @))
-            (<img> "@img/no.png") )
+            (<img> *Go.png 'obj (mkUrl @))
+            (<img> *No.png) )
          (prinl "</td></table>") )
       ((try (: msg) (: obj) 1 This)
          (showFld (<href> (nonblank (str> This)) (mkUrl @))) )

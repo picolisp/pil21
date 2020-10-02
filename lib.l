@@ -1,4 +1,4 @@
-# 30sep20 Software Lab. Alexander Burger
+# 01oct20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -217,9 +217,31 @@
       (call "mkdir" "-p" (setq *Tmp (pil "tmp/" *Pid "/"))) )
    (pass pack *Tmp) )
 
-### Number ###
+### String ###
 (de pad (N Val)
    (pack (need N (chop Val) "0")) )
+
+(de align (X . @)
+   (pack
+      (if (pair X)
+         (mapcar
+            '((X) (need X (chop (next)) " "))
+            X )
+         (need X (chop (next)) " ") ) ) )
+
+(de center (X . @)
+   (pack
+      (if (pair X)
+         (let R 0
+            (mapcar
+               '((X)
+                  (let (S (chop (next))  N (>> 1 (+ X (length S))))
+                     (prog1
+                        (need (+ N R) S " ")
+                        (setq R (- X N)) ) ) )
+               X ) )
+         (let S (chop (next))
+            (need (>> 1 (+ X (length S))) S " ") ) ) ) )
 
 ### List ###
 (de uniq (Lst)

@@ -1,4 +1,4 @@
-# 22sep20 Software Lab. Alexander Burger
+# 02oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -214,8 +214,7 @@
       (dbfErr Exe) )
    (set $DbFile  # Set current file
       (ofs (val $DbFiles) (* N (dbFile T))) )
-   (unless (val $DbLog)
-      (set $Protect (inc (val $Protect))) )
+   (set $Protect (inc (val $Protect)))
    (wrLockDb)
    (when (val $DbJnl)
       (lockJnl) )
@@ -226,8 +225,7 @@
       (when (val $DbJnl)
          (unLockJnl) )
       (unLockDb 1)
-      (unless (val $DbLog)
-         (set $Protect (dec (val $Protect))) ) ) )
+      (set $Protect (dec (val $Protect))) ) )
 
 (de i1 isLife (Sym)
    (let
@@ -298,13 +296,13 @@
       (when (== P (val $BlkEnd))
          (let Link (val $BlkLink)
             (ifn Link
-               (let (New (newBlock)  Cnt (i64 (val P)))  # Block count (link is zero)
-                  (setAdr (| New Cnt) (val $DbBlock))
+               (let
+                  (New (newBlock)
+                     Cnt (i64 (val (setq P (val $DbBlock)))) )  # Block count (link is zero)
+                  (setAdr (| New Cnt) P)
                   (wrBlock)  # Write new block
                   (set $BlkIndex New)  # Set new block index
-                  (setAdr
-                     (if (== Cnt BLKTAG) Cnt (inc Cnt))
-                     (setq P (val $DbBlock)) )
+                  (setAdr (if (== Cnt BLKTAG) Cnt (inc Cnt)) P)
                   (setq P (ofs P BLK)) )
                (wrBlock)  # Write current block
                (setq P (ofs (rdBlock Link) BLK)) ) ) )  # Read next block
@@ -893,8 +891,7 @@
 # (commit ['any] [exe1] [exe2]) -> T
 (de _commit (Exe)
    (let (X (cdr Exe)  Y (save (eval (++ X)))  Notify NO)
-      (unless (val $DbLog)
-         (set $Protect (inc (val $Protect))) )
+      (set $Protect (inc (val $Protect)))
       (wrLockDb)
       (when (val $DbJnl)
          (lockJnl) )
@@ -1120,8 +1117,7 @@
          (truncLog Exe) )
       (unLockDb 0)  # Unlock all
       (unsync)
-      (unless (val $DbLog)
-         (set $Protect (dec (val $Protect))) )
+      (set $Protect (dec (val $Protect)))
       (let (P (val $DbFiles)  C (val $DBs))  # Iterate DB files
          (loop
             ((dbFile P) flu -1)  # Init free list use count
