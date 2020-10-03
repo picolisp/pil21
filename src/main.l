@@ -1,4 +1,4 @@
-# 30sep20 Software Lab. Alexander Burger
+# 03oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -780,7 +780,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                               (A
                                  (if (cnt? NmX)
                                     (prog1
-                                       (& (int NmX) (hex "3FFFFFFFFFFFFFF"))  # Mask status bits
+                                       (shr (shl (name NmX) 2) 6)  # Clear status bits
                                        (setq NmX 0) )
                                     (prog1
                                        (val (dig NmX))  # Next digit
@@ -788,7 +788,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                                  B
                                  (if (cnt? NmY)
                                     (prog1
-                                       (& (int NmY) (hex "3FFFFFFFFFFFFFF"))  # Mask status bits
+                                       (shr (shl (name NmY) 2) 6)  # Clear status bits
                                        (setq NmY 0) )
                                     (prog1
                                        (val (dig NmY))  # Next digit

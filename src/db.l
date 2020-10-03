@@ -784,9 +784,9 @@
 
 (local) (db dbFetch dbTouch dbZap)
 
-(de void db (Exe Sym Tail)
+(de void db (Exe Sym Nm)
    (save Sym)
-   (let F (objFile Tail)  # Get file number
+   (let F (objFile Nm)  # Get file number
       (if (>= F (val $DBs))
          (let Ext (val $Ext)  # Non-local file
             (if
@@ -806,16 +806,16 @@
                   (let X (evList E)
                      (set Sym (++ X))  # Set value
                      (if (atom X)
-                        (set (tail Sym) Tail)  # Set status/name
+                        (set (tail Sym) Nm)  # Set status/name
                         (set (tail Sym) (sym X))  # Set property list
                         (while (pair (cdr X))  # Find end
                            (setq X @) )
-                        (set 2 X Tail) ) ) ) ) )  # Set status/name
+                        (set 2 X Nm) ) ) ) ) )  # Set status/name
          # Local file
          (set $DbFile
             (ofs (val $DbFiles) (* F (dbFile T))) )
          (rdLockDb)  # Lock for reading
-         (let Blk (rdBlock (shl (objId Tail) 6))  # Read first block
+         (let Blk (rdBlock (shl (objId Nm) 6))  # Read first block
             (unless (== 1 (& (val Blk) BLKTAG))  # ID-Block
                (err Exe Sym ($ "Bad ID") null) ) )
          (set
@@ -823,16 +823,16 @@
             $Extn 0 )
          (set Sym (binRead))  # Read symbol value
          (if (nil? (binRead))  # First property key
-            (set (tail Sym) Tail)  # Set status/name
+            (set (tail Sym) Nm)  # Set status/name
             (set (tail Sym)  # Set tail
-               (sym (setq Tail (cons @ Tail))) )
+               (sym (setq Nm (cons @ Nm))) )
             (unless (t? (binRead))  # First property value
-               (set Tail (cons @ (val Tail))) )  # Cons with key
+               (set Nm (cons @ (val Nm))) )  # Cons with key
             (until (nil? (binRead))  # Next property key
-               (set 2 Tail (cons @ (cdr Tail)))
-               (shift Tail)
+               (set 2 Nm (cons @ (cdr Nm)))
+               (shift Nm)
                (unless (t? (binRead))  # Next property value
-                  (set Tail (cons @ (val Tail))) ) ) )  # Cons with key
+                  (set Nm (cons @ (val Nm))) ) ) )  # Cons with key
          (unLockDb 1) ) ) )  # Unlock
 
 (de void dbFetch (Exe Sym)
