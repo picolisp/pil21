@@ -52912,11 +52912,11 @@ $3:
 
 define i32 @tryLock(i8*, i64, i64) {
 $1:
-; # (let Db: (dbFile DbFile) (loop (when (ge0 (wrLock (Db: fd) N Len ...
-; # (loop (when (ge0 (wrLock (Db: fd) N Len NO)) (Db: lck YES) (cond ...
+; # (let Db: (dbFile DbFile) (loop (? (ge0 (wrLock (Db: fd) N Len NO)...
+; # (loop (? (ge0 (wrLock (Db: fd) N Len NO)) (Db: lck YES) (nond (N ...
   br label %$2
 $2:
-; # (when (ge0 (wrLock (Db: fd) N Len NO)) (Db: lck YES) (cond ((=0 N...
+; # (? (ge0 (wrLock (Db: fd) N Len NO)) (Db: lck YES) (nond (N (set $...
 ; # (Db: fd)
   %3 = bitcast i8* %0 to i32*
   %4 = load i32, i32* %3
@@ -52924,104 +52924,97 @@ $2:
   %5 = call i32 @wrLock(i32 %4, i64 %1, i64 %2, i1 0)
 ; # (ge0 (wrLock (Db: fd) N Len NO))
   %6 = icmp sge i32 %5, 0
-  br i1 %6, label %$3, label %$4
-$3:
+  br i1 %6, label %$5, label %$3
+$5:
 ; # (Db: lck YES)
   %7 = getelementptr i8, i8* %0, i32 40
   %8 = bitcast i8* %7 to i1*
   store i1 1, i1* %8
-; # (cond ((=0 N) (set $Solo $T)) ((t? (val $Solo)) (set $Solo $Nil))...
-; # (=0 N)
-  %9 = icmp eq i64 %1, 0
-  br i1 %9, label %$7, label %$6
-$7:
+; # (nond (N (set $Solo $T)) ((t? (val $Solo)) (set $Solo $Nil)))
+  %9 = icmp ne i64 %1, 0
+  br i1 %9, label %$7, label %$8
+$8:
 ; # (set $Solo $T)
   %10 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 424) to i64) to i64*
   store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 280) to i64), i64* %10
-  br label %$5
-$6:
+  br label %$6
+$7:
 ; # (val $Solo)
   %11 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 424) to i64) to i64*
   %12 = load i64, i64* %11
 ; # (t? (val $Solo))
   %13 = icmp eq i64 %12, ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 280) to i64)
-  br i1 %13, label %$9, label %$8
-$9:
+  br i1 %13, label %$9, label %$10
+$10:
 ; # (set $Solo $Nil)
   %14 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 424) to i64) to i64*
   store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), i64* %14
-  br label %$5
-$8:
-  br label %$5
-$5:
-  %15 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 280) to i64), %$7], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), %$9], [0, %$8] ; # ->
-; # (ret 0)
-  ret i32 0
-$4:
+  br label %$6
+$9:
+  br label %$6
+$6:
+  %15 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 280) to i64), %$8], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), %$10], [0, %$9] ; # ->
+  br label %$4
+$3:
 ; # (unless (or (== (gErrno) EINTR) (== @ EACCES) (== @ EAGAIN)) (loc...
 ; # (or (== (gErrno) EINTR) (== @ EACCES) (== @ EAGAIN))
 ; # (gErrno)
   %16 = call i32 @gErrno()
 ; # (== (gErrno) EINTR)
   %17 = icmp eq i32 %16, 2
-  br i1 %17, label %$10, label %$11
-$11:
+  br i1 %17, label %$11, label %$12
+$12:
 ; # (== @ EACCES)
   %18 = icmp eq i32 %16, 5
-  br i1 %18, label %$10, label %$12
-$12:
+  br i1 %18, label %$11, label %$13
+$13:
 ; # (== @ EAGAIN)
   %19 = icmp eq i32 %16, 4
-  br label %$10
-$10:
-  %20 = phi i1 [1, %$4], [1, %$11], [%19, %$12] ; # ->
-  br i1 %20, label %$14, label %$13
-$13:
+  br label %$11
+$11:
+  %20 = phi i1 [1, %$3], [1, %$12], [%19, %$13] ; # ->
+  br i1 %20, label %$15, label %$14
+$14:
 ; # (lockErr)
   call void @lockErr()
   unreachable
-$14:
-; # (let Pid T (while (lt0 (setq Pid (getLock (Db: fd) N Len))) (unle...
-; # (while (lt0 (setq Pid (getLock (Db: fd) N Len))) (unless (== (gEr...
-  br label %$15
 $15:
+; # (while (lt0 (getLock (Db: fd) N Len)) (unless (== (gErrno) EINTR)...
+  br label %$16
+$16:
 ; # (Db: fd)
   %21 = bitcast i8* %0 to i32*
   %22 = load i32, i32* %21
 ; # (getLock (Db: fd) N Len)
   %23 = call i32 @getLock(i32 %22, i64 %1, i64 %2)
-; # (lt0 (setq Pid (getLock (Db: fd) N Len)))
+; # (lt0 (getLock (Db: fd) N Len))
   %24 = icmp slt i32 %23, 0
-  br i1 %24, label %$16, label %$17
-$16:
-  %25 = phi i32 [%23, %$15] ; # Pid
+  br i1 %24, label %$17, label %$18
+$17:
 ; # (unless (== (gErrno) EINTR) (lockErr))
 ; # (gErrno)
-  %26 = call i32 @gErrno()
+  %25 = call i32 @gErrno()
 ; # (== (gErrno) EINTR)
-  %27 = icmp eq i32 %26, 2
-  br i1 %27, label %$19, label %$18
-$18:
-  %28 = phi i32 [%25, %$16] ; # Pid
+  %26 = icmp eq i32 %25, 2
+  br i1 %26, label %$20, label %$19
+$19:
 ; # (lockErr)
   call void @lockErr()
   unreachable
-$19:
-  %29 = phi i32 [%25, %$16] ; # Pid
-  br label %$15
-$17:
-  %30 = phi i32 [%23, %$15] ; # Pid
-; # (when (gt0 Pid) (ret Pid))
-; # (gt0 Pid)
-  %31 = icmp sgt i32 %30, 0
-  br i1 %31, label %$20, label %$21
 $20:
-  %32 = phi i32 [%30, %$17] ; # Pid
-; # (ret Pid)
-  ret i32 %32
+  br label %$16
+$18:
+; # (? (gt0 @) @)
+; # (gt0 @)
+  %27 = icmp sgt i32 %23, 0
+  br i1 %27, label %$22, label %$21
+$22:
+  br label %$4
 $21:
-  %33 = phi i32 [%30, %$17] ; # Pid
   br label %$2
+$4:
+  %28 = phi i32 [0, %$6], [%23, %$22] ; # ->
+  ret i32 %28
 }
 
 define void @lockJnl() {

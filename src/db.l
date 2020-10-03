@@ -1,4 +1,4 @@
-# 02oct20 Software Lab. Alexander Burger
+# 03oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -92,24 +92,22 @@
 (de i32 tryLock ((i8* . DbFile) (i64 . N) (i64 . Len))
    (let Db: (dbFile DbFile)
       (loop
-         (when (ge0 (wrLock (Db: fd) N Len NO))  # Try to lock
+         (? (ge0 (wrLock (Db: fd) N Len NO))  # Try to lock
             (Db: lck YES)  # Set lock flag
-            (cond
-               ((=0 N) (set $Solo $T))  # Set solo mode
+            (nond
+               (N (set $Solo $T))  # Set solo mode
                ((t? (val $Solo)) (set $Solo $Nil)) )  # Clear solo mode
-            (ret 0) )
+            0 )
          (unless
             (or
                (== (gErrno) EINTR)  # Interrupted
                (== @ EACCES)  # Locked by another process
                (== @ EAGAIN) )  # Memory-mapped by another process
             (lockErr) )
-         (let Pid T
-            (while (lt0 (setq Pid (getLock (Db: fd) N Len)))
-               (unless (== (gErrno) EINTR)
-                  (lockErr) ) )
-            (when (gt0 Pid)
-               (ret Pid) ) ) ) ) )
+         (while (lt0 (getLock (Db: fd) N Len))
+            (unless (== (gErrno) EINTR)
+               (lockErr) ) )
+         (? (gt0 @) @) ) ) )
 
 (de void lockJnl ()
    (wrLockWait (fileno (val $DbJnl)) 0) )

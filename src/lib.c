@@ -1,4 +1,4 @@
-// 02oct20 Software Lab. Alexander Burger
+// 03oct20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -54,7 +54,7 @@ int32_t openWrAppend(char *nm) {
    return (int32_t)open(nm, O_APPEND|O_CREAT|O_WRONLY, 0666);
 }
 
-int fseekOfs(FILE *fp, int ofs) {
+int fseekOfs(FILE *fp, int32_t ofs) {
    return fseek(fp, (long)ofs, SEEK_CUR) == 0;
 }
 
@@ -62,15 +62,15 @@ int fseek0(FILE *fp) {
    return fseek(fp, 0L, SEEK_SET) == 0;
 }
 
-int seek0(int fd) {
+int seek0(int32_t fd) {
    return lseek(fd, 0L, SEEK_SET) == 0;
 }
 
-int truncate0(int fd) {
+int truncate0(int32_t fd) {
    return ftruncate(fd, 0) == 0;
 }
 
-int32_t socketPair(int *sv) {
+int32_t socketPair(int32_t *sv) {
    return (int32_t)socketpair(AF_UNIX, SOCK_STREAM, 0, sv);
 }
 
@@ -170,23 +170,23 @@ int32_t gSignal(int32_t n) {
    return 0;
 }
 
-void iSignal(int n, void (*fun)(int)) {
+void iSignal(int32_t n, void (*fun)(int)) {
    struct sigaction act;
 
    act.sa_handler = fun;
    sigemptyset(&act.sa_mask);
    act.sa_flags = 0;
-   sigaction(n, &act, NULL);
+   sigaction((int)n, &act, NULL);
 }
 
-void sigUnblock(int sig) {
+void sigUnblock(int32_t sig) {
    sigset_t mask;
 
    if (sig == 0)
       sigfillset(&mask);
    else {
       sigemptyset(&mask);
-      sigaddset(&mask, sig);
+      sigaddset(&mask, (int)sig);
    }
    sigprocmask(SIG_UNBLOCK, &mask, NULL);
 }
@@ -202,12 +202,12 @@ void waitNohang(void) {
    errno = e;
 }
 
-int waitWuntraced(int pid, int *res) {
-   return waitpid(pid, res, WUNTRACED);
+int32_t waitWuntraced(int32_t pid, int32_t *res) {
+   return waitpid((pid_t)pid, (int*)res, WUNTRACED);
 }
 
-int wifStopped(int *res) {
-   return WIFSTOPPED(*res);
+int32_t wifStopped(int32_t *res) {
+   return WIFSTOPPED(*(int*)res);
 }
 
 int32_t nErrno(void) {
