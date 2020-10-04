@@ -1,4 +1,4 @@
-# 22jun20 Software Lab. Alexander Burger
+# 04oct20 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -36,8 +36,8 @@
             (dec 'Cnt) ) ) ) )
 
 # Flooding Algorithm
-(private) (Lst Fun Init X)
 (local) flood
+(private) (Lst Fun Init X)
 
 (de flood (Lst Fun Init)
    (let G (mapcar '((X) (cons X (Fun X))) Lst)
@@ -54,8 +54,8 @@
                   (recurse (cdr (asoq X G))) ) ) ) ) ) )
 
 # Genetic Algorithm
-(private) (Pop Cond Re Mu Se P)
 (local) gen
+(private) (Pop Cond Re Mu Se P)
 
 (de gen (Pop Cond Re Mu Se)
    (until (Cond Pop)
@@ -70,8 +70,8 @@
    (maxi Se Pop) )
 
 # Alpha-Beta tree search
-(private) (*Val Flg Cnt Moves Move Cost Alpha Beta Mov)
 (local) game
+(private) (*Val Flg Cnt Moves Move Cost Alpha Beta Mov)
 
 (de game (Flg Cnt Moves Move Cost)
    (let (Alpha '(1000000)  Beta -1000000)
@@ -155,8 +155,8 @@
 (de north (This)
    (: 0 -1 -1) )
 
-(private) (Grid How Fun X Y DX DY)
 (local) (disp border)
+(private) (Grid How Fun X Y DX DY)
 
 (de disp (Grid How Fun X Y DX DY)
    (setq Grid
