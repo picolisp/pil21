@@ -195,7 +195,9 @@
 (de cell (X Y Car Cdr)
    (let A (max 6 (+ 3 (length (setq Car (sym Car)))))
       (box X Y A 2
-         (cons (pack X "/" Y) Car)
+         (cons
+            (pack (+ X *DX) "/" (+ Y *DY))
+            Car )
          (let B 6
             (setq Cdr
                (cond
@@ -212,7 +214,7 @@
 (de cells (X Y Any)
    (let Pos (list X)
       (recur (Any Y Pos)
-         (let Last NIL
+         (let (Y2 (+ Y *DY)  Last)
             (while (pair Any)
                (use D
                   (if (atom (car Any))
@@ -225,12 +227,14 @@
                      (setq D
                         (cell (car Pos) Y '| (cdr Any)) )
                      (recurse (++ Any) (+ Y 7) (cdr Pos))
-                     (arrow
-                        (pack (car Pos) "/" Y)
-                        (pack (car Pos) "/" (+ Y 7)) ) )
-                  (when Last
-                     (arrow @ (pack (car Pos) "/" Y)) )
-                  (setq Last (pack (car Pos) "/" Y "+"))
+                     (let X2 (+ (car Pos) *DX)
+                        (arrow
+                           (pack X2 "/" Y2)
+                           (pack X2 "/" (+ Y2 7)) ) ) )
+                  (let X2 (+ (car Pos) *DX)
+                     (when Last
+                        (arrow @ (pack X2 "/" Y2)) )
+                     (setq Last (pack X2 "/" Y2 "+")) )
                   (inc Pos (+ 6 D)) ) ) ) ) ) )
 
 
