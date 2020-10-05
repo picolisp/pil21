@@ -1,4 +1,4 @@
-# 02oct20 Software Lab. Alexander Burger
+# 05oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -107,8 +107,8 @@ tcsetpgrp waitpid setjmp longjmp kill exit)
 (de T i64 write (i32 i8* i64))
 (de T i64 pread (i32 i8* i64 i64))
 (de T i64 pwrite (i32 i8* i64 i64))
-(de T i32 fread (i8* i32 i32 i8*))
-(de T i32 fwrite (i8* i32 i32 i8*))
+(de T i32 fread (i8* i64 i64 i8*))
+(de T i32 fwrite (i8* i64 i64 i8*))
 (de T i32 putc_unlocked (i32 i8*))
 (de T i32 getc_unlocked (i8*))
 (de T i8* fopen (i8* i8*))

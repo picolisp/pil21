@@ -1,4 +1,4 @@
-# 04oct20 Software Lab. Alexander Burger
+# 05oct20 Software Lab. Alexander Burger
 # https://picolisp.com/wiki/?vip
 
 (symbols 'vip 'pico)
@@ -123,7 +123,7 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
       (for L Lst
          (let P NIL
             (while L
-               (let C (++ L)
+               (let? C (++ L)
                   (state 'S
                      (text (and (= "\"" C) 'string)
                         (set C 0) )
@@ -1215,7 +1215,7 @@ shell shFile prCmd reset command vi)
                   ("$"  # Shell command
                      (scratch (tmp "cmd")
                         (in (list *Shell "-c" (rplFile Line))
-                           (make (until (eof) (link (line)))) ) ) )
+                           (rdLines) ) ) )
                   ("!"  # External filter
                      (when Line
                         (if (=0 Cnt)

@@ -1,4 +1,4 @@
-# 03oct20 Software Lab. Alexander Burger
+# 05oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -54,17 +54,15 @@
    (set 6 P (i8 (shr N 8))) )
 
 # Read file number from buffer into '$DbFile'
-(de i1 dbfBuf ((i8* . P))
+(de i8* dbfBuf ((i8* . P))
    (let N
       (|  # Two bytes little endian
          (shl (i32 (val 2 P)) 8)
          (i32 (val P)) )
-      (and
-         (> (val $DBs) N)  # Local file
-         (prog
-            (set $DbFile  # Set current file
-               (ofs (val $DbFiles) (* N (dbFile T))) )
-            YES ) ) ) )
+      (if (> (val $DBs) N)  # Local file
+         (set $DbFile  # Set current file
+            (ofs (val $DbFiles) (* N (dbFile T))) )
+         null ) ) )
 
 # Locking
 (local) (rdLockDb wrLockDb unLockDb tryLock lockJnl unLockJnl)
@@ -140,8 +138,8 @@
    (let Db: (dbFile (val $DbFile))
       (unless (== Siz (i32 (pwrite (Db: fd) Buf (i64 Siz) Pos)))
          (dbWrErr) )
-      (let Jnl (val $DbJnl)
-         (when Jnl
+      (when (val $DbJnl)
+         (let Jnl @
             (putc_unlocked (if (== Siz (Db: siz)) 0 Siz) Jnl)
             (let P (b8 (+ BLK 2))  # Allocate buffer
                (set P (i8 (Db: db)))  # Store file number
@@ -152,7 +150,7 @@
                (unless
                   (and
                      (== 1 (fwrite P (+ BLK 2) 1 Jnl))  # Write file number and address
-                     (== 1 (fwrite Buf Siz 1 Jnl)) )  # Write 'Buf'
+                     (== 1 (fwrite Buf (i64 Siz) 1 Jnl)) )  # Write 'Buf'
                   (err 0 0 ($ "Journal write: %s") (strErrno)) ) ) ) ) ) )
 
 (de void wrBlock ()
@@ -173,7 +171,7 @@
       (unless
          (and
             (== 1 (fwrite P (+ BLK 2) 1 Log))  # Write file number and address
-            (== 1 (fwrite (val $DbBlock) (Db: siz) 1 Log)) )  # Write block
+            (== 1 (fwrite (val $DbBlock) (i64 (Db: siz)) 1 Log)) )  # Write block
          (err 0 0 ($ "Log write: %s") (strErrno)) ) ) )
 
 (local) (newBlock newId isLife cleanUp getBlock putBlock)
@@ -395,7 +393,7 @@
             (? (== (val (i16* Blk)) (hex "FFFF")) YES)  # Byte order doesn't matter
             (?
                (or
-                  (not (dbfBuf Blk))
+                  (=0 (dbfBuf Blk))
                   (<> (fread Blk BLK 1 Log) 1)
                   (not (fseekOfs Log ((dbFile (val $DbFile)) siz)))
                   (<> (fread Blk 2 1 Log) 1) )
@@ -428,24 +426,24 @@
             (unless (== (fread Blk 2 1 Log) 1)  # Get file number
                (jnlErr Exe) )
             (? (== (val (i16* Blk)) (hex "FFFF")))  # Byte order doesn't matter
-            (unless (dbfBuf Blk)
-               (jnlErr Exe) )
-            (let Db: (dbFile (val $DbFile))
-               (unless
-                  (and
-                     (== (fread Blk BLK 1 Log) 1)
-                     (== (fread Buf (Db: siz) 1 Log) 1) )
-                  (jnlErr Exe) )
-               (unless
-                  (==
-                     (pwrite
-                        (Db: fd)
-                        Buf
-                        (i64 (Db: siz))
-                        (shl (getAdr Blk) (i64 (Db: sh))) )
-                     (i64 (Db: siz)) )
-                  (dbWrErr) )
-               (Db: drt YES) ) )
+            (if (dbfBuf Blk)
+               (let Db: (dbFile @)
+                  (unless
+                     (and
+                        (== (fread Blk BLK 1 Log) 1)
+                        (== (fread Buf (i64 (Db: siz)) 1 Log) 1) )
+                     (jnlErr Exe) )
+                  (unless
+                     (==
+                        (pwrite
+                           (Db: fd)
+                           Buf
+                           (i64 (Db: siz))
+                           (shl (getAdr Blk) (i64 (Db: sh))) )
+                        (i64 (Db: siz)) )
+                     (dbWrErr) )
+                  (Db: drt YES) )
+               (jnlErr Exe) ) )
          (fsyncDB Exe) ) ) )
 
 (de void truncLog (Exe)
@@ -626,17 +624,20 @@
                (let Siz @
                   (unless (== (fread Blk 2 1 Fp) 1)  # Read file number
                      (jnlErr Exe) )
-                  (unless (dbfBuf Blk)  # Get file number from 'Buf' to 'DbFile'
-                     (dbfErr Exe) )  # No local file
-                  (let Db: (dbFile (val $DbFile))
-                     (unless Siz
-                        (setq Siz (Db: siz)) )
-                     (unless
-                        (and
-                           (== (fread Blk BLK 1 Fp) 1)
-                           (== (fread Buf Siz 1 Fp) 1) )
-                        (jnlErr Exe) )
-                     (blkPoke (getAdr Blk) Blk Siz) ) ) )
+                  (if (dbfBuf Blk)  # Get file number from 'Buf' to 'DbFile'
+                     (let Db: (dbFile @)
+                        (unless Siz
+                           (setq Siz (Db: siz)) )
+                        (unless
+                           (and
+                              (== (fread Blk BLK 1 Fp) 1)
+                              (== (fread Buf (i64 Siz) 1 Fp) 1) )
+                           (jnlErr Exe) )
+                        (blkPoke
+                           (shl (getAdr Blk) (i64 (Db: sh)))
+                           Buf
+                           Siz ) )
+                     (dbfErr Exe) ) ) )  # No local file
             (fclose Fp)
             (? (atom (shift X)))
             (setq Sym (evSym X)) ) )
