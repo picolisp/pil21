@@ -1,4 +1,4 @@
-# 20aug20 Software Lab. Alexander Burger
+# 05oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -187,11 +187,11 @@
                            (goto 3) )
                         (setq Y (car Y))  # Left sub-branch
                         (loop
-                           (? (atom (cdr Y))  # No more left branches
+                           (? (atom (cadr Y))  # No more left branches
                               (set  # Insert left sub-branch
                                  P (car Y)
-                                 (cdr X) (cdr @) ) )
-                           (setq X Y  Y (car @)) ) ) ) )  # Go down left
+                                 (cdr X) (cddr Y) ) )
+                           (setq X Y  Y @) ) ) ) )  # Go down left
                (: 3
                   (let X (cdr P)  # Left subtree
                      (? (pair (car X))
