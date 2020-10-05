@@ -1,4 +1,4 @@
-# 02oct20 Software Lab. Alexander Burger
+# 05oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1163,7 +1163,6 @@
             (T
                (let P (val $LinePtr)
                   (unless P
-                     (initReadline)
                      (free (val $LineBuf))
                      (flushAll)
                      (unless (setq P (set $LineBuf (readline (val $LinePrmt))))

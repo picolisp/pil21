@@ -42614,16 +42614,14 @@ $15:
   %37 = phi i32 [-1, %$13], [%27, %$17] ; # ->
   br label %$2
 $7:
-; # (let P (val $LinePtr) (unless P (initReadline) (free (val $LineBu...
+; # (let P (val $LinePtr) (unless P (free (val $LineBuf)) (flushAll) ...
 ; # (val $LinePtr)
   %38 = load i8*, i8** @$LinePtr
-; # (unless P (initReadline) (free (val $LineBuf)) (flushAll) (unless...
+; # (unless P (free (val $LineBuf)) (flushAll) (unless (setq P (set $...
   %39 = icmp ne i8* %38, null
   br i1 %39, label %$19, label %$18
 $18:
   %40 = phi i8* [%38, %$7] ; # P
-; # (initReadline)
-  call void @initReadline()
 ; # (val $LineBuf)
   %41 = load i8*, i8** @$LineBuf
 ; # (free (val $LineBuf))
@@ -104322,6 +104320,8 @@ $22:
 ; # (getUsec YES)
   %140 = call i64 @getUsec(i1 1)
   store i64 %140, i64* @$USec
+; # (initReadline)
+  call void @initReadline()
 ; # (unless (setjmp QuitRst) (loadAll 0))
 ; # (setjmp QuitRst)
   %141 = call i32 @setjmp(i8* @QuitRst)

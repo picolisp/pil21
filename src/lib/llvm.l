@@ -1,4 +1,4 @@
-# 30sep20 Software Lab. Alexander Burger
+# 05oct20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -513,7 +513,7 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
    (setq *Ssa -1)
    (off *Bind *Phi *Safe)
    (bind (and Body (mapcar fin Args))
-      (with Sym
+      (with (putMap Sym)
          (setq *Ret
             (if Ret
                (type Ret)
@@ -566,7 +566,6 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
                            (== void *Ret)
                            (list 'def '(pack "%" *Ssa) (lit Ret)) ) ) ) ) ) ) )
       (when Body
-         (putMap Sym)
          (let (*Lbl 1  *Log T)
             (for X
                (make

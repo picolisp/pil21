@@ -1,5 +1,4 @@
 # 05oct20 Software Lab. Alexander Burger
-# https://picolisp.com/wiki/?vip
 
 (symbols 'vip 'pico)
 

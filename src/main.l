@@ -1,4 +1,4 @@
-# 03oct20 Software Lab. Alexander Burger
+# 05oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1740,6 +1740,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (signal (val SIGTTIN Sig) (val SigIgn))
    (signal (val SIGTTOU Sig) (val SigIgn))
    (set $USec (getUsec YES))
+   (initReadline)
    (unless (setjmp QuitRst)
       (loadAll 0) )  # Load arguments
    (loop
