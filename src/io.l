@@ -312,7 +312,8 @@
                         (drop Q
                            (if (cnt? (val Q))
                               @
-                              (| (half @) (shl (& @ 1) 3)) ) ) ) )
+                              (let S (& (val (dig @)) 1)
+                                 (| (half @) (shl S 3)) ) ) ) ) )
                   (T  # Symbol
                      (set P 4)  # 'cnt' for symbol name
                      (when (== Cnt 63)  # More than one chunk
@@ -339,7 +340,7 @@
                                  (TRANSIENT (consStr Nm))
                                  (INTERN (requestSym Nm))
                                  (T  # External
-                                   (when (val $Extn)
+                                    (when (val $Extn)
                                        (let N
                                           (shl
                                              (& (i64 (+ (objFile Nm) @)) (hex "FFFF"))
