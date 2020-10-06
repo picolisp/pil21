@@ -1,4 +1,4 @@
-# 05oct20 Software Lab. Alexander Burger
+# 06oct20 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -327,12 +327,12 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
 
 
 (local) (delwin cursor addLine chgLine unmark redraw repaint scLeft scRight goto
-chgwin eqwin getch getch2 reload scratch done change jmp@@ cnt@@ goCol goLeft
-goRight goUp goDown goAbs goFind tword word lword end lend getWord _forward
-goForward _backward goBackward goPFore goPBack shift shiftY indent cutX cutN
-paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe evRpt
-move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN nextBuf
-shell shFile prCmd reset command vi)
+chgwin eqwin getch getch2 reload scratch tag done change jmp@@ cnt@@ goCol
+goLeft goRight goUp goDown goAbs goFind tword word lword end lend getWord
+_forward goForward _backward goBackward goPFore goPBack shift shiftY indent cutX
+cutN paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe
+evRpt move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN
+nextBuf shell shFile prCmd reset command vi)
 
 (de delwin ()
    (when (=: prev next (: next))
@@ -521,6 +521,18 @@ shell shFile prCmd reset command vi)
          Lst )
       (goto 1 (: buffer posY)) )
    (repaint) )
+
+(de tag (S)
+   (cond
+      ((: buffer syms)
+         (push '*TagStack (: posY) @ (symbols))
+         (syms> (: buffer) (cons S @))
+         (reload (: buffer file) 1) )
+      ((get S '*Dbg 1)
+         (push '*TagStack (: posY) (: buffer file) (symbols))
+         (apply symbols (cddr @))
+         (reload (cadr @) (car @)) )
+      (T (beep)) ) )
 
 (de done (Flg)
    (and Flg
@@ -1247,6 +1259,7 @@ shell shFile prCmd reset command vi)
                         (in (: mark) (move 'goAbs (read) (read))) ) )
                   ("n" (nextBuf))  # Next buffer
                   ("N" (nextBuf T))  # Previous buffer
+                  (("ta" "tag") (tag (any Line)))
                   ("e" (reload (rplFile Line)))  # (Edit) Reload buffer
                   ("r"  # Read file contents
                      (let F (fName (rplFile Line))
@@ -1498,17 +1511,7 @@ shell shFile prCmd reset command vi)
                                        (chgwin (inc (: lines))) ) ) ) )
                            ("=" (eqwin))  # Set all windows to equal size
                            (("K" "^]")  # Edit symbol
-                              (let S (any (pack (getWord T)))
-                                 (cond
-                                    ((: buffer syms)
-                                       (push '*TagStack (: posY) @ (symbols))
-                                       (syms> (: buffer) (cons S @))
-                                       (reload (: buffer file) 1) )
-                                    ((get S '*Dbg 1)
-                                       (push '*TagStack (: posY) (: buffer file) (symbols))
-                                       (apply symbols (cddr @))
-                                       (reload (cadr @) (car @)) )
-                                    (T (beep)) ) ) )
+                              (tag (any (pack (getWord T)))) )
                            (("Q" "^T")  # Pop tag stack
                               (ifn *TagStack
                                  (beep)
