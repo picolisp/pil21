@@ -1,4 +1,4 @@
-# 05oct20 Software Lab. Alexander Burger
+# 06oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -191,6 +191,7 @@
          (set $Talking 0) )
       (Cld: pid 0)
       (close (Cld: hear))
+      (close (Cld: tell))
       (free (Cld: buf)) ) )
 
 (de void wrChild ((i8* . Cld)  (i8* . P) (i64 . Cnt))
@@ -513,9 +514,10 @@
             (i32* Q) Pid
             (inc (i32* Q)) (i32 N) )
          (when (val $Tell)
-            (unless (wrBytes @ Q D)
-               (close @)
-               (set $Tell 0) ) )
+            (let Fd @
+               (unless (wrBytes Fd Q D)
+                  (close Fd)
+                  (set $Tell 0) ) ) )
          (let
             (Cld (val $Child)  # Iterate children
                <Cld (ofs Cld (* (val $Children) (child T))) )
@@ -531,9 +533,10 @@
 
 (de void unsync ()
    (when (val $Tell)
-      (unless (wrBytes @ (i8* (push 0)) 8)
-         (close @)
-         (set $Tell 0) ) )
+      (let Fd @
+         (unless (wrBytes Fd (i8* (push 0)) 8)
+            (close Fd)
+            (set $Tell 0) ) ) )
    (set $Sync NO) )
 
 (de rdHear ()

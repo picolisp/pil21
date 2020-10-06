@@ -36353,11 +36353,17 @@ $3:
   %10 = load i32, i32* %9
 ; # (close (Cld: hear))
   %11 = call i32 @close(i32 %10)
+; # (Cld: tell)
+  %12 = getelementptr i8, i8* %0, i32 32
+  %13 = bitcast i8* %12 to i32*
+  %14 = load i32, i32* %13
+; # (close (Cld: tell))
+  %15 = call i32 @close(i32 %14)
 ; # (Cld: buf)
-  %12 = bitcast i8* %0 to i8**
-  %13 = load i8*, i8** %12
+  %16 = bitcast i8* %0 to i8**
+  %17 = load i8*, i8** %16
 ; # (free (Cld: buf))
-  call void @free(i8* %13)
+  call void @free(i8* %17)
   ret void
 }
 
@@ -38280,7 +38286,7 @@ $1:
 ; # (i32 N)
   %11 = trunc i64 %7 to i32
   store i32 %11, i32* %10
-; # (when (val $Tell) (unless (wrBytes @ Q D) (close @) (set $Tell 0)...
+; # (when (val $Tell) (let Fd @ (unless (wrBytes Fd Q D) (close Fd) (...
 ; # (val $Tell)
   %12 = load i32, i32* @$Tell
   %13 = icmp ne i32 %12, 0
@@ -38288,14 +38294,15 @@ $1:
 $2:
   %14 = phi i8* [%3, %$1] ; # P
   %15 = phi i8* [%2, %$1] ; # Q
-; # (unless (wrBytes @ Q D) (close @) (set $Tell 0))
-; # (wrBytes @ Q D)
+; # (let Fd @ (unless (wrBytes Fd Q D) (close Fd) (set $Tell 0)))
+; # (unless (wrBytes Fd Q D) (close Fd) (set $Tell 0))
+; # (wrBytes Fd Q D)
   %16 = call i1 @wrBytes(i32 %12, i8* %15, i64 %6)
   br i1 %16, label %$5, label %$4
 $4:
   %17 = phi i8* [%14, %$2] ; # P
   %18 = phi i8* [%15, %$2] ; # Q
-; # (close @)
+; # (close Fd)
   %19 = call i32 @close(i32 %12)
 ; # (set $Tell 0)
   store i32 0, i32* @$Tell
@@ -38394,23 +38401,24 @@ $8:
 
 define void @unsync() {
 $1:
-; # (when (val $Tell) (unless (wrBytes @ (i8* (push 0)) 8) (close @) ...
+; # (when (val $Tell) (let Fd @ (unless (wrBytes Fd (i8* (push 0)) 8)...
 ; # (val $Tell)
   %0 = load i32, i32* @$Tell
   %1 = icmp ne i32 %0, 0
   br i1 %1, label %$2, label %$3
 $2:
-; # (unless (wrBytes @ (i8* (push 0)) 8) (close @) (set $Tell 0))
+; # (let Fd @ (unless (wrBytes Fd (i8* (push 0)) 8) (close Fd) (set $...
+; # (unless (wrBytes Fd (i8* (push 0)) 8) (close Fd) (set $Tell 0))
 ; # (push 0)
   %2 = alloca i64, i64 1
   store i64 0, i64* %2
 ; # (i8* (push 0))
   %3 = bitcast i64* %2 to i8*
-; # (wrBytes @ (i8* (push 0)) 8)
+; # (wrBytes Fd (i8* (push 0)) 8)
   %4 = call i1 @wrBytes(i32 %0, i8* %3, i64 8)
   br i1 %4, label %$5, label %$4
 $4:
-; # (close @)
+; # (close Fd)
   %5 = call i32 @close(i32 %0)
 ; # (set $Tell 0)
   store i32 0, i32* @$Tell
