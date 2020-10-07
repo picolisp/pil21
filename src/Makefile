@@ -1,4 +1,4 @@
-# 16sep20 Software Lab. Alexander Burger
+# 07oct20 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -15,7 +15,7 @@ LIB = ../lib
 INC = lib/llvm.l vers.l defs.l glob.l dec.l
 SRC = main.l gc.l big.l sym.l io.l db.l apply.l flow.l subr.l
 
-all: $(LIB)/sysdefs $(BIN)/picolisp $(LIB)/ext.so $(LIB)/ht.so
+all: $(LIB)/sysdefs $(BIN)/picolisp $(LIB)/ext.so $(LIB)/ht.so $(BIN)/balance $(BIN)/ssl $(BIN)/httpGate
 
 # System definitions
 $(LIB)/sysdefs: sysdefs.c
@@ -38,7 +38,7 @@ base.ll: $(INC) $(SRC)
 	mv base.map $(LIB)/map
 
 lib.bc: pico.h lib.c
-	$(CC) -c -O3 -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' `pkg-config --cflags libffi` -emit-llvm lib.c
+	$(CC) -w -c -O3 -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' `pkg-config --cflags libffi` -emit-llvm lib.c
 
 # Extension libraries
 $(LIB)/ext.so: ext.bc
@@ -60,6 +60,17 @@ ht.bc: ht.ll
 
 ht.ll: $(INC) ht.l
 	../pil lib/llvm.l ht.l -bye > ht.ll
+
+# Tools
+$(BIN)/balance: balance.c
+	$(CC) -w -o $(BIN)/balance balance.c
+
+# Gate
+$(BIN)/ssl: ssl.c
+	$(CC) -w -o $(BIN)/ssl ssl.c -lssl -lcrypto
+
+$(BIN)/httpGate: httpGate.c
+	$(CC) -w -o $(BIN)/httpGate httpGate.c -lssl -lcrypto
 
 # Clean up
 clean:
