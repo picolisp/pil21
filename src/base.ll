@@ -55657,8 +55657,8 @@ $5:
 ; # (loop (let (Nm (xName Exe Sym) Fp (fopen (pathString Nm (b8 (path...
   br label %$6
 $6:
-  %22 = phi i64 [%20, %$5], [%101, %$23] ; # X
-  %23 = phi i64 [%21, %$5], [%103, %$23] ; # Sym
+  %22 = phi i64 [%20, %$5], [%111, %$25] ; # X
+  %23 = phi i64 [%21, %$5], [%113, %$25] ; # Sym
 ; # (let (Nm (xName Exe Sym) Fp (fopen (pathString Nm (b8 (pathSize N...
 ; # (xName Exe Sym)
   %24 = call i64 @xName(i64 %0, i64 %23)
@@ -55685,8 +55685,8 @@ $8:
 ; # (while (ge0 (getc_unlocked Fp)) (let Siz @ (unless (== (fread Blk...
   br label %$9
 $9:
-  %34 = phi i64 [%32, %$8], [%90, %$16] ; # X
-  %35 = phi i64 [%33, %$8], [%91, %$16] ; # Sym
+  %34 = phi i64 [%32, %$8], [%100, %$16] ; # X
+  %35 = phi i64 [%33, %$8], [%101, %$16] ; # Sym
 ; # (getc_unlocked Fp)
   %36 = call i32 @getc_unlocked(i8* %28)
 ; # (ge0 (getc_unlocked Fp))
@@ -55713,7 +55713,7 @@ $13:
   %45 = phi i64 [%38, %$10] ; # X
   %46 = phi i64 [%39, %$10] ; # Sym
   %47 = phi i32 [%36, %$10] ; # Siz
-; # (if (dbfBuf Blk) (let Db: (dbFile @) (unless Siz (setq Siz (Db: s...
+; # (if (dbfBuf Blk) (let Db: (dbFile @) (when (== Siz BLKSIZE) (setq...
 ; # (dbfBuf Blk)
   %48 = call i8* @dbfBuf(i8* %9)
   %49 = icmp ne i8* %48, null
@@ -55722,10 +55722,11 @@ $14:
   %50 = phi i64 [%45, %$13] ; # X
   %51 = phi i64 [%46, %$13] ; # Sym
   %52 = phi i32 [%47, %$13] ; # Siz
-; # (let Db: (dbFile @) (unless Siz (setq Siz (Db: siz))) (unless (an...
-; # (unless Siz (setq Siz (Db: siz)))
-  %53 = icmp ne i32 %52, 0
-  br i1 %53, label %$18, label %$17
+; # (let Db: (dbFile @) (when (== Siz BLKSIZE) (setq Siz (Db: siz))) ...
+; # (when (== Siz BLKSIZE) (setq Siz (Db: siz)))
+; # (== Siz BLKSIZE)
+  %53 = icmp eq i32 %52, 64
+  br i1 %53, label %$17, label %$18
 $17:
   %54 = phi i64 [%50, %$14] ; # X
   %55 = phi i64 [%51, %$14] ; # Sym
@@ -55739,90 +55740,106 @@ $18:
   %60 = phi i64 [%50, %$14], [%54, %$17] ; # X
   %61 = phi i64 [%51, %$14], [%55, %$17] ; # Sym
   %62 = phi i32 [%52, %$14], [%59, %$17] ; # Siz
+; # (unless Siz (setq Siz (Db: siz)))
+  %63 = icmp ne i32 %62, 0
+  br i1 %63, label %$20, label %$19
+$19:
+  %64 = phi i64 [%60, %$18] ; # X
+  %65 = phi i64 [%61, %$18] ; # Sym
+  %66 = phi i32 [%62, %$18] ; # Siz
+; # (Db: siz)
+  %67 = getelementptr i8, i8* %48, i32 12
+  %68 = bitcast i8* %67 to i32*
+  %69 = load i32, i32* %68
+  br label %$20
+$20:
+  %70 = phi i64 [%60, %$18], [%64, %$19] ; # X
+  %71 = phi i64 [%61, %$18], [%65, %$19] ; # Sym
+  %72 = phi i32 [%62, %$18], [%69, %$19] ; # Siz
 ; # (unless (and (== (fread Blk BLK 1 Fp) 1) (== (fread Buf (i64 Siz)...
 ; # (and (== (fread Blk BLK 1 Fp) 1) (== (fread Buf (i64 Siz) 1 Fp) 1...
 ; # (fread Blk BLK 1 Fp)
-  %63 = call i32 @fread(i8* %9, i64 6, i64 1, i8* %28)
+  %73 = call i32 @fread(i8* %9, i64 6, i64 1, i8* %28)
 ; # (== (fread Blk BLK 1 Fp) 1)
-  %64 = icmp eq i32 %63, 1
-  br i1 %64, label %$20, label %$19
-$20:
-  %65 = phi i64 [%60, %$18] ; # X
-  %66 = phi i64 [%61, %$18] ; # Sym
-  %67 = phi i32 [%62, %$18] ; # Siz
-; # (i64 Siz)
-  %68 = sext i32 %67 to i64
-; # (fread Buf (i64 Siz) 1 Fp)
-  %69 = call i32 @fread(i8* %8, i64 %68, i64 1, i8* %28)
-; # (== (fread Buf (i64 Siz) 1 Fp) 1)
-  %70 = icmp eq i32 %69, 1
-  br label %$19
-$19:
-  %71 = phi i64 [%60, %$18], [%65, %$20] ; # X
-  %72 = phi i64 [%61, %$18], [%66, %$20] ; # Sym
-  %73 = phi i32 [%62, %$18], [%67, %$20] ; # Siz
-  %74 = phi i1 [0, %$18], [%70, %$20] ; # ->
+  %74 = icmp eq i32 %73, 1
   br i1 %74, label %$22, label %$21
+$22:
+  %75 = phi i64 [%70, %$20] ; # X
+  %76 = phi i64 [%71, %$20] ; # Sym
+  %77 = phi i32 [%72, %$20] ; # Siz
+; # (i64 Siz)
+  %78 = sext i32 %77 to i64
+; # (fread Buf (i64 Siz) 1 Fp)
+  %79 = call i32 @fread(i8* %8, i64 %78, i64 1, i8* %28)
+; # (== (fread Buf (i64 Siz) 1 Fp) 1)
+  %80 = icmp eq i32 %79, 1
+  br label %$21
 $21:
-  %75 = phi i64 [%71, %$19] ; # X
-  %76 = phi i64 [%72, %$19] ; # Sym
-  %77 = phi i32 [%73, %$19] ; # Siz
+  %81 = phi i64 [%70, %$20], [%75, %$22] ; # X
+  %82 = phi i64 [%71, %$20], [%76, %$22] ; # Sym
+  %83 = phi i32 [%72, %$20], [%77, %$22] ; # Siz
+  %84 = phi i1 [0, %$20], [%80, %$22] ; # ->
+  br i1 %84, label %$24, label %$23
+$23:
+  %85 = phi i64 [%81, %$21] ; # X
+  %86 = phi i64 [%82, %$21] ; # Sym
+  %87 = phi i32 [%83, %$21] ; # Siz
 ; # (jnlErr Exe)
   call void @jnlErr(i64 %0)
   unreachable
-$22:
-  %78 = phi i64 [%71, %$19] ; # X
-  %79 = phi i64 [%72, %$19] ; # Sym
-  %80 = phi i32 [%73, %$19] ; # Siz
+$24:
+  %88 = phi i64 [%81, %$21] ; # X
+  %89 = phi i64 [%82, %$21] ; # Sym
+  %90 = phi i32 [%83, %$21] ; # Siz
 ; # (getAdr Blk)
-  %81 = call i64 @getAdr(i8* %9)
+  %91 = call i64 @getAdr(i8* %9)
 ; # (Db: sh)
-  %82 = getelementptr i8, i8* %48, i32 8
-  %83 = bitcast i8* %82 to i32*
-  %84 = load i32, i32* %83
+  %92 = getelementptr i8, i8* %48, i32 8
+  %93 = bitcast i8* %92 to i32*
+  %94 = load i32, i32* %93
 ; # (i64 (Db: sh))
-  %85 = sext i32 %84 to i64
+  %95 = sext i32 %94 to i64
 ; # (shl (getAdr Blk) (i64 (Db: sh)))
-  %86 = shl i64 %81, %85
+  %96 = shl i64 %91, %95
 ; # (blkPoke (shl (getAdr Blk) (i64 (Db: sh))) Buf Siz)
-  call void @blkPoke(i64 %86, i8* %8, i32 %80)
+  call void @blkPoke(i64 %96, i8* %8, i32 %90)
   br label %$16
 $15:
-  %87 = phi i64 [%45, %$13] ; # X
-  %88 = phi i64 [%46, %$13] ; # Sym
-  %89 = phi i32 [%47, %$13] ; # Siz
+  %97 = phi i64 [%45, %$13] ; # X
+  %98 = phi i64 [%46, %$13] ; # Sym
+  %99 = phi i32 [%47, %$13] ; # Siz
 ; # (dbfErr Exe)
   call void @dbfErr(i64 %0)
   unreachable
 $16:
-  %90 = phi i64 [%78, %$22] ; # X
-  %91 = phi i64 [%79, %$22] ; # Sym
-  %92 = phi i32 [%80, %$22] ; # Siz
+  %100 = phi i64 [%88, %$24] ; # X
+  %101 = phi i64 [%89, %$24] ; # Sym
+  %102 = phi i32 [%90, %$24] ; # Siz
   br label %$9
 $11:
-  %93 = phi i64 [%34, %$9] ; # X
-  %94 = phi i64 [%35, %$9] ; # Sym
+  %103 = phi i64 [%34, %$9] ; # X
+  %104 = phi i64 [%35, %$9] ; # Sym
 ; # (fclose Fp)
-  %95 = call i32 @fclose(i8* %28)
+  %105 = call i32 @fclose(i8* %28)
 ; # (? (atom (shift X)))
 ; # (shift X)
-  %96 = inttoptr i64 %93 to i64*
-  %97 = getelementptr i64, i64* %96, i32 1
-  %98 = load i64, i64* %97
+  %106 = inttoptr i64 %103 to i64*
+  %107 = getelementptr i64, i64* %106, i32 1
+  %108 = load i64, i64* %107
 ; # (atom (shift X))
-  %99 = and i64 %98, 15
-  %100 = icmp ne i64 %99, 0
-  br i1 %100, label %$24, label %$23
-$23:
-  %101 = phi i64 [%98, %$11] ; # X
-  %102 = phi i64 [%94, %$11] ; # Sym
+  %109 = and i64 %108, 15
+  %110 = icmp ne i64 %109, 0
+  br i1 %110, label %$26, label %$25
+$25:
+  %111 = phi i64 [%108, %$11] ; # X
+  %112 = phi i64 [%104, %$11] ; # Sym
 ; # (evSym X)
-  %103 = call i64 @evSym(i64 %101)
+  %113 = call i64 @evSym(i64 %111)
   br label %$6
-$24:
-  %104 = phi i64 [%98, %$11] ; # X
-  %105 = phi i64 [%94, %$11] ; # Sym
-  %106 = phi i64 [0, %$11] ; # ->
+$26:
+  %114 = phi i64 [%108, %$11] ; # X
+  %115 = phi i64 [%104, %$11] ; # Sym
+  %116 = phi i64 [0, %$11] ; # ->
 ; # (set $DbLog Log $DbJnl Jnl)
   store i8* %6, i8** @$DbLog
   store i8* %5, i8** @$DbJnl

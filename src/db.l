@@ -1,4 +1,4 @@
-# 05oct20 Software Lab. Alexander Burger
+# 08oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -626,6 +626,10 @@
                      (jnlErr Exe) )
                   (if (dbfBuf Blk)  # Get file number from 'Buf' to 'DbFile'
                      (let Db: (dbFile @)
+                        #! Temporary backward compatibility
+                        (when (== Siz BLKSIZE)
+                           (setq Siz (Db: siz)) )
+                        #!
                         (unless Siz
                            (setq Siz (Db: siz)) )
                         (unless
