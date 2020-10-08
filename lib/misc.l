@@ -1,4 +1,4 @@
-# 01oct20 Software Lab. Alexander Burger
+# 08oct20 Software Lab. Alexander Burger
 
 # *Allow
 
@@ -78,11 +78,16 @@
                (at A (push 'L " "))
                (push 'L (& 1 X)) )
             (pack S L) ) )
-      ((setq X (filter '((C) (not (sp? C))) (chop X)))
-         (let (S (and (= '- (car X)) (++ X))  N 0)
-            (for C X
-               (setq N (| (format C) (>> -1 N))) )
-            (if S (- N) N) ) ) ) )
+      ((setq X
+            (filter
+               '((C) (not (sp? C)))
+               (chop X) ) )
+         (let (S (and (= '- (car X)) (++ X))  N 0  C)
+            (loop
+               (NIL (setq C (format (++ X))))
+               (NIL (or (=0 C) (=1 C)))
+               (setq N (| C (>> -1 N)))
+               (NIL X (if S (- N) N)) ) ) ) ) )
 
 # Octal notation
 (de oct (X I)
@@ -93,11 +98,16 @@
                (at A (push 'L " "))
                (push 'L (& 7 X)) )
             (pack S L) ) )
-      ((setq X (filter '((C) (not (sp? C))) (chop X)))
-         (let (S (and (= '- (car X)) (++ X))  N 0)
-            (for C X
-               (setq N (| (format C) (>> -3 N))) )
-            (if S (- N) N) ) ) ) )
+      ((setq X
+            (filter
+               '((C) (not (sp? C)))
+               (chop X) ) )
+         (let (S (and (= '- (car X)) (++ X))  N 0  C)
+            (loop
+               (NIL (setq C (format (++ X))))
+               (NIL (>= 7 C 0))
+               (setq N (| C (>> -3 N)))
+               (NIL X (if S (- N) N)) ) ) ) ) )
 
 # Hexadecimal notation
 (de hex (X I)
@@ -108,14 +118,18 @@
                (at A (push 'L " "))
                (push 'L (hex1 X)) )
             (pack S L) ) )
-      ((setq X (filter '((C) (not (sp? C))) (chop X)))
-         (let (S (and (= '- (car X)) (++ X))  N 0)
-            (for C X
-               (setq C (- (char C) `(char "0")))
+      ((setq X
+            (filter
+               '((C) (not (sp? C)))
+               (chop X) ) )
+         (let (S (and (= '- (car X)) (++ X))  N 0  C)
+            (loop
+               (setq C (- (char (++ X)) `(char "0")))
                (and (> C 9) (dec 'C 7))
                (and (> C 22) (dec 'C 32))
-               (setq N (| C (>> -4 N))) )
-            (if S (- N) N) ) ) ) )
+               (NIL (>= 15 C 0))
+               (setq N (| C (>> -4 N)))
+               (NIL X (if S (- N) N)) ) ) ) ) )
 
 (de hex1 (N)
    (let C (& 15 N)
@@ -139,27 +153,6 @@
                   (inc 'C 7) )
                (char (+ `(char "0") C)) )
             (chop X) ) ) ) )
-
-# Base 64 notation
-(de fmt64 (X)
-   (if (num? X)
-      (let L (_fmt64 X)
-         (until (=0 (setq X (>> 6 X)))
-            (push 'L (_fmt64 X)) )
-         (pack L) )
-      (let N 0
-         (for C (chop X)
-            (setq C (- (char C) `(char "0")))
-            (and (> C 42) (dec 'C 6))
-            (and (> C 11) (dec 'C 5))
-            (setq N (+ C (>> -6 N))) )
-         N ) ) )
-
-(de _fmt64 (N)
-   (let C (& 63 N)
-      (and (> C 11) (inc 'C 5))
-      (and (> C 42) (inc 'C 6))
-      (char (+ C `(char "0"))) ) )
 
 ### Tree ###
 (de balance ("Var" "Lst" "Flg")

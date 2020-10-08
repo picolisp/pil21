@@ -1,4 +1,4 @@
-# 06oct20 Software Lab. Alexander Burger
+# 08oct20 Software Lab. Alexander Burger
 
 ### locale ###
 (locale "DE" "de")
@@ -209,11 +209,3 @@
 (test "a/b/c/" (dirname "a/b/c/d/"))
 (test "d" (basename "a/b/c/d"))
 (test "d" (basename "a/b/c/d/"))
-
-
-### fmt64 ###
-(test "9" (fmt64 9))
-(test ":" (fmt64 10))
-(test ";" (fmt64 11))
-(test "A" (fmt64 12))
-(test 4096 (fmt64 "100"))
