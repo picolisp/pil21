@@ -1,17 +1,16 @@
-# 19jun20 Software Lab. Alexander Burger
+# 09oct20 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
    (setq *Uuid (in "UUID" (line T)))
    (for F '("JAVA" "LISP" "RQST" "RPLY" "BOSS")
-      (native "@" "unlink" 'I F)
-      (native "@" "mkfifo" 'I F `(oct "600")) )
+      (%@ "unlink" 'I F)
+      (%@ "mkfifo" 'I F `(oct "600")) )
    (hear (open "BOSS")) )
 
 (symbols 'android 'pico)
 
 # SSL
-(sys "LD_LIBRARY_PATH" "lib")
 (sys "SSL_CERT_FILE" "tls/cert.pem")
 
 # (boss 'sym ['any ..])
@@ -59,9 +58,7 @@
                            (and (get X Obj) (ext 0 (apply @ Lst))) ) ) ) ) ) )
          (push '*Fork
             '(off *Java *Lisp)
-            (list 'mapc 'close (list Rply *Java *Lisp)) )
-         (forked) )
-      (forked)
+            (list 'mapc 'close (list Rply *Java *Lisp)) ) )
       (javaExt) ) )
 
 (de java @

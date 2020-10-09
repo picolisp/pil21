@@ -1,4 +1,4 @@
-# 28sep20 Software Lab. Alexander Burger
+# 09oct20 Software Lab. Alexander Burger
 
 # *JS "*JS" *Style *SsEvts *Menu *Tab *ID
 
@@ -424,10 +424,11 @@
 (private) (Lst P LayX LayY L Args DX DY Cls Style)
 
 # Layout
-(zero LayX LayY)
-
 (de <layout> Lst
-   (let P (and (=T (car Lst)) (++ Lst))
+   (let
+      (P (and (=T (car Lst)) (++ Lst))
+         LayX 0
+         LayY 0 )
       (recur (Lst LayX)
          (use (LayX LayY)
             (for L Lst

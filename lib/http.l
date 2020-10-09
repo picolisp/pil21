@@ -1,4 +1,4 @@
-# 30sep20 Software Lab. Alexander Burger
+# 09oct20 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -81,7 +81,6 @@
       ((ctty Tty)
          (or *SesId (off *Run))
          (println *Pid)
-         (load (if *Dbg "@lib/too.l" "@dbg.l"))
          (off *Err)
          (quit) ) ) )
 
