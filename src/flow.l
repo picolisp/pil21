@@ -1,4 +1,4 @@
-# 30sep20 Software Lab. Alexander Burger
+# 10oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -231,14 +231,14 @@
                      (setq P (push V (needChkVar Exe Z) P)) ) ) ) ) )  # [val sym LINK]
       (prog1
          (if (== Y $At)  # VarArgs
-            (let Next (val $Next)
-               (if (pair X)
-                  (let (L (push NIL (eval (car X)) NIL)  Q L)
-                     (link (ofs L 1))
-                     (while (pair (shift X))
-                        (setq L
-                           (set L (push NIL (eval (car X)) NIL)) )
-                        (link (ofs L 1)) )
+            (if (pair X)
+               (let (L (push NIL (eval (car X)) NIL)  Q L)
+                  (link (ofs L 1))
+                  (while (pair (shift X))
+                     (setq L
+                        (set L (push NIL (eval (car X)) NIL)) )
+                     (link (ofs L 1)) )
+                  (let Next (val $Next)
                      (set L $Nil  $Next Q)
                      (loop
                         (let Sym (val 2 P)
@@ -250,7 +250,8 @@
                            (set $Typ Typ  $Key Key)
                            (run (cdr Exe))  # Run body
                            (set $Key KeyS  $Typ TypS  $Next Next)
-                           (drop (ofs Q 1)) ) ) )
+                           (drop (ofs Q 1)) ) ) ) )
+               (let Next (val $Next)
                   (set $Next $Nil)
                   (loop
                      (let Sym (val 2 P)
