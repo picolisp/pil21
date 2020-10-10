@@ -1,4 +1,4 @@
-# 01oct20 Software Lab. Alexander Burger
+# 10oct20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -29,31 +29,21 @@
       (push '*Run (list -1 (+ N) '(bye)))
       (del @ '*Run) ) )
 
-(de tasks Prg
-   (task -2 (abs (run Prg))  "Prg" Prg
+(de tasks Task
+   (task -2 (abs (run Task))  "Prg" Task
       (let (L (assoc @ *Run)  P (run "Prg"))
          (if2 (lt0 (car L)) (lt0 P)
             (set (cdr L) (abs P))            # (-2 111 ..) -> (-2 999 ..)
-            (prog                            # (-2 999 ..) -> (7 ..)
-               (del '(task -2) '*Fork)
-               (ifn P
-                  (task -2)
-                  (set L P)
-                  (con L (cddr L))
-                  (push '*Fork (list 'close P) (list 'task P)) ) )
-            (let N (car L)                   # (7 ..) -> (-2 999 ...)
-               (del (list 'task N) '*Fork)
-               (del (list 'close N) '*Fork)
+            (ifn P
+               (task -2)
+               (set L P)                     # (-2 999 ..) -> (7 ..)
+               (con L (cddr L)) )
+            (prog                            # (7 ..) -> (-2 999 ...)
                (set L -2)
-               (con L (cons (abs P) (cdr L)))
-               (push '*Fork '(task -2)) )
-            (let N (car L)                   # (3 ..) -> (7 ..)
-               (del (list 'task N) '*Fork)
-               (del (list 'close N) '*Fork)
-               (ifn P
-                  (task N)
-                  (set L P)
-                  (push '*Fork (list 'close P) (list 'task P)) ) ) ) ) ) )
+               (con L (cons (abs P) (cdr L))) )
+            (ifn P
+               (task (car L))
+               (set L P) ) ) ) ) )           # (3 ..) -> (7 ..)
 
 (de abort ("N" . "Prg")
    (catch 'abort
