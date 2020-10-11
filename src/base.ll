@@ -6829,6 +6829,7 @@ $2:
   store i64 %13, i64* %17
 ; # (gc)
   call void @gc()
+; # drop
   %18 = inttoptr i64 %6 to i64*
   %19 = getelementptr i64, i64* %18, i32 1
   %20 = load i64, i64* %19
@@ -6952,11 +6953,13 @@ $3:
   store i64 %44, i64* %48
 ; # (gc)
   call void @gc()
+; # drop
   %49 = inttoptr i64 %37 to i64*
   %50 = getelementptr i64, i64* %49, i32 1
   %51 = load i64, i64* %50
   %52 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 0) to i64) to i64*
   store i64 %51, i64* %52
+; # drop
   %53 = inttoptr i64 %24 to i64*
   %54 = getelementptr i64, i64* %53, i32 1
   %55 = load i64, i64* %54
@@ -7036,6 +7039,7 @@ $4:
   store i64 %15, i64* %19
 ; # (gc)
   call void @gc()
+; # drop
   %20 = inttoptr i64 %8 to i64*
   %21 = getelementptr i64, i64* %20, i32 1
   %22 = load i64, i64* %21
@@ -7058,6 +7062,7 @@ $5:
   store i64 %26, i64* %32
 ; # (gc)
   call void @gc()
+; # drop
   %33 = inttoptr i64 %26 to i64*
   %34 = getelementptr i64, i64* %33, i32 1
   %35 = load i64, i64* %34
@@ -7190,6 +7195,7 @@ $2:
   store i64 %6, i64* %12
 ; # (gc)
   call void @gc()
+; # drop
   %13 = inttoptr i64 %6 to i64*
   %14 = getelementptr i64, i64* %13, i32 1
   %15 = load i64, i64* %14
@@ -15825,6 +15831,7 @@ $24:
 $14:
   %65 = phi i64 [%41, %$15], [%56, %$22] ; # X
   %66 = phi i64 [%43, %$15], [%54, %$22] ; # ->
+; # drop
   %67 = inttoptr i64 %18 to i64*
   %68 = getelementptr i64, i64* %67, i32 1
   %69 = load i64, i64* %68
@@ -16004,6 +16011,7 @@ $29:
 $25:
   %73 = phi i64 [%58, %$26], [%69, %$30] ; # X
   %74 = phi i64 [%56, %$26], [%71, %$30] ; # ->
+; # drop
   %75 = inttoptr i64 %29 to i64*
   %76 = getelementptr i64, i64* %75, i32 1
   %77 = load i64, i64* %76
@@ -16710,6 +16718,7 @@ $14:
   %95 = phi i64 [%56, %$18], [%72, %$28] ; # X
   %96 = phi i1 [%57, %$18], [%73, %$28] ; # Sign
   %97 = phi i64 [%58, %$18], [%74, %$28] ; # ->
+; # drop
   %98 = inttoptr i64 %18 to i64*
   %99 = getelementptr i64, i64* %98, i32 1
   %100 = load i64, i64* %99
@@ -16971,6 +16980,7 @@ $19:
   %122 = phi i64 [%54, %$20], [%111, %$31] ; # X
   %123 = phi i1 [%55, %$20], [%112, %$31] ; # Sign
   %124 = phi i64 [%56, %$20], [%114, %$31] ; # ->
+; # drop
   %125 = inttoptr i64 %18 to i64*
   %126 = getelementptr i64, i64* %125, i32 1
   %127 = load i64, i64* %126
@@ -17202,6 +17212,7 @@ $14:
   %102 = phi i64 [%56, %$18], [%72, %$28] ; # X
   %103 = phi i1 [%57, %$18], [%73, %$28] ; # Sign
   %104 = phi i64 [%58, %$18], [%74, %$28] ; # ->
+; # drop
   %105 = inttoptr i64 %18 to i64*
   %106 = getelementptr i64, i64* %105, i32 1
   %107 = load i64, i64* %106
@@ -17402,6 +17413,7 @@ $32:
 $14:
   %79 = phi i64 [%52, %$18], [%66, %$28] ; # X
   %80 = phi i64 [%53, %$18], [%64, %$28] ; # ->
+; # drop
   %81 = inttoptr i64 %18 to i64*
   %82 = getelementptr i64, i64* %81, i32 1
   %83 = load i64, i64* %82
@@ -18342,6 +18354,7 @@ $24:
 $14:
   %67 = phi i64 [%42, %$15], [%57, %$22] ; # X
   %68 = phi i64 [%44, %$15], [%55, %$22] ; # ->
+; # drop
   %69 = inttoptr i64 %18 to i64*
   %70 = getelementptr i64, i64* %69, i32 1
   %71 = load i64, i64* %70
@@ -18505,6 +18518,7 @@ $24:
 $14:
   %67 = phi i64 [%42, %$15], [%57, %$22] ; # X
   %68 = phi i64 [%44, %$15], [%55, %$22] ; # ->
+; # drop
   %69 = inttoptr i64 %18 to i64*
   %70 = getelementptr i64, i64* %69, i32 1
   %71 = load i64, i64* %70
@@ -18668,6 +18682,7 @@ $24:
 $14:
   %67 = phi i64 [%42, %$15], [%57, %$22] ; # X
   %68 = phi i64 [%44, %$15], [%55, %$22] ; # ->
+; # drop
   %69 = inttoptr i64 %18 to i64*
   %70 = getelementptr i64, i64* %69, i32 1
   %71 = load i64, i64* %70
@@ -24569,6 +24584,7 @@ $25:
 $26:
   %75 = phi i32 [%67, %$24] ; # C
   %76 = phi i64 [%66, %$24] ; # Y
+; # drop
   %77 = inttoptr i64 %48 to i64*
   %78 = getelementptr i64, i64* %77, i32 1
   %79 = load i64, i64* %78
@@ -24672,6 +24688,7 @@ $4:
   %40 = load i64, i64* %39
 ; # (consStr (val 3 P))
   %41 = call i64 @consStr(i64 %40)
+; # drop
   %42 = inttoptr i64 %2 to i64*
   %43 = getelementptr i64, i64* %42, i32 1
   %44 = load i64, i64* %43
@@ -25588,6 +25605,7 @@ $23:
 $24:
   %60 = phi i64 [%58, %$25] ; # X
   %61 = phi i64 [%54, %$25] ; # ->
+; # drop
   %62 = inttoptr i64 %2 to i64*
   %63 = getelementptr i64, i64* %62, i32 1
   %64 = load i64, i64* %63
@@ -26001,6 +26019,7 @@ $33:
 $34:
   %86 = phi i64 [%82, %$35] ; # X
   %87 = phi i64 [%83, %$35] ; # ->
+; # drop
   %88 = inttoptr i64 %2 to i64*
   %89 = getelementptr i64, i64* %88, i32 1
   %90 = load i64, i64* %89
@@ -27535,6 +27554,7 @@ $35:
   %121 = phi i64 [%93, %$33], [%106, %$36] ; # Z
   %122 = phi i64 [%94, %$33], [%107, %$36] ; # P
   %123 = phi i64 [0, %$33], [0, %$36] ; # ->
+; # drop
   %124 = inttoptr i64 %85 to i64*
   %125 = getelementptr i64, i64* %124, i32 1
   %126 = load i64, i64* %125
@@ -28633,6 +28653,7 @@ $29:
 $21:
   %76 = phi i64 [%58, %$23], [%72, %$30], [%74, %$29] ; # X
   %77 = phi i64 [%59, %$23], [%73, %$30], [%75, %$29] ; # ->
+; # drop
   %78 = inttoptr i64 %29 to i64*
   %79 = getelementptr i64, i64* %78, i32 1
   %80 = load i64, i64* %79
@@ -30902,6 +30923,7 @@ $16:
   %48 = phi i64 [%33, %$10] ; # X
   %49 = phi i64 [%42, %$10] ; # Y
   %50 = phi i64 [0, %$10] ; # ->
+; # drop
   %51 = inttoptr i64 %21 to i64*
   %52 = getelementptr i64, i64* %51, i32 1
   %53 = load i64, i64* %52
@@ -31159,6 +31181,7 @@ $11:
   %40 = phi i64 [%33, %$9] ; # X
   %41 = phi i64 [%34, %$9] ; # Y
   %42 = phi i64 [0, %$9] ; # ->
+; # drop
   %43 = inttoptr i64 %21 to i64*
   %44 = getelementptr i64, i64* %43, i32 1
   %45 = load i64, i64* %44
@@ -40335,6 +40358,7 @@ $101:
   store i64 %722, i64* %728
 ; # (evList @)
   %729 = call i64 @evList(i64 %701)
+; # drop
   %730 = inttoptr i64 %722 to i64*
   %731 = getelementptr i64, i64* %730, i32 1
   %732 = load i64, i64* %731
@@ -44145,6 +44169,7 @@ $27:
 $28:
   %74 = phi i32 [%70, %$26], [%73, %$27] ; # C
   %75 = phi i64 [%72, %$26], [%53, %$27] ; # ->
+; # drop
   %76 = inttoptr i64 %60 to i64*
   %77 = getelementptr i64, i64* %76, i32 1
   %78 = load i64, i64* %77
@@ -44199,6 +44224,7 @@ $34:
   br label %$31
 $31:
   %103 = phi i64 [%87, %$33], [%101, %$35], [%102, %$34] ; # ->
+; # drop
   %104 = inttoptr i64 %89 to i64*
   %105 = getelementptr i64, i64* %104, i32 1
   %106 = load i64, i64* %105
@@ -51953,6 +51979,7 @@ $26:
   store i64 %92, i64* %98
 ; # (parse (name Y) NO 0 (save (evSym X)))
   %99 = call i64 @parse(i64 %89, i1 0, i64 0, i64 %90)
+; # drop
   %100 = inttoptr i64 %75 to i64*
   %101 = getelementptr i64, i64* %100, i32 1
   %102 = load i64, i64* %101
@@ -65477,6 +65504,7 @@ $20:
 ; # (safe (adds R @))
   %135 = inttoptr i64 %5 to i64*
   store i64 %134, i64* %135
+; # drop
   %136 = inttoptr i64 %127 to i64*
   %137 = getelementptr i64, i64* %136, i32 1
   %138 = load i64, i64* %137
@@ -67798,6 +67826,7 @@ $33:
   br label %$30
 $30:
   %97 = phi i64 [%13, %$32], [%95, %$34], [%96, %$33] ; # ->
+; # drop
   %98 = inttoptr i64 %30 to i64*
   %99 = getelementptr i64, i64* %98, i32 1
   %100 = load i64, i64* %99
@@ -68017,6 +68046,7 @@ $31:
 $32:
   %102 = phi i64 [%97, %$30], [%100, %$31] ; # X
   %103 = phi i64 [%99, %$30], [%101, %$31] ; # ->
+; # drop
   %104 = inttoptr i64 %35 to i64*
   %105 = getelementptr i64, i64* %104, i32 1
   %106 = load i64, i64* %105
@@ -74831,6 +74861,7 @@ $28:
   %130 = phi i64 [%111, %$29], [%121, %$27] ; # R
   %131 = phi i64 [%110, %$29], [%119, %$27] ; # V
   %132 = phi i64 [%111, %$29], [0, %$27] ; # ->
+; # drop
   %133 = inttoptr i64 %94 to i64*
   %134 = getelementptr i64, i64* %133, i32 1
   %135 = load i64, i64* %134
@@ -75321,6 +75352,7 @@ $75:
   %388 = phi i64 [%319, %$69], [%337, %$74] ; # R
   %389 = phi i64 [%320, %$69], [%335, %$74] ; # Z
   %390 = phi i64 [0, %$69], [0, %$74] ; # ->
+; # drop
   %391 = inttoptr i64 %310 to i64*
   %392 = getelementptr i64, i64* %391, i32 1
   %393 = load i64, i64* %392
@@ -75643,6 +75675,7 @@ $114:
   %556 = load i64, i64* %555
   %557 = inttoptr i64 %407 to i64*
   store i64 %556, i64* %557
+; # drop
   %558 = inttoptr i64 %436 to i64*
   %559 = getelementptr i64, i64* %558, i32 1
   %560 = load i64, i64* %559
@@ -84110,6 +84143,7 @@ $9:
   store i64 %30, i64* %36
 ; # (evCnt Exe X)
   %37 = call i64 @evCnt(i64 %0, i64 %26)
+; # drop
   %38 = inttoptr i64 %30 to i64*
   %39 = getelementptr i64, i64* %38, i32 1
   %40 = load i64, i64* %39
@@ -85826,6 +85860,7 @@ $33:
 $30:
   %145 = phi i64 [%92, %$28] ; # X
   %146 = phi i64 [%89, %$28] ; # Z
+; # drop
   %147 = inttoptr i64 %30 to i64*
   %148 = getelementptr i64, i64* %147, i32 1
   %149 = load i64, i64* %148
@@ -88276,6 +88311,7 @@ $13:
   store i64 %65, i64* %71
 ; # (evCnt Exe X)
   %72 = call i64 @evCnt(i64 %0, i64 %61)
+; # drop
   %73 = inttoptr i64 %65 to i64*
   %74 = getelementptr i64, i64* %73, i32 1
   %75 = load i64, i64* %74
@@ -88715,6 +88751,7 @@ $21:
   %68 = phi i64 [%52, %$22], [%61, %$24] ; # Z
   %69 = phi i64 [%53, %$22], [%62, %$24] ; # L
   %70 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), %$22], [%15, %$24] ; # ->
+; # drop
   %71 = inttoptr i64 %20 to i64*
   %72 = getelementptr i64, i64* %71, i32 1
   %73 = load i64, i64* %72
@@ -88885,6 +88922,7 @@ $46:
   %161 = phi i64 [%149, %$43] ; # N
   %162 = phi i64 [%150, %$43] ; # L
   %163 = phi i64 [%151, %$43] ; # Z
+; # drop
   %164 = inttoptr i64 %118 to i64*
   %165 = getelementptr i64, i64* %164, i32 1
   %166 = load i64, i64* %165
@@ -89020,6 +89058,7 @@ $23:
 $19:
   %52 = phi i64 [%40, %$20], [%43, %$22], [%50, %$24] ; # L
   %53 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), %$20], [%15, %$22], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), %$24] ; # ->
+; # drop
   %54 = inttoptr i64 %20 to i64*
   %55 = getelementptr i64, i64* %54, i32 1
   %56 = load i64, i64* %55
@@ -94665,6 +94704,7 @@ $48:
   %126 = inttoptr i64 %113 to i64*
   %127 = getelementptr i64, i64* %126, i32 1
   store i64 %125, i64* %127
+; # drop
   %128 = inttoptr i64 %93 to i64*
   %129 = getelementptr i64, i64* %128, i32 1
   %130 = load i64, i64* %129
@@ -94720,6 +94760,7 @@ $54:
   %158 = phi i64 [%150, %$52], [%154, %$53] ; # ->
 ; # (cons V (if (fill X Y) @ X))
   %159 = call i64 @cons(i64 %138, i64 %158)
+; # drop
   %160 = inttoptr i64 %143 to i64*
   %161 = getelementptr i64, i64* %160, i32 1
   %162 = load i64, i64* %161
@@ -99749,6 +99790,7 @@ $31:
   %125 = phi i8** [%113, %$29] ; # A
   %126 = phi i8* [%114, %$29] ; # P
   %127 = phi i64 [%112, %$29] ; # Y
+; # drop
   %128 = inttoptr i64 %102 to i64*
   %129 = getelementptr i64, i64* %128, i32 1
   %130 = load i64, i64* %129

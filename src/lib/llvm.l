@@ -1,4 +1,4 @@
-# 05oct20 Software Lab. Alexander Burger
+# 11oct20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -83,11 +83,14 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
             (let X (val (car (idx '*Map (val Sym))))
                (prinl "pico~" Sym " (" (car X) " \"@src/" (cdr X) "\" llvm pico)") ) ) ) ) )
 
-(de log ()
-   (when *Log
-      (let L (chop (symbols '(llvm pico cross) (sym (up 2))))
-         (and (nth L 65) (con pico~@ "..."))
-         (link (cons NIL L)) ) ) )
+(de log (A)
+   (let? L
+      (chop
+         (or A
+            (and *Log
+               (symbols '(llvm pico cross) (sym (up 2))) ) ) )
+      (and (nth L 65) (con pico~@ "..."))
+      (link (cons NIL L)) ) )
 
 (de asm Lst
    (for L (cddr Lst)
@@ -1459,6 +1462,7 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
             (pico~let *Log T
                (run pico~@) )
             (pico~when pico~@
+               (log "drop")
                (drop P)
                (setq *Safe Safe) ) )
          X ) ) )
@@ -1474,6 +1478,7 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
             (pico~let *Log T
                (run pico~@) )
             (pico~when pico~@
+               (log "drop")
                (drop P)
                (setq *Safe Safe) ) )
          Y ) ) )
