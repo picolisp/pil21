@@ -1,4 +1,4 @@
-# 06oct20 Software Lab. Alexander Burger
+# 11oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1139,7 +1139,7 @@
                      (wrLockWait Fd 0) )
                   (closeOnExec Exe Fd) ) ) ) ) ) )
 
-(local) (read0 getChar skipc comment skip testEsc anonymous rdAtom rdList)
+(local) (read0 getChar skipc comment skip testEsc anonymous rdAtom rdl rdList)
 
 (de read0 (i1))
 
@@ -1337,65 +1337,59 @@
                (T (requestSym Nm)) ) )
          (set $Intern Int) ) ) )
 
+(de void rdl (R P)
+   (loop
+      (? (== (skip) (char ")"))
+         (call $Get) )
+      (? (== @ (char "]")))
+      (cond
+         ((== @ (char "."))
+            (? (strchr $Delim (call $Get))
+               (setq P
+                  (set 2 P
+                     (if
+                        (or
+                           (== (skip) (char ")"))
+                           (== @ (char "]")) )
+                        R
+                        (read0 NO) ) ) )
+               (cond
+                  ((== (skip) (char ")"))
+                     (call $Get) )
+                  ((<> (val $Chr) (char "]"))
+                     (err 0 P ($ "Bad dotted pair") null) ) ) )
+            (setq P
+               (set 2 P (cons (rdAtom (char ".")) $Nil)) ) )
+         ((== @ (char "~"))
+            (call $Get)
+            (set 2 P
+               (eval
+                  (set 2 P (read0 NO)) ) )
+            (while (pair (cdr P))
+               (shift P) ) )
+         (T
+            (setq P
+               (set 2 P (cons (read0 NO) $Nil)) ) ) ) ) )
+
 (de rdList ()
    (stkChk 0)
    (call $Get)
-   (let
-      (P (push NIL NIL)
-         X
-         (loop
-            (let C (skip)
-               (when (== C (char ")"))  # Empty list
-                  (call $Get)
-                  (ret $Nil) )
-               (when (== C (char "]"))  # Empty list
-                  (ret $Nil) )
-               (? (<> C (char "~"))  # Read macro
-                  (prog1
-                     (set P (cons (read0 NO) $Nil))
-                     (link P) ) )
-               (call $Get)
-               (let Y (set P (read0 NO))
-                  (link P)
-                  (? (pair (setq Y (eval Y)))
-                     (while (pair (cdr Y))
-                        (shift Y) )
-                     Y )
-                  (drop P) ) ) ) )
-      (loop
-         (let C (skip)
-            (? (== C (char ")"))
-               (call $Get) )
-            (? (== C (char "]")))
-            (cond
-               ((== C (char "."))
-                  (? (strchr $Delim (call $Get))
-                     (setq X
-                        (set 2 X
-                           (if
-                              (or
-                                 (== (setq C (skip)) (char ")"))
-                                 (== C (char "]")) )
-                              (val P)
-                              (read0 NO) ) ) )
-                     (cond
-                        ((== (skip) (char ")"))
-                           (call $Get) )
-                        ((<> (val $Chr) (char "]"))
-                           (err 0 X ($ "Bad dotted pair") null) ) ) )
-                  (setq X
-                     (set 2 X (cons (rdAtom (char ".")) $Nil)) ) )
-               ((== C (char "~"))
-                  (call $Get)
-                  (set 2 X
-                     (eval
-                        (set 2 X (read0 NO)) ) )
-                  (while (pair (cdr X))
-                     (shift X) ) )
-               (T
-                  (setq X
-                     (set 2 X (cons (read0 NO) $Nil)) ) ) ) ) )
-      (pop P) ) )
+   (loop
+      (? (== (skip) (char ")"))  # Empty list
+         (call $Get)
+         $Nil )
+      (? (== @ (char "]")) $Nil)  # Empty list
+      (? (<> @ (char "~"))  # Read macro
+         (let R (save (cons (read0 NO) $Nil))
+            (rdl R R)
+            R ) )
+      (call $Get)
+      (let (X (save (read0 NO))  R (safe (eval X)))
+         (? (pair (setq X R))
+            (while (pair (cdr X))
+               (shift X) )
+            (rdl R X)
+            R ) ) ) )
 
 (de read0 ((i1 . Top))
    (let C (skip)
