@@ -1,4 +1,4 @@
-// 07oct20 Software Lab. Alexander Burger
+// 12oct20 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdint.h>
@@ -41,7 +41,9 @@ int main(void) {
    struct sockaddr_in6 addr;
    struct addrinfo ai;
 
-   printf("# %s System Definitions\n", __VERSION__);
+   printf("# %s\n", __VERSION__);
+   printf("# %s\n", _OS);
+   printf("# %s\n", _CPU);
 
    ttl("Errno");
    num("EINTR", EINTR);

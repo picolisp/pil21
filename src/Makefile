@@ -1,4 +1,4 @@
-# 07oct20 Software Lab. Alexander Burger
+# 12oct20 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -19,7 +19,7 @@ all: $(LIB)/sysdefs $(BIN)/picolisp $(LIB)/ext.so $(LIB)/ht.so $(BIN)/balance $(
 
 # System definitions
 $(LIB)/sysdefs: sysdefs.c
-	$(CC) sysdefs.c  &&  ./a.out > $(LIB)/sysdefs  &&  rm ./a.out
+	$(CC) -w -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' sysdefs.c  &&  ./a.out > $(LIB)/sysdefs  &&  rm ./a.out
 
 # Base system
 $(BIN)/picolisp: picolisp.bc
