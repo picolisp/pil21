@@ -247,7 +247,7 @@ declare void @prExt(i64)
 declare void @begString(i64*)
 declare void @tglString(i64*)
 declare i64 @endString()
-declare i64 @isLstIntern(i64, i64)
+declare i64 @findSym(i64, i64, i64)
 declare void @prSym(i64)
 declare i64 @mkChar(i32)
 declare i64 @evCnt(i64, i64)
@@ -734,7 +734,7 @@ $18:
   br i1 %48, label %$2, label %$19
 $19:
   %49 = phi i64 [%39, %$18] ; # X
-; # (let (Nm @ P (push 0 Nm) B (symByte P)) (cond ((== X (isLstIntern...
+; # (let (Nm @ P (push 0 Nm) B (symByte P)) (cond ((findSym X Nm (val...
 ; # (push 0 Nm)
   %50 = alloca i64, i64 2, align 16
   store i64 0, i64* %50
@@ -742,14 +742,13 @@ $19:
   store i64 %47, i64* %51
 ; # (symByte P)
   %52 = call i8 @symByte(i64* %50)
-; # (cond ((== X (isLstIntern Nm (val $Intern))) (call $Put (char "$"...
+; # (cond ((findSym X Nm (val $Intern)) (call $Put (char "$")) (htEnc...
 ; # (val $Intern)
   %53 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([23 x i64]* @env to i8*), i32 120) to i64) to i64*
   %54 = load i64, i64* %53
-; # (isLstIntern Nm (val $Intern))
-  %55 = call i64 @isLstIntern(i64 %47, i64 %54)
-; # (== X (isLstIntern Nm (val $Intern)))
-  %56 = icmp eq i64 %49, %55
+; # (findSym X Nm (val $Intern))
+  %55 = call i64 @findSym(i64 %49, i64 %47, i64 %54)
+  %56 = icmp ne i64 %55, 0
   br i1 %56, label %$22, label %$21
 $22:
   %57 = phi i64 [%49, %$19] ; # X

@@ -1,4 +1,4 @@
-# 24sep20 Software Lab. Alexander Burger
+# 12oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -225,7 +225,7 @@
       (pop R) ) )
 
 ### Interning ###
-(local) (cmpLong isIntern isLstIntern)
+(local) (cmpLong isIntern isLstIntern findSym)
 
 # Compare long names
 (de i64 cmpLong (X Y)
@@ -241,7 +241,7 @@
             (T +1) ) )
       (? (cnt? Y) +1) ) )
 
-# Is symbol interned?
+# Is name interned?
 (de isIntern (Name Tree)
    (if (cnt? Name)  # Short name
       (let X (car Tree)  # First tree
@@ -268,6 +268,12 @@
    (loop
       (? (atom Lst) 0)
       (? (isIntern Name (cdar (car Lst))) @)
+      (shift Lst) ) )
+
+(de i1 findSym (Sym Name Lst)
+   (loop
+      (? (atom Lst) NO)
+      (? (== Sym (isIntern Name (cdar (car Lst)))) YES)
       (shift Lst) ) )
 
 (local) (intern1 intern2 internRight internLeft)
@@ -691,7 +697,7 @@
          ((not (symb? X)) $Nil)
          ((or
                (sym? (val (tail X)))  # External
-               (== X (isLstIntern (name @) (val $Intern))) )
+               (findSym X (name @) (val $Intern)) )
             $Nil )
          (T X) ) ) )
 

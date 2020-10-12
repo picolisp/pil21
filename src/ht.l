@@ -1,4 +1,4 @@
-# 25sep20 Software Lab. Alexander Burger
+# 12oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -8,7 +8,7 @@
 (local) (Prin Fmt Pack Read In Out)
 
 # External declarations
-(local) (prin symByte prExt begString tglString endString isLstIntern prSym
+(local) (prin symByte prExt begString tglString endString findSym prSym
 mkChar evCnt getChar)
 
 (de T void prin (any))
@@ -17,7 +17,7 @@ mkChar evCnt getChar)
 (de T void begString (i64*))
 (de T void tglString (i64*))
 (de T endString ())
-(de T isLstIntern (any any))
+(de T findSym (any any any))
 (de T void prSym (any))
 (de T mkChar (i32))
 (de T i64 evCnt (any any))
@@ -107,7 +107,7 @@ mkChar evCnt getChar)
       (T
          (let (Nm @  P (push 0 Nm)  B (symByte P))  # [cnt name]
             (cond
-               ((== X (isLstIntern Nm (val $Intern)))  # Internal symbol
+               ((findSym X Nm (val $Intern))  # Internal symbol
                   (call $Put (char "$"))  # Prefix with "$"
                   (htEncode B P) )
                ((or  # Special

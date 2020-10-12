@@ -1,4 +1,4 @@
-# 11oct20 Software Lab. Alexander Burger
+# 12oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -457,7 +457,7 @@
          (let
             (Nm @
                Tag
-               (if (== X (isLstIntern Nm (val $Intern)))
+               (if (findSym X Nm (val $Intern))
                   (i8 INTERN)
                   (i8 TRANSIENT) ) )
             (if (cnt? Nm)
