@@ -1,4 +1,4 @@
-# 10oct20 Software Lab. Alexander Burger
+# 13oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1176,14 +1176,15 @@
                   (longjmp ((coroutine (Dst: org)) (rst)) 1) ) ) )
          ((t? Tag)
             (err Exe 0 ($ "Can't stop main routine") null) )
-         (T
-            (let Crt (val $Coroutines)  # Stop coroutine
+         ((val $Coroutines)
+            (let Crt @  # Stop coroutine
                (loop
                   (let Crt: (coroutine Crt)
                      (? (== Tag (Crt: tag))  # Found coroutine
                         (stop (Crt:)) )  # Stop it
                      (? (=0 (setq Crt (Crt: nxt)))) ) )
-               $Nil ) ) ) ) )
+               Tag ) )
+         (T $Nil) ) ) )
 
 # (yield 'any ['sym]) -> any
 (de _yield (Exe)
