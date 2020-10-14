@@ -1,4 +1,4 @@
-# 25aug20 Software Lab. Alexander Burger
+# 14oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1099,19 +1099,20 @@
          ((pair X) (cnt (size X)))
          ((nil? X) ZERO)
          ((sym? (val (tail X)))
-            (let Y (& @ -9)  # Properties
-               (dbFetch Exe X)
-               (let C (+ (binSize (val X)) (inc BLK))
-                  (while (pair Y)
-                     (let Z (++ Y)
-                        (setq C
-                           (+ C
-                              (if (atom Z)
-                                 (+ (binSize Z) 2)
-                                 (+
-                                    (binSize (car Z))
-                                    (binSize (cdr Z)) ) ) ) ) ) )
-                  (cnt C) ) ) )
+            (dbFetch Exe X)
+            (let
+               (C (+ (binSize (val X)) (inc BLK))  # Value
+                  Y (& (val (tail X)) -9) )
+               (while (pair Y)  # Properties
+                  (let Z (++ Y)
+                     (setq C
+                        (+ C
+                           (if (atom Z)
+                              (+ (binSize Z) 2)
+                              (+
+                                 (binSize (car Z))
+                                 (binSize (cdr Z)) ) ) ) ) ) )
+               (cnt C) ) )
          ((== (name @) ZERO) @)
          ((cnt? @)
             (let (C ONE  Z (int @))
