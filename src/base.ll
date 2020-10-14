@@ -93048,20 +93048,20 @@ $30:
   br label %$23
 $29:
   %93 = phi i64 [%78, %$28] ; # X
-; # (cnt? @)
+; # (cnt? (setq X @))
   %94 = and i64 %90, 2
   %95 = icmp ne i64 %94, 0
   br i1 %95, label %$32, label %$31
 $32:
-  %96 = phi i64 [%93, %$29] ; # X
-; # (shl @ 2)
-  %97 = shl i64 %90, 2
-; # (shr (shl @ 2) 6)
+  %96 = phi i64 [%90, %$29] ; # X
+; # (shl X 2)
+  %97 = shl i64 %96, 2
+; # (shr (shl X 2) 6)
   %98 = lshr i64 %97, 6
 ; # (goto 1)
   br label %$-1
 $31:
-  %99 = phi i64 [%93, %$29] ; # X
+  %99 = phi i64 [%90, %$29] ; # X
 ; # (let C 9 (until (cnt? (setq X (val (big X)))) (inc 'C 8)) (setq X...
 ; # (until (cnt? (setq X (val (big X)))) (inc 'C 8))
   br label %$33

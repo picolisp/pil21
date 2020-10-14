@@ -1055,8 +1055,8 @@
          (cond
             ((nil? X) 1)
             ((== (name (& (val (tail X)) -9)) ZERO) 1)
-            ((cnt? @)
-               (setq X (shr (shl @ 2) 6))  # Strip status bits
+            ((cnt? (setq X @))
+               (setq X (shr (shl X 2) 6))  # Strip status bits
                (goto 1) )
             (T
                (let C 9  # Count 8 significant bytes plus 1

@@ -1,4 +1,4 @@
-# 06oct20 Software Lab. Alexander Burger
+# 14oct20 Software Lab. Alexander Burger
 
 ### c[ad]*r ###
 (let L '(1 2 3 4 5)
@@ -453,6 +453,7 @@
 ### bytes ###
 (test 4 (bytes "abc"))
 (test 5 (bytes "äbc"))
+(test 9 (bytes "abcdefgh"))
 (test 2 (bytes 127))
 (test 3 (bytes 128))
 (test 10 (bytes (101 (102) 103)))
