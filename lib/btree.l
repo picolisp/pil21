@@ -1,8 +1,8 @@
-# 28sep20 Software Lab. Alexander Burger
+# 14oct20 Software Lab. Alexander Burger
 
 # *Prune
 
-(private) (_store _put _splitBt _del zap_)
+(private) (_store _put _splitBt _del)
 
 (de root (Tree)
    (cond
