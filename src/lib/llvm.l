@@ -1,4 +1,4 @@
-# 11oct20 Software Lab. Alexander Burger
+# 15oct20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -1290,36 +1290,36 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
 
 (asm ()
    (Lst
-      (use llvm~@
-         (let
-            (Var (box)
-               True (+lbl)
-               Flg (asoq T Lst)
-               End (if Flg (+lbl) True)
-               X (eval (++ Lst)) )
-            (link
-               (pack
-                  "switch " (type (val X)) " " X
-                  ", label %$" (+phi True) " [" ) )
-            (let Lbl
-               (extract
-                  '((Prg)
-                     (unless (=T (car Prg))
-                        (let Y (eval (car Prg))
-                           (prog1
-                              (+lbl)
-                              (link
-                                 (pack
-                                    "  " (type (val X)) " " Y
-                                    ", label %$" (+phi @) ) ) ) ) ) )
-                  Lst )
-               (link "]")
-               (for Prg Lst
-                  (label (if (=T (++ Prg)) True (++ Lbl)))
+      (let
+         (Var (box)
+            True (+lbl)
+            Flg (asoq T Lst)
+            End (if Flg (+lbl) True)
+            X (setq llvm~@ (eval (++ Lst))) )
+         (link
+            (pack
+               "switch " (type (val X)) " " X
+               ", label %$" (+phi True) " [" ) )
+         (let Lbl
+            (extract
+               '((Prg)
+                  (unless (=T (car Prg))
+                     (let Y (eval (car Prg))
+                        (prog1
+                           (+lbl)
+                           (link
+                              (pack
+                                 "  " (type (val X)) " " Y
+                                 ", label %$" (+phi @) ) ) ) ) ) )
+               Lst )
+            (link "]")
+            (for Prg Lst
+               (label (if (=T (++ Prg)) True (++ Lbl)))
+               (use llvm~@
                   (when (set Var (if Prg (run @) 0))
                      (and Flg (phi End Var))
-                     (br End) ) ) )
-            (label End) ) ) )
+                     (br End) ) ) ) )
+         (label End) ) )
    (llvm~case) )
 
 (asm ()

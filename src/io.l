@@ -1,4 +1,4 @@
-# 12oct20 Software Lab. Alexander Burger
+# 15oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -260,32 +260,31 @@
 
 # Read binary PLIO expression
 (de binRead ()
-   (let B (call $GetBin)
-      (cond
-         ((lt0 B) 0)  # EOF
-         ((== B NIX) $Nil)  # NIL
-         ((=0 (& B -4))  # Pair
-            (if (<> BEG B)
-               (any (i64 B))  # DOT or END
-               (let X (binRead)
-                  (ifn X
-                     0
-                     (let (Y (cons X $Nil)  R (save Y))
-                        (loop
-                           (? (=0 (setq X (binRead))) 0)
-                           (? (== X END) R)
-                           (? (== X DOT)
-                              (ifn (setq X (binRead))
-                                 0
-                                 (set 2 Y (if (== X END) R X))
-                                 R ) )
-                           (setq Y (set 2 Y (cons X $Nil))) ) ) ) ) ) )
-         (T
+   (case (call $GetBin)
+      (NIX $Nil)  # NIL
+      (BEG
+         (ifn (binRead)
+            0
+            (let (X (cons @ $Nil)  R (save X))
+               (loop
+                  (? (=0 (binRead)) @)
+                  (? (== @ END) R)
+                  (? (== @ -ZERO)  # DOT
+                     (ifn (binRead)
+                        0
+                        (set 2 X (if (== @ END) R @))
+                        R ) )
+                  (setq X (set 2 X (cons @ $Nil))) ) ) ) )
+      (DOT -ZERO)  # DOT -> -ZERO
+      (END (i64 @))  # END
+      (T
+         (if (lt0 @)
+            0  # EOF
             (let
-               (P (i64* (push NIL NIL ZERO NIL))  # [cnt last name link]
-                  Q (link (ofs P 2))
-                  Cnt (shr B 2)
-                  Tag (& B 3) )
+               (Tag (& @ 3)
+                  Cnt (shr @ 2)
+                  P (i64* (push NIL NIL ZERO NIL))  # [cnt last name link]
+                  Q (link (ofs P 2)) )
                (cond
                   ((== Tag NUMBER)
                      (set P 3)  # 'cnt' for signed number
