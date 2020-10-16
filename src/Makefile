@@ -1,4 +1,4 @@
-# 12oct20 Software Lab. Alexander Burger
+# 16oct20 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -38,7 +38,7 @@ base.ll: $(INC) $(SRC)
 	mv base.map $(LIB)/map
 
 lib.bc: pico.h lib.c
-	$(CC) -w -c -O3 -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' `pkg-config --cflags libffi` -emit-llvm lib.c
+	$(CC) -O3 -w -c -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' `pkg-config --cflags libffi` -emit-llvm lib.c
 
 # Extension libraries
 $(LIB)/ext.so: ext.bc
@@ -63,14 +63,14 @@ ht.ll: $(INC) ht.l
 
 # Tools
 $(BIN)/balance: balance.c
-	$(CC) -w -o $(BIN)/balance balance.c
+	$(CC) -O3 -w -o $(BIN)/balance balance.c
 
 # Gate
 $(BIN)/ssl: ssl.c
-	$(CC) -w -o $(BIN)/ssl ssl.c -lssl -lcrypto
+	$(CC) -O3 -w -o $(BIN)/ssl ssl.c -lssl -lcrypto
 
 $(BIN)/httpGate: httpGate.c
-	$(CC) -w -o $(BIN)/httpGate httpGate.c -lssl -lcrypto
+	$(CC) -O3 -w -o $(BIN)/httpGate httpGate.c -lssl -lcrypto
 
 # Clean up
 clean:

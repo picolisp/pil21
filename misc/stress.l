@@ -1,4 +1,4 @@
-# 06oct20 Software Lab. Alexander Burger
+# 16oct20 Software Lab. Alexander Burger
 # Use: nice pil misc/stress.l -main -go -bye; rm db/test jnl db/test2
 
 (load "@lib/too.l")
@@ -48,17 +48,14 @@
 
 (de go ()
    (do 12
-      (let Pids
-         (make
-            (do 60
-               (rand)
-               (if (fork)
-                  (link @)
-                  (modify 999)
-                  (bye) ) ) )
-         (wait NIL
-            (not (find '((P) (kill P 0)) Pids)) )
-         (rollback) ) )
+      (do 60
+         (rand)
+         (unless (fork)
+            (modify 999)
+            (bye) ) )
+      (while (kids)
+         (wait 999) )
+      (rollback) )
    (verify)
    (pool "db/test2")
    (journal "jnl")
