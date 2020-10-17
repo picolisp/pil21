@@ -35887,42 +35887,43 @@ $3:
 
 define i64 @slow(i8*) {
 $1:
-; # (let In: (inFile In) (In: ix (In: cnt 0)) (loop (? (ge0 (read (In...
-; # (In: ix (In: cnt 0))
+; # (let In: (inFile In) (In: ix 0) (loop (? (ge0 (read (In: fd) (In:...
+; # (In: ix 0)
   %1 = bitcast i8* %0 to i64*
-  %2 = getelementptr i8, i8* %0, i32 8
-  %3 = bitcast i8* %2 to i64*
-  store i64 0, i64* %3
   store i64 0, i64* %1
 ; # (loop (? (ge0 (read (In: fd) (In: (buf)) BUFSIZ)) (In: cnt @)) (?...
   br label %$2
 $2:
 ; # (? (ge0 (read (In: fd) (In: (buf)) BUFSIZ)) (In: cnt @))
 ; # (In: fd)
-  %4 = getelementptr i8, i8* %0, i32 16
-  %5 = bitcast i8* %4 to i32*
-  %6 = load i32, i32* %5
+  %2 = getelementptr i8, i8* %0, i32 16
+  %3 = bitcast i8* %2 to i32*
+  %4 = load i32, i32* %3
 ; # (In: (buf))
-  %7 = getelementptr i8, i8* %0, i32 40
+  %5 = getelementptr i8, i8* %0, i32 40
 ; # (read (In: fd) (In: (buf)) BUFSIZ)
-  %8 = call i64 @read(i32 %6, i8* %7, i64 4096)
+  %6 = call i64 @read(i32 %4, i8* %5, i64 4096)
 ; # (ge0 (read (In: fd) (In: (buf)) BUFSIZ))
-  %9 = icmp sge i64 %8, 0
-  br i1 %9, label %$5, label %$3
+  %7 = icmp sge i64 %6, 0
+  br i1 %7, label %$5, label %$3
 $5:
 ; # (In: cnt @)
-  %10 = getelementptr i8, i8* %0, i32 8
-  %11 = bitcast i8* %10 to i64*
-  store i64 %8, i64* %11
+  %8 = getelementptr i8, i8* %0, i32 8
+  %9 = bitcast i8* %8 to i64*
+  store i64 %6, i64* %9
   br label %$4
 $3:
-; # (? (<> (gErrno) EINTR) 0)
+; # (? (<> (gErrno) EINTR) (In: cnt 0))
 ; # (gErrno)
-  %12 = call i32 @gErrno()
+  %10 = call i32 @gErrno()
 ; # (<> (gErrno) EINTR)
-  %13 = icmp ne i32 %12, 2
-  br i1 %13, label %$7, label %$6
+  %11 = icmp ne i32 %10, 2
+  br i1 %11, label %$7, label %$6
 $7:
+; # (In: cnt 0)
+  %12 = getelementptr i8, i8* %0, i32 8
+  %13 = bitcast i8* %12 to i64*
+  store i64 0, i64* %13
   br label %$4
 $6:
 ; # (sigChk 0)
@@ -35935,95 +35936,98 @@ $8:
 $9:
   br label %$2
 $4:
-  %16 = phi i64 [%8, %$5], [0, %$7] ; # ->
+  %16 = phi i64 [%6, %$5], [0, %$7] ; # ->
   ret i64 %16
 }
 
 define i64 @slowNb(i8*) {
 $1:
-; # (let In: (inFile In) (In: ix (In: cnt 0)) (loop (let (Flg (nonBlo...
-; # (In: ix (In: cnt 0))
-  %1 = bitcast i8* %0 to i64*
-  %2 = getelementptr i8, i8* %0, i32 8
-  %3 = bitcast i8* %2 to i64*
-  store i64 0, i64* %3
-  store i64 0, i64* %1
+; # (let In: (inFile In) (loop (let (Flg (nonBlocking (In: fd)) N (re...
 ; # (loop (let (Flg (nonBlocking (In: fd)) N (read (In: fd) (In: (buf...
   br label %$2
 $2:
 ; # (let (Flg (nonBlocking (In: fd)) N (read (In: fd) (In: (buf)) BUF...
 ; # (In: fd)
-  %4 = getelementptr i8, i8* %0, i32 16
-  %5 = bitcast i8* %4 to i32*
-  %6 = load i32, i32* %5
+  %1 = getelementptr i8, i8* %0, i32 16
+  %2 = bitcast i8* %1 to i32*
+  %3 = load i32, i32* %2
 ; # (nonBlocking (In: fd))
-  %7 = call i32 @nonBlocking(i32 %6)
+  %4 = call i32 @nonBlocking(i32 %3)
 ; # (In: fd)
-  %8 = getelementptr i8, i8* %0, i32 16
-  %9 = bitcast i8* %8 to i32*
-  %10 = load i32, i32* %9
+  %5 = getelementptr i8, i8* %0, i32 16
+  %6 = bitcast i8* %5 to i32*
+  %7 = load i32, i32* %6
 ; # (In: (buf))
-  %11 = getelementptr i8, i8* %0, i32 40
+  %8 = getelementptr i8, i8* %0, i32 40
 ; # (read (In: fd) (In: (buf)) BUFSIZ)
-  %12 = call i64 @read(i32 %10, i8* %11, i64 4096)
+  %9 = call i64 @read(i32 %7, i8* %8, i64 4096)
 ; # (In: fd)
-  %13 = getelementptr i8, i8* %0, i32 16
-  %14 = bitcast i8* %13 to i32*
-  %15 = load i32, i32* %14
+  %10 = getelementptr i8, i8* %0, i32 16
+  %11 = bitcast i8* %10 to i32*
+  %12 = load i32, i32* %11
 ; # (fcntlSetFl (In: fd) Flg)
-  call void @fcntlSetFl(i32 %15, i32 %7)
-; # (? (gt0 N) (In: cnt N))
+  call void @fcntlSetFl(i32 %12, i32 %4)
+; # (? (gt0 N) (In: ix 0) (In: cnt N))
 ; # (gt0 N)
-  %16 = icmp sgt i64 %12, 0
-  br i1 %16, label %$5, label %$3
+  %13 = icmp sgt i64 %9, 0
+  br i1 %13, label %$5, label %$3
 $5:
+; # (In: ix 0)
+  %14 = bitcast i8* %0 to i64*
+  store i64 0, i64* %14
 ; # (In: cnt N)
-  %17 = getelementptr i8, i8* %0, i32 8
-  %18 = bitcast i8* %17 to i64*
-  store i64 %12, i64* %18
+  %15 = getelementptr i8, i8* %0, i32 8
+  %16 = bitcast i8* %15 to i64*
+  store i64 %9, i64* %16
   br label %$4
 $3:
 ; # (? (=0 N) (In: ix (In: cnt -1)) 0)
 ; # (=0 N)
-  %19 = icmp eq i64 %12, 0
-  br i1 %19, label %$7, label %$6
+  %17 = icmp eq i64 %9, 0
+  br i1 %17, label %$7, label %$6
 $7:
 ; # (In: ix (In: cnt -1))
-  %20 = bitcast i8* %0 to i64*
-  %21 = getelementptr i8, i8* %0, i32 8
-  %22 = bitcast i8* %21 to i64*
-  store i64 -1, i64* %22
+  %18 = bitcast i8* %0 to i64*
+  %19 = getelementptr i8, i8* %0, i32 8
+  %20 = bitcast i8* %19 to i64*
   store i64 -1, i64* %20
+  store i64 -1, i64* %18
   br label %$4
 $6:
 ; # (? (== (gErrno) EAGAIN) -1)
 ; # (gErrno)
-  %23 = call i32 @gErrno()
+  %21 = call i32 @gErrno()
 ; # (== (gErrno) EAGAIN)
-  %24 = icmp eq i32 %23, 4
-  br i1 %24, label %$9, label %$8
+  %22 = icmp eq i32 %21, 4
+  br i1 %22, label %$9, label %$8
 $9:
   br label %$4
 $8:
-; # (? (<> @ EINTR) 0)
+; # (? (<> @ EINTR) (In: ix (In: cnt 0)))
 ; # (<> @ EINTR)
-  %25 = icmp ne i32 %23, 2
-  br i1 %25, label %$11, label %$10
+  %23 = icmp ne i32 %21, 2
+  br i1 %23, label %$11, label %$10
 $11:
+; # (In: ix (In: cnt 0))
+  %24 = bitcast i8* %0 to i64*
+  %25 = getelementptr i8, i8* %0, i32 8
+  %26 = bitcast i8* %25 to i64*
+  store i64 0, i64* %26
+  store i64 0, i64* %24
   br label %$4
 $10:
 ; # (sigChk 0)
-  %26 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
-  %27 = icmp ne i32 %26, 0
-  br i1 %27, label %$12, label %$13
+  %27 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %28 = icmp ne i32 %27, 0
+  br i1 %28, label %$12, label %$13
 $12:
   call void @sighandler(i64 0)
   br label %$13
 $13:
   br label %$2
 $4:
-  %28 = phi i64 [%12, %$5], [0, %$7], [-1, %$9], [0, %$11] ; # ->
-  ret i64 %28
+  %29 = phi i64 [%9, %$5], [0, %$7], [-1, %$9], [0, %$11] ; # ->
+  ret i64 %29
 }
 
 define i1 @rdBytes(i32, i8*, i64) {
@@ -36643,17 +36647,17 @@ $4:
 
 define i32 @stdinByte() {
 $1:
-; # (let In: (inFile (val (val $InFiles))) (when (In:) (when (or (<> ...
+; # (let In: (inFile (val (val $InFiles))) (cond ((and (In:) (or (<> ...
 ; # (val $InFiles)
   %0 = load i8**, i8*** @$InFiles
 ; # (val (val $InFiles))
   %1 = load i8*, i8** %0
-; # (when (In:) (when (or (<> (In: ix) (In: cnt)) (and (ge0 @) (slow ...
+; # (cond ((and (In:) (or (<> (In: ix) (In: cnt)) (and (ge0 @) (slow ...
+; # (and (In:) (or (<> (In: ix) (In: cnt)) (and (ge0 @) (slow (In:)))...
 ; # (In:)
   %2 = icmp ne i8* %1, null
-  br i1 %2, label %$2, label %$3
-$2:
-; # (when (or (<> (In: ix) (In: cnt)) (and (ge0 @) (slow (In:)))) (le...
+  br i1 %2, label %$4, label %$3
+$4:
 ; # (or (<> (In: ix) (In: cnt)) (and (ge0 @) (slow (In:))))
 ; # (In: ix)
   %3 = bitcast i8* %1 to i64*
@@ -36664,57 +36668,59 @@ $2:
   %7 = load i64, i64* %6
 ; # (<> (In: ix) (In: cnt))
   %8 = icmp ne i64 %4, %7
-  br i1 %8, label %$4, label %$5
-$5:
+  br i1 %8, label %$5, label %$6
+$6:
 ; # (and (ge0 @) (slow (In:)))
 ; # (ge0 @)
   %9 = icmp sge i64 %4, 0
-  br i1 %9, label %$7, label %$6
-$7:
+  br i1 %9, label %$8, label %$7
+$8:
 ; # (In:)
 ; # (slow (In:))
   %10 = call i64 @slow(i8* %1)
   %11 = icmp ne i64 %10, 0
-  br label %$6
-$6:
-  %12 = phi i1 [0, %$5], [%11, %$7] ; # ->
-  br label %$4
-$4:
-  %13 = phi i1 [1, %$2], [%12, %$6] ; # ->
-  br i1 %13, label %$8, label %$9
-$8:
-; # (let I (In: ix) (In: ix (+ I 1)) (ret (i32 (val (ofs (In: (buf)) ...
-; # (In: ix)
-  %14 = bitcast i8* %1 to i64*
-  %15 = load i64, i64* %14
-; # (In: ix (+ I 1))
-  %16 = bitcast i8* %1 to i64*
-  %17 = add i64 %15, 1
-  store i64 %17, i64* %16
-; # (In: (buf))
-  %18 = getelementptr i8, i8* %1, i32 40
-; # (ofs (In: (buf)) I)
-  %19 = getelementptr i8, i8* %18, i64 %15
-; # (val (ofs (In: (buf)) I))
-  %20 = load i8, i8* %19
-; # (i32 (val (ofs (In: (buf)) I)))
-  %21 = zext i8 %20 to i32
-; # (ret (i32 (val (ofs (In: (buf)) I))))
-  ret i32 %21
-$9:
+  br label %$7
+$7:
+  %12 = phi i1 [0, %$6], [%11, %$8] ; # ->
+  br label %$5
+$5:
+  %13 = phi i1 [1, %$4], [%12, %$7] ; # ->
   br label %$3
 $3:
-; # (when (isatty 0) (bye 0))
-; # (isatty 0)
-  %22 = call i32 @isatty(i32 0)
-  %23 = icmp ne i32 %22, 0
-  br i1 %23, label %$10, label %$11
+  %14 = phi i1 [0, %$1], [%13, %$5] ; # ->
+  br i1 %14, label %$10, label %$9
 $10:
+; # (let I (In: ix) (In: ix (+ I 1)) (i32 (val (ofs (In: (buf)) I))))...
+; # (In: ix)
+  %15 = bitcast i8* %1 to i64*
+  %16 = load i64, i64* %15
+; # (In: ix (+ I 1))
+  %17 = bitcast i8* %1 to i64*
+  %18 = add i64 %16, 1
+  store i64 %18, i64* %17
+; # (In: (buf))
+  %19 = getelementptr i8, i8* %1, i32 40
+; # (ofs (In: (buf)) I)
+  %20 = getelementptr i8, i8* %19, i64 %16
+; # (val (ofs (In: (buf)) I))
+  %21 = load i8, i8* %20
+; # (i32 (val (ofs (In: (buf)) I)))
+  %22 = zext i8 %21 to i32
+  br label %$2
+$9:
+; # (isatty 0)
+  %23 = call i32 @isatty(i32 0)
+  %24 = icmp ne i32 %23, 0
+  br i1 %24, label %$12, label %$11
+$12:
 ; # (bye 0)
   call void @bye(i32 0)
   unreachable
 $11:
-  ret i32 -1
+  br label %$2
+$2:
+  %25 = phi i32 [%22, %$10], [-1, %$11] ; # ->
+  ret i32 %25
 }
 
 define i32 @getBinary() {
@@ -36725,7 +36731,7 @@ $1:
 ; # (In: ix)
   %1 = bitcast i8* %0 to i64*
   %2 = load i64, i64* %1
-; # (when (== I (In: cnt)) (when (lt0 I) (ret -1)) (unless (slow (In:...
+; # (when (== I (In: cnt)) (when (or (lt0 I) (=0 (slow (In:)))) (ret ...
 ; # (In: cnt)
   %3 = getelementptr i8, i8* %0, i32 8
   %4 = bitcast i8* %3 to i64*
@@ -36735,44 +36741,45 @@ $1:
   br i1 %6, label %$2, label %$3
 $2:
   %7 = phi i64 [%2, %$1] ; # I
-; # (when (lt0 I) (ret -1))
+; # (when (or (lt0 I) (=0 (slow (In:)))) (ret -1))
+; # (or (lt0 I) (=0 (slow (In:))))
 ; # (lt0 I)
   %8 = icmp slt i64 %7, 0
   br i1 %8, label %$4, label %$5
-$4:
-  %9 = phi i64 [%7, %$2] ; # I
-; # (ret -1)
-  ret i32 -1
 $5:
-  %10 = phi i64 [%7, %$2] ; # I
-; # (unless (slow (In:)) (ret -1))
+  %9 = phi i64 [%7, %$2] ; # I
 ; # (In:)
 ; # (slow (In:))
-  %11 = call i64 @slow(i8* %0)
-  %12 = icmp ne i64 %11, 0
-  br i1 %12, label %$7, label %$6
+  %10 = call i64 @slow(i8* %0)
+; # (=0 (slow (In:)))
+  %11 = icmp eq i64 %10, 0
+  br label %$4
+$4:
+  %12 = phi i64 [%7, %$2], [%9, %$5] ; # I
+  %13 = phi i1 [1, %$2], [%11, %$5] ; # ->
+  br i1 %13, label %$6, label %$7
 $6:
-  %13 = phi i64 [%10, %$5] ; # I
+  %14 = phi i64 [%12, %$4] ; # I
 ; # (ret -1)
   ret i32 -1
 $7:
-  %14 = phi i64 [%10, %$5] ; # I
+  %15 = phi i64 [%12, %$4] ; # I
   br label %$3
 $3:
-  %15 = phi i64 [%2, %$1], [0, %$7] ; # I
+  %16 = phi i64 [%2, %$1], [0, %$7] ; # I
 ; # (In: ix (+ I 1))
-  %16 = bitcast i8* %0 to i64*
-  %17 = add i64 %15, 1
-  store i64 %17, i64* %16
+  %17 = bitcast i8* %0 to i64*
+  %18 = add i64 %16, 1
+  store i64 %18, i64* %17
 ; # (In: (buf))
-  %18 = getelementptr i8, i8* %0, i32 40
+  %19 = getelementptr i8, i8* %0, i32 40
 ; # (ofs (In: (buf)) I)
-  %19 = getelementptr i8, i8* %18, i64 %15
+  %20 = getelementptr i8, i8* %19, i64 %16
 ; # (val (ofs (In: (buf)) I))
-  %20 = load i8, i8* %19
+  %21 = load i8, i8* %20
 ; # (i32 (val (ofs (In: (buf)) I)))
-  %21 = zext i8 %20 to i32
-  ret i32 %21
+  %22 = zext i8 %21 to i32
+  ret i32 %22
 }
 
 define i64 @binRead() {
@@ -39143,8 +39150,8 @@ $6:
   %9 = call i1 @readyIn(i64* %1)
   br label %$2
 $5:
-; # (let In: (inFile @) (or (> (In: cnt) (In: ix)) (readyIn P) (ge0 (...
-; # (or (> (In: cnt) (In: ix)) (readyIn P) (ge0 (slowNb (In:))))
+; # (let In: (inFile @) (or (> (In: cnt) (In: ix)) (and (readyIn P) (...
+; # (or (> (In: cnt) (In: ix)) (and (readyIn P) (ge0 (slowNb (In:))))...
 ; # (In: cnt)
   %10 = getelementptr i8, i8* %7, i32 8
   %11 = bitcast i8* %10 to i64*
@@ -39156,22 +39163,26 @@ $5:
   %15 = icmp ugt i64 %12, %14
   br i1 %15, label %$7, label %$8
 $8:
+; # (and (readyIn P) (ge0 (slowNb (In:))))
 ; # (readyIn P)
   %16 = call i1 @readyIn(i64* %1)
-  br i1 %16, label %$7, label %$9
-$9:
+  br i1 %16, label %$10, label %$9
+$10:
 ; # (In:)
 ; # (slowNb (In:))
   %17 = call i64 @slowNb(i8* %7)
 ; # (ge0 (slowNb (In:)))
   %18 = icmp sge i64 %17, 0
+  br label %$9
+$9:
+  %19 = phi i1 [0, %$8], [%18, %$10] ; # ->
   br label %$7
 $7:
-  %19 = phi i1 [1, %$5], [1, %$8], [%18, %$9] ; # ->
+  %20 = phi i1 [1, %$5], [%19, %$9] ; # ->
   br label %$2
 $2:
-  %20 = phi i1 [%4, %$4], [%9, %$6], [%19, %$7] ; # ->
-  ret i1 %20
+  %21 = phi i1 [%4, %$4], [%9, %$6], [%20, %$7] ; # ->
+  ret i1 %21
 }
 
 define i64 @waitFd(i64, i32, i64) {
@@ -41456,17 +41467,19 @@ $20:
 $24:
   br label %$16
 $23:
-; # (? (ge0 (slowNb (In:))))
+; # (? (ge0 (slowNb (In:))) C)
 ; # (In:)
 ; # (slowNb (In:))
   %37 = call i64 @slowNb(i8* %22)
 ; # (ge0 (slowNb (In:)))
   %38 = icmp sge i64 %37, 0
-  br i1 %38, label %$16, label %$25
+  br i1 %38, label %$26, label %$25
+$26:
+  br label %$16
 $25:
   br label %$14
 $16:
-  %39 = phi i64 [%13, %$17], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), %$24], [0, %$23] ; # ->
+  %39 = phi i64 [%13, %$17], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), %$24], [%13, %$26] ; # ->
   br label %$13
 $13:
   %40 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), %$11], [%39, %$16] ; # ->

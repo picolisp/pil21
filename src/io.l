@@ -1,4 +1,4 @@
-# 15oct20 Software Lab. Alexander Burger
+# 17oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -117,27 +117,30 @@
 
 (de i64 slow ((i8* . In))
    (let In: (inFile In)
-      (In: ix (In: cnt 0))
+      (In: ix 0)
       (loop
          (? (ge0 (read (In: fd) (In: (buf)) BUFSIZ))
             (In: cnt @) )
-         (? (<> (gErrno) EINTR) 0)
+         (? (<> (gErrno) EINTR)
+            (In: cnt 0) )
          (sigChk 0) ) ) )
 
 (de i64 slowNb ((i8* . In))
    (let In: (inFile In)
-      (In: ix (In: cnt 0))
       (loop
          (let
             (Flg (nonBlocking (In: fd))
                N (read (In: fd) (In: (buf)) BUFSIZ) )
             (fcntlSetFl (In: fd) Flg)
-            (? (gt0 N) (In: cnt N))
+            (? (gt0 N)
+               (In: ix 0)
+               (In: cnt N) )
             (? (=0 N)
                (In: ix (In: cnt -1))
                0 ) )
          (? (== (gErrno) EAGAIN) -1)
-         (? (<> @ EINTR) 0)
+         (? (<> @ EINTR)
+            (In: ix (In: cnt 0)) )
          (sigChk 0) ) ) )
 
 (de i1 rdBytes ((i32 . Fd) (i8* . P) (i64 . Cnt))
@@ -235,24 +238,22 @@
 
 (de i32 stdinByte ()
    (let In: (inFile (val (val $InFiles)))  # Stdin
-      (when (In:)
-         (when
-            (or
-               (<> (In: ix) (In: cnt))
-               (and (ge0 @) (slow (In:))) )
+      (cond
+         ((and
+               (In:)
+               (or
+                  (<> (In: ix) (In: cnt))
+                  (and (ge0 @) (slow (In:))) ) )
             (let I (In: ix)
                (In: ix (+ I 1))
-               (ret (i32 (val (ofs (In: (buf)) I)))) ) ) )
-      (when (isatty 0)
-         (bye 0) )
-      -1 ) )
+               (i32 (val (ofs (In: (buf)) I))) ) )
+         ((isatty 0) (bye 0))
+         (T -1) ) ) )
 
 (de i32 getBinary ()
    (let (In: (inFile (val $InFile))  I (In: ix))
       (when (== I (In: cnt))
-         (when (lt0 I)  # Closed
-            (ret -1) )
-         (unless (slow (In:))  # EOF
+         (when (or (lt0 I) (=0 (slow (In:))))  # Closed or EOF
             (ret -1) )
          (setq I 0) )
       (In: ix (+ I 1))
@@ -697,8 +698,9 @@
             (let In: (inFile @)
                (or
                   (> (In: cnt) (In: ix))
-                  (readyIn P)
-                  (ge0 (slowNb (In:))) ) ) ) ) ) )
+                  (and
+                     (readyIn P)
+                     (ge0 (slowNb (In:))) ) ) ) ) ) ) )
 
 (de i64 waitFd (Exe (i32 . Fd) (i64 . Ms))
    (let
@@ -954,7 +956,7 @@
                      (unless (== (gErrno) EINTR)
                         (selectErr Exe) ) )
                   (? (not (readyIn Poll)) $Nil)
-                  (? (ge0 (slowNb (In:)))) ) ) ) ) ) )
+                  (? (ge0 (slowNb (In:))) C) ) ) ) ) ) )
 
 (local) (rdOpen wrOpen erOpen ctOpen)
 
