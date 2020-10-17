@@ -1,5 +1,4 @@
-# 05jun19abu
-# (c) Software Lab. Alexander Burger
+# 05jun19 Software Lab. Alexander Burger
 
 (symbols 'gis 'pico)
 
@@ -164,5 +163,3 @@
       src=\"https://www.google.com/maps?source=s_q&amp;q="
       (fmt Lat "," Lon)
       "&amp;output=embed\"></iframe>" ) )
-
-# vi:et:ts=3:sw=3

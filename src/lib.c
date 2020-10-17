@@ -1,4 +1,4 @@
-// 03oct20 Software Lab. Alexander Burger
+// 17oct20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -191,7 +191,7 @@ void sigUnblock(int32_t sig) {
    sigprocmask(SIG_UNBLOCK, &mask, NULL);
 }
 
-void waitNohang(void) {
+void sigChld(int n __attribute__((unused))) {
    int e, stat;
    pid_t pid;
 

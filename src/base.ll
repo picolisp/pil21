@@ -1588,7 +1588,7 @@ declare i8* @currentLine()
 declare i32 @gSignal(i32)
 declare void @sigUnblock(i32)
 declare void @iSignal(i32, i8*)
-declare void @waitNohang()
+declare void @sigChld(i32)
 declare i32 @waitWuntraced(i32, i32*)
 declare i32 @wifStopped(i32*)
 declare i32 @nErrno()
@@ -2413,13 +2413,6 @@ $3:
   br label %$4
 $4:
   %12 = phi i32 [%3, %$2], [%11, %$3] ; # ->
-  ret void
-}
-
-define void @sigChld(i32) {
-$1:
-; # (waitNohang)
-  call void @waitNohang()
   ret void
 }
 

@@ -1,5 +1,4 @@
-# 13jun18abu
-# (c) Software Lab. Alexander Burger
+# 17oct20 Software Lab. Alexander Burger
 
 (allow "!jsDraw" )
 (push1 '*JS (allow "@lib/plio.js") (allow "@lib/canvas.js"))
@@ -80,5 +79,3 @@
       "\" ontouchleave=\"csLeave(this)\"" )
    (dfltCss "canvas")
    (prinl ">" Alt "</canvas>" ) )
-
-# vi:et:ts=3:sw=3

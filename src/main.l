@@ -1,4 +1,4 @@
-# 10oct20 Software Lab. Alexander Burger
+# 17oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -133,7 +133,7 @@
       (set $Avail A) ) )
 
 # Signals
-(local) (sig sigTerm sigChld sighandler)
+(local) (sig sigTerm sighandler)
 
 (de void sig ((i32 . N))
    (if (val $TtyPid)
@@ -148,9 +148,6 @@
       (set $Signal (+ (val $Signal) 1))
       (let P (ofs $Signal (gSignal (val SIGTERM Sig)))
          (set P (+ (val P) 1)) ) ) )
-
-(de void sigChld ((i32 . N))
-   (waitNohang) )
 
 (de void sighandler (Exe)
    (unless (val $Protect)
@@ -1680,7 +1677,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (cons (val $D) $Nil) ) ) )
 
 # Main entry point
-(local) main
+(local) (main sigChld)
 
 (de i32 main ((i32 . Ac) (i8** . Av))
    (set $AV0 (val Av))  # Save command

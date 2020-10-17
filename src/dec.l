@@ -1,4 +1,4 @@
-# 05oct20 Software Lab. Alexander Burger
+# 17oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -193,12 +193,12 @@ truncate0 socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (var SigDfl i8* NIL)
 (var SigIgn i8* NIL)
 
-(local) (gSignal sigUnblock iSignal waitNohang waitWuntraced wifStopped)
+(local) (gSignal sigUnblock iSignal sigChld waitWuntraced wifStopped)
 
 (de T i32 gSignal (i32))
 (de T void sigUnblock (i32))
 (de T void iSignal (i32 i8*))
-(de T void waitNohang ())
+(de T void sigChld (i32))
 (de T i32 waitWuntraced (i32 i32*))
 (de T i32 wifStopped (i32*))
 
