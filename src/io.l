@@ -1,4 +1,4 @@
-# 17oct20 Software Lab. Alexander Burger
+# 18oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -197,11 +197,11 @@
       (close (Cld: tell))
       (free (Cld: buf)) ) )
 
-(de void wrChild ((i8* . Cld)  (i8* . P) (i64 . Cnt))
+(de void wrChild ((i8* . Cld)  (i8* . P) (i32 . Cnt))
    (let (Cld: (child Cld)  C (Cld: cnt))
       (unless C
          (loop
-            (let N (write (Cld: tell) P Cnt)
+            (let N (write (Cld: tell) P (i64 Cnt))
                (if (lt0 N)
                   (let E (gErrno)
                      (? (== E EAGAIN))
@@ -210,14 +210,15 @@
                         (ret) )
                      (unless (== E EINTR)
                         (writeErr ($ "child write: %s")) ) )
-                  (unless (dec 'Cnt N)
+                  (unless (dec 'Cnt (i32 N))
                      (ret) )
                   (inc 'P N) ) ) ) )
-      (setq N (+ C Cnt 8))  # New buffer size
-      (let Q (ofs (Cld: buf (alloc (Cld: buf) N)) C)
-         (set (i64* Q) Cnt)
-         (memcpy (ofs Q 8) P Cnt)
-         (Cld: cnt N) ) ) )
+      (let
+         (Siz (+ C Cnt 4)  # New buffer size
+            Q (ofs (Cld: buf (alloc (Cld: buf) (i64 Siz))) C) )
+         (set (i32* Q) Cnt)
+         (memcpy (ofs Q 4) P (i64 Cnt))
+         (Cld: cnt Siz) ) ) )
 
 (de i1 flush ((i8* . Out))
    (ifn Out
@@ -510,10 +511,10 @@
    (let (P (val $Ptr)  Q (val $TellBuf))
       (set P END)  # Close list
       (inc 'P)
-      (let (D (- P Q)  N (- D 8))  # Size without PID and count
+      (let (D (- P Q)  N (i32 (- D 8)))  # Size without PID and count
          (set
             (i32* Q) Pid
-            (inc (i32* Q)) (i32 N) )
+            (inc (i32* Q)) N )
          (when (val $Tell)
             (let Fd @
                (unless (wrBytes Fd Q D)
@@ -781,30 +782,25 @@
                                                             (<> Cld Cld2)
                                                             (Cld2: pid)
                                                             (or (=0 (val Pn)) (== @ (Cld2: pid))) )
-                                                         (wrChild Cld2 Buf (i64 (val 2 Pn))) ) )
+                                                         (wrChild Cld2 Buf (val 2 Pn)) ) )
                                                    (setq Cld2 (ofs Cld2 (child T))) ) ) )
                                           (T
                                              (clsChild Cld)
                                              (goto 1) ) ) ) ) )
                               (when (readyOut (pollfd (Cld: tell)))
-                                 (let N
-                                    (+
-                                       (i64 (val (i32* (Cld: buf))))
-                                       (Cld: ofs) )
-                                    (ifn
-                                       (wrBytes
-                                          (Cld: tell)
-                                          (ofs (Cld: buf) (+ (Cld: ofs) 4))
-                                          N )
+                                 (let
+                                    (P (ofs (Cld: buf) (Cld: ofs))  # Buffer pointer plus offset
+                                       N (val (i32* P)) )  # Size
+                                    (ifn (wrBytes (Cld: tell) (ofs P 4) (i64 N))
                                        (clsChild Cld)
-                                       (Cld: ofs (+ (Cld: ofs) (Cld: cnt) N))
-                                       (when (>= (* 2 (Cld: ofs)) (Cld: cnt))
-                                          (when (Cld: cnt (- (Cld: cnt) (Cld: ofs)))
+                                       (Cld: ofs (setq N (+ (Cld: ofs) N 4)))  # Add size plus size of size to buffer offset
+                                       (when (>= (* 2 N) (Cld: cnt))
+                                          (when (Cld: cnt (- (Cld: cnt) N))
                                              (memcpy
                                                 (Cld: buf)
-                                                (ofs (Cld: buf) (Cld: ofs))
-                                                (Cld: cnt) )
-                                             (Cld: buf (alloc (Cld: buf) (Cld: cnt))) )
+                                                (ofs (Cld: buf) N)
+                                                (i64 (Cld: cnt)) )
+                                             (Cld: buf (alloc (Cld: buf) (i64 (Cld: cnt)))) )
                                           (Cld: ofs 0) ) ) ) ) ) )
                         (: 1
                            (setq Cld (ofs Cld (child T))) ) ) )
