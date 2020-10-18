@@ -1,4 +1,4 @@
-# 08oct20 Software Lab. Alexander Burger
+# 18oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -883,7 +883,7 @@
 
 # (commit ['any] [exe1] [exe2]) -> T
 (de _commit (Exe)
-   (let (X (cdr Exe)  Y (save (eval (++ X)))  Notify NO)
+   (let (Args (cdr Exe)  Rpc (save (eval (++ Args)))  Notify NO)
       (set $Protect (inc (val $Protect)))
       (wrLockDb)
       (when (val $DbJnl)
@@ -963,8 +963,8 @@
                (fflush Log)
                (when (lt0 (fsync (fileno Log)))
                   (err Exe 0 ($ "Transaction fsync error: %s") (strErrno)) ) ) ) )
-      (eval (++ X)) # Eval pre-expression
-      (when (and (not (nil? Y)) (or (val $Tell) (val $Children)))
+      (eval (++ Args)) # Eval pre-expression
+      (when (and (not (nil? Rpc)) (or (val $Tell) (val $Children)))
          (setq Notify YES)
          (set
             $BufX (val $TellBuf)  # Save current 'tell' env
@@ -972,7 +972,7 @@
             $EndX (val $End) )
          (tellBeg (b8 (val PipeBufSize)))  # Start 'tell' message
          (stkChk Exe)
-         (prTell Y) )
+         (prTell Rpc) )
       (let (Tos 0  P (val $Extern))  # Iterate external symbol tree
          (loop
             (loop
@@ -983,7 +983,7 @@
                      (set X Tos)
                      (setq Tos Y) ) ) )
             (loop
-               (let (S (val P)  Q (tail S)  Nm (val Q))  # Get external symbol
+               (let (Sym (val P)  Q (tail Sym)  Nm (val Q))  # Get external symbol
                   (unless (num? Nm)  # Any properties
                      (setq Nm (any (& Nm -9)))  # Clear 'extern' tag
                      (loop
@@ -1010,8 +1010,8 @@
                                              (set  # Partial 'tellBeg'
                                                 (inc 'P 8) BEG  # 8 bytes space (PID and count)
                                                 $Ptr (inc P) )  # Begin a list
-                                             (prTell Y) ) )
-                                       (prTell S) ) ) )  # Send external symbol to 'tell'
+                                             (prTell Rpc) ) )
+                                       (prTell Sym) ) ) )  # Send external symbol to 'tell'
                               (T  # Dirty
                                  (set Q (shr 1 N 2))  # Set "loaded"
                                  (when (> (val $DBs) F)  # Local file
@@ -1022,8 +1022,8 @@
                                           Blk (| (val Blk) 1)  # First block in object (might be new)
                                           $PutBin (fun (void i8) putBlock)
                                           $Extn 0 )
-                                       (binPrint (val S))  # Print value
-                                       (let L (& (val (tail S)) -9)  # Get Properties
+                                       (binPrint (val Sym))  # Print value
+                                       (let L (& (val (tail Sym)) -9)  # Get Properties
                                           (until (num? L)
                                              (let V (++ L)
                                                 (nond
@@ -1051,8 +1051,8 @@
                                                 (set  # Partial 'tellBeg'
                                                    (inc 'P 8) BEG  # 8 bytes space (PID and count)
                                                    $Ptr (inc P) )  # Begin a list
-                                                (prTell Y) ) )
-                                          (prTell S) ) ) ) ) ) ) ) ) )  # Send external symbol to 'tell'
+                                                (prTell Rpc) ) )
+                                          (prTell Sym) ) ) ) ) ) ) ) ) )  # Send external symbol to 'tell'
                (let X (cdr P)
                   (? (pair (cdr X))  # Right subtree
                      (let Y P  # Go right
@@ -1079,7 +1079,7 @@
                $TellBuf (val $BufX)
                $Ptr (val $PtrX)
                $End (val $EndX) ) ) )
-      (eval (car X)) # Eval post-expression
+      (eval (car Args)) # Eval post-expression
       (when (val $DbJnl)
          (unLockJnl) )
       (when (pair (val $Zap))  # Objects to delete
