@@ -1,4 +1,4 @@
-# 18oct20 Software Lab. Alexander Burger
+# 19oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -699,9 +699,8 @@
             (let In: (inFile @)
                (or
                   (> (In: cnt) (In: ix))
-                  (and
-                     (readyIn P)
-                     (ge0 (slowNb (In:))) ) ) ) ) ) ) )
+                  (readyIn P)
+                  (ge0 (slowNb (In:))) ) ) ) ) ) )
 
 (de i64 waitFd (Exe (i32 . Fd) (i64 . Ms))
    (let
@@ -1791,13 +1790,11 @@
                   (let
                      (N (evCnt Exe X)
                         P (push 4 NIL ZERO NIL)  # [cnt last name link]
-                        Q (link (ofs P 2)) )
+                        Q (link (ofs P 2) T) )
                      (loop
                         (charSym (getChar C) P)
                         (when (eol (setq C (call $Get)))
-                           (ret
-                              (drop Q
-                                 (cons (consStr (val Q)) $Nil) ) ) )
+                           (ret (cons (consStr (val Q)) $Nil)) )
                         (? (=0 (dec 'N))) )
                      (let
                         (Y (cons (consStr (val Q)) $Nil)
@@ -1809,7 +1806,6 @@
                               (charSym (getChar C) P)
                               (when (eol (setq C (call $Get)))
                                  (set 2 Y (cons (consStr (val Q)) $Nil))
-                                 (drop Q)
                                  (ret R) )
                               (? (=0 (dec 'N))) )
                            (setq Y

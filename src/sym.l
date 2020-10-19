@@ -1,4 +1,4 @@
-# 12oct20 Software Lab. Alexander Burger
+# 19oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -551,7 +551,10 @@
 (de consTree (P Lst)
    (if (atom P)
       P
-      (let (Q (link (push P NIL))  Tos (link (push -ZERO NIL)))
+      (let
+         (Q (link (push P NIL))
+            L (link (push Lst NIL))
+            Tos (link (push -ZERO NIL)))
          (loop
             (loop
                (let X (cdr P)  # Get subtrees
@@ -562,7 +565,7 @@
                      (set Tos Y) ) ) )
             (set Q P)  # Save tree
             (loop
-               (setq Lst (cons (car P) Lst))  # Cons symbol
+               (set L (cons (car P) (val L)))  # Cons symbol
                (let X (cdr P)
                   (? (pair (car X))  # Left subtree
                      (let Y P  # Go left
@@ -574,7 +577,7 @@
                   (let X (val Tos)
                      (when (== -ZERO X)
                         (drop Q)
-                        (ret Lst) )
+                        (ret (val L)) )
                      (? (=0 (& X 8))  # Second visit
                         (let Y (cdr X)  # Nodes
                            (set Tos (cdr Y))  # TOS on up link
