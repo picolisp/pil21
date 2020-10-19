@@ -43932,7 +43932,8 @@ $10:
 ; # (call $Get)
   %25 = load i32()*, i32()** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 96) to i32()**)
   %26 = call i32 %25()
-; # (let (X (save (read0 NO)) R (safe (eval X))) (? (pair (setq X R))...
+; # (let R (let X (save (read0 NO)) (eval X)) (? (pair R) (let L (sav...
+; # (let X (save (read0 NO)) (eval X))
 ; # (read0 NO)
   %27 = call i64 @read0(i1 0)
 ; # (save (read0 NO))
@@ -43966,52 +43967,62 @@ $15:
   br label %$12
 $12:
   %43 = phi i64 [%27, %$14], [%41, %$16], [%42, %$15] ; # ->
-; # (safe (eval X))
+; # (drop *Safe)
   %44 = inttoptr i64 %29 to i64*
-  store i64 %43, i64* %44
-; # (? (pair (setq X R)) (while (pair (cdr X)) (shift X)) (rdl R X) R...
-; # (pair (setq X R))
-  %45 = and i64 %43, 15
-  %46 = icmp eq i64 %45, 0
-  br i1 %46, label %$18, label %$17
+  %45 = getelementptr i64, i64* %44, i32 1
+  %46 = load i64, i64* %45
+  %47 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %46, i64* %47
+; # (? (pair R) (let L (save R) (while (pair (cdr L)) (setq L @)) (rd...
+; # (pair R)
+  %48 = and i64 %43, 15
+  %49 = icmp eq i64 %48, 0
+  br i1 %49, label %$18, label %$17
 $18:
-  %47 = phi i64 [%43, %$12] ; # X
-; # (while (pair (cdr X)) (shift X))
+; # (let L (save R) (while (pair (cdr L)) (setq L @)) (rdl R L))
+; # (save R)
+  %50 = alloca i64, i64 2, align 16
+  %51 = ptrtoint i64* %50 to i64
+  %52 = inttoptr i64 %51 to i64*
+  store i64 %43, i64* %52
+  %53 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %54 = load i64, i64* %53
+  %55 = inttoptr i64 %51 to i64*
+  %56 = getelementptr i64, i64* %55, i32 1
+  store i64 %54, i64* %56
+  %57 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %51, i64* %57
+; # (while (pair (cdr L)) (setq L @))
   br label %$19
 $19:
-  %48 = phi i64 [%47, %$18], [%57, %$20] ; # X
-; # (cdr X)
-  %49 = inttoptr i64 %48 to i64*
-  %50 = getelementptr i64, i64* %49, i32 1
-  %51 = load i64, i64* %50
-; # (pair (cdr X))
-  %52 = and i64 %51, 15
-  %53 = icmp eq i64 %52, 0
-  br i1 %53, label %$20, label %$21
+  %58 = phi i64 [%43, %$18], [%61, %$20] ; # L
+; # (cdr L)
+  %59 = inttoptr i64 %58 to i64*
+  %60 = getelementptr i64, i64* %59, i32 1
+  %61 = load i64, i64* %60
+; # (pair (cdr L))
+  %62 = and i64 %61, 15
+  %63 = icmp eq i64 %62, 0
+  br i1 %63, label %$20, label %$21
 $20:
-  %54 = phi i64 [%48, %$19] ; # X
-; # (shift X)
-  %55 = inttoptr i64 %54 to i64*
-  %56 = getelementptr i64, i64* %55, i32 1
-  %57 = load i64, i64* %56
+  %64 = phi i64 [%58, %$19] ; # L
   br label %$19
 $21:
-  %58 = phi i64 [%48, %$19] ; # X
-; # (rdl R X)
-  call void @rdl(i64 %43, i64 %58)
+  %65 = phi i64 [%58, %$19] ; # L
+; # (rdl R L)
+  call void @rdl(i64 %43, i64 %65)
+; # (drop *Safe)
+  %66 = inttoptr i64 %51 to i64*
+  %67 = getelementptr i64, i64* %66, i32 1
+  %68 = load i64, i64* %67
+  %69 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %68, i64* %69
   br label %$6
 $17:
-  %59 = phi i64 [%43, %$12] ; # X
-; # (drop *Safe)
-  %60 = inttoptr i64 %29 to i64*
-  %61 = getelementptr i64, i64* %60, i32 1
-  %62 = load i64, i64* %61
-  %63 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %62, i64* %63
   br label %$4
 $6:
-  %64 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), %$7], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), %$9], [%12, %$11], [%43, %$21] ; # ->
-  ret i64 %64
+  %70 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), %$7], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), %$9], [%12, %$11], [%43, %$21] ; # ->
+  ret i64 %70
 }
 
 define i64 @read0(i1) {
