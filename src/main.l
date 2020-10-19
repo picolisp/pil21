@@ -1,4 +1,4 @@
-# 17oct20 Software Lab. Alexander Burger
+# 19oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1060,9 +1060,8 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                S (In: name)
                P (strrchr S (char "/")) )
             (if P
-               (cons
-                  (mkStrE S (inc 'P))
-                  (cons (mkStr P) N) )
+               (let X (save (mkStrE S (inc 'P)))
+                  (cons X (cons (mkStr P) N)) )
                (cons $Nil (cons (mkStr S) N)) ) ) ) ) )
 
 # (argv [var ..] [. sym]) -> lst|sym

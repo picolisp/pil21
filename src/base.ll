@@ -99444,38 +99444,57 @@ $5:
   %16 = load i8*, i8** %15
 ; # (strrchr S (char "/"))
   %17 = call i8* @strrchr(i8* %16, i32 47)
-; # (if P (cons (mkStrE S (inc 'P)) (cons (mkStr P) N)) (cons $Nil (c...
+; # (if P (let X (save (mkStrE S (inc 'P))) (cons X (cons (mkStr P) N...
   %18 = icmp ne i8* %17, null
   br i1 %18, label %$7, label %$8
 $7:
   %19 = phi i8* [%17, %$5] ; # P
+; # (let X (save (mkStrE S (inc 'P))) (cons X (cons (mkStr P) N)))
 ; # (inc 'P)
   %20 = getelementptr i8, i8* %19, i32 1
 ; # (mkStrE S (inc 'P))
   %21 = call i64 @mkStrE(i8* %16, i8* %20)
+; # (save (mkStrE S (inc 'P)))
+  %22 = alloca i64, i64 2, align 16
+  %23 = ptrtoint i64* %22 to i64
+  %24 = inttoptr i64 %23 to i64*
+  store i64 %21, i64* %24
+  %25 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %26 = load i64, i64* %25
+  %27 = inttoptr i64 %23 to i64*
+  %28 = getelementptr i64, i64* %27, i32 1
+  store i64 %26, i64* %28
+  %29 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %23, i64* %29
 ; # (mkStr P)
-  %22 = call i64 @mkStr(i8* %20)
+  %30 = call i64 @mkStr(i8* %20)
 ; # (cons (mkStr P) N)
-  %23 = call i64 @cons(i64 %22, i64 %13)
-; # (cons (mkStrE S (inc 'P)) (cons (mkStr P) N))
-  %24 = call i64 @cons(i64 %21, i64 %23)
+  %31 = call i64 @cons(i64 %30, i64 %13)
+; # (cons X (cons (mkStr P) N))
+  %32 = call i64 @cons(i64 %21, i64 %31)
+; # (drop *Safe)
+  %33 = inttoptr i64 %23 to i64*
+  %34 = getelementptr i64, i64* %33, i32 1
+  %35 = load i64, i64* %34
+  %36 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %35, i64* %36
   br label %$9
 $8:
-  %25 = phi i8* [%17, %$5] ; # P
+  %37 = phi i8* [%17, %$5] ; # P
 ; # (mkStr S)
-  %26 = call i64 @mkStr(i8* %16)
+  %38 = call i64 @mkStr(i8* %16)
 ; # (cons (mkStr S) N)
-  %27 = call i64 @cons(i64 %26, i64 %13)
+  %39 = call i64 @cons(i64 %38, i64 %13)
 ; # (cons $Nil (cons (mkStr S) N))
-  %28 = call i64 @cons(i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), i64 %27)
+  %40 = call i64 @cons(i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), i64 %39)
   br label %$9
 $9:
-  %29 = phi i8* [%20, %$7], [%25, %$8] ; # P
-  %30 = phi i64 [%24, %$7], [%28, %$8] ; # ->
+  %41 = phi i8* [%20, %$7], [%37, %$8] ; # P
+  %42 = phi i64 [%32, %$7], [%40, %$8] ; # ->
   br label %$6
 $6:
-  %31 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), %$4], [%30, %$9] ; # ->
-  ret i64 %31
+  %43 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64), %$4], [%42, %$9] ; # ->
+  ret i64 %43
 }
 
 define i64 @_argv(i64) {
