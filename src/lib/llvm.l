@@ -1,4 +1,4 @@
-# 15oct20 Software Lab. Alexander Burger
+# 20oct20 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -1453,9 +1453,8 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
 
 (cross~de save (X . Prg)
    (log)
-   (pico~let (*Log NIL  Safe *Safe  P (push X NIL))
+   (pico~let (*Log NIL  Safe *Safe  P (push X (val $Link)))
       (default *Safe P)
-      (set 2 P (val $Link))
       (set $Link P)
       (pico~if Prg
          (prog1
@@ -1469,9 +1468,8 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
 
 (cross~de save2 (X Y . Prg)
    (log)
-   (pico~let (*Log NIL  Safe *Safe  P (push X NIL))
+   (pico~let (*Log NIL  Safe *Safe  P (push X (val $Link)))
       (default *Safe P)
-      (set 2 P (val $Link))
       (set $Link (push Y P))
       (pico~if Prg
          (prog1

@@ -1,4 +1,4 @@
-# 19oct20 Software Lab. Alexander Burger
+# 20oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -282,7 +282,7 @@
       (T
          (if (lt0 @)
             0  # EOF
-            (let
+            (let  # Atom
                (Tag (& @ 3)
                   Cnt (shr @ 2)
                   P (i64* (push NIL NIL ZERO NIL))  # [cnt last name link]
@@ -688,7 +688,7 @@
       (let In: (inFile @)
          (> (In: cnt) (In: ix)) ) ) )
 
-(de i1 inReady ((i32 . Fd))
+(de i1 inReady ((i32 . Fd) (i1 . Flg))
    (let P (pollfd Fd)
       (cond
          ((>= Fd (val $InFDs))
@@ -699,8 +699,9 @@
             (let In: (inFile @)
                (or
                   (> (In: cnt) (In: ix))
-                  (readyIn P)
-                  (ge0 (slowNb (In:))) ) ) ) ) ) )
+                  (and
+                     (readyIn P)
+                     (or Flg (ge0 (slowNb (In:)))) ) ) ) ) ) ) )
 
 (de i64 waitFd (Exe (i32 . Fd) (i64 . Ms))
    (let
@@ -814,7 +815,7 @@
                            (wrChild Cld $TBuf 2) ) ) )
                   (set $Protect (dec (val $Protect))) )
                (let N (val $Hear)  # RPC listener
-                  (when (and N (<> N Fd) (inReady N))
+                  (when (and N (<> N Fd) (inReady N NO))
                      (cond
                         ((=0 (rdHear))
                            (close N)
@@ -835,7 +836,7 @@
                                        (set Y (pos V)  $At V)
                                        (run (cdr Y)) ) ) ) )  # Run body
                            ((<> (i32 (int @)) Fd)
-                              (when (inReady @)
+                              (when (inReady @ NO)
                                  (set $At (car X))  # File descriptor
                                  (run (cdr X)) ) ) ) ) ) )  # Run body
                (and
@@ -844,7 +845,7 @@
                   (setq Ms 0) )
                (setq Tim Now) )
             (sigChk Exe)
-            (? (or (=0 Ms) (lt0 Fd) (inReady Fd)))
+            (? (or (=0 Ms) (lt0 Fd) (inReady Fd YES)))
             (setq Run (safe (val $Run))) ) )
       (set $At At)
       Ms ) )
