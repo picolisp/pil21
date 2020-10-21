@@ -1,4 +1,4 @@
-# 20oct20 Software Lab. Alexander Burger
+# 21oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -115,22 +115,24 @@
 
 (local) (slow slowNb rdBytes rdBytesNb wrBytes clsChild wrChild flush flushAll)
 
-(de i64 slow ((i8* . In))
+(de i32 slow ((i8* . In))
    (let In: (inFile In)
       (In: ix 0)
       (loop
-         (? (ge0 (read (In: fd) (In: (buf)) BUFSIZ))
+         (?
+            (ge0
+               (i32 (read (In: fd) (In: (buf)) BUFSIZ)) )
             (In: cnt @) )
          (? (<> (gErrno) EINTR)
             (In: cnt 0) )
          (sigChk 0) ) ) )
 
-(de i64 slowNb ((i8* . In))
+(de i32 slowNb ((i8* . In))
    (let In: (inFile In)
       (loop
          (let
             (Flg (nonBlocking (In: fd))
-               N (read (In: fd) (In: (buf)) BUFSIZ) )
+               N (i32 (read (In: fd) (In: (buf)) BUFSIZ)) )
             (fcntlSetFl (In: fd) Flg)
             (? (gt0 N)
                (In: ix 0)
@@ -143,10 +145,10 @@
             (In: ix (In: cnt 0)) )
          (sigChk 0) ) ) )
 
-(de i1 rdBytes ((i32 . Fd) (i8* . P) (i64 . Cnt))
+(de i1 rdBytes ((i32 . Fd) (i8* . P) (i32 . Cnt))
    (loop
       (loop
-         (? (gt0 (read Fd P Cnt))
+         (? (gt0 (i32 (read Fd P (i64 Cnt))))
             (inc 'P @)
             (dec 'Cnt @) )
          (unless (and @ (== (gErrno) EINTR))
@@ -154,16 +156,20 @@
          (sigChk 0) )
       (? (=0 Cnt) YES) ) )
 
-(de i64 rdBytesNb ((i32 . Fd) (i8* . P) (i64 . Cnt))
+(de i64 rdBytesNb ((i32 . Fd) (i8* . P) (i32 . Cnt))
    (loop
-      (let (Flg (nonBlocking Fd)  N (read Fd P Cnt))
+      (let
+         (Flg (nonBlocking Fd)
+            N (i32 (read Fd P (i64 Cnt))) )
          (fcntlSetFl Fd Flg)
          (when (gt0 N)
             (loop
                (unless (dec 'Cnt N)
                   (ret 1) )
                (inc 'P N)
-               (while (le0 (setq N (read Fd P Cnt)))
+               (while
+                  (le0
+                     (setq N (i32 (read Fd P (i64 Cnt)))) )
                   (unless (and N (== (gErrno) EINTR))
                      (ret 0) )
                   (sigChk 0) ) ) )
@@ -172,9 +178,9 @@
       (? (<> @ EINTR) 0)
       (sigChk 0) ) )
 
-(de i1 wrBytes ((i32 . Fd) (i8* . P) (i64 . Cnt))
+(de i1 wrBytes ((i32 . Fd) (i8* . P) (i32 . Cnt))
    (loop
-      (let N (write Fd P Cnt)
+      (let N (i32 (write Fd P (i64 Cnt)))
          (if (lt0 N)
             (let E (gErrno)
                (? (== E EBADF) NO)
@@ -511,7 +517,7 @@
    (let (P (val $Ptr)  Q (val $TellBuf))
       (set P END)  # Close list
       (inc 'P)
-      (let (D (- P Q)  N (i32 (- D 8)))  # Size without PID and count
+      (let (D (i32 (- P Q))  N (- D 8))  # Size without PID and count
          (set
             (i32* Q) Pid
             (inc (i32* Q)) N )
@@ -771,7 +777,7 @@
                                           ((=0 (val (i64* Pn)))  # PID and size are zero
                                              (when (== (Cld: pid) (val $Talking))
                                                 (set $Talking 0) ) )
-                                          ((rdBytes (Cld: hear) Buf (i64 (val 2 Pn)))
+                                          ((rdBytes (Cld: hear) Buf (val 2 Pn))
                                              (let
                                                 (Cld2 (val $Child)  # Iterate children
                                                    <Cld2 (ofs Cld2 (* (val $Children) (child T))) )
@@ -791,7 +797,7 @@
                                  (let
                                     (P (ofs (Cld: buf) (Cld: ofs))  # Buffer pointer plus offset
                                        N (val (i32* P)) )  # Size
-                                    (ifn (wrBytes (Cld: tell) (ofs P 4) (i64 N))
+                                    (ifn (wrBytes (Cld: tell) (ofs P 4) N)
                                        (clsChild Cld)
                                        (Cld: ofs (setq N (+ (Cld: ofs) N 4)))  # Add size plus size of size to buffer offset
                                        (when (>= (* 2 N) (Cld: cnt))

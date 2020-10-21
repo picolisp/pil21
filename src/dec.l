@@ -1,4 +1,4 @@
-# 18oct20 Software Lab. Alexander Burger
+# 21oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -6,8 +6,8 @@
 
 # I/O
 (struct inFile
-   (ix 8 i64)           # Buffer index
-   (cnt 8 i64)          # Buffer byte count
+   (ix 8 i32)           # Buffer index
+   (cnt 8 i32)          # Buffer byte count
    (fd 4 i32)           # File descriptor
    (next 4 i32)         # Saved next character
    (name 8 i8*)         # Current file name
@@ -16,7 +16,7 @@
    (buf BUFSIZ i8) )    # Buffer
 
 (struct outFile
-   (ix 8 i64)           # Buffer index
+   (ix 8 i32)           # Buffer index
    (fd 4 i32)           # File descriptor
    (buf BUFSIZ i8)      # Buffer
    (tty 1 i1) )         # TTY flag
