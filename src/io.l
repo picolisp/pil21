@@ -207,7 +207,7 @@
    (let (Cld: (child Cld)  C (Cld: cnt))
       (unless C
          (loop
-            (let N (write (Cld: tell) P (i64 Cnt))
+            (let N (i32 (write (Cld: tell) P (i64 Cnt)))
                (if (lt0 N)
                   (let E (gErrno)
                      (? (== E EAGAIN))
@@ -216,7 +216,7 @@
                         (ret) )
                      (unless (== E EINTR)
                         (writeErr ($ "child write: %s")) ) )
-                  (unless (dec 'Cnt (i32 N))
+                  (unless (dec 'Cnt N)
                      (ret) )
                   (inc 'P N) ) ) ) )
       (let
@@ -360,7 +360,7 @@
                                                    (hex "000FF000FF000000") ) ) ) ) )  # Mask file number
                                     (extern Nm) ) ) ) ) ) ) ) ) ) ) ) )
 
-(local) (prCnt binPrint pr putTell prTell tellBeg tellEnd unsync rdHear)
+(local) (prCnt binPrint pr putTell prTell tellBeg tellEnd unsync)
 
 # Binary print short number
 (de void prCnt ((i8 . Tag) Num)
@@ -546,16 +546,6 @@
             (close Fd)
             (set $Tell 0) ) ) )
    (set $Sync NO) )
-
-(de rdHear ()
-   (let In (val $InFile)
-      (set
-         $InFile (val (ofs (val $InFiles) (val $Hear)))
-         $GetBin (fun (i32) getBinary)
-         $Extn 0 )
-      (prog1
-         (binRead)
-         (set $InFile In) ) ) )
 
 (local) (waitFile currFd)
 
@@ -822,14 +812,21 @@
                   (set $Protect (dec (val $Protect))) )
                (let N (val $Hear)  # RPC listener
                   (when (and N (<> N Fd) (inReady N NO))
-                     (cond
-                        ((=0 (rdHear))
-                           (close N)
-                           (closeInFile N)
-                           (closeOutFile N)
-                           (set $Hear 0) )
-                        ((t? @) (set $Sync YES))
-                        (T (save @ (evList @))) ) ) )
+                     (let In (val $InFile)
+                        (set
+                           $InFile (val (ofs (val $InFiles) (val $Hear)))
+                           $GetBin (fun (i32) getBinary)
+                           $Extn 0 )
+                        (let E (binRead)
+                           (cond
+                              ((=0 E)
+                                 (close N)
+                                 (closeInFile N)
+                                 (closeOutFile N)
+                                 (set $Hear 0) )
+                              ((t? E) (set $Sync YES))
+                              (T (save E (evList E))) ) )
+                        (set $InFile In) ) ) )
                (let R Run
                   (while (pair R)
                      (let X (++ R)
