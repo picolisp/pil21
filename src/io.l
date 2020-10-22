@@ -1,4 +1,4 @@
-# 21oct20 Software Lab. Alexander Burger
+# 22oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -789,7 +789,7 @@
                                        N (val (i32* P)) )  # Size
                                     (ifn (wrBytes (Cld: tell) (ofs P 4) N)
                                        (clsChild Cld)
-                                       (Cld: ofs (setq N (+ (Cld: ofs) N 4)))  # Add size plus size of size to buffer offset
+                                       (setq N (Cld: ofs (+ (Cld: ofs) N 4)))  # Add size plus size of size to buffer offset
                                        (when (>= (* 2 N) (Cld: cnt))
                                           (when (Cld: cnt (- (Cld: cnt) N))
                                              (memcpy
@@ -804,7 +804,7 @@
                      (and
                         (=0 (val $Talking))
                         (readyIn (pollfd (val $Spkr)))
-                        (gt0 (rdBytesNb (val $Spkr) (i8* Pn) 8)) )  # Slot
+                        (gt0 (rdBytesNb (val $Spkr) (i8* Pn) 4)) )  # Slot
                      (let Cld (ofs (val $Child) (* (val Pn) (child T)))
                         (when ((child Cld) pid)
                            (set $Talking @)
@@ -879,7 +879,7 @@
          $Nil )
       ((val $Sync) $T)
       (T
-         (let (Mic (val $Mic)  P (i8* $Slot)  Cnt 8)
+         (let (Mic (val $Mic)  P (i8* $Slot)  Cnt 4)
             (loop
                (let N (write Mic P Cnt)
                   (cond
@@ -1877,7 +1877,7 @@
       (closeOnExec Exe (val 2 Hear))  # Write end
       (closeOnExec Exe (val Tell))  # Read end of 'tell'
       (closeOnExec Exe (val 2 Tell))  # Write end
-      (let (I 0  N (val $Children))
+      (let (I (i32 0)  N (val $Children))
          (let Cld (val $Child)
             (while (> N I)  # Find a free child slot
                (? (=0 ((child Cld) pid)))
@@ -1954,7 +1954,7 @@
                      (set $Children (inc 'N 8))  # Eight more slots
                      (let P
                         (set $Child
-                           (alloc (val $Child) (* N (child T))) )
+                           (alloc (val $Child) (i64 (* N (child T)))) )
                         (let Cld (ofs P (* I (child T)))
                            (loop
                               ((child Cld) pid 0)  # Clear 'pid'

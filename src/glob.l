@@ -1,4 +1,4 @@
-# 13oct20 Software Lab. Alexander Burger
+# 22oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -32,9 +32,9 @@
 (var $USec i64 0)                      # Startup microseconds
 (var $TickU i64 0)                     # Ticks in user time
 (var $TickS i64 0)                     # Ticks in system time
-(var $Children i64 0)                  # Number of children
 (var $Child i8* null)                  # Child array
-(var $Slot i64 0)                      # Child index
+(var $Children i32 0)                  # Number of children
+(var $Slot i32 0)                      # Child index
 (var $Spkr i32 0)                      # RPC loadspeaker
 (var $Mic i32 0)                       # RPC microphone
 (array $SpMiPipe i32 0 0)              # Speaker/microphone pipe

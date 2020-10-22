@@ -39,9 +39,9 @@ declare void @llvm.stackrestore(i8*)
 @$USec = external global i64
 @$TickU = external global i64
 @$TickS = external global i64
-@$Children = external global i64
 @$Child = external global i8*
-@$Slot = external global i64
+@$Children = external global i32
+@$Slot = external global i32
 @$Spkr = external global i32
 @$Mic = external global i32
 @$SpMiPipe = external global [2 x i32]
