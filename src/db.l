@@ -1,4 +1,4 @@
-# 18oct20 Software Lab. Alexander Burger
+# 23oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -971,7 +971,6 @@
             $PtrX (val $Ptr)
             $EndX (val $End) )
          (tellBeg (b8 (val PipeBufSize)))  # Start 'tell' message
-         (stkChk Exe)
          (prTell Rpc) )
       (let (Tos 0  P (val $Extern))  # Iterate external symbol tree
          (loop

@@ -1,4 +1,4 @@
-// 17oct20 Software Lab. Alexander Burger
+// 23oct20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -358,14 +358,14 @@ int readyIn(struct pollfd *p) {
    if (p->fd < 0)
       return 0;
    p->fd = -1;
-   return (p->revents & (POLLIN | POLLHUP | POLLERR)) != 0;
+   return (p->revents & (POLLIN | POLLHUP | POLLERR | POLLNVAL)) != 0;
 }
 
 int readyOut(struct pollfd *p) {
    if (p->fd < 0)
       return 0;
    p->fd = -1;
-   return (p->revents & POLLOUT) != 0;
+   return (p->revents & POLLOUT | POLLERR | POLLNVAL) != 0;
 }
 
 // Locking

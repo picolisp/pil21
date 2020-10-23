@@ -1,4 +1,4 @@
-# 14oct20 Software Lab. Alexander Burger
+# 23oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -374,19 +374,19 @@
             (eval (car X)) )
          (? (pair (eval (car X)))
             (let
-               (Y @
+               (Y (save @)
                   R (save (cons (car Y) (cdr Y)))
                   Z R )
                (while (pair (setq Y (cdr Z)))
                   (setq Z
                      (set 2 Z (cons (car Y) (cdr Y))) ) )
                (while (pair (cdr (shift X)))
-                  (setq Y (eval (car X)))
-                  (while (pair Y)
-                     (setq
-                        Z (set 2 Z (cons (car Y) (cdr Y))) )
-                     (shift Y) )
-                  (set 2 Z Y) )
+                  (save (setq Y (eval (car X)))
+                     (while (pair Y)
+                        (setq
+                           Z (set 2 Z (cons (car Y) (cdr Y))) )
+                        (shift Y) )
+                     (set 2 Z Y) ) )
                (set 2 Z (eval (car X)))
                R ) ) ) ) )
 
