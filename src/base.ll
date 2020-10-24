@@ -58150,6 +58150,10 @@ $61:
 $62:
   %341 = phi i64 [%331, %$57], [%334, %$61] ; # Args
   %342 = phi i1 [%332, %$57], [1, %$61] ; # Notify
+; # (set $PutBin (fun (void i8) putBlock) $Extn 0)
+; # (fun (void i8) putBlock)
+  store void(i8)* @putBlock, void(i8)** @$PutBin
+  store i32 0, i32* @$Extn
 ; # (let (Tos 0 P (val $Extern)) (loop (loop (let X (cdr P) (? (atom ...
 ; # (val $Extern)
   %343 = load i64, i64* @$Extern
@@ -58444,22 +58448,19 @@ $84:
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
   %517 = getelementptr i8, i8* %515, i32 %516
   store i8* %517, i8** @$DbFile
-; # (let Blk (rdBlock (shl (objId Nm) 6)) (set Blk (| (val Blk) 1) $P...
+; # (let Blk (rdBlock (shl (objId Nm) 6)) (set Blk (| (val Blk) 1)) (...
 ; # (objId Nm)
   %518 = call i64 @objId(i64 %513)
 ; # (shl (objId Nm) 6)
   %519 = shl i64 %518, 6
 ; # (rdBlock (shl (objId Nm) 6))
   %520 = call i8* @rdBlock(i64 %519)
-; # (set Blk (| (val Blk) 1) $PutBin (fun (void i8) putBlock) $Extn 0...
+; # (set Blk (| (val Blk) 1))
 ; # (val Blk)
   %521 = load i8, i8* %520
 ; # (| (val Blk) 1)
   %522 = or i8 %521, 1
   store i8 %522, i8* %520
-; # (fun (void i8) putBlock)
-  store void(i8)* @putBlock, void(i8)** @$PutBin
-  store i32 0, i32* @$Extn
 ; # (val Sym)
   %523 = inttoptr i64 %374 to i64*
   %524 = load i64, i64* %523
