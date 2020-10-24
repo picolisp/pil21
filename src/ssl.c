@@ -1,6 +1,4 @@
-/* 02jan20abu
- * (c) Software Lab. Alexander Burger
- */
+// 24oct20 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
