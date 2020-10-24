@@ -1,4 +1,4 @@
-# 19oct20 Software Lab. Alexander Burger
+# 24oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -372,6 +372,7 @@
 
 # Intern an external symbol
 (de extern (Name)
+   (need3)  # Reserve 3 cells
    (let (X (val $Extern)  C 0  Sym T)
       (loop
          (inc 'C)  # Next level

@@ -1,8 +1,8 @@
-# 23oct20 Software Lab. Alexander Burger
+# 24oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
-(local) (mark gc)
+(local) (mark gc need3)
 
 (de void mark (E)
    (let Tos 0  # Clear
@@ -248,6 +248,11 @@
          (while (ge0 Cnt)  # Ensure free cells
             (heapAlloc)
             (dec 'Cnt CELLS) ) ) ) )
+
+(de void need3 ()
+   (let P (val $Avail)
+      (unless (and P (setq P (car P)) (car P))
+         (gc) ) ) )
 
 # (gc ['cnt [cnt2]]) -> cnt | NIL
 (de _gc (Exe)

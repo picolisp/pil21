@@ -6708,6 +6708,43 @@ $100:
   ret void
 }
 
+define void @need3() {
+$1:
+; # (let P (val $Avail) (unless (and P (setq P (car P)) (car P)) (gc)...
+; # (val $Avail)
+  %0 = load i64, i64* @$Avail
+; # (unless (and P (setq P (car P)) (car P)) (gc))
+; # (and P (setq P (car P)) (car P))
+  %1 = icmp ne i64 %0, 0
+  br i1 %1, label %$3, label %$2
+$3:
+  %2 = phi i64 [%0, %$1] ; # P
+; # (car P)
+  %3 = inttoptr i64 %2 to i64*
+  %4 = load i64, i64* %3
+  %5 = icmp ne i64 %4, 0
+  br i1 %5, label %$4, label %$2
+$4:
+  %6 = phi i64 [%4, %$3] ; # P
+; # (car P)
+  %7 = inttoptr i64 %6 to i64*
+  %8 = load i64, i64* %7
+  %9 = icmp ne i64 %8, 0
+  br label %$2
+$2:
+  %10 = phi i64 [%0, %$1], [%4, %$3], [%6, %$4] ; # P
+  %11 = phi i1 [0, %$1], [0, %$3], [%9, %$4] ; # ->
+  br i1 %11, label %$6, label %$5
+$5:
+  %12 = phi i64 [%10, %$2] ; # P
+; # (gc)
+  call void @gc()
+  br label %$6
+$6:
+  %13 = phi i64 [%10, %$2], [%12, %$5] ; # P
+  ret void
+}
+
 define i64 @_gc(i64) {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X))) (set $At $Nil $At2 $Nil) (if ...
@@ -21833,6 +21870,8 @@ $4:
 
 define i64 @extern(i64) {
 $1:
+; # (need3)
+  call void @need3()
 ; # (let (X (val $Extern) C 0 Sym T) (loop (inc 'C) (setq Sym (car X)...
 ; # (val $Extern)
   %1 = load i64, i64* @$Extern
@@ -58150,10 +58189,6 @@ $61:
 $62:
   %341 = phi i64 [%331, %$57], [%334, %$61] ; # Args
   %342 = phi i1 [%332, %$57], [1, %$61] ; # Notify
-; # (set $PutBin (fun (void i8) putBlock) $Extn 0)
-; # (fun (void i8) putBlock)
-  store void(i8)* @putBlock, void(i8)** @$PutBin
-  store i32 0, i32* @$Extn
 ; # (let (Tos 0 P (val $Extern)) (loop (loop (let X (cdr P) (? (atom ...
 ; # (val $Extern)
   %343 = load i64, i64* @$Extern
@@ -58448,19 +58483,22 @@ $84:
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
   %517 = getelementptr i8, i8* %515, i32 %516
   store i8* %517, i8** @$DbFile
-; # (let Blk (rdBlock (shl (objId Nm) 6)) (set Blk (| (val Blk) 1)) (...
+; # (let Blk (rdBlock (shl (objId Nm) 6)) (set Blk (| (val Blk) 1) $P...
 ; # (objId Nm)
   %518 = call i64 @objId(i64 %513)
 ; # (shl (objId Nm) 6)
   %519 = shl i64 %518, 6
 ; # (rdBlock (shl (objId Nm) 6))
   %520 = call i8* @rdBlock(i64 %519)
-; # (set Blk (| (val Blk) 1))
+; # (set Blk (| (val Blk) 1) $PutBin (fun (void i8) putBlock) $Extn 0...
 ; # (val Blk)
   %521 = load i8, i8* %520
 ; # (| (val Blk) 1)
   %522 = or i8 %521, 1
   store i8 %522, i8* %520
+; # (fun (void i8) putBlock)
+  store void(i8)* @putBlock, void(i8)** @$PutBin
+  store i32 0, i32* @$Extn
 ; # (val Sym)
   %523 = inttoptr i64 %374 to i64*
   %524 = load i64, i64* %523
