@@ -1,4 +1,4 @@
-# 05oct20 Software Lab. Alexander Burger
+# 23oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -324,11 +324,11 @@
 (de consStr (Name)
    (if (== Name ZERO)
       $Nil
-      (consSym Name 0) ) )
+      (tailcall (consSym Name 0)) ) )
 
 (de consExt (Name)
    (set $ExtCnt (+ (val $ExtCnt) 1))
-   (consSym (sign Name) $Nil) )
+   (tailcall (consSym (sign Name) $Nil)) )
 
 (de boxNum (Dig)
    (let P (val $Avail)

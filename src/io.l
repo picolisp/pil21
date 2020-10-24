@@ -1,8 +1,9 @@
-# 22oct20 Software Lab. Alexander Burger
+# 24oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
-(local) (openErr closeErr eofErr badInput writeErr selectErr)
+(local) (openErr closeErr pipeErr sizeErr eofErr badInput badFd writeErr
+selectErr)
 
 (de NIL openErr (Exe X)
    (err Exe X ($ "Open error: %s") (strErrno)) )
@@ -12,6 +13,9 @@
 
 (de NIL pipeErr (Exe)
    (err Exe 0 ($ "Pipe error: %s") (strErrno)) )
+
+(de NIL sizeErr (Exe)
+   (err Exe 0 ($ "Size overflow") null) )
 
 (de NIL eofErr ()
    (err 0 0 ($ "EOF Overrun") null) )
@@ -219,12 +223,13 @@
                   (unless (dec 'Cnt N)
                      (ret) )
                   (inc 'P N) ) ) ) )
-      (let
-         (Siz (+ C Cnt 4)  # New buffer size
-            Q (ofs (Cld: buf (alloc (Cld: buf) (i64 Siz))) C) )
-         (set (i32* Q) Cnt)
-         (memcpy (ofs Q 4) P (i64 Cnt))
-         (Cld: cnt Siz) ) ) )
+      (let Siz (+ C Cnt 4)  # New buffer size
+         (when (> Siz (hex "3FFFFFFF"))  # Allow max 1 GiB
+            (sizeErr 0) )
+         (let Q (ofs (Cld: buf (alloc (Cld: buf) (i64 Siz))) C)
+            (set (i32* Q) Cnt)
+            (memcpy (ofs Q 4) P (i64 Cnt))
+            (Cld: cnt Siz) ) ) ) )
 
 (de i1 flush ((i8* . Out))
    (ifn Out
@@ -767,7 +772,9 @@
                                           ((=0 (val (i64* Pn)))  # PID and size are zero
                                              (when (== (Cld: pid) (val $Talking))
                                                 (set $Talking 0) ) )
-                                          ((rdBytes (Cld: hear) Buf (val 2 Pn))
+                                          ((> (val 2 Pn) (val PipeBufSize))
+                                             (sizeErr Exe) )
+                                          ((rdBytes (Cld: hear) Buf @)
                                              (let
                                                 (Cld2 (val $Child)  # Iterate children
                                                    <Cld2 (ofs Cld2 (* (val $Children) (child T))) )
@@ -2426,7 +2433,7 @@
    (let P (val $Ptr)
       (set P B)
       (when (== (set $Ptr (inc P)) (val $End))
-         (err 0 0 ($ "Size overflow") null) ) ) )
+         (sizeErr 0) ) ) )
 
 # (plio 'num) -> any
 # (plio 'num 'cnt 'any) -> cnt

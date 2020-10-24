@@ -1,4 +1,4 @@
-# 21oct20 Software Lab. Alexander Burger
+# 24oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -151,7 +151,7 @@ tcsetpgrp waitpid setjmp longjmp kill exit)
 
 (var TgOS i8 NIL)  # Target OS
 (var TgCPU i8 NIL)  # Target CPU
-(var PipeBufSize i64 NIL)  # PIPE_BUF
+(var PipeBufSize i32 NIL)  # PIPE_BUF
 
 (local) (stderrNum stderrMsg gPrintf strErrno openRd openWr openRdWr
 openRdWrExcl openRdWrCreate openRdWrAppend openWrAppend fseekOfs fseek0 seek0
