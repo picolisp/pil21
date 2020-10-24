@@ -1,4 +1,4 @@
-# 06oct20 Software Lab. Alexander Burger
+# 24oct20 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -496,7 +496,7 @@ nextBuf shell shFile prCmd reset command vi)
 (de getch2 (C)
    (if (= "^V" C) (key) C) )
 
-(de reload (File Y)
+(de reload (File Y X)
    (unless (== This *CmdWin)
       (when File
          (unless
@@ -506,7 +506,9 @@ nextBuf shell shFile prCmd reset command vi)
             (unmark) ) )
       (load> (: buffer) This)
       (off *StatNm)
-      (goto (: buffer posX) (or Y (: buffer posY)))
+      (goto
+         (or X (: buffer posX))
+         (or Y (: buffer posY)) )
       (repaint) ) )
 
 (de scratch (File Lst Y)
@@ -525,13 +527,17 @@ nextBuf shell shFile prCmd reset command vi)
 (de tag (S)
    (cond
       ((: buffer syms)
-         (push '*TagStack (: posY) @ (symbols))
+         (push '*TagStack (: posX) (: posY) @ (symbols))
          (syms> (: buffer) (cons S @))
-         (reload (: buffer file) 1) )
+         (reload (: buffer file) 1 1) )
       ((get S '*Dbg 1)
-         (push '*TagStack (: posY) (: buffer file) (symbols))
+         (push '*TagStack
+            (: posX)
+            (: posY)
+            (: buffer file)
+            (symbols) )
          (apply symbols (cddr @))
-         (reload (cadr @) (car @)) )
+         (reload (cadr @) (car @) 1) )
       (T (beep)) ) )
 
 (de done (Flg)
@@ -1517,9 +1523,9 @@ nextBuf shell shFile prCmd reset command vi)
                                  (beep)
                                  (symbols (++ *TagStack))
                                  (if (atom (car *TagStack))
-                                    (reload (++ *TagStack) (++ *TagStack))
+                                    (reload (++ *TagStack) (++ *TagStack) (++ *TagStack))
                                     (syms> (: buffer) (++ *TagStack))
-                                    (reload (: buffer file) (++ *TagStack)) ) ) )
+                                    (reload (: buffer file) (++ *TagStack) (++ *TagStack)) ) ) )
                            (("^[OP" "^[[[A")  # [F1] Highlight on/off
                               (=: buffer flat (not (: buffer flat)))
                               (repaint) )
