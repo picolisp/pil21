@@ -1,4 +1,4 @@
-# 13oct20 Software Lab. Alexander Burger
+# 25oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -78,50 +78,44 @@
 
 # (eval 'any ['cnt]) -> any
 (de _eval (Exe)
-   (let (X (cdr Exe)  E (eval (car X)))
-      (if (atom (shift X))
-         (eval E)
-         (save E
-            (let N (needCnt Exe (eval (car X)))
-               (when (setq N (int N))
-                  (let Bnd (val $Bind)
-                     (loop
-                        (? (=0 Bnd))
-                        (?
-                           (and
-                              (== $At (val 2 Bnd))
-                              (prog
-                                 (set $At (val Bnd))
-                                 (=0 (dec 'N)) ) ) )
-                        (setq Bnd (val 3 Bnd)) ) ) ) )
-            (eval E) ) ) ) )
+   (let (X (cdr Exe)  E (save (eval (car X))))
+      (when (pair (cdr X))
+         (let N (needCnt Exe (eval (car @)))
+            (when (setq N (int N))
+               (let Bnd (val $Bind)
+                  (loop
+                     (? (=0 Bnd))
+                     (?
+                        (and
+                           (== $At (val 2 Bnd))
+                           (prog
+                              (set $At (val Bnd))
+                              (=0 (dec 'N)) ) ) )
+                     (setq Bnd (val 3 Bnd)) ) ) ) ) )
+      (eval E) ) )
 
 # (run 'any ['cnt]) -> any
 (de _run (Exe)
    (let (X (cdr Exe)  E (eval (car X)))
       (cond
          ((num? E) E)
-         ((atom (shift X))
-            (if (sym? E)
-               (val E)
-               (runAt E)) )
+         ((sym? E) (val E))
          (T
             (save E
-               (let N (needCnt Exe (eval (car X)))
-                  (when (setq N (int N))
-                     (let Bnd (val $Bind)
-                        (loop
-                           (? (=0 Bnd))
-                           (?
-                              (and
-                                 (== $At (val 2 Bnd))
-                                 (prog
-                                    (set $At (val Bnd))
-                                    (=0 (dec 'N)) ) ) )
-                           (setq Bnd (val 3 Bnd)) ) ) ) )
-               (if (sym? E)
-                  (val E)
-                  (runAt E) ) ) ) ) ) )
+               (when (pair (cdr X))
+                  (let N (needCnt Exe (eval (car @)))
+                     (when (setq N (int N))
+                        (let Bnd (val $Bind)
+                           (loop
+                              (? (=0 Bnd))
+                              (?
+                                 (and
+                                    (== $At (val 2 Bnd))
+                                    (prog
+                                       (set $At (val Bnd))
+                                       (=0 (dec 'N)) ) ) )
+                              (setq Bnd (val 3 Bnd)) ) ) ) ) )
+               (runAt E) ) ) ) ) )
 
 # (def 'sym 'any) -> sym
 # (def 'sym 'sym 'any) -> sym
