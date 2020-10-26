@@ -50,7 +50,7 @@ static int sslConnect(SSL *ssl, char *node, char *service) {
 
    if (strchr(node, '/')  &&  (fd = open(node, O_RDONLY)) >= 0) {
       if (read(fd, Node, sizeof(Node)) > 0) {
-         if (q = strchr(node, '\n'))
+         if (q = strchr(Node, '\n'))
             *q = '\0';
          node = Node;
       }
