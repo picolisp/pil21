@@ -1,4 +1,4 @@
-// 24oct20 Software Lab. Alexander Burger
+// 26oct20 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,6 +25,8 @@ static char *File, *Dir, *Data;
 static off_t Size;
 static bool Safe, Hot;
 
+static char Node[40];  // 0000:0000:0000:0000:0000:0000:0000:0000
+
 static char Ciphers[] = "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
 
 static char Get[] =
@@ -43,8 +45,17 @@ static void giveup(char *msg, char *arg) {
 
 static int sslConnect(SSL *ssl, char *node, char *service) {
    struct addrinfo hints, *lst, *p;
-   int sd;
+   int fd, sd;
+   char *q;
 
+   if (strchr(node, '/')  &&  (fd = open(node, O_RDONLY)) >= 0) {
+      if (read(fd, Node, sizeof(Node)) > 0) {
+         if (q = strchr(node, '\n'))
+            *q = '\0';
+         node = Node;
+      }
+      close(fd);
+   }
    memset(&hints, 0, sizeof(hints));
    hints.ai_family = AF_UNSPEC;
    hints.ai_socktype = SOCK_STREAM;
