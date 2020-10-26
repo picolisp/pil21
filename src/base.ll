@@ -102179,11 +102179,21 @@ $1:
   %69 = add i64 %60, 24
   %70 = inttoptr i64 %60 to i64*
   store i64 %69, i64* %70
+; # (if (nil? (evList Exe)) @ (xCnt 0 @))
 ; # (evList Exe)
   %71 = call i64 @evList(i64 %7)
-; # (xCnt 0 (evList Exe))
-  %72 = call i64 @xCnt(i64 0, i64 %71)
-  ret i64 %72
+; # (nil? (evList Exe))
+  %72 = icmp eq i64 %71, ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64)
+  br i1 %72, label %$2, label %$3
+$2:
+  br label %$4
+$3:
+; # (xCnt 0 @)
+  %73 = call i64 @xCnt(i64 0, i64 %71)
+  br label %$4
+$4:
+  %74 = phi i64 [%71, %$2], [%73, %$3] ; # ->
+  ret i64 %74
 }
 
 define i64 @_cb1(i64, i64, i64, i64, i64) {

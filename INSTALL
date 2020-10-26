@@ -1,0 +1,124 @@
+# 26oct20 Software Lab. Alexander Burger
+
+
+         PicoLisp Installation
+         =====================
+
+
+PicoLisp needs a POSIX compatible system supporting the LLVM platform. It
+supports two installation strategies: Local and Global.
+
+For a global installation, allowing system-wide access to the executable and
+library/documentation files, you can either install it from a ready-made
+distribution, or set some symbolic links to one of the local installation
+directories as described below.
+
+Note that you are still free to have local installations along with a global
+installation, and invoke them explicitly as desired.
+
+
+      Local Installation
+      ------------------
+
+The following instructions work on Debian Linux. They should be similar on other
+systems.
+
+1. Install required packages
+
+   $ sudo apt install make clang llvm libffi libreadline-dev pkg-config
+
+2. Unpack the distribution
+
+   $ wget https://software-lab.de/pil21.tgz
+   $ tar xfz pil21.tgz
+
+3. Change the directory
+
+   $ cd pil21
+
+4. Compile the PicoLisp interpreter
+
+   $ (cd src; make)
+
+
+      Global Installation
+      -------------------
+
+The recommended way for a global installation is to use a picolisp package from
+the OS distribution.
+
+If that is not available, you can (as root) create symbolic links from /usr/lib
+and /usr/bin to a local installation directory:
+
+   # ln -s /<path>/pil21 /usr/lib/picolisp
+   # ln -s /usr/lib/picolisp/bin/picolisp /usr/bin
+   # ln -s /usr/lib/picolisp/bin/pil /usr/bin
+
+For additional access to the man pages and some examples:
+
+   # ln -s /<path>/pil21/man/man1/picolisp.1 /usr/share/man/man1
+   # ln -s /<path>/pil21/man/man1/pil.1 /usr/share/man/man1
+   # ln -s /<path>/pil21 /usr/share/picolisp
+
+
+      Invocation
+      ----------
+
+In a global installation, the 'pil' command should be used. You can either start
+in plain or in debug mode. The difference is that for debug mode the command is
+followed by single plus ('+') sign. The '+' must be the very last argument on
+the command line.
+
+   $ pil       # Plain mode
+   :
+
+   $ pil +     # Debug mode
+   :
+
+In both cases, the colon ':' is PicoLisp's prompt. You may enter some Lisp
+expression,
+
+   : (+ 1 2 3)
+   -> 6
+
+To exit the interpreter, enter
+
+   : (bye)
+
+or just type Ctrl-D.
+
+
+For a local invocation, specify a path name, e.g.
+
+   $ ./pil     # Plain mode
+   :
+
+   $ ./pil +   # Debug mode
+   :
+
+or
+
+   $ /home/app/pil  # Invoking a local installation from some other directory
+
+Note that 'pil' can also serve as a template for your own stand-alone scripts.
+
+
+      Documentation
+      -------------
+
+For further information, please look at "doc/index.html". There you find the
+PicoLisp Reference Manual ("doc/ref.html"), the PicoLisp tutorials
+("doc/tut.html", "doc/app.html", "doc/select.html" and "doc/native.html"), and
+the frequently asked questions ("doc/faq.html").
+
+As always, the most accurate and complete documentation is the source code ;-)
+
+Any feedback is welcome!
+Hope you enjoy :-)
+
+--------------------------------------------------------------------------------
+
+   Alexander Burger
+   Software Lab. / 7fach GmbH
+   Bahnhofstr. 24a, D-86462 Langweid
+   abu@software-lab.de, https://www.software-lab.de, +49 8230 5060

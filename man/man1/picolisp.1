@@ -1,0 +1,120 @@
+.\" 26oct20abu
+.\"
+.TH PICOLISP 1 "" "" "User Commands"
+.SH NAME
+pil, picolisp \- a fast, lightweight Lisp interpreter
+.SH SYNOPSIS
+.B pil
+[arguments ...] [-] [arguments ...] [+]
+.br
+.B picolisp
+[arguments ...] [-] [arguments ...] [+]
+.SH DESCRIPTION
+.B PicoLisp
+is a Lisp interpreter with a small memory footprint, yet relatively high
+execution speed. It combines an elegant and powerful language with built-in
+database functionality.
+.P
+.B pil
+is the startup front-end for the interpreter. It takes care of starting the
+binary base system and loading a useful runtime environment.
+.P
+.B picolisp
+is just the bare interpreter binary. It is usually called in stand-alone
+scripts, using the she-bang notation in the first line, passing the minimal
+environment in
+.I lib.l
+and loading additional files as needed:
+.P
+.RS
+#!/usr/bin/picolisp /usr/lib/picolisp/lib.l
+.RE
+.RS
+(load "@ext.l" "myfiles/lib.l" "myfiles/foo.l")
+.RE
+.RS
+(do ... something ...)
+.RE
+.RS
+(bye)
+.RE
+.SH INVOCATION
+.B PicoLisp
+has no pre-defined command line flags; applications are free to define their
+own. Any built-in or user-level Lisp function can be invoked from the command
+line by prefixing it with a hyphen. Examples for built-in functions useful in
+this context are
+.B version
+(print the version number) or
+.B bye
+(exit the interpreter). Therefore, a minimal call to print the version number
+and then immediately exit the interpreter would be:
+.P
+.RS
+$ pil -version -bye
+.RE
+.P
+Any other argument (not starting with a hyphen) should be the name of a file to
+be loaded. If the first character of a path or file name is an at-mark, it
+will be substituted with the path to the installation directory.
+.P
+All arguments are evaluated from left to right, then an interactive
+.I read-eval-print
+loop is entered (with a colon as prompt).
+.P
+A single hyphen stops the evaluation of the rest of the command line, so that
+the remaining arguments may be processed under program control.
+.P
+If the very last command line argument is a single plus character, debugging
+mode is switched on at interpreter startup, before evaluating any of the command
+line arguments. A minimal interactive session is started with:
+.P
+.RS
+$ pil +
+.RE
+.P
+Here you can access the reference manual
+.P
+.RS
+: (doc)
+.RE
+.P
+and the online documentation for most functions,
+.P
+.RS
+: (doc 'vi)
+.RE
+.P
+or directly inspect their sources:
+.P
+.RS
+: (vi 'doc)
+.RE
+.P
+The interpreter can be terminated with
+.P
+.RS
+: (bye)
+.RE
+.P
+or by typing Ctrl-D.
+.SH FILES
+Runtime files are maintained in the ~/.pil directory:
+.IP ~/.pil/tmp/<pid>/
+Process-local temporary directories
+.IP ~/.pil/rc
+Loaded after interpreter startup
+.IP ~/.pil/viprc
+Loaded by the Vip editor
+.SH BUGS
+.B PicoLisp
+doesn't try to protect you from every possible programming error ("You asked for
+it, you got it").
+.SH AUTHOR
+Alexander Burger <abu@software-lab.de>
+.SH RESOURCES
+.B Home page:
+http://home.picolisp.com
+.br
+.B Download:
+http://www.software-lab.de/down.html

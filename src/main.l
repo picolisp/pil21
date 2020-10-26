@@ -1,4 +1,4 @@
-# 19oct20 Software Lab. Alexander Burger
+# 26oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1401,7 +1401,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (setq P
             (set 2 P (push NIL $Nil ZERO (box E))) )
          (set P (ofs P 3)) )
-      (xCnt 0 (evList Exe)) ) )
+      (if (nil? (evList Exe)) @ (xCnt 0 @)) ) )
 
 (de _cb1 (A B C D E)
    (cbl (val 2 $Lisp) A B C D E) )

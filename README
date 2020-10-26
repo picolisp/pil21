@@ -1,0 +1,103 @@
+# 26oct20 Software Lab. Alexander Burger
+
+                                                          Perfection is attained
+                                           not when there is nothing left to add
+                                     but when there is nothing left to take away
+                                                     (Antoine de Saint-Exupery)
+         The PicoLisp System
+         ===================
+
+     _PI_co Lisp is not _CO_mmon Lisp
+
+PicoLisp can be viewed from two different aspects: As a general purpose
+programming language, and a dedicated application server framework.
+
+
+(1) As a programming language, PicoLisp provides a 1-to-1 mapping of a clean
+and powerful Lisp derivate, to a simple and efficient virtual machine. It
+supports persistent objects as a first class data type, resulting in a database
+system of Entity/Relation classes and a Prolog-like query language tightly
+integrated into the system.
+
+The virtual machine was designed to be
+   Simple
+      The internal data structure should be as simple as possible. Only one
+      single data structure is used to build all higher level constructs.
+   Unlimited
+      There are no limits imposed upon the language due to limitations of the
+      virtual machine architecture. That is, there is no upper bound in symbol
+      name length, number digit counts, or data structure and buffer sizes,
+      except for the total memory size of the host machine.
+   Dynamic
+      Behavior should be as dynamic as possible ("run"-time vs. "compile"-time).
+      All decisions are delayed till runtime where possible. This involves
+      matters like memory management, dynamic symbol binding, and late method
+      binding.
+   Practical
+      PicoLisp is not just a toy of theoretical value. PicoLisp is used since
+      1988 in actual application development, research and production.
+
+The language inherits the major advantages of classical Lisp systems like
+   - Dynamic data types and structures
+   - Formal equivalence of code and data
+   - Functional programming style
+   - An interactive environment
+
+PicoLisp is very different from any other Lisp dialect. This is partly due to
+the above design principles, and partly due to its long development history
+since 1984.
+
+You can download the latest release version at
+
+   https://software-lab.de/pil21.tgz
+
+
+(2) As an application server framework, PicoLisp provides for
+   NoSQL Database Management
+      Index trees
+      Object local indexes
+      Entity/Relation classes
+      Pilog (PicoLisp Prolog) queries
+      Multi-user synchronization
+      DB Garbage collection
+      Journaling, Replication
+   User Interface
+      Browser GUI
+      (X)HTML/CSS
+      XMLHttpRequest/JavaScript
+   Application Server
+      Process management
+      Process family communication
+      XML I/O
+      Import/export
+      User administration
+      Internationalization
+      Security
+      Object linkage
+      Postscript/Printing
+
+PicoLisp is not an IDE. All program development in Software Lab. is done using
+the console, bash, vip (vi-style editor) and the Lisp interpreter.
+
+The only type of GUI supported for applications is through a browser via HTML.
+This makes the client side completely platform independent. The GUI is created
+dynamically. Though it uses JavaScript and XMLHttpRequest for speed
+improvements, it is fully functional also without JavaScript or CSS.
+
+The GUI is deeply integrated with - and generated dynamically from - the
+application's data model. Because the application logic runs on the server,
+multiple users can view and modify the same database object without conflicts,
+everyone seeing changes done by other users on her screen immediately due to the
+internal process and database synchronization.
+
+PicoLisp is free software, and you are welcome to use and redistribute it under
+the conditions of the MIT/X11 License (see "COPYING").
+
+It is based on LLVM and compiles and runs on any 64-bit POSIX system.
+
+--------------------------------------------------------------------------------
+
+   Alexander Burger
+   Software Lab. / 7fach GmbH
+   Bahnhofstr. 24a, D-86462 Langweid
+   abu@software-lab.de, http://www.software-lab.de, +49 8230 5060
