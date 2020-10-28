@@ -1,0 +1,59 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>X</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+
+<h1>X</h1>
+
+<dl>
+
+<dt><a name="xchg"><code>(xchg 'var 'var ..) -> any</code></a>
+<dd>Exchange the values of successive <code>var</code> argument pairs. See also
+<code><a href="refS.html#swap">swap</a></code> and <code><a
+href="refS.html#set">set</a></code>.
+
+<pre><code>
+: (setq  A 1  B 2  C '(a b c))
+-> (a b c)
+: (xchg  'A C  'B (cdr C))
+-> 2
+: A
+-> a
+: B
+-> b
+: C
+-> (1 2 c)
+</code></pre>
+
+<dt><a name="xor"><code>(xor 'any 'any) -> flg</code></a>
+<dd>Returns T if exactly one of the arguments evaluates to non-<code>NIL</code>.
+
+<pre><code>
+: (xor T NIL)
+-> T
+: (xor T T)
+-> NIL
+</code></pre>
+
+<dt><a name="x|"><code>(x| 'num ..) -> num</code></a>
+<dd>Returns the bitwise <code>XOR</code> of all <code>num</code> arguments. When
+one of the arguments evaluates to <code>NIL</code>, it is returned immediately.
+See also <code><a href="ref_.html#&">&</a></code>, <code><a
+href="ref_.html#|">|</a></code> and <code><a
+href="refB.html#bit?">bit?</a></code>.
+
+<pre><code>
+: (x| 2 7)
+-> 5
+: (x| 2 7 1)
+-> 4
+</code></pre>
+
+</dl>
+
+</body>
+</html>

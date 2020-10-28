@@ -1,0 +1,747 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Native C Calls</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+<a href="mailto:abu@software-lab.de">abu@software-lab.de</a>
+
+<h1>Native C Calls</h1>
+
+<p align=right>(c) Software Lab. Alexander Burger
+
+<p>This document describes how to call C functions in shared object files
+(libraries) from PicoLisp, using the built-in <code><a
+href="refN.html#native">native</a></code> function - possibly with the help of
+the <code><a href="refS.html#struct">struct</a></code> and <code><a
+href="refL.html#lisp">lisp</a></code> functions.
+
+<p><ul>
+<li><a href="#overview">Overview</a>
+<li><a href="#syntax">Syntax</a>
+   <ul>
+   <li><a href="#libs">Libraries</a>
+   <li><a href="#funs">Functions</a>
+   <li><a href="#retval">Return Value</a>
+      <ul>
+      <li><a href="#primRet">Primitive Types</a>
+      <li><a href="#structRet">Arrays and Structures</a>
+      </ul>
+   <li><a href="#args">Arguments</a>
+      <ul>
+      <li><a href="#primArg">Primitive Types</a>
+      <li><a href="#structArg">Arrays and Structures</a>
+      </ul>
+   </ul>
+<li><a href="#memory">Memory Management</a>
+   <ul>
+   <li><a href="#fftw">Fast Fourier Transform</a>
+   <li><a href="#const">Constant Data</a>
+   </ul>
+<li><a href="#callbacks">Callbacks</a>
+   <ul>
+   <li><a href="#byName">Call by Name</a>
+   <li><a href="#funptr">Function Pointer</a>
+   </ul>
+</ul>
+
+
+<p><hr>
+<h2><a name="overview">Overview</a></h2>
+
+<p><code>native</code> calls a C function in a shared library. It tries to
+
+<p><ol>
+<li>find a library by name
+<li>find a function by name in the library
+<li>convert the function's argument(s) from Lisp to C structures
+<li>call the function's C code
+<li>convert the function's return value(s) from C to Lisp structures
+</ol>
+
+<p>The direct return value of <code>native</code> is the Lisp representation of
+the C function's return value. Further values, returned by reference from the C
+function, are available in Lisp variables (symbol values).
+
+<p><code>struct</code> is a helper function, which can be used to manipulate C
+data structures in memory. It may take a scalar (a numeric representation of a C
+value) to convert it to a Lisp item, or (more typically) a pointer to a memory
+area to build and extract data structures. <code>lisp</code> allows you to
+install callback functions, callable from C code, written in Lisp.
+
+<p>In combination, these three functions can interface PicoLisp to almost any C
+function.
+
+<p>The above steps are fully dynamic; <code>native</code> doesn't have (and
+doesn't require) a priory knowledge about the library, the function or the
+involved data. No need to write any glue code, interfaces or include files. All
+functions can even be called interactively from the REPL.
+
+
+<p><hr>
+<h2><a name="syntax">Syntax</a></h2>
+
+<p>The arguments to <code>native</code> are
+
+<p><ol>
+<li>a library
+<li>a function
+<li>a return value specification
+<li>optional arguments
+</ol>
+
+<p>The simplest form is a call to a function without return value and without
+arguments. If we assume a library "lib.so", containing a function with the
+prototype
+
+<pre><code>
+void fun(void);
+</code></pre>
+
+<p>then we can call it as
+
+<pre><code>
+(native "lib.so" "fun")
+</code></pre>
+
+
+<p><hr>
+<h3><a name="libs">Libraries</a></h3>
+
+<p>The first argument to <code>native</code> specifies the library. It is either
+the <i>name</i> of a library (a symbol), or the <i>handle</i> of a previously
+found library (a number).
+
+<p>As a special case, a transient symbol <code>"@"</code> can be passed for the
+library name. It then refers to the current main program (instead of an external
+library), and can be used for standard functions like <code>"malloc"</code> or
+<code>"printf"</code>.
+
+<p><code>native</code> uses <code>dlopen(3)</code> internally to find and open
+the library, and to obtain the handle. If the name contains a slash ('/'), then
+it is interpreted as a (relative or absolute) pathname. Otherwise, the dynamic
+linker searches for the library according to the system's environment and
+directories. See the man page of <code>dlopen(3)</code> for further details.
+
+<p>If called with a symbolic argument, <code>native</code> automatically caches
+the handle of the found library in the value of that symbol. The most natural
+way is to pass the library name as a <a href="ref.html#transient">transient</a>
+symbol (<code>"lib.so"</code> above): The initial value of a transient symbol is
+that symbol itself, so that <code>native</code> receives the library name upon
+the first call. After successfully finding and opening the library,
+<code>native</code> stores the handle of that library in the value of the passed
+symbol (<code>"lib.so"</code>). As <code>native</code> evaluates its arguments
+in the normal way, subsequent calls within the same transient scope will receive
+the numeric value (the handle), and don't need to open and search the library
+again.
+
+
+<p><hr>
+<h3><a name="funs">Functions</a></h3>
+
+<p>The same rules applies to the second argument, the function. When called with
+a symbol, <code>native</code> stores the function pointer in its value, so that
+subsequent calls evaluate to that pointer, and <code>native</code> can directly
+jump to the function.
+
+<p><code>native</code> uses <code>dlsym(3)</code> internally to obtain the
+function pointer. See the man page of <code>dlsym(3)</code> for further details.
+
+<p>In most cases a program will call more than one function from a given
+library. If we keep the code within the same transient scope (i.e. in the same
+source file), each library will be opened - and each function searched - only
+once.
+
+<pre><code>
+(native "lib.so" "fun1")
+(native "lib.so" "fun2")
+(native "lib.so" "fun3")
+</code></pre>
+
+<p>After <code>"fun1"</code> was called, <code>"lib.so"</code> will be open, and
+won't be re-opened for <code>"fun2"</code> and <code>"fun3"</code>. Consider
+the definition of helper functions:
+
+<pre><code>
+(de fun1 ()
+   (native "lib.so" "fun1") )
+
+(de fun2 ()
+   (native "lib.so" "fun2") )
+
+(de fun3 ()
+   (native "lib.so" "fun3") )
+</code></pre>
+
+<p>After any one of <code>fun1</code>, <code>fun2</code> or <code>fun3</code>
+was called, the symbol <code>"lib.so"</code> will hold the library handle. And
+each function <code>"fun1"</code>, <code>"fun2"</code> and <code>"fun3"</code>
+will be searched only when called the first time.
+
+<p>Warning: It should be avoided to put more than one library into a single
+transient scope if there is a chance that two different functions with the same
+name will be called in two different libraries. Because of the function pointer
+caching, the second call would otherwise (wrongly) go to the first function.
+
+
+
+<p><hr>
+<h3><a name="retval">Return Value</a></h3>
+
+<p>The (optional) third argument to <code>native</code> specifies the return
+value. A C function can return many types of values, like integer or floating
+point numbers, string pointers, or pointers to structures which in turn consist
+of those types, and even other structures or pointers to structures.
+<code>native</code> tries to cover most of them.
+
+<p>As described in the <a href="refN.html#natResult">result specification</a>,
+the third argument should consist of a pattern which tells <code>native</code>
+how to extract the proper value.
+
+
+<h4><a name="primRet">Primitive Types</a></h4>
+
+<p>In the simplest case, the result specification is <code>NIL</code> like in
+the examples so far. This means that either the C function returns
+<code>void</code>, or that we are not interested in the value. The return value
+of <code>native</code> will be <code>NIL</code> in that case.
+
+<p>If the result specification is one of the symbols <code>B</code>,
+<code>I</code> or <code>N</code>, an integer number is returned, by interpreting
+the result as a <code>char</code> (8 bit unsigned byte), <code>int</code> (32
+bit signed integer), or <code>long</code> number (64 bit signed integer),
+respectively. Other (signed or unsigned numbers, and of different sizes) can be
+produced from these types with logical and arithmetic operations if necessary.
+
+<p>If the result specification is the symbol <code>C</code>, the result is
+interpreted as a 16 bit number, and a single-char transient symbol (string) is
+returned.
+
+<p>A specification of <code>S</code> tells <code>native</code> to interpret the
+result as a pointer to a C string (null terminated), and to return a transient
+symbol (string).
+
+<p>If the result specification is a number, it will be used as a scale to
+convert a returned <code>double</code> (if the number is positive) or
+<code>float</code> (if the number is negative) to a scaled fixpoint number.
+
+<p>Examples for function calls, with their corresponding C prototypes:
+
+<pre><code>
+(native "lib.so" "fun" 'I)             # int fun(void);
+(native "lib.so" "fun" 'N)             # long fun(void);
+(native "lib.so" "fun" 'N)             # void *fun(void);
+(native "lib.so" "fun" 'S)             # char *fun(void);
+(native "lib.so" "fun" 1.0)            # double fun(void);
+</code></pre>
+
+
+<h4><a name="structRet">Arrays and Structures</a></h4>
+
+<p>If the result specification is a list, it means that the C function returned
+a pointer to an array, or an arbitrary memory structure. The specification list
+should then consist of either the above primitive specifications (symbols or
+numbers), or of cons pairs of a primitive specification and a repeat count, to
+denote arrays of the given type.
+
+<p>Examples for function calls, with their corresponding pseudo C prototypes:
+
+<pre><code>
+(native "lib.so" "fun" '(I . 8))       # int *fun(void);  // 8 integers
+(native "lib.so" "fun" '(B . 16))      # unsigned char *fun(void);  // 16 bytes
+
+(native "lib.so" "fun" '(I I))         # struct {int i; int j;} *fun(void);
+(native "lib.so" "fun" '(I . 4))       # struct {int i[4];} *fun(void);
+
+(native "lib.so" "fun" '(I (B . 4)))   # struct {
+                                       #    int i;
+                                       #    unsigned char c[4];
+                                       # } *fun(void);
+
+(native "lib.so" "fun"                 # struct {
+   '(((B . 4) I) (S . 12) (N . 8)) )   #    struct {unsigned char c[4]; int i;}
+                                       #    char *names[12];
+                                       #    long num[8];
+                                       # } *fun(void);
+</code></pre>
+
+<p>If a returned structure has an element which is a <i>pointer</i> to some
+other structure (i.e. not an embedded structure like in the last example above),
+this pointer must be first obtained with a <code>N</code> pattern, which can
+then be passed to <code><a href="refS.html#struct">struct</a></code> for further
+extraction.
+
+
+<p><hr>
+<h3><a name="args">Arguments</a></h3>
+
+<p>The (optional) fourth and following arguments to <code>native</code> specify
+the arguments to the C function.
+
+
+<h4><a name="primArg">Primitive Types</a></h4>
+
+<p>Integer arguments (up to 64 bits, signed or unsigned <code>char</code>,
+<code>short</code>, <code>int</code> or <code>long</code>) can be passed as they
+are: As numbers.
+
+<pre><code>
+(native "lib.so" "fun" NIL 123)        # void fun(int);
+(native "lib.so" "fun" NIL 1 2 3)      # void fun(int, long, short);
+</code></pre>
+
+<p>String arguments can be specified as symbols. <code>native</code> allocates
+memory for each string (with <code>strdup(3)</code>), passes the pointer to the
+C function, and releases the memory (with <code>free(3)</code>) when done.
+
+<pre><code>
+(native "lib.so" "fun" NIL "abc")      # void fun(char*);
+(native "lib.so" "fun" NIL 3 "def")    # void fun(int, char*);
+</code></pre>
+
+<p>Note that the allocated string memory is released <i>after</i> the return
+value is extracted. This allows a C function to return the argument string
+pointer, perhaps after modifying the data in-place, and receive the new string
+as the return value (with the <code>S</code> specification).
+
+<pre><code>
+(native "lib.so" "fun" 'S "abc")       # char *fun(char*);
+</code></pre>
+
+<p>Also note that specifying <code>NIL</code> as an argument passes an empty
+string ("", which also reads as <code>NIL</code> in PicoLisp) to the C function.
+Physically, this is a pointer to a NULL-byte, and is <u>not</u> a NULL-pointer.
+Be sure to pass <code>0</code> (the number zero) if a NULL-pointer is desired.
+
+<p>Floating point arguments are specified as cons pairs, where the value is in
+the CAR, and the CDR holds the fixpoint scale. If the scale is positive, the
+number is passed as a <code>double</code>, otherwise as a <code>float</code>.
+
+<pre><code>
+(native "lib.so" "fun" NIL             # void fun(double, float);
+   (12.3 . 1.0) (4.56 . -1.0) )
+</code></pre>
+
+
+<h4><a name="structArg">Arrays and Structures</a></h4>
+
+<p>Composite arguments are specified as nested list structures.
+<code>native</code> allocates memory for each array or structure (with
+<code>malloc(3)</code>), passes the pointer to the C function, and releases the
+memory (with <code>free(3)</code>) when done.
+
+<p>This implies that such an argument can be both an input and an output value
+to a C function (pass by reference).
+
+<p>The CAR of the argument specification can be <code>NIL</code> (then it is an
+input-only argument). Otherwise, it should be a variable which receives the
+returned structure data.
+
+<p>The CADR of the argument specification must be a cons pair with the total
+size of the structure in its CAR. The CDR is ignored for input-only arguments,
+and should contain a <a href="refN.html#natResult">result specification</a> for
+the output value to be stored in the variable.
+
+<p>For example, a minimal case is a function that takes an integer reference,
+and stores the number '123' in that location:
+
+<pre><code>
+void fun(int *i) {
+   *i = 123;
+}
+</code></pre>
+
+<p>We call <code>native</code> with a variable <code>X</code> in the CAR of the
+argument specification, a size of 4 (i.e. <code>sizeof(int)</code>), and
+<code>I</code> for the result specification. The stored value is then available
+in the variable <code>X</code>:
+
+<pre><code>
+: (native "lib.so" "fun" NIL '(X (4 . I)))
+-> NIL
+: X
+-> 123
+</code></pre>
+
+<p>The rest (CDDR) of the argument specification may contain initialization
+data, if the C function expects input values in the structure. It should be a
+list of <a href="refN.html#natItem">initialization items</a>, optionally with a
+fill-byte value in the CDR of the last cell.
+
+<p>If there are <i>no</i> initialization items and just the final fill-byte,
+then the whole buffer is filled with that byte. For example, to pass a buffer of
+20 bytes, initialized to zero:
+
+<pre><code>
+: (native "lib.so" "fun" NIL '(NIL (20) . 0))
+</code></pre>
+
+<p>A buffer of 20 bytes, with the first 4 bytes initialized to 1, 2, 3, and 4,
+and the rest filled with zero:
+
+<pre><code>
+: (native "lib.so" "fun" NIL '(NIL (20) 1 2 3 4 . 0))
+</code></pre>
+
+<p>and the same, where the buffer contents are returned as a list of bytes in
+the variable <code>X</code>:
+
+<pre><code>
+: (native "lib.so" "fun" NIL '(X (20 B . 20) 1 2 3 4 . 0))
+</code></pre>
+
+<p>For a more extensive example, let's use the following definitions:
+
+<pre><code>
+typedef struct value {
+   int x, y;
+   double a, b, c;
+   int z;
+   char nm[4];
+} value;
+
+void fun(value *val) {
+   printf("%d %d\n", val->x, val->y);
+   val->x = 3;
+   val->y = 4;
+   strcpy(val->nm, "OK");
+}
+</code></pre>
+
+<p>We call this function with a structure of 40 bytes, requesting the returned
+data in <code>V</code>, with two integers <code>(I . 2)</code>, three doubles
+<code>(100 . 3)</code> with a scale of 2 (1.0 = 100), another integer
+<code>I</code> and four characters <code>(C . 4)</code>. If the structure gets
+initialized with two integers 7 and 6, three doubles 0.11, 0.22 and 0.33, and
+another integer 5 while the rest of the 40 bytes is cleared to zero
+
+<pre><code>
+: (native "lib.so" "fun" NIL
+   '(V (40 (I . 2) (100 . 3) I (C . 4)) -7 -6 (100 11 22 33) -5 . 0) )
+</code></pre>
+
+<p>then it will print the integers 7 and 6, and <code>V</code> will contain the
+returned list
+
+<pre><code>
+((3 4) (11 22 33) 5 ("O" "K" NIL NIL))
+</code></pre>
+
+<p>i.e. the original integer values 7 and 6 replaced with 3 and 4.
+
+<p>Note that the allocated structure memory is released <i>after</i> the return
+value is extracted. This allows a C function to return the argument structure
+pointer, perhaps after modifying the data in-place, and receive the new
+structure as the return value - instead of (or even in addition to) to the
+direct return via the argument reference.
+
+
+<p><hr>
+<h2><a name="memory">Memory Management</a></h2>
+
+<p>The preceding <a href="#args">Arguments</a> section mentions that
+<code>native</code> implicitly allocates and releases memory for strings, arrays
+and structures.
+
+<p>Technically, this mimics <i>automatic variables</i> in C.
+
+<p>For a simple example, let's assume that we want to call <code>read(2)</code>
+directly, to fetch a 4-byte integer from a given file descriptor. This could be
+done with the following C function:
+
+<pre><code>
+int read4bytes(int fd) {
+   char buf[4];
+
+   read(fd, buf, 4);
+   return *(int*)buf;
+}
+</code></pre>
+
+<p><code>buf</code> is an automatic variable, allocated on the stack, which
+disappears when the function returns. A corresponding <code>native</code> call
+would be:
+
+<pre><code>
+(native "@" "read" 'N Fd '(Buf (4 . I)) 4)
+</code></pre>
+
+<p>The structure argument <code>(Buf (4 . I))</code> says that a space of 4
+bytes should be allocated and passed to <code>read</code>, then an integer
+<code>I</code> returned in the variable <code>Buf</code> (the return value of
+<code>native</code> itself is the number returned by <code>read</code>). The
+memory space is released after that.
+
+<p>(Note that we use <code>"@"</code> for the library here, as <code>read</code>
+resides in the main program.)
+
+<p>Instead of a single integer, we might want a list of four bytes to be
+returned from <code>native</code>:
+
+<pre><code>
+(native "@" "read" 'N Fd '(Buf (4 B . 4)) 4)
+</code></pre>
+
+<p>The difference is that we wrote <code>(B . 4)</code> (a list of 4 bytes)
+instead of <code>I</code> (a single integer) for the <a
+href="refN.html#natResult">result specification</a> (see the <a
+href="#structArg">Arrays and Structures</a> section).
+
+<p>Let's see what happens if we extend this example. We'll write the four bytes
+to another file descriptor, after reading them from the first one:
+
+<pre><code>
+void copy4bytes(int fd1, int fd2) {
+   char buf[4];
+
+   read(fd1, buf, 4);
+   write(fd2, buf, 4);
+}
+</code></pre>
+
+<p>Again, <code>buf</code> is an automatic variable. It is passed to both
+<code>read</code> and <code>write</code>. A direct translation would be:
+
+<pre><code>
+(native "@" "read" 'N Fd '(Buf (4 B . 4)) 4)
+(native "@" "write" 'N Fd (cons NIL (4) Buf) 4)
+</code></pre>
+
+<p>This work as expected. <code>read</code> returns a list of four bytes in
+<code>Buf</code>. The call to <code>cons</code> builds the structure
+
+<pre><code>
+(NIL (4) 1 2 3 4)
+</code></pre>
+
+<p>i.e. no return variable, a four-byte memory area, filled with the four bytes
+(assuming that <code>read</code> returned 1, 2, 3 and 4). Then this structure is
+passed to <code>write</code>.
+
+<p>But: This solution induces quite some overhead. The four-byte buffer is
+allocated before the call to <code>read</code> and released after that, then
+allocated and released again for <code>write</code>. Also, the bytes are
+converted to a list to be stored in <code>Buf</code>, then that list is extended
+for the structure argument to <code>write</code>, and converted again back to
+the raw byte array. The data in the list itself are never used.
+
+<p>If the above operation is to be used more than once, it is better to allocate
+the buffer manually, use it for both reading and writing, and then release it.
+This also avoids all intermediate list conversions.
+
+<pre><code>
+(let Buf (native "@" "malloc" 'N 4) # Allocate memory
+   (native "@" "read" 'N Fd Buf 4)  # (Possibly repeat this several times)
+   (native "@" "write" 'N Fd Buf 4)
+   (native "@" "free" NIL Buf) )    # Release memory
+</code></pre>
+
+
+<h4><a name="fftw">Fast Fourier Transform</a></h4>
+
+<p>For a more typical example, we might call the Fast Fourier Transform using
+the library from the <a href="http://fftw.org">FFTW</a> package. With the
+example code for calculating Complex One-Dimensional DFTs:
+
+<pre><code>
+#include &lt;fftw3.h&gt;
+...
+{
+   fftw_complex *in, *out;
+   fftw_plan p;
+   ...
+   in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
+   out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
+   p = fftw_plan_dft_1d(N, in, out, FFTW_FORWARD, FFTW_ESTIMATE);
+   ...
+   fftw_execute(p); /* repeat as needed */
+   ...
+   fftw_destroy_plan(p);
+   fftw_free(in); fftw_free(out);
+}
+</code></pre>
+
+<p>we can build the following equivalent:
+
+<pre><code>
+(load "@lib/math.l")
+
+(de FFTW_FORWARD . -1)
+(de FFTW_ESTIMATE . 64)
+
+(de fft (Lst)
+   (let
+      (Len (length Lst)
+         In (native "libfftw3.so" "fftw_malloc" 'N (* Len 16))
+         Out (native "libfftw3.so" "fftw_malloc" 'N (* Len 16))
+         P (native "libfftw3.so" "fftw_plan_dft_1d" 'N
+            Len In Out FFTW_FORWARD FFTW_ESTIMATE ) )
+      (struct In NIL (cons 1.0 (apply append Lst)))
+      (native "libfftw3.so" "fftw_execute" NIL P)
+      (prog1
+         (struct Out (make (do Len (link (1.0 . 2)))))
+         (native "libfftw3.so" "fftw_destroy_plan" NIL P)
+         (native "libfftw3.so" "fftw_free" NIL Out)
+         (native "libfftw3.so" "fftw_free" NIL In) ) ) )
+</code></pre>
+
+<p>This assumes that the argument list <code>Lst</code> is passed as a list
+of complex numbers, each as a list of two numbers for the real and imaginary
+part, like
+
+<pre><code>
+(fft '((1.0 0) (1.0 0) (1.0 0) (1.0 0) (0 0) (0 0) (0 0) (0 0)))
+</code></pre>
+
+<p>The above translation to Lisp is quite straightforward. After the two buffers
+are allocated, and a plan is created, <code><a
+href="refS.html#struct">struct</a></code> is called to store the argument list
+in the <code>In</code> structure as a list of double numbers (according to the
+<code>1.0</code> <a href="refN.html#natItem">initialization item</a>). Then
+<code>fftw_execute</code> is called, and <code>struct</code> is called again to
+retrieve the result from <code>Out</code> and return it from <code>fft</code>
+via the <code><a href="refP.html#prog1">prog1</a></code>. Finally, all memory is
+released.
+
+
+<h4><a name="const">Constant Data</a></h4>
+
+<p>If such allocated data (strings, arrays or structures passed to
+<code>native</code>) are constant during the lifetime of a program, it makes
+sense to allocate them only once, before their first use. A typical candidate is
+the format string of a <code>printf</code> call. Consider a function which
+prints a floating point number in scientific notation:
+
+<pre><code>
+(load "@lib/math.l")
+
+: (de prf (Flt)
+   (native "@" "printf" NIL "%e^J" (cons Flt 1.0)) )
+-> prf
+
+: (prf (exp 12.3))
+2.196960e+05
+</code></pre>
+
+<p>As we know that the format string <code>"%e^J"</code> will be converted from
+a Lisp symbol to a C string with <code>strdup</code> - and then thrown away - on
+each call to <code>prf</code>, we might as well perform a little optimization
+and delegate this conversion to the program load time:
+
+<pre><code>
+: (de prf (Flt)
+   (native "@" "printf" NIL `(native "@" "strdup" 'N "%e^J") (cons Flt 1.0)) )
+-> prf
+
+: (prf (exp 12.3))
+2.196960e+05
+</code></pre>
+
+<p>If we look at the <code>prf</code> function, we see that it now contains the
+pointer to the allocated string memory:
+
+<pre><code>
+: (pp 'prf)
+(de prf (Flt)
+   (native "@" "printf" NIL 24662032 (cons Flt 1000000)) )
+-> prf
+</code></pre>
+
+<p>This pointer will be used by <code>printf</code> directly, without any
+further conversion or memory management.
+
+
+<p><hr>
+<h2><a name="callbacks">Callbacks</a></h2>
+
+<p>Sometimes it is necessary to do the reverse: Call Lisp code from C code. This
+can be done in two ways - with certain limitations.
+
+
+<h4><a name="byName">Call by Name</a></h4>
+
+<p>The first way is actually not a <a
+href="http://en.wikipedia.org/wiki/Callback_(computer_programming)">callback</a>
+in the strict sense. It just allows to call a Lisp function with a given name.
+
+<p>The limitation is that this function can accept only maximally five numeric
+arguments, and returns a number.
+
+<p>The prerequisite is, of course, that you have access to the C source code. To
+use it from C, insert the following prototype somewhere before the first call:
+
+<pre><code>
+long lisp(char*,long,long,long,long,long);
+</code></pre>
+
+<p>Then you can call <code>lisp</code> from C:
+
+<pre><code>
+long n = lisp("myLispFun", a, b, 0, 0, 0);
+</code></pre>
+
+<p>The first argument should be the name of a Lisp function (built-in, or
+defined in Lisp). It is searched for at runtime, so it doesn't need to exist at
+the time the C library is compiled or loaded.
+
+<p>Be sure to pass dummy arguments (e.g. zero) if your function expects less
+than five arguments, to keep the C compiler happy.
+
+<p>This mechanism can generally be used for any type of argument and return
+value (not only <code>long</code>). On the C side, appropriate casts or an
+adapted prototype should be used. It is then up to the called Lisp function to
+prepare and/or extract the proper data with <code><a
+href="refS.html#struct">struct</a></code> and memory management operations.
+
+
+<h4><a name="funptr">Function Pointer</a></h4>
+
+<p>This is a true <a
+href="http://en.wikipedia.org/wiki/Callback_(computer_programming)">callback</a>
+mechanism. It uses the Lisp-level function <code><a
+href="refL.html#lisp">lisp</a></code> (not to confuse with the C-level function
+with the same name in the previous section). No C source code access is
+required.
+
+<p><code>lisp</code> returns a function pointer, which can be passed to C
+functions via <code>native</code>. When this function pointer is dereferenced
+and called from the C code, the corresponding Lisp function is invoked. Here,
+too, only five numeric arguments and a numeric return value can be used, and
+other data types must be handled by the Lisp function with <code><a
+href="refS.html#struct">struct</a></code> and memory management operations.
+
+<p>Callbacks are often used in user interface libraries, to handle key-, mouse-
+and other events. Examples can be found in <code>"@lib/openGl.l"</code>. The
+following function <code>mouseFunc</code> takes a Lisp function, installs it
+under the tag <code>mouseFunc</code> (any other tag would be all right too) as a
+callback, and passes the resulting function pointer to the OpenGL
+<code>glutMouseFunc()</code> function, to set it as a callback for the current
+window:
+
+<pre><code>
+(de mouseFunc (Fun)
+   (native `*GlutLib "glutMouseFunc" NIL (lisp 'mouseFunc Fun)) )
+</code></pre>
+
+<p>(The global <code>*GlutLib</code> holds the library
+<code>"/usr/lib/libglut.so"</code>. The backquote (<code>`</code>) is important
+here, so that the transient symbol with the library name (and not the global
+<code>*GlutLib</code>) is evaluated by <code>native</code>, resulting in the
+proper library handle at runtime).
+
+<p>A program using OpenGL may then use <code>mouseFunc</code> to install a
+function
+
+<pre><code>
+(mouseFunc
+   '((Btn State X Y)
+      (do-something-with Btn State X Y) ) )
+</code></pre>
+
+<p>so that future clicks into the window will pass the button, state and
+coordinates to that function.
+
+</body>
+</html>

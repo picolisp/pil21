@@ -1,0 +1,108 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN"
+   "http://www.w3.org/TR/html4/frameset.dtd">
+<html>
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=utf-8">
+   <title>PicoLisp Docs</title>
+   <meta name="generator" content="BBEdit 8.6">
+   <script type="text/javascript" language="javascript">
+   <!--
+function frameIdAsVariable(aFrame) {
+   // IE hack
+   // http://www.greymagic.com/security/advisories/gm011-ie/
+   if (aFrame.name == "toc") return tocfid;
+   if (aFrame.name == "upper") return upfid;
+}
+
+function contentDoc(aFrame) {
+   if (aFrame.contentDocument) {
+      return aFrame.contentDocument;
+   } else {
+      var fid = frameIdAsVariable(aFrame);
+      if (fid) {
+         return fid.document;
+      }
+   }
+   alert("Couldn't access a frame's document for this kind of browser.");
+}
+
+function doTocSublists(upDoc) {
+   var tocDoc = contentDoc(document.getElementById("tocfid"));
+   var ul = tocDoc.getElementById("upperul");
+   var oldExp = null;
+   var newSub = null;
+   for (var i=0; i<ul.childNodes.length; i++) {
+      var cni = ul.childNodes[i];
+      if (cni.firstChild) {
+         // cni.firstChild is an anchor
+         if (cni.firstChild.href == upDoc.URL) {
+            // Found TOC anchor that matches upper document
+            if (upDoc.URL.indexOf("#") < 0) {
+               if (cni.lastChild.nodeName != "UL") {
+                  // Expansion required, making sub-list ...
+                  newSub = tocDoc.createElement("ul");
+                  newSub.className = "sub";
+                  for (var j=0; j<upDoc.anchors.length; j++) {
+                     var ajText = null;
+                     if (upDoc.anchors[j].innerText) {
+                        ajText = upDoc.anchors[j].innerText;
+                     } else if (upDoc.anchors[j].text) {
+                        ajText = upDoc.anchors[j].text;
+                     }
+                     if (ajText) {
+                        var li = tocDoc.createElement("li");
+                        var a = tocDoc.createElement("a");
+                        a.href = upDoc.URL + "#" + upDoc.anchors[j].name;
+                        a.target = "upper";
+                        a.appendChild(tocDoc.createTextNode(ajText));
+                        li.appendChild(a);
+                        newSub.appendChild(li);
+                     }
+                  }
+                  cni.appendChild(newSub);
+               }
+            }
+         } else if (cni.lastChild.nodeName == "UL") {
+            oldExp = cni;
+         }
+      }
+   }
+   if ((oldExp != null) && (newSub != null)) {
+      // Remove old sub-list to save TOC space ...
+      oldExp.removeChild(oldExp.lastChild);
+   }
+}
+
+function upperLoad(upperFrame) {
+   try {
+      var upDoc = contentDoc(upperFrame);
+      // First modify the targets of the ref anchors ...
+      var anchors = upDoc.getElementsByTagName("a");
+      for (var i=0; i<anchors.length; i++) {
+         var ai = anchors[i];
+         if (ai.href.match(/ref\w\.html/)) {
+            ai.target = "lower";
+         }
+      }
+      doTocSublists(upDoc);
+   } catch (e) {
+      console.log("upperLoad: %s", e.toString());
+   }
+}
+   //-->
+</script>
+</head>
+<frameset cols="15%,85%">
+   <frameset rows="*,80">
+      <frame id="tocfid" name="toc" src="toc.html">
+      <frame name="reflook" src="rlook.html">
+   </frameset>
+   
+   <frameset rows="50%,50%">
+      <frame id="upfid" name="upper" src="ref.html#fun" onload="upperLoad(this);">
+      <frame name="lower" src="ref.html">
+   </frameset>
+
+</frameset>
+
+</html>

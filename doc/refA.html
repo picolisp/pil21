@@ -1,0 +1,652 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>A</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+
+<h1>A</h1>
+
+<dl>
+
+<dt><a name="*Adr"><code>*Adr</code></a>
+<dd>A global variable holding the IP address of last recently accepted client.
+See also <code><a href="refL.html#listen">listen</a></code> and <code><a
+href="refA.html#accept">accept</a></code>.
+
+<pre><code>
+: *Adr
+-> "127.0.0.1"
+</code></pre>
+
+<dt><a name="adr"><code>(adr 'var) -> num</code></a>
+<dt><code>(adr 'num) -> var</code>
+<dd>Converts, in the first form, a variable <code>var</code> (a symbol or a cons
+pair) into <code>num</code> (actually an encoded pointer). A symbol will result
+in a negative number, and a cons pair in a positive number. The second form
+converts a pointer back into the original <code>var</code>. Note that this
+original <code>var</code> may be garbage collected if it is not referred from
+other data, giving unpredictable results. See also <code><a
+href="refB.html#byte">byte</a></code>.
+
+<pre><code>
+: (setq X (box 7))
+-> $53063416137450
+: (adr X)
+-> -2961853431592
+: (adr @)
+-> $53063416137450
+: (val @)
+-> 7
+</code></pre>
+
+<dt><a name="*Allow"><code>*Allow</code></a>
+<dd>A global variable holding allowed access patterns. If its value is
+non-<code>NIL</code>, it should contain a list where the CAR is an <code><a
+href="refI.html#idx">idx</a></code> tree of allowed items, and the CDR a list of
+prefix strings. See also <code><a href="refA.html#allow">allow</a></code>,
+<code><a href="refA.html#allowed">allowed</a></code> and <code><a
+href="refP.html#pre?">pre?</a></code>.
+
+<pre><code>
+: (allowed ("app/")  # Initialize
+   "!start" "!stop" "lib.css" "!psh" )
+-> NIL
+: (allow "!myFoo")  # additional item
+-> "!myFoo"
+: (allow "myDir/" T)  # additional prefix
+-> "myDir/"
+
+: *Allow
+-> (("!start" ("!psh" ("!myFoo")) "!stop" NIL "lib.css") "app/" "myDir/")
+
+: (idx *Allow)  # items
+-> ("!myFoo" "!psh" "!start" "!stop" "lib.css")
+: (cdr *Allow)  # prefixes
+-> ("app/" "myDir/")
+</code></pre>
+
+<dt><a name="+Alt"><code>+Alt</code></a>
+<dd>Prefix class specifying an alternative class for a <code><a
+href="refR.html#+relation">+relation</a></code>. This allows indexes or other
+side effects to be maintained in a class different from the current one. See
+also <a href="ref.html#dbase">Database</a>.
+
+<pre><code>
+(class +EuOrd +Ord)                    # EU-specific order subclass
+(rel nr (+Alt +Key +Number) +XyOrd)    # Maintain the key in the +XyOrd index
+</code></pre>
+
+<dt><a name="+Any"><code>+Any</code></a>
+<dd>Class for unspecified relations, a subclass of <code><a
+href="refR.html#+relation">+relation</a></code>. Objects of that class accept
+and maintain any type of Lisp data. Used often when there is no other suitable
+relation class available. See also <a href="ref.html#dbase">Database</a>.
+
+<p>In the following example <code>+Any</code> is used simply for the reason that
+there is no direct way to specify dotted pairs:
+
+<pre><code>
+(rel loc (+Any))  # Locale, e.g. ("DE" . "de")
+</code></pre>
+
+<dt><a name="+Aux"><code>+Aux</code></a>
+<dd>Prefix class maintaining auxiliary keys for <code><a
+href="refR.html#+relation">+relation</a></code>s, in addition to <code><a
+href="refR.html#+Ref">+Ref</a></code> or <code><a
+href="refI.html#+Idx">+Idx</a></code> indexes. Expects a list of auxiliary
+attributes of the same object, and combines all keys in that order into a single
+index key. See also <code><a href="refU.html#+UB">+UB</a></code>, <code><a
+href="refA.html#aux">aux</a></code> and <a href="ref.html#dbase">Database</a>.
+
+<pre><code>
+(rel nr (+Ref +Number))                # Normal, non-unique index
+(rel nm (+Aux +Ref +String) (nr txt))  # Combined name/number/text index
+(rel txt (+Aux +Sn +Idx +String) (nr)) # Text/number plus tolerant text index
+</code></pre>
+
+<dt><a name="abort"><code>(abort 'cnt . prg) -> any</code></a>
+<dd>Aborts the execution of <code>prg</code> if it takes longer than
+<code>cnt</code> seconds, and returns <code>NIL</code>. Otherwise, the result of
+<code>prg</code> is returned. <code><a href="refA.html#alarm">alarm</a></code>
+is used internally, so care must be taken not to interfer with other calls to
+<code>alarm</code>.
+
+<pre><code>
+: (abort 20 (in Sock (rd)))  # Wait maximally 20 seconds for socket data
+</code></pre>
+
+<dt><a name="abs"><code>(abs 'num) -> num</code></a>
+<dd>Returns the absolute value of the <code>num</code> argument.
+
+<pre><code>
+: (abs -7)
+-> 7
+: (abs 7)
+-> 7
+</code></pre>
+
+<dt><a name="accept"><code>(accept 'cnt) -> cnt | NIL</code></a>
+<dd>Accepts a connection on descriptor <code>cnt</code> (as received by <code><a
+href="refP.html#port">port</a></code>), and returns the new socket descriptor
+<code>cnt</code>. The global variable <code>*Adr</code> is set to the IP address
+of the client. See also <code><a href="refL.html#listen">listen</a></code>,
+<code><a href="refC.html#connect">connect</a></code> and <code><a
+href="refA.html#*Adr">*Adr</a></code>.
+
+<pre><code>
+: (setq *Socket
+   (accept (port 6789)) )  # Accept connection at port 6789
+-> 4
+</code></pre>
+
+<dt><a name="accu"><code>(accu 'var 'any 'num)</code></a>
+<dd>Accumulates <code>num</code> into a sum, using the key <code>any</code> in
+an association list stored in <code>var</code>. See also <code><a
+href="refA.html#assoc">assoc</a></code>.
+
+<pre><code>
+: (off Sum)
+-> NIL
+: (accu 'Sum 'a 1)
+-> (a . 1)
+: (accu 'Sum 'a 5)
+-> 6
+: (accu 'Sum 22 100)
+-> (22 . 100)
+: Sum
+-> ((22 . 100) (a . 6))
+</code></pre>
+
+<dt><a name="acquire"><code>(acquire 'sym) -> flg</code></a>
+<dd>Tries to acquire the mutex represented by the file <code>sym</code>, by
+obtaining an exclusive lock on that file with <code><a
+href="refC.html#ctl">ctl</a></code>, and then trying to write the PID of the
+current process into that file. It fails if the file already holds the PID of
+some other existing process. See also <code><a
+href="refR.html#release">release</a></code>, <code><a
+href="refP.html#*Pid">*Pid</a></code> and <code><a
+href="refR.html#rc">rc</a></code>.
+
+<pre><code>
+: (acquire "sema1")
+-> 28255
+</code></pre>
+
+<dt><a name="alarm"><code>(alarm 'cnt . prg) -> cnt</code></a>
+<dd>Sets an alarm timer scheduling <code>prg</code> to be executed after
+<code>cnt</code> seconds, and returns the number of seconds remaining until any
+previously scheduled alarm was due to be delivered. Calling <code>(alarm
+0)</code> will cancel an alarm. See also <code><a
+href="refA.html#abort">abort</a></code>, <code><a
+href="refS.html#sigio">sigio</a></code>, <code><a
+href="refH.html#*Hup">*Hup</a></code> and <code><a
+href="refS.html#*Sig1">*Sig[12]</a></code>.
+
+<pre><code>
+: (prinl (tim$ (time) T)) (alarm 10 (prinl (tim$ (time) T)))
+16:36:14
+-> 0
+: 16:36:24
+
+: (alarm 10 (bye 0))
+-> 0
+$
+</code></pre>
+
+<dt><a name="align"><code>(align 'cnt 'any) -> sym</code></a>
+<dt><code>(align 'lst 'any ..) -> sym</code>
+<dd>Returns a transient symbol with all <code>any</code> arguments <code><a
+href="refP.html#pack">pack</a></code>ed in an aligned format. In the first form,
+<code>any</code> will be left-aligned if <code>cnt</code> is negative, otherwise
+right-aligned. In the second form, all <code>any</code> arguments are packed
+according to the numbers in <code>lst</code>. See also <code><a
+href="refT.html#tab">tab</a></code>, <code><a
+href="refC.html#center">center</a></code> and <code><a
+href="refW.html#wrap">wrap</a></code>.
+
+<pre><code>
+: (align 4 "a")
+-> "   a"
+: (align -4 12)
+-> "12  "
+: (align (4 4 4) "a" 12 "b")
+-> "   a  12   b"
+</code></pre>
+
+<dt><a name="all"><code>(all ['T | '0 | 'sym]) -> lst</code></a>
+<dd>Returns a new list of all <a href="ref.html#internal">internal</a> symbols
+in the system (if called without arguments, or with <code>NIL</code>), all
+current <a href="ref.html#transient">transient</a> symbols (if the argument is
+<code>T</code>), all <a href="ref.html#external">external</a> symbols (if the
+argument is zero), or all symbols of the given namespace <code>sym</code>.
+
+<pre><code>
+: (all)  # All internal symbols
+-> (inc> leaf nil inc! accept ...
+
+# Find all symbols starting with an underscore character
+: (filter '((X) (= "_" (car (chop X)))) (all))
+-> (_put _nacs _oct _lintq _lst _map _iter _dbg2 _getLine _led ...
+</code></pre>
+
+<dt><a name="allow"><code>(allow 'sym ['flg]) -> sym</code></a>
+<dd>Maintains an index structure of allowed access patterns in the global
+variable <code><a href="refA.html#*Allow">*Allow</a></code>. If the value of
+<code>*Allow</code> is non-<code>NIL</code>, <code>sym</code> is added to the
+<code><a href="refI.html#idx">idx</a></code> tree in the CAR of
+<code>*Allow</code> (if <code>flg</code> is <code>NIL</code>), or to the list of
+prefix strings (if <code>flg</code> is non-<code>NIL</code>). See also <code><a
+href="refA.html#allowed">allowed</a></code>.
+
+<pre><code>
+: *Allow
+-> (("!start" ("!psh") "!stop" NIL "lib.css") "app/")
+: (allow "!myFoo")  # additionally allowed item
+-> "!myFoo"
+: (allow "myDir/" T)  # additionally allowed prefix
+-> "myDir/"
+</code></pre>
+
+<dt><a name="allowed"><code>(allowed lst [sym ..])</code></a>
+<dd>Creates an index structure of allowed access patterns in the global variable
+<code><a href="refA.html#*Allow">*Allow</a></code>. <code>lst</code> should
+consist of prefix strings (to be checked at runtime with <code><a
+href="refP.html#pre?">pre?</a></code>), and the <code>sym</code> arguments
+should specify the initially allowed items. See also <code><a
+href="refA.html#allow">allow</a></code>.
+
+<pre><code>
+: (allowed ("app/")  # allowed prefixes
+   "!start" "!stop" "lib.css" "!psh" )  # allowed items
+-> NIL
+</code></pre>
+
+<dt><a name="and"><code>(and 'any ..) -> any</code></a>
+<dd>Logical AND. The expressions <code>any</code> are evaluated from left to
+right. If <code>NIL</code> is encountered, <code>NIL</code> is returned
+immediately. Else the result of the last expression is returned. See also
+<code><a href="refN.html#nand">nand</a></code>, <code><a
+href="refO.html#or">or</a></code> and <code><a
+href="refW.html#when">when</a></code>.
+
+<pre><code>
+: (and (= 3 3) (read))
+abc  # User input
+-> abc
+: (and (= 3 4) (read))
+-> NIL
+</code></pre>
+
+<dt><a name="any"><code>(any 'sym) -> any</code></a>
+<dd>Parses <code>any</code> from the name of <code>sym</code>. This is the
+reverse operation of <code><a href="refS.html#sym">sym</a></code>. See also
+<code><a href="refS.html#str">str</a></code>, <code>(any 'sym)</code> is
+equivalent to <code>(car (str 'sym))</code>.
+
+<pre><code>
+: (any "(a b # Comment^Jc d)")
+-> (a b c d)
+: (any "\"A String\"")
+-> "A String"
+</code></pre>
+
+<dt><a name="append"><code>(append 'lst ..) -> lst</code></a>
+<dd>Appends all argument lists. See also <code><a
+href="refC.html#conc">conc</a></code>, <code><a
+href="refI.html#insert">insert</a></code>, <code><a
+href="refD.html#delete">delete</a></code> and <code><a
+href="refR.html#remove">remove</a></code>.
+
+<pre><code>
+: (append '(a b c) (1 2 3))
+-> (a b c 1 2 3)
+: (append (1) (2) (3) 4)
+-> (1 2 3 . 4)
+</code></pre>
+
+<dt><a name="append/3"><code>append/3</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if appending the
+first two list arguments is equal to the third argument. See also <code><a
+href="refA.html#append">append</a></code> and <code><a
+href="refM.html#member/2">member/2</a></code>.
+
+<pre><code>
+: (? (append @X @Y (a b c)))
+ @X=NIL @Y=(a b c)
+ @X=(a) @Y=(b c)
+ @X=(a b) @Y=(c)
+ @X=(a b c) @Y=NIL
+-> NIL
+</code></pre>
+
+<dt><a name="apply"><code>(apply 'fun 'lst ['any ..]) -> any</code></a>
+<dd>Applies <code>fun</code> to <code>lst</code>. If additional <code>any</code>
+arguments are given, they are applied as leading elements of <code>lst</code>.
+<code>(apply 'fun 'lst 'any1 'any2)</code> is equivalent to <code>(apply 'fun
+(cons 'any1 'any2 'lst))</code>.
+
+<pre><code>
+: (apply + (1 2 3))
+-> 6
+: (apply * (5 6) 3 4)
+-> 360
+: (apply '((X Y Z) (* X (+ Y Z))) (3 4 5))
+-> 27
+: (apply println (3 4) 1 2)
+1 2 3 4
+-> 4
+</code></pre>
+
+<dt><a name="arg"><code>(arg ['cnt]) -> any</code></a>
+<dd>Can only be used inside functions with a variable number of arguments (with
+<code>@</code>). If <code>cnt</code> is not given, the value that was returned
+from the last call to <code><a href="refN.html#next">next</a></code> is
+returned. Otherwise, the <code>cnt</code>'th remaining argument is returned. See
+also <code><a href="refA.html#args">args</a></code>, <code><a
+href="refR.html#rest">rest</a></code> and <code><a
+href="refP.html#pass">pass</a></code>.
+
+<pre><code>
+: (de foo @ (println (next) (arg)))    # Print argument twice
+-> foo
+: (foo 123)
+123 123
+-> 123
+: (de foo @
+   (println (arg 1) (arg 2))
+   (println (next))
+   (println (arg 1) (arg 2)) )
+-> foo
+: (foo 'a 'b 'c)
+a b
+a
+b c
+-> c
+</code></pre>
+
+<dt><a name="args"><code>(args) -> flg</code></a>
+<dd>Can only be used inside functions with a variable number of arguments (with
+<code>@</code>). Returns <code>T</code> when there are more arguments to be
+fetched from the internal list. See also <code><a
+href="refN.html#next">next</a></code>, <code><a
+href="refA.html#arg">arg</a></code>, <code><a
+href="refR.html#rest">rest</a></code> and <code><a
+href="refP.html#pass">pass</a></code>.
+
+<pre><code>
+: (de foo @ (println (args)))       # Test for arguments
+-> foo
+: (foo)                             # No arguments
+NIL
+-> NIL
+: (foo NIL)                         # One argument
+T
+-> T
+: (foo 123)                         # One argument
+T
+-> T
+</code></pre>
+
+<dt><a name="argv"><code>(argv [var ..] [. sym]) -> lst|sym</code></a>
+<dd>If called without arguments, <code>argv</code> returns a list of strings
+containing all remaining command line arguments. Otherwise, the
+<code>var/sym</code> arguments are subsequently bound to the command line
+arguments. A hyphen "<code>-</code>" can be used to inhibit the automatic
+<code>load</code>ing further arguments. See also <code><a
+href="refC.html#cmd">cmd</a></code>, <a href="ref.html#invoc">Invocation</a> and
+<code><a href="refO.html#opt">opt</a></code>.
+
+<pre><code>
+$ pil -"println 'OK" - abc 123 +
+OK
+: (argv)
+-> ("abc" "123")
+: (argv A B)
+-> "123"
+: A
+-> "abc"
+: B
+-> "123"
+: (argv . Lst)
+-> ("abc" "123")
+: Lst
+-> ("abc" "123")
+</code></pre>
+
+<dt><a name="as"><code>(as 'any1 . any2) -> any2 | NIL</code></a>
+<dd>Returns <code>any2</code> unevaluated when <code>any1</code> evaluates to
+non-<code>NIL</code>. Otherwise <code>NIL</code> is returned. <code>(as Flg A B
+C)</code> is equivalent to <code>(and Flg '(A B C))</code>. <code>as</code> is
+typically used in <a href="ref.html#macro-io">read-macros</a> to conditionally
+exclude sub-expressions. See also <code><a
+href="refQ.html#quote">quote</a></code>.
+
+<pre><code>
+: (as (= 3 3) A B C)
+-> (A B C)
+
+(de foo ()
+   (doSomething)
+   ~(as (someConditio)
+      (doThis)
+      (doThat) )
+   (doMore) )
+</code></pre>
+
+<dt><a name="asoq"><code>(asoq 'any 'lst) -> lst</code></a>
+<dd>Searches an association list. Returns the first element from
+<code>lst</code> with <code>any</code> as its CAR, or <code>NIL</code> if no
+match is found. <code><a href="ref_.html#==">==</a></code> is used for
+comparison (pointer equality). See also <code><a
+href="refA.html#assoc">assoc</a></code>, <code><a
+href="refG.html#get">get</a></code>, <code><a
+href="refP.html#push1q">push1q</a></code>, <code><a
+href="refD.html#delq">delq</a></code>, <code><a
+href="refM.html#memq">memq</a></code>, <code><a
+href="refM.html#mmeq">mmeq</a></code> and <a href="ref.html#cmp">Comparing</a>.
+
+<pre><code>
+: (asoq 'a '((999 1 2 3) (b . 7) ("ok" "Hello")))
+-> NIL
+: (asoq 'b '((999 1 2 3) (b . 7) ("ok" "Hello")))
+-> (b . 7)
+</code></pre>
+
+<dt><a name="assert"><code>(assert exe ..) -> prg | NIL</code></a>
+<dd>When in debug mode (<code><a href="refD.html#*Dbg">*Dbg</a></code> is
+non-<code>NIL</code>), <code>assert</code> returns a <code>prg</code> list which
+tests all <code>exe</code> conditions, and issues an error via <code><a
+href="refQ.html#quit">quit</a></code> if one of the results evaluates to
+<code>NIL</code>. Otherwise, <code>NIL</code> is returned. Used typically in
+combination with the <code>~</code> tilde <code><a
+href="ref.html#macro-io">read-macro</a></code> to insert the test code only when
+in debug mode. See also <code><a href="refT.html#test">test</a></code>.
+
+<pre><code>
+# Start in debug mode
+$ pil +
+: (de foo (N)
+   ~(assert (>= 90 N 10))
+   (bar N) )
+-> foo
+: (pp 'foo)                      # Pretty-print 'foo'
+(de foo (N)
+   (unless (>= 90 N 10)          # Assertion code exists
+      (quit "'assert' failed" '(>= 90 N 10)) )
+   (bar N) )
+-> foo
+: (foo 7)                        # Try it
+(>= 90 N 10) -- Assertion failed
+?
+
+# Start in non-debug mode
+$ pil
+: (de foo (N)
+   ~(assert (>= 90 N 10))
+   (bar N) )
+-> foo
+: (pp 'foo)                      # Pretty-print 'foo'
+(de foo (N)
+   (bar N) )                     # Assertion code does not exist
+-> foo
+</code></pre>
+
+<dt><a name="asserta"><code>(asserta 'lst) -> lst</code></a>
+<dd>Inserts a new <a href="ref.html#pilog">Pilog</a> fact or rule before all
+other rules. See also <code><a href="refB.html#be">be</a></code>, <code><a
+href="refC.html#clause">clause</a></code>, <code><a
+href="refA.html#assertz">assertz</a></code> and <code><a
+href="refR.html#retract">retract</a></code>.
+
+<pre><code>
+: (be a (2))            # Define two facts
+-> a
+: (be a (3))
+-> a
+
+: (asserta '(a (1)))    # Insert new fact in front
+-> ((1))
+
+: (? (a @N))            # Query
+ @N=1
+ @N=2
+ @N=3
+-> NIL
+</code></pre>
+
+<dt><a name="asserta/1"><code>asserta/1</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate that inserts a new fact or rule
+before all other rules. See also <code><a
+href="refA.html#asserta">asserta</a></code>, <code><a
+href="refA.html#assertz/1">assertz/1</a></code> and <code><a
+href="refR.html#retract/1">retract/1</a></code>.
+
+<pre><code>
+: (? (asserta (a (2))))
+-> T
+: (? (asserta (a (1))))
+-> T
+: (rules 'a)
+1 (be a (1))
+2 (be a (2))
+-> a
+</code></pre>
+
+<dt><a name="assertz"><code>(assertz 'lst) -> lst</code></a>
+<dd>Appends a new <a href="ref.html#pilog">Pilog</a> fact or rule behind all
+other rules. See also <code><a href="refB.html#be">be</a></code>, <code><a
+href="refC.html#clause">clause</a></code>, <code><a
+href="refA.html#asserta">asserta</a></code> and <code><a
+href="refR.html#retract">retract</a></code>.
+
+<pre><code>
+: (be a (1))            # Define two facts
+-> a
+: (be a (2))
+-> a
+
+: (assertz '(a (3)))    # Append new fact at the end
+-> ((3))
+
+: (? (a @N))            # Query
+ @N=1
+ @N=2
+ @N=3
+-> NIL
+</code></pre>
+
+<dt><a name="assertz/1"><code>assertz/1</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate that appends a new fact or rule
+behind all other rules. See also <code><a
+href="refA.html#assertz">assertz</a></code>, <code><a
+href="refA.html#asserta/1">asserta/1</a></code> and <code><a
+href="refR.html#retract/1">retract/1</a></code>.
+
+<pre><code>
+: (? (assertz (a (1))))
+-> T
+: (? (assertz (a (2))))
+-> T
+: (rules 'a)
+1 (be a (1))
+2 (be a (2))
+-> a
+</code></pre>
+
+<dt><a name="assoc"><code>(assoc 'any 'lst) -> lst</code></a>
+<dd>Searches an association list. Returns the first element from
+<code>lst</code> with its CAR equal to <code>any</code>, or <code>NIL</code> if
+no match is found. See also <code><a href="refA.html#asoq">asoq</a></code> and
+<code><a href="refR.html#rassoc">rassoc</a></code>.
+
+<pre><code>
+: (assoc "b" '((999 1 2 3) ("b" . 7) ("ok" "Hello")))
+-> ("b" . 7)
+: (assoc 999 '((999 1 2 3) ("b" . 7) ("ok" "Hello")))
+-> (999 1 2 3)
+: (assoc 'u '((999 1 2 3) ("b" . 7) ("ok" "Hello")))
+-> NIL
+</code></pre>
+
+<dt><a name="at"><code>(at '(cnt1 . cnt2|NIL) . prg) -> any</code></a>
+<dd>Increments <code>cnt1</code> (destructively), and returns <code>NIL</code>
+when it is less than <code>cnt2</code>. Both <code>cnt1</code> and
+<code>cnt2</code> should be positive. Otherwise, <code>cnt1</code> is reset to
+zero and <code>prg</code> is executed. Returns the result of <code>prg</code>.
+If <code>cnt2</code> is <code>NIL</code>, nothing is done, and <code>NIL</code>
+is returned immediately.
+
+<pre><code>
+: (do 11 (prin ".") (at (0 . 3) (prin "!")))
+...!...!...!..-> NIL
+</code></pre>
+
+<dt><a name="atom"><code>(atom 'any) -> flg</code></a>
+<dd>Returns <code>T</code> when the argument <code>any</code> is an atom (a
+number or a symbol). See also <code><a href="refN.html#num?">num?</a></code>,
+<code><a href="refS.html#sym?">sym?</a></code> and <code><a
+href="refP.html#pair">pair</a></code>.
+
+<pre><code>
+: (atom 123)
+-> T
+: (atom 'a)
+-> T
+: (atom NIL)
+-> T
+: (atom (123))
+-> NIL
+</code></pre>
+
+<dt><a name="aux"><code>(aux 'sym 'cls ['hook] 'any ..) -> sym</code></a>
+<dd>Returns a database object of class <code>cls</code>, where the value for
+<code>sym</code> corresponds to <code>any</code> and the following arguments.
+<code>sym</code>, <code>cls</code> and <code>hook</code> should specify a
+<code><a href="refT.html#tree">tree</a></code> for <code>cls</code> or one of
+its superclasses, for a relation with auxiliary keys. For multi-key accesses,
+<code>aux</code> is similar to - but faster than - <code>db</code>, because it
+can use a single tree access. See also <code><a
+href="refD.html#db">db</a></code>, <code><a
+href="refC.html#collect">collect</a></code>, <code><a
+href="refF.html#fetch">fetch</a></code>, <code><a
+href="refI.html#init">init</a></code>, <code><a
+href="refS.html#step">step</a></code> and <code><a
+href="refA.html#+Aux">+Aux</a></code>.
+
+<pre><code>
+(class +PS +Entity)
+(rel par (+Dep +Joint) (sup) ps (+Part))        # Part
+(rel sup (+Aux +Ref +Link) (par) NIL (+Supp))   # Supplier
+...
+   (aux 'sup '+PS                               # Access PS object
+      (db 'nr '+Supp 1234)
+      (db 'nr '+Part 5678) )
+</code></pre>
+
+</dl>
+
+</body>
+</html>

@@ -1,0 +1,298 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>O</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+
+<h1>O</h1>
+
+<dl>
+
+<dt><a name="*ObjIdx"><code>*ObjIdx</code></a>
+<dd>Holds an <code><a href="refI.html#idx">idx</a></code> tree of objects
+created by <code><a href="refO.html#obj">obj</a></code>.
+
+<pre><code>
+</code></pre>
+
+<dt><a name="*Once"><code>*Once</code></a>
+<dd>Holds an <code><a href="refI.html#idx">idx</a></code> tree of already
+<code><a href="refL.html#load">load</a></code>ed source locations (as returned
+by <code><a href="refF.html#file">file</a></code>) See also <code><a
+href="refO.html#once">once</a></code>.
+
+<pre><code>
+: *Once
+-> (("lib/" "misc.l" . 11) (("lib/" "http.l" . 9) (("lib/" "form.l" . 11))))
+</code></pre>
+
+<dt><a name="*OS"><code>*OS</code></a>
+<dd>A global constant holding the name of the operating system. Possible values
+include <code>"Linux"</code>, <code>"Android"</code>, <code>"FreeBSD"</code>,
+<code>"OpenBSD"</code>, <code>"SunOS"</code>, <code>"Darwin"</code> or
+<code>"Cygwin"</code>. See also <code><a href="refC.html#*CPU">*CPU</a></code>
+and <code><a href="refV.html#version">version</a></code>.
+
+<pre><code>
+: *OS
+-> "Linux"
+</code></pre>
+
+<dt><a name="obj"><code>(obj (typ sym [hook] val ..) [var1 val1 ..]) -> obj</code></a>
+<dt><code>(obj typ any [var1 val1 ..]) -> obj</code>
+<dd>Finds or creates a database object, and initializes additional properties
+using the <code>varN</code> and <code>valN</code> arguments. In the first form,
+a <code><a href="refR.html#request">request</a></code> for <code>(typ sym [hook]
+val ..)</code> is called, while the second form uses <code><a
+href="refC.html#cache">cache</a></code> to maintain objects without unique
+<code><a href="refK.html#+Key">+Key</a></code>s by indexing <code><a
+href="refO.html#*ObjIdx">*ObjIdx</a></code> with the <code>any</code> argument.
+
+<pre><code>
+: (obj ((+Item) nr 2) nm "Spare Part" sup `(db 'nr '+CuSu 2) inv 100 pr 1250)
+-> {3-2}
+</code></pre>
+
+<dt><a name="object"><code>(object 'sym 'any ['sym2 'any2 ..]) -> obj</code></a>
+<dd>Defines <code>sym</code> to be an object with the value (or type)
+<code>any</code>. The property list is initialized with all optionally supplied
+key-value pairs. See also <a href="ref.html#oop">OO Concepts</a>, <code><a
+href="refN.html#new">new</a></code>, <code><a
+href="refT.html#type">type</a></code> and <code><a
+href="refI.html#isa">isa</a></code>.
+
+<pre><code>
+: (object 'Obj '(+A +B +C) 'a 1 'b 2 'c 3)
+-> Obj
+: (show 'Obj)
+Obj (+A +B +C)
+   c 3
+   b 2
+   a 1
+-> Obj
+</code></pre>
+
+<dt><a name="oct"><code>(oct 'num ['num]) -> sym</code></a>
+<dt><code>(oct 'sym) -> num</code>
+<dd>Converts a number <code>num</code> to an octal string, or an octal string
+<code>sym</code> to a number. In the first case, if the second argument is
+given, the result is separated by spaces into groups of such many digits. See
+also <code><a href="refB.html#bin">bin</a></code>, <code><a
+href="refH.html#hex">hex</a></code>, <code><a
+href="refH.html#hax">hax</a></code> and <code><a
+href="refF.html#format">format</a></code>.
+
+<pre><code>
+: (oct 73)
+-> "111"
+: (oct "111")
+-> 73
+: (oct 1234567 3)
+-> "4 553 207"
+</code></pre>
+
+<dt><a name="off"><code>(off var ..) -> NIL</code></a>
+<dd>Stores <code>NIL</code> in all <code>var</code> arguments. See also <code><a
+href="refO.html#on">on</a></code>, <code><a
+href="refO.html#onOff">onOff</a></code>, <code><a
+href="refZ.html#zero">zero</a></code> and <code><a
+href="refO.html#one">one</a></code>.
+
+<pre><code>
+: (off A B)
+-> NIL
+: A
+-> NIL
+: B
+-> NIL
+</code></pre>
+
+<dt><a name="offset"><code>(offset 'lst1 'lst2) -> cnt | NIL</code></a>
+<dd>Returns the <code>cnt</code> position of the tail list <code>lst1</code> in
+<code>lst2</code>, or <code>NIL</code> if it is not found. See also <code><a
+href="refI.html#index">index</a></code>, <code><a
+href="refS.html#sub?">sub?</a></code> and <code><a
+href="refT.html#tail">tail</a></code>.
+
+<pre><code>
+: (offset '(c d e f) '(a b c d e f))
+-> 3
+: (offset '(c d e) '(a b c d e f))
+-> NIL
+</code></pre>
+
+<dt><a name="on"><code>(on var ..) -> T</code></a>
+<dd>Stores <code>T</code> in all <code>var</code> arguments. See also <code><a
+href="refO.html#off">off</a></code>, <code><a
+href="refO.html#onOff">onOff</a></code>, <code><a
+href="refZ.html#zero">zero</a></code> and <code><a
+href="refO.html#one">one</a></code>.
+
+<pre><code>
+: (on A B)
+-> T
+: A
+-> T
+: B
+-> T
+</code></pre>
+
+<dt><a name="once"><code>(once . prg) -> any</code></a>
+<dd>Executes <code>prg</code> once, when the current file is <code><a
+href="refL.html#load">load</a></code>ed the first time. Subsequent loads at a
+later time will not execute <code>prg</code>, and <code>once</code> returns
+<code>NIL</code>. See also <code><a href="refO.html#*Once">*Once</a></code>.
+
+<pre><code>
+(once
+   (zero *Cnt1 *Cnt2)  # Init counters
+   (load "file1.l" "file2.l") )  # Load other files
+
+`(once T)  # Ignore next time the rest of this file
+</code></pre>
+
+<dt><a name="one"><code>(one var ..) -> 1</code></a>
+<dd>Stores <code>1</code> in all <code>var</code> arguments. See also <code><a
+href="refZ.html#zero">zero</a></code>, <code><a
+href="refO.html#on">on</a></code>, <code><a href="refO.html#off">off</a></code>
+and <code><a href="refO.html#onOff">onOff</a></code>.
+
+<pre><code>
+: (one A B)
+-> 1
+: A
+-> 1
+: B
+-> 1
+</code></pre>
+
+<dt><a name="onOff"><code>(onOff var ..) -> flg</code></a>
+<dd>Logically negates the values of all <code>var</code> arguments. Returns the
+new value of the last symbol. See also <code><a
+href="refO.html#on">on</a></code>, <code><a href="refO.html#off">off</a></code>,
+<code><a href="refZ.html#zero">zero</a></code> and <code><a
+href="refO.html#one">one</a></code>.
+
+<pre><code>
+: (onOff A B)
+-> T
+: A
+-> T
+: B
+-> T
+: (onOff A B)
+-> NIL
+: A
+-> NIL
+: B
+-> NIL
+</code></pre>
+
+<dt><a name="open"><code>(open 'any ['flg]) -> cnt | NIL</code></a>
+<dd>Opens the file with the name <code>any</code> in read/write mode (or
+read-only if <code>flg</code> is non-<code>NIL</code>), and returns a file
+descriptor <code>cnt</code> (or <code>NIL</code> on error). A leading
+"<code>@</code>" character in <code>any</code> is substituted with the
+<u>PicoLisp Home Directory</u>, as it was remembered during interpreter startup.
+If <code>flg</code> is <code>NIL</code> and the file does not exist, it is
+created. The file descriptor can be used in subsequent calls to <code><a
+href="refI.html#in">in</a></code> and <code><a
+href="refO.html#out">out</a></code>. See also <code><a
+href="refC.html#close">close</a></code> and <code><a
+href="refP.html#poll">poll</a></code>.
+
+<pre><code>
+: (open "x")
+-> 3
+</code></pre>
+
+<dt><a name="opid"><code>(opid) -> pid | NIL</code></a>
+<dd>Returns the corresponding process ID when the current output channel is
+writing to a pipe, otherwise <code>NIL</code>. See also <code><a
+href="refI.html#ipid">ipid</a></code> and <code><a
+href="refO.html#out">out</a></code>.
+
+<pre><code>
+: (out '(cat) (call 'ps "-p" (opid)))
+  PID TTY          TIME CMD
+ 7127 pts/3    00:00:00 cat
+-> T
+</code></pre>
+
+<dt><a name="opt"><code>(opt) -> sym</code></a>
+<dd>Return the next command line argument ("option", as would be processed by
+<code><a href="refL.html#load">load</a></code>) as a string, and remove it from
+the remaining command line arguments. See also <a
+href="ref.html#invoc">Invocation</a> and <code><a
+href="refA.html#argv">argv</a></code>.
+
+<pre><code>
+$ pil  -"de f () (println 'opt (opt))"  -f abc  -bye
+opt "abc"
+</code></pre>
+
+<dt><a name="or"><code>(or 'any ..) -> any</code></a>
+<dd>Logical OR. The expressions <code>any</code> are evaluated from left to
+right. If a non-<code>NIL</code> value is encountered, it is returned
+immediately. Else the result of the last expression is returned. See also
+<code><a href="refN.html#nor">nor</a></code>, <code><a
+href="refA.html#and">and</a></code> and <code><a
+href="refU.html#unless">unless</a></code>.
+
+<pre><code>
+: (or (= 3 3) (read))
+-> T
+: (or (= 3 4) (read))
+abc
+-> abc
+</code></pre>
+
+<dt><a name="or/2"><code>or/2</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate that takes an arbitrary number
+of clauses, and succeeds if one of them can be proven. See also <code><a
+href="refN.html#not/1">not/1</a></code>.
+
+<pre><code>
+: (?
+   (or
+      ((equal 3 @X) (equal @X 4))
+      ((equal 7 @X) (equal @X 7)) ) )
+ @X=7
+-> NIL</code></pre>
+
+<dt><a name="out"><code>(out 'any . prg) -> any</code></a>
+<dd>Opens <code>any</code> as output channel during the execution of
+<code>prg</code>. The current output channel will be saved and restored
+appropriately. If the argument is <code>NIL</code>, standard output is used. If
+the argument is a symbol, it is used as a file name (opened in "append" mode if
+the first character is "<code>+</code>"). If it is a positive number, it is used
+as the descriptor of an open file. If it is a negative number, the saved output
+channel such many levels above the current one is used. Otherwise (if it is a
+list), it is taken as a command with arguments, and a pipe is opened for output.
+The (system dependent) exit status code of the child process is stored in the
+global variable <code><a href="ref_.html#@@">@@</a></code>. In all cases,
+<code><a href="refF.html#flush">flush</a></code> is called when <code>prg</code>
+is done. See also <code><a href="refO.html#opid">opid</a></code>, <code> <a
+href="refC.html#call">call</a></code>, <code><a
+href="refI.html#in">in</a></code>, <code> <a
+href="refE.html#err">err</a></code>, <code> <a
+href="refC.html#ctl">ctl</a></code>, <code><a
+href="refP.html#pipe">pipe</a></code>, <code> <a
+href="refP.html#poll">poll</a></code>, <code> <a
+href="refC.html#close">close</a></code> and <code><a
+href="refL.html#load">load</a></code>.
+
+<pre><code>
+: (out "a" (println 123 '(a b c) 'def))  # Write one line to file "a"
+-> def
+: (out '(lpr) (prinl "Hello"))  # Send line to line printer
+-> "Hello"
+</code></pre>
+
+</dl>
+
+</body>
+</html>

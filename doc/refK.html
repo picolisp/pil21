@@ -1,0 +1,84 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>K</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+
+<h1>K</h1>
+
+<dl>
+
+<dt><a name="+Key"><code>+Key</code></a>
+<dd>Prefix class for maintaining unique indexes to <code><a
+href="refR.html#+relation">+relation</a></code>s, a subclass of <code><a
+href="refI.html#+index">+index</a></code>. Accepts an optional argument for a
+<code><a href="refH.html#+Hook">+Hook</a></code> attribute. See also <a
+href="ref.html#dbase">Database</a>.
+
+<pre><code>
+(rel nr (+Need +Key +Number))  # Mandatory, unique Customer/Supplier number
+</code></pre>
+
+<dt><a name="key"><code>(key ['cnt]) -> sym</code></a>
+<dd>Returns the next character from standard input as a single-character
+transient symbol. The console is set to raw mode. While waiting for a key press,
+a <code>select</code> system call is executed for all file descriptors and
+timers in the <code>VAL</code> of the global variable <code><a
+href="refR.html#*Run">*Run</a></code>. If <code>cnt</code> is
+non-<code>NIL</code>, that amount of milliseconds is waited maximally, and
+<code>NIL</code> is returned upon timeout. See also <code><a
+href="refR.html#raw">raw</a></code> and <code><a
+href="refW.html#wait">wait</a></code>.
+
+<pre><code>
+: (key)           # Wait for a key
+-> "a"            # 'a' pressed
+</code></pre>
+
+<dt><a name="kids"><code>(kids) -> lst</code></a>
+<dd>Returns a list of process IDs of all running child processes. See also
+<code><a href="refF.html#fork">fork</a></code>, <code><a
+href="refD.html#detach">detach</a></code>, <code><a
+href="refP.html#pipe">pipe</a></code>, <code><a
+href="refT.html#tell">tell</a></code>, <code><a
+href="refP.html#proc">proc</a></code> and <code><a
+href="refK.html#kill">kill</a></code>.
+
+<pre><code>
+: (unless (fork) (wait 60000) (bye))
+-> NIL
+: (unless (fork) (wait 60000) (bye))
+-> NIL
+
+: (proc 'pil)
+  PID  PPID  STARTED  SIZE %CPU WCHAN  CMD
+ 2205 22853 19:45:24  1336  0.1 -      /usr/bin/picolisp /usr/lib/picolisp/lib.l /usr/bin/pil +
+ 2266  2205 19:45:30  1336  0.0 -        /usr/bin/picolisp /usr/lib/picolisp/lib.l /usr/bin/pil +
+ 2300  2205 19:45:33  1336  0.0 -        /usr/bin/picolisp /usr/lib/picolisp/lib.l /usr/bin/pil +
+-> T
+
+: (kids)
+-> (2300 2266)
+</code></pre>
+
+<dt><a name="kill"><code>(kill 'pid ['cnt]) -> flg</code></a>
+<dd>Sends a signal with the signal number <code>cnt</code> (or SIGTERM if
+<code>cnt</code> is not given) to the process with the ID <code>pid</code>.
+Returns <code>T</code> if successful.
+
+<pre><code>
+: (kill *Pid 20)                                # Stop current process
+
+[2]+  Stopped               pil +               # Unix shell
+$ fg                                            # Job control: Foreground
+pil +
+-> T                                            # 'kill' was successful
+</code></pre>
+
+</dl>
+
+</body>
+</html>

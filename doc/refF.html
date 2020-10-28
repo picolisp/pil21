@@ -1,0 +1,614 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>F</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+
+<h1>F</h1>
+
+<dl>
+
+<dt><a name="*Fork"><code>*Fork</code></a>
+<dd>A global variable holding a (possibly empty) <code>prg</code> body, to be
+executed after a call to <code><a href="refF.html#fork">fork</a></code> in the
+child process.
+
+<pre><code>
+: (push '*Fork '(off *Tmp))   # Clear '*Tmp' in child process
+-> (off *Tmp)
+</code></pre>
+
+<dt><a name="+Fold"><code>+Fold</code></a>
+<dd>Prefix class for maintaining <code><a
+href="refF.html#fold">fold</a></code>ed indexes to <code><a
+href="refS.html#+String">+String</a></code> relations. Typically used in
+combination with the <code><a href="refR.html#+Ref">+Ref</a></code> or <code><a
+href="refI.html#+Idx">+Idx</a></code> prefix classes. See also <code><a
+href="refI.html#+IdxFold">+IdxFold</a></code> and <a
+href="ref.html#dbase">Database</a>.
+
+<pre><code>
+(rel nm (+Fold +Idx +String))   # Item Description
+...
+(rel tel (+Fold +Ref +String))  # Phone number
+</code></pre>
+
+<dt><a name="fail"><code>(fail) -> lst</code></a>
+<dd>Constructs an empty <a href="ref.html#pilog">Pilog</a> query, i.e. a query
+that will always fail. See also <code><a href="refG.html#goal">goal</a></code>.
+
+<pre><code>
+(dm clr> ()                # Clear query chart in search dialogs
+   (query> This (fail)) )
+</code></pre>
+
+<dt><a name="fail/0"><code>fail/0</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate that always fails. See also
+<code><a href="refT.html#true/0">true/0</a></code>.
+
+<pre><code>
+: (? (fail))
+-> NIL
+</code></pre>
+
+<dt><a name="fd"><code>(fd) -> cnt</code></a>
+<dd>Return the current file descriptor, typically of the closest <code><a
+href="refI.html#in">in</a></code> or <code><a
+href="refO.html#out">out</a></code> channel. See also <code><a
+href="refI.html#ipid">ipid</a></code> and <code><a
+href="refO.html#opid">opid</a></code>.
+
+<pre><code>
+: (in "@lib.l" (fd))
+-> 3
+</code></pre>
+
+<dt><a name="fetch"><code>(fetch 'tree 'any) -> any</code></a>
+<dd>Fetches a value for the key <code>any</code> from a database tree. See also
+<code><a href="refT.html#tree">tree</a></code> and <code><a
+href="refS.html#store">store</a></code>.
+
+<pre><code>
+: (fetch (tree 'nr '+Item) 2)
+-> {3-2}
+</code></pre>
+
+<dt><a name="fifo"><code>(fifo 'var ['any ..]) -> any</code></a>
+<dd>Implements a first-in-first-out structure using a circular list. When called
+with <code>any</code> arguments, they will be concatenated to end of the
+structure. Otherwise, the first element is removed from the structure and
+returned. See also <code><a href="refQ.html#queue">queue</a></code>, <code><a
+href="refP.html#push">push</a></code>, <code><a
+href="refP.html#pop">pop</a></code>, <code><a
+href="refR.html#rot">rot</a></code> and <code><a
+href="refC.html#circ">circ</a></code>.
+
+<pre><code>
+: (fifo 'X 1)
+-> 1
+: (fifo 'X 2 3)
+-> 3
+: X
+-> (3 1 2 .)
+: (fifo 'X)
+-> 1
+: (fifo 'X)
+-> 2
+: X
+-> (3 .)
+</code></pre>
+
+<dt><a name="file"><code>(file) -> (sym1 sym2 . num) | NIL</code></a>
+<dd>Returns for the current input channel the path name <code>sym1</code>, the
+file name <code>sym2</code>, and the current line number <code>num</code>. If
+the current input channel is not a file, <code>NIL</code> is returned. See also
+<code><a href="refI.html#info">info</a></code>, <code><a
+href="refI.html#in">in</a></code> and <code><a
+href="refL.html#load">load</a></code>.
+
+<pre><code>
+: (load (pack (car (file)) "localFile.l"))  # Load a file in same directory
+</code></pre>
+
+<dt><a name="fill"><code>(fill 'any ['sym|lst]) -> any</code></a>
+<dd>Non-destructively fills a pattern <code>any</code>, by substituting
+<code>sym</code>, or all symbols in <code>lst</code>, or - if no second argument
+is given - each pattern symbol in <code>any</code> (see <code><a
+href="refP.html#pat?">pat?</a></code>), with its current value. <code>@</code>
+itself is not considered a pattern symbol here. Unmodified subexpressions are
+shared. In any case, expressions following the symbol <code>^</code> should
+evaluate to lists which are then (destructively) spliced into the result. See
+also <code><a href="refM.html#match">match</a></code>.
+
+<pre><code>
+: (setq  @X 1234  @Y (1 2 3 4))
+-> (1 2 3 4)
+: (fill '@X)
+-> 1234
+: (fill '(a b (c @X) ((@Y . d) e)))
+-> (a b (c 1234) (((1 2 3 4) . d) e))
+: (let X 2 (fill (1 X 3) 'X))
+-> (1 2 3)
+
+: (fill (1 ^ (list 'a 'b 'c) 9))
+-> (1 a b c 9)
+
+: (match '(This is @X) '(This is a pen))
+-> T
+: (fill '(Got ^ @X))
+-> (Got a pen)
+</code></pre>
+
+<dt><a name="filter"><code>(filter 'fun 'lst ..) -> lst</code></a>
+<dd>Applies <code>fun</code> to each element of <code>lst</code>. When
+additional <code>lst</code> arguments are given, their elements are also passed
+to <code>fun</code>. Returns a list of all elements of <code>lst</code> where
+<code>fun</code> returned non-<code>NIL</code>. See also <code><a
+href="refF.html#fish">fish</a></code>, <code><a
+href="refF.html#find">find</a></code>, <code><a
+href="refP.html#pick">pick</a></code> and <code><a
+href="refE.html#extract">extract</a></code>.
+
+<pre><code>
+: (filter num? (1 A 2 (B) 3 CDE))
+-> (1 2 3)
+: (filter < (2 9 3 8 4 7) (5 4 3 9 9 5))
+-> (2 8 4)
+: (filter and (1 NIL 3 NIL 5) (2 3 4 5 6) (7 8 NIL 1 1))
+-> (1 5)
+: (filter and (range 1 22) '(NIL NIL T .))
+-> (3 6 9 12 15 18 21)
+</code></pre>
+
+<dt><a name="fin"><code>(fin 'any) -> num|sym</code></a>
+<dd>Returns <code>any</code> if it is an atom, otherwise the CDR of its last
+cell. See also <code><a href="refL.html#last">last</a></code> and <code><a
+href="refT.html#tail">tail</a></code>.
+
+<pre><code>
+: (fin 'a)
+-> a
+: (fin '(a . b))
+-> b
+: (fin '(a b . c))
+-> c
+: (fin '(a b c))
+-> NIL
+</code></pre>
+
+<dt><a name="finally"><code>(finally exe . prg) -> any</code></a>
+<dd><code>prg</code> is executed, then <code>exe</code> is evaluated, and the
+result of <code>prg</code> is returned. <code>exe</code> will also be evaluated
+if <code>prg</code> does not terminate normally due to a runtime error or a call
+to <code><a href="refT.html#throw">throw</a></code>. See also <code><a
+href="refB.html#bye">bye</a></code>, <code><a
+href="refC.html#catch">catch</a></code>, <code><a
+href="refQ.html#quit">quit</a></code> and <code><a href="ref.html#errors">Error
+Handling</a></code>.
+
+<pre><code>
+: (finally (prinl "Done!")
+   (println 123)
+   (quit)
+   (println 456) )
+123
+Done!
+: (catch 'A
+   (finally (prinl "Done!")
+      (println 1)
+      (throw 'A 123)
+      (println 2) ) )
+1
+Done!
+-> 123
+</code></pre>
+
+<dt><a name="find"><code>(find 'fun 'lst ..) -> any</code></a>
+<dd>Applies <code>fun</code> to successive elements of <code>lst</code> until
+non-<code>NIL</code> is returned. Returns that element (and stores the
+non-<code>NIL</code> value in the global variable <code><a
+href="ref_.html#@@">@@</a></code>), or <code>NIL</code> if <code>fun</code> did
+not return non-<code>NIL</code> for any element of <code>lst</code>. When
+additional <code>lst</code> arguments are given, their elements are also passed
+to <code>fun</code>. See also <code><a href="refS.html#seek">seek</a></code>,
+<code><a href="refP.html#pick">pick</a></code>, <code><a
+href="refF.html#fully">fully</a></code> and <code><a
+href="refF.html#filter">filter</a></code>.
+
+<pre><code>
+: (find pair (1 A 2 (B) 3 CDE))
+-> (B)
+: (find '((A B) (> A B)) (1 2 3 4 5 6) (6 5 4 3 2 1))
+-> 4
+: (find > (1 2 3 4 5 6) (6 5 4 3 2 1))  # shorter
+-> 4
+</code></pre>
+
+<dt><a name="fish"><code>(fish 'fun 'any) -> lst</code></a>
+<dd>Applies <code>fun</code> to each element - and recursively to all sublists -
+of <code>any</code>. Returns a list of all items where <code>fun</code> returned
+non-<code>NIL</code>. See also <code><a
+href="refF.html#filter">filter</a></code>.
+
+<pre><code>
+: (fish atom '((a b) c (d e)))
+-> (a b c d e)
+: (fish gt0 '(a -2 (1 b (-3 c 2)) 3 d -1))
+-> (1 2 3)
+: (fish sym? '(a -2 (1 b (-3 c 2)) 3 d -1))
+-> (a b c d)
+</code></pre>
+
+<dt><a name="flg?"><code>(flg? 'any) -> flg</code></a>
+<dd>Returns <code>T</code> when the argument <code>any</code> is either
+<code>NIL</code> or <code>T</code>. See also <code><a
+href="refB.html#bool">bool</a></code>. <code>(flg? X)</code> is equivalent to
+<code>(or (not X) (=T X))</code>.
+
+<pre><code>
+: (flg? (= 3 3))
+-> T
+: (flg? (= 3 4))
+-> T
+: (flg? (+ 3 4))
+-> NIL
+</code></pre>
+
+<dt><a name="flip"><code>(flip 'lst ['cnt]) -> lst</code></a>
+<dd>Returns <code>lst</code> (destructively) reversed. Without the optional
+<code>cnt</code> argument, the whole list is flipped, otherwise only the first
+<code>cnt</code> elements. See also <code><a
+href="refR.html#reverse">reverse</a></code> and <code><a
+href="refR.html#rot">rot</a></code>.
+
+<pre><code>
+: (flip (1 2 3 4))         # Flip all  four elements
+-> (4 3 2 1)
+: (flip (1 2 3 4 5 6) 3)   # Flip only the first three elements
+-> (3 2 1 4 5 6)
+</code></pre>
+
+<dt><a name="flood"><code>(flood 'lst1 'fun 'lst2) -> lst</code></a>
+<dd>Implements a flooding algorithm, returning a list of flooded nodes of a
+graph. <code>lst1</code> is a list of relevant nodes, <code>fun</code> a
+function accepting a node and returning a list of connected nodes, and
+<code>lst2</code> a list of seed nodes.
+
+<pre><code>
+: (setq *Graph (1 2 3 4 5))         # For simplicity, a one-dimensional "graph"
+-> (1 2 3 4 5)
+
+: (flood
+   (maplist prog *Graph)            # List of relevant cells
+   '((X)                            # Flood the three central cells (2 3 4)
+      (when (member (car X) (2 3))  # 2 -> 3 and 3 -> 4
+         (list (cdr X)) ) )
+   (list (cddr *Graph)) )           # Seed third (middle) cell
+-> ((3 4 5) (2 3 4 5) (4 5))        # -> Cells (3 ..) (2 ..) (4 ..)
+</code></pre>
+
+<dt><a name="flush"><code>(flush) -> flg</code></a>
+<dd>Flushes the current output stream by writing all buffered data. A call to
+<code>flush</code> for standard output is done automatically before a call to
+<code><a href="refK.html#key">key</a></code>. Returns <code>T</code> when
+successful. See also <code><a href="refR.html#rewind">rewind</a></code>.
+
+<pre><code>
+: (flush)
+-> T
+</code></pre>
+
+<dt><a name="fold"><code>(fold 'any ['cnt]) -> sym</code></a>
+<dd>Folding to a canonical form: If <code>any</code> is not a symbol, it is
+returned as it is. Otherwise, a new transient symbol with all digits and all
+letters of <code>any</code>, converted to lower case, is returned. If the
+<code>cnt</code> argument is given and non-zero, the result is truncated to that
+length. See also <code><a href="refL.html#lowc">lowc</a></code>.
+
+<pre><code>
+: (fold " 1A 2-b/3")
+-> "1a2b3"
+: (fold " 1A 2-B/3" 3)
+-> "1a2"
+</code></pre>
+
+<dt><a name="fold/3"><code>fold/3</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the first
+argument, after <code><a href="refF.html#fold">fold</a></code>ing it to a
+canonical form, is a <i>prefix</i> of the folded string representation of the
+result of applying the <code><a href="refG.html#get">get</a></code> algorithm to
+the following arguments. Typically used as filter predicate in <code><a
+href="refS.html#select/3">select/3</a></code> database queries. See also
+<code><a href="refP.html#pre?">pre?</a></code>, <code><a
+href="refI.html#isa/2">isa/2</a></code>, <code><a
+href="refS.html#same/3">same/3</a></code>, <code><a
+href="refB.html#bool/3">bool/3</a></code>, <code><a
+href="refR.html#range/3">range/3</a></code>, <code><a
+href="refH.html#head/3">head/3</a></code>, <code><a
+href="refP.html#part/3">part/3</a></code> and <code><a
+href="refT.html#tolr/3">tolr/3</a></code>.
+
+<pre><code>
+: (?
+   @Nr (1 . 5)
+   @Nm "main"
+   (select (@Item)
+      ((nr +Item @Nr) (nm +Item @Nm))
+      (range @Nr @Item nr)
+      (fold @Nm @Item nm) ) )
+ @Nr=(1 . 5) @Nm="main" @Item={3-1}
+-> NIL
+</code></pre>
+
+<dt><a name="for"><code>(for sym 'num ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code></a>
+<dt><code>(for sym|(sym2 . sym) 'lst ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code>
+<dt><code>(for (sym|(sym2 . sym) 'any1 'any2 [. prg]) ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code>
+<dd>Conditional loop with local variable(s) and multiple conditional exits:<br>
+In the first form, the value of <code>sym</code> is saved, <code>sym</code> is
+bound to <code>1</code>, and the body is executed with increasing values up to
+(and including) <code>num</code>.<br>
+
+In the second form, the value of <code>sym</code> is saved, <code>sym</code> is
+subsequently bound to the elements of <code>lst</code>, and the body is executed
+each time.<br>
+
+In the third form, the value of <code>sym</code> is saved, and <code>sym</code>
+is bound to <code>any1</code>. If <code>sym2</code> is given, it is treated as a
+counter variable, first bound to 1 and then incremented for each execution of
+the body. While the condition <code>any2</code> evaluates to
+non-<code>NIL</code>, the body is repeatedly executed and, if <code>prg</code>
+is given, <code>sym</code> is re-bound to the result of its evaluation.<br>
+
+If a clause has <code>NIL</code> or <code>T</code> as its CAR, the clause's
+second element is evaluated as a condition and - if the result is
+<code>NIL</code> or non-<code>NIL</code>, respectively - the <code>prg</code> is
+executed and the result returned. If the body is never executed,
+<code>NIL</code> is returned.<br>
+
+See also <code><a href="refD.html#do">do</a></code> and <code><a
+href="refL.html#loop">loop</a></code>.
+
+<pre><code>
+# First form:
+: (for N 5 (printsp N))
+1 2 3 4 5 -> 5
+: (for N 5 (printsp N) (NIL (< N 3) (printsp 'enough)))
+1 2 3 enough -> enough
+: (for N 5 (T (> N 3) (printsp 'enough)) (printsp N))
+1 2 3 enough -> enough
+
+# Second form:
+: (for X (1 a 2 b) (printsp X))
+1 a 2 b -> b
+: (for (I . X) '(a b c) (println I X))
+1 a
+2 b
+3 c
+-> c
+
+# Third form:
+: (for (L (1 2 3 4 5) L) (printsp (pop 'L)))
+1 2 3 4 5 -> 5
+: (for (N 1 (>= 5 N) (inc N)) (printsp N))
+1 2 3 4 5 -> 5
+: (for ((I . L) '(a b c d e f) L (cddr L)) (println I L))
+1 (a b c d e f)
+2 (c d e f)
+3 (e f)
+-> (e f)
+</code></pre>
+
+<dt><a name="for/2"><code>for/2</code></a>
+<dt><a name="for/3"><code>for/3</code></a>
+<dt><a name="for/4"><code>for/4</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate that generates a sequence of
+numbers. See also <code><a href="refF.html#for">for</a></code> and <code><a
+href="refR.html#range">range</a></code>.
+
+<pre><code>
+: (? (for @I 3))
+ @I=1
+ @I=2
+ @I=3
+-> NIL
+
+: (? (for @I 3 7))
+ @I=3
+ @I=4
+ @I=5
+ @I=6
+ @I=7
+-> NIL
+
+: (? (for @I 7 3 2))
+ @I=7
+ @I=5
+ @I=3
+-> NIL
+
+: (? (for @N T))
+ @N=1
+ @N=2
+ @N=3
+ ...
+</code></pre>
+
+<dt><a name="fork"><code>(fork) -> pid | NIL</code></a>
+<dd>Forks a child process. Returns <code>NIL</code> in the child, and the
+child's process ID <code>pid</code> in the parent. In the child, the
+<code>VAL</code> of the global variable <code><a
+href="refF.html#*Fork">*Fork</a></code> (should be a <code>prg</code>) is
+executed. See also <code><a href="refE.html#exec">exec</a></code>, <code><a
+href="refD.html#detach">detach</a></code>, <code><a
+href="refK.html#kids">kids</a></code>, <code><a
+href="refP.html#pipe">pipe</a></code> and <code><a
+href="refT.html#tell">tell</a></code>.
+
+<pre><code>
+: (unless (fork) (do 5 (println 'OK) (wait 1000)) (bye))
+-> NIL
+OK                                              # Child's output
+: OK
+OK
+OK
+OK
+</code></pre>
+
+<dt><a name="forked"><code>(forked)</code></a>
+<dd>Installs maintenance code in <code><a
+href="refF.html#*Fork">*Fork</a></code> to close server sockets and clean up
+<code><a href="refR.html#*Run">*Run</a></code> code in child processes. Should
+only be called immediately after <code><a href="refT.html#task">task</a></code>.
+
+<pre><code>
+: (task -60000 60000 (msg 'OK))     # Install timer task
+-> (-60000 60000 (msg 'OK))
+: (forked)                          # No timer in child processes
+-> (task -60000)
+: *Run
+-> ((-60000 56432 (msg 'OK)))
+: *Fork
+-> ((task -60000) (del '(saveHistory) '*Bye))
+</code></pre>
+
+<dt><a name="format"><code>(format 'num ['cnt ['sym1 ['sym2]]]) -> sym</code></a>
+<dt><code>(format 'sym|lst ['cnt ['sym1 ['sym2]]]) -> num</code>
+<dd>Converts a number <code>num</code> to a string, or a string
+<code>sym|lst</code> to a number. In both cases, optionally a precision
+<code>cnt</code>, a decimal-separator <code>sym1</code> and a
+thousands-separator <code>sym2</code> can be supplied. Returns
+<code>NIL</code> if the conversion is unsuccessful. See also <a
+href="ref.html#num-io">Numbers</a>, <code><a
+href="refP.html#pad">pad</a></code>, <code><a
+href="refH.html#hex">hex</a></code>, <code><a
+href="refO.html#oct">oct</a></code>, <code><a
+href="refB.html#bin">bin</a></code> and <code><a
+href="refR.html#round">round</a></code>.
+
+<pre><code>
+: (format 123456789)                   # Integer conversion
+-> "123456789"
+: (format 123456789 2)                 # Fixed point
+-> "1234567.89"
+: (format 123456789 2 ",")             # Comma as decimal-separator
+-> "1234567,89"
+: (format 123456789 2 "," ".")         # and period as thousands-separator
+-> "1.234.567,89"
+
+: (format "123456789")                 # String to number
+-> 123456789
+: (format (1 "23" (4 5 6)))
+-> 123456
+: (format "1234567.89" 4)              # scaled to four digits
+-> 12345678900
+: (format "1.234.567,89")              # separators not recognized
+-> NIL
+: (format "1234567,89" 4 ",")
+-> 12345678900
+: (format "1.234.567,89" 4 ",")        # thousands-separator not recognized
+-> NIL
+: (format "1.234.567,89" 4 "," ".")
+-> 12345678900
+</code></pre>
+
+<dt><a name="free"><code>(free 'cnt) -> (sym . lst)</code></a>
+<dd>Returns, for the <code>cnt</code>'th database file, the next available
+symbol <code>sym</code> (i.e. the first symbol greater than any symbol in the
+database), and the list <code>lst</code> of free symbols. See also <code><a
+href="refS.html#seq">seq</a></code>, <code><a
+href="refZ.html#zap">zap</a></code> and <code><a
+href="refD.html#dbck">dbck</a></code>.
+
+<pre><code>
+: (pool "x")      # A new database
+-> T
+: (new T)         # Create a new symbol
+-> {2}
+: (new T)         # Create another symbol
+-> {3}
+: (commit)        # Commit changes
+-> T
+: (zap '{2})      # Delete the first symbol
+-> {2}
+: (free 1)        # Show free list
+-> ({4})          # {3} was the last symbol allocated
+: (commit)        # Commit the deletion of {2}
+-> T
+: (free 1)        # Now {2} is in the free list
+-> ({4} {2})
+</code></pre>
+
+<dt><a name="from"><code>(from 'any ..) -> sym</code></a>
+<dd>Skips the current input channel until one of the strings <code>any</code> is
+found, and starts subsequent reading from that point. The found <code>any</code>
+argument (or <code>NIL</code> if none is found) is returned. See also <code><a
+href="refT.html#till">till</a></code> and <code><a
+href="refE.html#echo">echo</a></code>.
+
+<pre><code>
+: (and (from "val='") (till "'" T))
+test val='abc'
+-> "abc"
+</code></pre>
+
+<dt><a name="full"><code>(full 'any) -> bool</code></a>
+<dd>Returns <code>NIL</code> if <code>any</code> is a non-empty list with at
+least one <code>NIL</code> element, otherwise <code>T</code>. <code>(full
+X)</code> is equivalent to <code>(not (memq NIL X))</code>. See also <code><a
+href="refF.html#fully">fully</a></code>.
+
+<pre><code>
+: (full (1 2 3))
+-> T
+: (full (1 NIL 3))
+-> NIL
+: (full 123)
+-> T
+</code></pre>
+
+<dt><a name="fully"><code>(fully 'fun 'lst ..) -> flg</code></a>
+<dd>Applies <code>fun</code> to successive elements of <code>lst</code>, and
+returns <code>NIL</code> immediately if one of the results is <code>NIL</code>.
+Otherwise, <code>T</code> is returned. When additional <code>lst</code>
+arguments are given, their elements are also passed to <code>fun</code>.
+<code>(fully foo Lst)</code> is equivalent to <code>(not (find '((X) (not (foo
+X))) Lst))</code>. See also <code><a href="refF.html#find">find</a></code> and
+<code><a href="refF.html#full">full</a></code>.
+
+<pre><code>
+: (fully gt0 (1 2 3))
+-> T
+: (fully gt0 (1 -2 3))
+-> NIL
+</code></pre>
+
+<dt><a name="fun?"><code>(fun? 'any) -> any</code></a>
+<dd>Returns <code>NIL</code> when the argument <code>any</code> is neither a
+number suitable for a code-pointer, nor a list suitable for a lambda expression
+(function). Otherwise a number is returned for a code-pointer, <code>T</code>
+for a function without arguments, and a single formal parameter or a list of
+formal parameters for a function. See also <code><a
+href="refG.html#getd">getd</a></code>.
+
+<pre><code>
+: (fun? 1000000000)              # Might be a code pointer
+-> 1000000000
+: (fun? 10000000000000000000)    # Too big for a code pointer
+-> NIL
+: (fun? '((A B) (* A B)))        # Lambda expression
+-> (A B)
+: (fun? '((A B) (* A B) . C))    # Not a lambda expression
+-> NIL
+: (fun? '(1 2 3 4))              # Not a lambda expression
+-> NIL
+: (fun? '((A 2 B) (* A B)))      # Not a lambda expression
+-> NIL
+</code></pre>
+
+</dl>
+
+</body>
+</html>

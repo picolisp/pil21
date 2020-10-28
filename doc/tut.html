@@ -1,0 +1,1160 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>PicoLisp Tutorial</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+<a href="mailto:abu@software-lab.de">abu@software-lab.de</a>
+
+<h1>A PicoLisp Tutorial</h1>
+
+<p align=right>(c) Software Lab. Alexander Burger
+
+<p>This document demonstrates some aspects of the PicoLisp system in detail and
+example. For a general description of the PicoLisp kernel please look at the <a
+href="ref.html">PicoLisp Reference</a>.
+
+<p>This is <i>not</i> a Lisp tutorial, as it assumes some basic knowledge of
+programming, Lisp, and even PicoLisp. Please read these sections before coming
+back here: <a href="ref.html#intro">Introduction</a> and <a
+href="ref.html#vm">The PicoLisp Machine</a>. This tutorial concentrates on the
+specificities of PicoLisp, and its differences with other Lisp dialects.
+
+<h3>Now let's start</h3>
+
+<p>If not stated otherwise, all examples assume that PicoLisp was started from a
+global installation (see <a href="ref.html#inst">Installation</a>) from the
+shell prompt as
+
+<pre><code>
+$ pil +
+:
+</code></pre>
+
+<p>It loads the PicoLisp base system and the debugging environment, and waits
+for you to enter input lines at the interpreter prompt (<code>:</code>). You can
+terminate the interpreter and return to the shell at any time, by either hitting
+the <code>Ctrl-D</code> key, or by executing the function <code><a
+href="refB.html#bye">(bye)</a></code>.
+
+<p>Input editing is done via the <code>readline()</code> library. You will want
+to configure it according to your taste via your "~/.inputrc" file. Useful value
+for PicoLisp are
+
+<pre><code>
+set keyseq-timeout 40
+set blink-matching-paren on
+TAB: menu-complete
+C-y: menu-complete-backward
+</code></pre>
+
+In addition to the above, I (preferring vi-style) do also have
+
+<pre><code>
+set editing-mode vi
+set show-mode-in-prompt on
+set vi-ins-mode-string ""
+set vi-cmd-mode-string "$"
+set keymap vi-command
+v: ""
+</code></pre>
+
+<h3>Table of content</h3>
+
+<p>If you are new to PicoLisp, you might want to read the following sections in
+the given order, as some of them assume knowledge about previous ones. Otherwise
+just jump anywhere you are interested in.
+
+<p><ul>
+<li><a href="#brw">Browsing</a>
+<li><a href="#fun">Defining Functions</a>
+<li><a href="#dbg">Debugging</a>
+<li><a href="#funio">Functional I/O</a>
+<li><a href="#script">Scripting</a>
+</ul>
+
+<p><hr>
+<h2><a name="brw">Browsing</a></h2>
+
+<p>PicoLisp provides some functionality for inspecting pieces of data and code
+within the running system.
+
+<h3>Basic tools</h3>
+
+The really basic tools are of course available and their name alone is enough
+to know:
+<code><a href="refP.html#print">print</a></code>,
+<code><a href="refS.html#size">size</a></code>
+...
+
+<p>But you will appreciate some more powerful tools like:
+<p><ul><li><code><a href="refM.html#match">match</a></code>, a predicate which
+    compares S-expressions with bindable wildcards when matching,</li>
+</ul>
+
+<h3>Inspect a symbol with <i>show</i></h3>
+
+<p>The most commonly used tool is probably the <code><a
+href="refS.html#show">show</a></code> function. It takes a symbolic argument,
+and shows the symbol's name (if any), followed by its value, and then the
+contents of the property list on the following lines (assignment of such things
+to a symbol can be done with <code><a href="refS.html#set">set</a></code>,
+<code><a href="refS.html#setq">setq</a></code>, and <code><a
+href="refP.html#put">put</a></code>).
+
+<pre><code>
+: (setq A '(This is the value))  # Set the value of 'A'
+-> (This is the value)
+: (put 'A 'key1 'val1)           # Store property 'key1'
+-> val1
+: (put 'A 'key2 'val2)           # and 'key2'
+-> val2
+: (show 'A)                      # Now 'show' the symbol 'A'
+A (This is the value)
+   key2 val2
+   key1 val1
+-> A
+</code></pre>
+
+<p><code>show</code> accepts an arbitrary number of arguments which are
+processed according to the rules of <code><a
+href="refG.html#get">get</a></code>, resulting in a symbol which is showed then.
+
+<pre><code>
+: (put 'B 'a 'A)        # Put 'A' under the 'a'-property of 'B'
+-> A
+: (setq Lst '(A B C))   # Create a list with 'B' as second argument
+-> (A B C)
+: (show Lst 2 'a)       # Show the property 'a of the 2nd element of 'Lst'
+A (This is the value)   # (which is 'A' again)
+   key2 val2
+   key1 val1
+-> A
+</code></pre>
+
+<h3>Inspect and edit symbols in-memory</h3>
+
+<p>If you pass one or more symbols as a list to <code><a
+href="refV.html#vi">vi</a></code>, they are written to a temporary file in a
+format similar to <code>show</code>, and <code>Vip</code> is started with that
+file.
+
+<pre><code>
+: (vi '(A B))
+</code></pre>
+
+<p>The <code>Vip</code> window will look like
+
+<pre><code>
+A (This is the value)
+key1 val1
+key2 val2
+
+(=======)
+
+B NIL
+a A  # (This is the value)
+
+(=======)
+</code></pre>
+
+<p>A convenient shortcut is the non-evaluating version <code>v</code> of
+<code>vi</code>. An equivalent call to the above is:
+
+<pre><code>
+(v A B)
+</code></pre>
+
+<p>Now you can modify values or properties. You should not touch the
+parenthesized hyphens, as they serve as delimiters. If you position the cursor
+on the first character of a symbol name and type '<code>K</code>' ("Keyword
+lookup"), the editor will be restarted with that symbol added to the editor
+window. '<code>Q</code>' (for "Quit") will bring you back to the previous view.
+
+<p>If you exit Vip with e.g. ":x", any changes you made in your editing session
+will be communicated back to the REPL.
+
+<p>In-memory editing is also very useful to browse in a database. You can follow
+the links between objects with '<code>K</code>', and even - e.g. for low-level
+repairs - modify the data (but only if you are really sure about what you are
+doing, and don't forget to <code><a href="refC.html#commit">commit</a></code>
+when you are done).
+
+<h3>Built-in pretty print with <i>pp</i></h3>
+
+<p>The <i>pretty-print</i> function <code><a href="refP.html#pp">pp</a></code>
+takes a symbol that has a function defined (or two symbols that specify message
+and class for a method definition), and displays that definition in a formatted
+and indented way.
+
+<pre><code>
+: (pp 'pretty)
+(de pretty (X N)
+   (setq N (abs (space (or N 0))))
+   (while (and (pair X) (== 'quote (car X)))
+      (prin "'")
+      (pop 'X) )
+   (cond
+      ...
+      (T (prtty0 X N)) ) )
+-> pretty
+</code></pre>
+
+<p>The style is the same as we use in source files:
+
+<ul>
+
+<li>The indentation level is three spaces
+
+<li>If a list is too long (to be precise: if its <code><a
+href="refS.html#size">size</a></code> is greater than 12), pretty-print the CAR
+on the current line, and each element of the CDR recursively on its own line.
+
+<li>A closing parenthesis a preceded by a space if the corresponding open
+parenthesis is not on the same line
+
+</ul>
+
+<h3>Inspect elements one by one with <i>more</i></h3>
+
+<p><code><a href="refM.html#more">more</a></code> is a simple tool that displays
+the elements of a list one by one. It stops after each element and waits for
+input. If you just hit ENTER, <code>more</code> continues with the next element,
+otherwise (usually I type a dot (<code>.</code>) followed by ENTER) it
+terminates.
+
+<pre><code>
+: (more (1 2 3 4 5 6))
+1                          # Hit ENTER
+2   .                      # Hit '.' and ENTER
+-> T                       # stopped
+</code></pre>
+
+<p>Optionally <code>more</code> takes a function as a second argument and
+applies that function to each element (instead of the default <code><a
+href="refP.html#print">print</a></code>). Here, often <code>show</code> or
+<code>pp</code> (see below) is used.
+
+<pre><code>
+: (more '(A B))            # Step through 'A' and 'B'
+A
+B
+-> NIL
+: (more '(A B) show)       # Step through 'A' and 'B' with 'show'
+A (This is the value)      # showing 'A'
+   key2 val2
+   key1 val1
+                           # Hit ENTER
+B NIL                      # showing 'B'
+   a A
+-> NIL
+</code></pre>
+
+<h3>Search through available symbols with <i>what</i></h3>
+
+<p>The <code><a href="refW.html#what">what</a></code> function returns a list of
+all internal symbols in the system which match a given pattern (with
+'<code>@</code>' wildcard characters).
+
+<pre><code>
+: (what "prin@")
+-> (prin print prinl print> printsp println)
+</code></pre>
+
+<h3>Search through values or properties of symbols with <i>who</i></h3>
+
+<p>The function <code><a href="refW.html#who">who</a></code> returns <i>"who
+contains that"</i>, i.e. a list of symbols that contain a given argument
+somewhere in their value or property list.
+
+<pre><code>
+: (who 'print)
+-> (query pretty pp msg more view show (print> . +Date) rules select
+(print> . +relation))</code></pre>
+
+<p>A dotted pair indicates either a method definition or a property entry. So
+<code>(print> . +relation)</code> denotes the <code>print&gt;</code> method of
+the <code><a href="refR.html#+relation">+relation</a></code> class.
+
+<p><code>who</code> can be conveniently combined with <code>more</code> and
+<code>pp</code>:
+
+<pre><code>
+: (more (who 'print) pp)
+(de query ("Q" "Dbg")  # Pretty-print these functions one by one
+   (use "R"
+      (loop
+         (NIL (prove "Q" "Dbg"))
+         (T (=T (setq "R" @)) T)
+         (for X "R"
+            (space)
+            (print (car X))
+            (print '=)
+            (print (cdr X))
+            (flush) )
+         (T (line)) ) ) )
+
+(de pretty (X N)
+   ...
+</code></pre>
+
+<p>The argument to <code>who</code> may also be a pattern list (see <code><a
+href="refM.html#match">match</a></code>):
+
+<pre><code>
+: (who '(print @ (val @)))
+-> (show)
+
+: (more (who '(% @ 7)) pp)
+(de day (Dat Lst)
+   (when Dat
+      (get
+         (or Lst *DayFmt)
+         (inc (% (inc Dat) 7)) ) ) )
+
+(de _week (Dat)
+   (/ (- Dat (% (inc Dat) 7)) 7) )
+</code></pre>
+
+<h3>Find what classes can accept a given message with <i>can</i></h3>
+
+<p>The function <code><a href="refC.html#can">can</a></code> returns a list
+which indicates which classes <i>can</i> accept a given message. Again, this
+list is suitable for iteration with <code>pp</code>:
+
+<pre><code>
+: (can 'del>)                                   # Which classes accept 'del>' ?
+-> ((del> . +List) (del> . +Entity) (del> . +relation))
+
+: (more (can 'del>) pp)                         # Inspect the methods with 'pp'
+(dm (del> . +List) (Obj Old Val)
+   (and ((&lt;> Old Val) (delete Val Old)) )
+
+(dm (del> . +Entity) (Var Val)
+   (when
+      (and
+         Val
+         (has> (meta This Var) Val (get This Var)) )
+      (let Old (get This Var)
+         (rel>
+            (meta This Var)
+            This
+            Old
+            (put This Var (del> (meta This Var) This Old @)) )
+         (when (asoq Var (meta This 'Aux))
+            (relAux This Var Old (cdr @)) )
+         (upd> This Var Old) ) ) )
+
+(dm (del> . +relation) (Obj Old Val)
+   (and ((&lt;> Old Val) Val) )
+</code></pre>
+
+<h3>Inspect dependencies with <i>dep</i></h3>
+
+<p><code><a href="refD.html#dep">dep</a></code> shows the dependencies in a
+class hierarchy. That is, for a given class it displays the tree of its
+(super)class(es) above it, and the tree of its subclasses below it.
+
+<p>To view the complete hierarchy of input fields, we start with the root class
+<code><a href="refR.html#+relation">+relation</a></code>:
+
+<pre><code>
+: (dep '+relation)
++relation
+   +Bag
+   +Any
+   +Blob
+   +Link
+      +Joint
+   +Bool
+   +Symbol
+      +String
+   +Number
+      +Time
+      +Date
+-> +relation
+</code></pre>
+
+<p>If we are interested in <code>+Link</code>:
+
+<pre><code>
+: (dep '+Link)
+   +relation
++Link
+   +Joint
+-> +Link
+</code></pre>
+
+<p>This says that <code>+Link</code> is a subclass of <code><a
+href="refR.html#+relation">+relation</a></code>, and has a single subclass
+(<code>+Joint</code>).
+
+
+<p><hr>
+<h2><a name="fun">Defining Functions</a></h2>
+
+<p>Most of the time during programming is spent defining functions (or methods).
+In the following we will concentrate on functions, but most will be true for
+methods as well except for using <code><a href="refD.html#dm">dm</a></code>
+instead of <code><a href="refD.html#de">de</a></code>.
+
+<h3>Functions with no argument</h3>
+
+<p>The notorious "Hello world" function must be defined:
+
+<pre><code>
+: (de hello ()
+   (prinl "Hello world") )
+-> hello
+</code></pre>
+
+<p>The <code>()</code> in the first line indicates a function without arguments.
+The body of the function is in the second line, consisting of a single
+statement. The last line is the return value of <code>de</code>, which here is
+the defined symbol. From now on we will omit the return values of examples when
+they are unimportant.
+
+<p>Now you can call this function this way:
+
+<pre><code>
+: (hello)
+Hello world
+</code></pre>
+
+<h3>Functions with one argument</h3>
+
+<p>A function with an argument might be defined this way:
+
+<pre><code>
+: (de hello (X)
+   (prinl "Hello " X) )
+# hello redefined
+-> hello
+</code></pre>
+
+<p>PicoLisp informs you that you have just redefined the function. This might be
+a useful warning in case you forgot that a bound symbol with that name already
+existed.
+
+<pre><code>
+: (hello "world")
+Hello world
+</code></pre>
+
+<pre><code>
+: (hello "Alex")
+Hello Alex
+</code></pre>
+
+<h3>Preventing arguments evaluation and variable number of arguments</h3>
+
+<p>Normally, PicoLisp evaluates the arguments before it passes them to a
+function:
+
+<pre><code>
+: (hello (+ 1 2 3))
+Hello 6
+</code></pre>
+
+<pre><code>
+: (setq A 1  B 2)       # Set 'A' to 1 and 'B' to 2
+-> 2
+: (de foo (X Y)         # 'foo' returns the list of its arguments
+   (list X Y) )
+-> foo
+: (foo A B)             # Now call 'foo' with 'A' and 'B'
+-> (1 2)                # -> We get a list of 1 and 2, the values of 'A' and 'B'
+</code></pre>
+
+<p>In some cases you don't want that. For some functions (<code><a
+href="refS.html#setq">setq</a></code> for example) it is better if the function
+gets all arguments unevaluated, and can decide for itself what to do with them.
+
+<p>For such cases you do not define the function with a <i>list</i> of
+parameters, but give it a <i>single atomic</i> parameter instead. PicoLisp will
+then bind all (unevaluated) arguments as a list to that parameter.
+
+<pre><code>
+: (de foo X
+   (list (car X) (cadr X)) )        # 'foo' lists the first two arguments
+
+: (foo A B)                         # Now call it again
+-> (A B)                            # -> We don't get '(1 2)', but '(A B)'
+
+: (de foo X
+   (list (car X) (eval (cadr X))) ) # Now evaluate only the second argument
+
+: (foo A B)
+-> (A 2)                            # -> We get '(A 2)'
+</code></pre>
+
+<h3>Mixing evaluated arguments and variable number of unevaluated arguments</h3>
+
+<p>As a logical consequence, you can combine these principles. To define a
+function with 2 evaluated and an arbitrary number of unevaluated arguments:
+
+<pre><code>
+: (de foo (X Y . Z)     # Evaluate only the first two args
+   (list X Y Z) )
+
+: (foo A B C D E)
+-> (1 2 (C D E))        # -> Get the value of 'A' and 'B' and the remaining list
+</code></pre>
+
+<h3>Variable number of evaluated arguments</h3>
+
+<p>More common, in fact, is the case where you want to pass an arbitrary number
+of <i>evaluated</i> arguments to a function. For that, PicoLisp recognizes the
+symbol <code>@</code> as a single atomic parameter and remembers all evaluated
+arguments in an internal frame. This frame can then be accessed sequentially
+with the <code><a href="refA.html#args">args</a></code>, <code><a
+href="refN.html#next">next</a></code>, <code><a
+href="refA.html#arg">arg</a></code> and <code><a
+href="refR.html#rest">rest</a></code> functions.
+
+<pre><code>
+: (de foo @
+   (list (next) (next)) )     # Get the first two arguments
+
+: (foo A B)
+-> (1 2)
+</code></pre>
+
+<p>Again, this can be combined:
+
+<pre><code>
+: (de foo (X Y . @)
+   (list X Y (next) (next)) ) # 'X' and 'Y' are fixed arguments
+
+: (foo A B (+ 3 4) (* 3 4))
+-> (1 2 7 12)                 # All arguments are evaluated
+</code></pre>
+
+<p>These examples are not very useful, because the advantage of a variable
+number of arguments is not used. A function that prints all its evaluated
+numeric arguments, each on a line followed by its squared value:
+
+<pre><code>
+: (de foo @
+   (while (args)                    # Check if there are some args left
+      (let N (next)
+         (println N (* N N)) ) ) )
+
+: (foo (+ 2 3) (- 7 1) 1234 (* 9 9))
+5 25
+6 36
+1234 1522756
+81 6561
+-> 6561
+</code></pre>
+
+<p>This next example shows the behaviour of <code>args</code> and
+<code>rest</code>:
+
+<pre><code>
+: (de foo @
+   (while (args)
+      (println (next) (args) (rest)) ) )
+: (foo 1 2 3)
+1 T (2 3)
+2 T (3)
+3 NIL NIL
+</code></pre>
+
+<p>Finally, it is possible to pass all these evaluated arguments to another
+function, using <code><a href="refP.html#pass">pass</a></code>:
+
+<pre><code>
+: (de foo @
+   (pass println 9 8 7)       # First print all arguments preceded by 9, 8, 7
+   (pass + 9 8 7) )           # Then add all these values
+
+: (foo (+ 2 3) (- 7 1) 1234 (* 9 9))
+9 8 7 5 6 1234 81             # Printing ...
+-> 1350                       # Return the result
+</code></pre>
+
+<h3>Anonymous functions without the <i>lambda</i> keyword</h3>
+
+There's no distinction between code and data in PicoLisp,
+<code><a href="refQ.html#quote">quote</a></code> will do what you want (see
+also <a href="faq.html#lambda">this FAQ entry</a>).
+
+<pre><code>
+: ((quote (X) (* X X)) 9)
+-> 81
+</code></pre>
+
+<pre><code>
+: (setq f '((X) (* X X)))  # This is equivalent to (de f (X) (* X X))
+-> ((X) (* X X))
+: f
+-> ((X) (* X X))
+: (f 3)
+-> 9
+</code></pre>
+
+
+<p><hr>
+<h2><a name="dbg">Debugging</a></h2>
+
+<p>There are two major ways to debug functions (and methods) at runtime:
+<i>Tracing</i> and <i>single-stepping</i>.
+
+<p>In this section we will use the REPL to explore the debugging facilities, but
+in the <a href="#script">Scripting</a> section, you will learn how to launch
+PicoLisp scripts with some selected functions debugged:
+
+<pre><code>
+$ pil app/file1.l -"trace 'foo" -main -"debug 'bar" app/file2.l +
+</code></pre>
+
+<h3>Tracing</h3>
+
+<p><i>Tracing</i> means letting functions of interest print their name and arguments
+when they are entered, and their name again and the return value when they are
+exited.
+
+<p>For demonstration, let's define the unavoidable factorial function:
+
+<pre><code>
+(de fact (N)
+   (if (=0 N)
+      1
+      (* N (fact (dec N))) ) )
+</code></pre>
+
+<p>With <code><a href="refT.html#trace">trace</a></code> we can put it in trace
+mode:
+
+<pre><code>
+: (trace 'fact)
+-> fact
+</code></pre>
+
+<p>Calling <code>fact</code> now will display its execution trace.
+
+<pre><code>
+: (fact 3)
+ fact : 3
+  fact : 2
+   fact : 1
+    fact : 0
+    fact = 1
+   fact = 1
+  fact = 2
+ fact = 6
+-> 6
+</code></pre>
+
+<p>As can be seen here, each level of function call will indent by an additional
+space. Upon function entry, the name is separated from the arguments with a
+colon (<code>:</code>), and upon function exit with an equals sign
+(<code>=</code>) from the return value.
+
+<p><code>trace</code> works by modifying the function body, so generally it
+works only for functions defined as lists (lambda expressions, see <a
+href="ref.html#ev">Evaluation</a>). Tracing a built-in function (SUBR) is
+possible, however, when it is a function that evaluates all its arguments.
+
+<p>So let's trace the functions <code><a href="ref_.html#=0">=0</a></code> and
+<code><a href="ref_.html#*">*</a></code>:
+
+<pre><code>
+: (trace '=0)
+-> =0
+: (trace '*)
+-> *
+</code></pre>
+
+<p>If we call <code>fact</code> again, we see the additional output:
+
+<pre><code>
+: (fact 3)
+ fact : 3
+  =0 : 3
+  =0 = NIL
+  fact : 2
+   =0 : 2
+   =0 = NIL
+   fact : 1
+    =0 : 1
+    =0 = NIL
+    fact : 0
+     =0 : 0
+     =0 = 0
+    fact = 1
+    * : 1 1
+    * = 1
+   fact = 1
+   * : 2 1
+   * = 2
+  fact = 2
+  * : 3 2
+  * = 6
+ fact = 6
+-> 6
+</code></pre>
+
+<p>To reset a function to its untraced state, call <code><a
+href="refU.html#untrace">untrace</a></code>:
+
+<pre><code>
+: (untrace 'fact)
+-> fact
+: (untrace '=0)
+-> =0
+: (untrace '*)
+-> *
+</code></pre>
+
+<p>or simply use <code><a href="refM.html#mapc">mapc</a></code>:
+
+<pre><code>
+: (mapc untrace '(fact =0 *))
+-> *
+</code></pre>
+
+<h3>Single-stepping</h3>
+
+<p><i>Single-stepping</i> means to execute a function step by step, giving the
+programmer an opportunity to look more closely at what is happening. The
+function <code><a href="refD.html#debug">debug</a></code> inserts a breakpoint
+into each top-level expression of a function. When the function is called, it
+stops at each breakpoint, displays the expression it is about to execute next
+(this expression is also stored into the global variable <code><a
+href="ref_.html#^">^</a></code>) and enters a read-eval-loop. The programmer can
+then
+
+<ul>
+
+<li>inspect the current environment by typing variable names or calling
+functions
+
+<li>execute <code>(<a href="refD.html#d">d</a>)</code> to recursively debug the
+next expression (looping through subexpressions of this expression)
+
+<li>execute <code>(<a href="refE.html#e">e</a>)</code> to evaluate the next
+expression, to see what will happen without actually advancing on
+
+<li>type ENTER (that is, enter an empty line) to leave the read-eval loop and
+continue with the next expression
+
+</ul>
+
+<p>Thus, in the simplest case, single-stepping consists of just hitting ENTER
+repeatedly to step through the function.
+
+<p>To try it out, let's look at the <code><a
+href="refS.html#stamp">stamp</a></code> system function. You may need to have a
+look at
+
+<ul>
+<li><code><a href="ref_.html#=T">=T</a></code> (T test),</li>
+
+<li><code><a href="refD.html#date">date</a></code> and <code><a
+href="refT.html#time">time</a></code> (grab system date and time)
+
+<li><code><a href="refD.html#default">default</a></code> (conditional
+assignments)
+
+<li><code><a href="refP.html#pack">pack</a></code> (kind of concatenation), and
+
+<li><code><a href="refD.html#dat$">dat$</a></code> and <code><a
+href="refT.html#tim$">tim$</a></code> (date and time formats)</li>
+
+</ul>
+
+to understand this definition.
+
+<pre><code>
+: (pp 'stamp)
+(de stamp (Dat Tim)
+   (and (=T Dat) (setq Dat (date T)))
+   (default Dat (date) Tim (time T))
+   (pack (dat$ Dat "-") " " (tim$ Tim T)) )
+-> stamp
+</code></pre>
+
+<pre><code>
+: (debug 'stamp)                       # Debug it
+-> T
+: (stamp)                              # Call it again
+(and (=T Dat) (setq Dat (date T)))     # stopped at first expression
+!                                      # ENTER
+(default Dat (date) Tim (time T))      # second expression
+!                                      # ENTER
+(pack (dat$ Dat "-") " " (tim$ ...     # third expression
+! Tim                                  # inspect 'Tim' variable
+-> 41908
+! (time Tim)                           # convert it
+-> (11 38 28)
+!                                      # ENTER
+-> "2004-10-29 11:38:28"               # done, as there are only 3 expressions
+</code></pre>
+
+<p>Now we execute it again, but this time we want to look at what's happening
+inside the second expression.
+
+<pre><code>
+: (stamp)                              # Call it again
+(and (=T Dat) (setq Dat (date T)))
+!                                      # ENTER
+(default Dat (date) Tim (time T))
+!                                      # ENTER
+(pack (dat$ Dat "-") " " (tim$ ...     # here we want to look closer
+! (d)                                  # debug this expression
+-> T
+!                                      # ENTER
+(dat$ Dat "-")                         # stopped at first subexpression
+! (e)                                  # evaluate it
+-> "2004-10-29"
+!                                      # ENTER
+(tim$ Tim T)                           # stopped at second subexpression
+! (e)                                  # evaluate it
+-> "11:40:44"
+!                                      # ENTER
+-> "2004-10-29 11:40:44"               # done
+</code></pre>
+
+<p>The breakpoints still remain in the function body. We can see them when we
+pretty-print it:
+
+<pre><code>
+: (pp 'stamp)
+(de stamp (Dat Tim)
+   (! and (=T Dat) (setq Dat (date T)))
+   (! default Dat (date) Tim (time T))
+   (! pack
+      (! dat$ Dat "-")
+      " "
+      (! tim$ Tim T) ) )
+-> stamp
+</code></pre>
+
+<p>To reset the function to its normal state, call <code><a
+href="refU.html#unbug">unbug</a></code>:
+
+<pre><code>
+: (unbug 'stamp)
+</code></pre>
+
+<p>Often, you will not want to single-step a whole function. Just use
+<code>edit</code> (see above) to insert a single breakpoint (the exclamation
+mark followed by a space) as CAR of an expression, and run your program.
+Execution will then stop there as described above; you can inspect the
+environment and continue execution with ENTER when you are done.
+
+
+<p><hr>
+<h2><a name="funio">Functional I/O</a></h2>
+
+<p>Input and output in PicoLisp is functional, in the sense that there are not
+variables assigned to file descriptors, which need then to be passed to I/O
+functions for reading, writing and closing. Instead, these functions operate on
+implicit input and output channels, which are created and maintained as dynamic
+environments.
+
+<p>Standard input and standard output are the default channels. Try reading a
+single expression:
+
+<pre><code>
+: (read)
+(a b c)        # Console input
+-> (a b c)
+</code></pre>
+
+<p>To read from a file, we redirect the input with <code><a
+href="refI.html#in">in</a></code>. Note that comments and whitespace are
+automatically skipped by <code>read</code>:
+
+<pre><code>
+: (in "@lib.l" (read))
+-> (de task (Key . Prg) (nond (...
+</code></pre>
+
+<p>The <code><a href="refS.html#skip">skip</a></code> function can also be used
+directly. To get the first non-white character in the file with <code><a
+href="refC.html#char">char</a></code>:
+
+<pre><code>
+: (in "@lib.l" (skip "#") (char))
+-> "("
+</code></pre>
+
+<p><code><a href="refF.html#from">from</a></code> searches through the input
+stream for given patterns. Typically, this is not done with Lisp source files
+(there are better ways), but for a simple example let's extract all items
+immediately following <code>fact</code> in the file,
+
+<pre><code>
+: (in "@lib.l" (while (from "none") (println (read))))
+(Prg (del (assoc Key *Run) '*Run))
+((pair "X") (or (pair (getd "X")) (expr "X")))
+("Prg" (caar (idx "Var" "K")))
+</code></pre>
+
+<p>or the word following "(de " with <code><a
+href="refT.html#till">till</a></code>:
+
+<pre><code>
+: (in "@lib.l" (from "(de ") (till " " T))
+-> "task"
+</code></pre>
+
+<p> To read the contents of a whole file (or the rest of it starting from the
+current position):
+
+<pre><code>
+: (in "f.l" (till NIL T))
+-> "... file contents ..."
+</code></pre>
+
+
+<p>With <code><a href="refL.html#line">line</a></code>, a line of characters is
+read, either into a single <a href="ref.html#transient-io">transient</a> symbol
+(the type used by PicoLisp for strings),
+
+<pre><code>
+: (in "@doc/tut.html" (line T))
+-> "&lt;!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://..."
+</code></pre>
+
+<p>or into a list of symbols (characters):
+
+<pre><code>
+: (in "@doc/tut.html" (line))
+-> ("&lt;" "!" "D" "O" "C" "T" "Y" "P" "E" " " "H" "T" "M" "L" ...
+</code></pre>
+
+<p><code>line</code> is typically used to read tabular data from a file.
+Additional arguments can split the line into fixed-width fields, as described in
+the <code><a href="refL.html#line">reference manual</a></code>. If, however, the
+data are of variable width, delimited by some special character, the <code><a
+href="refS.html#split">split</a></code> function can be used to extract the
+fields. A typical way to import the contents of such a file is:
+
+<pre><code>
+(in '("bin/utf2" "importFile.txt")              # Pipe: Convert to UTF-8
+   (until (eof)                                 # Process whole file
+      (let L (split (line) "^I")                # TAB-delimited data
+         ...                                    # process them
+</code></pre>
+
+<p>Some more examples with <code><a href="refE.html#echo">echo</a></code>:
+
+<pre><code>
+(in "a"                                         # Copy the first 40 Bytes
+   (out "b"                                     # from file "a" to file "b"
+      (echo 40) ) )
+
+(in "@doc/tut.html"                             # Show the HTTP-header
+   (line)
+   (echo "&lt;body>") )
+
+(out "file.mac"                                 # Convert to Macintosh
+   (in "file.txt"                               # from Unix or DOS format:
+      (while (char)
+         (prin
+            (case @
+               ("^M" NIL)                       # ignore CR
+               ("^J" "^M")                      # convert LF to CR
+               (T @) ) ) ) ) )                  # otherwise no change
+
+(out "c"                                        # Merge the contents of "a"
+   (in "b"                                      # and "b" into "c"
+      (in "a"
+         (while (read)                          # Read an item from "a",
+            (println @ (in -1 (read))) ) ) ) )  # print it with an item from "b"
+</code></pre>
+
+
+<p><hr>
+<h2><a name="script">Scripting</a></h2>
+
+<p>There are two possibilities to get the PicoLisp interpreter into doing useful
+work: via command line arguments, or as a stand-alone script.
+
+<h3>Command line arguments for the PicoLisp interpreter</h3>
+
+<p>The command line can specify either files for execution, or arbitrary Lisp
+expressions for direct evaluation (see <a href="ref.html#invoc">Invocation</a>):
+if an argument starts with a hyphen, it is evaluated, otherwise it is <code><a
+href="refL.html#load">load</a></code>ed as a file. A typical invocation might
+look like:
+
+<pre><code>
+$ pil app/file1.l -main app/file2.l +
+</code></pre>
+
+<p>It loads the debugging environment, an application source file, calls the
+main function, and then loads another application source. In a typical
+development and debugging session, this line is often modified using the shell's
+history mechanisms, e.g. by inserting debugging statements:
+
+<pre><code>
+$ pil app/file1.l -"trace 'foo" -main -"debug 'bar" app/file2.l +
+</code></pre>
+
+<p>Another convenience during debugging and testing is to put things into the
+command line (shell history) which would otherwise have to be done each time in
+the application's user interface:
+
+<pre><code>
+$ pil app/file1.l -main app/file2.l -go -'login "name" "password"' +
+</code></pre>
+
+<p>The final production release of an application usually includes a shell
+script, which initializes the environment, does some bookkeeping and cleanup,
+and calls the application with a proper command line. It is no problem if the
+command line is long and complicated.
+
+<p>For small utility programs, however, this is overkill. Enter full PicoLisp
+scripts.
+
+<h3>PicoLisp scripts</h3>
+
+It is better to write
+a single executable file using the mechanisms of "interpreter files". If the
+first two characters in an executable file are "<code>#!</code>", the operating
+system kernel will pass this file to an interpreter program whose pathname is
+given in the first line (optionally followed by a single argument). This is fast
+and efficient, because the overhead of a subshell is avoided.
+
+<p>Let's assume you installed PicoLisp in the directory "/home/foo/pil21/",
+and put links to the executable and the installation directory as:
+
+<pre><code>
+$ ln -s /home/foo/pil21 /usr/lib/picolisp
+$ ln -s /usr/lib/picolisp/bin/picolisp /usr/bin
+</code></pre>
+
+Then a simple hello-world script might look like:
+
+<pre><code>
+#!/usr/bin/picolisp /usr/lib/picolisp/lib.l
+(prinl "Hello world!")
+(bye)
+</code></pre>
+
+<p>If you write this into a text file, and use <code>chmod</code> to set it to
+"executable", it can be executed like any other command. Note that (because
+<code>#</code> is the comment character in PicoLisp) the first line will not be
+interpreted, and you can still use that file as a normal command line argument
+to PicoLisp (useful during debugging).
+
+<h3>Grab command line arguments from PicoLisp scripts</h3>
+
+<p>The fact that a hyphen causes evaluation of command line arguments can be
+used to implement command line options. The following script defines two
+functions <code>a</code> and <code>f</code>, and then calls <code>(<a
+href="refL.html#load">load</a> T)</code> to process the rest of the command line
+(which otherwise would be ignored because of the <code>(<a
+href="refB.html#bye">bye</a>)</code> statement):
+
+<pre><code>
+#!/usr/bin/picolisp /usr/lib/picolisp/lib.l
+
+(de a ()
+   (println '-a '-> (opt)) )
+
+(de f ()
+   (println '-f '-> (opt)) )
+
+(load T)
+(bye)
+</code></pre>
+
+(<code><a href="refO.html#opt">opt</a></code> retrieves the next command line
+option)
+
+<p>Calling this script (let's say we named it "testOpts") gives:
+
+<pre><code>
+$ ./testOpts -f abc
+-f -> "abc"
+$ ./testOpts -a xxx  -f yyy
+-a -> "xxx"
+-f -> "yyy"
+</code></pre>
+
+<p>We have to be aware of the fact, however, that the aggregation of arguments
+like
+
+<pre><code>
+$ ./testOpts -axxx  -fyyy
+</code></pre>
+
+<p>or
+
+<pre><code>
+$ ./testOpts -af yyy
+</code></pre>
+
+<p>cannot be achieved with this simple and general mechanism of command line
+processing.
+
+<h3>Run scripts from arbitrary places on the host file system</h3>
+
+<p>Utilities are typically used outside the context of the PicoLisp environment.
+All examples above assumed that the current working directory is the PicoLisp
+installation directory, which is usually all right for applications developed in
+that environment. Command line file arguments like "app/file1.l" will be
+properly found.
+
+<p>To allow utilities to run in arbitrary places on the host file system, the
+concept of <i>home directory substitution</i> was introduced. The interpreter
+remembers internally at start-up the pathname of its first argument (usually
+"lib.l"), and substitutes any leading "<code>@</code>" character in subsequent
+file names with that pathname. Thus, to run the above example in some other
+place, simply write:
+
+<pre><code>
+$ /home/foo/pil21/pil @app/file1.l -main @app/file2.l +
+</code></pre>
+
+<p>that is, supply a full path name to the initial command (here 'pil'), or put
+it into your <code>PATH</code> variable, and prefix each file which has to be
+loaded from the PicoLisp home directory with a <code>@</code> character.
+"Normal" files (not prefixed by <code>@</code>) will be opened or created
+relative to the current working directory as usual.
+
+<p>Stand-alone scripts will often want to load additional modules from the
+PicoLisp environment, beyond the "lib.l" we provided in the first line of the
+hello-world script. Typically, at least a call to
+
+<pre><code>
+(load "@lib/misc.l")
+</code></pre>
+
+<p>(note the home directory substitution) will be included near the beginning of
+the script.
+
+<p>As a more complete example, here is a script which extracts the date, name
+and size of the latest official PicoLisp release version from the download web
+site, and prints it to standard output:
+
+<pre><code>
+#!/usr/bin/picolisp /usr/lib/picolisp/lib.l
+
+(load "@lib/misc.l" "@lib/http.l")
+
+(use (@Date @Name @Size)
+   (when
+      (match
+         '(@Date ~(chop " - &lt;a href=\"") @Name "\"" "&gt;"
+             @Name ~(chop "&lt;/a&gt; (") @Size )
+         (client "software-lab.de" 80 "down.html"
+            (from "Release Archive")
+            (from "&lt;li&gt;")
+            (till ",") ) )
+      (prinl @Name)
+      (prinl @Date " -- " @Size) ) )
+
+(bye)
+</code></pre>
+
+</body>
+</html>

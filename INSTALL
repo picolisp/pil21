@@ -1,11 +1,11 @@
-# 26oct20 Software Lab. Alexander Burger
+# 27oct20 Software Lab. Alexander Burger
 
 
          PicoLisp Installation
          =====================
 
 
-PicoLisp needs a POSIX compatible system supporting the LLVM platform. It
+PicoLisp needs a POSIX compatible system and the LLVM infrastructure. It
 supports two installation strategies: Local and Global.
 
 For a global installation, allowing system-wide access to the executable and
@@ -27,7 +27,7 @@ systems.
 
    $ sudo apt install make clang llvm libffi libreadline-dev pkg-config
 
-2. Unpack the distribution
+2. Unpack the tarball
 
    $ wget https://software-lab.de/pil21.tgz
    $ tar xfz pil21.tgz
@@ -108,8 +108,8 @@ Note that 'pil' can also serve as a template for your own stand-alone scripts.
 
 For further information, please look at "doc/index.html". There you find the
 PicoLisp Reference Manual ("doc/ref.html"), the PicoLisp tutorials
-("doc/tut.html", "doc/app.html", "doc/select.html" and "doc/native.html"), and
-the frequently asked questions ("doc/faq.html").
+("doc/tut.html", "doc/native.html", "doc/select.html" and "doc/httpGate.html"),
+and the frequently asked questions ("doc/faq.html").
 
 As always, the most accurate and complete documentation is the source code ;-)
 

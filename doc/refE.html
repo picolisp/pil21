@@ -1,0 +1,497 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>E</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+
+<h1>E</h1>
+
+<dl>
+
+<dt><a name="*Err"><code>*Err</code></a>
+<dd>A global variable holding a (possibly empty) <code>prg</code> body, which
+will be executed during error processing. See also <code><a
+href="ref.html#errors">Error Handling</a></code>, <code><a
+href="refM.html#*Msg">*Msg</a></code> and <code><a
+href="ref_.html#^">^</a></code>.
+
+<pre><code>
+: (de *Err (prinl "Fatal error!"))
+-> *Err
+: (/ 3 0)
+!? (/ 3 0)
+Div/0
+Fatal error!
+?
+</code></pre>
+
+<dt><a name="*Ext"><code>*Ext</code></a>
+<dd>A global variable holding a sorted list of cons pairs. The CAR of each pair
+specifies an external symbol offset (suitable for <code><a
+href="refE.html#ext">ext</a></code>), and the CDR should be a function taking a
+single external symbol as an argument. This function should return a list, with
+the value for that symbol in its CAR, and the property list (in the format used
+by <code><a href="refG.html#getl">getl</a></code> and <code><a
+href="refP.html#putl">putl</a></code>) in its CDR. The symbol will be set to
+this value and property list upon access. Typically this function will access
+the corresponding symbol in a remote database process. See also <code><a
+href="refQ.html#qsym">qsym</a></code> and <code><a
+href="ref.html#external">external symbols</a></code>.
+
+<pre><code>
+### On the local machine ###
+: (setq *Ext  # Define extension functions
+   (mapcar
+      '((@Host @Ext)
+         (cons @Ext
+            (curry (@Host @Ext (Sock)) (Obj)
+               (when (or Sock (setq Sock (connect @Host 4040)))
+                  (ext @Ext
+                     (out Sock (pr (cons 'qsym Obj)))
+                     (prog1
+                        (in Sock (rd))
+                        (unless @
+                           (close Sock)
+                           (off Sock) ) ) ) ) ) ) )
+      '("10.10.12.1" "10.10.12.2" "10.10.12.3" "10.10.12.4")
+      (20 40 60 80) ) )
+
+### On the remote machines ###
+(de go ()
+   ...
+   (task (port 4040)                      # Set up background query server
+      (let? Sock (accept @)               # Accept a connection
+         (unless (fork)                   # In child process
+            (in Sock
+               (while (rd)                # Handle requests
+                  (sync)
+                  (tell)
+                  (out Sock
+                     (pr (eval @)) ) ) )
+            (bye) )                       # Exit child process
+         (close Sock) ) )
+   (forked)                               # Close task in children
+   ...
+
+</code></pre>
+
+<dt><a name="+Entity"><code>+Entity</code></a>
+<dd>Base class of all database objects. See also <code><a
+href="refR.html#+relation">+relation</a></code> and <a
+href="ref.html#dbase">Database</a>.
+
+<p><a name="entityMesssages">Messages</a> to entity objects include
+
+<pre><code>
+zap> ()              # Clean up relational structures, for removal from the DB
+url> (Tab)           # Call the GUI on that object (in optional Tab)
+gui> ()              # Generate object-specific GUI fragment
+upd> (X Old)         # Callback method when object is created/modified/deleted
+has> (Var Val)       # Check if value is present
+rel?> (Var Val)      # Check if relations for value are correctly maintained
+put> (Var Val)       # Put a new value
+put!> (Var Val)      # Put a new value, single transaction
+del> (Var Val)       # Delete value (also partial)
+del!> (Var Val)      # Delete value (also partial), single transaction
+inc> (Var Val)       # Increment numeric value
+inc!> (Var Val)      # Increment numeric value, single transaction
+dec> (Var Val)       # Decrement numeric value
+dec!> (Var Val)      # Decrement numeric value, single transaction
+mis> (Var Val)       # Return error message if value or type mismatch
+lose1> (Var)         # Delete relational structures for a single attribute
+lose> (Lst)          # Delete relational structures (excluding 'Lst')
+lose!> ()            # Delete relational structures, single transaction
+keep1> (Var)         # Restore relational structures for single attribute
+keep> (Lst)          # Restore relational structures (excluding 'Lst')
+keep?> (Lst)         # Test for restauration (excluding 'Lst')
+keep!> ()            # Restore relational structures, single transaction
+set> (Val)           # Set the value (type, i.e. class list)
+set!> (Val)          # Set the value, single transaction
+clone> ()            # Object copy
+clone!> ()           # Object copy, single transaction
+</code></pre>
+
+<dt><a name="e"><code>(e . prg) -> any</code></a>
+<dd>Used in a breakpoint. Evaluates <code>prg</code> in the execution
+environment, or the currently executed expression if <code>prg</code> is not
+given. See also <code><a href="refD.html#debug">debug</a></code>, <code><a
+href="ref_.html#!">!</a></code>, <code><a href="ref_.html#^">^</a></code> and
+<code><a href="refD.html#*Dbg">*Dbg</a></code>.
+
+<pre><code>
+: (! + 3 4)
+(+ 3 4)
+! (e)
+-> 7
+</code></pre>
+
+<dt><a name="echo"><code>(echo ['cnt ['cnt]] | ['sym ..]) -> sym</code></a>
+<dd>Reads the current input channel, and writes to the current output channel.
+If <code>cnt</code> is given, only that many bytes are actually echoed. In case
+of two <code>cnt</code> arguments, the first one specifies the number of bytes
+to skip in the input stream. Otherwise, if one or more <code>sym</code>
+arguments are given, the echo process stops as soon as one of the symbol's names
+is encountered in the input stream. In this case the name will be read and
+returned, but not written. Returns non-<code>NIL</code> if the operation was
+successfully completed. See also <code><a href="refF.html#from">from</a></code>.
+
+<pre><code>
+: (in "x.l" (echo))  # Display file on console
+ ..
+
+: (out "x2.l" (in "x.l" (echo)))  # Copy file "x.l" to "x2.l"
+</code></pre>
+
+<dt><a name="env"><code>(env ['lst] | ['sym 'val] ..) -> lst</code></a>
+<dd>Return a list of symbol-value pairs of all dynamically bound symbols if
+called without arguments, or of the symbols or symbol-value pairs in
+<code>lst</code>, or the explicitly given <code>sym</code>-<code>val</code>
+arguments. See also <code><a href="refB.html#bind">bind</a></code>, <code><a
+href="refJ.html#job">job</a></code>, <code><a
+href="refT.html#trail">trail</a></code> and <code><a
+href="refU.html#up">up</a></code>.
+
+<pre><code>
+: (env)
+-> NIL
+: (let (A 1 B 2) (env))
+-> ((A . 1) (B . 2))
+: (let (A 1 B 2) (env '(A B)))
+-> ((B . 2) (A . 1))
+: (let (A 1 B 2) (env 'X 7 '(A B (C . 3)) 'Y 8))
+-> ((Y . 8) (C . 3) (B . 2) (A . 1) (X . 7))
+</code></pre>
+
+<dt><a name="eof"><code>(eof ['flg]) -> flg</code></a>
+<dd>Returns the end-of-file status of the current input channel. If
+<code>flg</code> is non-<code>NIL</code>, the channel's status is forced to
+end-of-file, so that the next call to <code>eof</code> will return
+<code>T</code>, and calls to <code><a href="refC.html#char">char</a></code>,
+<code><a href="refP.html#peek">peek</a></code>, <code><a
+href="refL.html#line">line</a></code>, <code><a
+href="refF.html#from">from</a></code>, <code><a
+href="refT.html#till">till</a></code>, <code><a
+href="refR.html#read">read</a></code> or <code><a
+href="refS.html#skip">skip</a></code> will return <code>NIL</code>. Note that
+<code>eof</code> cannot be used with the binary <code><a
+href="refR.html#rd">rd</a></code> function. See also <code><a
+href="refE.html#eol">eol</a></code>.
+
+<pre><code>
+: (in "file" (until (eof) (println (line T))))
+...
+</code></pre>
+
+<dt><a name="eol"><code>(eol) -> flg</code></a>
+<dd>Returns the end-of-line status of the current input channel.
+See also <code><a href="refE.html#eof">eof</a></code>.
+
+<pre><code>
+: (make (until (prog (link (read)) (eol))))  # Read line into a list
+a b c (d e f) 123
+-> (a b c (d e f) 123)
+</code></pre>
+
+<dt><a name="equal/2"><code>equal/2</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the two
+arguments are equal. See also <code><a href="ref_.html#=">=</a></code>, <code><a
+href="refD.html#different/2">different/2</a></code> and <code><a
+href="refM.html#member/2">member/2</a></code>.
+
+<pre><code>
+: (? (equal 3 4))
+-> NIL
+: (? (equal @N 7))
+ @N=7
+-> NIL
+</code></pre>
+
+<dt><a name="err"><code>(err 'sym . prg) -> any</code></a>
+<dd>Redirects the standard error stream to <code>sym</code> during the execution
+of <code>prg</code>. The current standard error stream will be saved and
+restored appropriately. If the argument is <code>NIL</code>, the current output
+stream will be used. Otherwise, <code>sym</code> is taken as a file name (opened
+in "append" mode if the first character is "+"), where standard error is to be
+written to. See also <code><a href="refI.html#in">in</a></code>, <code><a
+href="refO.html#out">out</a></code> and <code><a
+href="refC.html#ctl">ctl</a></code>.
+
+<pre><code>
+: (err "/dev/null"             # Suppress error messages
+   (call 'ls 'noSuchFile) )
+-> NIL
+</code></pre>
+
+<dt><a name="errno"><code>(errno) -> cnt</code></a>
+<dd>Returns the value of the standard I/O 'errno' variable. See also <code><a
+href="refN.html#native">native</a></code>.
+
+<pre><code>
+: (in "foo")                           # Produce an error
+!? (in "foo")
+"foo" -- Open error: No such file or directory
+? (errno)
+-> 2                                   # Returned 'ENOENT'
+</code></pre>
+
+<dt><a name="eval"><code>(eval 'any ['cnt ['lst]]) -> any</code></a>
+<dd>Evaluates <code>any</code>. Note that because of the standard argument
+evaluation, <code>any</code> is actually evaluated twice. If a lambda-binding
+environment offset <code>cnt</code> is given, the second evaluation takes place
+in the corresponding environment, and an optional <code>lst</code> of excluded
+symbols can be supplied. <code>cnt</code> should be greater than zero. See also
+<code><a href="refR.html#run">run</a></code> and <code><a
+href="refU.html#up">up</a></code>.
+
+<pre><code>
+: (eval (list '+ 1 2 3))
+-> 6
+: (setq X 'Y  Y 7)
+-> 7
+: X
+-> Y
+: Y
+-> 7
+: (eval X)
+-> 7
+
+: (de f (A)
+   (list
+      (eval 'A)
+      (eval 'A 1)
+      (eval 'A 2) ) )
+-> f
+: (de g (A)
+   (f (inc A)) )
+-> g
+: (one A)
+-> 1
+: (g (inc A))
+-> (3 2 1)
+</code></pre>
+
+<dt><a name="exec"><code>(exec 'any ..)</code></a>
+<dd>Executes an external system command. The <code>any</code> arguments specify
+the command and its arguments. Does not return to the caller; the current
+process is replaced with a new process image. See also <code><a
+href="refF.html#fork">fork</a></code> and <code><a
+href="refC.html#call">call</a></code>.
+
+<pre><code>
+: (pipe (exec 'echo 123 "abc")
+   (list (read) (read)) )
+-> (123 abc)
+
+(unless (fork)
+   (exec "@bin/ssl"  # Start replication process
+      "10.11.12.13" 443
+      "app/!replica" "key/app" "fifo/app" "db/app/blob/" 20 ) )
+</code></pre>
+
+<dt><a name="expDat"><code>(expDat 'sym) -> dat</code></a>
+<dd>Expands a <code><a href="refD.html#date">date</a></code> string according to
+the current <code><a href="refL.html#locale">locale</a></code> (delimiter, and
+order of year, month and day). Accepts abbreviated input, without delimiter and
+with only the day, or the day and month, or the day, month and year of current
+century. A single dot "." expands to "today", and a signed number to a date such
+many days in the past or future. See also <code><a
+href="refD.html#datStr">datStr</a></code>, <code><a
+href="refD.html#day">day</a></code>, <code><a
+href="refE.html#expTel">expTel</a></code>.
+
+<pre><code>
+: (date)
+-> 733133
+: (date (date))
+-> (2007 5 31)
+: (expDat "31")
+-> 733133
+: (expDat "315")
+-> 733133
+: (expDat "3105")
+-> 733133
+: (expDat "31057")
+-> 733133
+: (expDat "310507")
+-> 733133
+: (expDat "2007-05-31")
+-> 733133
+: (expDat "7-5-31")
+-> 733133
+
+: (locale "DE" "de")
+-> NIL
+: (expDat "31.5")
+-> 733133
+: (expDat "31.5.7")
+-> 733133
+</code></pre>
+
+<dt><a name="expTel"><code>(expTel 'sym) -> sym</code></a>
+<dd>Expands a telephone number string. Multiple spaces or hyphens are coalesced.
+A leading <code>+</code> or <code>00</code> is removed, a leading national trunk
+prefix is replaced with the current country code. Otherwise, <code>NIL</code> is
+returned. See also <code><a href="refT.html#telStr">telStr</a></code>, <code><a
+href="refE.html#expDat">expDat</a></code> and <code><a
+href="refL.html#locale">locale</a></code>.
+
+<pre><code>
+: (expTel "+49 1234 5678-0")
+-> "49 1234 5678-0"
+: (expTel "0049 1234 5678-0")
+-> "49 1234 5678-0"
+: (expTel "01234 5678-0")
+-> NIL
+: (locale "DE" "de")
+-> NIL
+: (expTel "01234 5678-0")
+-> "49 1234 5678-0"
+</code></pre>
+
+<dt><a name="export"><code>(export ['sym]) sym|lst</code></a>
+<dd>Intern symbols explicitly in the second namespace in the current search
+order, or in the given namespace if <code>sym</code> is given.
+<code>(export)</code> expects a single symbol or a list of symbols immediately
+following in the current input stream. See also <code><a
+href="refP.html#pico">pico</a></code>, <code><a
+href="refS.html#symbols">symbols</a></code>, <code><a
+href="refP.html#private">private</a></code>, <code><a
+href="refL.html#local">local</a></code>, <code><a
+href="refI.html#import">import</a></code> and <code><a
+href="refI.html#intern">intern</a></code>.
+
+<pre><code>
+: (symbols 'myLib 'pico)
+-> (pico)
+myLib: (export) (foo bar)  # Intern 'foo' and 'bar' in 'pico'
+</code></pre>
+
+<dt><a name="expr"><code>(expr 'sym) -> fun</code></a>
+<dd>Converts a built-in function (SUBR) to a Lisp-function. Useful only for
+normal functions (i.e. functions that evaluate all arguments). See also <code><a
+href="refS.html#subr">subr</a></code>.
+
+<pre><code>
+: car
+-> 67313448
+: (expr 'car)
+-> (@ (pass $385260187))
+: (car (1 2 3))
+-> 1
+</code></pre>
+
+<dt><a name="ext"><code>(ext 'cnt . prg) -> any</code></a>
+<dd>During the execution of <code>prg</code>, all <code><a
+href="ref.html#external">external symbols</a></code> processed by <code><a
+href="refR.html#rd">rd</a></code>, <code><a href="refP.html#pr">pr</a></code>,
+<code><a href="refB.html#blk">blk</a></code> or <code><a
+href="refU.html#udp">udp</a></code> are modified by an offset <code>cnt</code>
+suitable for mapping via the <code><a href="refE.html#*Ext">*Ext</a></code>
+mechanism. All external symbol's file numbers are decremented by
+<code>cnt</code> during output, and incremented by <code>cnt</code> during
+input.
+
+<pre><code>
+: (out 'a (ext 5 (pr '({6-2} ({8-9} . a) ({7-7} . b)))))
+-> ({6-2} ({8-9} . a) ({7-7} . b))
+
+: (in 'a (rd))
+-> ({2} ({3-9} . a) ({2-7} . b))
+
+: (in 'a (ext 5 (rd)))
+-> ({6-2} ({8-9} . a) ({7-7} . b))
+</code></pre>
+
+<dt><a name="ext?"><code>(ext? 'any) -> sym | NIL</code></a>
+<dd>Returns the argument <code>any</code> when it is an existing external
+symbol, otherwise <code>NIL</code>. See also <code><a
+href="refS.html#sym?">sym?</a></code>, <code><a
+href="refB.html#box?">box?</a></code>, <code><a
+href="refS.html#str?">str?</a></code>, <code><a
+href="refE.html#extern">extern</a></code> and <code><a
+href="refL.html#lieu">lieu</a></code>.
+
+<pre><code>
+: (ext? *DB)
+-> {1}
+: (ext? 'abc)
+-> NIL
+: (ext? "abc")
+-> NIL
+: (ext? 123)
+-> NIL
+</code></pre>
+
+<dt><a name="extend"><code>(extend cls) -> cls</code></a>
+<dd>Extends the class <code>cls</code>, by storing it in the global variable
+<code><a href="refC.html#*Class">*Class</a></code>. As a consequence, all
+following method, relation and class variable definitions are applied to that
+class. See also <a href="ref.html#oop">OO Concepts</a>, <code><a
+href="refC.html#class">class</a></code>, <code><a
+href="refD.html#dm">dm</a></code>, <code><a href="refV.html#var">var</a></code>,
+<code><a href="refR.html#rel">rel</a></code>, <code><a
+href="refT.html#type">type</a></code> and <code><a
+href="refI.html#isa">isa</a></code>.
+
+<pre><code>
+</code></pre>
+
+<dt><a name="extern"><code>(extern 'sym) -> sym | NIL</code></a>
+<dd>Creates or finds an external symbol. If a symbol with the name
+<code>sym</code> is already extern, it is returned. Otherwise, a new external
+symbol is returned. <code>NIL</code> is returned if <code>sym</code> does not
+exist in the database. See also <code><a
+href="refI.html#intern">intern</a></code> and <code><a
+href="refE.html#ext?">ext?</a></code>.
+
+<pre><code>
+: (extern "A1b")
+-> {A1b}
+: (extern "{A1b}")
+-> {A1b}
+</code></pre>
+
+<dt><a name="extra"><code>(extra ['any ..]) -> any</code></a>
+<dd>Can only be used inside methods. Sends the current message to the current
+object <code>This</code>, this time starting the search for a method at the
+remaining branches of the inheritance tree of the class where the current method
+was found. See also <a href="ref.html#oop">OO Concepts</a>, <code><a
+href="refS.html#super">super</a></code>, <code><a
+href="refM.html#method">method</a></code>, <code><a
+href="refM.html#meth">meth</a></code>, <code><a
+href="refS.html#send">send</a></code> and <code><a
+href="refT.html#try">try</a></code>.
+
+<pre><code>
+(dm key> (C)            # 'key>' method of the '+Uppc' class
+   (uppc (extra C)) )   # Convert 'key>' of extra classes to upper case
+</code></pre>
+
+<dt><a name="extract"><code>(extract 'fun 'lst ..) -> lst</code></a>
+<dd>Applies <code>fun</code> to each element of <code>lst</code>. When
+additional <code>lst</code> arguments are given, their elements are also passed
+to <code>fun</code>. Returns a list of all non-<code>NIL</code> values returned
+by <code>fun</code>. <code>(extract 'fun 'lst)</code> is equivalent to
+<code>(mapcar 'fun (filter 'fun 'lst))</code> or, for non-NIL results, to
+<code>(mapcan '((X) (and (fun X) (cons @))) 'lst)</code>. See also <code><a
+href="refF.html#filter">filter</a></code>, <code><a
+href="refF.html#find">find</a></code>, <code><a
+href="refP.html#pick">pick</a></code> and <code><a
+href="refM.html#mapcan">mapcan</a></code>.
+
+<pre><code>
+: (setq A NIL  B 1  C NIL  D 2  E NIL  F 3)
+-> 3
+: (filter val '(A B C D E F))
+-> (B D F)
+: (extract val '(A B C D E F))
+-> (1 2 3)
+</code></pre>
+
+</dl>
+
+</body>
+</html>

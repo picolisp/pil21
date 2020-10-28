@@ -1,0 +1,72 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+   <meta http-equiv="content-type" content="text/html; charset=utf-8">
+   <title>PicoLisp RefLook</title>
+   <meta name="generator" content="BBEdit 8.6">
+   <style type="text/css">
+   <!--
+body {
+   margin-left: 0.5em;
+   margin-right: 0;
+   background-color: #eee;
+}
+ul {
+   margin-left: 0;
+   padding-left: 1.1em;
+}
+li {
+   margin-bottom: 0.4em;
+}
+ul.sub {
+   padding-left: 0.5em;
+   font-size: 75%;
+}
+ul.sub li {
+   margin-bottom: 0.3em;
+}
+input {
+   margin-top: 0.3em;
+}
+   -->
+   </style>
+   <script type="text/javascript" language="javascript">
+   <!--
+function searchKeyup(searchField) {
+   try {
+      var sWord = searchField.value;
+      if (sWord) {
+         var sUrl;
+         if (sWord == "NIL") {
+            sUrl = "ref.html#nilSym";
+         } else if (sWord.match(/^[a-zA-Z_]/)) {
+            sUrl = "ref" + sWord.substring(0, 1).toUpperCase() + ".html#" + sWord;
+         } else if (sWord.match(/^\*[a-zA-Z_]/)) {
+            sUrl = "ref" + sWord.substring(1, 2) + ".html#" + sWord;
+         } else {
+            sUrl = "ref_.html#" + sWord;
+         }
+         window.top.lower.location = sUrl;
+      }
+   } catch (e) {
+      alert(e);
+   }
+}
+   //-->
+   </script>
+</head>
+<body>
+   <ul>
+      <li>
+         <a href="ref.html" target="lower">Reference</a> lookup<br>
+         <input id="search" type="text" size="13" onkeyup="searchKeyup(this)">
+      </li>
+   </ul>
+   <script type="text/javascript" language="javascript">
+   <!--
+      window.document.getElementById('search').focus();
+   //-->
+   </script>
+</body>
+</html>

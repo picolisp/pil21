@@ -1,0 +1,636 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>T</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+
+<h1>T</h1>
+
+<dl>
+
+<dt><a name="*TStp1"><code>*TStp1</code></a>
+<dt><a name="*TStp2"><code>*TStp2</code></a>
+<dd>Global variables holding (possibly empty) <code>prg</code> bodies, which
+will be executed when a SIGTSTP signal (<code>*TStp1</code>) or a SIGCONT signal
+(<code>*TStp2</code>) is sent to the current process. See also <code><a
+href="refA.html#alarm">alarm</a></code>, <code><a
+href="refS.html#sigio">sigio</a></code>, <code><a
+href="refH.html#*Hup">*Hup</a></code>, and <code><a
+href="refS.html#*Sig1">*Sig[12]</a></code>.
+
+<pre><code>
+: (de *TStp1 (msg 'SIGTSTP))
+-> *TStp1
+</code></pre>
+
+<dt><a name="*Tmp"><code>*Tmp</code></a>
+<dd>A global variable holding the temporary directory name created with <code><a
+href="refT.html#tmp">tmp</a></code>. See also <code><a
+href="refB.html#*Bye">*Bye</a></code>.
+
+<pre><code>
+: *Bye
+-> ((saveHistory) (and *Tmp (call 'rm "-r" *Tmp)))
+: (tmp "foo" 123)
+-> "/home/app/.pil/tmp/27140/foo123"
+: *Tmp
+-> "/home/app/.pil/tmp/27140/"
+</code></pre>
+
+<dt><a name="+Time"><code>+Time</code></a>
+<dd>Class for clock time values (as calculated by <code><a
+href="refT.html#time">time</a></code>), a subclass of <code><a
+href="refN.html#+Number">+Number</a></code>. See also <a
+href="ref.html#dbase">Database</a>.
+
+<pre><code>
+(rel tim (+Time))  # Time of the day
+</code></pre>
+
+<dt><a name="T"><code>T</code></a>
+<dd>A global constant, evaluating to itself. <code>T</code> is commonly returned
+as the boolean value "true" (though any non-<code>NIL</code> values could be
+used). It represents the absolute maximum, as it is larger than any other
+object. As a property key, it is used to store <a
+href="ref.html#pilog">Pilog</a> clauses, and inside Pilog clauses it is the
+<i>cut</i> operator. See also <code><a href="ref.html#nilSym">NIL</a></code> and
+and <a href="ref.html#cmp">Comparing</a>.
+
+<pre><code>
+: T
+-> T
+: (= 123 123)
+-> T
+: (get 'not T)
+-> ((@P (1 (-> @P)) T (fail)) (@P))
+</code></pre>
+
+<dt><a name="This"><code>This</code></a>
+<dd>Holds the current object during method execution (see <a
+href="ref.html#oop">OO Concepts</a>), or inside the body of a <code><a
+href="refW.html#with">with</a></code> statement. As it is a normal symbol,
+however, it can be used in normal bindings anywhere. See also <code><a
+href="refI.html#isa">isa</a></code>, <code><a href="ref_.html#:">:</a></code>,
+<code><a href="ref_.html#=:">=:</a></code>, <code><a
+href="ref_.html#::">::</a></code> and <code><a
+href="refV.html#var:">var:</a></code>.
+
+<pre><code>
+: (with 'X (println 'This 'is This))
+This is X
+-> X
+: (put 'X 'a 1)
+-> 1
+: (put 'X 'b 2)
+-> 2
+: (put 'Y 'a 111)
+-> 111
+: (put 'Y 'b 222)
+-> 222
+: (mapcar '((This) (cons (: a) (: b))) '(X Y))
+-> ((1 . 2) (111 . 222))
+</code></pre>
+
+<dt><a name="t"><code>(t . prg) -> T</code></a>
+<dd>Executes <code>prg</code>, and returns <code>T</code>. See also <code><a
+href="refN.html#nil">nil</a></code>, <code><a
+href="refP.html#prog">prog</a></code>, <code><a
+href="refP.html#prog1">prog1</a></code> and <code><a
+href="refP.html#prog2">prog2</a></code>.
+
+<pre><code>
+: (t (println 'OK))
+OK
+-> T
+</code></pre>
+
+<dt><a name="tab"><code>(tab 'lst 'any ..) -> NIL</code></a>
+<dd>Print all <code>any</code> arguments in a tabular format. <code>lst</code>
+should be a list of numbers, specifying the field width for each argument. All
+items in a column will be left-aligned for negative numbers, otherwise
+right-aligned. See also <code><a href="refA.html#align">align</a></code>,
+<code><a href="refC.html#center">center</a></code> and <code><a
+href="refW.html#wrap">wrap</a></code>.
+
+<pre><code>
+: (let Fmt (-3 14 14)
+   (tab Fmt "Key" "Rand 1" "Rand 2")
+   (tab Fmt "---" "------" "------")
+   (for C '(A B C D E F)
+      (tab Fmt C (rand) (rand)) ) )
+Key        Rand 1        Rand 2
+---        ------        ------
+A               0    1481765933
+B     -1062105905    -877267386
+C      -956092119     812669700
+D       553475508   -1702133896
+E      1344887256   -1417066392
+F      1812158119   -1999783937
+-> NIL
+</code></pre>
+
+<dt><a name="tail"><code>(tail 'cnt|lst 'lst) -> lst</code></a>
+<dd>Returns the last <code>cnt</code> elements of <code>lst</code>. If
+<code>cnt</code> is negative, it is added to the length of <code>lst</code>. If
+the first argument is a <code>lst</code>, <code>tail</code> is a predicate
+function returning that argument list if it is <code>equal</code> to the tail of
+the second argument, and <code>NIL</code> otherwise. <code>(tail -2 Lst)</code>
+is equivalent to <code>(nth Lst 3)</code>. See also <code><a
+href="refO.html#offset">offset</a></code>, <code><a
+href="refH.html#head">head</a></code>, <code><a
+href="refL.html#last">last</a></code> and <code><a
+href="refS.html#stem">stem</a></code>.
+
+<pre><code>
+: (tail 3 '(a b c d e f))
+-> (d e f)
+: (tail -2 '(a b c d e f))
+-> (c d e f)
+: (tail 0 '(a b c d e f))
+-> NIL
+: (tail 10 '(a b c d e f))
+-> (a b c d e f)
+: (tail '(d e f) '(a b c d e f))
+-> (d e f)
+</code></pre>
+
+<dt><a name="task"><code>(task 'num ['num] [sym 'any ..] [. prg]) -> lst</code></a>
+<dd>A front-end to the <code><a href="refR.html#*Run">*Run</a></code> global. If
+called with only a single <code>num</code> argument, the corresponding entry is
+removed from the value of <code>*Run</code>. Otherwise, a new entry is created.
+If an entry with that key already exists, an error is issued. For negative
+numbers, a second number must be supplied. If <code>sym</code>/<code>any</code>
+arguments are given, a <code><a href="refJ.html#job">job</a></code> environment
+is built for the <code>*Run</code> entry. See also <code><a
+href="refT.html#tasks">tasks</a></code>, <code><a
+href="refF.html#forked">forked</a></code> and <code><a
+href="refT.html#timeout">timeout</a></code>.
+
+<pre><code>
+: (task -10000 5000 N 0 (msg (inc 'N)))            # Install task
+-> (-10000 5000 (job '((N . 0)) (msg (inc 'N))))   # for every 10 seconds
+: 1                                                # ... after 5 seconds
+2                                                  # ... after 10 seconds
+3                                                  # ... after 10 seconds
+(task -10000)                                      # remove again
+-> NIL
+
+: (task (port T 4444) (eval (udp @)))              # Receive RPC via UDP
+-> (3 (eval (udp @)))
+
+# Another session (on the same machine)
+: (udp "localhost" 4444 '(println *Pid))  # Send RPC message
+-> (println *Pid)
+</code></pre>
+
+<dt><a name="tasks"><code>(tasks . prg)</code></a>
+<dd>Runs a <code><a href="refT.html#task">task</a></code> with variable event
+specification in a single <code><a href="refR.html#*Run">*Run</a></code> entry.
+The task body <code>prg</code> should return either a positive number (a file
+descriptor) or a negative number (a timeout value) to be used in the next
+iteration. The first value must be a timeout. A value of <code>NIL</code>
+removes the task. Uses <code>-2</code> as implicit key. See also <code><a
+href="refF.html#forked">forked</a></code> and <code><a
+href="refT.html#timeout">timeout</a></code>.
+
+<pre><code>
+(tasks  # Three iterations with varying timeout
+   (let X (pop '(((-1000 . a) (-4000 . b) (-1000 . c))))
+      (msg (cdr X))
+      (car X) ) )
+
+(tasks
+   (co 'echoes  # Coroutine
+      (use S
+         (loop  # Loop infinitely
+            (yield -4000)  # First wait 4 seconds
+            (msg 'OK)
+            (yield  # Then wait for remote data
+               (setq S
+                  (pipe (exec "sh" "-c" "sleep 2; echo 7")) ) )
+            (msg (in S (read)))
+            (close S) ) ) ) )
+</code></pre>
+
+<dt><a name="telStr"><code>(telStr 'sym) -> sym</code></a>
+<dd>Formats a telephone number according to the current <code><a
+href="refL.html#locale">locale</a></code>. If the string head matches the local
+country code, it is replaced with the national trunk prefix, otherwise
+<code>+</code> is prepended. See also <code><a
+href="refE.html#expTel">expTel</a></code>, <code><a
+href="refD.html#datStr">datStr</a></code>, <code><a
+href="refM.html#money">money</a></code> and <code><a
+href="refF.html#format">format</a></code>.
+
+<pre><code>
+: (telStr "49 1234 5678-0")
+-> "+49 1234 5678-0"
+: (locale "DE" "de")
+-> NIL
+: (telStr "49 1234 5678-0")
+-> "01234 5678-0"
+</code></pre>
+
+<dt><a name="tell"><code>(tell ['cnt] 'sym ['any ..]) -> any</code></a>
+<dd>Family IPC: Send an executable list <code>(sym any ..)</code> to all family
+members (i.e. all children of the current process, and all other children of the
+parent process, see <code><a href="refF.html#fork">fork</a></code>) for
+automatic execution. When the <code>cnt</code> argument is given and non-zero,
+it should be the PID of such a process, and the list will be sent only to that
+process. When called without arguments, no message is actually sent, and the
+parent process may grant <code><a href="refS.html#sync">sync</a></code> to the
+next waiting process. <code>tell</code> is also used internally by <code><a
+href="refC.html#commit">commit</a></code> to notify about database changes. When
+called explicitly, the size of the message is limited to the POSIX constant
+PIPE_BUF. See also <code><a href="refK.html#kids">kids</a></code>, <code><a
+href="refD.html#detach">detach</a></code> and <code><a
+href="refH.html#hear">hear</a></code>.
+
+<pre><code>
+: (call 'ps "x")                          # Show processes
+  PID TTY      STAT   TIME COMMAND
+  ..
+ 1321 pts/0    S      0:00 /usr/bin/picolisp ..  # Parent process
+ 1324 pts/0    S      0:01 /usr/bin/picolisp ..  # First child
+ 1325 pts/0    S      0:01 /usr/bin/picolisp ..  # Second child
+ 1326 pts/0    R      0:00 ps x
+-> T
+: *Pid                                    # We are the second child
+-> 1325
+: (tell 'println '*Pid)                   # Ask all others to print their Pid's
+1324
+-> *Pid
+</code></pre>
+
+<dt><a name="test"><code>(test 'any . prg)</code></a>
+<dd>Executes <code>prg</code>, and issues an <code><a
+href="ref.html#errors">error</a></code> if the result does not <code><a
+href="refM.html#match">match</a></code> the <code>any</code> argument. See also
+<code><a href="refA.html#assert">assert</a></code>.
+
+<pre><code>
+: (test 12 (* 3 4))
+-> NIL
+: (test 12 (+ 3 4))
+((+ 3 4))
+12 -- 'test' failed
+?
+</code></pre>
+
+<dt><a name="text"><code>(text 'any1 'any ..) -> sym</code></a>
+<dd>Builds a new transient symbol (string) from the string representation of
+<code>any1</code>, by replacing all occurrences of an at-mark "<code>@</code>",
+followed by one of the letters "<code>1</code>" through "<code>9</code>", and
+"<code>A</code>" through "<code>Z</code>", with the corresponding
+<code>any</code> argument. In this context "<code>@A</code>" refers to the 10th
+argument. A literal at-mark in the text can be represented by two successive
+at-marks. See also <code><a href="refP.html#pack">pack</a></code> and <code><a
+href="refG.html#glue">glue</a></code>.
+
+<pre><code>
+: (text "abc @1 def @2" 'XYZ 123)
+-> "abc XYZ def 123"
+: (text "a@@bc.@1" "de")
+-> "a@bc.de"
+</code></pre>
+
+<dt><a name="throw"><code>(throw 'sym 'any)</code></a>
+<dd>Non-local jump into a previous <code><a
+href="refC.html#catch">catch</a></code> environment with the jump label
+<code>sym</code> (or <code>T</code> as a catch-all). Any pending <code><a
+href="refF.html#finally">finally</a></code> expressions are executed, local
+symbol bindings are restored, open files are closed and internal data structures
+are reset appropriately, as the environment was at the time when the
+corresponding <code>catch</code> was called. Then <code>any</code> is returned
+from that <code>catch</code>. See also <code><a
+href="refQ.html#quit">quit</a></code>.
+
+<pre><code>
+: (de foo (N)
+   (println N)
+   (throw 'OK) )
+-> foo
+: (let N 1  (catch 'OK (foo 7))  (println N))
+7
+1
+-> 1
+</code></pre>
+
+<dt><a name="tick"><code>(tick (cnt1 . cnt2) . prg) -> any</code></a>
+<dd>Executes <code>prg</code>, then (destructively) adds the number of elapsed
+user ticks to the <code>cnt1</code> parameter, and the number of elapsed system
+ticks to the <code>cnt2</code> parameter. Thus, <code>cnt1</code> and
+<code>cnt2</code> will finally contain the total number of user and system time
+ticks spent in <code>prg</code> and all functions called (this works also for
+recursive functions). For execution profiling, <code>tick</code> is usually
+inserted into words with <code>prof</code>, and removed with
+<code>unprof</code>. See also <code><a href="refU.html#usec">usec</a></code>.
+
+<pre><code>
+: (de foo ()                        # Define function with empty loop
+   (tick (0 . 0) (do 100000000)) )
+-> foo
+: (foo)                             # Execute it
+-> NIL
+: (pp 'foo)
+(de foo NIL
+   (tick (97 . 0) (do 100000000)) ) # 'tick' incremented 'cnt1' by 97
+-> foo
+</code></pre>
+
+<dt><a name="till"><code>(till 'any ['flg]) -> lst|sym</code></a>
+<dd>Reads from the current input channel till a character contained in
+<code>any</code> is found (or until end of file if <code>any</code> is
+<code>NIL</code>). If <code>flg</code> is <code>NIL</code>, a list of
+single-character transient symbols is returned. Otherwise, a single string is
+returned. See also <code><a href="refF.html#from">from</a></code> and <code><a
+href="refL.html#line">line</a></code>.
+
+<pre><code>
+: (till ":")
+abc:def
+-> ("a" "b" "c")
+: (till ":" T)
+abc:def
+-> "abc"
+</code></pre>
+
+<dt><a name="tim$"><code>(tim$ 'tim ['flg]) -> sym</code></a>
+<dd>Formats a <code><a href="refT.html#time">time</a></code> <code>tim</code>.
+If <code>flg</code> is <code>NIL</code>, the format is HH:MM, otherwise it is
+HH:MM:SS. See also <code><a href="ref_.html#$tim">$tim</a></code> and <code><a
+href="refD.html#dat$">dat$</a></code>.
+
+<pre><code>
+: (tim$ (time))
+-> "10:57"
+: (tim$ (time) T)
+-> "10:57:56"
+</code></pre>
+
+<dt><a name="time"><code>(time ['T]) -> tim</code></a>
+<dt><code>(time 'tim) -> (h m s)</code>
+<dt><code>(time 'h 'm ['s]) -> tim | NIL</code>
+<dt><code>(time '(h m [s])) -> tim | NIL</code>
+<dd>Calculates the time of day, represented as the number of seconds since
+midnight. When called without arguments, the current local time is returned.
+When called with a <code>T</code> argument, the time of the last call to
+<code><a href="refD.html#date">date</a></code> is returned. When called with a
+single number <code>tim</code>, it is taken as a time value and a list with the
+corresponding hour, minute and second is returned. When called with two or three
+numbers (or a list of two or three numbers) for the hour, minute (and optionally
+the second), the corresponding time value is returned (or <code>NIL</code> if
+they do not represent a legal time). See also <code><a
+href="refD.html#date">date</a></code>, <code><a
+href="refS.html#stamp">stamp</a></code>, <code><a
+href="refU.html#usec">usec</a></code>, <code><a
+href="refT.html#tim$">tim$</a></code> and <code><a
+href="ref_.html#$tim">$tim</a></code>.
+
+<pre><code>
+: (time)                         # Now
+-> 32334
+: (time 32334)                   # Now
+-> (8 58 54)
+: (time 12 70)                   # Illegal time
+-> NIL
+</code></pre>
+
+<dt><a name="timeout"><code>(timeout ['num])</code></a>
+<dd>Sets or refreshes a timeout value in the <code><a
+href="refR.html#*Run">*Run</a></code> global, so that the current process
+executes <code><a href="refB.html#bye">bye</a></code> after the given period. If
+called without arguments, the timeout is removed. Uses <code>-1</code> as
+implicit key. See also <code><a href="refT.html#task">task</a></code>.
+
+<pre><code>
+: (timeout 3600000)           # Timeout after one hour
+-> (-1 3600000 (bye))
+: *Run                        # Look after a few seconds
+-> ((-1 3574516 (bye)))
+</code></pre>
+
+<dt><a name="tmp"><code>(tmp ['any ..]) -> sym</code></a>
+<dd>Returns the path name to the <code><a
+href="refP.html#pack">pack</a></code>ed <code>any</code> arguments in a
+process-local temporary directory. The directory name consists of the path to
+".pil/tmp/" in the user's home directory, followed by the current process ID
+<code><a href="refP.html#*Pid">*Pid</a></code>. This directory is automatically
+created if necessary, and removed upon termination of the process (<code><a
+href="refB.html#bye">bye</a></code>). See also <code><a
+href="refP.html#pil">pil</a></code>, <code><a
+href="refT.html#*Tmp">*Tmp</a></code> and <code><a
+href="refB.html#*Bye">*Bye</a></code> .
+
+<pre><code>
+: *Pid
+-> 27140
+: (tmp "foo" 123)
+-> "/home/app/.pil/tmp/27140/foo123"
+: (out (tmp "foo" 123) (println 'OK))
+-> OK
+: (dir (tmp))
+-> ("foo123")
+: (in (tmp "foo" 123) (read))
+-> OK
+</code></pre>
+
+<dt><a name="tolr/3"><code>tolr/3</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the first
+argument, after <code><a href="refF.html#fold">fold</a></code>ing it to a
+canonical form, is either a <i>substring</i> or a <code><a
+href="refS.html#+Sn">+Sn</a></code> <i>soundex</i> match of the result of
+applying the <code><a href="refG.html#get">get</a></code> algorithm to the
+following arguments. Typically used as filter predicate in <code><a
+href="refS.html#select/3">select/3</a></code> database queries. See also
+<code><a href="refI.html#isa/2">isa/2</a></code>, <code><a
+href="refS.html#same/3">same/3</a></code>, <code><a
+href="refB.html#bool/3">bool/3</a></code>, <code><a
+href="refR.html#range/3">range/3</a></code>, <code><a
+href="refH.html#head/3">head/3</a></code>, <code><a
+href="refF.html#fold/3">fold/3</a></code> and <code><a
+href="refP.html#part/3">part/3</a></code>.
+
+<pre><code>
+: (?
+   @Nr (1 . 5)
+   @Nm "Sven"
+   (select (@CuSu)
+      ((nr +CuSu @Nr) (nm +CuSu @Nm))
+      (range @Nr @CuSu nr)
+      (tolr @Nm @CuSu nm) )
+   (val @Name @CuSu nm) )
+ @Nr=(1 . 5) @Nm="Sven" @CuSu={2-2} @Name="Seven Oaks Ltd."
+</code></pre>
+
+<dt><a name="touch"><code>(touch 'sym) -> sym</code></a>
+<dd>When <code>sym</code> is an external symbol, it is marked as "modified" so
+that upon a later <code><a href="refC.html#commit">commit</a></code> it will be
+written to the database file. An explicit call of <code>touch</code> is only
+necessary when the value or properties of <code>sym</code> are indirectly
+modified.
+
+<pre><code>
+: (get '{2} 'lst)
+-> (1 2 3 4 5)
+: (set (cdr (get (touch '{2}) 'lst)) 999)    # Only read-access, need 'touch'
+-> 999
+: (get '{2} 'lst)                            # Modified second list element
+-> (1 999 3 4 5)
+</code></pre>
+
+<dt><a name="trace"><code>(trace 'sym) -> sym</code></a>
+<dt><code>(trace 'sym 'cls) -> sym</code>
+<dt><code>(trace '(sym . cls)) -> sym</code>
+<dd>(Debug mode only) Inserts a <code><a href="ref_.html#$">$</a></code> trace
+function call at the beginning of the function or method body of
+<code>sym</code>, so that trace information will be printed before and after
+execution. Can only be used with EXPRs and SUBRs. Built-in functions (SUBRs) are
+automatically converted to Lisp expressions (see <code><a
+href="refE.html#expr">expr</a></code>). See also <code><a
+href="refD.html#*Dbg">*Dbg</a></code>, <code><a
+href="refT.html#traceAll">traceAll</a></code> and <code><a
+href="refU.html#untrace">untrace</a></code>, <code><a
+href="refD.html#debug">debug</a></code> and <code><a
+href="refL.html#lint">lint</a></code>.
+
+<pre><code>
+: (trace '+)
+-> +
+: (+ 3 4)
+ + : 3 4
+ + = 7
+-> 7
+</code></pre>
+
+<dt><a name="traceAll"><code>(traceAll ['lst]) -> sym</code></a>
+<dd>(Debug mode only) Traces all Lisp level functions by inserting a <code><a
+href="ref_.html#$">$</a></code> function call at the beginning. <code>lst</code>
+may contain symbols which are to be excluded from that process. In addition, all
+symbols in the global variable <code>*NoTrace</code> are excluded. See also
+<code><a href="refT.html#trace">trace</a></code>, <code><a
+href="refU.html#untrace">untrace</a></code> and <code><a
+href="refD.html#*Dbg">*Dbg</a></code>.
+
+<pre><code>
+: (traceAll)      # Trace all Lisp level functions
+-> balance
+</code></pre>
+
+<dt><a name="trail"><code>(trail ['flg]) -> lst</code></a>
+<dd>Returns a stack backtrace for the current point of program execution. The
+list elements are either list expressions (denoting function or method calls),
+or symbols followed by their corresponding values. If <code>flg</code> is
+<code>NIL</code>, the symbols and their values are omitted, and only the
+expressions are returned. See also <code><a href="refB.html#bt">bt</a></code>,
+<code><a href="refU.html#up">up</a></code> and <code><a
+href="refE.html#env">env</a></code>.
+
+<pre><code>
+: (de f (A B)
+   (g (inc A) (dec B)) )
+-> f
+: (de g (X Y)
+   (trail T) )
+-> g
+: (f 3 4)
+-> ((f 3 4) A 3 B 4 (g (inc A) (dec B)) X 4 Y 3)
+</code></pre>
+
+<dt><a name="tree"><code>(tree 'sym 'cls ['hook]) -> tree</code></a>
+<dd>Returns a data structure specifying a database index tree. <code>sym</code>
+and <code>cls</code> determine the relation, with an optional <code>hook</code>
+object. See also <code><a href="refR.html#root">root</a></code>, <code><a
+href="refF.html#fetch">fetch</a></code>, <code><a
+href="refS.html#store">store</a></code>, <code><a
+href="refC.html#count">count</a></code>, <code><a
+href="refL.html#leaf">leaf</a></code>, <code><a
+href="refM.html#minKey">minKey</a></code>, <code><a
+href="refM.html#maxKey">maxKey</a></code>, <code><a
+href="refI.html#init">init</a></code>, <code><a
+href="refS.html#step">step</a></code>, <code><a
+href="refS.html#scan">scan</a></code>, <code><a
+href="refI.html#iter">iter</a></code>, <code><a
+href="refP.html#prune">prune</a></code>, <code><a
+href="refZ.html#zapTree">zapTree</a></code> and <code><a
+href="refC.html#chkTree">chkTree</a></code>.
+
+<pre><code>
+: (tree 'nm '+Item)
+-> (nm . +Item)
+</code></pre>
+
+<dt><a name="trim"><code>(trim 'lst) -> lst</code></a>
+<dd>Returns a copy of <code>lst</code> with all trailing whitespace characters
+or <code>NIL</code> elements removed. See also <code><a
+href="refC.html#clip">clip</a></code>.
+
+<pre><code>
+: (trim (1 NIL 2 NIL NIL))
+-> (1 NIL 2)
+: (trim '(a b " " " "))
+-> (a b)
+</code></pre>
+
+<dt><a name="true/0"><code>true/0</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate that always succeeds. See also
+<code><a href="refF.html#fail/0">fail/0</a></code> and <code><a
+href="refR.html#repeat/0">repeat/0</a></code>.
+
+<pre><code>
+:  (? (true))
+-> T
+</code></pre>
+
+<dt><a name="try"><code>(try 'msg 'obj ['any ..]) -> any</code></a>
+<dd>Tries to send the message <code>msg</code> to the object <code>obj</code>,
+optionally with arguments <code>any</code>. If <code>obj</code> is not an
+object, or if the message cannot be located in <code>obj</code>, in its classes
+or superclasses, <code>NIL</code> is returned. See also <a
+href="ref.html#oop">OO Concepts</a>, <code><a
+href="refS.html#send">send</a></code>, <code><a
+href="refM.html#method">method</a></code>, <code><a
+href="refM.html#meth">meth</a></code>, <code><a
+href="refS.html#super">super</a></code> and <code><a
+href="refE.html#extra">extra</a></code>.
+
+<pre><code>
+: (try 'msg> 123)
+-> NIL
+: (try 'html> 'a)
+-> NIL
+</code></pre>
+
+<dt><a name="type"><code>(type 'any) -> lst</code></a>
+<dd>Return the type (list of classes) of the object <code>sym</code>. See also
+<a href="ref.html#oop">OO Concepts</a>, <code><a
+href="refI.html#isa">isa</a></code>, <code><a
+href="refC.html#class">class</a></code>, <code><a
+href="refN.html#new">new</a></code> and <code><a
+href="refO.html#object">object</a></code>.
+
+<pre><code>
+: (type '{1A;3})
+(+Address)
+: (type '+DnButton)
+-> (+Tiny +Rid +JS +Able +Button)
+</code></pre>
+
+<dt><a name="tzo"><code>(tzo) -> cnt</code></a>
+<dd>Return the time zone offset, i.e. the number of seconds east of Coordinated
+Universal Time (UTC). Supported only on Linux. See also <code><a
+href="refD.html#date">date</a></code> and <code><a
+href="refT.html#time">time</a></code>.
+
+<pre><code>
+: (tzo)
+-> 3600
+</code></pre>
+
+</dl>
+
+</body>
+</html>

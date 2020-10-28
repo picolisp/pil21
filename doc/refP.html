@@ -1,0 +1,998 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>P</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+
+<h1>P</h1>
+
+<dl>
+
+<dt><a name="*PPid"><code>*PPid</code></a>
+<dd>A global constant holding the process-id of the parent picolisp process, or
+<code>NIL</code> if the current process is a top level process.
+
+<pre><code>
+: (println *PPid *Pid)
+NIL 5286
+
+: (unless (fork) (println *PPid *Pid) (bye))
+5286 5522
+</code></pre>
+
+<dt><a name="*Pid"><code>*Pid</code></a>
+<dd>A global constant holding the current process-id.
+
+<pre><code>
+: *Pid
+-> 6386
+: (call "ps")  # Show processes
+  PID TTY          TIME CMD
+ .... ...      ........ .....
+ 6386 pts/1    00:00:00 pil   # <- current process
+ 6388 pts/1    00:00:00 ps
+-> T
+</code></pre>
+
+<dt><a name="*Prompt"><code>*Prompt</code></a>
+<dd>Global variable holding a (possibly empty) <code>prg</code> body, which is
+executed - and the result <code><a href="refP.html#prin">prin</a></code>ted -
+every time before a prompt is output to the console in the
+"read-eval-print-loop" (REPL).
+
+<pre><code>
+: (de *Prompt (pack "[" (stamp) "]"))
+# *Prompt redefined
+-> *Prompt
+[2011-10-11 16:50:05]: (+ 1 2 3)
+-> 6
+[2011-10-11 16:50:11]:
+</code></pre>
+
+<dt><a name="pack"><code>(pack 'any ..) -> sym</code></a>
+<dd>Returns a transient symbol whose name is concatenated from all arguments
+<code>any</code>. A <code>NIL</code> arguments contributes nothing to the result
+string, a number is converted to a digit string, a symbol supplies the
+characters of its name, and for a list its elements are taken. See also <code><a
+href="refT.html#text">text</a></code> and <code><a
+href="refG.html#glue">glue</a></code>.
+
+<pre><code>
+: (pack 'car " is " 1 '(" symbol " name))
+-> "car is 1 symbol name"
+</code></pre>
+
+<dt><a name="pad"><code>(pad 'cnt 'any) -> sym</code></a>
+<dd>Returns a transient symbol with <code>any</code> <code><a
+href="refP.html#pack">pack</a></code>ed with leading '0' characters, up to a
+field width of <code>cnt</code>. See also <code><a
+href="refF.html#format">format</a></code> and <code><a
+href="refA.html#align">align</a></code>.
+
+<pre><code>
+: (pad 5 1)
+-> "00001"
+: (pad 5 123456789)
+-> "123456789"
+</code></pre>
+
+<dt><a name="pair"><code>(pair 'any) -> any</code></a>
+<dd>Returns <code>any</code> when the argument is a cons pair. See also <code><a
+href="refA.html#atom">atom</a></code>, <code><a
+href="refN.html#num?">num?</a></code>, <code><a
+href="refS.html#sym?">sym?</a></code> and <code><a
+href="refL.html#lst?">lst?</a></code>.
+
+<pre><code>
+: (pair NIL)
+-> NIL
+: (pair (1 . 2))
+-> (1 . 2)
+: (pair (1 2 3))
+-> (1 2 3)
+</code></pre>
+
+<dt><a name="part/3"><code>part/3</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the first
+argument, after <code><a href="refF.html#fold">fold</a></code>ing it to a
+canonical form, is a <i>substring</i> of the folded string representation of the
+result of applying the <code><a href="refG.html#get">get</a></code> algorithm to
+the following arguments. Typically used as filter predicate in <code><a
+href="refS.html#select/3">select/3</a></code> database queries. See also
+<code><a href="refS.html#sub?">sub?</a></code>, <code><a
+href="refI.html#isa/2">isa/2</a></code>, <code><a
+href="refS.html#same/3">same/3</a></code>, <code><a
+href="refB.html#bool/3">bool/3</a></code>, <code><a
+href="refR.html#range/3">range/3</a></code>, <code><a
+href="refH.html#head/3">head/3</a></code>, <code><a
+href="refF.html#fold/3">fold/3</a></code> and <code><a
+href="refT.html#tolr/3">tolr/3</a></code>.
+
+<pre><code>
+: (?
+   @Nr (1 . 5)
+   @Nm "part"
+   (select (@Item)
+      ((nr +Item @Nr) (nm +Item @Nm))
+      (range @Nr @Item nr)
+      (part @Nm @Item nm) ) )
+ @Nr=(1 . 5) @Nm="part" @Item={3-1}
+ @Nr=(1 . 5) @Nm="part" @Item={3-2}
+-> NIL
+</code></pre>
+
+<dt><a name="pass"><code>(pass 'fun ['any ..]) -> any</code></a>
+<dd>Passes to <code>fun</code> all arguments <code>any</code>, and all remaining
+variable arguments (<code>@</code>) as they would be returned by <code><a
+href="refR.html#rest">rest</a></code>. <code>(pass 'fun 'any)</code> is
+equivalent to <code>(apply 'fun (rest) 'any)</code>. See also <code><a
+href="refA.html#apply">apply</a></code>.
+
+<pre><code>
+: (de bar (A B . @)
+   (println 'bar A B (rest)) )
+-> bar
+: (de foo (A B . @)
+   (println 'foo A B)
+   (pass bar 1)
+   (pass bar 2) )
+-> foo
+: (foo 'a 'b 'c 'd 'e 'f)
+foo a b
+bar 1 c (d e f)
+bar 2 c (d e f)
+-> (d e f)
+</code></pre>
+
+<dt><a name="pat?"><code>(pat? 'any) -> pat | NIL</code></a>
+<dd>Returns <code>any</code> when the argument <code>any</code> is a symbol
+whose name starts with an at-mark "<code>@</code>", otherwise <code>NIL</code>.
+
+<pre><code>
+: (pat? '@)
+-> @
+: (pat? "@Abc")
+-> "@Abc"
+: (pat? "ABC")
+-> NIL
+: (pat? 123)
+-> NIL
+</code></pre>
+
+<dt><a name="patch"><code>(patch 'lst 'any . prg) -> any</code></a>
+<dd>Destructively replaces all sub-expressions of <code>lst</code>, that
+<code><a href="refM.html#match">match</a></code> the pattern <code>any</code>,
+by the result of the execution of <code>prg</code>. See also <code><a
+href="refD.html#daemon">daemon</a></code> and <code><a
+href="refR.html#redef">redef</a></code>.
+
+<pre><code>
+: (pp 'hello)
+(de hello NIL
+   (prinl "Hello world!") )
+-> hello
+
+: (patch hello 'prinl 'println)
+-> NIL
+: (pp 'hello)
+(de hello NIL
+   (println "Hello world!") )
+-> hello
+
+: (patch hello '(prinl @S) (fill '(println "We said: " . @S)))
+-> NIL
+: (hello)
+We said: Hello world!
+-> "Hello world!"
+</code></pre>
+
+<dt><a name="path"><code>(path 'any) -> sym</code></a>
+<dd>Substitutes any leading "<code>@</code>" character in the <code>any</code>
+argument with the <u>PicoLisp Home Directory</u>, as it was remembered during
+interpreter startup. Optionally, the name may be preceded by a "<code>+</code>"
+character (as used by <code><a href="refI.html#in">in</a></code> and <code><a
+href="refO.html#out">out</a></code>). This mechanism is used internally by all
+I/O functions. See also <a href="ref.html#invoc">Invocation</a>, <code><a
+href="refB.html#basename">basename</a></code> and <code><a
+href="refD.html#dirname">dirname</a></code>.
+
+<pre><code>
+$ /usr/bin/picolisp /usr/lib/picolisp/lib.l
+: (path "a/b/c")
+-> "a/b/c"
+: (path "@a/b/c")
+-> "/usr/lib/picolisp/a/b/c"
+: (path "+@a/b/c")
+-> "+/usr/lib/picolisp/a/b/c"
+</code></pre>
+
+<dt><a name="peek"><code>(peek) -> sym</code></a>
+<dd>Single character look-ahead: Returns the same character as the next call to
+<code><a href="refC.html#char">char</a></code> would return. Note that the
+look-ahead covers only the next <i>byte</i>, so a multi-byte character might
+still block. See also <code><a href="refS.html#skip">skip</a></code>.
+
+<pre><code>
+$ cat a
+# Comment
+abcd
+$ pil +
+: (in "a" (list (peek) (char)))
+-> ("#" "#")
+</code></pre>
+
+<dt><a name="permute/2"><code>permute/2</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the second
+argument is a permutation of the list in the second argument. See also <code><a
+href="refA.html#append/3">append/3</a></code>.
+
+<pre><code>
+: (? (permute (a b c) @X))
+ @X=(a b c)
+ @X=(a c b)
+ @X=(b a c)
+ @X=(b c a)
+ @X=(c a b)
+ @X=(c b a)
+-> NIL
+</code></pre>
+
+<dt><a name="pick"><code>(pick 'fun 'lst ..) -> any</code></a>
+<dd>Applies <code>fun</code> to successive elements of <code>lst</code> until
+non-<code>NIL</code> is returned. Returns that value, or <code>NIL</code> if
+<code>fun</code> did not return non-<code>NIL</code> for any element of
+<code>lst</code>. When additional <code>lst</code> arguments are given, their
+elements are also passed to <code>fun</code>. <code>(pick 'fun 'lst)</code> is
+equivalent to <code>(fun (find 'fun 'lst))</code>. See also <code><a
+href="refS.html#seek">seek</a></code>, <code><a
+href="refF.html#find">find</a></code> and <code><a
+href="refE.html#extract">extract</a></code>.
+
+<pre><code>
+: (setq A NIL  B 1  C NIL  D 2  E NIL  F 3)
+-> 3
+: (find val '(A B C D E))
+-> B
+: (pick val '(A B C D E))
+-> 1
+</code></pre>
+
+<dt><a name="pico"><code>pico</code></a>
+<dd>A global constant holding the initial (default) namespace of internal
+symbols. Its value is a cons pair of two '<code><a
+href="refI.html#idx">idx</a></code>' trees, one for symbols with short names and
+one for symbols with long names (more than 7 bytes in the name). See also
+<code><a href="refS.html#symbols">symbols</a></code>, <code><a
+href="refN.html#nsp">nsp</a></code>, <code><a
+href="refI.html#import">import</a></code> and <code><a
+href="refI.html#intern">intern</a></code>.
+
+<pre><code>
+: (symbols)
+-> (pico)
+: (cdr pico)
+-> (rollback (*NoTrace (*CtryCode (+IdxFold) genStrKey) basename ...
+</code></pre>
+
+<dt><a name="pil"><code>(pil ['any ..]) -> sym</code></a>
+<dd>Returns the path name to the <code><a
+href="refP.html#pack">pack</a></code>ed <code>any</code> arguments in
+the directory ".pil/" in the user's home directory.
+See also <code><a href="refT.html#tmp">tmp</a></code>.
+
+<pre><code>
+: (pil "history")  # Path to the line editor's history file
+-> "/home/app/.pil/history"
+</code></pre>
+
+<dt><a name="pilog"><code>(pilog 'lst . prg) -> any</code></a>
+<dd>Evaluates a <a href="ref.html#pilog">Pilog</a> query, and executes
+<code>prg</code> for each result set with all Pilog variables bound to their
+matching values. See also <code><a href="refS.html#solve">solve</a></code>,
+<code><a href="ref_.html#?">?</a></code>, <code><a
+href="refG.html#goal">goal</a></code> and <code><a
+href="refP.html#prove">prove</a></code>.
+
+<pre><code>
+: (pilog '((append @X @Y (a b c))) (println @X '- @Y))
+NIL - (a b c)
+(a) - (b c)
+(a b) - (c)
+(a b c) - NIL
+-> NIL
+</code></pre>
+
+<dt><a name="pipe"><code>(pipe exe) -> cnt</code></a>
+<dt><code>(pipe exe . prg) -> any</code>
+<dd>Executes <code>exe</code> in a <code><a
+href="refF.html#fork">fork</a></code>'ed child process (which terminates
+thereafter). In the first form, <code>pipe</code> just returns a file descriptor
+to write to the standard input and read from the standard output of that
+process. In the second form, it opens the standard output of that process as
+input channel during the execution of <code>prg</code>. The current input
+channel will be saved and restored appropriately, and the (system dependent)
+exit status code of the child process is stored in the global variable <code><a
+href="ref_.html#@@">@@</a></code>. See also <code><a
+href="refL.html#later">later</a></code>, <code><a
+href="refI.html#ipid">ipid</a></code>, <code><a
+href="refI.html#in">in</a></code> and <code><a
+href="refO.html#out">out</a></code>.
+
+<pre><code>
+: (pipe                                # equivalent to 'any'
+   (prinl "(a b # Comment^Jc d)")         # Child
+   (read) )                               # Parent
+-> (a b c d)
+
+: (pipe                                # pipe through an external program
+   (out '(tr "[a-z]" "[A-Z]")             # Child
+      (prinl "abc def ghi") )
+   (line T) )                             # Parent
+-> "ABC DEF GHI"
+
+: (setq P
+     (pipe
+        (in NIL                           # Child: Read stdin
+           (while (line T)
+              (prinl (uppc @))            # and write to stdout
+              (flush) ) ) ) )
+-> 3
+:  (out P (prinl "abc def"))              # Parent: Send line to child
+-> "abc def"
+:  (in P (line))                          # Parent: Read reply
+-> ("A" "B" "C" " " "D" "E" "F")
+</code></pre>
+
+<dt><a name="place"><code>(place 'cnt 'lst 'any) -> lst</code></a>
+<dd>Places <code>any</code> into <code>lst</code> at position <code>cnt</code>.
+This is a non-destructive operation. See also <code><a
+href="refI.html#insert">insert</a></code>, <code><a
+href="refR.html#remove">remove</a></code>, <code><a
+href="refA.html#append">append</a></code>, <code><a
+href="refD.html#delete">delete</a></code> and <code><a
+href="refR.html#replace">replace</a></code>.
+
+<pre><code>
+: (place 3 '(a b c d e) 777)
+-> (a b 777 d e)
+: (place 1 '(a b c d e) 777)
+-> (777 b c d e)
+: (place 9 '(a b c d e) 777)
+-> (a b c d e 777)
+</code></pre>
+
+<dt><a name="poll"><code>(poll 'cnt) -> cnt | NIL</code></a>
+<dd>Checks for the availability of data for reading on the file descriptor
+<code>cnt</code>. See also <code><a href="refO.html#open">open</a></code>,
+<code><a href="refI.html#in">in</a></code> and <code><a
+href="refC.html#close">close</a></code>.
+
+<pre><code>
+: (and (poll *Fd) (in @ (read)))  # Prevent blocking
+</code></pre>
+
+<dt><a name="pool"><code>(pool ['sym1 ['lst] ['sym2] ['sym3]]) -> T</code></a>
+<dd>Opens the file <code>sym1</code> as a database file in read/write mode. If
+the file does not exist, it is created. A currently open database is closed.
+<code>lst</code> is a list of block size scale factors (i.e. numbers),
+defaulting to (2) (for a single file with a 256 byte block size). If
+<code>lst</code> is given, an individual database file is opened for each item.
+If <code>sym2</code> is non-<code>NIL</code>, it is opened in append-mode as an
+asynchronous replication journal. If <code>sym3</code> is non-<code>NIL</code>,
+it is opened for reading and appending, to be used as a synchronous transaction
+log during <code><a href="refC.html#commit">commit</a></code>s. Calling
+<code>(pool)</code> without arguments just closes the current database. See also
+<code><a href="refD.html#dbs">dbs</a></code>, <code><a
+href="refD.html#*Dbs">*Dbs</a></code> and <code><a
+href="refJ.html#journal">journal</a></code>.
+
+<pre><code>
+: *Dbs
+-> (1 2 2 4)
+: (pool "dbFile" *Dbs)
+-> T
+
+$ ls -l dbFile*
+-rw-r--r-- 1 abu abu  256 Jul  3 08:30 dbFile@
+-rw-r--r-- 1 abu abu  256 Jul  3 08:30 dbFileA
+-rw-r--r-- 1 abu abu  256 Jul  3 08:30 dbFileB
+-rw-r--r-- 1 abu abu 1024 Jul  3 08:30 dbFileC
+
+# DB directly on a device
+: (pool "/dev/hda2")
+-> T
+</code></pre>
+
+<dt><a name="pool2"><code>(pool2 'sym . prg)</code> -> any</a>
+<dd>Temporary switches to another database specified by <code>sym</code>. This
+database must be a multi-file DB with exactly the same <code><a
+href="refD.html#*Dbs">*Dbs</a></code> structure as the currently open one. The
+current database is not closed - I/O is just redirected to the new one. All
+files are opened before <code>prg</code> runs, and are closed thereafter. The
+result of <code>prg</code> is returned. No replication journal or transaction
+log is written. Also, possibly cached objects of the current DB remain in the
+heap, so an explicit call to <code><a
+href="refR.html#rollback">rollback</a></code> may be necessary. See also
+<code><a href="refB.html#blk">blk</a></code>.
+
+<pre><code>
+(pool2 "db2/"  # Update a read-only DB
+   (journal "file.jnl") )
+
+(rollback)
+(pool2 "db2/"  # Access object(s)
+   (show *DB) )
+(rollback)
+</code></pre>
+
+<dt><a name="pop"><code>(pop 'var) -> any</code></a>
+<dd>Pops the first element (CAR) from the stack in <code>var</code>. See also
+<code><a href="refP.html#push">push</a></code>, <code><a
+href="ref_.html#++">++</a></code>, <code><a
+href="refQ.html#queue">queue</a></code>, <code><a
+href="refC.html#cut">cut</a></code>, <code><a
+href="refD.html#del">del</a></code> and <code><a
+href="refF.html#fifo">fifo</a></code>.
+
+<pre><code>
+: (setq S '((a b c) (1 2 3)))
+-> ((a b c) (1 2 3))
+: (pop S)
+-> a
+: (pop (cdr S))
+-> 1
+: (pop 'S)
+-> (b c)
+: S
+-> ((2 3))
+</code></pre>
+
+<dt><a name="port"><code>(port ['T] 'cnt|(cnt . cnt) ['var]) -> cnt</code></a>
+<dd>Opens a TCP-Port <code>cnt</code> (or a UDP-Port if the first argument is
+<code>T</code>), and returns a socket descriptor suitable as an argument for
+<code><a href="refL.html#listen">listen</a></code> or <code><a
+href="refA.html#accept">accept</a></code> (or <code><a
+href="refU.html#udp">udp</a></code>, respectively). If <code>cnt</code> is zero,
+some free port number is allocated. If a pair of <code>cnt</code>s is given
+instead, it should be a range of numbers which are tried in turn. When
+<code>var</code> is given, it is bound to the port number.
+
+<pre><code>
+: (port 0 'A)                       # Allocate free port
+-> 4
+: A
+-> 1034                             # Got 1034
+: (port (4000 . 4008) 'A)           # Try one of these ports
+-> 5
+: A
+-> 4002
+</code></pre>
+
+<dt><a name="pp"><code>(pp 'sym) -> sym</code></a>
+<dt><code>(pp 'sym 'cls) -> sym</code>
+<dt><code>(pp '(sym . cls)) -> sym</code>
+<dd>Pretty-prints the function or method definition of <code>sym</code>. The
+output format would regenerate that same definition when read and executed. See
+also <code><a href="refP.html#pretty">pretty</a></code>, <code><a
+href="refD.html#debug">debug</a></code> and <code><a
+href="refV.html#vi">vi</a></code>.
+
+<pre><code>
+: (pp 'tab)
+(de tab (Lst . @)
+   (for N Lst
+      (let V (next)
+         (and (gt0 N) (space (- N (length V))))
+         (prin V)
+         (and
+            (lt0 N)
+            (space (- 0 N (length V))) ) ) )
+   (prinl) )
+-> tab
+
+: (pp 'has> '+Entity)
+(dm has> (Var Val)
+   (or
+      (nor Val (get This Var))
+      (has> (meta This Var) Val (get This Var)) ) )
+-> has>
+
+: (more (can 'has>) pp)
+(dm (has> . +relation) (Val X)
+   (and (= Val X) X) )
+
+(dm (has> . +Fold) (Val X)
+   (extra
+      Val
+      (if (= Val (fold Val)) (fold X) X) ) )
+
+(dm (has> . +Entity) (Var Val)
+   (or
+      (nor Val (get This Var))
+      (has> (meta This Var) Val (get This Var)) ) )
+
+(dm (has> . +List) (Val X)
+   (and
+      Val
+      (or
+         (extra Val X)
+         (find '((X) (extra Val X)) X) ) ) )
+
+(dm (has> . +Bag) (Val X)
+   (and
+      Val
+      (or (super Val X) (car (member Val X))) ) )
+</code></pre>
+
+<dt><a name="pr"><code>(pr 'any ..) -> any</code></a>
+<dd>Binary print: Prints all <code>any</code> arguments to the current output
+channel in encoded binary format. See also <code><a
+href="refR.html#rd">rd</a></code>, <code><a
+href="refB.html#bytes">bytes</a></code>, <code><a
+href="refT.html#tell">tell</a></code>, <code><a
+href="refH.html#hear">hear</a></code> and <code><a
+href="refW.html#wr">wr</a></code>.
+
+<pre><code>
+: (out "x" (pr 7 "abc" (1 2 3) 'a))  # Print to "x"
+-> a
+: (hd "x")
+00000000  04 0E 0E 61 62 63 01 04 02 04 04 04 06 03 05 61  ...abc.........a
+-> NIL
+</code></pre>
+
+<dt><a name="prBase64"><code>(prBase64 'cnt) -> NIL</code></a>
+<dd>Multiline base64 printing. Echoes bytes from the current input channel to
+the current output channel in Base64 format. A newline is inserted after every
+<code>cnt</code> byte-triples (character-quadruples). See also <code><a
+href="refE.html#echo">echo</a></code> <code><a
+href="refM.html#mail">mail</a></code>.
+
+<pre><code>
+: (in "image.png" (prBase64 18))  # Print 72 columns
+</code></pre>
+
+<dt><a name="prEval"><code>(prEval 'prg ['cnt]) -> any</code></a>
+<dd>Executes <code>prg</code>, similar to <code><a
+href="refR.html#run">run</a></code>, by evaluating all expressions in
+<code>prg</code> (within the binding environment given by <code>cnt-1</code>).
+As a side effect, all atomic expressions will be printed with <code><a
+href="refP.html#prinl">prinl</a></code>. See also <code><a
+href="refE.html#eval">eval</a></code>.
+
+<pre><code>
+: (let Prg 567
+   (prEval
+      '("abc" (prinl (+ 1 2 3)) Prg 987) ) )
+abc
+6
+567
+987
+-> 987
+</code></pre>
+
+<dt><a name="pre?"><code>(pre? 'any1 'any2) -> any2 | NIL</code></a>
+<dd>Returns <code>any2</code> when the string representation of
+<code>any1</code> is a prefix of the string representation of <code>any2</code>.
+See also <code><a href="refS.html#sub?">sub?</a></code> and <code><a
+href="refH.html#head">head</a></code>.
+
+<pre><code>
+: (pre? "abc" "abcdefg")
+-> "abcdef"
+: (pre? "def" "abcdefg")
+-> NIL
+: (pre? (+ 3 4) "7fach")
+-> "7fach"
+: (pre? NIL "abcdefg")
+-> "abcdefg"
+
+: (pre? "abc" '(a b c d e f g))
+-> "abcdefg"
+: (pre? '(a b c) "abcdefg")
+-> "abcdefg"
+</code></pre>
+
+<dt><a name="pretty"><code>(pretty 'any 'cnt)</code></a>
+<dd>Pretty-prints <code>any</code>. If <code>any</code> is an atom, or a list
+with a <code><a href="refS.html#size">size</a></code> not greater than 12, it is
+<code><a href="refP.html#print">print</a></code>ed as is. Otherwise, only the
+opening parenthesis and the CAR of the list is printed, all other elements are
+pretty-printed recursively indented by three spaces, followed by a space and the
+corresponding closing parenthesis. The initial indentation level
+<code>cnt</code> defaults to zero. See also <code><a
+href="refP.html#pp">pp</a></code>.
+
+<pre><code>
+: (pretty '(a (b c d) (e (f (g) (h) (i)) (j (k) (l) (m))) (n o p) q))
+(a
+   (b c d)
+   (e
+      (f (g) (h) (i))
+      (j (k) (l) (m)) )
+   (n o p)
+   q )-> ")"
+</code></pre>
+
+<dt><a name="prin"><code>(prin 'any ..) -> any</code></a>
+<dd>Prints the string representation of all <code>any</code> arguments to the
+current output channel. No space or newline is printed between individual items,
+or after the last item. For lists, all elements are <code>prin</code>'ted
+recursively. See also <code><a href="refP.html#prinl">prinl</a></code>.
+
+<pre><code>
+: (prin 'abc 123 '(a 1 b 2))
+abc123a1b2-> (a 1 b 2)
+</code></pre>
+
+<dt><a name="prinl"><code>(prinl 'any ..) -> any</code></a>
+<dd>Prints the string representation of all <code>any</code> arguments to the
+current output channel, followed by a newline. No space or newline is printed
+between individual items. For lists, all elements are <code>prin</code>'ted
+recursively. See also <code><a href="refP.html#prin">prin</a></code>.
+
+<pre><code>
+: (prinl 'abc 123 '(a 1 b 2))
+abc123a1b2
+-> (a 1 b 2)
+</code></pre>
+
+<dt><a name="print"><code>(print 'any ..) -> any</code></a>
+<dd>Prints all <code>any</code> arguments to the current output channel. If
+there is more than one argument, a space is printed between successive
+arguments. No space or newline is printed after the last item. See also <code><a
+href="refP.html#println">println</a></code>, <code><a
+href="refP.html#printsp">printsp</a></code>, <code><a
+href="refS.html#sym">sym</a></code> and <code><a
+href="refS.html#str">str</a></code>
+
+<pre><code>
+: (print 123)
+123-> 123
+: (print 1 2 3)
+1 2 3-> 3
+: (print '(a b c) 'def)
+(a b c) def-> def
+</code></pre>
+
+<dt><a name="println"><code>(println 'any ..) -> any</code></a>
+<dd>Prints all <code>any</code> arguments to the current output channel,
+followed by a newline. If there is more than one argument, a space is printed
+between successive arguments. See also <code><a
+href="refP.html#print">print</a></code>, <code><a
+href="refP.html#printsp">printsp</a></code>.
+
+<pre><code>
+: (println '(a b c) 'def)
+(a b c) def
+-> def
+</code></pre>
+
+<dt><a name="printsp"><code>(printsp 'any ..) -> any</code></a>
+<dd>Prints all <code>any</code> arguments to the current output channel,
+followed by a space. If there is more than one argument, a space is printed
+between successive arguments. See also <code><a
+href="refP.html#print">print</a></code>, <code><a
+href="refP.html#println">println</a></code>.
+
+<pre><code>
+: (printsp '(a b c) 'def)
+(a b c) def -> def
+</code></pre>
+
+<dt><a name="prior"><code>(prior 'lst1 'lst2) -> lst | NIL</code></a>
+<dd>Returns the cell in <code>lst2</code> which immediately precedes the cell
+<code>lst1</code>, or <code>NIL</code> if <code>lst1</code> is not found in
+<code>lst2</code> or is the very first cell. <code><a
+href="ref_.html#==">==</a></code> is used for comparison (pointer equality). See
+also <code><a href="refO.html#offset">offset</a></code> and <code><a
+href="refM.html#memq">memq</a></code>.
+
+<pre><code>
+: (setq L (1 2 3 4 5 6))
+-> (1 2 3 4 5 6)
+: (setq X (cdddr L))
+-> (4 5 6)
+: (prior X L)
+-> (3 4 5 6)
+</code></pre>
+
+<dt><a name="private"><code>(private) sym|lst</code></a>
+<dd>Intern symbols locally into an automatically created local namespace named
+'<code>priv</code>'. This namespace is inserted into the second position in the
+search order, behind the current namespace. <code>(private)</code> expects a
+single symbol or a list of symbols immediately following in the current input
+stream. See also <code><a href="refP.html#pico">pico</a></code>, <code><a
+href="refS.html#symbols">symbols</a></code>, <code><a
+href="refL.html#local">local</a></code>, <code><a
+href="refE.html#export">export</a></code>, <code><a
+href="refI.html#import">import</a></code> and <code><a
+href="refI.html#intern">intern</a></code>.
+
+<pre><code>
+: (symbols 'myLib 'pico)
+-> (pico)
+myLib: (symbols)
+-> (myLib pico)
+myLib: (private) (foo bar)  # Intern 'foo' and 'bar' in 'priv'
+myLib: (symbols)
+-> (myLib priv pico)
+</code></pre>
+
+<dt><a name="proc"><code>(proc 'sym ..) -> T</code></a>
+<dd>(Debug mode on Linux only) Shows a list of processes with command names
+given by the <code>sym</code> arguments, using the system <code>ps</code>
+utility. See also <code><a href="refK.html#kids">kids</a></code>, <code><a
+href="refK.html#kill">kill</a></code> and <code><a
+href="refH.html#hd">hd</a></code>.
+
+<pre><code>
+: (proc 'pil)
+  PID  PPID  STARTED  SIZE %CPU WCHAN  CMD
+16993  3267 12:38:21  1516  0.5 -      /usr/bin/picolisp /usr/lib/picolisp/lib.l /usr/bin/pil +
+15731  1834 12:36:35  2544  0.1 -      /usr/bin/picolisp /usr/lib/picolisp/lib.l /usr/bin/pil app/main.l -main -go +
+15823 15731 12:36:44  2548  0.0 -        /usr/bin/picolisp /usr/lib/picolisp/lib.l /usr/bin/pil app/main.l -main -go +
+-> T
+</code></pre>
+
+<dt><a name="prog"><code>(prog . prg) -> any</code></a>
+<dd>Executes <code>prg</code>, and returns the result of the last expression.
+See also <code><a href="refN.html#nil">nil</a></code>, <code><a
+href="refT.html#t">t</a></code>, <code><a
+href="refP.html#prog1">prog1</a></code> and <code><a
+href="refP.html#prog2">prog2</a></code>.
+
+<pre><code>
+: (prog (print 1) (print 2) (print 3))
+123-> 3
+</code></pre>
+
+<dt><a name="prog1"><code>(prog1 'any1 . prg) -> any1</code></a>
+<dd>Executes all arguments, and returns the result of the first expression
+<code>any1</code>. See also <code><a href="refN.html#nil">nil</a></code>,
+<code><a href="refT.html#t">t</a></code>, <code><a
+href="refP.html#prog">prog</a></code> and <code><a
+href="refP.html#prog2">prog2</a></code>.
+
+<pre><code>
+: (prog1 (print 1) (print 2) (print 3))
+123-> 1
+</code></pre>
+
+<dt><a name="prog2"><code>(prog2 'any1 'any2 . prg) -> any2</code></a>
+<dd>Executes all arguments, and returns the result of the second expression
+<code>any2</code>. See also <code><a href="refN.html#nil">nil</a></code>,
+<code><a href="refT.html#t">t</a></code>, <code><a
+href="refP.html#prog">prog</a></code> and <code><a
+href="refP.html#prog1">prog1</a></code>.
+
+<pre><code>
+: (prog2 (print 1) (print 2) (print 3))
+123-> 2
+</code></pre>
+
+<dt><a name="prop"><code>(prop 'sym1|lst ['sym2|cnt ..] 'sym) -> var</code></a>
+<dd>Fetches a property for a property key <code>sym</code> from a symbol. That
+symbol is <code>sym1</code> (if no other arguments are given), or a symbol found
+by applying the <code><a href="refG.html#get">get</a></code> algorithm to
+<code>sym1|lst</code> and the following arguments. The property (the cons pair,
+not just its value) is returned, suitable for direct (destructive) manipulations
+with functions expecting a <code>var</code> argument. See also <code><a
+href="ref_.html#::">::</a></code>.
+
+<pre><code>
+: (put 'X 'cnt 0)
+-> 0
+: (prop 'X 'cnt)
+-> (0 . cnt)
+: (inc (prop 'X 'cnt))        # Directly manipulate the property value
+-> 1
+: (get 'X 'cnt)
+-> 1
+</code></pre>
+
+<dt><a name="protect"><code>(protect . prg) -> any</code></a>
+<dd>Executes <code>prg</code>, and returns the result of the last expression. If
+a signal is received during that time, its handling will be delayed until the
+execution of <code>prg</code> is completed. See also <code><a
+href="refA.html#alarm">alarm</a></code>, <a href="refH.html#*Hup">*Hup</a>, <a
+href="refS.html#*Sig1">*Sig[12]</a> and <code><a
+href="refK.html#kill">kill</a></code>.
+
+<pre><code>
+: (protect (journal "db1.log" "db2.log"))
+-> T
+</code></pre>
+
+<dt><a name="prove"><code>(prove 'lst ['lst]) -> lst</code></a>
+<dd>The <a href="ref.html#pilog">Pilog</a> interpreter. Tries to prove the query
+list in the first argument, and returns an association list of symbol-value
+pairs, or <code>NIL</code> if not successful. The query list is modified as a
+side effect, allowing subsequent calls to <code>prove</code> for further
+results. The optional second argument may contain a list of symbols; in that
+case the successful matches of rules defined for these symbols will be traced.
+See also <code><a href="refG.html#goal">goal</a></code>, <code><a
+href="ref_.html#->">-&gt</a></code> and <code><a
+href="refU.html#unify">unify</a></code>.
+
+<pre><code>
+: (prove (goal '((equal 3 3))))
+-> T
+: (prove (goal '((equal 3 @X))))
+-> ((@X . 3))
+: (prove (goal '((equal 3 4))))
+-> NIL
+</code></pre>
+
+<dt><a name="prune"><code>(prune ['cnt])</code></a>
+<dd>Optimizes memory usage by pruning in-memory nodes of database trees.
+Typically called repeatedly during bulk data imports. If <code>cnt</code> is
+<code>0</code>, the pruning process is initialized, and if it is
+<code>NIL</code>, further pruning will be disabled. Otherwise, all nodes which
+have not been accessed (with <code><a href="refF.html#fetch">fetch</a></code> or
+<code><a href="refS.html#store">store</a></code>) for <code>cnt</code> calls to
+<code>prune</code> will be <code><a href="refW.html#wipe">wipe</a></code>d. See
+also <code><a href="refL.html#lieu">lieu</a></code>.
+
+<pre><code>
+(in File1
+   (prune 0)
+   (while (someData)
+      (new T '(+Cls1) ..)
+      (at (0 . 10000) (commit) (prune 100)) ) )
+(in File2
+   (prune 0)
+   (while (moreData)
+      (new T '(+Cls2) ..)
+      (at (0 . 10000) (commit) (prune 100)) ) )
+(commit)
+(prune)
+</code></pre>
+
+<dt><a name="push"><code>(push 'var 'any ..) -> any</code></a>
+<dd>Implements a stack using a list in <code>var</code>. The <code>any</code>
+arguments are cons'ed in front of the value list. See also <code><a
+href="refP.html#push1">push1</a></code>, <code><a
+href="refP.html#push1q">push1q</a></code>, <code><a
+href="refP.html#pop">pop</a></code>, <code><a
+href="refQ.html#queue">queue</a></code> and <code><a
+href="refF.html#fifo">fifo</a></code>.
+
+<pre><code>
+: (push 'S 3)              # Use the VAL of 'S' as a stack
+-> 3
+: S
+-> (3)
+: (push 'S 2)
+-> 2
+: (push 'S 1)
+-> 1
+: S
+-> (1 2 3)
+: (push S 999)             # Now use the CAR of the list in 'S'
+-> 999
+: (push S 888 777)
+-> 777
+: S
+-> ((777 888 999 . 1) 2 3)
+</code></pre>
+
+<dt><a name="push1"><code>(push1 'var 'any ..) -> any</code></a>
+<dd>Maintains a unique list in <code>var</code>. Each <code>any</code> argument
+is cons'ed in front of the value list only if it is not already a <code><a
+href="refM.html#member">member</a></code> of that list. See also <code><a
+href="refP.html#push">push</a></code>, <code><a
+href="refP.html#push1q">push1q</a></code>, <code><a
+href="refP.html#pop">pop</a></code> and <code><a
+href="refQ.html#queue">queue</a></code>.
+
+<pre><code>
+: (push1 'S 1 2 3)
+-> 3
+: S
+-> (3 2 1)
+: (push1 'S 2 4)
+-> 4
+: S
+-> (4 3 2 1)
+</code></pre>
+
+<dt><a name="push1q"><code>(push1q 'var 'any ..) -> any</code></a>
+<dd>Maintains a unique list in <code>var</code>. Each <code>any</code> argument
+is cons'ed in front of the value list only if it is not already <code><a
+href="refM.html#memq">memq</a></code> of that list (pointer equality). See also
+<code><a href="refP.html#push">push</a></code>, <code><a
+href="refP.html#push1">push1</a></code>, <code><a
+href="refP.html#pop">pop</a></code> and <code><a
+href="refQ.html#queue">queue</a></code>.
+
+<pre><code>
+: (push1q 'S 'a (1) 'b (2) 'c)
+-> c
+: S
+-> (c (2) b (1) a)
+: (push1q 'S 'b (1) 'd)       # (1) is not pointer equal to the previous one
+-> d
+: S
+->  (d (1) c (2) b (1) a)     # (1) is twice in the list
+</code></pre>
+
+<dt><a name="put"><code>(put 'sym1|lst ['sym2|cnt ..] 'any) -> any</code></a>
+<dd>Stores a new value <code>any</code> for a property key (or in the symbol
+value for zero) in a symbol, or in a list. That symbol is <code>sym1</code> (if
+no other arguments are given), or a symbol found by applying the <code><a
+href="refG.html#get">get</a></code> algorithm to <code>sym1|lst</code> and the
+following arguments. If the final destination is a list, the value is stored in
+the CDR of an <code><a href="refA.html#asoq">asoq</a></code>ed element (if the
+key argument is a symbol), or the n'th element (if the key is a number). See
+also <code><a href="ref_.html#=:">=:</a></code>.
+
+<pre><code>
+: (put 'X 'a 1)
+-> 1
+: (get 'X 'a)
+-> 1
+: (prop 'X 'a)
+-> (1 . a)
+
+: (setq L '(A B C))
+-> (A B C)
+: (setq B 'D)
+-> D
+: (put L 2 0 'p 5)  # Store '5' under the 'p' property of the value of 'B'
+-> 5
+: (getl 'D)
+-> ((5 . p))
+</code></pre>
+
+<dt><a name="put!"><code>(put! 'obj 'sym 'any) -> any</code></a>
+<dd><a href="ref.html#trans">Transaction</a> wrapper function for <code><a
+href="refP.html#put">put</a></code>. Note that for setting property values of
+entities typically the <code><a
+href="refE.html#entityMesssages">put!></a></code> message is used. See also
+<code><a href="refN.html#new!">new!</a></code>, <code><a
+href="refR.html#request!">request!</a></code>, <code><a
+href="refS.html#set!">set!</a></code> and <code><a
+href="refI.html#inc!">inc!</a></code>.
+
+<pre><code>
+(put! Obj 'cnt 0)  # Setting a property of a non-entity object
+</code></pre>
+
+<dt><a name="putl"><code>(putl 'sym1|lst1 ['sym2|cnt ..] 'lst) -> lst</code></a>
+<dd>Stores a complete new property list <code>lst</code> in a symbol. That
+symbol is <code>sym1</code> (if no other arguments are given), or a symbol found
+by applying the <code><a href="refG.html#get">get</a></code> algorithm to
+<code>sym1|lst1</code> and the following arguments. All previously defined
+properties for that symbol are lost. See also <code><a
+href="refG.html#getl">getl</a></code> and <code><a
+href="refM.html#maps">maps</a></code>.
+
+<pre><code>
+: (putl 'X '((123 . a) flg ("Hello" . b)))
+-> ((123 . a) flg ("Hello" . b))
+: (get 'X 'a)
+-> 123
+: (get 'X 'b)
+-> "Hello"
+: (get 'X 'flg)
+-> T
+</code></pre>
+
+<dt><a name="pwd"><code>(pwd) -> sym</code></a>
+<dd>Returns the path to the current working directory. See also <code><a
+href="refD.html#dir">dir</a></code> and <code><a
+href="refC.html#cd">cd</a></code>.
+
+<pre><code>
+: (pwd)
+-> "/home/app"
+</code></pre>
+
+</dl>
+
+</body>
+</html>

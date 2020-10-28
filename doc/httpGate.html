@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>The 'httpGate' Proxy Server</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+<a href="mailto:mattias@inogu.se">mattias@inogu.se</a>
+
+<h1>The 'httpGate' Proxy Server</h1>
+
+<p align=right>(c) Software Lab. Mattias Sundblad
+
+<p>This document describes the <code>httpGate</code> utility which is included
+in the PicoLisp distribution.
+
+<p>For basic information about the PicoLisp system please look at the <a
+href="ref.html">PicoLisp Reference</a> and the <a href="tut.html">PicoLisp
+Tutorial</a>.
+
+<p><ul>
+<li><a href="#purpose">Purpose</a>
+<li><a href="#basic">Basic functionality</a>
+<li><a href="#building">Building httpGate</a>
+<li><a href="#running">Running httpGate</a>
+<li><a href="#config">Configuring httpGate</a>
+   <ul>
+   <li><a href="#names">The "names" config file</a>
+   <li><a href="#balanced">Balanced "names" file</a>
+   <li><a href="#voidfile">The "void" file</a>
+   <li><a href="#reload">Reloading the configuration</a>
+   </ul>
+<li><a href="#keepalive">Keep-alive and retirement</a>
+</ul>
+
+<p><hr>
+<h2><a name="purpose">Purpose</a></h2>
+
+<p><code>httpGate</code> is a central element of the PicoLisp application server
+architecture. Its purpose is to perform the following tasks:
+
+<p><ul>
+<li>Provide a single application entry port (e.g. 80 or 443).
+<li>Allow PicoLisp applications to run as non-root.
+<li>Start application servers on demand.
+<li>Handle HTTPS/SSL communication.
+</ul>
+
+<h2><a name="basic">Basic functionality</a></h2>
+
+<p>A HTTP request to port 80, respectively 443, of the form
+
+<pre><code>
+   http[s]://server.org/12345/path/file
+</code></pre>
+
+<p>is forwarded to a server on localhost listening on port 12345, to ask for the
+resource "path/file".
+
+<p>If httpGate was started with a config file, and that file contains an entry
+for "app", then also the following request is accepted:
+
+<pre><code>
+   http[s]://server.org/app/path/file
+</code></pre>
+
+<p>In that case, the "app" server process is started automatically (if it is not
+already running) listening on port 12345, and the request is forwarded as above.
+
+<p>Only GET and POST requests will be forwarded, and only to ports &gt;= 1024.
+The main httpGate process then forks two child processes, one for each
+direction. These child processes terminate automatically if the connection is
+idle for more than 7 minutes.
+
+<h2><a name="building">Building httpGate</a></h2>
+
+<p>httpGate is delivered in source code form with the picoLisp distribution. To
+build the program you need a c compiler and related header files. Development
+headers for OpenSSL are also needed. On Debian based systems, the prerequisites
+can be fulfilled by running <code>apt-get install build-essential</code> and
+<code>apt-get install libssl-dev</code>. <p>Next, go to the 'src' directory in
+the distribution and run <code>make gate</code>. When this is done, there should
+be an <code>httpGate</code> executable in the 'bin' directory.
+
+<h2><a name="running">Running httpGate</a></h2>
+
+<p>The simplest way to run httpGate is to start it with an explicit port
+argument:
+
+<pre><code>
+   bin/httpGate 80 8080
+   bin/httpGate 443 8080 pem/www.domain.key,pem/domain.crt
+</code></pre>
+
+<p>When started in this way, httpGate forwards requests from port 80 and 443
+respectively to a PicoLisp application on port 8080. This form has a drawback
+though, since it only allows for a single application to be handled. Usually,
+there are many PicoLisp applications running on the same machine, and we need
+httpGate to forward requests to all of them.
+
+<p>To handle several applications, start httpGate with a "names" config file:
+
+<pre><code>
+      bin/httpGate 80 names
+      bin/httpGate 443 names pem/www.domain.key,pem/domain.crt
+</code></pre>
+
+<p>httpGate needs to be started as root, but application servers should run
+under normal user accounts. The easiest way to start httpGate automatically is
+to add lines like the ones above to '/etc/rc.local'.
+
+<h2><a name="config">Configuring httpGate</a></h2>
+
+<h3><a name="names">The "names" config file</a></h3>
+
+<p>The "names" config file contains one line per application server. Each line
+holds six whitespace separated tokens, for example:
+
+<pre><code>
+   app 12345 tom /home/tom log/app ./pil app/main.l lib/app.l -main -go -wait
+</code></pre>
+
+<p><ol>
+<li>"app" is the name of the application, and the key to this line.
+<li>"12345" is the port where this server should listen at.
+<li>"tom" is the user under whose ID the server should run.
+<li>"/home/tom" is the working directory where the server should start.
+<li>"log/app" is a log file to redirect stdout/stderr to.
+<li>The rest of the line ".pil app/main.l ..." is the command to start the application.
+</ol>
+
+<p>Empty lines, and lines starting with a "#", are ignored. If the key in a
+config file record is the special name "@", then it denotes the default
+application for this machine. URLs without name will be forwarded to that port.
+Optional tokens (e.g. log files) or empty arguments to the commands must be
+written as single caret (^) characters to denote empty strings. Double or single
+quotes are not parsed.
+
+<p>If the port is zero, then a single additional token is expected which should
+denote an URL to redirect the request to:
+
+<pre><code>
+   app 0 https://domain/foo/bar
+</code></pre>
+
+This will cause httpGate to respnd with "302 Found" and "Location:
+https://domain/foo/bar".
+
+<h3><a name="balanced">Balanced names file</a></h3>
+
+<p>If the config file contains many (hundreds or thousands) entries, then it is
+recommended to sort it with the 'balance' utility. This may greatly accelerate
+name (key) lookup at runtime. For that, put the above config lines into a file
+"config". The tool 'balance' can be built - together with httpGate - with
+
+<pre><code>
+   (cd src; make tools gate)
+</code></pre>
+
+<p>The following command will create a balanced "names" file:
+
+<pre><code>
+   cat config | bin/balance -sort &gt; names
+</code></pre>
+
+<h3><a name="voidfile">The "void" file</a></h3>
+
+<p>If the local application server cannot be connected on the requested port
+(typically because a session timed out), and a file with the name "void" exists
+in the current working directory (token 4 in the config line), then the contents
+of that file (normally HTML) are sent as response to the client.
+
+<h3><a name="reload">Reloading the configuration</a></h3>
+
+<p>When the config file is modified, it can be reloaded by sending SIGHUP to all
+running top-level httpGate processes:
+
+<pre><code>
+   $ sudo pkill -HUP -P1 httpGate
+</code></pre>
+
+<p>Another possibility is to restart httpGate(s). This is not a problem, and can
+be done also while the server is in production.
+
+<p>Just kill the top level httpGate parent process. This is not harmful, because
+existing user sessions are handled by pairs of child processes, which continue
+to run (until they terminate normally) even if their parent is stopped. Note
+that this is different from PicoLisp DB applications, where the parent should
+*never* be hard-stopped (eg. with 'kill -9 &lt;pid&gt;') while child processes
+are running ('kill &lt;pid&gt;' is OK though, because the parent takes care of
+stopping the children).
+
+<p>An example for stopping and restarting a running httpGate is:
+
+<pre><code>
+   (let L
+      # Build list of all httpGate parents (i.e. on 80 and 443)
+      (make
+         (in '("sudo" "pgrep" "-P1" "httpGate")
+            (while (read)
+               (link @) ) ) )
+      # Stop them
+      (for P L
+         (call "sudo" "kill" P) )
+      # Wait until all are gone
+      (while (find '((P) (kill P 0)) L)
+         (wait 200) )
+      # Start new
+      (call "sudo" "bin/httpGate" 80 "names")
+      (call "sudo" "bin/httpGate" 443 "names" "pem/...") )
+</code></pre>
+
+<h2><a name="keepalive">Keep-alive and retirement</a></h2>
+
+<p>Applications should call
+
+<pre><code>
+   (retire 20)
+</code></pre>
+
+<p>before they call 'server'. This causes the parent server process to terminate
+automatically 20 minutes after the last child process (user session) terminated.
+It will be started by httpGate again on demand. User sessions in turn terminate
+automatically after 5 minutes (if nobody logged in) or 1 hour (if a user is
+logged in), unless JavaScript is enabled in the client browser and the
+application calls
+
+<pre><code>
+   (&lt;ping&gt; 7)
+</code></pre>
+
+<p>in its main 'action' function. In that case, the user session will not
+terminate until the user closes the last window or tab to this application.
+
+</body>
+</html>

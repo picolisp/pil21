@@ -1,4 +1,4 @@
-# 19oct20 Software Lab. Alexander Burger
+# 28oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1203,7 +1203,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (let P (i64* (val Ptr))
             (set Ptr (i8* (inc P)))
             (box (val P)) ) )
-      ((== Spec $P)  # 'P' Pointer or positive (unsigned 64 bit)
+      ((== Spec $P)  # 'P' Pointer (unsigned 64 bit)
          (let P (i64* (val Ptr))
             (set Ptr (i8* (inc P)))
             (box64 (val P)) ) )
@@ -1217,7 +1217,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (sign (cnt (i64 (- @)))) ) )
       ((== Spec $C)  # 'C' Character (UTF-8, 1-4 bytes)
          (if (fetchChar Ptr) (mkChar @) $Nil) )
-      ((== Spec $W)  # 'W' Integer (signed 16 bit)
+      ((== Spec $W)  # 'W' Word (signed 16 bit)
          (if
             (ge0
                (let P (i16* (val Ptr))
@@ -1283,14 +1283,14 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          ((nil? Spec) $Nil)
          ((== Spec $T) Val)  # 'T' Direct Lisp value
          ((== Spec $N) (box Val))  # 'N' Number (signed 64 bit)
-         ((== Spec $P) (box64 Val))  # 'P' Pointer or positive (unsigned 64 bit)
+         ((== Spec $P) (box64 Val))  # 'P' Pointer (unsigned 64 bit)
          ((== Spec $I)  # 'I' Integer (signed 32 bit)
             (if (ge0 (i32 Val))
                (cnt (i64 @))
                (sign (cnt (i64 (- @)))) ) )
          ((== Spec $C)  # 'C' Character (UTF-8, 1-4 bytes)
             (if (i32 Val) (mkChar @) $Nil) )
-         ((== Spec $W)  # 'W' Integer (signed 16 bit)
+         ((== Spec $W)  # 'W' Word (signed 16 bit)
             (if (ge0 (i16 Val))
                (cnt (i64 @))
                (sign (cnt (i64 (- @)))) ) )

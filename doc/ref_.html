@@ -1,0 +1,561 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Other</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+
+<h1>Other</h1>
+
+<dl>
+
+<dt><a name="!"><code>(! . exe) -> any</code></a>
+<dd>Low level breakpoint function: The current execution environment is saved
+and the I/O channels are redirected to the console. Then <code>exe</code> is
+displayed, and a read-eval-print-loop is entered (with <code>!</code> as its
+prompt character), to evaluate expressions and examine the current program
+environment. An empty input line terminates the read-eval-print-loop, the
+environment and I/O channels are restored, and the result of <code>exe</code> is
+returned. <code>!</code> is normally inserted into existing programs with the
+<code><a href="refD.html#debug">debug</a></code> function. See also <code><a
+href="refE.html#e">e</a></code>, <code><a href="ref_.html#^">^</a></code> and
+<code><a href="refD.html#*Dbg">*Dbg</a></code>.
+
+<pre><code>
+: (de foo (N) (and (println 1) (! println N) (println 2)))
+-> foo
+: (foo 7)
+1                 # Executed '(println 1)'
+(println N)       # Entered breakpoint
+! N               # Examine the value of 'N'
+-> 7
+! (e)             # Evaluate '^', i.e. (println N)
+7
+-> 7
+! (e @)           # Evaluate '@' -> the result of '(println 1)'
+-> 1
+!                 # Empty line: continue
+7                 # Executed '(println N)'
+2                 # Executed '(println 2)'
+-> 2
+</code></pre>
+
+<dt><a name="$"><code>($ sym|lst lst . prg) -> any</code></a>
+<dd>Low level trace function: The first argument <code>sym|lst</code> is printed
+to the console with a proper indentation, followed by a colon <code>:</code>. If
+a function is traced, the first argument is the function symbol, else if a
+method is traced, it is a cons pair of message and class. The second argument
+<code>lst</code> should be a list of symbols, identical to the function's
+argument list. The current values of these symbols are printed, followed by a
+newline. Then <code>prg</code> is executed, and its return value printed in a
+similar way (this time with an equals sign <code>=</code> instead of a colon)
+and returned. <code>$</code> is normally inserted into existing programs with
+the <code><a href="refT.html#trace">trace</a></code> function.
+
+<pre><code>
+: (de foo (A B) ($ foo (A B) (* A B)))
+-> foo
+: (foo 3 4)
+ foo : 3 4        # Function entry, arguments 3 and 4
+ foo = 12         # Function exit, return value 12
+-> 12
+</code></pre>
+
+<dt><a name="$dat"><code>($dat 'sym1 ['sym2]) -> dat</code></a>
+<dd>Converts a string <code>sym1</code> in ISO format to a <code><a
+href="refD.html#date">date</a></code>, optionally using a delimiter character
+<code>sym2</code>. See also <code><a href="refD.html#dat$">dat$</a></code>,
+<code><a href="ref_.html#$tim">$tim</a></code>, <code><a
+href="refS.html#strDat">strDat</a></code> and <code><a
+href="refE.html#expDat">expDat</a></code>.
+
+<pre><code>
+: ($dat "20070601")
+-> 733134
+: ($dat "2007-06-01" "-")
+-> 733134
+</code></pre>
+
+<dt><a name="$tim"><code>($tim 'sym) -> tim</code></a>
+<dd>Converts a string to a <code><a href="refT.html#time">time</a></code>. The
+minutes and seconds are optional and default to zero. See also <code><a
+href="refT.html#tim$">tim$</a></code> and <code><a
+href="ref_.html#$dat">$dat</a></code>.
+
+<pre><code>
+: (time ($tim "10:57:56"))
+-> (10 57 56)
+: (time ($tim "10:57"))
+-> (10 57 0)
+: (time ($tim "10"))
+-> (10 0 0)
+</code></pre>
+
+<dt><a name="%"><code>(% 'num ..) -> num</code></a>
+<dd>Returns the remainder from the divisions of successive <code>num</code>
+arguments. The sign of the result is that of the first argument. When one of the
+arguments evaluates to <code>NIL</code>, it is returned immediately. See also
+<code><a href="ref_.html#/">/</a></code> and <code><a
+href="ref_.html#*/">*/</a></code> .
+
+<pre><code>
+: (% 17 5)
+-> 2
+: (% -17 5)  # Sign is that of the first argument
+-> -2
+: (% 5 2)
+-> 1
+: (% 15 10)
+-> 5
+: (% 15 10 2)  # (% 15 10) -> 5, then (% 5 2) -> 1
+-> 1
+</code></pre>
+
+<dt><a name="&"><code>(& 'num ..) -> num</code></a>
+<dd>Returns the bitwise <code>AND</code> of all <code>num</code> arguments. When
+one of the arguments evaluates to <code>NIL</code>, it is returned immediately.
+See also <code><a href="ref_.html#|">|</a></code>, <code><a
+href="refX.html#x|">x|</a></code> and <code><a
+href="refB.html#bit?">bit?</a></code>.
+
+<pre><code>
+: (& 6 3)
+-> 2
+: (& 7 3 1)
+-> 1
+</code></pre>
+
+<dt><a name="*"><code>(* 'num ..) -> num</code></a>
+<dd>Returns the product of all <code>num</code> arguments. When one of the
+arguments evaluates to <code>NIL</code>, it is returned immediately. See also
+<code><a href="ref_.html#/">/</a></code>, <code><a
+href="ref_.html#*/">*/</a></code>, <code><a href="ref_.html#+">+</a></code> and
+<code><a href="ref_.html#-">-</a></code>.
+
+<pre><code>
+: (* 1 2 3)
+-> 6
+: (* 5 3 2 2)
+-> 60
+</code></pre>
+
+<dt><a name="**"><code>(** 'num1 'num2) -> num</code></a>
+<dd>Integer exponentiation: Returns <code>num1</code> to the power of
+<code>num2</code>.
+
+<pre><code>
+: (** 2 3)
+-> 8
+: (** 100 100)
+-> 10000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000000000000000000000000000000000000000
+00000000000000000000000000000000000000000000
+</code></pre>
+
+<dt><a name="*/"><code>(*/ 'num1 ['num2 ..] 'num3) -> num</code></a>
+<dd>Returns the product of <code>num1</code> and all following <code>num2</code>
+arguments, divided by the <code>num3</code> argument. The result is rounded to
+the nearest integer value. When one of the arguments evaluates to
+<code>NIL</code>, it is returned immediately. Note that <code>*/</code> is
+especially useful for fixed point arithmetic, by multiplying with (or dividing
+by) the scale factor. See also <code><a href="ref_.html#*">*</a></code>,
+<code><a href="ref_.html#/">/</a></code>, <code><a
+href="ref_.html#+">+</a></code>, <code><a href="ref_.html#-">-</a></code> and
+<code><a href="refS.html#sqrt">sqrt</a></code>.
+
+<pre><code>
+: (*/ 3 4 2)
+-> 6
+: (*/ 1234 2 10)
+-> 247
+: (*/ 100 6)
+-> 17
+
+: (scl 2)
+-> 2
+: (format (*/ 3.0 1.5 1.0) *Scl)
+-> "4.50"
+
+: (scl 20)
+-> 20
+: (format (*/ 9.9 9.789 9.56789 `(* 1.0 1.0)) *Scl)
+-> "927.23474457900000000000"
+
+</code></pre>
+
+<dt><a name="+"><code>(+ 'num ..) -> num</code></a>
+<dd>Returns the sum of all <code>num</code> arguments. When one of the arguments
+evaluates to <code>NIL</code>, it is returned immediately. See also <code><a
+href="refI.html#inc">inc</a></code>, <code><a href="ref_.html#-">-</a></code>,
+<code><a href="ref_.html#*">*</a></code>, <code><a
+href="ref_.html#/">/</a></code> and <code><a href="ref_.html#*/">*/</a></code>.
+
+<pre><code>
+: (+ 1 2 3)
+-> 6
+</code></pre>
+
+<dt><a name="++"><code>(++ var) -> any</code></a>
+<dd>Pops the first element (CAR) from the stack in <code>var</code>. <code>(++
+Lst)</code> is equivalent to <code>(pop 'Lst)</code>. See also <code><a
+href="refP.html#pop">pop</a></code>.
+
+<pre><code>
+</code></pre>
+
+<dt><a name="-"><code>(- 'num ..) -> num</code></a>
+<dd>Returns the difference of the first <code>num</code> argument and all
+following arguments. If only a single argument is given, it is negated. When one
+of the arguments evaluates to <code>NIL</code>, it is returned immediately. See
+also <code><a href="refD.html#dec">dec</a></code>, <code><a
+href="ref_.html#+">+</a></code>, <code><a href="ref_.html#*">*</a></code>,
+<code><a href="ref_.html#/">/</a></code> and <code><a
+href="ref_.html#*/">*/</a></code>.
+
+<pre><code>
+: (- 7)
+-> -7
+: (- 7 2 1)
+-> 4
+</code></pre>
+
+<dt><a name="->"><code>(-&gt any [cnt]) -> any</code></a>
+<dd>Searches for the value of <code>any</code> (typically a <a
+href="ref.html#pilog">Pilog</a> variable, or an expression of variables) at top
+level (or level <code>cnt</code>) in the current environment. See also <code><a
+href="refP.html#prove">prove</a></code> and <code><a
+href="refU.html#unify">unify</a></code>.
+
+<pre><code>
+: (? (append (1 2 3) (4 5 6) @X) (^ @ (println 'X '= (-> @X))))
+X = (1 2 3 4 5 6)
+ @X=(1 2 3 4 5 6)
+-> NIL
+</code></pre>
+
+<dt><a name="/"><code>(/ 'num ..) -> num</code></a>
+<dd>Returns the first <code>num</code> argument successively divided by all
+following arguments. When one of the arguments evaluates to <code>NIL</code>, it
+is returned immediately. See also <code><a href="ref_.html#*">*</a></code>,
+<code><a href="ref_.html#*/">*/</a></code>, <code><a
+href="ref_.html#%">%</a></code>, <code><a href="ref_.html#+">+</a></code> and
+<code><a href="ref_.html#-">-</a></code>.
+
+<pre><code>
+: (/ 12 3)
+-> 4
+: (/ 60 -3 2 2)
+-> -5
+</code></pre>
+
+<dt><a name=":"><code>(: sym|0 [sym1|cnt ..]) -> any</code></a>
+<dd>Fetches a value <code>any</code> from the properties of a symbol, or from a
+list, by applying the <code><a href="refG.html#get">get</a></code> algorithm to
+<code>This</code> and the following arguments. Used typically in methods or
+<code><a href="refW.html#with">with</a></code> bodies. <code>(: ..)</code> is
+equivalent to <code>(; This ..)</code>. See also <code><a
+href="ref_.html#;">;</a></code>, <code><a href="ref_.html#=:">=:</a></code> and
+<code><a href="ref_.html#::">::</a></code>.
+
+<pre><code>
+: (put 'X 'a 1)
+-> 1
+: (with 'X (: a))
+-> 1
+</code></pre>
+
+<dt><a name="::"><code>(:: sym [sym1|cnt .. sym2]) -> var</code></a>
+<dd>Fetches a property for a property key <code>sym</code> or <code>sym2</code>
+from a symbol. That symbol is <code>This</code> (if no other arguments are
+given), or a symbol found by applying the <code><a
+href="refG.html#get">get</a></code> algorithm to <code>This</code> and the
+following arguments. The property (the cons pair, not just its value) is
+returned, suitable for direct (destructive) manipulations with functions
+expecting a <code>var</code> argument. Used typically in methods or <code><a
+href="refW.html#with">with</a></code> bodies. See also <code><a
+href="ref_.html#=:">=:</a></code>, <code><a
+href="refP.html#prop">prop</a></code> and <code><a
+href="ref_.html#:">:</a></code>.
+
+<pre><code>
+: (with 'X (=: cnt 0) (inc (:: cnt)) (: cnt))
+-> 1
+</code></pre>
+
+<dt><a name=";"><code>(; 'sym1|lst [sym2|cnt ..]) -> any</code></a>
+<dd>Fetches a value <code>any</code> from the properties of a symbol, or from a
+list, by applying the <code><a href="refG.html#get">get</a></code> algorithm to
+<code>sym1|lst</code> and the following arguments. See also <code><a
+href="ref_.html#:">:</a></code>, <code><a href="ref_.html#=:">=:</a></code> and
+<code><a href="ref_.html#::">::</a></code>.
+
+<pre><code>
+: (put 'A 'a 1)
+-> 1
+: (put 'A 'b 'B)
+-> B
+: (put 'B 'c 7)
+-> 7
+: (; 'A a)
+-> 1
+: (; 'A b c)
+-> 7
+</code></pre>
+
+<dt><a name="<"><code>(< 'any ..) -> flg</code></a>
+<dd>Returns <code>T</code> when all arguments <code>any</code> are in strictly
+increasing order. See also <a href="ref.html#cmp">Comparing</a>.
+
+<pre><code>
+: (< 3 4)
+-> T
+: (< 'a 'b 'c)
+-> T
+: (< 999 'a)
+-> T
+</code></pre>
+
+<dt><a name="<="><code>(<= 'any ..) -> flg</code></a>
+<dd>Returns <code>T</code> when all arguments <code>any</code> are in strictly
+non-decreasing order. See also <a href="ref.html#cmp">Comparing</a>.
+
+<pre><code>
+: (<= 3 3)
+-> T
+: (<= 1 2 3)
+-> T
+: (<= "abc" "abc" "def")
+-> T
+</code></pre>
+
+<dt><a name="<>"><code>(&lt;&gt 'any ..) -> flg</code></a>
+<dd>Returns <code>T</code> when not all <code>any</code> arguments are equal
+(structure equality). <code>(<&gt 'any ..)</code> is equivalent to <code>(not (=
+'any ..))</code>. See also <a href="ref.html#cmp">Comparing</a>.
+
+<pre><code>
+: (<&gt 'a 'b)
+-> T
+: (<&gt 'a 'b 'b)
+-> T
+: (<&gt 'a 'a 'a)
+-> NIL
+</code></pre>
+
+<dt><a name="="><code>(= 'any ..) -> flg</code></a>
+<dd>Returns <code>T</code> when all <code>any</code> arguments are equal
+(structure equality). See also <a href="ref.html#cmp">Comparing</a>.
+
+<pre><code>
+: (= 6 (* 1 2 3))
+-> T
+: (= "a" "a")
+-> T
+: (== "a" "a")
+-> T
+: (= (1 (2) 3) (1 (2) 3))
+-> T
+</code></pre>
+
+<dt><a name="=0"><code>(=0 'any) -> 0 | NIL</code></a>
+<dd>Returns <code>0</code> when <code>any</code> is a number with value zero.
+See also <code><a href="refN.html#n0">n0</a></code>, <code><a
+href="refL.html#lt0">lt0</a></code>, <code><a
+href="refL.html#le0">le0</a></code>, <code><a
+href="refG.html#ge0">ge0</a></code>, <code><a
+href="refG.html#gt0">gt0</a></code> and <code><a
+href="ref_.html#=1">=1</a></code>.
+
+<pre><code>
+: (=0 (- 6 3 2 1))
+-> 0
+: (=0 'a)
+-> NIL
+</code></pre>
+
+<dt><a name="=1"><code>(=1 'any) -> 1 | NIL</code></a>
+<dd>Returns <code>1</code> when <code>any</code> is a number with value one.
+See also <code><a href="ref_.html#=0">=0</a></code>.
+
+<pre><code>
+: (=1 (- 6 3 2))
+-> 1
+: (=1 'a)
+-> NIL
+</code></pre>
+
+<dt><a name="=:"><code>(=: sym|0 [sym1|cnt ..] 'any) -> any</code></a>
+<dd>Stores a new value <code>any</code> for a property key (or in the symbol
+value for zero) in a symbol, or in a list. That symbol is <code>This</code> (if
+no other arguments are given), or a symbol found by applying the <code><a
+href="refG.html#get">get</a></code> algorithm to <code>This</code> and the
+following arguments. If the final destination is a list, the value is stored in
+the CDR of an <code><a href="refA.html#asoq">asoq</a></code>ed element (if the
+key argument is a symbol), or the n'th element (if the key is a number). Used
+typically in methods or <code><a href="refW.html#with">with</a></code> bodies.
+See also <code><a href="refP.html#put">put</a></code>, <code><a
+href="ref_.html#:">:</a></code> and <code><a href="ref_.html#::">::</a></code>.
+
+<pre><code>
+: (with 'X (=: a 1) (=: b 2))
+-> 2
+: (get 'X 'a)
+-> 1
+: (get 'X 'b)
+-> 2
+</code></pre>
+
+<dt><a name="=="><code>(== 'any ..) -> flg</code></a>
+<dd>Returns <code>T</code> when all <code>any</code> arguments are the same
+(pointer equality). See also <code><a href="refN.html#n==">n==</a></code> and <a
+href="ref.html#cmp">Comparing</a>.
+
+<pre><code>
+: (== 'a 'a)
+-> T
+: (== 'NIL NIL (val NIL) (car NIL) (cdr NIL))
+-> T
+: (== (1 2 3) (1 2 3))
+-> NIL
+</code></pre>
+
+<dt><a name="=T"><code>(=T 'any) -> flg</code></a>
+<dd>Returns <code>T</code> when <code>any</code> is the symbol <code>T</code>.
+<code>(=T X)</code> is equivalent to <code>(== T X)</code>. See also <a
+href="refN.html#nT">nT</a>.
+
+<pre><code>
+: (=T 0)
+-> NIL
+: (=T "T")
+-> NIL
+: (=T T)
+-> T
+</code></pre>
+
+<dt><a name=">"><code>(> 'any ..) -> flg</code></a>
+<dd>Returns <code>T</code> when all arguments <code>any</code> are in strictly
+decreasing order. See also <a href="ref.html#cmp">Comparing</a>.
+
+<pre><code>
+: (> 4 3)
+-> T
+: (> 'A 999)
+-> T
+</code></pre>
+
+<dt><a name=">="><code>(>= 'any ..) -> flg</code></a>
+<dd>Returns <code>T</code> when all arguments <code>any</code> are in strictly
+non-increasing order. See also <a href="ref.html#cmp">Comparing</a>.
+
+<pre><code>
+: (>= 'A 999)
+-> T
+: (>= 3 2 2 1)
+-> T
+</code></pre>
+
+<dt><a name=">>"><code>(>> 'cnt 'num) -> num</code></a>
+<dd>Shifts right the <code>num</code> argument by <code>cnt</code>
+bit-positions. If <code>cnt</code> is negative, a corresponding left shift is
+performed.
+
+<pre><code>
+: (>> 1 8)
+-> 4
+: (>> 3 16)
+-> 2
+: (>> -3 16)
+-> 128
+: (>> -1 -16)
+-> -32
+</code></pre>
+
+<dt><a name="?"><code>(? [sym ..] [pat 'any ..] . lst) -> flg</code></a>
+<dd>Top-level function for interactive <a href="ref.html#pilog">Pilog</a>
+queries. <code>?</code> is a non-evaluating front-end to the <code><a
+href="refQ.html#query">query</a></code> function. It displays each result, waits
+for console input, and terminates when a non-empty line is entered. If a
+preceding list of (non-pattern-) symbols is given, they will be taken as rules
+to be traced by <code><a href="refP.html#prove">prove</a></code>. The list of
+variable/value pairs is passed to <code><a href="refG.html#goal">goal</a></code>
+for an initial Pilog environment. See also <code><a
+href="refP.html#pilog">pilog</a></code> and <code><a
+href="refS.html#solve">solve</a></code>.
+
+<pre><code>
+: (? (append (a b c) (d e f) @X))
+ @X=(a b c d e f)
+-> NIL
+
+: (? (append @X @Y (a b c)))
+ @X=NIL @Y=(a b c)
+ @X=(a) @Y=(b c)
+ @X=(a b) @Y=(c)
+ @X=(a b c) @Y=NIL
+-> NIL
+
+: (? (append @X @Y (a b c)))
+ @X=NIL @Y=(a b c).                    # Stopped
+-> NIL
+
+: (? append (append @X @Y (a b c)))    # Trace 'append'
+1 (append NIL (a b c) (a b c))
+ @X=NIL @Y=(a b c)
+2 (append (a . @X) @Y (a b c))
+1 (append NIL (b c) (b c))
+ @X=(a) @Y=(b c).                      # Stopped
+-> NIL
+</code></pre>
+
+<dt><a name="@"><code>@</code></a>
+<dd>Holds the result of the last top level expression in the current
+read-eval-print loop, or the result of the conditional expression during the
+evaluation of flow functions (see <code><a href="ref.html#atres">@
+Result</a></code>). When <code>@</code> is used as a formal parameter in <a
+href="ref.html#lambda">lambda expressions</a>, it denotes a variable number of
+evaluated arguments.
+
+<dt><a name="@@"><code>@@</code></a>
+<dd>Holds the result of the second last top level expression in the current
+read-eval-print loop (see <code><a href="ref.html#atres">@ Result</a></code>).
+Some functions store a secondary return value in <code>@@</code>.
+
+<dt><a name="@@@"><code>@@@</code></a>
+<dd>Holds the result of the third last top level expression in the current
+read-eval-print loop (see <code><a href="ref.html#atres">@ Result</a></code>).
+
+<dt><a name="^"><code>^</code></a>
+<dd>Holds the currently executed expression during a breakpoint or an error. See
+also <code><a href="refD.html#debug">debug</a></code>, <code><a
+href="ref_.html#!">!</a></code>, <code><a href="refE.html#e">e</a></code> and
+<code><a href="refD.html#*Dbg">*Dbg</a></code>.
+
+<pre><code>
+: (* (+ 3 4) (/ 7 0))
+!? (/ 7 0)
+Div/0
+? ^
+-> (/ 7 0)
+</code></pre>
+
+<dt><a name="|"><code>(| 'num ..) -> num</code></a>
+<dd>Returns the bitwise <code>OR</code> of all <code>num</code> arguments. When
+one of the arguments evaluates to <code>NIL</code>, it is returned immediately.
+See also <code><a href="refX.html#x|">x|</a></code>, <code><a
+href="ref_.html#&">&</a></code> and <code><a
+href="refB.html#bit?">bit?</a></code>.
+
+<pre><code>
+: (| 1 2)
+-> 3
+: (| 1 2 4 8)
+-> 15
+</code></pre>
+
+</dl>
+
+</body>
+</html>

@@ -1,0 +1,107 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Q</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+
+<h1>Q</h1>
+
+<dl>
+
+<dt><a name="qsym"><code>(qsym . sym) -> lst</code></a>
+<dd>Returns a cons pair of the value and property list of <code>sym</code>. See
+also <code><a href="refQ.html#quote">quote</a></code>, <code><a
+href="refV.html#val">val</a></code> and <code><a
+href="refG.html#getl">getl</a></code>.
+
+<pre><code>
+: (setq A 1234)
+-> 1234
+: (put 'A 'a 1)
+-> 1
+: (put 'A 'b 2)
+-> 2
+: (put 'A 'f T)
+-> T
+: (qsym . A)
+-> (1234 f (2 . b) (1 . a))
+</code></pre>
+
+<dt><a name="quote"><code>(quote . any) -> any</code></a>
+<dd>Returns <code>any</code> unevaluated. The reader recognizes the single quote
+char <code>'</code> as a macro for this function. See also <code><a
+href="refL.html#lit">lit</a></code>.
+
+<pre><code>
+: 'a
+-> a
+: '(foo a b c)
+-> (foo a b c)
+: (quote (quote (quote a)))
+-> ('('(a)))
+</code></pre>
+
+<dt><a name="query"><code>(query 'lst ['lst]) -> flg</code></a>
+<dd>Handles an interactive <a href="ref.html#pilog">Pilog</a> query. The two
+<code>lst</code> arguments are passed to <code><a
+href="refP.html#prove">prove</a></code>. <code>query</code> displays each
+result, waits for console input, and terminates when a non-empty line is
+entered. See also <code><a href="ref_.html#?">?</a></code>, <code><a
+href="refP.html#pilog">pilog</a></code> and <code><a
+href="refS.html#solve">solve</a></code>.
+
+<pre><code>
+: (query (goal '((append @X @Y (a b c)))))
+ @X=NIL @Y=(a b c)
+ @X=(a) @Y=(b c).   # Stop
+-> NIL
+</code></pre>
+
+<dt><a name="queue"><code>(queue 'var 'any) -> any</code></a>
+<dd>Implements a queue using a list in <code>var</code>. The <code>any</code>
+argument is (destructively) concatenated to the end of the value list. See also
+<code><a href="refP.html#push">push</a></code>, <code><a
+href="refP.html#pop">pop</a></code> and <code><a
+href="refF.html#fifo">fifo</a></code>.
+
+<pre><code>
+: (queue 'A 1)
+-> 1
+: (queue 'A 2)
+-> 2
+: (queue 'A 3)
+-> 3
+: A
+-> (1 2 3)
+: (pop 'A)
+-> 1
+: A
+-> (2 3)
+</code></pre>
+
+<dt><a name="quit"><code>(quit ['any ['any]])</code></a>
+<dd>Stops current execution. If no arguments are given, all pending <code><a
+href="refF.html#finally">finally</a></code> expressions are executed and control
+is returned to the top level read-eval-print loop. Otherwise, an error handler
+is entered. The first argument can be some error message, and the second might
+be the reason for the error. See also <code><a href="ref.html#errors">Error
+Handling</a></code>.
+
+<pre><code>
+: (de foo (X) (quit "Sorry, my error" X))
+-> foo
+: (foo 123)                                  # 'X' is bound to '123'
+123 -- Sorry, my error                       # Error entered
+? X                                          # Inspect 'X'
+-> 123
+?                                            # Empty line: Exit
+:
+</code></pre>
+
+</dl>
+
+</body>
+</html>

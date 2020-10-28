@@ -1,0 +1,485 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>The 'select' Predicate</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+<a href="mailto:abu@software-lab.de">abu@software-lab.de</a>
+
+<h1>The 'select' Predicate</h1>
+
+<p align=right>(c) Software Lab. Alexander Burger
+
+<p>The <a href="ref.html#pilog">Pilog</a> <a
+href="refS.html#select/3">select/3</a> predicate is rather complex, and quite
+different from other predicates. This document tries to explain it in detail,
+and shows some typical use cases.
+
+<p><ul>
+<li><a href="#syntax">Syntax</a>
+<li><a href="#example1">First Example</a>
+<li><a href="#univar">Unification Variables</a>
+<li><a href="#gencl">Generator Clauses</a>
+   <ul>
+   <li><a href="#db">B-Tree Stepping</a>
+   <li><a href="#interaction">Interaction of Generator Clauses</a>
+   <li><a href="#combined">Combined Indexes</a>
+   <li><a href="#associations">Indirect Object Associations</a>
+   <li><a href="#nested">Nested Pilog Queries</a>
+   </ul>
+<li><a href="#filcl">Filter Clauses</a>
+   <ul>
+   <li><a href="#little">A Little Report</a>
+   <li><a href="#filpr">Filter Predicates</a>
+   </ul>
+</ul>
+
+
+<p><hr>
+<h2><a name="syntax">Syntax</a></h2>
+
+<p><code>select</code> takes at least three arguments:
+
+<p><ul>
+<li>A list of unification variables,
+<li>a list of generator clauses
+<li>and an arbitrary number of filter clauses
+</ul>
+
+<p>We will describe these arguments in the following, but demonstrate them first
+on a concrete example.
+
+
+<p><hr>
+<h2><a name="example1">First Example</a></h2>
+
+<p>The examples in this document will use the demo application in "app/*.l" (see
+also "<a href="app.html#minApp">A Minimal Complete Application</a>"). To get an
+interactive prompt, start it as
+
+<pre><code>
+$ pil app/main.l -main +
+:
+</code></pre>
+
+<p>As ever, you can terminate the interpreter by hitting <code>Ctrl-D</code>.
+
+<p>For a first, typical example, let's write a complete call to <a
+href="refS.html#solve">solve</a> that returns a list of articles with numbers
+between 1 and 4, which contain "Part" in their description, and have a price
+less than 100:
+
+<pre><code>
+(let (Nr (1 . 4)  Nm "Part"  Pr '(NIL . 100.00))
+   (solve
+      (quote
+         @Nr Nr
+         @Nm Nm
+         @Pr Pr
+         (select (@Item)
+            ((nr +Item @Nr) (nm +Item @Nm) (pr +Item @Pr))
+               (range @Nr @Item nr)
+               (part @Nm @Item nm)
+               (range @Pr @Item pr) ) )
+      @Item ) )
+</code></pre>
+
+<p>This expression will return, with the default database setup of "app/init.l",
+a list of exactly one item <code>({3-2})</code>, the item with the number 2.
+
+<p>The <code><a href="refL.html#let">let</a></code> statement assigns values to
+the search parameters for number <code>Nr</code>, description <code>Nm</code>
+and price <code>Pr</code>. The Pilog query (the first argument to
+<code>solve</code>) passes these values to the Pilog variables <code>@Nr</code>,
+<code>@Nm</code> and <code>@Pr</code>. Ranges of values are always specified by
+cons pairs, so <code>(1 . 4)</code> includes the numbers 1 through 4, while
+<code>(NIL . 100.00)</code> includes prices from minus infinite up to one
+hundred.
+
+<p>The list of unification variables is
+
+<pre><code>
+   <code>(@Item)</code>
+</code></pre>
+
+<p>The list of generator clauses is
+
+<pre><code>
+      ((nr +Item @Nr) (nm +Item @Nm) (pr +Item @Pr))
+</code></pre>
+
+<p>The filter clauses are
+
+<pre><code>
+         (range @Nr @Item nr)
+         (part @Nm @Item nm)
+         (range @Pr @Item pr)
+</code></pre>
+
+
+<p><hr>
+<h2><a name="univar">Unification Variables</a></h2>
+
+<p>As stated above, the first argument to <code>select</code> should be a list
+of variables. These variables communicate values (via <code><a
+href="refU.html#unify">unify</a></code>) from the <code>select</code>
+environment to the enclosing Pilog environment.
+
+<p>The first variable in this list (<code>@Item</code> in the above example) is
+mandatory, it takes the direct return value of <code>select</code>. Additional
+optional variables may be unified by clauses in the body of <code>select</code>,
+and return further values.
+
+
+<p><hr>
+<h2><a name="gencl">Generator Clauses</a></h2>
+
+<p>The second argument to <code>select</code> is a list of "generator clauses".
+Each of these clauses specifies some kind of database B-Tree <code><a
+href="refI.html#+index">+index</a></code>, to be traversed by
+<code>select</code>, step by step, where each step returns a suitable single
+database object. In the simplest case, they consist like here just of a relation
+name (e.g. <code>nr</code>), a class (e.g. <code>+Item</code>), an optional hook
+specifier (not in this example), and a pattern (values or ranges, e.g. (1 . 4)
+or "Part").
+
+<p>The generator clauses are the core of 'select'. In some way, they behave
+analog to <code><a href="refO.html#or/2">or/2</a></code>, as each of them
+generates a sequence of values. However, the generator clauses behave different,
+as they will not generate an exhaustive set of values upon backtracking, one
+after the other, where the next gets its turn when the previous one is
+exhausted. Instead, all clauses will generate their values quasi-parallel, with
+a built-in optimization so that successful clauses will be called with a higher
+probability. "Successful" means that the returned values successfully pass
+<code>select</code>'s filter clauses.
+
+
+<p><hr>
+<h3><a name="db">B-Tree Stepping</a></h3>
+
+<p>In its basic form, a generator clause is equivalent to the <code><a
+href="refD.html#db/3">db/3</a></code> predicate, stepping through a single
+B-Tree. The clause
+
+<pre><code>
+(nr +Item @Nr)
+</code></pre>
+
+<p>generates the same values as would be produced by a stand-alone Pilog clause
+
+<pre><code>
+(db nr +Item @Nr @Item)
+</code></pre>
+
+<p>as can be seen in the following two calls:
+
+<pre><code>
+: (? (db nr +Item (1 . 4) @Item))
+ @Item={3-1}
+ @Item={3-2}
+ @Item={3-3}
+ @Item={3-4}
+-> NIL
+: (? (select (@Item) ((nr +Item (1 . 4)))))
+ @Item={3-1}
+ @Item={3-2}
+ @Item={3-3}
+ @Item={3-4}
+-> NIL
+</code></pre>
+
+
+<p><hr>
+<h3><a name="interaction">Interaction of Generator Clauses</a></h3>
+
+<p><code>select</code> is mostly useful if more than one generator clause is
+involved. The tree search parameters of all clauses are meant to form a logical
+<code>AND</code>. Only those objects should be returned, for which all search
+parameters (and the associated filter clauses) are valid. As soon as one of the
+clauses finishes stepping through its database (sub)tree, the whole call to
+<code>select</code> will terminate, because further values returned from other
+generator clauses cannot be part of the result set.
+
+<p>Therefore, <code>select</code> would find all results most quickly if it
+could simply call only the generator clause with the smallest (sub)tree.
+Unfortunately, this is usually not known in advance. It depends on the
+distribution of the data in the database, and on the search parameters to each
+generator clause.
+
+<p>Instead, <code>select</code> single-steps each generator clause in turn, in a
+round-robin scheme, applies the filter clauses to each generated object, and
+re-arranges the order of generator clauses so that the more successful clauses
+will be preferred. This process usually converges quickly and efficiently.
+
+
+<p><hr>
+<h3><a name="combined">Combined Indexes</a></h3>
+
+<p>A generator clause can also combine several (similar) indexes into a single
+one. Then the clause is written actually as a list of clauses.
+
+<p>For example, a generator clause to search for a customer by phone number is
+
+<pre><code>
+(tel +CuSu @Tel)
+</code></pre>
+
+If we want to search for a customer without knowing whether a given number is a
+normal or a mobile phone number, then a combined generator clause searching both
+index trees could look like
+
+<pre><code>
+((tel +CuSu @Tel  mob +CuSu @Tel))
+</code></pre>
+
+<p>The generator will first traverse all matching entries in the <code><a
+href="refR.html#+Ref">+Ref</a></code> tree of the <code>tel</code> relation, and
+then, when these are exhausted, all matching entries in the <code>mob</code>
+index tree.
+
+
+<p><hr>
+<h3><a name="associations">Indirect Object Associations</a></h3>
+
+<p>But generator clauses are not limited to the direct B-Tree interaction of
+<code><a href="refD.html#db/3">db/3</a></code>. They can also traverse trees of
+associated objects, and then follow <code><a
+href="refL.html#+Link">+Link</a></code> / <code><a
+href="refJ.html#+Joint">+Joint</a></code> relations, or tree relations like
+<code><a href="refR.html#+Ref">+Ref</a></code> to arrive at database objects
+with a type suitable for return values from <code>select</code>.
+
+<p>To locate appropriate objects from associated objects, the generator clause
+can contain - in addition to the standard relation/class/pattern specification
+(see <a href="#gencl">Generator Clauses</a> above) - an arbitrary number of
+association specifiers. Each association specifier can be
+
+<ol>
+<li>A symbol. Then a <code><a href="refL.html#+Link">+Link</a></code> or
+<code><a href="refJ.html#+Joint">+Joint</a></code> will be followed, or a
+<code><a href="refL.html#+List">+List</a></code> of those will be traversed to
+locate appropriate objects.
+
+<li>A list. Then this list should hold a relation and a class (and an optional
+hook) which specify some B-Tree <code><a
+href="refI.html#+index">+index</a></code> to be traversed to locate appropriate
+objects.
+
+</ol>
+
+In this way, a single generator clause can cause the traversal of a tree of
+object relations to generate the desired sequence of objects.
+
+An example can be found in "app/gui.l", in the 'choOrd' function which
+implements the search dialog for <code>+Ord</code> (order) objects. Orders can
+be searched for order number and date, customer name and city, item description
+and supplier name:
+
+<pre><code>
+(select (@@)
+   ((nr +Ord @Nr) (dat +Ord @Dat)
+      (nm +CuSu @Cus (cus +Ord))
+      (ort +CuSu @Ort (cus +Ord))
+      (nm +Item @Item (itm +Pos) ord)
+      (nm +CuSu @Sup (sup +Item) (itm +Pos) ord) )
+</code></pre>
+
+<p>While <code>(nr +Ord @Nr)</code> and <code>(dat +Ord @Dat)</code> are direct
+index traversals, <code>(nm +CuSu @Cus (cus +Ord))</code> iterates the
+<code>nm</code> (name) index of customers/suppliers <code>+CuSu</code>, and then
+follows the <code><a href="refR.html#+Ref">+Ref</a></code> <code><a
+href="refL.html#+Link">+Link</a></code> of the <code>cus</code> relation to the
+orders. The same applies to the search for city names via <code>ort</code>.
+
+<p>The most complex example is <code>(nm +CuSu @Sup (sup +Item) (itm +Pos)
+ord)</code>, where the supplier name is searched in the <code>nm</code> tree of
+<code>+CuSu</code>, then the <code><a href="refR.html#+Ref">+Ref</a></code> tree
+<code>(sup +Item)</code> tree is followed to locate items of that supplier, then
+all positions for those items are found using <code>(itm +Pos)</code>, and
+finally the <code>ord</code> <code><a href="refJ.html#+Joint">+Joint</a></code>
+is followed to arrive at the order object(s).
+
+
+<p><hr>
+<h3><a name="nested">Nested Pilog Queries</a></h3>
+
+<p>In the most general case, a generator clause can be an arbitrary Pilog query.
+Often this is a query to a database on a remote machine, using the <code><a
+href="refR.html#remote/2">remote/2</a></code> predicate, or some other resource
+not accessible via database indexes, like iterating a <code><a
+href="refL.html#+List">+List</a></code> of <code><a
+href="refL.html#+Link">+Link</a></code>s or <code><a
+href="refJ.html#+Joint">+Joint</a></code>s.
+
+<p>Syntactically, such a generator clause is recognized by the fact that its CAR
+is a Pilog variable to denote the return value.
+
+<p>The second argument is a list of Pilog variables to communicate values (via
+<code><a href="refU.html#unify">unify</a></code>) from the surrounding
+<code>select</code> environment.
+
+<p>The third argument is the actual list of clauses for the nested query.
+
+<p>Finally, an arbitrary number of association specifiers may follow, as
+described in the <a href="#associations">Indirect Object Associations</a>
+section.
+
+<p>We can illustrate this with a somewhat useless (but simple) example, which
+replaces the standard generators for item number and supplier name
+
+<pre><code>
+(select (@Item)
+   ((nr +Item @Nr) (nm +CuSu @Sup (sup +Item)))
+   ...
+</code></pre>
+
+<p>with the equivalent form
+
+<pre><code>
+(select (@Item)
+   ((@A (@Nr) ((db nr +Item @Nr @A)))
+      (@B (@Sup) ((db nm +CuSu @Sup @B)) (sup +Item)) )
+</code></pre>
+
+<p>That is, a query with the <code><a href="refD.html#db/3">db/3</a></code> tree
+iteration predicate is used to generate appropriate values.
+
+
+<p><hr>
+<h2><a name="filcl">Filter Clauses</a></h2>
+
+<p>The generator clauses produce - independent from each other - lots of
+objects, which match the patterns of individual generator clauses, but not
+necessarily the desired result set of the total <code>select</code> call.
+Therefore, the filter clauses are needed to retain the good, and throw away the
+bad objects. In addition, they give feedback to the generator for optimizing its
+traversal priorities (as described in <a href="#gencl">Generator Clauses</a>).
+
+<p><code>select</code> then collects all objects which passed through the
+filters into a unique list, to avoid duplicates which would otherwise appear,
+because most objects can be found by more than one generator clause.
+
+<p>Technically, the filters are normal Pilog clauses, which just happen to be
+evaluated in the context of <code>select</code>. Arbitrary Pilog predicates can
+be used, though there exist some predicates (e.g. <code><a
+href="refI.html#isa/2">isa/2</a></code>, <code><a
+href="refS.html#same/3">same/3</a></code>, <code><a
+href="refB.html#bool/3">bool/3</a></code>, <code><a
+href="refR.html#range/3">range/3</a></code>, <code><a
+href="refH.html#head/3">head/3</a></code>, <code><a
+href="refF.html#fold/3">fold/3</a></code>, <code><a
+href="refP.html#part/3">part/3</a></code> or <code><a
+href="refT.html#tolr/3">tolr/3</a></code>) especially suited for that task.
+
+
+<p><hr>
+<h3><a name="little">A Little Report</a></h3>
+
+<p>Assume we want to know how many pieces of item #2 were sold in the year 2007.
+Then we must find all <code>+Pos</code> (position) objects referring to that
+item and at the same time belonging to orders of the year 2007 (see the class
+definition for <code>+Pos</code> in "app/er.l"). The number of sold pieces is
+then in the <code>cnt</code> property of the <code>+Pos</code> objects.
+
+<p>As shown in the complete <code>select</code> below, we will hold the item
+number in the variable <code>@Nr</code> and the date range for the year in
+<code>@Year</code>.
+
+<p>Now, all positions referred by item #2 can be found by the generator clause
+
+<pre><code>
+(nr +Item @Nr (itm +Pos))
+</code></pre>
+
+<p>and all positions sold in 2007 can be found by
+
+<pre><code>
+(dat +Ord @Year pos)
+</code></pre>
+
+<p>However, the combination of both generator clauses
+
+<pre><code>
+(select (@Pos)
+   ((nr +Item @Nr (itm +Pos)) (dat +Ord @Year pos)) )
+</code></pre>
+
+<p>will probably generate too many results, namely all positions with item #2
+<u>OR</u> from the year 2007. Thus, we need two filter clauses. With them, the
+full search expression will be:
+
+<pre><code>
+(?
+   @Nr 2                                                 # Item number
+   @Year (cons (date 2007 1 1) (date 2007 12 31))        # Date range 2007
+   (select (@Pos)
+      ((nr +Item @Nr (itm +Pos)) (dat +Ord @Year pos))   # Generator clauses
+      (same @Nr @Pos itm nr)                             # Filter item number
+      (range @Year @Pos ord dat) ) )                     # Filter order date
+</code></pre>
+
+<p>For completeness, let's calculate the total count of sold items:
+
+<pre><code>
+(let Cnt 0     # Counter variable
+   (pilog
+      (quote
+         @Nr 2
+         @Year (cons (date 2007 1 1) (date 2007 12 31))
+         (select (@Pos)
+            ((nr +Item @Nr (itm +Pos)) (dat +Ord @Year pos))
+            (same @Nr @Pos itm nr)
+            (range @Year @Pos ord dat) ) )
+      (inc 'Cnt (get @Pos 'cnt)) )  # Increment total count
+   Cnt )  # Return count
+</code></pre>
+
+
+<p><hr>
+<h3><a name="filpr">Filter Predicates</a></h3>
+
+<p>As mentioned under <a href="#filcl">Filter Clauses</a>, some predicates
+exists mainly for <code>select</code> filtering.
+
+<p>Some of these predicates are of general use: <code><a
+href="refI.html#isa/2">isa/2</a></code> can be used to check for a type,
+<code><a href="refS.html#same/3">same/3</a></code> checks for a definite value,
+<code><a href="refB.html#bool/3">bool/3</a></code> looks if the value is
+non-<code>NIL</code>. These predicates are rather independent of the <code><a
+href="refR.html#+relation">+relation</a></code> type.
+
+<p><code><a href="refR.html#range/3">range/3</a></code> checks whether a value
+is within a given range. This could be used with any <code><a
+href="refR.html#+relation">+relation</a></code> type, but typically it will be
+used for numeric (<code><a href="refN.html#+Number">+Number</a></code>) or time
+( <code><a href="refD.html#+Date">+Date</a></code> and <code><a
+href="refT.html#+Time">+Time</a></code>) relations.
+
+<p>Other predicates make only sense in the context of a certain <code><a
+href="refR.html#+relation">+relation</a></code> type:
+
+<ul>
+<li><code><a href="refH.html#head/3">head/3</a></code> is mainly intended for
+<code>(<a href="refK.html#+Key">+Key</a> <a
+href="refS.html#+String">+String</a>)</code> or <code>(<a
+href="refR.html#+Ref">+Ref</a> <a href="refS.html#+String">+String</a>)</code>
+relations,
+
+<li><code><a href="refF.html#fold/3">fold/3</a></code> is useful for <code>(<a
+href="refF.html#+Fold">+Fold</a> <a href="refR.html#+Ref">+Ref</a> <a
+href="refS.html#+String">+String</a>)</code> relations,
+
+<li><code><a href="refP.html#part/3">part/3</a></code> for <code>(<a
+href="refF.html#+Fold">+Fold</a> <a href="refI.html#+Idx">+Idx</a> <a
+href="refS.html#+String">+String</a>)</code> relations, and
+
+<li><code><a href="refT.html#tolr/3">tolr/3</a></code> for <code>(<a
+href="refS.html#+Sn">+Sn</a> <a href="refI.html#+Idx">+Idx</a> <a
+href="refS.html#+String">+String</a>)</code> relations.
+
+</ul>
+
+</body>
+</html>

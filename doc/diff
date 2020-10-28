@@ -1,4 +1,4 @@
-# 30sep20 Software Lab. Alexander Burger
+# 28oct20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -46,3 +46,4 @@
 % '*Run' cleared in children: 'forked' is not needed
 % Main coroutine has a tag 'T'
 % 'file' returns NIL instead of "./"
+% 'edit' functionality is handled by 'vi' (Vip)

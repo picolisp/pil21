@@ -1,0 +1,207 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>W</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+
+<h1>W</h1>
+
+<dl>
+
+<dt><a name="wait"><code>(wait 'cnt|NIL . prg) -> any</code></a>
+<dt><code>(wait 'cnt|NIL T 'fd) -> fd|NIL</code>
+<dd>Waits for a condition. While the result of the execution of <code>prg</code>
+is <code>NIL</code> (first form), or no input is available for the file
+descriptor in <code>fd</code> (second form), a <code>select</code> system call
+is executed for all file descriptors and timers in the <code>VAL</code> of the
+global variable <code><a href="refR.html#*Run">*Run</a></code>. When
+<code>cnt</code> is non-<code>NIL</code>, the waiting time is limited to
+<code>cnt</code> milliseconds. Returns the result of <code>prg</code>. See also
+<code><a href="refK.html#key">key</a></code> and <code><a
+href="refS.html#sync">sync</a></code>.
+
+<pre><code>
+: (wait 2000)                                # Wait 2 seconds
+-> NIL
+: (prog
+   (zero *Cnt)
+   (setq *Run                                # Install background loop
+      '((-2000 0 (println (inc '*Cnt)))) )   # Increment '*Cnt' every 2 sec
+   (wait NIL (> *Cnt 6))                     # Wait until > 6
+   (off *Run) )
+1                                            # Waiting ..
+2
+3
+4
+5
+6
+7
+-> NIL
+</code></pre>
+
+<dt><a name="week"><code>(week 'dat) -> num</code></a>
+<dd>Returns the number of the week for a given <code><a
+href="refD.html#date">date</a></code> <code>dat</code>. See also <code><a
+href="refD.html#day">day</a></code>, <code><a
+href="refU.html#ultimo">ultimo</a></code>, <code><a
+href="refD.html#datStr">datStr</a></code> and <code><a
+href="refS.html#strDat">strDat</a></code>.
+
+<pre><code>
+: (datStr (date))
+-> "2007-06-01"
+: (week (date))
+-> 22
+</code></pre>
+
+<dt><a name="when"><code>(when 'any . prg) -> any</code></a>
+<dd>Conditional execution: When the condition <code>any</code> evaluates to
+non-<code>NIL</code>, <code>prg</code> is executed and the result is returned.
+Otherwise <code>NIL</code> is returned. See also <code><a
+href="refU.html#unless">unless</a></code>, <code><a
+href="refI.html#if">if</a></code>, <code><a href="refA.html#and">and</a></code>
+and <code><a href="refC.html#cond">cond</a></code>.
+
+<pre><code>
+: (when (> 4 3) (println 'OK) (println 'Good))
+OK
+Good
+-> Good
+</code></pre>
+
+<dt><a name="while"><code>(while 'any . prg) -> any</code></a>
+<dd>Conditional loop: While the condition <code>any</code> evaluates to
+non-<code>NIL</code>, <code>prg</code> is repeatedly executed. If
+<code>prg</code> is never executed, <code>NIL</code> is returned. Otherwise the
+result of <code>prg</code> is returned. See also <code><a
+href="refU.html#until">until</a></code>, <code><a
+href="refF.html#for">for</a></code>, <code><a
+href="refL.html#loop">loop</a></code> and <code><a
+href="refD.html#do">do</a></code>.
+
+<pre><code>
+: (while (read)
+   (println 'got: @) )
+abc
+got: abc
+1234
+got: 1234
+NIL
+-> 1234
+</code></pre>
+
+<dt><a name="what"><code>(what 'sym) -> lst</code></a>
+<dd>(Debug mode only) Returns a list of all internal symbols that match the
+pattern string <code>sym</code>. See also <code><a
+href="refM.html#match">match</a></code>, <code><a
+href="refW.html#who">who</a></code>, <code><a
+href="refH.html#has">has</a></code> and <code><a
+href="refC.html#can">can</a></code>.
+
+<pre><code>
+: (what "cd@dr")
+-> (cdaddr cdaadr cddr cddddr cdddr cddadr cdadr)
+</code></pre>
+
+<dt><a name="who"><code>(who 'any) -> lst</code></a>
+<dd>(Debug mode only) Returns a list of all functions or method definitions that
+contain the atom or pattern <code>any</code>. See also <code><a
+href="refM.html#match">match</a></code>, <code><a
+href="refW.html#what">what</a></code>, <code><a
+href="refH.html#has">has</a></code> and <code><a
+href="refC.html#can">can</a></code>.
+
+<pre><code>
+: (who 'caddr)                         # Who is using 'caddr'?
+-> ($dat lint1 expDat datStr $tim tim$ mail _gen dat$ datSym)
+
+: (who "Type error")
+-> ((mis> . +Link) *Uni (mis> . +Joint))
+
+: (more (who "Type error") pp)         # Pretty print all results
+(dm (mis> . +Link) (Val Obj)
+   (and
+      Val
+      (nor (isa (: type) Val) (canQuery Val))
+      "Type error" ) )
+.                                      # Stop
+-> T
+</code></pre>
+
+<dt><a name="wipe"><code>(wipe 'sym|lst) -> sym|lst</code></a>
+<dd>Clears the <code>VAL</code> and the property list of <code>sym</code>, or of
+all symbols in the list <code>lst</code>. When a symbol is an external symbol,
+its state is also set to "not loaded". Does nothing when <code>sym</code> is an
+external symbol that has been modified or deleted ("dirty").
+
+<pre><code>
+: (setq A (1 2 3 4))
+-> (1 2 3 4)
+: (put 'A 'a 1)
+-> 1
+: (put 'A 'b 2)
+-> 2
+: (show 'A)
+A (1 2 3 4)
+   b 2
+   a 1
+-> A
+: (wipe 'A)
+-> A
+: (show 'A)
+A NIL
+-> A
+</code></pre>
+
+<dt><a name="with"><code>(with 'var . prg) -> any</code></a>
+<dd>Saves the current object <code>This</code> and sets it to the new value
+<code>var</code>. Then <code>prg</code> is executed, and <code>This</code> is
+restored to its previous value. The return value is the result of
+<code>prg</code>. Used typically to access the local data of <code>var</code> in
+the same manner as inside a method body. <code>prg</code> is not executed (and
+<code>NIL</code> is returned) when <code>var</code> is <code>NIL</code>.
+<code>(with 'X . prg)</code> is equivalent to <code>(let? This 'X . prg)</code>.
+
+<pre><code>
+: (put 'X 'a 1)
+-> 1
+: (put 'X 'b 2)
+-> 2
+: (with 'X (list (: a) (: b)))
+-> (1 2)
+</code></pre>
+
+<dt><a name="wr"><code>(wr 'cnt ..) -> cnt</code></a>
+<dd>Writes all <code>cnt</code> arguments as raw bytes to the current output
+channel. See also <code><a href="refR.html#rd">rd</a></code> and <code><a
+href="refP.html#pr">pr</a></code>.
+
+<pre><code>
+: (out "x" (wr 1 255 257))  # Write to "x"
+-> 257
+: (hd "x")
+00000000  01 FF 01                                         ...
+-> NIL
+</code></pre>
+
+<dt><a name="wrap"><code>(wrap 'cnt 'lst) -> sym</code></a>
+<dd>Returns a transient symbol with all characters in <code>lst</code> <code><a
+href="refP.html#pack">pack</a></code>ed in lines with a maximal length of
+<code>cnt</code>. See also <code><a href="refT.html#tab">tab</a></code>,
+<code><a href="refA.html#align">align</a></code> and <code><a
+href="refC.html#center">center</a></code>.
+
+<pre><code>
+: (wrap 20 (chop "The quick brown fox jumps over the lazy dog"))
+-> "The quick brown fox^Jjumps over the lazy^Jdog"
+: (wrap 8 (chop "The quick brown fox jumps over the lazy dog"))
+-> "The^Jquick^Jbrown^Jfox^Jjumps^Jover the^Jlazy dog"
+</code></pre>
+
+</dl>
+
+</body>
+</html>

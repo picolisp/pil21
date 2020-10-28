@@ -1,0 +1,791 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>R</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+
+<h1>R</h1>
+
+<dl>
+
+<dt><a name="*Run"><code>*Run</code></a>
+<dd>This global variable can hold a list of <code>prg</code> expressions which
+are used during <code><a href="refK.html#key">key</a></code>, <code><a
+href="refS.html#sync">sync</a></code>, <code><a
+href="refW.html#wait">wait</a></code> and <code><a
+href="refL.html#listen">listen</a></code>. The first element of each expression
+must either be a positive number (thus denoting a file descriptor to wait for)
+or a negative number (denoting a timeout value in milliseconds (in that case
+another number must follow to hold the remaining time)). A <code>select</code>
+system call is performed with these values, and the corresponding
+<code>prg</code> body is executed when input data are available or when a
+timeout occurred (with <code><a href="ref_.html#@">@</a></code> set to the file
+descriptor or timeout value). See also <code><a
+href="refT.html#task">task</a></code>.
+
+<pre><code>
+: (de *Run (-2000 0 (println '2sec)))     # Install 2-sec-timer
+-> *Run
+: 2sec                                    # Prints "2sec" every 2 seconds
+2sec
+2sec
+                                          # (Ctrl-D) Exit
+$
+</code></pre>
+
+<dt><a name="+Ref"><code>+Ref</code></a>
+<dd>Prefix class for maintaining non-unique indexes to <code><a
+href="refR.html#+relation">+relation</a></code>s, a subclass of <code><a
+href="refI.html#+index">+index</a></code>. Accepts an optional argument for a
+<code><a href="refH.html#+Hook">+Hook</a></code> attribute. See also <a
+href="ref.html#dbase">Database</a>.
+
+<pre><code>
+(rel tel (+Fold +Ref +String))  # Phone number with folded, non-unique index
+</code></pre>
+
+<dt><a name="+Ref2"><code>+Ref2</code></a>
+<dd>Prefix class for maintaining a secondary ("backing") index to <code><a
+href="refR.html#+relation">+relation</a></code>s. Can only be used as a prefix
+class to <code><a href="refK.html#+Key">+Key</a></code> or <code><a
+href="refR.html#+Ref">+Ref</a></code>. It maintains an index in the current
+(sub)class, in addition to that in one of the superclasses (must be a
+<code>+Ref</code>), to allow (sub)class-specific queries. See also <a
+href="ref.html#dbase">Database</a>.
+
+<pre><code>
+(class +Ord +Entity)             # Order class
+(rel nr (+Need +Ref +Number))    # Order number
+...
+(class +EuOrd +Ord)              # EU-specific order subclass
+(rel nr (+Ref2 +Key +Number))    # Order number with backing index
+</code></pre>
+
+<dt><a name="+relation"><code>+relation</code></a>
+<dd>Abstract base class of all database relations. Relation objects are usually
+defined with <code><a href="refR.html#rel">rel</a></code>. The class hierarchy
+includes the classes <code><a href="refA.html#+Any">+Any</a></code>, <code><a
+href="refB.html#+Bag">+Bag</a></code>, <code><a
+href="refB.html#+Bool">+Bool</a></code>, <code><a
+href="refN.html#+Number">+Number</a></code>, <code><a
+href="refD.html#+Date">+Date</a></code>, <code><a
+href="refT.html#+Time">+Time</a></code>, <code><a
+href="refS.html#+Symbol">+Symbol</a></code>, <code><a
+href="refS.html#+String">+String</a></code>, <code><a
+href="refL.html#+Link">+Link</a></code>, <code><a
+href="refJ.html#+Joint">+Joint</a></code> and <code><a
+href="refB.html#+Blob">+Blob</a></code>, and the prefix classes <code><a
+href="refH.html#+Hook">+Hook</a></code>, <code><a
+href="refH.html#+Hook2">+Hook2</a></code>, <code><a
+href="refI.html#+index">+index</a></code>, <code><a
+href="refK.html#+Key">+Key</a></code>, <code><a
+href="refR.html#+Ref">+Ref</a></code>, <code><a
+href="refR.html#+Ref2">+Ref2</a></code>, <code><a
+href="refI.html#+Idx">+Idx</a></code>, <code><a
+href="refI.html#+IdxFold">+IdxFold</a></code>, <code><a
+href="refS.html#+Sn">+Sn</a></code>, <code><a
+href="refF.html#+Fold">+Fold</a></code>, <code><a
+href="refA.html#+Aux">+Aux</a></code>, <code><a
+href="refU.html#+UB">+UB</a></code>, <code><a
+href="refD.html#+Dep">+Dep</a></code>, <code><a
+href="refL.html#+List">+List</a></code>, <code><a
+href="refN.html#+Need">+Need</a></code>, <code><a
+href="refM.html#+Mis">+Mis</a></code>, <code><a
+href="refA.html#+Alt">+Alt</a></code> and <code><a
+href="refS.html#+Swap">+Swap</a></code>. See also <a
+href="ref.html#dbase">Database</a> and <code><a
+href="refE.html#+Entity">+Entity</a></code>.
+
+<p><a name="relationMesssages">Messages</a> to relation objects include
+
+<pre><code>
+mis> (Val Obj)       # Return error if mismatching type or value
+has> (Val X)         # Check if the value is present
+put> (Obj Old New)   # Put new value
+rel> (Obj Old New)   # Maintain relational structures
+lose> (Obj Val)      # Delete relational structures
+keep> (Obj Val)      # Restore deleted relational structures
+zap> (Obj Val)       # Clean up relational structures
+</code></pre>
+
+<dt><a name="rand"><code>(rand ['cnt1 'cnt2] | ['T]) -> cnt | flg</code></a>
+<dd>Returns a pseudo random number in the range cnt1 .. cnt2 (or -2147483648 ..
++2147483647 if no arguments are given). If the argument is <code>T</code>, a
+boolean value <code>flg</code> is returned. Note that if a range is given, the
+results are "more random" because the higher bits of the internal generator are
+used. See also <code><a href="refS.html#seed">seed</a></code>.
+
+<pre><code>
+: (rand 3 9)
+-> 3
+: (rand 3 9)
+-> 7
+</code></pre>
+
+<dt><a name="range"><code>(range 'num1 'num2 ['num3]) -> lst</code></a>
+<dd>Produces a list of numbers in the range <code>num1</code> through
+<code>num2</code>. When <code>num3</code> is non-<code>NIL</code>, it is used
+to increment <code>num1</code> (if it is smaller than <code>num2</code>) or to
+decrement <code>num1</code> (if it is greater than <code>num2</code>). See also
+<code><a href="refN.html#need">need</a></code>.
+
+<pre><code>
+: (range 1 6)
+-> (1 2 3 4 5 6)
+: (range 6 1)
+-> (6 5 4 3 2 1)
+: (range -3 3)
+-> (-3 -2 -1 0 1 2 3)
+: (range 3 -3 2)
+-> (3 1 -1 -3)
+</code></pre>
+
+<dt><a name="range/3"><code>range/3</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the first
+argument is in the range of the result of applying the <code><a
+href="refG.html#get">get</a></code> algorithm to the following arguments.
+Typically used as filter predicate in <code><a
+href="refS.html#select/3">select/3</a></code> database queries. See also
+<code><a href="ref.html#cmp">Comparing</a></code>, <code><a
+href="refI.html#isa/2">isa/2</a></code>, <code><a
+href="refS.html#same/3">same/3</a></code>, <code><a
+href="refB.html#bool/3">bool/3</a></code>, <code><a
+href="refH.html#head/3">head/3</a></code>, <code><a
+href="refF.html#fold/3">fold/3</a></code>, <code><a
+href="refP.html#part/3">part/3</a></code> and <code><a
+href="refT.html#tolr/3">tolr/3</a></code>.
+
+<pre><code>
+: (?
+   @Nr (1 . 5)  # Numbers between 1 and 5
+   @Nm "part"
+   (select (@Item)
+      ((nr +Item @Nr) (nm +Item @Nm))
+      (range @Nr @Item nr)
+      (part @Nm @Item nm) ) )
+ @Nr=(1 . 5) @Nm="part" @Item={3-1}
+ @Nr=(1 . 5) @Nm="part" @Item={3-2}
+-> NIL
+</code></pre>
+
+<dt><a name="rank"><code>(rank 'any 'lst ['flg]) -> lst</code></a>
+<dd>Searches a ranking list. <code>lst</code> should be sorted. Returns the
+element from <code>lst</code> with a maximal CAR less or equal to
+<code>any</code> (if <code>flg</code> is <code>NIL</code>), or with a minimal
+CAR greater or equal to <code>any</code> (if <code>flg</code> is
+non-<code>NIL</code>), or <code>NIL</code> if no match is found. See also
+<code><a href="refA.html#assoc">assoc</a></code> and <a
+href="ref.html#cmp">Comparing</a>.
+
+<pre><code>
+: (rank 0 '((1 . a) (100 . b) (1000 . c)))
+-> NIL
+: (rank 50 '((1 . a) (100 . b) (1000 . c)))
+-> (1 . a)
+: (rank 100 '((1 . a) (100 . b) (1000 . c)))
+-> (100 . b)
+: (rank 300 '((1 . a) (100 . b) (1000 . c)))
+-> (100 . b)
+: (rank 9999 '((1 . a) (100 . b) (1000 . c)))
+-> (1000 . c)
+: (rank 50 '((1000 . a) (100 . b) (1 . c)) T)
+-> (100 . b)
+</code></pre>
+
+<dt><a name="rassoc"><code>(rassoc 'any 'lst) -> lst</code></a>
+<dd>Reverse <code><a href="refA.html#assoc">assoc</a></code>. Returns the first
+element from <code>lst</code> with its CDR equal to <code>any</code>, or
+<code>NIL</code> if no match is found. See also <code><a
+href="refA.html#assoc">assoc</a></code> and <code><a
+href="refA.html#asoq">asoq</a></code>.
+
+<pre><code>
+: (rassoc 7 '((999 1 2 3) ("b" . 7) ("ok" "Hello")))
+-> ("b" . 7)
+: (rassoc (1 2 3) '((999 1 2 3) ("b" . 7) ("ok" "Hello")))
+-> (999 1 2 3)
+: (rassoc 'u '((999 1 2 3) ("b" . 7) ("ok" "Hello")))
+-> NIL
+</code></pre>
+
+<dt><a name="raw"><code>(raw ['flg]) -> flg</code></a>
+<dd>Console mode control function. When called without arguments, it returns the
+current console mode (<code>NIL</code> for "cooked mode"). Otherwise, the
+console is set to the new state. See also <code><a
+href="refK.html#key">key</a></code>.
+
+<pre><code>
+$ pil
+: (raw)
+-> NIL
+$ pil +
+: (raw)
+-> T
+</code></pre>
+
+<dt><a name="rc"><code>(rc 'sym 'any1 ['any2 ['any3 'any4..]]) -> any</code></a>
+<dd>Fetches a value from a resource file <code>sym</code>, or stores one or more
+key-value pairs <code>(any1 . any2)</code> in that file, using the key
+<code>any1</code> (and optionally <code>any3</code> etc. for multiple stores).
+All values are stored in a list in the file, using <code><a
+href="refA.html#assoc">assoc</a></code>. During the whole operation, the file is
+exclusively locked with <code><a href="refC.html#ctl">ctl</a></code>.
+
+<pre><code>
+: (info "a.rc")               # File exists?
+-> NIL                        # No
+: (rc "a.rc" 'a 1)            # Store 1 for 'a'
+-> 1
+: (rc "a.rc" 'b (2 3 4))      # Store (2 3 4) for 'b'
+-> (2 3 4)
+: (rc "a.rc" 'c 'b)           # Store 'b' for 'c'
+-> b
+: (info "a.rc")               # Check file
+-> (28 733124 . 61673)
+: (in "a.rc" (echo))          # Display it
+((c . b) (b 2 3 4) (a . 1))
+-> T
+: (rc "a.rc" 'c)              # Fetch value for 'c'
+-> b
+: (rc "a.rc" @)               # Fetch value for 'b'
+-> (2 3 4)
+</code></pre>
+
+<dt><a name="rd"><code>(rd ['sym]) -> any</code></a>
+<dt><code>(rd 'cnt) -> num | NIL</code>
+<dd>Binary read: Reads one item from the current input channel in encoded binary
+format. When called with a <code>cnt</code> argument (second form), that number
+of raw bytes (in big endian format if <code>cnt</code> is positive, otherwise
+little endian) is read as a single number. Upon end of file, if the
+<code>sym</code> argument is given, it is returned, otherwise <code>NIL</code>.
+See also <code><a href="refP.html#pr">pr</a></code>, <code><a
+href="refT.html#tell">tell</a></code>, <code><a
+href="refH.html#hear">hear</a></code> and <code><a
+href="refW.html#wr">wr</a></code>.
+
+<pre><code>
+: (out "x" (pr 'abc "EOF" 123 "def"))
+-> "def"
+: (in "x" (rd))
+-> abc
+: (in "x"
+   (make
+      (use X
+         (until (== "EOF" (setq X (rd "EOF")))  # '==' detects end of file
+            (link X) ) ) ) )
+-> (abc "EOF" 123 "def")  # as opposed to reading a symbol "EOF"
+
+: (in "/dev/urandom" (rd 20))
+-> 396737673456823753584720194864200246115286686486
+</code></pre>
+
+<dt><a name="read"><code>(read ['sym1 ['sym2]]) -> any</code></a>
+<dd>Reads one item from the current input channel. <code>NIL</code> is returned
+upon end of file. When called without arguments, an arbitrary Lisp expression is
+read. Otherwise, a token (a number, an internal symbol, a transient symbol (for
+punctuation), or a list of symbols (for a string)) is read. In that case,
+<code>sym1</code> specifies which set of characters to accept for continuous
+symbol names (in addition to the standard alphanumerical characters), and
+<code>sym2</code> an optional comment character. See also <code><a
+href="refA.html#any">any</a></code>, <code><a
+href="refS.html#str">str</a></code>, <code><a
+href="refL.html#line">line</a></code>, <code><a
+href="refS.html#skip">skip</a></code> and <code><a
+href="refE.html#eof">eof</a></code>.
+
+<pre><code>
+: (list (read) (read) (read))    # Read three things from console
+123                              # a number
+abcd                             # a symbol
+(def                             # and a list
+ghi
+jkl
+)
+-> (123 abcd (def ghi jkl))
+: (make (while (read "_" "#") (link @)))
+abc = def_ghi("xyz"+-123) # Comment
+NIL
+-> (abc "=" def_ghi "(" ("x" "y" "z") "+" "-" 123 ")")
+</code></pre>
+
+<dt><a name="recur"><code>(recur fun) -> any</code></a>
+<dt><a name="recurse"><code>(recurse ..) -> any</code></a>
+<dd>Implements anonymous recursion, by defining the function
+<code>recurse</code> on the fly. During the execution of <code>fun</code>, the
+symbol <code>recurse</code> is bound to the function definition
+<code>fun</code>. See also <code><a href="refL.html#let">let</a></code> and
+<code><a href="ref.html#lambda">lambda</a></code>.
+
+<pre><code>
+: (de fibonacci (N)
+   (when (lt0 N)
+      (quit "Bad fibonacci" N) )
+   (recur (N)
+      (if (>= 2 N)
+         1
+         (+
+            (recurse (dec N))
+            (recurse (- N 2)) ) ) ) )
+-> fibonacci
+: (fibonacci 22)
+-> 17711
+: (fibonacci -7)
+-7 -- Bad fibonacci
+</code></pre>
+
+<dt><a name="redef"><code>(redef sym . fun) -> sym</code></a>
+<dd>Redefines <code>sym</code> in terms of itself. The current definition is
+saved in a new symbol, which is substituted for each occurrence of
+<code>sym</code> in <code>fun</code>, and which is also returned. See also
+<code><a href="refD.html#de">de</a></code>, <code><a
+href="refU.html#undef">undef</a></code>, <code><a
+href="refD.html#daemon">daemon</a></code> and <code><a
+href="refP.html#patch">patch</a></code>.
+
+<pre><code>
+: (de hello () (prinl "Hello world!"))
+-> hello
+: (pp 'hello)
+(de hello NIL
+   (prinl "Hello world!") )
+-> hello
+
+: (redef hello (A B)
+   (println 'Before A)
+   (prog1 (hello) (println 'After B)) )
+-> "hello"
+: (pp 'hello)
+(de hello (A B)
+   (println 'Before A)
+   (prog1 ("hello") (println 'After B)) )
+-> hello
+: (hello 1 2)
+Before 1
+Hello world!
+After 2
+-> "Hello world!"
+
+: (redef * @
+   (msg (rest))
+   (pass *) )
+-> "*"
+: (* 1 2 3)
+(1 2 3)
+-> 6
+
+: (redef + @
+   (pass (ifn (num? (next)) pack +) (arg)) )
+-> "+"
+: (+ 1 2 3)
+-> 6
+: (+ "a" 'b '(c d e))
+-> "abcde"
+
+</code></pre>
+
+<dt><a name="rel"><code>(rel sym lst [any ..]) -> any</code></a>
+<dd>Defines a relation for <code>sym</code> in the current class <code><a
+href="refC.html#*Class">*Class</a></code>, using <code>lst</code> as the list of
+classes for that relation, and possibly additional arguments <code>any</code>
+for its initialization. See also <a href="ref.html#dbase">Database</a>, <code><a
+href="refC.html#class">class</a></code>, <code><a
+href="refE.html#extend">extend</a></code>, <code><a
+href="refD.html#dm">dm</a></code> and <code><a
+href="refV.html#var">var</a></code>.
+
+<pre><code>
+(class +Person +Entity)
+(rel nm  (+List +Ref +String))            # Names
+(rel tel (+Ref +String))                  # Telephone
+(rel adr (+Joint) prs (+Address))         # Address
+
+(class +Address +Entity)
+(rel cit (+Need +Hook +Link) (+City))     # City
+(rel str (+List +Ref +String) cit)        # Street
+(rel prs (+List +Joint) adr (+Person))    # Inhabitants
+
+(class +City +Entity)
+(rel nm  (+List +Ref +String))            # Zip / Names
+</code></pre>
+
+<dt><a name="release"><code>(release 'sym) -> NIL</code></a>
+<dd>Releases the mutex represented by the file 'sym'. This is the reverse
+operation of <code><a href="refA.html#acquire">acquire</a></code>.
+
+<pre><code>
+: (release "sema1")
+-> NIL
+</code></pre>
+
+<dt><a name="remote/2"><code>remote/2</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate for remote database queries. It
+takes a list and an arbitrary number of clauses. The list should contain a Pilog
+variable for the result in the CAR, and a list of resources in the CDR. The
+clauses will be evaluated on remote machines according to these resources. Each
+resource must be a cons pair of two functions, an "out" function in the CAR, and
+an "in" function in the CDR. See also <code><a
+href="refE.html#*Ext">*Ext</a></code>, <code><a
+href="refR.html#revolve/2">revolve/2</a></code>, <code><a
+href="refS.html#select/3">select/3</a></code> and <code><a
+href="refD.html#db/3">db/3</a></code>.
+
+<pre><code>
+(setq *Ext           # Set up external offsets
+   (mapcar
+      '((@Host @Ext)
+         (cons @Ext
+            (curry (@Host @Ext (Sock)) (Obj)
+               (when (or Sock (setq Sock (connect @Host 4040)))
+                  (ext @Ext
+                     (out Sock (pr (cons 'qsym Obj)))
+                     (prog1
+                        (in Sock (rd))
+                        (unless @
+                           (close Sock)
+                           (off Sock) ) ) ) ) ) ) )
+      '("localhost")
+      '(20) ) )
+
+(de rsrc ()  # Simple resource handler, ignoring errors or EOFs
+   (extract
+      '((@Ext Host)
+         (let? @Sock (connect Host 4040)
+            (cons
+               (curry (@Ext @Sock) (X)  # out
+                  (ext @Ext (out @Sock (pr X))) )
+               (curry (@Ext @Sock) ()  # in
+                  (ext @Ext (in @Sock (rd))) ) ) ) )
+      '(20)
+      '("localhost") ) )
+
+: (?
+   @Nr (1 . 3)
+   @Sup 2
+   @Rsrc (rsrc)
+   (remote (@Item . @Rsrc)
+      (db nr +Item @Nr @Item)
+      (val @Sup @Item sup nr) )
+   (show @Item) )
+{L-2} (+Item)
+   pr 1250
+   inv 100
+   sup {K-2}
+   nm Spare Part
+   nr 2
+ @Nr=(1 . 3) @Sup=2 @Rsrc=((((X) (ext 20 (out 16 (pr X)))) NIL (ext 20 (in 16 (rd))))) @Item={L-2}
+-> NIL
+</code></pre>
+
+<dt><a name="remove"><code>(remove 'cnt 'lst) -> lst</code></a>
+<dd>Removes the element at position <code>cnt</code> from <code>lst</code>. This
+is a non-destructive operation. See also <code><a
+href="refI.html#insert">insert</a></code>, <code><a
+href="refP.html#place">place</a></code>, <code><a
+href="refA.html#append">append</a></code>, <code><a
+href="refD.html#delete">delete</a></code> and <code><a
+href="refR.html#replace">replace</a></code>.
+
+<pre><code>
+: (remove 3 '(a b c d e))
+-> (a b d e)
+: (remove 1 '(a b c d e))
+-> (b c d e)
+: (remove 9 '(a b c d e))
+-> (a b c d e)
+</code></pre>
+
+<dt><a name="repeat"><code>(repeat) -> lst</code></a>
+<dd>Makes the current <a href="ref.html#pilog">Pilog</a> definition "tail
+recursive", by closing the previously defined rules in the definition's T
+property to a circular list. See also <code><a
+href="refR.html#repeat/0">repeat/0</a></code> and <code><a
+href="refB.html#be">be</a></code>.
+
+<pre><code>
+(be a (1))     # Define three facts
+(be a (2))
+(be a (3))
+(repeat)       # Unlimited supply
+
+: (? (a @N))
+ @N=1
+ @N=2
+ @N=3
+ @N=1
+ @N=2
+ @N=3.         # Stop
+-> NIL
+</code></pre>
+
+<dt><a name="repeat/0"><code>repeat/0</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate that always succeeds, also on
+backtracking. See also <code><a href="refR.html#repeat">repeat</a></code> and
+<code><a href="refT.html#true/0">true/0</a></code>.
+
+<pre><code>
+: (be integer (@I)   # Generate unlimited supply of integers
+   (^ @C (box 0))    # Init to zero
+   (repeat)          # Repeat from here
+   (^ @I (inc (-> @C))) )
+-> integer
+
+: (? (integer @X))
+ @X=1
+ @X=2
+ @X=3
+ @X=4.               # Stop
+-> NIL
+</code></pre>
+
+<dt><a name="replace"><code>(replace 'lst 'any1 'any2 ..) -> lst</code></a>
+<dd>Replaces in <code>lst</code> all occurrences of <code>any1</code> with
+<code>any2</code>. For optional additional argument pairs, this process is
+repeated. This is a non-destructive operation. See also <code><a
+href="refA.html#append">append</a></code>, <code><a
+href="refD.html#delete">delete</a></code>, <code><a
+href="refI.html#insert">insert</a></code>, <code><a
+href="refR.html#remove">remove</a></code> and <code><a
+href="refP.html#place">place</a></code>.
+
+<pre><code>
+: (replace '(a b b a) 'a 'A)
+-> (A b b A)
+: (replace '(a b b a) 'b 'B)
+-> (a B B a)
+: (replace '(a b b a) 'a 'B 'b 'A)
+-> (B A A B)
+</code></pre>
+
+<dt><a name="request"><code>(request 'typ 'sym ['hook] 'val ..) -> obj</code></a>
+<dd>Returns a database object. If a matching object cannot be found (using
+<code><a href="refD.html#db">db</a></code>), a new object of the given type is
+created (using <code><a href="refN.html#new">new</a></code>). See also <code><a
+href="refO.html#obj">obj</a></code>.
+
+<pre><code>
+: (request '(+Item) 'nr 2)
+-> {3-2}
+</code></pre>
+
+<dt><a name="request!"><code>(request! 'typ 'sym ['hook] 'val ..) -> obj</code></a>
+<dd><a href="ref.html#trans">Transaction</a> wrapper function for <code><a
+href="refR.html#request">request</a></code>.
+See also <code><a href="refN.html#new!">new!</a></code>, <code><a
+href="refS.html#set!">set!</a></code>, <code><a
+href="refP.html#put!">put!</a></code> and <code><a
+href="refI.html#inc!">inc!</a></code>.
+
+<pre><code>
+</code></pre>
+
+
+<dt><a name="rest"><code>(rest) -> lst</code></a>
+<dd>Can only be used inside functions with a variable number of arguments (with
+<code>@</code>). Returns the list of all remaining arguments from the internal
+list. See also <code><a href="refA.html#args">args</a></code>, <code><a
+href="refN.html#next">next</a></code>, <code><a
+href="refA.html#arg">arg</a></code> and <code><a
+href="refP.html#pass">pass</a></code>.
+
+<pre><code>
+: (de foo @ (println (rest)))
+-> foo
+: (foo 1 2 3)
+(1 2 3)
+-> (1 2 3)
+</code></pre>
+
+<dt><a name="retract"><code>(retract) -> lst</code></a>
+<dd>Removes a <a href="ref.html#pilog">Pilog</a> fact or rule. See also <code><a
+href="refB.html#be">be</a></code>, <code><a
+href="refC.html#clause">clause</a></code>, <code><a
+href="refA.html#asserta">asserta</a></code> and <code><a
+href="refA.html#assertz">assertz</a></code>.
+
+<pre><code>
+: (be a (1))
+-> a
+: (be a (2))
+-> a
+: (be a (3))
+-> a
+
+: (retract '(a (2)))
+-> (((1)) ((3)))
+
+:  (? (a @N))
+ @N=1
+ @N=3
+-> NIL
+</code></pre>
+
+<dt><a name="retract/1"><code>retract/1</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate that removes a fact or rule.
+See also <code><a href="refR.html#retract">retract</a></code>, <code><a
+href="refA.html#asserta/1">asserta/1</a></code> and <code><a
+href="refA.html#assertz/1">assertz/1</a></code>.
+
+<pre><code>
+: (be a (1))
+-> a
+: (be a (2))
+-> a
+: (be a (3))
+-> a
+
+: (? (retract (a 2)))
+-> T
+: (rules 'a)
+1 (be a (1))
+2 (be a (3))
+-> a
+</code></pre>
+
+<dt><a name="reverse"><code>(reverse 'lst) -> lst</code></a>
+<dd>Returns a reversed copy of <code>lst</code>. See also <code><a
+href="refF.html#flip">flip</a></code>.
+
+<pre><code>
+: (reverse (1 2 3 4))
+-> (4 3 2 1)
+</code></pre>
+
+<dt><a name="rewind"><code>(rewind) -> flg</code></a>
+<dd>Sets the file position indicator for the current output stream to the
+beginning of the file, and truncates the file length to zero. Returns
+<code>T</code> when successful. See also <code><a
+href="refF.html#flush">flush</a></code>.
+
+<pre><code>
+: (out "a" (prinl "Hello world"))
+-> "Hello world"
+: (in "a" (echo))
+Hello world
+-> T
+: (info "a")
+-> (12 733216 . 53888)
+: (out "a" (rewind))
+-> T
+: (info "a")
+-> (0 733216 . 53922)
+</code></pre>
+
+<dt><a name="revolve/2"><code>revolve/2</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate for quasi-parallel evaluation
+of clauses. It takes a list and an arbitrary number of clauses. The list should
+contain a Pilog variable for the result in the CAR, another Pilog variable for
+passing the values in the CADR, and a list of values in the CDDR. The clauses
+will be evaluated in a round-robin fashion. See also <code><a
+href="refR.html#remote/2">remote/2</a></code>.
+
+<pre><code>
+: (solve
+   (quote
+      @Rsrc '((1 2 3 4) (5 6 7 8) (a b c))
+      (revolve (@Res @Lst . @Rsrc)
+         (lst @Res @Lst) ) )
+   @Res )
+-> (1 5 a 2 6 b 3 7 c 4 8)
+</code></pre>
+
+<dt><a name="rollback"><code>(rollback) -> flg</code></a>
+<dd>Cancels a transaction, by discarding all modifications of external symbols.
+See also <code><a href="refC.html#commit">commit</a></code>.
+
+<pre><code>
+: (pool "db")
+-> T
+# .. Modify external objects ..
+: (rollback)            # Rollback
+-> T
+</code></pre>
+
+<dt><a name="root"><code>(root 'tree) -> (num . sym)</code></a>
+<dd>Returns the root of a database index tree, with the number of entries in
+<code>num</code>, and the base node in <code>sym</code>. See also <code><a
+href="refT.html#tree">tree</a></code>.
+
+<pre><code>
+: (root (tree 'nr '+Item))
+-> (7 . {7-1})
+</code></pre>
+
+<dt><a name="rot"><code>(rot 'lst ['cnt]) -> lst</code></a>
+<dd>Rotate: The contents of the cells of <code>lst</code> are (destructively)
+shifted right, and the value from the last cell is stored in the first cell.
+Without the optional <code>cnt</code> argument, the whole list is rotated,
+otherwise only the first <code>cnt</code> elements. See also <code><a
+href="refF.html#flip">flip</a></code> .
+
+<pre><code>
+: (rot (1 2 3 4))             # Rotate all four elements
+-> (4 1 2 3)
+: (rot (1 2 3 4 5 6) 3)       # Rotate only the first three elements
+-> (3 1 2 4 5 6)
+</code></pre>
+
+<dt><a name="round"><code>(round 'num1 ['num2]) -> sym</code></a>
+<dd>Formats a number <code>num1</code> with <code>num2</code> decimal places,
+according to the current scale <code><a href="refS.html#*Scl">*Scl</a></code>.
+<code>num2</code> defaults to 3. See also <a href="ref.html#num-io">Numbers</a>
+and <code><a href="refF.html#format">format</a></code>.
+
+<pre><code>
+: (scl 4)               # Set scale to 4
+-> 4
+: (round 123456)        # Format with three decimal places
+-> "12.346"
+: (round 123456 2)      # Format with two decimal places
+-> "12.35"
+: (format 123456 *Scl)  # Format with full precision
+-> "12.3456"
+</code></pre>
+
+<dt><a name="rules"><code>(rules 'sym ..) -> sym</code></a>
+<dd>Prints all rules defined for the <code>sym</code> arguments. See also <a
+href="ref.html#pilog">Pilog</a> and <code><a href="refB.html#be">be</a></code>.
+
+<pre><code>
+: (rules 'member 'append)
+1 (be member (@X (@X . @)))
+2 (be member (@X (@ . @Y)) (member @X @Y))
+1 (be append (NIL @X @X))
+2 (be append ((@A . @X) @Y (@A . @Z)) (append @X @Y @Z))
+-> append
+</code></pre>
+
+<dt><a name="run"><code>(run 'any ['cnt ['lst]]) -> any</code></a>
+<dd>If <code>any</code> is an atom, <code>run</code> behaves like <code><a
+href="refE.html#eval">eval</a></code>. Otherwise <code>any</code> is a list,
+which is evaluated in sequence. The last result is returned. If a lambda-binding
+environment offset <code>cnt</code> is given, that evaluation takes place in the
+corresponding environment, and an optional <code>lst</code> of excluded symbols
+can be supplied. <code>cnt</code> should be greater than zero. See also <code><a
+href="refU.html#up">up</a></code>.
+
+<pre><code>
+: (run '((println (+ 1 2 3)) (println 'OK)))
+6
+OK
+-> OK
+
+: (de f Prg
+   (let A 12
+      (println (cons 'Prg Prg) (cons 'A A))
+      (run Prg 1) ) )
+-> f
+: (let (Prg 77  A 99)
+   (f
+      (println (cons 'Prg Prg) (cons 'A A)) ) )
+(Prg (println (cons 'Prg Prg) (cons 'A A))) (A . 12)
+(Prg . 77) (A . 99)
+-> (A . 99)
+</code></pre>
+
+</dl>
+
+</body>
+</html>

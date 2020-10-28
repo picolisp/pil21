@@ -1,0 +1,39 @@
+/* 27oct20 Software Lab. Alexander Burger
+ * 06dec12jk
+ */
+
+html {
+   background-color: #ddd;
+}
+
+body {
+   margin: auto;
+   max-width: 50em;
+   border: 1px solid #bbb;
+   background-color: white;
+   padding: 2em 7% 4em 10%;
+}
+
+h5 {
+   font-size: 95%;
+   margin-bottom: 1em;
+}
+
+dt {
+   margin: 0.4em -2em 0 0;
+   font-weight: 600;
+   color: #444;
+}
+
+dd {
+   margin-top: 0.3em;
+   margin-bottom: 0.4em;
+}
+
+code {
+   color: rgb(0%,40%,0%);
+}
+
+dt code {
+   word-spacing: -0.04em;
+}

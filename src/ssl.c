@@ -1,4 +1,4 @@
-// 26oct20 Software Lab. Alexander Burger
+// 28oct20 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -45,12 +45,12 @@ static void giveup(char *msg, char *arg) {
 
 static int sslConnect(SSL *ssl, char *node, char *service) {
    struct addrinfo hints, *lst, *p;
-   int fd, sd;
+   int n, fd, sd;
    char *q;
 
    if (strchr(node, '/')  &&  (fd = open(node, O_RDONLY)) >= 0) {
-      if (read(fd, Node, sizeof(Node)) > 0) {
-         if (q = strchr(Node, '\n'))
+      if ((n = read(fd, Node, sizeof(Node))) > 0) {
+         if ((q = strchr(Node, '\n')) && q < Node+n)
             *q = '\0';
          node = Node;
       }

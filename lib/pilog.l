@@ -1,4 +1,4 @@
-# 21sep20 Software Lab. Alexander Burger
+# 27oct20 Software Lab. Alexander Burger
 
 # *Rule
 
@@ -674,5 +674,3 @@
 `*Dbg
 
 (load "@lib/sq.l")
-
-## (docs "@doc/")

@@ -1,0 +1,641 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>L</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+
+<h1>L</h1>
+
+<dl>
+
+<dt><a name="*Led"><code>*Led</code></a>
+<dd>(Debug mode only) A global variable holding a (possibly empty)
+<code>prg</code> body that implements a "Line editor". When
+non-<code>NIL</code>, it should return a single symbol (string) upon execution.
+
+<pre><code>
+: (de *Led "(bye)")
+# *Led redefined
+-> *Led
+: $                                    # Exit
+</code></pre>
+
+<dt><a name="+Link"><code>+Link</code></a>
+<dd>Class for object relations, a subclass of <code><a
+href="refR.html#+relation">+relation</a></code>. Expects a list of classes as
+<code><a href="refT.html#type">type</a></code> of the referred database object
+(of class <code><a href="refE.html#+Entity">+Entity</a></code>). See also <a
+href="ref.html#dbase">Database</a>.
+
+<pre><code>
+(rel sup (+Ref +Link) NIL (+CuSu))  # Supplier (class Customer/Supplier)
+</code></pre>
+
+<dt><a name="+List"><code>+List</code></a>
+<dd>Prefix class for a list of identical relations. Objects of that class
+maintain a list of Lisp data of uniform type. See also <a
+href="ref.html#dbase">Database</a>.
+
+<pre><code>
+(rel pos (+List +Joint) ord (+Pos))  # Positions
+(rel nm (+List +Ref +String))        # List of indexed strings
+(rel val (+Ref +List +Number))       # Indexed list of numeric values
+</code></pre>
+
+<dt><a name="last"><code>(last 'lst) -> any</code></a>
+<dd>Returns the last element of <code>lst</code>. See also <code><a
+href="refF.html#fin">fin</a></code> and <code><a
+href="refT.html#tail">tail</a></code>.
+
+<pre><code>
+: (last (1 2 3 4))
+-> 4
+: (last '((a b) c (d e f)))
+-> (d e f)
+</code></pre>
+
+<dt><a name="later"><code>(later 'var . prg) -> var</code></a>
+<dd>Executes <code>prg</code> in a <code><a
+href="refP.html#pipe">pipe</a></code>'ed child process. The return value of
+<code>prg</code> will later be available in <code>var</code>. Note that
+<code>later</code> uses <code><a href="refP.html#pr">pr</a></code> and <code><a
+href="refR.html#rd">rd</a></code> to communicate the result, so <code>prg</code>
+should not write any data to standard output as a side effect.
+
+<pre><code>
+: (prog1  # Parallel background calculation of square numbers
+   (mapcan '((N) (later (cons) (* N N))) (1 2 3 4))
+   (wait NIL (full @)) )
+-> (1 4 9 16)
+</code></pre>
+
+<dt><a name="ld"><code>(ld) -> any</code></a>
+<dd>(Debug mode only) <code><a href="refL.html#load">load</a></code>s the last
+file edited with <code><a href="refV.html#vi">vi</a></code>.
+
+<pre><code>
+: (vi 'main)
+-> T
+: (ld)
+# main redefined
+-> go
+</code></pre>
+
+<dt><a name="le0"><code>(le0 'any) -> num | NIL</code></a>
+<dd>Returns <code>num</code> when the argument is a number less or equal zero,
+otherwise <code>NIL</code>. See also <code><a
+href="refL.html#lt0">lt0</a></code>, <code><a
+href="refG.html#ge0">ge0</a></code>, <code><a
+href="refG.html#gt0">gt0</a></code>, <code><a href="ref_.html#=0">=0</a></code>
+and <code><a href="refN.html#n0">n0</a></code>.
+
+<pre><code>
+: (le0 -2)
+-> -2
+: (le0 0)
+-> 0
+: (le0 3)
+-> NIL
+</code></pre>
+
+<dt><a name="leaf"><code>(leaf 'tree) -> any</code></a>
+<dd>Returns the first leaf (i.e. the value of the smallest key) in a database
+tree. See also <code><a href="refT.html#tree">tree</a></code>, <code><a
+href="refM.html#minKey">minKey</a></code>, <code><a
+href="refM.html#maxKey">maxKey</a></code> and <code><a
+href="refS.html#step">step</a></code>.
+
+<pre><code>
+: (leaf (tree 'nr '+Item))
+-> {3-1}
+: (db 'nr '+Item (minKey (tree 'nr '+Item)))
+-> {3-1}
+</code></pre>
+
+<dt><a name="length"><code>(length 'any) -> cnt | T</code></a>
+<dd>Returns the "length" of <code>any</code>. For numbers this is the number of
+decimal digits in the value (plus 1 for negative values), for symbols it is the
+number of characters in the name, and for lists it is the number of cells (or
+<code>T</code> for circular lists). See also <code><a
+href="refS.html#size">size</a></code> and <code><a
+href="refB.html#bytes">bytes</a></code>.
+
+<pre><code>
+: (length "abc")
+-> 3
+: (length "äbc")
+-> 3
+: (length 123)
+-> 3
+: (length (1 (2) 3))
+-> 3
+: (length (1 2 3 .))
+-> T
+</code></pre>
+
+<dt><a name="less"><code>(less 'any ['cnt]) -> any</code></a>
+<dd>(Debug mode only) Returns a reduced form of <code>any</code>, where for each
+list and its sublists only the first <code>cnt</code> elements (default 4),
+possibly followed by <code>..</code>, are retained.
+
+<pre><code>
+: (less '(a b c d e f))
+-> (a b c d ..)
+: (less '((a b c) ((d e f g h i) (j k l m n))))
+-> ((a b c) ((d e f ..) (j k ..)))
+: (less '((a b c) ((d e f g h i) (j k l m n))) 2)
+-> ((a b ..) ((d ..) ..))
+</code></pre>
+
+<dt><a name="let"><code>(let sym 'any . prg) -> any</code></a>
+<dt><code>(let (sym|lst 'any ..) . prg) -> any</code>
+<dd>Defines local variables. The value of the symbol <code>sym</code> - or the
+values of the symbols <code>sym</code> in the list of the second form - are
+saved and the symbols are bound to the evaluated <code>any</code> arguments. The
+<code>lst</code> arguments in the second form may consist only of symbols and
+sublists, and match the <code>any</code> argument (destructuring bind).
+<code>prg</code> is executed, then the symbols are restored to their original
+values. The result of <code>prg</code> is returned. It is an error condition to
+pass <code>NIL</code> as a <code>sym</code> argument. In destructuring patterns,
+<code>NIL</code> denotes a "don't care" position. See also <code><a
+href="refL.html#let?">let?</a></code>, <code><a
+href="refB.html#bind">bind</a></code>, <code><a
+href="refR.html#recur">recur</a></code>, <code><a
+href="refW.html#with">with</a></code>, <code><a
+href="refF.html#for">for</a></code>, <code><a
+href="refJ.html#job">job</a></code> and <code><a
+href="refU.html#use">use</a></code>.
+
+<pre><code>
+: (setq  X 123  Y 456)
+-> 456
+: (let X "Hello" (println X))
+"Hello"
+-> "Hello"
+: (let (X "Hello" Y "world") (prinl X " " Y))
+Hello world
+-> "world"
+: X
+-> 123
+: Y
+-> 456
+
+: (let (A 1  (B . C) (2 3)  D 4)
+   (list A B C D) )
+-> (1 2 (3) 4)
+
+: (let (((A . B) (C) . D) '((1 2 3) (4 5 6) 7 8 9))
+   (list A B C D) )
+-> (1 (2 3) 4 (7 8 9))
+
+: (let (((A . NIL) NIL NIL D) '((1 2 3) (4 5 6) 7 8 9))
+   (trail T) )
+-> (A 1 D 8)
+</code></pre>
+
+<dt><a name="let?"><code>(let? sym 'any . prg) -> any</code></a>
+<dd>Conditional local variable binding and execution: If <code>any</code>
+evaluates to <code>NIL</code>, <code>NIL</code> is returned. Otherwise, the
+value of the symbol <code>sym</code> is saved and <code>sym</code> is bound to
+the evaluated <code>any</code> argument. <code>prg</code> is executed, then
+<code>sym</code> is restored to its original value. The result of
+<code>prg</code> is returned. It is an error condition to pass <code>NIL</code>
+as the <code>sym</code> argument. <code>(let? sym 'any ..)</code> is equivalent
+to <code>(when 'any (let sym @ ..))</code>. See also <code><a
+href="refL.html#let">let</a></code>, <code><a
+href="refB.html#bind">bind</a></code>, <code><a
+href="refJ.html#job">job</a></code> and <code><a
+href="refU.html#use">use</a></code>.
+
+<pre><code>
+: (setq Lst (1 NIL 2 NIL 3))
+-> (1 NIL 2 NIL 3)
+: (let? A (pop 'Lst) (println 'A A))
+A 1
+-> 1
+: (let? A (pop 'Lst) (println 'A A))
+-> NIL
+</code></pre>
+
+<dt><a name="lieu"><code>(lieu 'any) -> sym | NIL</code></a>
+<dd>Returns the argument <code>any</code> when it is an external symbol and
+currently manifest in heap space, otherwise <code>NIL</code>. See also <code><a
+href="refE.html#ext?">ext?</a></code>.
+
+<pre><code>
+: (lieu *DB)
+-> {1}
+</code></pre>
+
+<dt><a name="line"><code>(line 'flg ['cnt ..]) -> lst|sym</code></a>
+<dd>Reads a line of characters from the current input channel. End of line is
+recognized as linefeed (hex "0A"), carriage return (hex "0D"), or the
+combination of both. (Note that a single carriage return may not work on network
+connections, because the character look-ahead to distinguish from
+return+linefeed can block the connection.) If <code>flg</code> is
+<code>NIL</code>, a list of single-character transient symbols is returned. When
+<code>cnt</code> arguments are given, subsequent characters of the input line
+are grouped into sublists, to allow parsing of fixed field length records. If
+<code>flg</code> is non-<code>NIL</code>, strings are returned instead of
+single-character lists. <code>NIL</code> is returned upon end of file. See also
+<code><a href="refC.html#char">char</a></code>, <code><a
+href="refR.html#read">read</a></code>, <code><a
+href="refT.html#till">till</a></code> and <code><a
+href="refE.html#eof">eof</a></code>.
+
+<pre><code>
+: (line)
+abcdefghijkl
+-> ("a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l")
+: (line T)
+abcdefghijkl
+-> "abcdefghijkl"
+: (line NIL 1 2 3)
+abcdefghijkl
+-> (("a") ("b" "c") ("d" "e" "f") "g" "h" "i" "j" "k" "l")
+: (line T 1 2 3)
+abcdefghijkl
+-> ("a" "bc" "def" "g" "h" "i" "j" "k" "l")
+</code></pre>
+
+<dt><a name="lines"><code>(lines 'any ..) -> cnt</code></a>
+<dd>Returns the sum of the number of lines in the files with the names
+<code>any</code>, or <code>NIL</code> if none was found. See also <code><a
+href="refI.html#info">info</a></code>.
+
+<pre><code>
+: (lines "x.l")
+-> 11
+</code></pre>
+
+<dt><a name="link"><code>(link 'any ..) -> any</code></a>
+<dd>Links one or several new elements <code>any</code> to the end of the list in
+the current <code><a href="refM.html#make">make</a></code> environment. This
+operation is efficient also for long lists, because a pointer to the last
+element of the list is maintained. <code>link</code> returns the last linked
+argument. See also <code><a href="refY.html#yoke">yoke</a></code>, <code><a
+href="refC.html#chain">chain</a></code> and <code><a
+href="refM.html#made">made</a></code>.
+
+<pre><code>
+: (make
+   (println (link 1))
+   (println (link 2 3)) )
+1
+3
+-> (1 2 3)
+</code></pre>
+
+<dt><a name="lint"><code>(lint 'sym) -> lst</code></a>
+<dt><code>(lint 'sym 'cls) -> lst</code>
+<dt><code>(lint '(sym . cls)) -> lst</code>
+<dd>(Debug mode only) Checks the function definition or file contents (in the
+first form), or the method body of sym (second and third form), for possible
+pitfalls. Returns an association list of diagnoses, where <code>var</code>
+indicates improper variables, <code>dup</code> duplicate parameters,
+<code>def</code> an undefined function, <code>bnd</code> an unbound variable,
+and <code>use</code> unused variables. See also <code><a
+href="refN.html#noLint">noLint</a></code>, <code><a
+href="refL.html#lintAll">lintAll</a></code>, <code><a
+href="refD.html#debug">debug</a></code>, <code><a
+href="refT.html#trace">trace</a></code> and <code><a
+href="refD.html#*Dbg">*Dbg</a></code>.
+
+<pre><code>
+: (de foo (R S T R)     # 'T' is a improper parameter, 'R' is duplicated
+   (let N 7             # 'N' is unused
+      (bar X Y) ) )     # 'bar' is undefined, 'X' and 'Y' are not bound
+-> foo
+: (lint 'foo)
+-> ((var T) (dup R) (def bar) (bnd Y X) (use N))
+</code></pre>
+
+<dt><a name="lintAll"><code>(lintAll ['sym ..]) -> lst</code></a>
+<dd>(Debug mode only) Applies <code><a href="refL.html#lint">lint</a></code> to
+<code><a href="refA.html#all">all</a></code> internal symbols - and optionally
+to all files <code>sym</code> - and returns a list of diagnoses. See also
+<code><a href="refN.html#noLint">noLint</a></code>.
+
+<pre><code>
+: (more (lintAll "file1.l" "file2.l"))
+...
+</code></pre>
+
+<dt><a name="lisp"><code>(lisp 'sym ['fun]) -> num</code></a>
+<dd>Installs under the tag <code>sym</code> a callback function
+<code>fun</code>, and returns a pointer <code>num</code> suitable to be passed
+to a C function via 'native'. If <code>fun</code> is <code>NIL</code>, the
+corresponding entry is freed. Maximally 24 callback functions can be installed
+that way. 'fun' should be a function of maximally five numbers, and should
+return a number. "Numbers" in this context are 64-bit scalars, and may not only
+represent integers, but also pointers or other encoded data. See also <code><a
+href="refN.html#native">native</a></code> and <code><a
+href="refS.html#struct">struct</a></code>.
+
+<pre><code>
+(load "lib/native.l")
+
+(gcc "ltest" NIL
+   (cbTest (Fun) cbTest 'N Fun) )
+
+long cbTest(int(*fun)(int,int,int,int,int)) {
+   return fun(1,2,3,4,5);
+}
+/**/
+
+: (cbTest
+   (lisp 'cbTest
+      '((A B C D E)
+         (msg (list A B C D E))
+         (* A B C D E) ) ) )
+(1 2 3 4 5)
+-> 120
+</code></pre>
+
+<dt><a name="list"><code>(list 'any ['any ..]) -> lst</code></a>
+<dd>Returns a list of all <code>any</code> arguments. See also <code><a
+href="refC.html#cons">cons</a></code>.
+
+<pre><code>
+: (list 1 2 3 4)
+-> (1 2 3 4)
+: (list 'a (2 3) "OK")
+-> (a (2 3) "OK")
+</code></pre>
+
+<dt><a name="lst/3"><code>lst/3</code></a>
+<dd><a href="ref.html#pilog">Pilog</a> predicate that returns subsequent list
+elements, after applying the <code><a href="refG.html#get">get</a></code>
+algorithm to that object and the following arguments. Often used in database
+queries. See also <code><a href="refM.html#map/3">map/3</a></code>.
+
+<pre><code>
+: (? (db nr +Ord 1 @Ord) (lst @Pos @Ord pos))
+ @Ord={3-7} @Pos={4-1}
+ @Ord={3-7} @Pos={4-2}
+ @Ord={3-7} @Pos={4-3}
+-> NIL
+</code></pre>
+
+<dt><a name="lst?"><code>(lst? 'any) -> flg</code></a>
+<dd>Returns <code>T</code> when the argument <code>any</code> is a (possibly
+empty) list (<code>NIL</code> or a cons pair). See also <code><a
+href="refP.html#pair">pair</a></code>.
+
+<pre><code>
+: (lst? NIL)
+-> T
+: (lst? (1 . 2))
+-> T
+: (lst? (1 2 3))
+-> T
+</code></pre>
+
+<dt><a name="listen"><code>(listen 'cnt1 ['cnt2]) -> cnt | NIL</code></a>
+<dd>Listens at a socket descriptor <code>cnt1</code> (as received by <code><a
+href="refP.html#port">port</a></code>) for an incoming connection, and returns
+the new socket descriptor <code>cnt</code>. While waiting for a connection, a
+<code>select</code> system call is executed for all file descriptors and timers
+in the <code>VAL</code> of the global variable <code><a
+href="refR.html#*Run">*Run</a></code>. If <code>cnt2</code> is
+non-<code>NIL</code>, that amount of milliseconds is waited maximally, and
+<code>NIL</code> is returned upon timeout. The global variable <code>*Adr</code>
+is set to the IP address of the client. See also <code><a
+href="refA.html#accept">accept</a></code>, <code><a
+href="refC.html#connect">connect</a></code>, <code><a
+href="refA.html#*Adr">*Adr</a></code>.
+
+<pre><code>
+: (setq *Socket
+   (listen (port 6789) 60000) )  # Listen at port 6789 for max 60 seconds
+-> 4
+: *Adr
+-> "127.0.0.1"
+</code></pre>
+
+<dt><a name="lit"><code>(lit 'any) -> any</code></a>
+<dd>Returns the literal (i.e. quoted) value of <code>any</code>, by
+<code>cons</code>ing it with the <code><a
+href="refQ.html#quote">quote</a></code> function if necessary. See also <code><a
+href="refS.html#strip">strip</a></code>.
+
+<pre><code>
+: (lit T)
+-> T
+: (lit 1)
+-> 1
+: (lit '(1))
+-> (1)
+: (lit '(a))
+-> '(a)
+</code></pre>
+
+<dt><a name="load"><code>(load 'any ..) -> any</code></a>
+<dd>Loads all <code>any</code> arguments. Normally, the name of each argument is
+taken as a file to be executed in a read-eval loop. The argument semantics are
+identical to that of <code><a href="refI.html#in">in</a></code>, with the
+exception that if an argument is a symbol and its first character is a hyphen
+'-', then that argument is parsed as an executable list (without the surrounding
+parentheses). When <code>any</code> is <code>T</code>, all remaining command
+line arguments are <code>load</code>ed recursively. When <code>any</code> is
+<code>NIL</code>, standard input is read, a prompt is issued before each read
+operation, the results are printed to standard output (read-eval-print loop),
+and <code>load</code> terminates when an empty line is entered. In any case,
+<code>load</code> terminates upon end of file, or when <code>NIL</code> is read.
+The index for transient symbols is cleared before and after the load, so that
+all transient symbols in a file have a local scope. If the namespace was
+switched (with <code><a href="refS.html#symbols">symbols</a></code>) while
+executing a file, it is restored to the previous one. Returns the value of the
+last evaluated expression. See also <code><a
+href="refS.html#script">script</a></code>, <code><a
+href="refI.html#ipid">ipid</a></code>, <code><a
+href="refC.html#call">call</a></code>, <code><a
+href="refF.html#file">file</a></code>, <code><a
+href="refI.html#in">in</a></code>, <code><a href="refO.html#out">out</a></code>
+and <code><a href="refS.html#str">str</a></code>.
+
+<pre><code>
+: (load "lib.l" "-* 1 2 3")
+-> 6
+</code></pre>
+
+<dt><a name="loc"><code>(loc 'sym 'lst) -> sym</code></a>
+<dd>Locates in <code>lst</code> a <code><a
+href="ref.html#transient">transient</a></code> symbol with the same name as
+<code>sym</code>. Allows to get hold of otherwise inaccessible symbols.
+
+<pre><code>
+: (loc "X" curry)
+-> "X"
+: (== @ "X")
+-> NIL
+</code></pre>
+
+<dt><a name="local"><code>(local) sym|lst</code></a>
+<dd>Intern symbols locally in the current namespace. <code>(local)</code>
+expects a single symbol or a list of symbols immediately following in the
+current input stream. See also <code><a href="refP.html#pico">pico</a></code>,
+<code><a href="refS.html#symbols">symbols</a></code>, <code><a
+href="refP.html#private">private</a></code>, <code><a
+href="refE.html#export">export</a></code>, <code><a
+href="refI.html#import">import</a></code> and <code><a
+href="refI.html#intern">intern</a></code>.
+
+<pre><code>
+: (symbols 'myLib 'pico)
+-> (pico)
+myLib: (local) (foo bar)
+
+myLib: (de foo (A)  # 'foo' is local to 'myLib'
+   ...
+myLib: (de bar (B)  # 'bar' is local to 'myLib'
+   ...
+</code></pre>
+
+<dt><a name="locale"><code>(locale 'sym1 'sym2 ['sym ..])</code></a>
+<dd>Sets the current locale to that given by the country file <code>sym1</code>
+and the language file <code>sym2</code> (both located in the "loc/" directory),
+and optional application-specific directories <code>sym</code>. The locale
+influences the language, and numerical, date and other formats. See also
+<code><a href="refU.html#*Uni">*Uni</a></code>, <code><a
+href="refD.html#datStr">datStr</a></code>, <code><a
+href="refS.html#strDat">strDat</a></code>, <code><a
+href="refE.html#expDat">expDat</a></code>, <code><a
+href="refD.html#day">day</a></code>, <code><a
+href="refT.html#telStr">telStr</a></code>, <code><a
+href="refE.html#expTel">expTel</a></code> and and <code><a
+href="refM.html#money">money</a></code>.
+
+<pre><code>
+: (locale "DE" "de" "app/loc/")
+-> "Zip"
+: ,"Yes"
+-> "Ja"
+</code></pre>
+
+<dt><a name="lock"><code>(lock ['sym]) -> cnt | NIL</code></a>
+<dd>Write-locks an external symbol <code>sym</code> (file record locking), or
+the whole database root file if <code>sym</code> is <code>NIL</code>. Returns
+<code>NIL</code> if successful, or the ID of the process currently holding the
+lock. When <code>sym</code> is non-<code>NIL</code>, the lock is released at the
+next call to <code><a href="refC.html#commit">commit</a></code> or <code><a
+href="refR.html#rollback">rollback</a></code>, otherwise only when another
+database is opened with <code><a href="refP.html#pool">pool</a></code>, or when
+the process terminates. See also <code><a
+href="refS.html#*Solo">*Solo</a></code>.
+
+<pre><code>
+: (lock '{1})        # Lock single object
+-> NIL
+: (lock)             # Lock whole database
+-> NIL
+</code></pre>
+
+<dt><a name="loop"><code>(loop ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code></a>
+<dd>Endless loop with multiple conditional exits: The body is executed an
+unlimited number of times. If a clause has <code>NIL</code> or <code>T</code> as
+its CAR, the clause's second element is evaluated as a condition and - if the
+result is <code>NIL</code> or non-<code>NIL</code>, respectively - the
+<code>prg</code> is executed and the result returned. See also <code><a
+href="refD.html#do">do</a></code> and <code><a
+href="refF.html#for">for</a></code>.
+
+<pre><code>
+: (let N 3
+   (loop
+      (prinl N)
+      (T (=0 (dec 'N)) 'done) ) )
+3
+2
+1
+-> done
+</code></pre>
+
+<dt><a name="low?"><code>(low? 'any) -> sym | NIL</code></a> <dd>Returns
+<code>any</code> when the argument is a string (symbol) that starts with a
+lowercase character. See also <code><a href="refL.html#lowc">lowc</a></code> and
+<code><a href="refU.html#upp?">upp?</a></code>
+
+<pre><code>
+: (low? "a")
+-> "a"
+: (low? "A")
+-> NIL
+: (low? 123)
+-> NIL
+: (low? ".")
+-> NIL
+</code></pre>
+
+<dt><a name="lowc"><code>(lowc 'any) -> any</code></a>
+<dd>Lower case conversion: If <code>any</code> is not a symbol, it is returned
+as it is. Otherwise, a new transient symbol with all characters of
+<code>any</code>, converted to lower case, is returned. See also <code><a
+href="refU.html#uppc">uppc</a></code>, <code><a
+href="refF.html#fold">fold</a></code> and <code><a
+href="refL.html#low?">low?</a></code>.
+
+<pre><code>
+: (lowc 123)
+-> 123
+: (lowc "ABC")
+-> "abc"
+</code></pre>
+
+<dt><a name="lt0"><code>(lt0 'any) -> num | NIL</code></a>
+<dd>Returns <code>num</code> when the argument is a number and less than zero,
+otherwise <code>NIL</code>. See also <code><a
+href="refL.html#le0">le0</a></code>, <code><a
+href="refG.html#ge0">ge0</a></code>, <code><a
+href="refG.html#gt0">gt0</a></code>, <code><a href="ref_.html#=0">=0</a></code>
+and <code><a href="refN.html#n0">n0</a></code>.
+
+<pre><code>
+: (lt0 -2)
+-> -2
+: (lt0 3)
+-> NIL
+</code></pre>
+
+<dt><a name="lup"><code>(lup 'lst 'any) -> lst</code></a>
+<dt><code>(lup 'lst 'any 'any2) -> lst</code>
+<dd>Looks up <code>any</code> in the CAR-elements of cons pairs stored in the
+index tree <code>lst</code>, as built-up by <code><a
+href="refI.html#idx">idx</a></code>. In the first form, the first found cons
+pair is returned, in the second form a list of all pairs whose CAR is in the
+range <code>any</code> .. <code>any2</code>. If the tree is empty,
+<code>NIL</code> is returned immediately. See also <code><a
+href="refA.html#assoc">assoc</a></code>.
+
+<pre><code>
+: (idx 'A 'a T)
+-> NIL
+: (idx 'A (1 . b) T)
+-> NIL
+: (idx 'A 123 T)
+-> NIL
+: (idx 'A (1 . a) T)
+-> NIL
+: (idx 'A (1 . c) T)
+-> NIL
+: (idx 'A (2 . d) T)
+-> NIL
+: (idx 'A)
+-> (123 a (1 . a) (1 . b) (1 . c) (2 . d))
+: (lup A 1)
+-> (1 . b)
+: (lup A 2)
+-> (2 . d)
+: (lup A 1 1)
+-> ((1 . a) (1 . b) (1 . c))
+: (lup A 1 2)
+-> ((1 . a) (1 . b) (1 . c) (2 . d))
+</code></pre>
+
+</dl>
+
+</body>
+</html>

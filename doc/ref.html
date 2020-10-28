@@ -1,0 +1,2806 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>PicoLisp Reference</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+<a href="mailto:abu@software-lab.de">abu@software-lab.de</a>
+
+<p align=right>
+<i>Perfection is attained</i><br>
+<i>not when there is nothing left to add</i><br>
+<i>but when there is nothing left to take away.</i><br>
+<i>(Antoine de Saint-Exupéry)</i><br>
+
+
+<h1>The PicoLisp Reference</h1>
+
+<p align=right>(c) Software Lab. Alexander Burger
+
+<p>This document describes the concepts, data types, and kernel functions of the
+<a href="http://software-lab.de/down.html">PicoLisp</a> system.
+
+<p>This is <i>not</i> a Lisp tutorial. For an introduction to Lisp, a
+traditional Lisp book like "Lisp" by Winston/Horn (Addison-Wesley 1981) is
+recommended. Note, however, that there are significant differences between
+PicoLisp and Maclisp (and even greater differences to Common Lisp).
+
+<p>Please take a look at the <a href="tut.html">PicoLisp Tutorial</a> for an
+explanation of some aspects of PicoLisp, and scan through the list of <a
+href="faq.html">Frequently Asked Questions (FAQ)</a>.
+
+<p><ul>
+<li><a href="#intro">Introduction</a>
+<li><a href="#vm">The PicoLisp Machine</a>
+   <ul>
+   <li><a href="#cell">The Cell</a>
+   <li><a href="#data">Data Types</a>
+      <ul>
+      <li><a href="#number">Numbers</a>
+      <li><a href="#symbol">Symbols</a>
+         <ul>
+         <li><a href="#nilSym">NIL</a>
+         <li><a href="#internal">Internal Symbols</a>
+         <li><a href="#transient">Transient Symbols</a>
+         <li><a href="#external">External Symbols</a>
+         </ul>
+      <li><a href="#lst">Lists</a>
+      </ul>
+   <li><a href="#mem">Memory Management</a>
+   </ul>
+<li><a href="#penv">Programming Environment</a>
+   <ul>
+   <li><a href="#inst">Installation</a>
+   <li><a href="#invoc">Invocation</a>
+   <li><a href="#io">Input/Output</a>
+      <ul>
+      <li><a href="#num-io">Numbers</a>
+      <li><a href="#sym-io">Symbols</a>
+         <ul>
+         <li><a href="#nilSym-io">NIL</a>
+         <li><a href="#internal-io">Internal Symbols</a>
+         <li><a href="#transient-io">Transient Symbols</a>
+         <li><a href="#external-io">External Symbols</a>
+         </ul>
+      <li><a href="#lst-io">Lists</a>
+      <li><a href="#macro-io">Read-Macros</a>
+      </ul>
+   <li><a href="#ev">Evaluation</a>
+   <li><a href="#libs">Shared Libraries</a>
+   <li><a href="#coroutines">Coroutines</a>
+   <li><a href="#int">Interrupt</a>
+   <li><a href="#errors">Error Handling</a>
+   <li><a href="#atres">@ Result</a>
+   <li><a href="#cmp">Comparing</a>
+   <li><a href="#oop">OO Concepts</a>
+   <li><a href="#dbase">Database</a>
+      <ul>
+      <li><a href="#trans">Transactions</a>
+      <li><a href="#er">Entities / Relations</a>
+      </ul>
+   <li><a href="#pilog">Pilog (PicoLisp Prolog)</a>
+   <li><a href="#conv">Naming Conventions</a>
+   <li><a href="#trad">Breaking Traditions</a>
+   </ul>
+<li><a href="#fun">Function Reference</a>
+<li><a href="#down">Download</a>
+</ul>
+
+
+<p><hr>
+<h2><a name="intro">Introduction</a></h2>
+
+<p>PicoLisp is the result of a language design study, trying to answer the
+question "What is a minimal but useful architecture for a virtual machine?".
+Because opinions differ about what is meant by "minimal" and "useful", there are
+many answers to that question, and people might consider other solutions more
+"minimal" or more "useful". But from a practical point of view, PicoLisp has
+proven to be a valuable answer to that question.
+
+<p>First of all, PicoLisp is a virtual machine architecture, and then a
+programming language. It was designed in a "bottom up" way, and "bottom up" is
+also the most natural way to understand and to use it: <i>Form Follows
+Function</i>.
+
+<p>PicoLisp has been used in several commercial and research programming
+projects since 1988. Its internal structures are simple enough, allowing an
+experienced programmer always to fully understand what's going on under the
+hood, and its language features, efficiency and extensibility make it suitable
+for almost any practical programming task.
+
+<p>In a nutshell, emphasis was put on four design objectives. The PicoLisp
+system should be
+
+<p><dl>
+
+<dt>Simple
+<dd>The internal data structure should be as simple as possible. Only one single
+data structure is used to build all higher level constructs.
+
+<dt>Unlimited
+<dd>There are no limits imposed upon the language due to limitations of the
+virtual machine architecture. That is, there is no upper bound in symbol name
+length, number digit counts, stack depth, or data structure and buffer sizes,
+except for the total memory size of the host machine.
+
+<dt>Dynamic
+<dd>Behavior should be as dynamic as possible ("run"-time vs. "compile"-time).
+All decisions are delayed until runtime where possible. This involves matters
+like memory management, dynamic symbol binding, and late method binding.
+
+<dt>Practical
+<dd>PicoLisp is not just a toy of theoretical value. It is in use since 1988 in
+actual application development, research and production.
+
+</dl>
+
+
+<p><hr>
+<h2><a name="vm">The PicoLisp Machine</a></h2>
+
+<p>An important point in the PicoLisp philosophy is the knowledge about the
+architecture and data structures of the internal machinery. The high-level
+constructs of the programming language directly map to that machinery, making
+the whole system both understandable and predictable.
+
+<p>This is similar to assembly language programming, where the programmer has
+complete control over the machine.
+
+
+<p><hr>
+<h3><a name="cell">The Cell</a></h3>
+
+<p>The PicoLisp virtual machine is both simpler and more powerful than most
+current (hardware) processors. At the lowest level, it is constructed from a
+single data structure called "cell":
+
+<pre><code>
+         +-----+-----+
+         | CAR | CDR |
+         +-----+-----+
+</code></pre>
+
+<p>A cell is a pair of 64-bit machine words, which traditionally are called CAR
+and CDR in the Lisp terminology. These words can represent either a numeric
+value (scalar) or the address of another cell (pointer). All higher level data
+structures are built out of cells.
+
+<p>The type information of higher level data is contained in the pointers to
+these data. Assuming the implementation on a byte-addressed physical machine,
+and the pointer size being 8 bytes, each cell has a size of 16 bytes. Therefore,
+the pointer to a cell must point to a 16-byte boundary (a number which is a
+multiple of 16), and its bit-representation will look like:
+
+<pre><code>
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx0000
+</code></pre>
+
+<p>(the '<code>x</code>' means "don't care"). For the individual data types, the
+pointer is adjusted to point to other parts of a cell, in effect setting some of
+the lower four bits to non-zero values. These bits are then used by the
+interpreter to determine the data type.
+
+<p>In any case, bit(0) - the least significant of these bits - is reserved as a
+mark bit for garbage collection.
+
+<p>Initially, all cells in the memory are unused (free), and linked together to
+form a "free list". To create higher level data types at runtime, cells are
+taken from that free list, and returned by the garbage collector when they are
+no longer needed. All memory management is done via that free list; there are no
+additional buffers, string spaces or special memory areas, with two exceptions:
+
+<p><ul>
+<li>A certain fixed area of memory is set aside to contain the executable code
+and global variables of the interpreter itself, and
+
+<li>a standard push down stack for return addresses and temporary storage. Both
+are not directly accessible by the programmer.
+
+</ul>
+
+<p><hr>
+<h3><a name="data">Data Types</a></h3>
+
+<p>On the virtual machine level, PicoLisp supports
+
+<p><ul>
+<li>three base data types: Numbers, Symbols and Cons Pairs (Lists),
+<li>the three scope variations of symbols: Internal, Transient and External, and
+<li>the special symbol <code>NIL</code>.
+</ul>
+
+<p>They are all built from the single cell data structure, and all runtime data
+cannot consist of any other types than these three.
+
+<p>The following diagram shows the complete data type hierarchy, consisting of
+the three base types and the symbol variations:
+
+<pre><code>
+                       cell
+                        |
+            +-----------+-----------+
+            |           |           |
+         Number       Symbol       Pair
+                        |
+                        |
+   +--------+-----------+-----------+
+   |        |           |           |
+  NIL   Internal    Transient    External
+</code></pre>
+
+
+<p><hr>
+<h4><a name="number">Numbers</a></h4>
+
+<p>A number can represent a signed integral value of arbitrary size. Internally,
+numeric values of up to 60 bits are stored in "short" numbers,
+
+<pre><code>
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxS010
+</code></pre>
+
+i.e. the value is directly represented in the pointer, and doesn't take any heap
+space.
+
+<p>Numbers larger than that are "big" numbers, stored in heap cells. The CARs of
+one or more cells hold the number's "digits" (64 bits each), with the least
+significant digit first, while the CDRs point to the remaining digits.
+
+<pre><code>
+         Bignum
+         |
+         V
+      +-----+-----+
+      | DIG |  |  |
+      +-----+--+--+
+               |
+               V
+            +-----+-----+
+            | DIG |  |  |
+            +-----+--+--+
+                     |
+                     V
+                  +-----+-----+
+                  | DIG | CNT |
+                  +-----+-----+
+</code></pre>
+
+The CDR of the final cell holds the remaining bits in a short number.
+
+<p>The pointer to a big number points into the middle of the CAR, with an offset
+of 4 from the cell's start address, and the sign bit in bit(3):
+
+<pre><code>
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxS100
+</code></pre>
+
+<p>Thus, a number is recognized by the interpreter when either bit(1) is
+non-zero (a short number) or bit(2) is non-zero (a big number).
+
+
+<p><hr>
+<h4><a name="symbol">Symbols</a></h4>
+
+<p>A symbol is more complex than a number. Each symbol has a value, and
+optionally a name and an arbitrary number of properties. The CDR of a symbol
+cell is also called VAL, and the CAR points to the symbol's tail. As a minimum,
+a symbol consists of a single cell, and has no name or properties:
+
+<pre><code>
+            Symbol
+            |
+            V
+      +-----+-----+
+      |  /  | VAL |
+      +-----+-----+
+</code></pre>
+
+<p>That is, the symbol's tail is empty (<code>ZERO</code>, as indicated by the
+'<code>/</code>' character).
+
+<p>The pointer to a symbol points to the CDR of the cell, with an offset of 8
+bytes from the cell's start address. Therefore, the bit pattern of a symbol will
+be:
+
+<pre><code>
+      xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1000
+</code></pre>
+
+<p>Thus, a symbol is recognized by the interpreter when bit(3) is non-zero. (It
+should also be understood that both bit(2) and bit(1) must be zero, thus
+avoiding confusion with the number types.)
+
+<p>A property is a key-value pair, represented by a cons pair in the symbol's
+tail. This is called a "property list". The property list may be terminated by a
+number (short or big) representing the symbol's name. In the following example,
+a symbol with the name <code>"abcdefghijklmno"</code> has three properties: A
+KEY/VAL pair, a cell with only a KEY, and another KEY/VAL pair.
+
+<pre><code>
+            Symbol
+            |
+            V
+      +-----+-----+                                +----------+---------+
+      |  |  | VAL |                                |'hgfedcba'|'onmlkji'|
+      +--+--+-----+                                +----------+---------+
+         | tail                                       ^
+         |                                            |
+         V                                            | name
+         +-----+-----+     +-----+-----+     +-----+--+--+
+         |  |  |  ---+---> | KEY |  ---+---> |  |  |  |  |
+         +--+--+-----+     +-----+-----+     +--+--+-----+
+            |                                   |
+            V                                   V
+            +-----+-----+                       +-----+-----+
+            | VAL | KEY |                       | VAL | KEY |
+            +-----+-----+                       +-----+-----+
+</code></pre>
+
+<p>Each property in a symbol's tail is either a symbol (like the single KEY
+above, then it represents the boolean value <code>T</code>) or a cons pair with
+the property key in its CDR and the property value in its CAR. In both cases,
+the key should be a symbol, because searches in the property list are performed
+using pointer comparisons.
+
+<p>The name of a symbol is stored as a number at the end of the tail. It
+contains the characters of the name in UTF-8 encoding, using between one and
+seven bytes in a short number, or eight bytes in a bignum cell. The first byte
+of the first character, for example, is stored in the lowest 8 bits of the
+number.
+
+<p>All symbols have the above structure, but depending on scope and
+accessibility there are actually four types of symbols: <code><a
+href="#nilSym">NIL</a></code>, <a href="#internal">internal</a>, <a
+href="#transient">transient</a> and <a href="#external">external</a> symbols.
+
+
+<p><hr>
+<h5><a name="nilSym">NIL</a></h5>
+
+<p><code>NIL</code> is a special symbol which exists exactly once in the whole
+system. It is used
+
+<p><ul>
+<li>as an end-of-list marker
+<li>to represent the empty list
+<li>to represent the boolean value "false"
+<li>to represent the absolute minimum
+<li>to represent a string of length zero
+<li>to represent end of file
+<li>to represent the value "Not a Number"
+<li>as the root of all class hierarchies
+<li>as volatile property key
+</ul>
+
+<p>For that, <code>NIL</code> has a special structure:
+
+<pre><code>
+      NIL:  /
+            |
+            V
+      +-----+-----+-----+-----+
+      |'LIN'|  /  |  /  |  /  |
+      +-----+-----+-----+-----+
+</code></pre>
+
+<p>The reason for that structure is <code>NIL</code>'s dual nature both as a
+symbol and as a list:
+
+<p><ul>
+<li>As a symbol, it should give <code>NIL</code> for its VAL, and be without
+properties
+
+<li>For the empty list, <code>NIL</code> should give <code>NIL</code> both for
+its CAR and for its CDR
+
+</ul>
+
+<p>These requirements are fulfilled by the above structure.
+
+
+<p><hr>
+<h5><a name="internal">Internal Symbols</a></h5>
+
+<p>Internal symbols are all those "normal" symbols, as they are used for
+function definitions and variable names. They are "interned" into an index
+structure, so that it is possible to find an internal symbol by searching for
+its name.
+
+<p>There cannot be two different symbols with the same name in the same
+namespace.
+
+<p>Initially, a new internal symbol's VAL is <code>NIL</code>.
+
+
+<p><hr>
+<h5><a name="transient">Transient Symbols</a></h5>
+
+<p>Transient symbols are only interned into an index structure for a certain
+time (e.g. while reading the current source file), and are released after that.
+That means, a transient symbol cannot be accessed then by its name, and there
+may be several transient symbols in the system having the same name.
+
+<p>Transient symbols are used
+
+<p><ul>
+<li>as text strings
+
+<li>as identifiers with a limited access scope (like, for example,
+<code>static</code> identifiers in the C language family)
+
+<li>as anonymous, dynamically created objects (without a name)
+
+</ul>
+
+<p>Initially, a new transient symbol's VAL is that symbol itself.
+
+<p>A transient symbol without a name can be created with the <code><a
+href="refB.html#box">box</a></code> or <code><a
+href="refN.html#new">new</a></code> functions.
+
+
+<p><hr>
+<h5><a name="external">External Symbols</a></h5>
+
+<p>External symbols reside in a database file (or other resources, see <code><a
+href="refE.html#*Ext">*Ext</a></code>), and are loaded into memory - and written
+back to the file - dynamically as needed, and transparently to the programmer.
+They are kept in memory ("cached") as long as they are accessible ("referred
+to") from other parts of the program, or when they were modified but not yet
+written to the database file (by <code><a
+href="refC.html#commit">commit</a></code>).
+
+<p>The interpreter recognizes external symbols internally by an additional tag
+bit in the tail structure.
+
+<p>There cannot be two different external symbols with the same name. External
+symbols are maintained in index structures while they are loaded into memory,
+and have their external location (disk file and block offset) directly coded
+into their names (more details <a href="#external-io">here</a>).
+
+<p>Initially, a new external symbol's VAL is <code>NIL</code>, unless otherwise
+specified at creation time.
+
+
+<p><hr>
+<h4><a name="lst">Lists</a></h4>
+
+<p>A list is a sequence of one or more cells (cons pairs), holding numbers,
+symbols, or cons pairs.
+
+<pre><code>
+      |
+      V
+      +-----+-----+
+      | any |  |  |
+      +-----+--+--+
+               |
+               V
+               +-----+-----+
+               | any |  |  |
+               +-----+--+--+
+                        |
+                        V
+                        ...
+</code></pre>
+
+<p>Lists are used in PicoLisp to implement composite data structures like
+arrays, trees, stacks or queues.
+
+<p>In contrast to lists, numbers and symbols are collectively called "Atoms".
+
+<p>Typically, the CDR of each cell in a list points to the following cell,
+except for the last cell which points to <code>NIL</code>. If, however, the CDR of
+the last cell points to an atom, that cell is called a "dotted pair" (because of
+its I/O syntax with a dot '<code>.</code>' between the two values).
+
+
+<p><hr>
+<h3><a name="mem">Memory Management</a></h3>
+
+<p>The PicoLisp interpreter has complete knowledge of all data in the system,
+due to the type information associated with every pointer. Therefore, an
+efficient garbage collector mechanism can easily be implemented. PicoLisp
+employs a simple but fast mark-and-sweep garbage collector.
+
+<p>As the collection process is very fast (in the order of milliseconds per
+megabyte), it was not necessary to develop more complicated, time-consuming and
+error-prone garbage collection algorithms (e.g. incremental collection). A
+compacting garbage collector is also not necessary, because the single cell data
+type cannot cause heap fragmentation.
+
+
+<p><hr>
+<h2><a name="penv">Programming Environment</a></h2>
+
+<p>Lisp was chosen as the programming language, because of its clear and simple
+structure.
+
+<p>In some previous versions, a Forth-like syntax was also implemented on top of
+a similar virtual machine (Lifo). Though that language was more flexible and
+expressive, the traditional Lisp syntax proved easier to handle, and the virtual
+machine can be kept considerably simpler.
+
+PicoLisp inherits the major advantages of classical Lisp systems like
+
+<p><ul>
+<li>Dynamic data types and structures
+<li>Formal equivalence of code and data
+<li>Functional programming style
+<li>An interactive environment
+</ul>
+
+<p>In the following, some concepts and peculiarities of the PicoLisp language
+and environment are described.
+
+
+<p><hr>
+<h3><a name="inst">Installation</a></h3>
+
+<p>PicoLisp supports two installation strategies: Local and Global.
+
+<p>Normally, if you didn't build PicoLisp yourself but installed it with your
+operating system's package manager, you will have a global installation. This
+allows system-wide access to the executable and library/documentation files.
+
+<p>To get a local installation, you can directly download the PicoLisp tarball,
+and follow the instructions in the INSTALL file.
+
+<p>A local installation will not interfere in any way with the world outside its
+directory. There is no need to touch any system locations, and you don't have to
+be root to install it. Many different versions - or local modifications - of
+PicoLisp can co-exist on a single machine.
+
+<p>Note that you are still free to have local installations along with a global
+installation, and invoke them explicitly as desired.
+
+<p>Most examples in the following apply to a global installation.
+
+
+<p><hr>
+<h3><a name="invoc">Invocation</a></h3>
+
+<p>When PicoLisp is invoked from the command line, an arbitrary number of
+arguments may follow the command name.
+
+<p>By default, each argument is the name of a file to be executed by the
+interpreter. If, however, the argument's first character is a hyphen
+'<code>-</code>', then the rest of that argument is taken as a Lisp function
+call (without the surrounding parentheses), and a hyphen by itself as an
+argument stops evaluation of the rest of the command line (it may be processed
+later using the <code><a href="refA.html#argv">argv</a></code> and <code><a
+href="refO.html#opt">opt</a></code> functions). This whole mechanism corresponds
+to calling <code>(<a href="refL.html#load">load</a> T)</code>.
+
+<p>A special case is if the last argument is a single '<code>+</code>'. This
+will switch on debug mode (the <code><a href="refD.html#*Dbg">*Dbg</a></code>
+global variable) and discard the '<code>+</code>'.
+
+<p>As a convention, PicoLisp source files have the extension "<code>.l</code>".
+
+<p>Note that the PicoLisp executable itself does not expect or accept any
+command line flags or options (except the '<code>+</code>', see above). They are
+reserved for application programs.
+
+<p>The simplest and shortest invocation of PicoLisp does nothing, and exits
+immediately by calling <code><a href="refB.html#bye">bye</a></code>:
+
+<pre><code>
+$ picolisp -bye
+$
+</code></pre>
+
+<p>In interactive mode, the PicoLisp interpreter (see <code><a
+href="refL.html#load">load</a></code>) will also exit when <code>Ctrl-D</code>
+is entered:
+
+<pre><code>
+$ picolisp
+:           # Typed Ctrl-D
+$
+</code></pre>
+
+<p>To start up the standard PicoLisp environment, several files should be
+loaded. The most commonly used things are in "lib.l" and in a bunch of other
+files, which are in turn loaded by "ext.l". Thus, a typical call would be:
+
+<pre><code>
+$ picolisp lib.l ext.l
+</code></pre>
+
+<p>The recommended way, however, is to call the "pil" shell script, which
+includes "lib.l" and "ext.l". Given that your current project is loaded by some
+file "myProject.l" and your startup function is <code>main</code>, your
+invocation would look like:
+
+<pre><code>
+$ pil myProject.l -main
+</code></pre>
+
+<p>For interactive development it is recommended to enable debugging mode, to
+get readline line editing, single-stepping, tracing and other debugging
+utilities.
+
+<pre><code>
+$ pil myProject.l -main +
+</code></pre>
+
+<p>This is - in a local installation - equivalent to
+
+<pre><code>
+$ ./pil myProject.l -main +
+</code></pre>
+
+<p>In any case, the directory part of the first file name supplied (normally,
+the path to "lib.l" as called by 'pil') is remembered internally as the
+<i>PicoLisp Home Directory</i>. This path is later automatically substituted for
+any leading "<code>@</code>" character in file name arguments to I/O functions
+(see <code><a href="refP.html#path">path</a></code>).
+
+<p><hr>
+<h3><a name="io">Input/Output</a></h3>
+
+<p>In Lisp, each internal data structure has a well-defined external
+representation in human-readable format. All kinds of data can be written to a
+file, and restored later to their original form by reading that file.
+
+<p>For all input functions besides <code><a href="refW.html#wr">wr</a></code>,
+<code><a href="refR.html#rd">rd</a></code> and <code><a
+href="refE.html#echo">echo</a></code> the input is assumed to be valid UTF-8,
+consisting only of characters allowed in picolisp symbol names.
+
+<p>In normal operation, the PicoLisp interpreter continually executes an
+infinite "read-eval-print loop". It reads one expression at a time, evaluates
+it, and prints the result to the console. Any input into the system, like data
+structures and function definitions, is done in a consistent way no matter
+whether it is entered at the console or read from a file.
+
+<p>Comments can be embedded in the input stream with the hash <code>#</code>
+character. Everything up to the end of that line will be ignored by the reader.
+
+<pre><code>
+: (* 1 2 3)  # This is a comment
+-> 6
+</code></pre>
+
+<p>A comment spanning several lines (a block comment) may be enclosed between
+<code>#{</code> and <code>}#</code>. Block comments may be nested.
+
+
+<p>Here is the I/O syntax for the individual PicoLisp data types (numbers,
+symbols and lists) and for read-macros:
+
+
+<p><hr>
+<h4><a name="num-io">Numbers</a></h4>
+
+<p>A number consists of an arbitrary number of digits ('<code>0</code>' through
+'<code>9</code>'), optionally preceded by a sign character ('<code>+</code>' or
+'<code>-</code>'). Legal number input is:
+
+<pre><code>
+: 7
+-> 7
+: -12345678901245678901234567890
+-> -12345678901245678901234567890
+</code></pre>
+
+<p>Fixpoint numbers can be input by embedding a decimal point '<code>.</code>',
+and setting the global variable <code><a href="refS.html#*Scl">*Scl</a></code>
+appropriately:
+
+<pre><code>
+: *Scl
+-> 0
+
+: 123.45
+-> 123
+: 456.78
+-> 457
+
+: (setq *Scl 3)
+-> 3
+: 123.45
+-> 123450
+: 456.78
+-> 456780
+</code></pre>
+
+<p>Thus, fixpoint input simply scales the number to an integer value
+corresponding to the number of digits in <code><a
+href="refS.html#*Scl">*Scl</a></code>.
+
+<p>Formatted output of scaled fixpoint values can be done with the <code><a
+href="refF.html#format">format</a></code> and <code><a
+href="refR.html#round">round</a></code> functions:
+
+<pre><code>
+: (format 1234567890 2)
+-> "12345678.90"
+: (format 1234567890 2 "." ",")
+-> "12,345,678.90"
+</code></pre>
+
+
+<p><hr>
+<h4><a name="sym-io">Symbols</a></h4>
+
+<p>The reader is able to recognize the individual symbol types from their
+syntactic form. A symbol name should - of course - not look like a legal number
+(see above).
+
+<p>In general, symbol names are case-sensitive. <code>car</code> is not the same
+as <code>CAR</code>.
+
+
+<p><hr>
+<h5><a name="nilSym-io">NIL</a></h5>
+
+<p>Besides the standard form, <code>NIL</code> is also recognized as
+<code>()</code>, <code>[]</code> or <code>""</code>.
+
+<pre><code>
+: NIL
+-> NIL
+: ()
+-> NIL
+: ""
+-> NIL
+</code></pre>
+
+<p>Output will always appear as <code>NIL</code>.
+
+
+<p><hr>
+<h5><a name="internal-io">Internal Symbols</a></h5>
+
+<p>Internal symbol names can consist of any printable (non-whitespace)
+character, except for the following meta characters:
+
+<pre><code>
+   "  '  (  )  ,  [  ]  `  { } ~
+</code></pre>
+
+<p>It is possible, though, to include these special characters into symbol names
+by escaping them with a backslash '<code>\</code>'.
+
+<p>The dot '<code>.</code>' has a dual nature. It is a meta character when
+standing alone, denoting a <a href="#dotted">dotted pair</a>, but can otherwise
+be used in symbol names.
+
+<p>As a rule, anything not recognized by the reader as another data type will be
+returned as an internal symbol.
+
+
+<p><hr>
+<h5><a name="transient-io">Transient Symbols</a></h5>
+
+<p>A transient symbol is anything surrounded by double quotes '<code>"</code>'.
+With that, it looks like - and can be used as - a string constant in other
+languages. However, it is a real symbol, and may be assigned a value or a
+function definition, and properties.
+
+<p>Initially, a transient symbol's value is that symbol itself, so that it does
+not need to be quoted for evaluation:
+
+<p><pre><code>
+: "This is a string"
+-> "This is a string"
+</code></pre>
+
+<p>However, care must be taken when assigning a value to a transient symbol.
+This may cause unexpected behavior:
+
+<p><pre><code>
+: (setq "This is a string" 12345)
+-> 12345
+: "This is a string"
+-> 12345
+</code></pre>
+
+<p>The name of a transient symbol can contain any character except the
+null-byte. Control characters can be written with a preceding hat
+'<code>^</code>' character. A hat or a double quote character can be escaped
+with a backslash '<code>\</code>', and a backslash itself has to be escaped with
+another backslash.
+
+<p><pre><code>
+: "We^Ird\\Str\"ing"
+-> "We^Ird\\Str\"ing"
+: (chop @)
+-> ("W" "e" "^I" "r" "d" "\\" "S" "t" "r" "\"" "i" "n" "g")
+</code></pre>
+
+<p>The combination of a backslash followed by 'n', 'r' or 't' is replaced with
+newline ("^J"), return ("^M") or TAB ("^I"), respectively.
+
+<p><pre><code>
+: "abc\tdef\r"
+-> "abc^Idef^M"
+</code></pre>
+
+<p>A decimal number between two backslashes can be used to specify any unicode
+character directly.
+
+<p><pre><code>
+: "äöü\8364\xyz"
+-> "äöü€xyz"
+</code></pre>
+
+<p>A backslash in a transient symbol name at the end of a line discards the
+newline, and continues the name in the next line. In that case, all leading
+spaces and tabs in that line are discarded, to allow proper source code
+indentation.
+
+<p><pre><code>
+: "abc\
+   def"
+-> "abcdef"
+: "x \
+   y \
+   z"
+-> "x y z"
+</code></pre>
+
+<p>The index for transient symbols is local when <code><a
+href="refL.html#load">load</a></code>ing a source file. With that mechanism, it
+is possible to create symbols with a local access scope, not accessible from
+other parts of the program.
+
+<p>A special case of transient symbols are <i>anonymous symbols</i>. These are
+symbols without name (see <code><a href="refB.html#box">box</a></code>, <code><a
+href="refB.html#box?">box?</a></code> or <code><a
+href="refN.html#new">new</a></code>). They print as a dollar sign
+(<code>$</code>) followed by a decimal digit string (actually their machine
+address).
+
+
+<p><hr>
+<h5><a name="external-io">External Symbols</a></h5>
+
+<p>External symbol names are surrounded by braces ('<code>{</code>' and
+'<code>}</code>'). The characters of the symbol's name itself identify the
+physical location of the external object. This is the number of the database
+file minus 1 in <code><a href="refH.html#hax">hax</a></code> notation (i.e.
+hexadecimal/alpha notation, where '<code>@</code>' is zero, '<code>A</code>' is
+1 and '<code>O</code>' is 15 (from "alpha" to "omega")), immediately followed
+(without a hyphen) the starting block in octal ('<code>0</code>' through
+'<code>7</code>').
+
+<p>The database file is omitted for the first (default) file.
+
+<p><hr>
+<h4><a name="lst-io">Lists</a></h4>
+
+<p>Lists are surrounded by parentheses ('<code>(</code>' and '<code>)</code>').
+
+<p><code>(A)</code> is a list consisting of a single cell, with the symbol
+<code>A</code> in its CAR, and <code>NIL</code> in its CDR.
+
+<p><code>(A B C)</code> is a list consisting of three cells, with the symbols
+<code>A</code>, <code>B</code> and <code>C</code> respectively in their CAR, and
+<code>NIL</code> in the last cell's CDR.
+
+<p><a name="dotted"><code>(A . B)</code></a> is a "dotted pair", a list
+consisting of a single cell, with the symbol <code>A</code> in its CAR, and
+<code>B</code> in its CDR.
+
+<p>PicoLisp has built-in support for reading and printing simple circular lists.
+If the dot in a dotted-pair notation is immediately followed by a closing
+parenthesis, it indicates that the CDR of the last cell points back to the
+beginning of that list.
+
+<pre><code>
+: (let L '(a b c) (conc L L))
+-> (a b c .)
+: (cdr '(a b c .))
+-> (b c a .)
+: (cddddr '(a b c .))
+-> (b c a .)
+</code></pre>
+
+<p>A similar result can be achieved with the function <code><a
+href="refC.html#circ">circ</a></code>. Such lists must be used with care,
+because many functions won't terminate or will crash when given such a list.
+
+
+<p><hr>
+<h4><a name="macro-io">Read-Macros</a></h4>
+
+<p>Read-macros in PicoLisp are special forms that are recognized by the reader,
+and modify its behavior. Note that they take effect immediately while <code><a
+href="refR.html#read">read</a></code>ing an expression, and are not seen by the
+<code>eval</code> in the main loop.
+
+<p>The most prominent read-macro in Lisp is the single quote character
+"<code>'</code>", which expands to a call of the <code><a
+href="refQ.html#quote">quote</a></code> function. Note that the single quote
+character is also printed instead of the full function name.
+
+<pre><code>
+: '(a b c)
+-> (a b c)
+: '(quote . a)
+-> 'a
+: (cons 'quote 'a)   # (quote . a)
+-> 'a
+: (list 'quote 'a)   # (quote a)
+-> '(a)
+</code></pre>
+
+<p>A comma (<code>,</code>) will cause the reader to collect the following data
+item into an <code><a href="refI.html#idx">idx</a></code> tree in the global
+variable <code><a href="refU.html#*Uni">*Uni</a></code>, and to return a
+previously inserted equal item if present. This makes it possible to create a
+unique list of references to data which do normally not follow the rules of
+pointer equality. If the value of <code>*Uni</code> is <code>T</code>, the
+comma read macro mechanism is disabled.
+
+<p>A single backquote character "<code>`</code>" will cause the reader to
+evaluate the following expression, and return the result.
+
+<pre><code>
+: '(a `(+ 1 2 3) z)
+-> (a 6 z)
+</code></pre>
+
+<p>A tilde character <code>~</code> inside a list will cause the reader to
+evaluate the following expression, and (destructively) splice the result into
+the list.
+
+<pre><code>
+: '(a b c ~(list 'd 'e 'f) g h i)
+-> (a b c d e f g h i)
+</code></pre>
+
+<p>When a tilde character is used to separate two symbol names (without
+surrounding whitespace), the first is taken as a namespace to look up the
+second.
+
+<pre><code>
+: 'libA~foo  # Look up 'foo' in namespace 'libA'
+-> libA~foo  # "foo" is not interned in the current namespace
+</code></pre>
+
+<p>Reading <code>libA~foo</code> is equivalent to switching the current
+namespace search order to <code>libA</code> only (with <code><a
+href="refS.html#symbols">symbols</a></code>), reading the symbol
+<code>foo</code>, and then switching back to the original search order.
+
+<p>Brackets ('<code>[</code>' and '<code>]</code>') can be used as super
+parentheses. A closing bracket will match the innermost opening bracket, or all
+currently open parentheses.
+
+<pre><code>
+: '(a (b (c (d]
+-> (a (b (c (d))))
+: '(a (b [c (d]))
+-> (a (b (c (d))))
+</code></pre>
+
+<p>Finally, reading the sequence '<code>{}</code>' will result in a new
+anonymous symbol with value <code>NIL</code>, equivalent to a call to <code><a
+href="refB.html#box">box</a></code> without arguments.
+
+<pre><code>
+: '({} {} {})
+-> ($177066763035351 $177066763035353 $177066763035355)
+: (mapcar val @)
+-> (NIL NIL NIL)
+</code></pre>
+
+
+<p><hr>
+<h3><a name="ev">Evaluation</a></h3>
+
+<p>PicoLisp tries to evaluate any expression encountered in the read-eval-print
+loop. Basically, it does so by applying the following three rules:
+
+<p><ul>
+<li>A number evaluates to itself.
+
+<li>A symbol evaluates to its value (VAL).
+
+<li>A list is evaluated as a function call, with the CAR as the function and the
+CDR the arguments to that function. These arguments are in turn evaluated
+according to these three rules.
+
+</ul>
+
+<pre><code>
+: 1234
+-> 1234        # Number evaluates to itself
+: *Pid
+-> 22972       # Symbol evaluates to its VAL
+: (+ 1 2 3)
+-> 6           # List is evaluated as a function call
+</code></pre>
+
+<p>For the third rule, however, things get a bit more involved. First - as a
+special case - if the CAR of the list is a number, the whole list is returned as
+it is:
+
+<pre><code>
+: (1 2 3 4 5 6)
+-> (1 2 3 4 5 6)
+</code></pre>
+
+<p>This is not really a function call, but just a convenience to avoid having to
+quote simple data lists. The interpreter needs to check it anyway, and returning
+the list (instead of throwing an error) is a lot faster than calling the
+<code>quote</code> function.
+
+<p>Otherwise, if the CAR is a symbol or a list, PicoLisp tries to obtain an
+executable function from that, by either using the symbol's value, or by
+evaluating the list.
+
+<p>What is an executable function? Or, said in another way, what can be applied
+to a list of arguments, to result in a function call? A legal function in
+PicoLisp is
+
+<p><dl>
+<dt>either
+<dd>a <i>number</i>. When a number is used as a function, it is simply taken as
+a pointer to executable code that will be called with the list of (unevaluated)
+arguments as its single parameter. It is up to that code to evaluate the
+arguments, or not. Some functions do not evaluate their arguments (e.g.
+<code>quote</code>) or evaluate only some of their arguments (e.g.
+<code>setq</code>).
+
+<dt>or
+<dd>a <i>lambda expression</i>. A lambda expression is a list, whose CAR is
+either a symbol or a list of symbols, and whose CDR is a list of expressions.
+Note: In contrast to other Lisp implementations, the symbol LAMBDA itself does
+not exist in PicoLisp but is implied from context.
+
+</dl>
+
+<p>A few examples should help to understand the practical consequences of these
+rules. In the most common case, the CAR will be a symbol defined as a function,
+like the <code>*</code> in:
+
+<pre><code>
+: (* 1 2 3)    # Call the function '*'
+-> 6
+</code></pre>
+
+<p>Inspecting the VAL of <code>*</code> gives
+
+<pre><code>
+: *            # Get the VAL of the symbol '*'
+-> 67318096
+</code></pre>
+
+<p>The VAL of <code>*</code> is a number. In fact, it is the numeric
+representation of a function pointer, i.e. a pointer to executable code. This
+is the case for all built-in functions of PicoLisp.
+
+<p>Other functions in turn are written as Lisp expressions:
+
+<pre><code>
+: (de foo (X Y)            # Define the function 'foo'
+   (* (+ X Y) (+ X Y)) )
+-> foo
+: (foo 2 3)                # Call the function 'foo'
+-> 25
+: foo                      # Get the VAL of the symbol 'foo'
+-> ((X Y) (* (+ X Y) (+ X Y)))
+</code></pre>
+
+<p>The VAL of <code>foo</code> is a list. It is the list that was assigned to
+<code>foo</code> with the <code>de</code> function. It would be perfectly legal
+to use <code>setq</code> instead of <code>de</code>:
+
+<pre><code>
+: (setq foo '((X Y) (* (+ X Y) (+ X Y))))
+-> ((X Y) (* (+ X Y) (+ X Y)))
+: (foo 2 3)
+-> 25
+</code></pre>
+
+<p>If the VAL of <code>foo</code> were another symbol, that symbol's VAL would
+be used instead to search for an executable function.
+
+<p>As we said above, if the CAR of the evaluated expression is not a symbol but
+a list, that list is evaluated to obtain an executable function.
+
+<pre><code>
+: ((intern (pack "c" "a" "r")) (1 2 3))
+-> 1
+</code></pre>
+
+<p>Here, the <code>intern</code> function returns the symbol <code>car</code>
+whose VAL is used then. It is also legal, though quite dangerous, to use the <a
+name="codePointer">code-pointer</a> directly:
+
+<pre><code>
+: *
+-> 67318096
+: ((* 2 33659048) 1 2 3)
+-> 6
+: ((quote . 67318096) 1 2 3)
+-> 6
+: ((quote . 1234) (1 2 3))
+Segmentation fault
+</code></pre>
+
+<p>When an executable function is defined in Lisp itself, we call it a <a
+name="lambda"><i>lambda expression</i></a>. A lambda expression always has a
+list of executable expressions as its CDR. The CAR, however, must be a either a
+list of symbols, or a single symbol, and it controls the evaluation of the
+arguments to the executable function according to the following rules:
+
+<p><dl>
+
+<dt>When the CAR is a list of symbols
+<dd>For each of these symbols an argument is evaluated, then the symbols are
+bound simultaneously to the results. The body of the lambda expression is
+executed, then the VAL's of the symbols are restored to their original values.
+This is the most common case, a fixed number of arguments is passed to the
+function.
+
+<dt>Otherwise, when the CAR is the symbol <code>@</code>
+<dd>All arguments are evaluated and the results kept internally in a list. The
+body of the lambda expression is executed, and the evaluated arguments can be
+accessed sequentially with the <code><a href="refA.html#args">args</a></code>,
+<code><a href="refN.html#next">next</a></code>, <code><a
+href="refA.html#arg">arg</a></code> and <code><a
+href="refR.html#rest">rest</a></code> functions. This allows to define functions
+with a variable number of evaluated arguments.
+
+<dt>Otherwise, when the CAR is a single symbol
+<dd>The symbol is bound to the whole unevaluated argument list. The body of the
+lambda expression is executed, then the symbol is restored to its original
+value. This allows to define functions with unevaluated arguments. Any kind of
+interpretation and evaluation of the argument list can be done inside the
+expression body.
+
+</dl>
+
+<p>In all cases, the return value is the result of the last expression in the
+body.
+
+<pre><code>
+: (de foo (X Y Z)                   # CAR is a list of symbols
+   (list X Y Z) )                   # Return a list of all arguments
+-> foo
+: (foo (+ 1 2) (+ 3 4) (+ 5 6))
+-> (3 7 11)                         # all arguments are evaluated
+</code></pre>
+
+<pre><code>
+: (de foo @                         # CAR is the symbol '@'
+   (list (next) (next) (next)) )    # Return the first three arguments
+-> foo
+: (foo (+ 1 2) (+ 3 4) (+ 5 6))
+-> (3 7 11)                         # all arguments are evaluated
+</code></pre>
+
+<pre><code>
+: (de foo X                         # CAR is a single symbol
+   X )                              # Return the argument
+-> foo
+: (foo (+ 1 2) (+ 3 4) (+ 5 6))
+-> ((+ 1 2) (+ 3 4) (+ 5 6))        # the whole unevaluated list is returned
+</code></pre>
+
+<p>Note that these forms can also be combined. For example, to evaluate only the
+first two arguments, bind the results to <code>X</code> and <code>Y</code>, and
+bind all other arguments (unevaluated) to <code>Z</code>:
+
+<pre><code>
+: (de foo (X Y . Z)                 # CAR is a list with a dotted-pair tail
+   (list X Y Z) )                   # Return a list of all arguments
+-> foo
+: (foo (+ 1 2) (+ 3 4) (+ 5 6))
+-> (3 7 ((+ 5 6)))                  # Only the first two arguments are evaluated
+</code></pre>
+
+<p>Or, a single argument followed by a variable number of arguments:
+
+<pre><code>
+: (de foo (X . @)                   # CAR is a dotted-pair with '@'
+   (println X)                      # print the first evaluated argument
+   (while (args)                    # while there are more arguments
+      (println (next)) ) )          # print the next one
+-> foo
+: (foo (+ 1 2) (+ 3 4) (+ 5 6))
+3                                   # X
+7                                   # next argument
+11                                  # and the last argument
+-> 11
+</code></pre>
+
+<p>In general, if more than the expected number of arguments is supplied to a
+function, these extra arguments will be ignored. Missing arguments default to
+<code>NIL</code>.
+
+
+<p><hr>
+<h3><a name="libs">Shared Libraries</a></h3>
+
+<p>Analogous to built-in functions (which are written in PilSrc (based on LLVM))
+in the interpreter kernel), PicoLisp functions may also be defined in shared
+object files (called "DLLs" on some systems). The coding style, register usage,
+argument passing etc. follow the same rules as for normal built-in functions.
+
+<p>Note that this has nothing to do with external (e.g. third-party) library
+functions called with <a href="refN.html#native">native</a>.
+
+<p>When the interpreter encounters a symbol supposed to be called as a function,
+without a function definition, but with a name of the form
+"<code>lib:sym</code>", then - instead of throwing an "undefined"-error - it
+tries to locate a shared object file with the name <code>lib.so</code> and a
+function <code>sym</code>, and stores a pointer to this code in the symbol's
+value. From that point, this symbol <code>lib:sym</code> keeps that function
+definition, and is undistinguishable from built-in functions. Future calls to
+this function do not require another library search.
+
+<p>A consequence of this lookup mechanism, however, is the fact that such
+symbols cannot be used directly in a function-passing context (i.e.
+"<code>apply</code>" them) like
+
+<pre><code>
+(apply + (1 2 3))
+(mapcar inc (1 2 3))
+</code></pre>
+
+<p>These calls work because <code>+</code> and <code>inc</code> already have a
+(function) value at this point. Applying a shared library function like
+
+<pre><code>
+(apply ext:Base64 (1 2 3))
+</code></pre>
+
+<p>works <i>only</i> if <code>ext:Base64</code> was either called before (and
+thus automatically received a function definition), or was fetched explicitly
+with <code>(getd 'ext:Base64)</code>.
+
+<p>Therefore, it is recommended to always apply such functions by passing the
+symbol itself and not just the value:
+
+<pre><code>
+(apply 'ext:Base64 (1 2 3))
+</code></pre>
+
+
+<p><hr>
+<h3><a name="coroutines">Coroutines</a></h3>
+
+<p>Coroutines are independent execution contexts. They may have multiple entry
+and exit points, and preserve their environment between invocations.
+
+<p>A coroutine is identified by a tag. This tag can be passed to other
+functions, and (re)invoked as needed. In this regard coroutines are similar to
+"continuations" in other languages.
+
+<p>When the tag goes out of scope while it is not actively running, the
+coroutine will be garbage collected. In cases where this is desired, using a <a
+href="#transient">transient</a> symbol for the tag is recommended.
+
+<p>A coroutine is created by calling <code><a href="refC.html#co">co</a></code>.
+Its <code>prg</code> body will be executed, and unless <code><a
+href="refY.html#yield">yield</a></code> is called at some point, the coroutine
+will "fall off" at the end and disappear.
+
+<p>When <code><a href="refY.html#yield">yield</a></code> is called, control is
+either transferred back to the caller, or to some other - explicitly specified,
+and already running - coroutine.
+
+<p>A coroutine is stopped and disposed when
+
+<p><ul>
+<li>execution falls off the end
+
+<li>some other (co)routine calls <code><a href="refC.html#co">co</a></code> with
+that tag but without a <code>prg</code> body
+
+<li>a <code><a href="refT.html#throw">throw</a></code> into another (co)routine
+environment is executed
+
+<li>an error occurred, and <a href="#errors">error handling</a> was entered
+
+</ul>
+
+<p>Reentrant coroutines are not supported: A coroutine cannot resume itself
+directly or indirectly.
+
+<p>Before using many coroutines, make sure you have sufficient stack space, e.g.
+by calling
+
+<pre><code>
+$ ulimit -s unlimited
+</code></pre>
+
+<p>Without that, the stack limit in Linux is typically 8 MiB.
+
+
+<p><hr>
+<h3><a name="int">Interrupt</a></h3>
+
+<p>During the evaluation of an expression, the PicoLisp interpreter can be
+interrupted at any time by hitting <code>Ctrl-C</code>. It will then enter the
+breakpoint routine, as if <code><a href="ref_.html#!">!</a></code> were called.
+
+<p>Hitting ENTER at that point will continue evaluation, while <code>(<a
+href="refQ.html#quit">quit</a>)</code> will abort evaluation and return the
+interpreter to the top level. See also <code><a
+href="refD.html#debug">debug</a></code>, <code><a
+href="refE.html#e">e</a></code>, <code><a href="ref_.html#^">^</a></code> and
+<code><a href="refD.html#*Dbg">*Dbg</a></code>
+
+<p>Other interrupts may be handled by <code><a
+href="refA.html#alarm">alarm</a></code>, <code><a
+href="refS.html#sigio">sigio</a></code>, <code><a
+href="refH.html#*Hup">*Hup</a></code>, <code><a
+href="refW.html#*Winch">*Winch</a></code>, <code><a
+href="refS.html#*Sig1">*Sig[12]</a></code> and <code><a
+href="refT.html#*TStp1">*TStp[12]</a></code>.
+
+
+<p><hr>
+<h3><a name="errors">Error Handling</a></h3>
+
+<p>When a runtime error occurs, execution is stopped and an error handler is
+entered.
+
+<p>The error handler resets the I/O channels to the console, and displays the
+location (if possible) and the reason of the error, followed by an error
+message. That message is also stored in the global <code><a
+href="refM.html#*Msg">*Msg</a></code>, and the location of the error in <code><a
+href="ref_.html#^">^</a></code>. If the VAL of the global <code><a
+href="refE.html#*Err">*Err</a></code> is non-<code>NIL</code> it is executed as
+a <code>prg</code> body. If the standard input is from a terminal, a
+read-eval-print loop (with a question mark "<code>?</code>" as prompt) is
+entered (the loop is exited when an empty line is input). Then all pending
+<code><a href="refF.html#finally">finally</a></code> expressions are executed,
+all variable bindings restored, and all files closed. If the standard input is
+not from a terminal, the interpreter terminates. Otherwise it is reset to its
+top-level state.
+
+<pre><code>
+: (de foo (A B) (badFoo A B))       # 'foo' calls an undefined symbol
+-> foo
+: (foo 3 4)                         # Call 'foo'
+!? (badFoo A B)                     # Error handler entered
+badFoo -- Undefined
+? A                                 # Inspect 'A'
+-> 3
+? B                                 # Inspect 'B'
+-> 4
+?                                   # Empty line: Exit
+:
+</code></pre>
+
+<p>Errors can be caught with <code><a href="refC.html#catch">catch</a></code>,
+if a list of substrings of possible error messages is supplied for the first
+argument. In such a case, the matching substring (or the whole error message if
+the substring is <code>NIL</code>) is returned.
+
+<p>An arbitrary error can be thrown explicitly with <code><a
+href="refQ.html#quit">quit</a></code>.
+
+
+<p><hr>
+<h3><a name="atres">@ Result</a></h3>
+
+<p>In certain situations, the result of the last evaluation is stored in the VAL
+of the symbol <code>@</code>. This can be very convenient, because it often
+makes the assignment to temporary variables unnecessary.
+
+<p>This happens in two - only superficially similar - situations:
+
+<p><dl>
+
+<dt><code><a href="refL.html#load">load</a></code>
+<dd>In read-eval loops, the last three results which were printed at the console
+are available in <code>@@@</code>, <code>@@</code> and <code>@</code>, in that
+order (i.e the latest result is in <code>@</code>).
+
+<pre><code>
+: (+ 1 2 3)
+-> 6
+: (/ 128 4)
+-> 32
+: (- @ @@)        # Subtract the last two results
+-> 26
+</code></pre>
+
+<p><dt>Flow functions
+<dd>Flow- and logic-functions store the result of their controlling expression -
+respectively non-<code>NIL</code> results of their conditional expression - in
+<code>@</code>.
+
+<pre><code>
+: (while (read) (println 'got: @))
+abc            # User input
+got: abc       # print result
+123            # User input
+got: 123       # print result
+NIL
+-> 123
+
+: (setq L (1 2 3 4 5 1 2 3 4 5))
+-> (1 2 3 4 5 1 2 3 4 5)
+: (and (member 3 L) (member 3 (cdr @)) (set @ 999))
+-> 999
+: L
+-> (1 2 3 4 5 1 2 999 4 5)
+</code></pre>
+
+<p>Functions with controlling expressions are
+   <a href="refC.html#case">case</a>,
+   <a href="refC.html#casq">casq</a>,
+   <a href="refP.html#prog1">prog1</a>,
+   <a href="refP.html#prog2">prog2</a>,
+and the bodies of <code><a href="refR.html#*Run">*Run</a></code> tasks.
+
+<p>Functions with conditional expressions are
+   <a href="refA.html#and">and</a>,
+   <a href="refC.html#cond">cond</a>,
+   <a href="refD.html#do">do</a>,
+   <a href="refF.html#for">for</a>,
+   <a href="refI.html#if">if</a>,
+   <a href="refI.html#if2">if2</a>,
+   <a href="refI.html#ifn">ifn</a>,
+   <a href="refL.html#loop">loop</a>,
+   <a href="refN.html#nand">nand</a>,
+   <a href="refN.html#nond">nond</a>,
+   <a href="refN.html#nor">nor</a>,
+   <a href="refN.html#not">not</a>,
+   <a href="refO.html#or">or</a>,
+   <a href="refS.html#state">state</a>,
+   <a href="refU.html#unless">unless</a>,
+   <a href="refU.html#until">until</a>,
+   <a href="refW.html#when">when</a> and
+   <a href="refW.html#while">while</a>.
+
+</dl>
+
+<p><code>@</code> is generally local to functions and methods, its value is
+automatically saved upon function entry and restored at exit.
+
+
+<p><hr>
+<h3><a name="cmp">Comparing</a></h3>
+
+<p>In PicoLisp, it is legal to compare data items of arbitrary type. Any two
+items are either
+
+<p><dl>
+
+<dt>Identical
+<dd>They are the same memory object (pointer equality). For example, two
+internal symbols with the same name are identical. And short numbers (up to 60
+bits plus sign) are also equivalent to "pointer"-equal.
+
+<dt>Equal
+<dd>They are equal in every respect (structure equality), but need not to be
+identical. Examples are numbers with the same value, transient symbols with the
+same name or lists with equal elements.
+
+<dt>Or they have a well-defined ordinal relationship
+<dd>Numbers are comparable by their numeric value, strings by their name, and
+lists recursively by their elements (if the CAR's are equal, their CDR's are
+compared). For differing types, the following rule applies: Numbers are less
+than symbols, and symbols are less than lists. As special cases,
+<code>NIL</code> is always less than anything else, and <code>T</code> is always
+greater than anything else.
+
+</dl>
+
+<p>To demonstrate this, <code><a href="refS.html#sort">sort</a></code> a list of
+mixed data types:
+
+<pre><code>
+: (sort '("abc" T (d e f) NIL 123 DEF))
+-> (NIL 123 DEF "abc" (d e f) T)
+</code></pre>
+
+<p>See also <code><a href="refM.html#max">max</a></code>, <code><a
+href="refM.html#min">min</a></code>, <code><a
+href="refR.html#rank">rank</a></code>, <code><a href="ref_.html#<"><</a></code>,
+<code><a href="ref_.html#=">=</a></code>, <code><a
+href="ref_.html#>">></a></code> etc.
+
+
+<p><hr>
+<h3><a name="oop">OO Concepts</a></h3>
+
+<p>PicoLisp comes with built-in object oriented extensions. There seems to be a
+common agreement upon three criteria for object orientation:
+
+<p><dl>
+<dt>Encapsulation
+<dd>Code and data are encapsulated into <u>objects</u>, giving them both a
+<u>behavior</u> and a <u>state</u>. Objects communicate by sending and receiving
+<u>messages</u>.
+
+<dt>Inheritance
+<dd>Objects are organized into <u>classes</u>. The behavior of an object is
+inherited from its class(es) and superclass(es).
+
+<dt>Polymorphism
+<dd>Objects of different classes may behave differently in response to the same
+message. For that, classes may define different methods for each message.
+
+</dl>
+
+<p>PicoLisp implements both objects and classes with symbols. Object-local data
+are stored in the symbol's property list, while the code (methods) and links to
+the superclasses are stored in the symbol's VAL (encapsulation).
+
+<p>In fact, there is no formal difference between objects and classes (except
+that objects usually are anonymous symbols containing mostly local data, while
+classes are named internal symbols with an emphasis on method definitions). At
+any time, a class may be assigned its own local data (class variables), and any
+object can receive individual method definitions in addition to (or overriding)
+those inherited from its (super)classes.
+
+<p>PicoLisp supports multiple inheritance. The VAL of each object is a (possibly
+empty) association list of message symbols and method bodies, concatenated with
+a list of classes. When a message is sent to an object, it is searched in the
+object's own method list, and then (with a left-to-right depth-first search) in
+the tree of its classes and superclasses. The first method found is executed and
+the search stops. The search may be explicitly continued with the <code><a
+href="refE.html#extra">extra</a></code> and <code><a
+href="refS.html#super">super</a></code> functions.
+
+<p>Thus, which method is actually executed when a message is sent to an object
+depends on the classes that the object is currently linked to (polymorphism). As
+the method search is fully dynamic (late binding), an object's type (i.e. its
+classes and method definitions) can be changed even at runtime!
+
+<p>While a method body is being executed, the global variable <code><a
+href="refT.html#This">This</a></code> is set to the current object, allowing
+the use of the short-cut property functions <code><a
+href="ref_.html#=:">=:</a></code>, <code><a href="ref_.html#:">:</a></code>
+and <code><a href="ref_.html#::">::</a></code>.
+
+
+<p><hr>
+<h3><a name="dbase">Database</a></h3>
+
+<p>On the lowest level, a PicoLisp database is just a collection of <a
+href="#external">external symbols</a>. They reside in a database file, and are
+dynamically swapped in and out of memory. Only one database can be open at a
+time (<code><a href="refP.html#pool">pool</a></code>).
+
+<p>In addition, further external symbols can be specified to originate from
+arbitrary sources via the <code><a href="refE.html#*Ext">*Ext</a></code>
+mechanism.
+
+<p>Whenever an external symbol's value or property list is accessed, it will be
+automatically fetched into memory, and can then be used like any other symbol.
+Modifications will be written to disk only when <code><a
+href="refC.html#commit">commit</a></code> is called. Alternatively, all
+modifications since the last call to <code>commit</code> can be discarded by
+calling <code><a href="refR.html#rollback">rollback</a></code>.
+
+<p>Note that a property with the key <code>NIL</code> is a <i>volatile
+property</i>, which is held only in memory and not written to disk on
+<code>commit</code>, and discarded by <code>rollback</code>. Volatile properties
+can be used by applications for any kind of temporary data.
+
+<p><hr>
+<h4><a name="trans">Transactions</a></h4>
+
+<p>In the typical case there will be multiple processes operating on the same
+database. These processes should be all children of the same parent process,
+which takes care of synchronizing read/write operations and heap contents. Then
+a database transaction is normally initiated by calling <code>(<a
+href="refD.html#dbSync">dbSync</a>)</code>, and closed by calling <code>(<a
+href="refC.html#commit">commit</a> 'upd)</code>. Short transactions, involving
+only a single DB operation, are available in functions like <code><a
+href="refN.html#new!">new!</a></code> and methods like <code><a
+href="refE.html#entityMesssages">put!></a></code> (by convention with an
+exclamation mark), which implicitly call <code>(dbSync)</code> and <code>(commit
+'upd)</code> themselves.
+
+<p>A transaction proceeds through five phases:
+
+<p><ol>
+<li><code><a href="refD.html#dbSync">dbSync</a></code> waits to get a <code><a
+href="refL.html#lock">lock</a></code> on the root object <code><a
+href="refD.html#*DB">*DB</a></code>. Other processes continue reading and
+writing meanwhile.
+
+<li><code><a href="refD.html#dbSync">dbSync</a></code> calls <code><a
+href="refS.html#sync">sync</a></code> to synchronize with changes from other
+processes. We hold the shared lock, but other processes may continue reading.
+
+<li>We make modifications to the internal state of external symbols with
+<code><a href="refE.html#entityMesssages">put>, set>, lose></a></code> etc. We -
+and also other processes - can still read the DB.
+
+<li>We call <code>(<a href="refC.html#commit">commit</a> 'upd)</code>.
+<code>commit</code> obtains an exclusive lock (no more read operations by other
+processes), writes an optional transaction log, and then all modified symbols.
+As <code><a href="refU.html#upd">upd</a></code> is passed to 'commit', other
+processes synchronize with these changes.
+
+<li>Finally, all locks are released by 'commit'.
+
+</ol>
+
+<p><hr>
+<h4><a name="er">Entities / Relations</a></h4>
+
+<p>The symbols in a database can be used to store arbitrary information
+structures. In typical use, some symbols represent nodes of search trees, by
+holding keys, values, and links to subtrees in their VAL's. Such a search tree
+in the database is called <u>index</u>.
+
+<p>For the most part, other symbols in the database are objects derived from the
+<code><a href="refE.html#+Entity">+Entity</a></code> class.
+
+<p>Entities depend on objects of the <code><a
+href="refR.html#+relation">+relation</a></code> class hierarchy.
+Relation-objects manage the property values of entities, they define the
+application database model and are responsible for the integrity of mutual
+object references and index trees.
+
+<p>Relations are stored as properties in the entity classes, their methods are
+invoked as daemons whenever property values in an entity are changed. When
+defining an <code><a href="refE.html#+Entity">+Entity</a></code> class, relations are defined - in addition to
+the method definitions of a normal class - with the <code><a
+href="refR.html#rel">rel</a></code> function. Predefined relation classes
+include
+
+<p><ul>
+<li>Scalar relations like
+   <dl>
+   <dt><code><a href="refS.html#+Symbol">+Symbol</a></code>
+   <dd>Symbolic data
+   <dt><code><a href="refS.html#+String">+String</a></code>
+   <dd>Strings (just a general case of symbols)
+   <dt><code><a href="refN.html#+Number">+Number</a></code>
+   <dd>Integers and fixpoint numbers
+   <dt><code><a href="refD.html#+Date">+Date</a></code>
+   <dd>Calendar date values, represented by a number
+   <dt><code><a href="refT.html#+Time">+Time</a></code>
+   <dd>Time-of-the-day values, represented by a number
+   <dt><code><a href="refB.html#+Blob">+Blob</a></code>
+   <dd>"Binary large objects" stored in separate files
+   <dt><code><a href="refB.html#+Bool">+Bool</a></code>
+   <dd><code>T</code> or <code>NIL</code>
+   </dl>
+<li>Object-to-object relations
+   <dl>
+   <dt><code><a href="refL.html#+Link">+Link</a></code>
+   <dd>A reference to some other entity
+   <dt><code><a href="refH.html#+Hook">+Hook</a></code>
+   <dd>A reference to an entity holding object-local index trees
+   <dt><code><a href="refJ.html#+Joint">+Joint</a></code>
+   <dd>A bidirectional reference to some other entity
+   </dl>
+<li>Container prefix classes like
+   <dl>
+   <dt><code><a href="refL.html#+List">+List</a></code>
+   <dd>A list of any of the other primitive or object relation types
+   <dt><code><a href="refB.html#+Bag">+Bag</a></code>
+   <dd>A list containing a mixture of any of the other types
+   </dl>
+<li>Index prefix classes
+   <dl>
+   <dt><code><a href="refR.html#+Ref">+Ref</a></code>
+   <dd>An index with other primitives or entities as key
+   <dt><code><a href="refK.html#+Key">+Key</a></code>
+   <dd>A unique index with other primitives or entities as key
+   <dt><code><a href="refI.html#+Idx">+Idx</a></code>
+   <dd>A full-text index, typically for strings
+   <dt><code><a href="refF.html#+Fold">+Fold</a></code>
+   <dd>A folded text index
+   <dt><code><a href="refI.html#+IdxFold">+IdxFold</a></code>
+   <dd>Folded substring index
+   <dt><code><a href="refS.html#+Sn">+Sn</a></code>
+   <dd>Tolerant index, using a modified Soundex-Algorithm
+   </dl>
+<li>And a catch-all class
+   <dl>
+   <dt><code><a href="refA.html#+Any">+Any</a></code>
+   <dd>Not specified, may be any of the above relations
+   </dl>
+</ul>
+
+
+<p><hr>
+<h3><a name="pilog">Pilog (PicoLisp Prolog)</a></h3>
+
+<p>A declarative language is built on top of PicoLisp, that has the semantics of
+Prolog, but uses the syntax of Lisp.
+
+<p>For an explanation of Prolog's declarative programming style, an introduction
+like "Programming in Prolog" by Clocksin/Mellish (Springer-Verlag 1981) is
+recommended.
+
+<p>Facts and rules can be declared with the <code><a
+href="refB.html#be">be</a></code> function. For example, a Prolog fact
+'<code>likes(john,mary).</code>' is written in Pilog as:
+
+<pre><code>
+(be likes (John Mary))
+</code></pre>
+
+<p>and a rule '<code>likes(john,X) :- likes(X,wine), likes(X,food).</code>' is
+in Pilog:
+
+<pre><code>
+(be likes (John @X) (likes @X wine) (likes @X food))
+</code></pre>
+
+<p>As in Prolog, the difference between facts and rules is that the latter ones
+have conditions, and usually contain variables.
+
+<p>A variable in Pilog is any symbol starting with an at-mark character
+("<code>@</code>"), i.e. a <code><a href="refP.html#pat?">pat?</a></code>
+symbol. The symbol <code>@</code> itself can be used as an anonymous variable:
+It will match during unification, but will not be bound to the matched values.
+
+<p>The <i>cut</i> operator of Prolog (usually written as an exclamation mark
+(<code>!</code>)) is the symbol <code>T</code> in Pilog.
+
+<p>An interactive query can be done with the <code><a
+href="ref_.html#?">?</a></code> function:
+
+<pre><code>
+(? (likes John @X))
+</code></pre>
+
+<p>This will print all solutions, waiting for user input after each line. If a
+non-empty line (not just a ENTER key, but for example a dot (<code>.</code>)
+followed by ENTER) is typed, it will terminate.
+
+<p>Pilog can be called from Lisp and vice versa:
+
+<ul>
+
+<li>The interface from Lisp is via the functions <code><a
+href="refG.html#goal">goal</a></code> (prepare a query from Lisp data) and
+<code><a href="refP.html#prove">prove</a></code> (return an association list of
+successful bindings), and the application level functions <code><a
+href="refP.html#pilog">pilog</a></code> and <code><a
+href="refS.html#solve">solve</a></code>.
+
+<li>When the CAR of a Pilog clause is the symbol <code>^</code>, then the CDDR
+is executed as a Lisp <code>prg</code> body and the result unified with the
+CADR.
+
+<li>Within such a Lisp expression in a Pilog clause, the current bindings of
+Pilog variables can be accessed with the <code><a
+href="ref_.html#->">-&gt</a></code> function.
+
+</ul>
+
+<p><hr>
+<h3><a name="conv">Naming Conventions</a></h3>
+
+<p>It was necessary to introduce - and adhere to - a set of conventions for
+PicoLisp symbol names. Because all (internal) symbols have a global scope, and
+each symbol can only have either a value or function definition, it would
+otherwise be very easy to introduce name conflicts. Besides this, source code
+readability is increased when the scope of a symbol is indicated by its name.
+
+<p>These conventions are not hard-coded into the language, but should be so into
+the head of the programmer. Here are the most commonly used ones:
+
+<p><ul>
+<li>Global variables start with an asterisk "<code>*</code>"
+<li>Global constants may be written all-uppercase
+<li>Functions and other global symbols start with a lower case letter
+<li>Locally bound symbols start with an upper case letter
+<li>Local functions start with an underscore "<code>_</code>"
+<li>Classes start with a plus-sign "<code>+</code>", where the first letter
+   <ul>
+   <li>is in lower case for abstract classes
+   <li>and in upper case for normal classes
+   </ul>
+<li>Methods end with a right arrow "<code>></code>"
+<li>Class variables may be indicated by an upper case letter
+</ul>
+
+<p>For example, a local variable could easily overshadow a function definition:
+
+<pre><code>
+: (de max-speed (car)
+   (.. (get car 'speeds) ..) )
+-> max-speed
+</code></pre>
+
+<p>Inside the body of <code>max-speed</code> (and all other functions called
+during that execution) the kernel function <code>car</code> is redefined to some
+other value, and will surely crash if something like <code>(car Lst)</code> is
+executed. Instead, it is safe to write:
+
+<pre><code>
+: (de max-speed (Car)            # 'Car' with upper case first letter
+   (.. (get Car 'speeds) ..) )
+-> max-speed
+</code></pre>
+
+<p>Note that there are also some strict naming rules (as opposed to the
+voluntary conventions) that are required by the corresponding kernel
+functionalities, like:
+
+<p><ul>
+<li>Transient symbols are enclosed in double quotes (see <a
+href="#transient-io">Transient Symbols</a>)
+<li>External symbols are enclosed in braces (see <a href="#external-io">External
+Symbols</a>)
+<li>Pattern-Wildcards start with an at-mark "<code>@</code>" (see <a
+href="refM.html#match">match</a> and <a href="refF.html#fill">fill</a>)
+<li>Symbols referring to a shared library contain a colon "<code>lib:sym</code>"
+</ul>
+
+<p>With that, the last of the above conventions (local functions start with an
+underscore) is not really necessary, because true local scope can be enforced
+with transient symbols.
+
+<p>The symbols <code>T</code> and <code>NIL</code> are global constants, so care
+should be taken not to bind them to some other value by mistake:
+
+<pre><code>
+(de foo (R S T)
+   ...
+</code></pre>
+
+<p>However, <code><a href="refL.html#lint">lint</a></code> will issue a warning
+in such a case.
+
+
+<p><hr>
+<h3><a name="trad">Breaking Traditions</a></h3>
+
+<p>PicoLisp does not try very hard to be compatible with traditional Lisp
+systems. If you are used to some other Lisp dialects, you may notice the
+following differences:
+
+<p><dl>
+
+<dt>Case Sensitivity
+<dd>PicoLisp distinguishes between upper case and lower case characters in
+symbol names. Thus, <code>CAR</code> and <code>car</code> are different symbols,
+which was not the case in traditional Lisp systems.
+
+<dt><code>QUOTE</code>
+<dd>In traditional Lisp, the <code>QUOTE</code> function returns its
+<i>first</i> unevaluated argument. In PicoLisp, on the other hand,
+<code>quote</code> returns <i>all</i> (unevaluated) argument(s).
+
+<dt><code>LAMBDA</code>
+<dd>The <code>LAMBDA</code> function, in some way at the heart of traditional
+Lisp, is completely missing (and <code>quote</code> is used instead).
+
+<dt><code>PROG</code>
+<dd>The <code>PROG</code> function of traditional Lisp, with its GOTO and ENTER
+functionality, is also missing. PicoLisp's <code>prog</code> function is just a
+simple sequencer (as <code>PROGN</code> in some Lisps).
+
+<dt>Function/Value
+<dd>In PicoLisp, a symbol cannot have a value <i>and</i> a function definition
+at the same time. Though this is a disadvantage at first sight, it allows a
+completely uniform handling of functional data.
+
+</dl>
+
+
+<p><hr>
+<h2><a name="fun">Function Reference</a></h2>
+
+<p>This section provides a reference manual for the kernel functions, and some
+extensions. See the thematically grouped list of indexes below.
+
+<p>Though PicoLisp is a dynamically typed language (resolved at runtime, as
+opposed to statically (compile-time) typed languages), many functions can only
+accept and/or return a certain set of data types. For each function, the
+expected argument types and return values are described with the following
+abbreviations:
+
+<p>The primary data types:
+
+<p><ul>
+<li><code>num</code> - Number
+<li><code>sym</code> - Symbol
+<li><code>lst</code> - List
+</ul>
+
+<p>Other (derived) data types
+
+<p><ul>
+<li><code>any</code> - Anything: Any data type
+<li><code>flg</code> - Flag: Boolean value (<code>NIL</code> or non-<code>NIL</code>)
+<li><code>cnt</code> - A count or a small number
+<li><code>dat</code> - Date: Days, starting first of March of the year 0 A.D.
+<li><code>tim</code> - Time: Seconds since midnight
+<li><code>obj</code> - Object/Class: A symbol with methods and/or classes
+<li><code>var</code> - Variable: Either a symbol or a cons pair
+<li><code>exe</code> - Executable: An executable expression (<code>eval</code>)
+<li><code>prg</code> - Prog-Body: A list of executable expressions (<code>run</code>)
+<li><code>fun</code> - Function: Either a number (code-pointer), a symbol (message) or a list (lambda)
+<li><code>msg</code> - Message: A symbol sent to an object (to invoke a method)
+<li><code>cls</code> - Class: A symbol defined as an object's class
+<li><code>typ</code> - Type: A list of <code>cls</code> symbols
+<li><code>pat</code> - Pattern: A symbol whose name starts with an at-mark "<code>@</code>"
+<li><code>pid</code> - Process ID: A number, the ID of a Unix process
+<li><code>fd</code> - File descriptor: The number of an open file
+<li><code>tree</code> - Database index tree specification
+<li><code>hook</code> - Database hook object
+</ul>
+
+<p>Arguments evaluated by the function (depending on the context) are quoted
+(prefixed with the single quote character "<code>'</code>").
+
+<p>
+<a href="refA.html">A</a>
+<a href="refB.html">B</a>
+<a href="refC.html">C</a>
+<a href="refD.html">D</a>
+<a href="refE.html">E</a>
+<a href="refF.html">F</a>
+<a href="refG.html">G</a>
+<a href="refH.html">H</a>
+<a href="refI.html">I</a>
+<a href="refJ.html">J</a>
+<a href="refK.html">K</a>
+<a href="refL.html">L</a>
+<a href="refM.html">M</a>
+<a href="refN.html">N</a>
+<a href="refO.html">O</a>
+<a href="refP.html">P</a>
+<a href="refQ.html">Q</a>
+<a href="refR.html">R</a>
+<a href="refS.html">S</a>
+<a href="refT.html">T</a>
+<a href="refU.html">U</a>
+<a href="refV.html">V</a>
+<a href="refW.html">W</a>
+<a href="refX.html">X</a>
+<a href="refY.html">Y</a>
+<a href="refZ.html">Z</a>
+<a href="ref_.html">Other</a>
+
+<p><span id="sortBtnHome"></span><dl>
+
+<dt>Symbol Functions
+<dd><code>
+   <a href="refN.html#new">new</a>
+   <a href="refS.html#sym">sym</a>
+   <a href="refS.html#str">str</a>
+   <a href="refC.html#char">char</a>
+   <a href="refN.html#name">name</a>
+   <a href="refN.html#nsp">nsp</a>
+   <a href="refS.html#sp?">sp?</a>
+   <a href="refP.html#pat?">pat?</a>
+   <a href="refF.html#fun?">fun?</a>
+   <a href="refA.html#all">all</a>
+   <a href="refS.html#symbols">symbols</a>
+   <a href="refP.html#private">private</a>
+   <a href="refL.html#local">local</a>
+   <a href="refE.html#export">export</a>
+   <a href="refI.html#import">import</a>
+   <a href="refI.html#intern">intern</a>
+   <a href="refE.html#extern">extern</a>
+   <a href="refQ.html#qsym">qsym</a>
+   <a href="refL.html#loc">loc</a>
+   <a href="refB.html#box?">box?</a>
+   <a href="refS.html#str?">str?</a>
+   <a href="refE.html#ext?">ext?</a>
+   <a href="refT.html#touch">touch</a>
+   <a href="refZ.html#zap">zap</a>
+   <a href="refL.html#length">length</a>
+   <a href="refS.html#size">size</a>
+   <a href="refF.html#format">format</a>
+   <a href="refC.html#chop">chop</a>
+   <a href="refP.html#pack">pack</a>
+   <a href="refG.html#glue">glue</a>
+   <a href="refP.html#pad">pad</a>
+   <a href="refA.html#align">align</a>
+   <a href="refC.html#center">center</a>
+   <a href="refT.html#text">text</a>
+   <a href="refW.html#wrap">wrap</a>
+   <a href="refP.html#pre?">pre?</a>
+   <a href="refS.html#sub?">sub?</a>
+   <a href="refL.html#low?">low?</a>
+   <a href="refU.html#upp?">upp?</a>
+   <a href="refL.html#lowc">lowc</a>
+   <a href="refU.html#uppc">uppc</a>
+   <a href="refF.html#fold">fold</a>
+   <a href="refV.html#val">val</a>
+   <a href="refG.html#getd">getd</a>
+   <a href="refS.html#set">set</a>
+   <a href="refS.html#setq">setq</a>
+   <a href="refD.html#def">def</a>
+   <a href="refD.html#de">de</a>
+   <a href="refD.html#dm">dm</a>
+   <a href="refR.html#recur">recur</a>
+   <a href="refU.html#undef">undef</a>
+   <a href="refR.html#redef">redef</a>
+   <a href="refD.html#daemon">daemon</a>
+   <a href="refP.html#patch">patch</a>
+   <a href="refS.html#swap">swap</a>
+   <a href="refX.html#xchg">xchg</a>
+   <a href="refO.html#on">on</a>
+   <a href="refO.html#off">off</a>
+   <a href="refO.html#onOff">onOff</a>
+   <a href="refZ.html#zero">zero</a>
+   <a href="refO.html#one">one</a>
+   <a href="refD.html#default">default</a>
+   <a href="refE.html#expr">expr</a>
+   <a href="refS.html#subr">subr</a>
+   <a href="refL.html#let">let</a>
+   <a href="refL.html#let?">let?</a>
+   <a href="refU.html#use">use</a>
+   <a href="refA.html#accu">accu</a>
+   <a href="refP.html#push">push</a>
+   <a href="refP.html#push1">push1</a>
+   <a href="refP.html#push1q">push1q</a>
+   <a href="refP.html#pop">pop</a>
+   <a href="ref_.html#++">++</a>
+   <a href="refC.html#cut">cut</a>
+   <a href="refD.html#del">del</a>
+   <a href="refQ.html#queue">queue</a>
+   <a href="refF.html#fifo">fifo</a>
+   <a href="refI.html#idx">idx</a>
+   <a href="refL.html#lup">lup</a>
+   <a href="refC.html#cache">cache</a>
+   <a href="refL.html#locale">locale</a>
+   <a href="refD.html#dirname">dirname</a>
+   <a href="refB.html#basename">basename</a>
+</code>
+
+<dt>Property Access
+<dd><code>
+   <a href="refP.html#put">put</a>
+   <a href="refG.html#get">get</a>
+   <a href="refP.html#prop">prop</a>
+   <a href="ref_.html#;">;</a>
+   <a href="ref_.html#=:">=:</a>
+   <a href="ref_.html#:">:</a>
+   <a href="ref_.html#::">::</a>
+   <a href="refP.html#putl">putl</a>
+   <a href="refG.html#getl">getl</a>
+   <a href="refW.html#wipe">wipe</a>
+   <a href="refM.html#meta">meta</a>
+</code>
+
+<dt>Predicates
+<dd><code>
+   <a href="refA.html#atom">atom</a>
+   <a href="refP.html#pair">pair</a>
+   <a href="refC.html#circ?">circ?</a>
+   <a href="refL.html#lst?">lst?</a>
+   <a href="refN.html#num?">num?</a>
+   <a href="refS.html#sym?">sym?</a>
+   <a href="refF.html#flg?">flg?</a>
+   <a href="refS.html#sp?">sp?</a>
+   <a href="refP.html#pat?">pat?</a>
+   <a href="refF.html#fun?">fun?</a>
+   <a href="refB.html#box?">box?</a>
+   <a href="refS.html#str?">str?</a>
+   <a href="refE.html#ext?">ext?</a>
+   <a href="refB.html#bool">bool</a>
+   <a href="refN.html#not">not</a>
+   <a href="ref_.html#==">==</a>
+   <a href="refN.html#n==">n==</a>
+   <a href="ref_.html#=">=</a>
+   <a href="ref_.html#<>"><&gt</a>
+   <a href="ref_.html#=0">=0</a>
+   <a href="ref_.html#=1">=1</a>
+   <a href="ref_.html#=T">=T</a>
+   <a href="refN.html#n0">n0</a>
+   <a href="refN.html#nT">nT</a>
+   <a href="ref_.html#<">&lt;</a>
+   <a href="ref_.html#<=">&lt;=</a>
+   <a href="ref_.html#>">&gt;</a>
+   <a href="ref_.html#>=">&gt;=</a>
+   <a href="refM.html#match">match</a>
+   <a href="refF.html#full">full</a>
+</code>
+
+<dt>Arithmetics
+<dd><code>
+   <a href="ref_.html#+">+</a>
+   <a href="ref_.html#-">-</a>
+   <a href="ref_.html#*">*</a>
+   <a href="ref_.html#/">/</a>
+   <a href="ref_.html#%">%</a>
+   <a href="ref_.html#*/">*/</a>
+   <a href="ref_.html#**">**</a>
+   <a href="refI.html#inc">inc</a>
+   <a href="refD.html#dec">dec</a>
+   <a href="ref_.html#>>">>></a>
+   <a href="refL.html#lt0">lt0</a>
+   <a href="refL.html#le0">le0</a>
+   <a href="refG.html#ge0">ge0</a>
+   <a href="refG.html#gt0">gt0</a>
+   <a href="refA.html#abs">abs</a>
+   <a href="refB.html#bit?">bit?</a>
+   <a href="ref_.html#&">&</a>
+   <a href="ref_.html#|">|</a>
+   <a href="refX.html#x|">x|</a>
+   <a href="refS.html#sqrt">sqrt</a>
+   <a href="refS.html#seed">seed</a>
+   <a href="refH.html#hash">hash</a>
+   <a href="refR.html#rand">rand</a>
+   <a href="refM.html#max">max</a>
+   <a href="refM.html#min">min</a>
+   <a href="refL.html#length">length</a>
+   <a href="refS.html#size">size</a>
+   <a href="refA.html#accu">accu</a>
+   <a href="refF.html#format">format</a>
+   <a href="refP.html#pad">pad</a>
+   <a href="refM.html#money">money</a>
+   <a href="refR.html#round">round</a>
+   <a href="refB.html#bin">bin</a>
+   <a href="refO.html#oct">oct</a>
+   <a href="refH.html#hex">hex</a>
+   <a href="refH.html#hax">hax</a>
+</code>
+
+<dt>List Processing
+<dd><code>
+   <a href="refC.html#car">car</a>
+   <a href="refC.html#cdr">cdr</a>
+   <a href="refC.html#caar">caar</a>
+   <a href="refC.html#cadr">cadr</a>
+   <a href="refC.html#cdar">cdar</a>
+   <a href="refC.html#cddr">cddr</a>
+   <a href="refC.html#caaar">caaar</a>
+   <a href="refC.html#caadr">caadr</a>
+   <a href="refC.html#cadar">cadar</a>
+   <a href="refC.html#caddr">caddr</a>
+   <a href="refC.html#cdaar">cdaar</a>
+   <a href="refC.html#cdadr">cdadr</a>
+   <a href="refC.html#cddar">cddar</a>
+   <a href="refC.html#cdddr">cdddr</a>
+   <a href="refC.html#caaaar">caaaar</a>
+   <a href="refC.html#caaadr">caaadr</a>
+   <a href="refC.html#caadar">caadar</a>
+   <a href="refC.html#caaddr">caaddr</a>
+   <a href="refC.html#cadaar">cadaar</a>
+   <a href="refC.html#cadadr">cadadr</a>
+   <a href="refC.html#caddar">caddar</a>
+   <a href="refC.html#cadddr">cadddr</a>
+   <a href="refC.html#cdaaar">cdaaar</a>
+   <a href="refC.html#cdaadr">cdaadr</a>
+   <a href="refC.html#cdadar">cdadar</a>
+   <a href="refC.html#cdaddr">cdaddr</a>
+   <a href="refC.html#cddaar">cddaar</a>
+   <a href="refC.html#cddadr">cddadr</a>
+   <a href="refC.html#cdddar">cdddar</a>
+   <a href="refC.html#cddddr">cddddr</a>
+   <a href="refN.html#nth">nth</a>
+   <a href="refC.html#con">con</a>
+   <a href="refC.html#cons">cons</a>
+   <a href="refC.html#conc">conc</a>
+   <a href="refC.html#circ">circ</a>
+   <a href="refR.html#rot">rot</a>
+   <a href="refL.html#list">list</a>
+   <a href="refN.html#need">need</a>
+   <a href="refR.html#range">range</a>
+   <a href="refF.html#full">full</a>
+   <a href="refM.html#make">make</a>
+   <a href="refM.html#made">made</a>
+   <a href="refC.html#chain">chain</a>
+   <a href="refL.html#link">link</a>
+   <a href="refY.html#yoke">yoke</a>
+   <a href="refC.html#copy">copy</a>
+   <a href="refM.html#mix">mix</a>
+   <a href="refA.html#append">append</a>
+   <a href="refD.html#delete">delete</a>
+   <a href="refD.html#delq">delq</a>
+   <a href="refR.html#replace">replace</a>
+   <a href="refI.html#insert">insert</a>
+   <a href="refR.html#remove">remove</a>
+   <a href="refP.html#place">place</a>
+   <a href="refS.html#strip">strip</a>
+   <a href="refS.html#split">split</a>
+   <a href="refR.html#reverse">reverse</a>
+   <a href="refF.html#flip">flip</a>
+   <a href="refT.html#trim">trim</a>
+   <a href="refC.html#clip">clip</a>
+   <a href="refH.html#head">head</a>
+   <a href="refT.html#tail">tail</a>
+   <a href="refS.html#stem">stem</a>
+   <a href="refF.html#fin">fin</a>
+   <a href="refL.html#last">last</a>
+   <a href="refM.html#member">member</a>
+   <a href="refM.html#memq">memq</a>
+   <a href="refM.html#mmeq">mmeq</a>
+   <a href="refS.html#sect">sect</a>
+   <a href="refD.html#diff">diff</a>
+   <a href="refI.html#index">index</a>
+   <a href="refO.html#offset">offset</a>
+   <a href="refP.html#prior">prior</a>
+   <a href="refA.html#assoc">assoc</a>
+   <a href="refR.html#rassoc">rassoc</a>
+   <a href="refA.html#asoq">asoq</a>
+   <a href="refF.html#flood">flood</a>
+   <a href="refR.html#rank">rank</a>
+   <a href="refS.html#sort">sort</a>
+   <a href="refU.html#uniq">uniq</a>
+   <a href="refG.html#group">group</a>
+   <a href="refL.html#length">length</a>
+   <a href="refS.html#size">size</a>
+   <a href="refB.html#bytes">bytes</a>
+   <a href="refV.html#val">val</a>
+   <a href="refS.html#set">set</a>
+   <a href="refX.html#xchg">xchg</a>
+   <a href="refP.html#push">push</a>
+   <a href="refP.html#push1">push1</a>
+   <a href="refP.html#push1q">push1q</a>
+   <a href="refP.html#pop">pop</a>
+   <a href="ref_.html#++">++</a>
+   <a href="refC.html#cut">cut</a>
+   <a href="refQ.html#queue">queue</a>
+   <a href="refF.html#fifo">fifo</a>
+   <a href="refI.html#idx">idx</a>
+   <a href="refB.html#balance">balance</a>
+   <a href="refD.html#depth">depth</a>
+   <a href="refG.html#get">get</a>
+   <a href="refF.html#fill">fill</a>
+   <a href="refA.html#apply">apply</a>
+</code>
+
+<dt>Control Flow
+<dd><code>
+   <a href="refL.html#load">load</a>
+   <a href="refA.html#args">args</a>
+   <a href="refN.html#next">next</a>
+   <a href="refA.html#arg">arg</a>
+   <a href="refR.html#rest">rest</a>
+   <a href="refP.html#pass">pass</a>
+   <a href="refQ.html#quote">quote</a>
+   <a href="refA.html#as">as</a>
+   <a href="refL.html#lit">lit</a>
+   <a href="refE.html#eval">eval</a>
+   <a href="refR.html#run">run</a>
+   <a href="refM.html#macro">macro</a>
+   <a href="refC.html#curry">curry</a>
+   <a href="refD.html#def">def</a>
+   <a href="refD.html#de">de</a>
+   <a href="refD.html#dm">dm</a>
+   <a href="refR.html#recur">recur</a>
+   <a href="refR.html#recurse">recurse</a>
+   <a href="refU.html#undef">undef</a>
+   <a href="refB.html#box">box</a>
+   <a href="refN.html#new">new</a>
+   <a href="refT.html#type">type</a>
+   <a href="refI.html#isa">isa</a>
+   <a href="refM.html#method">method</a>
+   <a href="refM.html#meth">meth</a>
+   <a href="refS.html#send">send</a>
+   <a href="refT.html#try">try</a>
+   <a href="refS.html#super">super</a>
+   <a href="refE.html#extra">extra</a>
+   <a href="refW.html#with">with</a>
+   <a href="refB.html#bind">bind</a>
+   <a href="refJ.html#job">job</a>
+   <a href="refL.html#let">let</a>
+   <a href="refL.html#let?">let?</a>
+   <a href="refU.html#use">use</a>
+   <a href="refA.html#and">and</a>
+   <a href="refO.html#or">or</a>
+   <a href="refN.html#nand">nand</a>
+   <a href="refN.html#nor">nor</a>
+   <a href="refX.html#xor">xor</a>
+   <a href="refB.html#bool">bool</a>
+   <a href="refN.html#not">not</a>
+   <a href="refN.html#nil">nil</a>
+   <a href="refT.html#t">t</a>
+   <a href="refP.html#prog">prog</a>
+   <a href="refP.html#prog1">prog1</a>
+   <a href="refP.html#prog2">prog2</a>
+   <a href="refI.html#if">if</a>
+   <a href="refI.html#if2">if2</a>
+   <a href="refI.html#ifn">ifn</a>
+   <a href="refW.html#when">when</a>
+   <a href="refU.html#unless">unless</a>
+   <a href="refC.html#cond">cond</a>
+   <a href="refN.html#nond">nond</a>
+   <a href="refC.html#case">case</a>
+   <a href="refC.html#casq">casq</a>
+   <a href="refS.html#state">state</a>
+   <a href="refW.html#while">while</a>
+   <a href="refU.html#until">until</a>
+   <a href="refL.html#loop">loop</a>
+   <a href="refD.html#do">do</a>
+   <a href="refA.html#at">at</a>
+   <a href="refF.html#for">for</a>
+   <a href="refC.html#catch">catch</a>
+   <a href="refT.html#throw">throw</a>
+   <a href="refF.html#finally">finally</a>
+   <a href="refC.html#co">co</a>
+   <a href="refY.html#yield">yield</a>
+   <a href="ref_.html#!">!</a>
+   <a href="refE.html#e">e</a>
+   <a href="ref_.html#$">$</a>
+   <a href="refC.html#call">call</a>
+   <a href="refT.html#tick">tick</a>
+   <a href="refI.html#ipid">ipid</a>
+   <a href="refO.html#opid">opid</a>
+   <a href="refK.html#kill">kill</a>
+   <a href="refQ.html#quit">quit</a>
+   <a href="refT.html#task">task</a>
+   <a href="refF.html#fork">fork</a>
+   <a href="refD.html#detach">detach</a>
+   <a href="refP.html#pipe">pipe</a>
+   <a href="refL.html#later">later</a>
+   <a href="refT.html#timeout">timeout</a>
+   <a href="refT.html#tasks">tasks</a>
+   <a href="refA.html#abort">abort</a>
+   <a href="refB.html#bye">bye</a>
+</code>
+
+<dt>Mapping
+<dd><code>
+   <a href="refA.html#apply">apply</a>
+   <a href="refP.html#pass">pass</a>
+   <a href="refM.html#maps">maps</a>
+   <a href="refM.html#map">map</a>
+   <a href="refM.html#mapc">mapc</a>
+   <a href="refM.html#maplist">maplist</a>
+   <a href="refM.html#mapcar">mapcar</a>
+   <a href="refM.html#mapcon">mapcon</a>
+   <a href="refM.html#mapcan">mapcan</a>
+   <a href="refF.html#filter">filter</a>
+   <a href="refE.html#extract">extract</a>
+   <a href="refS.html#seek">seek</a>
+   <a href="refF.html#find">find</a>
+   <a href="refP.html#pick">pick</a>
+   <a href="refF.html#fully">fully</a>
+   <a href="refC.html#cnt">cnt</a>
+   <a href="refS.html#sum">sum</a>
+   <a href="refM.html#maxi">maxi</a>
+   <a href="refM.html#mini">mini</a>
+   <a href="refF.html#fish">fish</a>
+   <a href="refB.html#by">by</a>
+</code>
+
+<dt>Input/Output
+<dd><code>
+   <a href="refP.html#path">path</a>
+   <a href="refI.html#in">in</a>
+   <a href="refO.html#out">out</a>
+   <a href="refF.html#fd">fd</a>
+   <a href="refE.html#err">err</a>
+   <a href="refC.html#ctl">ctl</a>
+   <a href="refI.html#ipid">ipid</a>
+   <a href="refO.html#opid">opid</a>
+   <a href="refP.html#pipe">pipe</a>
+   <a href="refA.html#any">any</a>
+   <a href="refS.html#sym">sym</a>
+   <a href="refS.html#str">str</a>
+   <a href="refL.html#load">load</a>
+   <a href="refH.html#hear">hear</a>
+   <a href="refT.html#tell">tell</a>
+   <a href="refK.html#key">key</a>
+   <a href="refP.html#poll">poll</a>
+   <a href="refP.html#peek">peek</a>
+   <a href="refC.html#char">char</a>
+   <a href="refS.html#skip">skip</a>
+   <a href="refE.html#eol">eol</a>
+   <a href="refE.html#eof">eof</a>
+   <a href="refF.html#from">from</a>
+   <a href="refT.html#till">till</a>
+   <a href="refL.html#line">line</a>
+   <a href="refF.html#format">format</a>
+   <a href="refS.html#scl">scl</a>
+   <a href="refR.html#read">read</a>
+   <a href="refP.html#print">print</a>
+   <a href="refP.html#println">println</a>
+   <a href="refP.html#printsp">printsp</a>
+   <a href="refP.html#prin">prin</a>
+   <a href="refP.html#prinl">prinl</a>
+   <a href="refM.html#msg">msg</a>
+   <a href="refS.html#space">space</a>
+   <a href="refB.html#beep">beep</a>
+   <a href="refT.html#tab">tab</a>
+   <a href="refF.html#flush">flush</a>
+   <a href="refR.html#rewind">rewind</a>
+   <a href="refE.html#ext">ext</a>
+   <a href="refR.html#rd">rd</a>
+   <a href="refP.html#pr">pr</a>
+   <a href="refW.html#wr">wr</a>
+   <a href="refW.html#wait">wait</a>
+   <a href="refS.html#sync">sync</a>
+   <a href="refE.html#echo">echo</a>
+   <a href="refI.html#info">info</a>
+   <a href="refF.html#file">file</a>
+   <a href="refD.html#dir">dir</a>
+   <a href="refL.html#lines">lines</a>
+   <a href="refO.html#open">open</a>
+   <a href="refC.html#close">close</a>
+   <a href="refP.html#port">port</a>
+   <a href="refL.html#listen">listen</a>
+   <a href="refA.html#accept">accept</a>
+   <a href="refH.html#host">host</a>
+   <a href="refC.html#connect">connect</a>
+   <a href="refU.html#udp">udp</a>
+   <a href="refS.html#script">script</a>
+   <a href="refO.html#once">once</a>
+   <a href="refR.html#rc">rc</a>
+   <a href="refA.html#acquire">acquire</a>
+   <a href="refR.html#release">release</a>
+   <a href="refT.html#tmp">tmp</a>
+   <a href="refP.html#pretty">pretty</a>
+   <a href="refP.html#pp">pp</a>
+   <a href="refS.html#show">show</a>
+   <a href="refV.html#view">view</a>
+   <a href="refH.html#here">here</a>
+   <a href="refP.html#prEval">prEval</a>
+   <a href="refM.html#mail">mail</a>
+</code>
+
+<dt>Object Orientation
+<dd><code>
+   <a href="refC.html#*Class">*Class</a>
+   <a href="refC.html#class">class</a>
+   <a href="refD.html#dm">dm</a>
+   <a href="refR.html#rel">rel</a>
+   <a href="refV.html#var">var</a>
+   <a href="refV.html#var:">var:</a>
+   <a href="refN.html#new">new</a>
+   <a href="refT.html#type">type</a>
+   <a href="refI.html#isa">isa</a>
+   <a href="refM.html#method">method</a>
+   <a href="refM.html#meth">meth</a>
+   <a href="refS.html#send">send</a>
+   <a href="refT.html#try">try</a>
+   <a href="refO.html#object">object</a>
+   <a href="refE.html#extend">extend</a>
+   <a href="refS.html#super">super</a>
+   <a href="refE.html#extra">extra</a>
+   <a href="refW.html#with">with</a>
+   <a href="refT.html#This">This</a>
+   <a href="refC.html#can">can</a>
+   <a href="refD.html#dep">dep</a>
+</code>
+
+<dt>Database
+<dd><code>
+   <a href="refP.html#pool">pool</a>
+   <a href="refP.html#pool2">pool2</a>
+   <a href="refJ.html#journal">journal</a>
+   <a href="refI.html#id">id</a>
+   <a href="refB.html#blk">blk</a>
+   <a href="refS.html#seq">seq</a>
+   <a href="refL.html#lieu">lieu</a>
+   <a href="refL.html#lock">lock</a>
+   <a href="refC.html#commit">commit</a>
+   <a href="refR.html#rollback">rollback</a>
+   <a href="refM.html#mark">mark</a>
+   <a href="refF.html#free">free</a>
+   <a href="refD.html#dbck">dbck</a>
+   <a href="refD.html#dbs">dbs</a>
+   <a href="refD.html#dbs+">dbs+</a>
+   <a href="refD.html#db:">db:</a>
+   <a href="refT.html#tree">tree</a>
+   <a href="refD.html#db">db</a>
+   <a href="refA.html#aux">aux</a>
+   <a href="refC.html#collect">collect</a>
+   <a href="refG.html#genKey">genKey</a>
+   <a href="refG.html#genStrKey">genStrKey</a>
+   <a href="refU.html#useKey">useKey</a>
+   <a href="refR.html#+relation">+relation</a>
+   <a href="refA.html#+Any">+Any</a>
+   <a href="refB.html#+Bag">+Bag</a>
+   <a href="refB.html#+Bool">+Bool</a>
+   <a href="refN.html#+Number">+Number</a>
+   <a href="refD.html#+Date">+Date</a>
+   <a href="refT.html#+Time">+Time</a>
+   <a href="refS.html#+Symbol">+Symbol</a>
+   <a href="refS.html#+String">+String</a>
+   <a href="refL.html#+Link">+Link</a>
+   <a href="refJ.html#+Joint">+Joint</a>
+   <a href="refB.html#+Blob">+Blob</a>
+   <a href="refH.html#+Hook">+Hook</a>
+   <a href="refH.html#+Hook2">+Hook2</a>
+   <a href="refI.html#+index">+index</a>
+   <a href="refK.html#+Key">+Key</a>
+   <a href="refR.html#+Ref">+Ref</a>
+   <a href="refR.html#+Ref2">+Ref2</a>
+   <a href="refI.html#+Idx">+Idx</a>
+   <a href="refS.html#+Sn">+Sn</a>
+   <a href="refF.html#+Fold">+Fold</a>
+   <a href="refI.html#+IdxFold">+IdxFold</a>
+   <a href="refA.html#+Aux">+Aux</a>
+   <a href="refU.html#+UB">+UB</a>
+   <a href="refD.html#+Dep">+Dep</a>
+   <a href="refL.html#+List">+List</a>
+   <a href="refN.html#+Need">+Need</a>
+   <a href="refM.html#+Mis">+Mis</a>
+   <a href="refA.html#+Alt">+Alt</a>
+   <a href="refS.html#+Swap">+Swap</a>
+   <a href="refE.html#+Entity">+Entity</a>
+   <a href="refB.html#blob">blob</a>
+   <a href="refD.html#dbSync">dbSync</a>
+   <a href="refN.html#new!">new!</a>
+   <a href="refS.html#set!">set!</a>
+   <a href="refP.html#put!">put!</a>
+   <a href="refI.html#inc!">inc!</a>
+   <a href="refB.html#blob!">blob!</a>
+   <a href="refU.html#upd">upd</a>
+   <a href="refR.html#rel">rel</a>
+   <a href="refR.html#request">request</a>
+   <a href="refR.html#request!">request!</a>
+   <a href="refO.html#obj">obj</a>
+   <a href="refC.html#create">create</a>
+   <a href="refR.html#root">root</a>
+   <a href="refF.html#fetch">fetch</a>
+   <a href="refS.html#store">store</a>
+   <a href="refC.html#count">count</a>
+   <a href="refL.html#leaf">leaf</a>
+   <a href="refM.html#minKey">minKey</a>
+   <a href="refM.html#maxKey">maxKey</a>
+   <a href="refI.html#init">init</a>
+   <a href="refS.html#step">step</a>
+   <a href="refS.html#scan">scan</a>
+   <a href="refI.html#iter">iter</a>
+   <a href="refU.html#ubIter">ubIter</a>
+   <a href="refP.html#prune">prune</a>
+   <a href="refZ.html#zapTree">zapTree</a>
+   <a href="refC.html#chkTree">chkTree</a>
+   <a href="refD.html#db/3">db/3</a>
+   <a href="refD.html#db/4">db/4</a>
+   <a href="refD.html#db/5">db/5</a>
+   <a href="refV.html#val/3">val/3</a>
+   <a href="refL.html#lst/3">lst/3</a>
+   <a href="refM.html#map/3">map/3</a>
+   <a href="refI.html#isa/2">isa/2</a>
+   <a href="refS.html#same/3">same/3</a>
+   <a href="refB.html#bool/3">bool/3</a>
+   <a href="refR.html#range/3">range/3</a>
+   <a href="refH.html#head/3">head/3</a>
+   <a href="refF.html#fold/3">fold/3</a>
+   <a href="refP.html#part/3">part/3</a>
+   <a href="refT.html#tolr/3">tolr/3</a>
+   <a href="refS.html#select/3">select/3</a>
+   <a href="refR.html#remote/2">remote/2</a>
+   <a href="refR.html#revolve/2">revolve/2</a>
+</code>
+
+<dt>Pilog
+<dd><code>
+   <a href="refP.html#prove">prove</a>
+   <a href="ref_.html#->">-&gt</a>
+   <a href="refU.html#unify">unify</a>
+   <a href="refB.html#be">be</a>
+   <a href="refC.html#clause">clause</a>
+   <a href="refR.html#repeat">repeat</a>
+   <a href="refA.html#asserta">asserta</a>
+   <a href="refA.html#assertz">assertz</a>
+   <a href="refR.html#retract">retract</a>
+   <a href="refR.html#rules">rules</a>
+   <a href="refG.html#goal">goal</a>
+   <a href="refF.html#fail">fail</a>
+   <a href="refP.html#pilog">pilog</a>
+   <a href="refS.html#solve">solve</a>
+   <a href="refQ.html#query">query</a>
+   <a href="ref_.html#?">?</a>
+   <a href="refR.html#repeat/0">repeat/0</a>
+   <a href="refF.html#fail/0">fail/0</a>
+   <a href="refT.html#true/0">true/0</a>
+   <a href="refN.html#not/1">not/1</a>
+   <a href="refC.html#call/1">call/1</a>
+   <a href="refO.html#or/2">or/2</a>
+   <a href="refN.html#nil/1">nil/1</a>
+   <a href="refE.html#equal/2">equal/2</a>
+   <a href="refD.html#different/2">different/2</a>
+   <a href="refA.html#append/3">append/3</a>
+   <a href="refM.html#member/2">member/2</a>
+   <a href="refD.html#delete/3">delete/3</a>
+   <a href="refP.html#permute/2">permute/2</a>
+   <a href="refU.html#uniq/2">uniq/2</a>
+   <a href="refA.html#asserta/1">asserta/1</a>
+   <a href="refA.html#assertz/1">assertz/1</a>
+   <a href="refR.html#retract/1">retract/1</a>
+   <a href="refC.html#clause/2">clause/2</a>
+   <a href="refS.html#show/1">show/1</a>
+   <a href="refF.html#for/2">for/2</a>
+   <a href="refF.html#for/3">for/3</a>
+   <a href="refF.html#for/4">for/4</a>
+   <a href="refD.html#db/3">db/3</a>
+   <a href="refD.html#db/4">db/4</a>
+   <a href="refD.html#db/5">db/5</a>
+   <a href="refV.html#val/3">val/3</a>
+   <a href="refL.html#lst/3">lst/3</a>
+   <a href="refM.html#map/3">map/3</a>
+   <a href="refI.html#isa/2">isa/2</a>
+   <a href="refS.html#same/3">same/3</a>
+   <a href="refB.html#bool/3">bool/3</a>
+   <a href="refR.html#range/3">range/3</a>
+   <a href="refH.html#head/3">head/3</a>
+   <a href="refF.html#fold/3">fold/3</a>
+   <a href="refP.html#part/3">part/3</a>
+   <a href="refT.html#tolr/3">tolr/3</a>
+   <a href="refS.html#select/3">select/3</a>
+   <a href="refR.html#remote/2">remote/2</a>
+</code>
+
+<dt>Debugging
+<dd><code>
+   <a href="refP.html#pretty">pretty</a>
+   <a href="refP.html#pp">pp</a>
+   <a href="refS.html#show">show</a>
+   <a href="refL.html#loc">loc</a>
+   <a href="refD.html#*Dbg">*Dbg</a>
+   <a href="refH.html#help">help</a>
+   <a href="refD.html#docs">docs</a>
+   <a href="refD.html#doc">doc</a>
+   <a href="refM.html#more">more</a>
+   <a href="refL.html#less">less</a>
+   <a href="refW.html#what">what</a>
+   <a href="refW.html#who">who</a>
+   <a href="refC.html#can">can</a>
+   <a href="refD.html#dep">dep</a>
+   <a href="refD.html#debug">debug</a>
+   <a href="refD.html#d">d</a>
+   <a href="refU.html#unbug">unbug</a>
+   <a href="refU.html#u">u</a>
+   <a href="refV.html#vi">vi</a>
+   <a href="refL.html#ld">ld</a>
+   <a href="refT.html#trace">trace</a>
+   <a href="refU.html#untrace">untrace</a>
+   <a href="refT.html#traceAll">traceAll</a>
+   <a href="refP.html#proc">proc</a>
+   <a href="refH.html#hd">hd</a>
+   <a href="refB.html#bench">bench</a>
+   <a href="refB.html#bt">bt</a>
+   <a href="refL.html#lint">lint</a>
+   <a href="refL.html#lintAll">lintAll</a>
+   <a href="refS.html#select">select</a>
+   <a href="refU.html#update">update</a>
+</code>
+
+<dt>System Functions
+<dd><code>
+   <a href="refC.html#cmd">cmd</a>
+   <a href="refA.html#argv">argv</a>
+   <a href="refO.html#opt">opt</a>
+   <a href="refV.html#version">version</a>
+   <a href="refG.html#gc">gc</a>
+   <a href="refR.html#raw">raw</a>
+   <a href="refA.html#alarm">alarm</a>
+   <a href="refS.html#sigio">sigio</a>
+   <a href="refK.html#kids">kids</a>
+   <a href="refP.html#protect">protect</a>
+   <a href="refH.html#heap">heap</a>
+   <a href="refS.html#stack">stack</a>
+   <a href="refA.html#adr">adr</a>
+   <a href="refB.html#byte">byte</a>
+   <a href="refE.html#env">env</a>
+   <a href="refT.html#trail">trail</a>
+   <a href="refU.html#up">up</a>
+   <a href="refP.html#pil">pil</a>
+   <a href="refS.html#sys">sys</a>
+   <a href="refD.html#date">date</a>
+   <a href="refT.html#time">time</a>
+   <a href="refT.html#tzo">tzo</a>
+   <a href="refU.html#usec">usec</a>
+   <a href="refS.html#stamp">stamp</a>
+   <a href="refD.html#dat$">dat$</a>
+   <a href="ref_.html#$dat">$dat</a>
+   <a href="refD.html#datSym">datSym</a>
+   <a href="refD.html#datStr">datStr</a>
+   <a href="refS.html#strDat">strDat</a>
+   <a href="refE.html#expDat">expDat</a>
+   <a href="refD.html#day">day</a>
+   <a href="refW.html#week">week</a>
+   <a href="refU.html#ultimo">ultimo</a>
+   <a href="refT.html#tim$">tim$</a>
+   <a href="ref_.html#$tim">$tim</a>
+   <a href="refT.html#telStr">telStr</a>
+   <a href="refE.html#expTel">expTel</a>
+   <a href="refL.html#locale">locale</a>
+   <a href="refA.html#allowed">allowed</a>
+   <a href="refA.html#allow">allow</a>
+   <a href="refP.html#pwd">pwd</a>
+   <a href="refC.html#cd">cd</a>
+   <a href="refC.html#chdir">chdir</a>
+   <a href="refC.html#ctty">ctty</a>
+   <a href="refI.html#info">info</a>
+   <a href="refD.html#dir">dir</a>
+   <a href="refD.html#dirname">dirname</a>
+   <a href="refB.html#basename">basename</a>
+   <a href="refE.html#errno">errno</a>
+   <a href="refN.html#native">native</a>
+   <a href="refS.html#struct">struct</a>
+   <a href="refL.html#lisp">lisp</a>
+   <a href="refE.html#exec">exec</a>
+   <a href="refC.html#call">call</a>
+   <a href="refT.html#tick">tick</a>
+   <a href="refK.html#kill">kill</a>
+   <a href="refQ.html#quit">quit</a>
+   <a href="refT.html#task">task</a>
+   <a href="refF.html#fork">fork</a>
+   <a href="refF.html#forked">forked</a>
+   <a href="refP.html#pipe">pipe</a>
+   <a href="refT.html#timeout">timeout</a>
+   <a href="refM.html#mail">mail</a>
+   <a href="refA.html#assert">assert</a>
+   <a href="refT.html#test">test</a>
+   <a href="refB.html#bye">bye</a>
+</code>
+
+<dt>Globals
+<dd><code>
+   <a href="#nilSym">NIL</a>
+   <a href="refP.html#pico">pico</a>
+   <a href="refC.html#*CPU">*CPU</a>
+   <a href="refO.html#*OS">*OS</a>
+   <a href="refD.html#*DB">*DB</a>
+   <a href="refT.html#T">T</a>
+   <a href="refS.html#*Solo">*Solo</a>
+   <a href="refP.html#*PPid">*PPid</a>
+   <a href="refP.html#*Pid">*Pid</a>
+   <a href="ref_.html#@">@</a>
+   <a href="ref_.html#@@">@@</a>
+   <a href="ref_.html#@@@">@@@</a>
+   <a href="refT.html#This">This</a>
+   <a href="refP.html#*Prompt">*Prompt</a>
+   <a href="refD.html#*Dbg">*Dbg</a>
+   <a href="refZ.html#*Zap">*Zap</a>
+   <a href="refS.html#*Scl">*Scl</a>
+   <a href="refC.html#*Class">*Class</a>
+   <a href="refD.html#*Dbs">*Dbs</a>
+   <a href="refR.html#*Run">*Run</a>
+   <a href="refH.html#*Hup">*Hup</a>
+   <a href="refS.html#*Sig1">*Sig1</a>
+   <a href="refS.html#*Sig2">*Sig2</a>
+   <a href="refT.html#*TStp1">*TStp1</a>
+   <a href="refT.html#*TStp2">*TStp2</a>
+   <a href="ref_.html#^">^</a>
+   <a href="refE.html#*Err">*Err</a>
+   <a href="refM.html#*Msg">*Msg</a>
+   <a href="refU.html#*Uni">*Uni</a>
+   <a href="refL.html#*Led">*Led</a>
+   <a href="refA.html#*Adr">*Adr</a>
+   <a href="refA.html#*Allow">*Allow</a>
+   <a href="refF.html#*Fork">*Fork</a>
+   <a href="refB.html#*Bye">*Bye</a>
+</code>
+
+</dl>
+
+<p><hr>
+<h2><a name="down">Download</a></h2>
+
+<p>The <code>PicoLisp</code> system can be downloaded from the <a
+href="http://software-lab.de/down.html">PicoLisp Download</a> page.
+
+<script type="text/javascript">
+var sortBtn;
+
+if (document.querySelectorAll) {
+	sortBtn = document.createElement("input");
+	sortBtn.setAttribute("type", "button");
+	sortBtn.setAttribute("onclick", "sortFunWords()");
+	sortBtn.value = "Sort Words Alphabetically";
+	document.getElementById("sortBtnHome").appendChild(sortBtn);
+};
+
+function sortFunWords() {
+	var dls = document.querySelectorAll("dl"), funDl = dls[dls.length-1];
+	var cats = funDl.querySelectorAll("dd code");
+	for (var c=0; c<cats.length; c++) {
+		var aElems = cats[c].querySelectorAll("a"), aArr = [];
+		for (var i=0; i<aElems.length; i++) { aArr.push(aElems[i]); }
+		aArr.sort(function(a,b) { return (a.innerHTML < b.innerHTML) ? -1 : 1; });
+		var dd = cats[c].parentNode;
+		dd.removeChild(cats[c]);
+		var newCode = document.createElement("code");
+		dd.appendChild(newCode);
+		for (var i=0; i<aArr.length; i++) {
+			newCode.appendChild(aArr[i]);
+			newCode.appendChild(document.createTextNode(" "));
+		}
+	}
+	sortBtn.setAttribute("disabled", "disabled");
+}
+</script>
+
+</body>
+</html>

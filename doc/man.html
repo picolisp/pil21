@@ -1,0 +1,208 @@
+Content-type: text/html; charset=UTF-8
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<HTML><HEAD><TITLE>Man page of PICOLISP</TITLE>
+</HEAD><BODY>
+<H1>PICOLISP</H1>
+Section: User Commands (1)<BR>Updated: <BR><A HREF="#index">Index</A>
+<A HREF="http://home.picolisp.com">Return to Main Contents</A><HR>
+
+<A NAME="lbAB">&nbsp;</A>
+<H2>NAME</H2>
+
+pil, picolisp - a fast, lightweight Lisp interpreter
+<A NAME="lbAC">&nbsp;</A>
+<H2>SYNOPSIS</H2>
+
+<B>pil</B>
+
+[arguments ...] [-] [arguments ...] [+]
+<BR>
+
+<B>picolisp</B>
+
+[arguments ...] [-] [arguments ...] [+]
+<A NAME="lbAD">&nbsp;</A>
+<H2>DESCRIPTION</H2>
+
+<B>PicoLisp</B>
+
+is a Lisp interpreter with a small memory footprint, yet relatively high
+execution speed. It combines an elegant and powerful language with built-in
+database functionality.
+<P>
+
+<B>pil</B>
+
+is the startup front-end for the interpreter. It takes care of starting the
+binary base system and loading a useful runtime environment.
+<P>
+
+<B>picolisp</B>
+
+is just the bare interpreter binary. It is usually called in stand-alone
+scripts, using the she-bang notation in the first line, passing the minimal
+environment in
+<I>lib.l</I>
+
+and loading additional files as needed:
+<P>
+
+<DL COMPACT><DT><DD>
+#!/usr/bin/picolisp /usr/lib/picolisp/lib.l
+</DL>
+
+<DL COMPACT><DT><DD>
+(load &quot;@ext.l&quot; &quot;myfiles/lib.l&quot; &quot;myfiles/foo.l&quot;)
+</DL>
+
+<DL COMPACT><DT><DD>
+(do ... something ...)
+</DL>
+
+<DL COMPACT><DT><DD>
+(bye)
+</DL>
+
+<A NAME="lbAE">&nbsp;</A>
+<H2>INVOCATION</H2>
+
+<B>PicoLisp</B>
+
+has no pre-defined command line flags; applications are free to define their
+own. Any built-in or user-level Lisp function can be invoked from the command
+line by prefixing it with a hyphen. Examples for built-in functions useful in
+this context are
+<B>version</B>
+
+(print the version number) or
+<B>bye</B>
+
+(exit the interpreter). Therefore, a minimal call to print the version number
+and then immediately exit the interpreter would be:
+<P>
+
+<DL COMPACT><DT><DD>
+$ pil -version -bye
+</DL>
+
+<P>
+
+Any other argument (not starting with a hyphen) should be the name of a file to
+be loaded. If the first character of a path or file name is an at-mark, it
+will be substituted with the path to the installation directory.
+<P>
+
+All arguments are evaluated from left to right, then an interactive
+<I>read-eval-print</I>
+
+loop is entered (with a colon as prompt).
+<P>
+
+A single hyphen stops the evaluation of the rest of the command line, so that
+the remaining arguments may be processed under program control.
+<P>
+
+If the very last command line argument is a single plus character, debugging
+mode is switched on at interpreter startup, before evaluating any of the command
+line arguments. A minimal interactive session is started with:
+<P>
+
+<DL COMPACT><DT><DD>
+$ pil +
+</DL>
+
+<P>
+
+Here you can access the reference manual
+<P>
+
+<DL COMPACT><DT><DD>
+: (doc)
+</DL>
+
+<P>
+
+and the online documentation for most functions,
+<P>
+
+<DL COMPACT><DT><DD>
+: (doc 'vi)
+</DL>
+
+<P>
+
+or directly inspect their sources:
+<P>
+
+<DL COMPACT><DT><DD>
+: (vi 'doc)
+</DL>
+
+<P>
+
+The interpreter can be terminated with
+<P>
+
+<DL COMPACT><DT><DD>
+: (bye)
+</DL>
+
+<P>
+
+or by typing Ctrl-D.
+<A NAME="lbAF">&nbsp;</A>
+<H2>FILES</H2>
+
+Runtime files are maintained in the ~/.pil directory:
+<DL COMPACT>
+<DT>~/.pil/tmp/&lt;pid&gt;/<DD>
+Process-local temporary directories
+<DT>~/.pil/rc<DD>
+Loaded after interpreter startup
+<DT>~/.pil/viprc<DD>
+Loaded by the Vip editor
+</DL>
+<A NAME="lbAG">&nbsp;</A>
+<H2>BUGS</H2>
+
+<B>PicoLisp</B>
+
+doesn't try to protect you from every possible programming error (&quot;You asked for
+it, you got it&quot;).
+<A NAME="lbAH">&nbsp;</A>
+<H2>AUTHOR</H2>
+
+Alexander Burger &lt;<A HREF="mailto:abu@software-lab.de">abu@software-lab.de</A>&gt;
+<A NAME="lbAI">&nbsp;</A>
+<H2>RESOURCES</H2>
+
+<B>Home page:</B>
+
+<A HREF="http://home.picolisp.com">http://home.picolisp.com</A>
+<BR>
+
+<B>Download:</B>
+
+<A HREF="http://www.software-lab.de/down.html">http://www.software-lab.de/down.html</A>
+<P>
+
+<HR>
+<A NAME="index">&nbsp;</A><H2>Index</H2>
+<DL>
+<DT><A HREF="#lbAB">NAME</A><DD>
+<DT><A HREF="#lbAC">SYNOPSIS</A><DD>
+<DT><A HREF="#lbAD">DESCRIPTION</A><DD>
+<DT><A HREF="#lbAE">INVOCATION</A><DD>
+<DT><A HREF="#lbAF">FILES</A><DD>
+<DT><A HREF="#lbAG">BUGS</A><DD>
+<DT><A HREF="#lbAH">AUTHOR</A><DD>
+<DT><A HREF="#lbAI">RESOURCES</A><DD>
+</DL>
+<HR>
+This document was created by
+<A HREF="http://home.picolisp.com">man2html</A>,
+using the manual pages.<BR>
+Time: 08:59:40 GMT, October 27, 2020
+</BODY>
+</HTML>

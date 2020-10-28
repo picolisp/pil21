@@ -1,0 +1,102 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Z</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+
+<h1>Z</h1>
+
+<dl>
+
+<dt><a name="*Zap"><code>*Zap</code></a>
+<dd>A global variable holding a list and a pathname. If given, and the value of
+<code><a href="refS.html#*Solo">*Solo</a></code> is <code>NIL</code>, external
+symbols which are no longer accessible can be collected in the CAR, e.g. during
+DB tree processing, and written to the file in the CDR at the next <code><a
+href="refC.html#commit">commit</a></code>. A (typically periodic) call to
+<code><a href="refZ.html#zap_">zap_</a></code> will clean them up later.
+
+<pre><code>
+: (setq *Zap '(NIL . "db/app/_zap"))
+-> (NIL . "db/app/_zap")
+</code></pre>
+
+<dt><a name="zap"><code>(zap 'sym) -> sym</code></a>
+<dd>"Delete" the symbol <code>sym</code>. For internal symbols, that means to
+remove it from the current namespace, effectively transforming it to a transient
+symbol. For external symbols, it means to mark it as "deleted", so that upon a
+later <code><a href="refC.html#commit">commit</a></code> it will be removed from
+the database file. See also <code><a href="refI.html#intern">intern</a></code>.
+
+<pre><code>
+: (de foo (Lst) (car Lst))          # 'foo' calls 'car'
+-> foo
+: (zap 'car)                        # Delete the symbol 'car'
+-> "car"
+: (pp 'foo)
+(de foo (Lst)
+   ("car" Lst) )                    # 'car' is now a transient symbol
+-> foo
+: (foo (1 2 3))                     # 'foo' still works
+-> 1
+: (car (1 2 3))                     # Reader returns a new 'car' symbol
+!? (car (1 2 3))
+car -- Undefined
+?
+</code></pre>
+
+<dt><a name="zapTree"><code>(zapTree 'sym)</code></a>
+<dd>Recursively deletes a tree structure from the database. See also <code><a
+href="refT.html#tree">tree</a></code>, <code><a
+href="refC.html#chkTree">chkTree</a></code> and <code><a
+href="refP.html#prune">prune</a></code>.
+
+<pre><code>
+: (zapTree (cdr (root (tree 'nm '+Item))))
+</code></pre>
+
+<dt><a name="zap_"><code>(zap_)</code></a>
+<dd>Delayed deletion (with <code><a href="refZ.html#zap">zap</a></code>) of
+external symbols which were collected e.g. during DB tree processing. An
+auxiliary file (with the name taken from the CDR of the value of <code><a
+href="refZ.html#*Zap">*Zap</a></code>, concatenated with a "<code>_</code>"
+character) is used as an intermediary file.
+
+<pre><code>
+: *Zap
+-> (NIL . "db/app/Z")
+: (call 'ls "-l" "db/app")
+...
+-rw-r--r-- 1 abu abu     1536 2007-06-23 12:34 Z
+-rw-r--r-- 1 abu abu     1280 2007-05-23 12:15 Z_
+...
+: (zap_)
+...
+: (call 'ls "-l" "db/app")
+...
+-rw-r--r-- 1 abu abu     1536 2007-06-23 12:34 Z_
+...
+</code></pre>
+
+<dt><a name="zero"><code>(zero var ..) -> 0</code></a>
+<dd>Stores <code>0</code> in all <code>var</code> arguments. See also <code><a
+href="refO.html#one">one</a></code>, <code><a href="refO.html#on">on</a></code>,
+<code><a href="refO.html#off">off</a></code> and <code><a
+href="refO.html#onOff">onOff</a></code>.
+
+<pre><code>
+: (zero A B)
+-> 0
+: A
+-> 0
+: B
+-> 0
+</code></pre>
+
+</dl>
+
+</body>
+</html>
