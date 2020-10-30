@@ -1,4 +1,4 @@
-# 25oct20 Software Lab. Alexander Burger
+# 30oct20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1022,7 +1022,7 @@
                   (? (== Q (setq P (val 3 P)) ) ) )
                (set $Bind P) ) ) ) ) )
 
-# (buf sym 'cnt . prg)
+# (buf sym 'cnt . prg) -> any
 (de _buf (Exe)
    (let
       (X (cdr Exe)

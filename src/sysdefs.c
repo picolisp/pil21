@@ -1,4 +1,4 @@
-// 12oct20 Software Lab. Alexander Burger
+// 30oct20 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdint.h>
@@ -45,18 +45,24 @@ int main(void) {
    printf("# %s\n", _OS);
    printf("# %s\n", _CPU);
 
-   ttl("Errno");
+   ttl("errno");
    num("EINTR", EINTR);
    num("EAGAIN", EAGAIN);
    num("EACCES", EACCES);
 
-   ttl("Terminal");
+   ttl("stdio");
+   num("BUFSIZ", BUFSIZ);
+
+   ttl("unistd");
+   num("PIPE_BUF", PIPE_BUF);
+
+   ttl("terminal");
    num("TIOCGWINSZ", TIOCGWINSZ);
    num("winsize", sizeof(struct winsize));
    num("ws_row", (char*)&term.ws_row - (char*)&term);
    num("ws_col", (char*)&term.ws_col - (char*)&term);
 
-   ttl("Networking");
+   ttl("networking");
    num("SOCK_STREAM", SOCK_STREAM);
    num("SOCK_DGRAM", SOCK_DGRAM);
    num("AF_INET6", AF_INET6);

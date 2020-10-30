@@ -391,6 +391,30 @@ Div/0
 -> NIL
 </code></pre>
 
+<dt><a name="buf"><code>(buf sym 'cnt . prg) -> any</code></a>
+<dd>Creates a temporary local memory buffer on the stack, and binds
+<code>sym</code> to the pointer during the execution of <code>prg</code>. The
+current value of <code>sym</code> is saved and restored appropriately. The
+return value is the result of <code>prg</code>. See also <code><a
+href="refL.html#let">let</a></code>, <code><a
+href="refN.html#native">native</a></code> and <code><a
+href="ref_.html#%@">%@</a></code>.
+
+<pre><code>
+(buf Buf BUFSIZ
+   (%@ "read" 'I Fd Buf BUFSIZ)
+   (%@ "write" 'I Fd2 Buf BUFSIZ) )
+</code></pre>
+
+This is functionally equivalent to (but more efficient than)
+
+<pre><code>
+(let Buf (%@ "malloc" 'P BUFSIZ)
+   (%@ "read" 'I Fd Buf BUFSIZ)
+   (%@ "write" 'I Fd2 Buf BUFSIZ)
+   (%@ "free" NIL Buf) )
+</code></pre>
+
 <dt><a name="by"><code>(by 'fun1 'fun2 'lst ..) -> lst</code></a>
 <dd>Applies <code>fun1</code> to each element of <code>lst</code>. When
 additional <code>lst</code> arguments are given, their elements are also passed

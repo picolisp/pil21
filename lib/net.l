@@ -1,7 +1,7 @@
-# 21sep20 Software Lab. Alexander Burger
+# 30oct20 Software Lab. Alexander Burger
 
-(sysdefs "Errno")
-(sysdefs "Networking")
+(sysdefs "errno")
+(sysdefs "networking")
 
 (private) (ipErr A Type Sd Addr Port Var)
 

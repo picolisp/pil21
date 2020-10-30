@@ -1,4 +1,4 @@
-# 24oct20 Software Lab. Alexander Burger
+# 30oct20 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -7,7 +7,7 @@
 
 (local) (TIOCGWINSZ winsize ws_row ws_col setTermSize)
 
-(sysdefs "Terminal")
+(sysdefs "terminal")
 
 (de setTermSize ()
    (use L

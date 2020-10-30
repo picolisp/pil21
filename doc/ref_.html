@@ -113,6 +113,18 @@ href="ref_.html#*/">*/</a></code> .
 -> 1
 </code></pre>
 
+<dt><a name="%@"><code>(%@ 'cnt|sym 'any 'any ..) -> any</code></a>
+<dd>Convenience function for a common use case of <code><a
+href="refN.html#native">native</a></code>. <code>(%@ "fun" ...)</code> is
+equivalent to <code>(native "@" "fun" ...)</code>.
+
+<pre><code>
+: (%@ "printf" 'I "abc%d%s^J" (+ 3 4) (pack "X"
+ "Y" "Z"))
+abc7XYZ
+-> 8
+</code></pre>
+
 <dt><a name="&"><code>(& 'num ..) -> num</code></a>
 <dd>Returns the bitwise <code>AND</code> of all <code>num</code> arguments. When
 one of the arguments evaluates to <code>NIL</code>, it is returned immediately.

@@ -51,31 +51,37 @@ href="refL.html#lisp">lisp</a></code> functions.
 <p><hr>
 <h2><a name="overview">Overview</a></h2>
 
-<p><code>native</code> calls a C function in a shared library. It tries to
+<p>
+<code><a href="refN.html#native">native</a></code> calls a C function in a
+shared library. It tries to
 
 <p><ol>
 <li>find a library by name
 <li>find a function by name in the library
-<li>convert the function's argument(s) from Lisp to C structures
+<li>convert the function's argument(s) from Lisp to C data structures
 <li>call the function's C code
-<li>convert the function's return value(s) from C to Lisp structures
+<li>convert the function's return value(s) from C to Lisp data structures
 </ol>
 
 <p>The direct return value of <code>native</code> is the Lisp representation of
 the C function's return value. Further values, returned by reference from the C
 function, are available in Lisp variables (symbol values).
 
-<p><code>struct</code> is a helper function, which can be used to manipulate C
-data structures in memory. It may take a scalar (a numeric representation of a C
-value) to convert it to a Lisp item, or (more typically) a pointer to a memory
-area to build and extract data structures. <code>lisp</code> allows you to
-install callback functions, callable from C code, written in Lisp.
+<p><code><a href="refS.html#struct">struct</a></code> is a helper function,
+which can be used to manipulate C data structures in memory. It may take a
+scalar (a numeric representation of a C value) to convert it to a Lisp item, or
+(more typically) a pointer to a memory area to build and extract data
+structures. <code>lisp</code> allows you to install callback functions, callable
+from C code, written in Lisp.
 
-<p>In combination, these three functions can interface PicoLisp to almost any C
+<p><code><a href="ref_.html#%@">%@</a></code> is a convenience function,
+simplifying the most common use case of <code>native</code>.
+
+<p>In combination, these functions can interface PicoLisp to almost any C
 function.
 
 <p>The above steps are fully dynamic; <code>native</code> doesn't have (and
-doesn't require) a priory knowledge about the library, the function or the
+doesn't require) a priori knowledge about the library, the function or the
 involved data. No need to write any glue code, interfaces or include files. All
 functions can even be called interactively from the REPL.
 
@@ -118,6 +124,17 @@ found library (a number).
 library name. It then refers to the current main program (instead of an external
 library), and can be used for standard functions like <code>"malloc"</code> or
 <code>"printf"</code>.
+Because this is needed so often,
+
+<pre><code>
+(%@ "fun" ...)
+</code></pre>
+
+<p>can be used instead of
+
+<pre><code>
+(native "@" "fun" ...)
+</code></pre>
 
 <p><code>native</code> uses <code>dlopen(3)</code> internally to find and open
 the library, and to obtain the handle. If the name contains a slash ('/'), then
@@ -232,7 +249,7 @@ convert a returned <code>double</code> (if the number is positive) or
 <pre><code>
 (native "lib.so" "fun" 'I)             # int fun(void);
 (native "lib.so" "fun" 'N)             # long fun(void);
-(native "lib.so" "fun" 'N)             # void *fun(void);
+(native "lib.so" "fun" 'P)             # void *fun(void);
 (native "lib.so" "fun" 'S)             # char *fun(void);
 (native "lib.so" "fun" 1.0)            # double fun(void);
 </code></pre>
@@ -465,23 +482,23 @@ disappears when the function returns. A corresponding <code>native</code> call
 would be:
 
 <pre><code>
-(native "@" "read" 'N Fd '(Buf (4 . I)) 4)
+(%@ "read" 'I Fd '(Buf (4 . I)) 4)
 </code></pre>
 
 <p>The structure argument <code>(Buf (4 . I))</code> says that a space of 4
 bytes should be allocated and passed to <code>read</code>, then an integer
 <code>I</code> returned in the variable <code>Buf</code> (the return value of
-<code>native</code> itself is the number returned by <code>read</code>). The
+<code>native</code> itself is the integer returned by <code>read</code>). The
 memory space is released after that.
 
-<p>(Note that we use <code>"@"</code> for the library here, as <code>read</code>
-resides in the main program.)
+<p>(Note that we can call <code>%@</code> here, as <code>read</code> resides in
+the main program.)
 
 <p>Instead of a single integer, we might want a list of four bytes to be
 returned from <code>native</code>:
 
 <pre><code>
-(native "@" "read" 'N Fd '(Buf (4 B . 4)) 4)
+(%@ "read" 'I Fd '(Buf (4 B . 4)) 4)
 </code></pre>
 
 <p>The difference is that we wrote <code>(B . 4)</code> (a list of 4 bytes)
@@ -505,11 +522,11 @@ void copy4bytes(int fd1, int fd2) {
 <code>read</code> and <code>write</code>. A direct translation would be:
 
 <pre><code>
-(native "@" "read" 'N Fd '(Buf (4 B . 4)) 4)
-(native "@" "write" 'N Fd (cons NIL (4) Buf) 4)
+(%@ "read" 'I Fd '(Buf (4 B . 4)) 4)
+(%@ "write" 'I Fd2 (cons NIL (4) Buf) 4)
 </code></pre>
 
-<p>This work as expected. <code>read</code> returns a list of four bytes in
+<p>This works as expected. <code>read</code> returns a list of four bytes in
 <code>Buf</code>. The call to <code>cons</code> builds the structure
 
 <pre><code>
@@ -532,10 +549,20 @@ the buffer manually, use it for both reading and writing, and then release it.
 This also avoids all intermediate list conversions.
 
 <pre><code>
-(let Buf (native "@" "malloc" 'N 4) # Allocate memory
-   (native "@" "read" 'N Fd Buf 4)  # (Possibly repeat this several times)
-   (native "@" "write" 'N Fd Buf 4)
-   (native "@" "free" NIL Buf) )    # Release memory
+(let Buf (%@ "malloc" 'P 4)  # Allocate memory
+   (%@ "read" 'I Fd Buf 4)   # (Possibly repeat this several times)
+   (%@ "write" 'I Fd2 Buf 4)
+   (%@ "free" NIL Buf) )     # Release memory
+</code></pre>
+
+<p>To allocate such a buffer locally on the stack (just like a C function would
+do), <code><a href="refB.html#buf">buf</a></code> can be used. Equivalent to the
+above is:
+
+<pre><code>
+(buf Buf 4  # Allocate local memory
+   (%@ "read" 'I Fd Buf 4)
+   (%@ "write" 'I Fd2 Buf 4) )
 </code></pre>
 
 
@@ -574,8 +601,8 @@ example code for calculating Complex One-Dimensional DFTs:
 (de fft (Lst)
    (let
       (Len (length Lst)
-         In (native "libfftw3.so" "fftw_malloc" 'N (* Len 16))
-         Out (native "libfftw3.so" "fftw_malloc" 'N (* Len 16))
+         In (native "libfftw3.so" "fftw_malloc" 'P (* Len 16))
+         Out (native "libfftw3.so" "fftw_malloc" 'P (* Len 16))
          P (native "libfftw3.so" "fftw_plan_dft_1d" 'N
             Len In Out FFTW_FORWARD FFTW_ESTIMATE ) )
       (struct In NIL (cons 1.0 (apply append Lst)))
@@ -618,21 +645,21 @@ prints a floating point number in scientific notation:
 (load "@lib/math.l")
 
 : (de prf (Flt)
-   (native "@" "printf" NIL "%e^J" (cons Flt 1.0)) )
+   (%@ "printf" NIL "%e\n" (cons Flt 1.0)) )
 -> prf
 
 : (prf (exp 12.3))
 2.196960e+05
 </code></pre>
 
-<p>As we know that the format string <code>"%e^J"</code> will be converted from
+<p>As we know that the format string <code>"%e\n"</code> will be converted from
 a Lisp symbol to a C string with <code>strdup</code> - and then thrown away - on
 each call to <code>prf</code>, we might as well perform a little optimization
 and delegate this conversion to the program load time:
 
 <pre><code>
 : (de prf (Flt)
-   (native "@" "printf" NIL `(native "@" "strdup" 'N "%e^J") (cons Flt 1.0)) )
+   (%@ "printf" NIL `(%@ "strdup" 'P "%e\n") (cons Flt 1.0)) )
 -> prf
 
 : (prf (exp 12.3))
@@ -645,7 +672,7 @@ pointer to the allocated string memory:
 <pre><code>
 : (pp 'prf)
 (de prf (Flt)
-   (native "@" "printf" NIL 24662032 (cons Flt 1000000)) )
+   (%@ "printf" NIL 24662032 (cons Flt 1000000)) )
 -> prf
 </code></pre>
 
@@ -667,7 +694,7 @@ href="http://en.wikipedia.org/wiki/Callback_(computer_programming)">callback</a>
 in the strict sense. It just allows to call a Lisp function with a given name.
 
 <p>The limitation is that this function can accept only maximally five numeric
-arguments, and returns a number.
+arguments, and must return a number.
 
 <p>The prerequisite is, of course, that you have access to the C source code. To
 use it from C, insert the following prototype somewhere before the first call:
