@@ -1,4 +1,4 @@
-// 29oct20 Software Lab. Alexander Burger
+// 31oct20 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -244,13 +244,13 @@ int main(int ac, char *av[]) {
          if (fstat(fd,&st) < 0  ||  st.st_size == 0)
             close(fd);
          else {
-            alarm(lim);
             lenLen = sprintf(len, "%ld\n", size = lockFile(fd));
             if ((data = malloc(size)) == NULL)
                giveup("Can't alloc");
             if (read(fd, data, size) != size)
                giveup("Can't read");
             close(fd);
+            alarm(0);
             for (nm[0] = '\0', i = 9;  i < ac;  ++i) {
                if (dp = opendir(av[i])) {
                   int max = -1;
@@ -311,6 +311,7 @@ int main(int ac, char *av[]) {
                   ERR_print_errors_fp(stderr);
                sleep(sec);
             }
+            alarm(lim);
             free(data);
          }
       }
