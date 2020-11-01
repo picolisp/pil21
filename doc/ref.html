@@ -576,7 +576,11 @@ to calling <code>(<a href="refL.html#load">load</a> T)</code>.
 
 <p>A special case is if the last argument is a single '<code>+</code>'. This
 will switch on debug mode (the <code><a href="refD.html#*Dbg">*Dbg</a></code>
-global variable) and discard the '<code>+</code>'.
+global variable) and discard the '<code>+</code>'. In that case, a file
+"~/.pil/rc" (if it exists) will be <code><a
+href="refL.html#load">load</a></code>ed, which can contain arbitrary statements
+and definitions (e.g. to initialize the <code>readline(3)</code> <code><a
+href="refH.html#history">history</a></code>).
 
 <p>As a convention, PicoLisp source files have the extension "<code>.l</code>".
 
@@ -620,7 +624,7 @@ $ pil myProject.l -main
 </code></pre>
 
 <p>For interactive development it is recommended to enable debugging mode, to
-get readline line editing, single-stepping, tracing and other debugging
+get readline line history, single-stepping, tracing and other debugging
 utilities.
 
 <pre><code>

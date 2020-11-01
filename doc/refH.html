@@ -277,6 +277,19 @@ href="refF.html#format">format</a></code>.
 -> "12 D687"
 </code></pre>
 
+<dt><a name="history"><code>(history ['lst]) -> lst</code></a>
+<dd>When called without argument, <code>history</code> returns the current
+<code>readline(3)</code> history. <code>lst</code> is a list of strings.
+Otherwise, the history is set to <code>lst</code>. See also <a
+href="ref.html#invoc">Invocation</a>.
+
+<pre><code>
+: (+ 1 2 3)
+-> 6
+: (history)
+-> ("(+ 1 2 3)" "(history)")
+</code></pre>
+
 <dt><a name="host"><code>(host 'any) -> sym</code></a>
 <dd>Returns the hostname corresponding to the given IP address. See also
 <code><a href="refA.html#*Adr">*Adr</a></code>.
