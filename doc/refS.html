@@ -1102,6 +1102,17 @@ href="refW.html#wait">wait</a></code>.
 -> "vt100"
 </code></pre>
 
+<dt><a name="sysdefs"><code>(sysdefs 'sym1 '[sym2])</code></a>
+<dd>Loads system-dependent definitions for all symbols in the section named
+<code>sym1</code> from the file "@lib/sysdefs" (or an alternative file given by
+<code>sym2</code>). All symbols in that section are <code><a
+href="refD.html#def">def</a></code>ined to their given values. See also <code><a
+href="refN.html#native">native</a></code>.
+
+<pre><code>
+: (sysdefs "networking")  # Load networking system definitions
+</code></pre>
+
 </dl>
 
 </body>
