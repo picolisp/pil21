@@ -364,6 +364,21 @@ href="refR.html#replace">replace</a></code>.
 -> (a b c d e 777)
 </code></pre>
 
+<dt><a name="plio"><code>(plio 'num) -> any</code></a>
+<dt><code>(plio 'num 'cnt 'any) -> cnt</code>
+<dd>The first form returns one item stored in PLIO format at the memory location
+pointed to by <code>num</code>. The second form stores an item <code>any</code>
+in a buffer of size <code>cnt</code>. See also <code><a
+href="refB.html#byte">byte</a></code> and <code><a
+href="refS.html#struct">struct</a></code>.
+
+<pre><code>
+: (buf P 64
+   (plio P 64 (1 a (2 b c) d))  # Store expression
+   (plio P) )                   # Fetch it
+-> (1 a (2 b c) d)
+</code></pre>
+
 <dt><a name="poll"><code>(poll 'cnt) -> cnt | NIL</code></a>
 <dd>Checks for the availability of data for reading on the file descriptor
 <code>cnt</code>. See also <code><a href="refO.html#open">open</a></code>,
