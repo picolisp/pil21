@@ -72,18 +72,6 @@ should not write any data to standard output as a side effect.
 -> (1 4 9 16)
 </code></pre>
 
-<dt><a name="ld"><code>(ld) -> any</code></a>
-<dd>(Debug mode only) <code><a href="refL.html#load">load</a></code>s the last
-file edited with <code><a href="refV.html#vi">vi</a></code>.
-
-<pre><code>
-: (vi 'main)
--> T
-: (ld)
-# main redefined
--> go
-</code></pre>
-
 <dt><a name="le0"><code>(le0 'any) -> num | NIL</code></a>
 <dd>Returns <code>num</code> when the argument is a number less or equal zero,
 otherwise <code>NIL</code>. See also <code><a

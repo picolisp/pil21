@@ -109,21 +109,22 @@ $ pil -version
 -> (15 11 0)
 </code></pre>
 
-<dt><a name="vi"><code>(vi 'sym) -> sym</code></a>
-<dt><code>(vi 'sym 'cls) -> sym</code>
-<dt><code>(vi '(sym . cls)) -> sym</code>
-<dt><code>(vi) -> NIL</code>
-<dd>(Debug mode only) Opens the "vi" editor on the function or method definition
-of <code>sym</code>. A call to <code><a href="refL.html#ld">ld</a></code>
-thereafter will <code><a href="refL.html#load">load</a></code> the modified
-file. See also <code><a href="refD.html#doc">doc</a></code>, <code><a
+<dt><a name="vi"><code>(vi 'sym) -> sym | NIL</code></a>
+<dt><code>(vi 'sym 'cls) -> sym | NIL</code>
+<dt><code>(vi 'lst) -> lst | NIL</code>
+<dt><code>(v . lst) -> lst | NIL</code>
+<dd>(Debug mode only) Opens the "Vip" editor on the function or method
+definition of <code>sym</code> (source file or direct path name), or on a list
+of symbols <code>lst</code> (in-memory). See also <code><a
+href="refD.html#doc">doc</a></code>, <code><a
 href="refD.html#*Dbg">*Dbg</a></code>, <code><a
 href="refD.html#debug">debug</a></code> and <code><a
 href="refP.html#pp">pp</a></code>.
 
 <pre><code>
-: (vi 'url> '+CuSu)  # Edit the method's source code, then exit from 'vi'
--> T
+: (vi 'put> '+Entity)  # Edit the method's source code
+: (v {1})  # In-memory-edit the database root object
+-> put>
 </code></pre>
 
 <dt><a name="view"><code>(view 'lst ['T]) -> any</code></a>
