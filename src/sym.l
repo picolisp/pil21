@@ -1,4 +1,4 @@
-# 24oct20 Software Lab. Alexander Burger
+# 02nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -20,14 +20,20 @@
       (Len (bufSize Nm)
          N (if (cnt? Nm) (int @) (val (dig @)))
          B (i8 N) )
-      (if
-         (or
-            (== B (char "@"))
-            (and
-               (== B (char "+"))
-               (== (i8 (shr N 8)) (char "@")) ) )
-         (+ (val $HomeLen) (dec Len))
-         Len ) ) )
+      (cond
+         ((or
+               (== B (char "@"))
+               (and
+                  (== B (char "+"))
+                  (== (i8 (shr N 8)) (char "@")) ) )
+            (+ (val $PilLen) (dec Len)) )
+         ((or
+               (== B (char "~"))
+               (and
+                  (== B (char "+"))
+                  (== (i8 (shr N 8)) (char "~")) ) )
+            (+ (val $UsrLen) (dec Len)) )
+         (T Len) ) ) )
 
 (de i8* bufString (Nm (i8* . P))
    (let Q (push 0 Nm)  # [cnt name]
@@ -42,12 +48,18 @@
             (set P B)
             (inc 'P)
             (setq B (symByte Q)) )
-         (if (== B (char "@"))
-            (when (val $HomeLen)
-               (memcpy P (val $Home) @)
-               (inc 'P @) )
-            (set P B)
-            (inc 'P) )
+         (case B
+            ((char "@")
+               (when (val $PilLen)
+                  (memcpy P (val $PilHome) @)
+                  (inc 'P @) ) )
+            ((char "~")
+               (when (val $UsrLen)
+                  (memcpy P (val $UsrHome) @)
+                  (inc 'P @) ) )
+            (T
+               (set P B)
+               (inc 'P) ) )
          (while (set P (symByte Q))
             (inc 'P) ) ) ) )
 

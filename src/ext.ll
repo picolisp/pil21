@@ -11,8 +11,10 @@ declare void @llvm.stackrestore(i8*)
 
 @$AV0 = external global i8*
 @$AV = external global i8**
-@$Home = external global i8*
-@$HomeLen = external global i64
+@$PilHome = external global i8*
+@$PilLen = external global i64
+@$UsrHome = external global i8*
+@$UsrLen = external global i64
 @$Heaps = external global i64
 @$Avail = external global i64
 @$Extern = external global i64

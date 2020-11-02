@@ -1,4 +1,4 @@
-# 30oct20 Software Lab. Alexander Burger
+# 02nov20 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -85,11 +85,7 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
          File ) ) )
 
 (de fName (File)
-   (when
-      (setq File
-         (if (pre? "~/" File)
-            (pack (sys "HOME") "/" (cddr (chop File)))
-            (path File) ) )
+   (when (setq File (path File))
       (use R
          (when (=0 (%@ "realpath" 'N File '(R (4096 C . 4096))))
             (setq R (chop File)) )

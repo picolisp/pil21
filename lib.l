@@ -1,4 +1,4 @@
-# 10oct20 Software Lab. Alexander Burger
+# 02nov20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -166,9 +166,10 @@
       (run "Prg" 1) ) )
 
 (de pil @
-   (when (== "Pil" '"Pil")
-      (call "mkdir" "-p" (setq "Pil" `(pack (sys "HOME") "/.pil/"))) )
-   (pass pack "Pil") )
+   (let P (path "~/.pil/")
+      (call "mkdir" "-p" P)
+      (con pil (list (list 'pass 'pack P)))
+      (pass pil) ) )
 
 (de rc (File Key . @)
    (ctl File

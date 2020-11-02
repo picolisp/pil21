@@ -1,11 +1,13 @@
-# 22oct20 Software Lab. Alexander Burger
+# 02nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
 (var $AV0 i8* null)                    # Command name
 (var $AV i8** null)                    # Command line argument vector
-(var $Home i8* null)                   # Home directory
-(var $HomeLen i64 0)                   # Home directory
+(var $PilHome i8* null)                # Picolisp home directory
+(var $PilLen i64 0)                    # $PilHome length
+(var $UsrHome i8* null)                # User home directory
+(var $UsrLen i64 0)                    # $UsrHome length
 (var $Heaps 0)                         # Heap list
 (var $Avail 0)                         # Avail list
 (var $Extern 0)                        # External symbol tree
