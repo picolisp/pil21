@@ -1,4 +1,4 @@
-# 28oct20 Software Lab. Alexander Burger
+# 02nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1410,70 +1410,70 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (cbl (val 4 $Lisp) A B C D E) )
 
 (de _cb3 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 6 $Lisp) A B C D E) )
 
 (de _cb4 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 8 $Lisp) A B C D E) )
 
 (de _cb5 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 10 $Lisp) A B C D E) )
 
 (de _cb6 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 12 $Lisp) A B C D E) )
 
 (de _cb7 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 14 $Lisp) A B C D E) )
 
 (de _cb8 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 16 $Lisp) A B C D E) )
 
 (de _cb9 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 18 $Lisp) A B C D E) )
 
 (de _cb10 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 20 $Lisp) A B C D E) )
 
 (de _cb11 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 22 $Lisp) A B C D E) )
 
 (de _cb12 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 24 $Lisp) A B C D E) )
 
 (de _cb13 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 26 $Lisp) A B C D E) )
 
 (de _cb14 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 28 $Lisp) A B C D E) )
 
 (de _cb15 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 30 $Lisp) A B C D E) )
 
 (de _cb16 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 32 $Lisp) A B C D E) )
 
 (de _cb17 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 34 $Lisp) A B C D E) )
 
 (de _cb18 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 36 $Lisp) A B C D E) )
 
 (de _cb19 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 38 $Lisp) A B C D E) )
 
 (de _cb20 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 40 $Lisp) A B C D E) )
 
 (de _cb21 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 42 $Lisp) A B C D E) )
 
 (de _cb22 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 44 $Lisp) A B C D E) )
 
 (de _cb23 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 46 $Lisp) A B C D E) )
 
 (de _cb24 (A B C D E)
-   (cbl (val 4 $Lisp) A B C D E) )
+   (cbl (val 48 $Lisp) A B C D E) )
 
 # (lisp 'sym ['fun]) -> num
 (de _lisp (Exe)
