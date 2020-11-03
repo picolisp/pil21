@@ -457,23 +457,6 @@ OK
 OK
 </code></pre>
 
-<dt><a name="forked"><code>(forked)</code></a>
-<dd>Installs maintenance code in <code><a
-href="refF.html#*Fork">*Fork</a></code> to close server sockets and clean up
-<code><a href="refR.html#*Run">*Run</a></code> code in child processes. Should
-only be called immediately after <code><a href="refT.html#task">task</a></code>.
-
-<pre><code>
-: (task -60000 60000 (msg 'OK))     # Install timer task
--> (-60000 60000 (msg 'OK))
-: (forked)                          # No timer in child processes
--> (task -60000)
-: *Run
--> ((-60000 56432 (msg 'OK)))
-: *Fork
--> ((task -60000) (del '(saveHistory) '*Bye))
-</code></pre>
-
 <dt><a name="format"><code>(format 'num ['cnt ['sym1 ['sym2]]]) -> sym</code></a>
 <dt><code>(format 'sym|lst ['cnt ['sym1 ['sym2]]]) -> num</code>
 <dd>Converts a number <code>num</code> to a string, or a string

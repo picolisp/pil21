@@ -166,8 +166,7 @@ If an entry with that key already exists, an error is issued. For negative
 numbers, a second number must be supplied. If <code>sym</code>/<code>any</code>
 arguments are given, a <code><a href="refJ.html#job">job</a></code> environment
 is built for the <code>*Run</code> entry. See also <code><a
-href="refT.html#tasks">tasks</a></code>, <code><a
-href="refF.html#forked">forked</a></code> and <code><a
+href="refT.html#tasks">tasks</a></code> and <code><a
 href="refT.html#timeout">timeout</a></code>.
 
 <pre><code>
@@ -194,7 +193,6 @@ The task body <code>prg</code> should return either a positive number (a file
 descriptor) or a negative number (a timeout value) to be used in the next
 iteration. The first value must be a timeout. A value of <code>NIL</code>
 removes the task. Uses <code>-2</code> as implicit key. See also <code><a
-href="refF.html#forked">forked</a></code> and <code><a
 href="refT.html#timeout">timeout</a></code>.
 
 <pre><code>

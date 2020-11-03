@@ -40,7 +40,7 @@
 - Lambda-binding environment offset for 'eval' and 'run' only for '@'
 - 'native'
    * only functions with fixed number of arguments
-   * 'T' changed (no skipped call)
+   * 'T' changed: No skipped call
 - Because of readline(3), '*Run' tasks are suspended while typing in the REPL
 
 % '*Run' cleared in children: 'forked' is not needed

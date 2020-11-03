@@ -11,18 +11,6 @@
 
 <dl>
 
-<dt><a name="*Led"><code>*Led</code></a>
-<dd>(Debug mode only) A global variable holding a (possibly empty)
-<code>prg</code> body that implements a "Line editor". When
-non-<code>NIL</code>, it should return a single symbol (string) upon execution.
-
-<pre><code>
-: (de *Led "(bye)")
-# *Led redefined
--> *Led
-: $                                    # Exit
-</code></pre>
-
 <dt><a name="+Link"><code>+Link</code></a>
 <dd>Class for object relations, a subclass of <code><a
 href="refR.html#+relation">+relation</a></code>. Expects a list of classes as
