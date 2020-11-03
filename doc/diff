@@ -1,9 +1,9 @@
-# 28oct20 Software Lab. Alexander Burger
+# 03nov20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
 
-+ PicoLisp Source instead of PilAsm
++ PilSrc ("PicoLisp Source") instead of PilAsm
 + No pre-installed PicoLisp required for bootstrapping
 + '*Run' not limited to 1024 FDs / 500 children
 + Shared libraries have ".so" extension
@@ -28,7 +28,8 @@
 + 'buf' function
 + More checks for protected symbols
 + Lists of symbols as function parameters (destructuring, one-dimensional)
-* '*Winch' global SIGWINCH handler
++ '*Winch' global SIGWINCH handler
++ Path names expand "~" for the HOME directory
 
 - '====' is not supported
 - 'lines' is not supported

@@ -190,10 +190,11 @@ We said: Hello world!
 </code></pre>
 
 <dt><a name="path"><code>(path 'any) -> sym</code></a>
-<dd>Substitutes any leading "<code>@</code>" character in the <code>any</code>
-argument with the <u>PicoLisp Home Directory</u>, as it was remembered during
-interpreter startup. Optionally, the name may be preceded by a "<code>+</code>"
-character (as used by <code><a href="refI.html#in">in</a></code> and <code><a
+<dd>Substitutes any leading "<code>@</code>" or "<code>~</code>" character in
+the <code>any</code> argument with the <u>PicoLisp</u> or <u>User</u> Home
+Directory respectively, as they were remembered during interpreter startup.
+Optionally, the name may be preceded by a "<code>+</code>" character (as used by
+<code><a href="refI.html#in">in</a></code> and <code><a
 href="refO.html#out">out</a></code>). This mechanism is used internally by all
 I/O functions. See also <a href="ref.html#invoc">Invocation</a>, <code><a
 href="refB.html#basename">basename</a></code> and <code><a
