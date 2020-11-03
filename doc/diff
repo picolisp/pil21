@@ -13,9 +13,8 @@
 + 'history' function for readline
 + 'mix' accepts also negative arguments
 + 'native'
-   * 'P' and 'W' result specifications
-   * (T . any) argument passes direct Lisp value
-   * 'T' result spec returns direct Lisp value (no skipped call)
+   * 'W', 'P' and 'T' result specifications
+   * (T . any) direct Lisp argument
 + '%@' function
 + 'struct'
    * Useful atomic result specifications
@@ -26,7 +25,7 @@
 + 'intern' accepts namespace argument
 + 'plio' function
 + 'buf' function
-+ More checks for protected symbols
++ Various runtime checks
 + Lists of symbols as function parameters (destructuring, one-dimensional)
 + '*Winch' global SIGWINCH handler
 + Path names expand "~" for the HOME directory

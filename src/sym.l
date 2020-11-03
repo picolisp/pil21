@@ -1,4 +1,4 @@
-# 02nov20 Software Lab. Alexander Burger
+# 03nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -683,8 +683,8 @@
       (X (cdr Exe)
          Sym (save (needSymb Exe (eval (++ X)))) )
       (cond
-         ((sym? (val (tail Sym))) $Nil)
-         ((== (name @) ZERO) $Nil)
+         ((sym? (val (tail Sym))) $Nil)  # External symbol
+         ((== (name @) ZERO) $Nil)  # Anonymous symbol
          (T
             (let Nm @
                (cond

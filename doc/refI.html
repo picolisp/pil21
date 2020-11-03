@@ -281,13 +281,13 @@ href="refS.html#sub?">sub?</a></code>.
 <dd>Returns information about a file with the name <code>any</code>: The current
 size <code>cnt</code> in bytes, and the modification date and time (UTC). For
 directories, <code>T</code> is returned instead of the size, and
-<code>NIL</code> for other non-regular files. If <code>flg</code> is
-non-<code>NIL</code> and <code>any</code> is the name of a symbolic link, then
-the link itself is used, not the file that it refers to. See also <code><a
-href="refD.html#dir">dir</a></code>, <code><a
-href="refD.html#date">date</a></code>, <code><a
-href="refT.html#time">time</a></code> and <code><a
-href="refL.html#lines">lines</a></code>.
+<code>NIL</code> for other non-regular files. The file argument itself is stored
+in the global variable <code><a href="ref_.html#@@">@@</a></code>). If
+<code>flg</code> is non-<code>NIL</code> and <code>any</code> is the name of a
+symbolic link, then the link itself is used, not the file that it refers to. See
+also <code><a href="refD.html#dir">dir</a></code>, <code><a
+href="refD.html#date">date</a></code> and <code><a
+href="refT.html#time">time</a></code>.
 
 <pre><code>
 $ ls -l x.l
@@ -331,12 +331,13 @@ href="refR.html#replace">replace</a></code>.
 -> (a b c d e 777)
 </code></pre>
 
-<dt><a name="intern"><code>(intern 'sym ['flg]) -> sym</code></a>
+<dt><a name="intern"><code>(intern 'sym ['nsp]) -> sym</code></a>
 <dd>Creates or finds an internal symbol. If a symbol with the name
 <code>sym</code> is already intern, it is returned. Otherwise, <code>sym</code>
-is interned in the current namespace and returned. If <code>flg</code> is
-non-<code>NIL</code>, <code>sym</code> is always interned in the current
-namespace even if it is found in other namespaces. See also <code><a
+is interned and returned. If <code>nsp</code> is non-<code>NIL</code>,
+<code>sym</code> is always interned in the current namespace (if
+<code>nsp</code> is <code>T</code>) or in the given namespace, even if it is
+found in other namespaces. See also <code><a
 href="refS.html#symbols">symbols</a></code>, <code><a
 href="refZ.html#zap">zap</a></code>, <code><a
 href="refI.html#import">import</a></code> and <code><a

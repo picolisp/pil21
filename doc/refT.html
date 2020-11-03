@@ -18,8 +18,9 @@ will be executed when a SIGTSTP signal (<code>*TStp1</code>) or a SIGCONT signal
 (<code>*TStp2</code>) is sent to the current process. See also <code><a
 href="refA.html#alarm">alarm</a></code>, <code><a
 href="refS.html#sigio">sigio</a></code>, <code><a
-href="refH.html#*Hup">*Hup</a></code>, and <code><a
-href="refS.html#*Sig1">*Sig[12]</a></code>.
+href="refH.html#*Hup">*Hup</a></code>, <code><a
+href="refS.html#*Sig1">*Sig[12]</a></code> and <code><a
+href="refW.html#*Winch">*Winch</a></code>.
 
 <pre><code>
 : (de *TStp1 (msg 'SIGTSTP))
@@ -319,28 +320,6 @@ href="refQ.html#quit">quit</a></code>.
 -> 1
 </code></pre>
 
-<dt><a name="tick"><code>(tick (cnt1 . cnt2) . prg) -> any</code></a>
-<dd>Executes <code>prg</code>, then (destructively) adds the number of elapsed
-user ticks to the <code>cnt1</code> parameter, and the number of elapsed system
-ticks to the <code>cnt2</code> parameter. Thus, <code>cnt1</code> and
-<code>cnt2</code> will finally contain the total number of user and system time
-ticks spent in <code>prg</code> and all functions called (this works also for
-recursive functions). For execution profiling, <code>tick</code> is usually
-inserted into words with <code>prof</code>, and removed with
-<code>unprof</code>. See also <code><a href="refU.html#usec">usec</a></code>.
-
-<pre><code>
-: (de foo ()                        # Define function with empty loop
-   (tick (0 . 0) (do 100000000)) )
--> foo
-: (foo)                             # Execute it
--> NIL
-: (pp 'foo)
-(de foo NIL
-   (tick (97 . 0) (do 100000000)) ) # 'tick' incremented 'cnt1' by 97
--> foo
-</code></pre>
-
 <dt><a name="till"><code>(till 'any ['flg]) -> lst|sym</code></a>
 <dd>Reads from the current input channel till a character contained in
 <code>any</code> is found (or until end of file if <code>any</code> is
@@ -617,17 +596,6 @@ href="refO.html#object">object</a></code>.
 (+Address)
 : (type '+DnButton)
 -> (+Tiny +Rid +JS +Able +Button)
-</code></pre>
-
-<dt><a name="tzo"><code>(tzo) -> cnt</code></a>
-<dd>Return the time zone offset, i.e. the number of seconds east of Coordinated
-Universal Time (UTC). Supported only on Linux. See also <code><a
-href="refD.html#date">date</a></code> and <code><a
-href="refT.html#time">time</a></code>.
-
-<pre><code>
-: (tzo)
--> 3600
 </code></pre>
 
 </dl>

@@ -24,21 +24,26 @@ href="refA.html#accept">accept</a></code>.
 <dt><a name="adr"><code>(adr 'var) -> num</code></a>
 <dt><code>(adr 'num) -> var</code>
 <dd>Converts, in the first form, a variable <code>var</code> (a symbol or a cons
-pair) into <code>num</code> (actually an encoded pointer). A symbol will result
-in a negative number, and a cons pair in a positive number. The second form
-converts a pointer back into the original <code>var</code>. Note that this
-original <code>var</code> may be garbage collected if it is not referred from
-other data, giving unpredictable results. See also <code><a
+pair) into <code>num</code> (actually an encoded pointer). This pointer can be
+passed to <code><a href="refN.html#native">native</a></code> or <code><a
+href="refS.html#struct">struct</a></code>. The second form converts a pointer
+back into the original <code>var</code>. Note that this original
+<code>var</code> may be garbage collected if it is not referred from other data,
+giving unpredictable results. See also <code><a
 href="refB.html#byte">byte</a></code>.
 
 <pre><code>
 : (setq X (box 7))
--> $53063416137450
+-> $370237372176
 : (adr X)
--> -2961853431592
+-> 533244889064
 : (adr @)
--> $53063416137450
+-> $370237372176
 : (val @)
+-> 7
+: (struct (adr X) 'N)
+-> 114
+$: (struct (adr X) T)
 -> 7
 </code></pre>
 
@@ -182,8 +187,10 @@ previously scheduled alarm was due to be delivered. Calling <code>(alarm
 0)</code> will cancel an alarm. See also <code><a
 href="refA.html#abort">abort</a></code>, <code><a
 href="refS.html#sigio">sigio</a></code>, <code><a
-href="refH.html#*Hup">*Hup</a></code> and <code><a
-href="refS.html#*Sig1">*Sig[12]</a></code>.
+href="refH.html#*Hup">*Hup</a></code>, <code><a
+href="refS.html#*Sig1">*Sig[12]</a></code>, <code><a
+href="refT.html#*TStp1">*TStp[12]</a></code> and <code><a
+href="refW.html#*Winch">*Winch</a></code>.
 
 <pre><code>
 : (prinl (tim$ (time) T)) (alarm 10 (prinl (tim$ (time) T)))
@@ -340,21 +347,14 @@ arguments are given, they are applied as leading elements of <code>lst</code>.
 -> 4
 </code></pre>
 
-<dt><a name="arg"><code>(arg ['cnt]) -> any</code></a>
+<dt><a name="arg"><code>(arg 'cnt) -> any</code></a>
 <dd>Can only be used inside functions with a variable number of arguments (with
-<code>@</code>). If <code>cnt</code> is not given, the value that was returned
-from the last call to <code><a href="refN.html#next">next</a></code> is
-returned. Otherwise, the <code>cnt</code>'th remaining argument is returned. See
-also <code><a href="refA.html#args">args</a></code>, <code><a
+<code>@</code>). Returns the <code>cnt</code>'th remaining argument. See also
+<code><a href="refA.html#args">args</a></code>, <code><a
 href="refR.html#rest">rest</a></code> and <code><a
 href="refP.html#pass">pass</a></code>.
 
 <pre><code>
-: (de foo @ (println (next) (arg)))    # Print argument twice
--> foo
-: (foo 123)
-123 123
--> 123
 : (de foo @
    (println (arg 1) (arg 2))
    (println (next))

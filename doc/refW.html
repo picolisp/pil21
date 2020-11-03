@@ -11,6 +11,20 @@
 
 <dl>
 
+<dt><a name="*Winch"><code>*Winch</code></a>
+<dd>Global variable holding a (possibly empty) <code>prg</code> body, which will
+be executed when a SIGWINCH signal is sent to the current process. See also
+<code><a href="refA.html#alarm">alarm</a></code>, <code><a
+href="refH.html#*Hup">*Hup</a></code>, <code><a
+href="refS.html#sigio">sigio</a></code>, <code><a
+href="refS.html#*Sig1">*Sig[12]</a></code> and <code><a
+href="refT.html#*TStp1">*TStp[12]</a></code>.
+
+<pre><code>
+: (de *Winch (msg 'SIGWINCH))
+-> *Winch
+</code></pre>
+
 <dt><a name="wait"><code>(wait 'cnt|NIL . prg) -> any</code></a>
 <dt><code>(wait 'cnt|NIL T 'fd) -> fd|NIL</code>
 <dd>Waits for a condition. While the result of the execution of <code>prg</code>

@@ -214,6 +214,8 @@ href="refF.html#filter">filter</a></code>.
 <pre><code>
 : (mapcar + (1 2 3) (4 5 6))
 -> (5 7 9)
+: (mapcar + (1 2 3) 5)
+-> (6 7 8)
 : (mapcar '((X Y) (+ X (* Y Y))) (1 2 3 4) (5 6 7 8))
 -> (26 38 52 68)
 </code></pre>
@@ -546,6 +548,8 @@ result is used.
 <pre><code>
 : (mix '(a b c d) 3 4 1 2)
 -> (c d a b)
+: (mix '(a b c d) -2 1)
+-> ((c d) a)
 : (mix '(a b c d) 1 'A 4 'D)
 -> (a A d D)
 </code></pre>
