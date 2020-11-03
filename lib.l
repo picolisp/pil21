@@ -1,4 +1,4 @@
-# 02nov20 Software Lab. Alexander Burger
+# 03nov20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -165,12 +165,6 @@
    (unless (idx '*Once (file) T)
       (run "Prg" 1) ) )
 
-(de pil @
-   (let P (path "~/.pil/")
-      (call "mkdir" "-p" P)
-      (con pil (list (list 'pass 'pack P)))
-      (pass pil) ) )
-
 (de rc (File Key . @)
    (ctl File
       (in File
@@ -205,7 +199,8 @@
    (unless *Tmp
       (push '*Bye '(call "rm" "-r" *Tmp))
       (push '*Fork '(off *Tmp) '(del '(call "rm" "-r" *Tmp) '*Bye))
-      (call "mkdir" "-p" (setq *Tmp (pil "tmp/" *Pid "/"))) )
+      (call "mkdir" "-p"
+         (setq *Tmp (pack (path "~/.pil/tmp/") *Pid "/")) ) )
    (pass pack *Tmp) )
 
 ### String ###
@@ -589,7 +584,7 @@
 ### Debug ###
 `*Dbg
 
-(and (info (pil "rc")) (load @@))
+(and (info "~/.pil/rc") (load @@))
 
 (load "@lib/lint.l" "@lib/debug.l" "@lib/vip.l")
 

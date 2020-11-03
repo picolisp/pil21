@@ -1,4 +1,4 @@
-# 02nov20 Software Lab. Alexander Burger
+# 03nov20 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1586,8 +1586,7 @@ nextBuf shell shFile prCmd reset command vi)
                            (T (beep)) )
                         (reset) ) ) ) ) ) ) ) )
 
-(when (info (pil "viprc"))
-   (load (pil "viprc")) )
+(and (info "~/.pil/viprc") (load @@))
 
 `*Dbg
 

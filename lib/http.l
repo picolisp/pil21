@@ -1,4 +1,4 @@
-# 09oct20 Software Lab. Alexander Burger
+# 03nov20 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -68,9 +68,9 @@
 # Local Password
 (de pw (N)
    (if N
-      (out (pil "pw")
+      (out "~/.pil/pw"
          (prinl (in "/dev/urandom" (rd N))) )
-      (in (pil "pw")
+      (in "~/.pil/pw"
          (line T) ) ) )
 
 # PicoLisp Shell

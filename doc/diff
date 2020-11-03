@@ -42,6 +42,7 @@
    * only functions with fixed number of arguments
    * 'T' changed: No skipped call
 - Because of readline(3), '*Run' tasks are suspended while typing in the REPL
+- 'pil' is not needed
 
 % '*Run' cleared in children: 'forked' is not needed
 % Main coroutine has a tag 'T'
