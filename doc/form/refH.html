@@ -1,0 +1,57 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>H</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>H</h1>
+
+<dl>
+    <dt><a name="+hint"><code>+hint</code></a>
+    <dd><code>+hint</code> is a base class used to implement autocomplete
+    functionality in the GUI. See <a href="refH.html#+Hint">+Hint</a>, <a
+    href="refH.html#+Hint1">+Hint1</a>, <a href="refH.html#+Hint2">+Hint2</a>,
+    <a href="refD.html#+DbHint">+DbHint</a> and <a
+    href="refO.html#+Obj">+Obj</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Hint"><code>+Hint</code></a>
+    <dd><code>+Hint</code> takes a function which is supposed to generate a list
+    of matches for the argument string. See also <a
+    href="refD.html#+DbHint">+DbHint</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Hint1"><code>+Hint1</code></a>
+    <dd><code>+Hint1</code> takes an expression that produces a list of all
+    values to be used. Useful if there are not too many values, for example a
+    small number of constant strings or a short DB selection.
+</dl>
+
+<dl>
+    <dt><a name="+Hint2"><code>+Hint2</code></a>
+    <dd><code>+Hint2</code>, "second hint", should be used in a field
+    immediately after a <code>+Choice</code>- button, or after a
+    <code>+Hint1</code>- field. It will then use the hint values of the
+    preceding field. See also <a href="refC.html#+Choice">+Choice</a>, <a
+    href="refH.html#+Hint1">+Hint1</a>.
+</dl>
+
+<dl>
+    <dt><a name="+HttpField"><code>+HttpField</code></a>
+    <dd>+HttpField stores a URL and creates a link to it in the gui.
+
+    <pre><code>,"Home page" (gui '(+E/R +HttpField) '(hp : home obj) 40)</code>
+    
+    </pre>See also <a href="refU.html#+Url">+Url</a>, <a
+    href="refM.html#+MailField">+MailField</a>, <a
+    href="refT.html#+TelField">+TelField</a> and <a
+    href="refT.html#+TextField">+TextField</a>.
+</dl>
+
+</body>
+</html>

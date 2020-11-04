@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>P</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>P</h1>
+
+<dl>
+    <dt><a name="+PickButton"><code>+PickButton</code></a>
+    <dd>A button labeled "@", used for selecting an object. Like
+    <code>+ChoButton</code>, it is a convenience class to provide a style and a
+    tooltip. See also <a href="refT.html#+Tiny">+Tiny</a>, <a
+    href="refT.html#+Tip">+Tip</a>, <a href="refB.html#+Button">+Button</a>, <a
+    href="refC.html#+ChoButton">+ChoButton</a>.
+</dl>
+
+<dl>
+    <dt><a name="prev"><code>(prev @)</code></a>
+    <dd>Same as 'row' but for the preceding row. The function implementation
+    looks like this:
+
+    <pre><code>
+    (de prev @
+       (pass get (: chart 1 data) (row -1)) )
+    </code></pre>
+
+    See <a href="refR.html#row">row</a>.
+</dl>
+
+<dl>
+    <dt><a name="+PwField"><code>+PwField</code></a>
+    <dd>A standard password field. Does not echo the entered characters back.
+    Example:
+
+    <pre><code>
+    (gui 'pw '(+PwField) 20 "Password")
+    </code></pre>
+
+    This produces a <code>&lt;passwd&gt;</code> html tag. See also <a
+    href="refG.html#gui">gui</a>, <a href="refT.html#+TextField">+TextField</a>
+    and <a href="../app.html#inputFields">input fields</a>.
+</dl>
+
+</body>
+</html>

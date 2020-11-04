@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>S</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>S</h1>
+
+<dl>
+    <dt><a name="saveButton"><code>(saveButton Exe)</code></a>
+    <dd>A button with the label "Save". 'Exe' is the code that runs when the
+    button is pressed.
+
+    <pre><code>
+    (saveButton
+       '(let Obj (: home obj)
+          (when (: home org)  # Reply
+             (dbSync)
+             (put&gt; (: home org mup) 'rpl
+                (append
+                   (: home org mup rpl)
+                   (cons (setq Obj (new (db: +Doc) '(+Doc)))) ) )
+             (commit 'upd) )
+          (apply 'newMup&gt; (: home mup) Obj)
+          (off *ID)
+          (url (ext.html (or (: home org) Obj))) ) )
+    </code></pre>
+    The above code is an example from the code running the PicoLisp wiki, in
+    gui.l. The button is passed a code argument that checks if a reply has been
+    written to the current object, creating markup code and syncing the
+    database. In effect, an entire "miniature program" is connected to the save
+    button to be run when someone clicks it. See also <a
+    href="refB.html#+Button">+Button</a>.
+</dl>
+
+<dl>
+    <dt><a name="searchButton"><code>(searchButton Exe)</code></a>
+    <dd>Creates a button with the label "Search" and takes an <code>Exe</code>
+    argument. Here is an example from the demo app included with the PicoLisp
+    distribution, in gui.l.
+
+    <pre><code>
+    (searchButton '(init&gt; (: home query)))
+    </code></pre>
+
+    This is from one of the search dialogs and is given <code>'(init&gt; (: home
+    query))</code> as argument. When the search button if pressed, the argument
+    code is run. In this case, the pilog query in the search dialog is
+    initiated. See also <a href="refR.html#+Rid">+Rid</a>, <a
+    href="refJ.html#+JS">+JS</a>, <a href="refT.html#+Tip">+Tip</a>, <a
+    href="refB.html#+Button">+Button</a>.
+</dl>
+
+<dl>
+    <dt><a name="+SexField"><code>+SexField</code></a>
+    <dd>+SexField displays a choice between "Male" or "Female" and stores T or 0
+    respectively, depending on what the user selects.
+
+    <pre><code>
+    ,"Sex" (gui '(+E/R +SexField) '(sex : home obj))
+    </code></pre>
+
+    See also <a href="refM.html#+Map">+Map</a>, <a
+    href="refG.html#gui">gui</a> and <a
+    href="refT.html#+TextField">+TextField</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Sgn"><code>+Sgn</code></a>
+    <dd>"Signum" prefix for numeric fields causing negative number to show in
+    red color.
+</dl>
+
+<dl>
+    <dt><a name="+ShowButton"><code>+ShowButton</code></a>
+    <dd>This button generates HTML that is displayed outside of the current
+    form. One way of using this is in report creation and similar tasks. An
+    example of this can be found in the demo app:
+
+    <pre><code>
+      (gui '(+ShowButton) NIL
+         '(csv ,"Inventory"
+            (&lt;table&gt; 'chart NIL
+               (&lt;!&gt;
+                  (quote
+                     (align)
+                     (NIL ,"Description")
+                     (align ,"Inventory")
+                     (NIL ,"Supplier")
+                     NIL
+                     (NIL ,"Zip")
+                     (NIL ,"City")
+                     (align ,"Price") ) )
+               (catch NIL
+                  (pilog
+                     (quote
+                        @Rng (cons *InvFrom (or *InvTill T))
+                        @Nm *InvNm
+                        @Sup *InvSup
+                        (select (@Item)
+                           ((nr +Item @Rng) (nm +Item @Nm) (sup +Item @Sup))
+                           (range @Rng @Item nr)
+                           (part @Nm @Item nm)
+                           (same @Sup @Item sup) ) )
+                     (with @Item
+                        (&lt;row&gt; (alternating)
+                           (<+> (: nr) This)
+                           (<+> (: nm) This)
+                           (<+> (cnt&gt; This))
+                           (<+> (: sup nm) (: sup))
+                           (<+> (: sup nm2))
+                           (<+> (: sup plz))
+                           (<+> (: sup ort))
+                           (<-> (money (: pr))) ) )
+                     (at (0 . 10000) (or (flush) (throw))) ) ) ) ) ) ) )
+    </code></pre>
+
+    The above code from inventory.l produces a CSV file with the current
+    inventory. See also <a href="refB.html#+Button">+Button</a>.
+</dl>
+
+<dl>
+    <dt><a name="+SymField"><code>+SymField</code></a>
+    <dd>+SymField interns the text entered.
+</dl>
+
+<dl>
+   <dt><a name="+SubE/R"><code>+SubE/R</code></a>
+   <dd>This class refers to a relation in an object which is '+Link'ed or
+   '+Join'ed from the current form's object. Here is an example:
+
+   <pre><code>
+   (class +Instr +Entity)
+   (rel foo (+Joint) ins (+Foo))
+   (rel ma (+String))
+   (rel ha (+String))
+   </code></pre>
+
+   A <code>+Foo</code> object may have an <code>+Instr</code> object. The
+   <code>+Instr</code> object in turn has two <code>+String</code> properties,
+   'ma' and 'ha'. Using <code>+SubE/R</code> allows us to write this in the GUI
+   of <code>+Foo</code>:
+
+   <pre><code>
+   (gui '(+SubE/R +TextField) '(ma ins +Instr) 30)
+   (gui '(+SubE/R +TextField) '(ha ins +Instr) 30)
+   </code></pre>
+
+   This makes it possible to edit 'ma' and 'ha' from the <code>+Instr</code>-
+   object in the GUI for the <code>+Foo</code>- object, and no separate form is
+   needed for <code>+Instr</code>.
+</dl>
+
+<dl>
+    <dt><a name="+Set"><code>+Set</code></a>
+    <dd>+Set takes an argument function that is called each time the field in
+    question is set to a value. For example, the following snippet can be used
+    to convert user input to upper case:
+
+    <pre><code>
+    (gui '(+Set +TextField) uppc 30)   
+    </code></pre>
+
+    See also <a href="refV.html#+Val">+Val</a>, <a
+    href="refF.html#+Fmt">+Fmt</a>, <a
+    href="../app.html#formatPrefix">Formatting</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Style"><code>+Style</code></a>
+    <dd>Adds a css class name to a GUI component.
+    <pre><code>
+    (gui '(+Style +View +TextField) "mono"
+       '(pack
+          (make
+             (for Col (: home grid)
+                (for This Col
+                   (link (if (: life) "X " "  ")) )
+                (link "^J") ) ) )
+       40 20 )
+    </code></pre>
+    In this example, the class "mono" is added to a <code>+TextField</code>.
+</dl>
+
+</body>
+</html>

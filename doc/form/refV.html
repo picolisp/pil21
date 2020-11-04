@@ -1,0 +1,55 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>V</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>V</h1>
+
+<dl>
+    <dt><a name="+Val"><code>+Val</code></a>
+    <dd>Takes a function that gets called each time a field's value is
+    retrieved. The following example returns the square of the field's value:
+
+    <pre><code>
+    (gui '(+Val +NumField) '((N) (* N N)) 10)
+    </code></pre>
+
+    See also <a href="refS.html#+Set">+Set</a>, <a
+    href="refF.html#+Fmt">+Fmt</a>, <a
+    href="../app.html#formatPrefix">Formatting</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Var"><code>+Var</code></a>
+    <dd>Links a form field to a variable.
+
+    <pre><code>
+    "Occupation" (gui 'job '(+Var +TextField) '*PrsJob 20)
+    </code></pre>
+
+    This example links a text field to the variable *PrsJob. See also <a
+    href="refE.html#+E/R">+E/R</a>.
+</dl>
+
+<dl>
+    <dt><a name="+View"><code>+View</code></a>
+    <dd>Like <code>+Lock</code>, view is a prefix class that disables a GUI
+    component. However, <code>+View</code> can take a functional argument:
+
+    <pre><code>
+    (gui '(+Sgn +View +FixField) '(sum&gt; (: home obj)) 2 12) ) )
+    </code></pre>
+
+    This example is a snippet from the demo app included with the PicoLisp
+    distribution, in ord.l. The code produces a disabled text field that
+    displays the total order sum of the current order object. See also <a
+    href="refL.html#+Lock">+Lock</a>, <a href="refU.html#+Upd">+Upd</a>, <a
+    href="refI.html#+Init">+Init</a>.
+</dl>
+
+</body>
+</html>

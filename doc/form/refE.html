@@ -1,0 +1,77 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>E</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>E</h1>
+
+<dl>
+    <dt><a name="+Edit"><code>+Edit</code></a>
+    <dd>Lock/Edit button prefix class used to gain or release exclusive write
+    access to an object. See also <a href="refR.html#+Rid">+Rid</a>, <a
+    href="refF.html#+Force">+Force</a> and <a href="refT.html#+Tip">+Tip</a>.
+</dl>
+
+<dl>
+    <dt><a name="+E/R"><code>+E/R</code></a>
+    <dd>Connects GUI elements to database entities. Like its parent class,
+    <code>+/R</code>, <code>+E/R</code> takes a relation specification argument:
+
+    <pre><code>
+    (gui '(+E/R +TextField) '(text : home obj) 40 4)
+    </code></pre>
+
+    This example created a textarea, 40 x 4, and connects it to the 'text'-
+    property of the current form object. See also <a
+    href="refR.html#+/R">+/R</a>, <a href="../app.html#linkage">data
+    linkage</a>.
+</dl>
+
+<dl>
+    <dt><a name="editButton"><code>(editButton Able Exe)</code></a>
+    <dd>A function creating an "Edit" button. Takes one argument, "Able",
+    deciding if the button should be clickable or not and one optional
+    <code>Exe</code> argument that is run when clicking the button. This button
+    locks the form object and makes the form editable by the current user.
+    Another user trying to edit the same object at the same time will receive an
+    error message. Here is an example from the code running the PicoLisp wiki,
+    in doc.l.
+
+    <pre><code>
+    (editButton '(may Wiki) '(_newMup))
+    </code></pre>
+
+    <code>'(may Wiki)</code> makes sure that this page is only editable by users
+    having a permission called "Wiki" and <code>'(_newMup)</code> is a function
+    to be run when someone clicks the button. See also <a
+    href="refA.html#+AO">+AO</a>, <a href="refF.html#+Focus">+Focus</a>, <a
+    href="refE.html#+Edit">+Edit</a>, <a href="refB.html#+Button">+Button</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Enum"><code>+Enum</code></a>
+    <dd>A prefix taking a list of items (e.g. strings for a '+TextField') which
+    are mapped to sequential numbers.
+</dl>
+
+<dl>
+    <dt><a name="error"><code>(error Exe)</code></a>
+    <dd>Can be called in a button action to signal an error to the user. The
+    message is displayed near the offending field. See also <a
+    href="refB.html#+Button">+Button</a>.
+</dl>
+
+<dl>
+    <dt><a name="expires"><code>(expires)</code></a>
+    <dd><code>expires</code> shows when the current session expires. If
+    Javascript is enabled and <code>&lt;ping&gt;</code> is called in the GUI top
+    level, the session will never expire. In that case, this function is not
+    needed.
+</dl>
+
+</body>
+</html>

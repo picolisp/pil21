@@ -1,0 +1,422 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>C</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>C</h1>
+<dl>
+    <dt><a name="cancelButton"><code>(cancelButton)</code></a>
+    <dd>A cancel button. Uses the +Force and +Close prefix classes. See also <a
+    href="refF.html#+Force">+Force</a>, <a href="refC.html#+Close">+Close</a>,
+    <a href="refB.html#+Button">+Button</a>, <a href="refG.html#gui">gui</a>.
+</dl>
+
+<dl>
+    <dt><a name="change"><code>(change Msg Env Exe Exe)</code></a>
+    <dd>Workhorse function for '+UndoButton' and '+RedoButton'. When called in
+    some button action, or as a side-effect in a '+Chg' function or similar, it
+    maintains an undo- and a redo-stack for the current form. It takes:
+
+    <ul>
+        <li>A message to be displayed as a tooltip in the undo- and redo-button,
+        to inform the user what is being un- or redone in case that button
+        should be pressed. </li>
+        <li>An environment of variable bindings, to be pushed onto - and popped
+        from - the stacks, and to be used during the un-/redo operations. </li>
+        <li>A single 'exe' for *un-doing* in that environment.</li>
+        <li>And one or several 'exe's (i.e. a 'prg') for *doing* in that
+        environment.</li>
+    </ul>
+
+   Example:
+
+   <pre><code>
+   (gui '(+UndoButton))
+   (gui '(+RedoButton))
+   ...
+   (gui '(+Button) "Do something"
+      '(change "Some change action"
+          (env 'New (makeNewValue)  'Old (getCurrentValue))  # Build environment
+          (restoreValue Old)                                 # Undo-expression
+          (doSomething New) ) )                              # Do-expression
+   </code></pre>
+
+   When this button is pressed, 'doSomething' is executed with the results of
+   (makeNewValue) and (getCurrentValue). The tooltip of the undo-button will
+   show "Undo: 'Some change action'". The redo-stack is cleared and the
+   redo-button is disabled.
+   <p>If now the undo-button is pressed, 'undoSomething' is executed with the
+   saved results of (foo) and (bar). It should perform the opposite action of
+   'doSomething', effectively undoing the operation. The tooltip of the
+   redo-button will now show "Redo: 'Some change action'", and the tooltip of
+   the undo-button will show a possible previous undoable operation. Pressing
+   the redo-button will *do* the operation again, and so on.</p> See also <a
+   href="refU.html#+UndoButton">+UndoButton</a>, <a
+   href="refR.html#+RedoButton">+RedoButton</a>.
+</dl>
+
+<dl>
+    <dt><a name="choButton"><code>(choButton 'Exe)</code></a>
+    <dd>A button used to select or create an object of the same type as the one
+    currently displayed. See also <a href="refR.html#+Rid">+Rid</a>, <a
+    href="refT.html#+Tip">+Tip</a>, <a href="refB.html#+Button">+Button</a>, <a
+    href="refG.html#gui">gui</a>.
+</dl>
+
+<dl>
+    <dt><a name="chart"><code>(chart @)</code></a>
+    <dd>Returns the chart where the current field is, or any value accessible
+    from that chart by applying the 'get' algorithm.
+
+    <pre><code>
+    (chart) # chart
+    (chart 'data 1) # The first line (list) of the chart's data.
+    </code></pre>
+</dl>
+
+<dl>
+    <dt><a name="+Chg"><code>+Chg</code></a>
+    <dd>A prefix taking a function argument, which is called when the user
+    changes the value of a field. That function receives the modified value, and
+    may modify it again or perform side-effects with it like setting other
+    fields (accessible with 'field').
+</dl>
+
+<dl>
+    <dt><a name="+ChoButton"><code>+ChoButton</code></a>
+    <dd>A class corresponding to <code>(choButton 'Exe)</code>.
+    <code>+ChoButton</code> is quite a general class. It can be used to select,
+    or even do, anything. See also <a href="refC.html#choButton">choButton</a>,
+    <a href="refT.html#+Tiny">+Tiny</a>, <a href="refT.html#+Tip">+Tip</a>, <a
+    href="refB.html#+Button">+Button</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Choice"><code>+Choice</code></a>
+    <dd>Subclass of <code>+ChoButton</code>. Opens a <code>dialog</code> that
+    allows the user to choose anything from a list, which is dynamically
+    generated from the 'Exe' argument. See also <a
+    href="refC.html#+ChoButton">+ChoButton</a>, <a
+    href="refD.html#dialog">dialog</a>.
+</dl>
+
+<dl>
+    <dt><a name="cho"><code>(cho)</code></a>
+    <dd><code>cho</code> is a function that returns the number 16 if the
+    <code>diaform</code> is used as a normal form (i.e. not as a dialog) or 8 if
+    used in another context. It is typically used to show a different number of
+    rows in a chart when the same chart is used as a dialog compared to when it
+    is used on it's own. The following code fragment comes from the demo app
+    included in the PicoLisp distribution, in gui.l. Here we can see
+    <code>cho</code> being used to determine how many rows of data should be
+    created, as well as making sure scrolling the data goes along with the
+    number of rows.
+    <pre><code> . .
+     (do (cho)
+        (&lt;row&gt; (alternating)
+           (gui 1 '(+DstButton) Dst) (gui 2 '(+NumField)) (gui 3 '(+ObjView
+           +TextField) '(: nm)) (gui 4 '(+TextField)) (gui 5 '(+MailField)) (gui
+           6 '(+TextField)) (gui 7 '(+TextField)) (gui 8 '(+TelField)) (gui 9
+           '(+TelField)) ) ) )
+  (&lt;spread&gt;
+     (scroll (cho)) . .
+    </code></pre> See also <a
+     href="refD.html#diaform">diaform</a>.
+ </dl>
+
+<dl>
+    <dt><a name="choTtl"><code>(choTtl Ttl X . @)</code></a>
+    <dd><code>choTtl</code> is a utility function typically used to set the
+    title of a chart in a search dialog. The function combines a transient
+    symbol, a text string, with the number of objects of a given type in the
+    database. Here is an example from the demo app included in the PicoLisp
+    distribution, in gui.l.
+
+    <pre><code>
+    (choTtl ,"Customers/Suppliers" 'nr '+CuSu)
+    </code></pre>
+    
+    This example specifies an index, "...'nr '+CuSu)", and counts the number of
+    <code>+CuSu</code> objects in that index. The result is combined with
+    "Customers/Suppliers", setting the title of the data chart to, for example,
+    "3 Customers/Suppliers". It is also possible to specify only the class, "...
+    '+CuSu)". In that case the total number of entities of that class is used,
+    regardless of any index.
+</dl>
+
+<dl>
+    <dt><a name="choDlg"><code>(choDlg Dst Ttl Rel [Hook] [((+XyzField) ..) Exe
+    Able])</code></a>
+    <dd><code>choDlg</code>, "choose dialog" creates a dialog
+    that lets the user select or create an object, to be either jumped to (when
+    called as a form), or taken into the destination field (when called as a
+    dialog, see <a href="refD.html#+DstButton">+DstButton</a>). The following
+    example comes from the demo app included with the PicoLisp distribution, in
+    cusu.l. This file implements a form that handles objects of a class called
+    <code>+CuSu</code>, "CustomerSupplier". <code>+CuSu</code> is connected to
+    another class, <code>+Sal</code>, "Salutation". Using a <code>choDlg</code>
+    in cusu.l allows a user to add or change the salutation belonging to the
+    current object from the same GUI page used to edit other properties.
+    <pre><code> ,"Salutation" (choDlg 0 ,"Salutations" '(nm +Sal)) </code></pre>
+    This code creates a <code>choDlg</code> that presents objects of the class
+    <code>+Sal</code> using a <code>diaform</code>. Selecting an object in the
+    choose dialog will close the dialog and adopts the selected value as the new
+    salutation. See also <a href="refD.html#diaform">diaform</a>.
+</dl>
+
+<dl>
+   <dt><a name="+Close"><code>+Close</code></a>
+   <dd>A button prefix class which closes the current form if it is a dialog.
+   See also <a href="refD.html#dialog">dialog</a>, <a
+   href="refD.html#diaForm">diaForm</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Clr0"><code>+Clr0</code></a>
+    <dd>Prefix for a numeric field which maps zero to/from NIL.
+</dl>
+
+<dl>
+    <dt><a name="+Click"><code>+Click</code></a>
+    <dd>Class that can be used together with <code>+Auto</code> to automatically
+    click a button after a certain amount of time has passed. Strictly speaking,
+    <code>+Click</code> is not limited to <code>+Auto</code> buttons, but that
+    is the most common usage.
+
+    <pre><code>
+    (gui '(+Click +Auto +Button) 420 'This 1000 '(pop
+    *Throbber)
+       '(with (: home)
+          (for Col (: grid)
+             (for This Col
+                (let N # Count neighbors
+                   (cnt
+                      '((Dir) (get (Dir This) 'life)) (quote
+                         west east south north ((X) (south (west X))) ((X)
+                         (north (west X))) ((X) (south (east X))) ((X) (north
+                         (east X))) ) )
+                   (=: next # Next generation
+                      (if (: life)
+                         (&gt;= 3 N 2) (= N 3) ) ) ) ) )
+          (for Col (: grid) # Update
+             (for This Col
+                (=: life (: next)) ) ) ) )
+    </code></pre>
+    
+    See also <a href="refA.html#+Auto">+Auto</a>, <a
+    href="refB.html#+Button">+Button</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Chk"><code>+Chk</code></a>
+    <dd>Prefix class used to implement on-the-fly field validation. For example,
+    the following code uses <code>+Chk</code> in combination with the built-in
+    validation from <code>+NumField</code> to only accept numbers not bigger
+    than 9.
+
+    <pre><code>
+    (app)
+
+    (action
+       (html 0 "+Chk" "@lib.css" NIL
+          (form NIL
+             (gui '(+Chk +NumField)
+                '(or
+                   (extra)
+                   (and (&gt; (val&gt; This) 9) "Number too big") )
+                12 )
+             (gui '(+JS +Button) "Print"
+                '(msg (val&gt; (field -1))) ) ) ) )
+    </code></pre>
+</dl>
+
+<dl>
+    <dt><a name="+Chart"><code>+Chart</code></a>
+    <dd>Charts are an important
+    part of the GUI framework. The basic idea is to provide a separation between
+    the way two-dimensional data (i.e. a tabular data, a list of lists) is
+    presented in the gui and the way it is stored internally. Charts make it
+    possible to display the data in rows and columns, scroll the data and
+    connect it to gui components. The first argument to a <code>+Chart</code> is
+    a number:
+    
+    <pre><code>
+    (gui (+Chart) 2)
+    (&lt;table&gt; NIL NIL '((NIL "Text") (NIL "Number"))
+       (do 1
+          (&lt;row&gt; NIL
+            (gui 1 '(+TextField) 20)
+            (gui 2 '(+NumField) 10) ) ) )
+    </code></pre>
+    
+    This number tells the chart how many columns of data to
+    expect. As can be seen in the code snippet above, the number '2' matches the
+    number of gui components in the table. To make it possible for a
+    <code>+Chart</code> to display data in a representation that is different
+    from how the date is stored, you may pass two functions to a
+    <code>+Chart</code>. The functions in question are a 'put' and a 'get'
+    function, and they are responsible for 'translating' the data format between
+    the gui and the internal representation. The first function is a 'put'-
+    function that puts data into the GUI components from the internal
+    representation and the second one is a 'get'- function gets data from the
+    GUI components into the internal representation.
+    
+    
+    <pre><code>
+    (gui '(+E/R +Chart) '(bin : home obj) 3
+       '((This) (list (: nm)))                    # 'Put'- function
+       '((L D)                                    # 'Get'- function
+          (and D (put!&gt; D 'nm (car L)))
+          D ) )
+    (&lt;table&gt; NIL "Binaries" '((NIL "Name"))
+       (do 6
+          (&lt;row&gt; NIL
+             (gui 1 '(+Able +TextField) '(curr) 30)
+             (gui 2 '(+DelRowButton))
+             (gui 3 '(+BubbleButton)) ) ) )
+    </code></pre>
+    
+    All GUI components that follow a chart and that have a number
+    as their first argument go into that chart. Typically, the components are
+    arranged in a <code>&lt;table&gt;</code> but this is not a requirement. Any
+    suitable layout works just as well. See also <a
+    href="../app.html#charts">charts</a>, <a
+    href="refC.html#+Chart1">+Chart1</a>, <a
+    href="refQ.html#+QueryChart">+QueryChart</a> and <a
+    href="refG.html#gui">gui</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Chart1"><code>+Chart1</code></a>
+    <dd>+Chart1 is a shortcut to +Chart, with the 'put'-function predefined to
+    'list' and the 'get'- function predefined to 'car'. This way, +Chart1 can
+    directly map a one-dimensional list to a table.
+    
+    <pre><code>
+    (gui '(+Var +Chart1) (: mup -3) 3)
+    (&lt;table&gt; 'chart NIL '((NIL "Media"))
+       (do 3
+          (&lt;row&gt; (alternating)
+             (gui 1 '(+ObjView +TextField) '(: nm)) # Binary name
+             (gui 2 '(+DelRowButton)) (gui 3 '(+BubbleButton)) ) )
+       (&lt;row&gt; NIL (scroll 3 T)) )
+    </code></pre>
+    
+    The example above comes from the code running the PicoLisp wiki, in gui.l.
+    In this code, a <code>+Chart1</code> handles the data provided by
+    <code>(: mup -3)</code> and the chart expects 3 columns. 'mup'
+    is setup a little earlier in the code:
+    
+    <pre><code>
+    (=: mup
+         (list
+            (and (: obj mup) (in (blob @ 'txt) (till NIL T))) # txt
+            NIL # sum
+            NIL # min
+            (: obj mup bin) ) )
+    </code></pre>
+    
+    'mup' is a list here, and <code>(: mup -3)</code> picks
+    <code>(: obj mup bin)</code> from there. 'list' is applied as the 'put'-
+    function, resulting in a list containing what is stored in the 'bin'
+    property of the markup contained in the current object. In the table
+    displaying the data, a combination of +ObjView and +TextField is used to
+    create a link to the object: <code>(gui 1 '(+ObjView +TextField) '(:
+    nm))</code> See also <a href="refC.html#+Chart">+Chart</a>, <a
+    href="../app.html#charts">charts</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Checkbox"><code>+Checkbox</code></a>
+    <dd>A checkbox component,
+    example:
+    
+    <pre><code>
+    ,"Hotel?" (gui '(+E/R +Checkbox) '(htl : home obj))
+    </code></pre>
+    
+    <code>+Checkbox</code> maps to a bool (T or NIL). In the example above, the
+    'htl' property of the current object will contain T or NIL, depending on
+    whether the checkbox in the gui has been ticked or not. See also <a
+    href="refG.html#gui">gui</a>, <a href="refF.html#+field">+field</a> and <a
+    href="../app.html#inputFields">input fields</a>.
+</dl>
+
+<dl>
+    <dt><a name="+ClassField"><code>+ClassField</code></a>
+    <dd>A <code>+ClassField</code> is used to display and change the class of an
+    object
+    .
+    <pre><code>
+    (gui '(+ClassField) '(: home obj) '(("Male" +Man) ("Female" +Woman)))
+    </code></pre>
+    
+    The example above displays and changes a
+    person's sex from male to female and vice versa. See also <a
+    href="refM.html#+Map">+Map</a>, <a
+    href="refT.html#+TextField">+TextField</a>.
+</dl>
+
+<dl>
+    <dt><a name="cloneButton"><code>cloneButton</code></a>
+    <dd>This function creates a button used to clone, make a copy of the object
+    in the current form. To customise the copy the form object, or it's class,
+    may override the <code>clone&gt;</code>- method (inherited from <code>+Entity</code>).
+    See also <a href="refR.html#+Rid">+Rid</a>, <a href="refA.html#+Able">+Able</a>,
+    <a href="refT.html#+Tip">+Tip</a> and <a
+    href="refB.html#+Button">+Button</a>.
+</dl>
+
+<dl>
+    <dt><a name="closeButton"><code>(closeButton Lbl 'Exe)</code></a>
+    <dd>A close button. 'Exe' runs when the button is pressed and 'Lbl' is the button
+    label. See also <a href="refR.html#+Rid">+Rid</a>, <a
+    href="refC.html#+Close">+Close</a>, <a href="refB.html#+Button">+Button</a>,
+    <a href="refG.html#gui">gui</a>.
+</dl>
+
+
+<dl>
+    <dt><a name="+ClrButton"><code>+ClrButton</code></a>
+    <dd>Clears all input fields. See also <a href="refR.html#resetButton">resetButton</a>,
+    <a href="refJ.html#+JS">+JS</a>, <a href="refT.html#+Tip">+Tip</a> and
+    <a href="refB.html#+Button">+Button</a>.
+</dl>
+
+<dl>
+   <dt><a name="+Cue"><code>+Cue</code></a>
+   <dd>Prefix class used to initialize fields with a help text, hint, about what
+   is supposed to be entered in the field. Displays the argument value within
+   angular brackets if the current value of the field is NIL. Example:
+   
+   <pre><code>
+   (gui '(+Cue +TextField) "Please enter some text here" 30)
+   </code></pre>
+   
+   Causes an empty field to display "&lt;Please enter some text
+   here&gt;".
+</dl>
+
+<dl>
+    <dt><a name="curr"><code>(curr @)</code></a>
+    <dd>Returns the data in the current row of the current chart,
+    optionally applying the 'get' algorithm to
+    any following arguments.
+    
+    <pre><code>
+    ...
+    (&lt;table&gt; 'chart NIL
+       '((NIL ,"File") (NIL ,"Delete")) (do 2
+          (&lt;row&gt; NIL
+             (gui 1 '(+DocObj +TextField) (curr)) # (gui 2 '(+DelRowButton)) ) )
+             )
+    ...
+    </code></pre>
+</dl>
+
+</body>
+</html>

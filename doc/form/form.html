@@ -1,0 +1,402 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>PicoLisp Form Library</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+<a href="mailto:mattias@inogu.se">mattias@inogu.se</a>
+<p align=right>
+<i>Perfection is attained</i><br>
+<i>not when there is nothing left to add</i><br>
+<i>but when there is nothing left to take away</i><br>
+<i>(Antoine de Saint-Exupéry)</i><br>
+
+<h1>The PicoLisp Form Library</h1>
+
+<p align=right>(c) Software Lab. Mattias Sundblad
+
+<p>This document describes the form library included with the <a
+href="http://software-lab.de/down.html">PicoLisp</a> system. <p>The purpose of
+this document is to go into the form library in more depth and hopefully supply
+an overview of the various components involved. <p>This document builds upon the
+information provided in <a href="../app.html" target="upper">Application
+Dev.</a> Please start by going through this section of the documentation.
+<p>Also remember to take a look at the <a href="../tut.html">PicoLisp
+Tutorial</a> for an explanation of some aspects of PicoLisp, and scan through
+the list of <a href="../faq.html">Frequently Asked Questions (FAQ)</a>.
+
+<p><hr> <h2><a name="usage">A typical example</a></h2>
+
+<p>A typical usage of forms and form components can be found in the example
+application included with the PicoLisp distribution. This application has a
+number of search forms in app/gui.l and forms to display and edit objects, for
+example app/cusu.l.
+
+<p>Let's have a look at app/cusu.l. This file displays and allows you to edit
+objects of the class +Cusu (Customer/ Supplier, defined in app/er.l). The
+beginning of this file looks like this:
+
+<pre><code>
+########################################################################
+(must "Customer/Supplier" Customer)
+
+(menu ,"Customer/Supplier"
+   (idForm ,"Customer/Supplier" '(choCuSu) 'nr '+CuSu T '(may Delete)
+      '((: nr) " -- " (: nm))
+      ....
+########################################################################
+</code></pre>
+
+<p>The first line checks whether the user has the right permissions to access
+this page. After that a call to a function called 'menu' follows. This function
+is defined in app/gui.l and creates the menu and basic page layout of this
+application. Nested within the call to 'menu' is our first, direct encounter
+with a form function. In this case it is a call to 'idForm'. Let us look a
+little closer at this call.
+
+<p>The first parameter, "Customer/Supplier", is used in the form heading.
+Parameter number two is interesting. '(choCuSu) creates a dialog that makes is
+possible to search for an existing object to display/ edit, or create a new one.
+The function 'choCuSu'is defined in app/gui.l and uses another form function,
+called 'diaForm'. An abbreviated version is shown below.
+
+<pre><code>
+########################################################################
+(de choCuSu (Dst)
+   (diaform '(Dst)
+      (&lt;grid&gt; "--.-.-."
+         # Form components
+         ... )
+      (gui 'query '(+QueryChart) (cho)
+         # Pilog query
+         9
+         '((This) (list This (: nr) This (: nm2) (: em) (: plz) (: ort) (: tel) (: mob))) )
+      (&lt;table&gt; 'chart (choTtl ,"Customers/Suppliers" 'nr '+CuSu)
+         # Table headers
+         (do (cho)
+            (&lt;row&gt; (alternating)
+               (gui 1 '(+DstButton) Dst)
+               ...
+               (gui 9 '(+TelField)) ) ) )
+      (&lt;spread&gt;
+         (scroll (cho))
+         (newButton T Dst '(+CuSu) ...)
+         (cancelButton) ) ) )
+########################################################################
+</code></pre>
+
+<p>As can be seen in app/gui.l, the search dialogs contain a lot of
+functionality. This is quite typical. 'choCuSu' starts off by calling 'diaform'.
+This function is used when we want a form to behave in a similar way to a dialog
+(See <a href="../app.html#dialogs">Alerts and Dialogs</a> for a description of
+how dialogs work in the framework). The first part of our diaform is a 'grid'
+containing some form components. See <a href="../app.html">application
+development</a> for a more thorough description of form components.
+
+<p>The grid is followed by another gui component, this time a +QueryChart. The
+chart is an interesting, and very useful concept. The basic idea is to separate
+how data is presented in the gui from the internal representation. See <a
+href="../app.html#charts">charts</a> for more information.
+
+<p>The +QueryChart has a Piloq query used to fetch the data we want to show from
+the database. This part is followed by a number, in this case 9, which tells the
+Chart how many columns of data to expect. The last part is a function that takes
+care of putting data into the chart gui from the dataset retrieved by the Pilog
+query.
+
+<p>Finally, a table is used to present the result. The number of columns in this
+table must match the number mentioned above, the one that tells the chart how
+many columns to expect.
+
+<p>What is described in the preceding section is a common way of structuring
+applications in PicoLisp. The objects are displayed and edited using idForms,
+which use diaforms to select or create new objects to view or edit. Please take
+some time to study the demo app included with the distribution. Another good
+idea is to start experimenting with some small application of your own. It is a
+very good way to get acquainted with the language and framework, and I highly
+recommend it! One way to do that would be to start making changes to the demo
+application. Just copy it to a directory of your choice and start exploring. It
+really is a lot of fun!
+
+<p><hr> <h2><a name="fun">Form Library Function Reference</a></h2>
+
+<p>This section provides a reference manual for the form library functions. See
+the thematically grouped list of indexes below.
+
+<p>Though PicoLisp is a dynamically typed language (resolved at runtime, as
+opposed to statically (compile-time) typed languages), many functions can only
+accept and/or return a certain set of data types. For each function, the
+expected argument types and return values are described with the following
+abbreviations:
+
+<p>The primary data types:
+
+<p><ul>
+<li><code>num</code> - Number
+<li><code>sym</code> - Symbol
+<li><code>lst</code> - List
+</ul>
+
+<p>Other (derived) data types
+
+<p><ul>
+<li><code>any</code> - Anything: Any data type
+<li><code>flg</code> - Flag: Boolean value (<code>NIL</code> or non-<code>NIL</code>)
+<li><code>cnt</code> - A count or a small number
+<li><code>dat</code> - Date: Days, starting first of March of the year 0 A.D.
+<li><code>tim</code> - Time: Seconds since midnight
+<li><code>obj</code> - Object/Class: A symbol with methods and/or classes
+<li><code>var</code> - Variable: Either a symbol or a cons pair
+<li><code>exe</code> - Executable: An executable expression (<code>eval</code>)
+<li><code>prg</code> - Prog-Body: A list of executable expressions (<code>run</code>)
+<li><code>fun</code> - Function: Either a number (code-pointer), a symbol (message) or a list (lambda)
+<li><code>msg</code> - Message: A symbol sent to an object (to invoke a method)
+<li><code>cls</code> - Class: A symbol defined as an object's class
+<li><code>typ</code> - Type: A list of <code>cls</code> symbols
+<li><code>pat</code> - Pattern: A symbol whose name starts with an at-mark "<code>@</code>"
+<li><code>pid</code> - Process ID: A number, the ID of a Unix process
+<li><code>tree</code> - Database index tree specification
+<li><code>hook</code> - Database hook object
+</ul>
+
+<p>Arguments evaluated by the function (depending on the context) are quoted
+(prefixed with the single quote character "<code>'</code>").
+
+<p>
+<a href="refA.html">A</a>
+<a href="refB.html">B</a>
+<a href="refC.html">C</a>
+<a href="refD.html">D</a>
+<a href="refE.html">E</a>
+<a href="refF.html">F</a>
+<a href="refG.html">G</a>
+<a href="refH.html">H</a>
+<a href="refI.html">I</a>
+<a href="refJ.html">J</a>
+<a href="refL.html">L</a>
+<a href="refM.html">M</a>
+<a href="refN.html">N</a>
+<a href="refO.html">O</a>
+<a href="refP.html">P</a>
+<a href="refQ.html">Q</a>
+<a href="refR.html">R</a>
+<a href="refS.html">S</a>
+<a href="refT.html">T</a>
+<a href="refU.html">U</a>
+<a href="refV.html">V</a>
+<a href="refY.html">Y</a>
+
+<p><span id="sortBtnHome"></span><dl>
+
+<dt>Forms
+<dd><code>
+   <a href="refD.html#diaform">diaform</a>
+   <a href="refF.html#form">form</a>
+   <a href="refI.html#idForm">idForm</a>
+</code>
+
+<dt>Utility functions
+<dd><code>
+    <a href="refA.html#action">action</a>
+    <a href="refA.html#alternating">alternating</a>
+    <a href="refC.html#change">change</a>
+    <a href="refC.html#chart">chart</a>
+    <a href="refC.html#cho">cho</a>
+    <a href="refC.html#choTtl">choTtl</a>
+    <a href="refC.html#curr">curr</a>
+    <a href="refD.html#disable">disable</a>
+    <a href="refE.html#error">error</a>
+    <a href="refE.html#expires">expires</a>
+    <a href="refF.html#field">field</a>
+    <a href="refI.html#&lt;id&gt;">&lt;id&gt;</a>
+    <a href="refN.html#newUrl">newUrl</a>
+    <a href="refP.html#prev">prev</a>
+    <a href="refR.html#row">row</a>
+    <a href="refT.html#*Throbber">*Throbber</a>
+    <a href="refU.html#url">url</a>
+</code>
+
+<dt>Button functions
+<dd><code>
+   <a href="refS.html#saveButton">saveButton</a>
+   <a href="refC.html#closeButton">closeButton</a>
+   <a href="refO.html#okButton">okButton</a>
+   <a href="refC.html#cancelButton">cancelButton</a>
+   <a href="refC.html#choButton">choButton</a>
+   <a href="refD.html#delButton">delButton</a>
+   <a href="refY.html#yesButton">yesButton</a>
+   <a href="refN.html#noButton">noButton</a>
+   <a href="refE.html#editButton">editButton</a>
+   <a href="refS.html#searchButton">searchButton</a>
+   <a href="refR.html#resetButton">resetButton</a>
+   <a href="refN.html#newButton">newButton</a>
+   <a href="refC.html#cloneButton">cloneButton</a>
+</code>
+
+<dt>Alerts and dialogs
+<dd><code>
+   <a href="refD.html#dialog">dialog</a>
+   <a href="refA.html#alert">alert</a>
+   <a href="refN.html#note">note</a>
+   <a href="refA.html#ask">ask</a>
+   <a href="refC.html#choDlg">choDlg</a>
+</code>
+
+<dt>Form field classes
+<dd><code>
+    <a href="refA.html#+Auto">+Auto</a>
+    <a href="refB.html#+Button">+Button</a>
+    <a href="refB.html#+BubbleButton">+BubbleButton</a>
+    <a href="refC.html#+ClrButton">+ClrButton</a>
+    <a href="refD.html#+DelRowButton">+DelRowButton</a>
+    <a href="refD.html#+DnButton">+DnButton</a>
+    <a href="refG.html#+GoButton">+GoButton</a>
+    <a href="refU.html#+UpButton">+UpButton</a>
+    <a href="refD.html#+Drop">+Drop</a>
+    <a href="refJ.html#+JS">+JS</a>
+    <a href="refO.html#+OnClick">+OnClick</a>
+    <a href="refS.html#+ShowButton">+ShowButton</a>
+    <a href="refC.html#+Checkbox">+Checkbox</a>
+    <a href="refR.html#+Radio">+Radio</a>
+    <a href="refT.html#+TextField">+TextField</a>
+    <a href="refU.html#+UndoButton">+UndoButton</a>
+    <a href="refL.html#+LinesField">+LinesField</a>
+    <a href="refL.html#+ListTextField">+ListTextField</a>
+    <a href="refP.html#+PwField">+PwField</a>
+    <a href="refU.html#+UpField">+UpField</a>
+    <a href="refR.html#+RgbPicker">+RgbPicker</a>
+    <a href="refR.html#+RedoButton">+RedoButton</a>
+    <a href="refS.html#+SymField">+SymField</a>
+    <a href="refN.html#+NumField">+NumField</a>
+    <a href="refF.html#+FixField">+FixField</a>
+    <a href="refA.html#+AtomField">+AtomField</a>
+    <a href="refD.html#+DateField">+DateField</a>
+    <a href="refT.html#+TimeField">+TimeField</a>
+    <a href="refI.html#+Img">+Img</a>
+    <a href="refI.html#+Icon">+Icon</a>
+    <a href="refF.html#+FileField">+FileField</a>
+    <a href="refU.html#+Url">+Url</a>
+    <a href="refH.html#+HttpField">+HttpField</a>
+    <a href="refM.html#+MailField">+MailField</a>
+    <a href="refT.html#+TelField">+TelField</a>
+    <a href="refS.html#+SexField">+SexField</a>
+    <a href="refJ.html#+JsField">+JsField</a>
+    <a href="refB.html#+BlobField">+BlobField</a>
+    <a href="refC.html#+ClassField">+ClassField</a>
+    <a href="refD.html#+DstButton">+DstButton</a>
+    <a href="refC.html#+ChoButton">+ChoButton</a>
+    <a href="refC.html#+Choice">+Choice</a>
+    <a href="refP.html#+PickButton">+PickButton</a>
+    <a href="refI.html#+InsRowButton">+InsRowButton</a> 
+</code>
+
+<dt>Charts 
+<dd><code>
+    <a href="refC.html#+Chart">+Chart</a>
+    <a href="refC.html#+Chart1">+Chart1</a>
+    <a href="refQ.html#+QueryChart">+QueryChart</a>
+</code>
+
+<dt>Entity/ Relationship classes
+<dd><code>
+    <a href="refR.html#+/R">+/R</a>
+    <a href="refE.html#+E/R">+E/R</a>
+    <a href="refS.html#+SubE/R">+SubE/R</a>
+</code>
+
+<dt>Base classes
+<dd><code>
+    <a href="refG.html#+gui">+gui</a>
+    <a href="refF.html#+field">+field</a>
+    <a href="refO.html#+obj">+obj</a>
+    <a href="refH.html#+hint">+hint</a>
+</code>
+
+<dt>Prefix classes
+<dd><code>
+    <a href="refA.html#+Align">+Align</a>
+    <a href="refA.html#+AO">+AO</a>
+    <a href="refC.html#+Chg">+Chg</a>
+    <a href="refC.html#+Clr0">+Clr0</a>
+    <a href="refD.html#+Dflt">+Dflt</a>
+    <a href="refE.html#+Edit">+Edit</a>
+    <a href="refE.html#+Enum">+Enum</a>
+    <a href="refF.html#+Force">+Force</a>
+    <a href="refO.html#+Obj">+Obj</a>
+    <a href="refO.html#+ObjView">+ObjView</a>
+    <a href="refO.html#+ObjVal">+ObjVal</a>
+    <a href="refV.html#+Var">+Var</a>
+    <a href="refC.html#+Cue">+Cue</a>
+    <a href="refT.html#+Trim">+Trim</a>
+    <a href="refU.html#+Uppc">+Uppc</a>
+    <a href="refL.html#+Lowc">+Lowc</a>
+    <a href="refR.html#+Rid">+Rid</a>
+    <a href="refS.html#+Set">+Set</a>
+    <a href="refS.html#+Sgn">+Sgn</a>
+    <a href="refV.html#+Val">+Val</a>
+    <a href="refF.html#+Fmt">+Fmt</a>
+    <a href="refA.html#+Able">+Able</a>
+    <a href="refL.html#+Lock">+Lock</a>
+    <a href="refV.html#+View">+View</a>
+    <a href="refU.html#+Upd">+Upd</a>
+    <a href="refC.html#+Chk">+Chk</a>
+    <a href="refL.html#+Limit">+Limit</a>
+    <a href="refI.html#+Init">+Init</a>
+    <a href="refM.html#+Map">+Map</a>
+    <a href="refT.html#+Tip">+Tip</a>
+    <a href="refF.html#+Focus">+Focus</a>
+    <a href="refM.html#+Mono">+Mono</a>
+    <a href="refD.html#+DbHint">+DbHint</a>
+    <a href="refC.html#+Close">+Close</a>
+    <a href="refC.html#+Click">+Click</a>
+</code>
+
+<dt>Styles and layouts
+<dd><code>
+    <a href="refS.html#+Style">+Style</a>
+    <a href="refT.html#+Tiny">+Tiny</a>
+</code>
+
+</dl>
+
+<p><hr>
+<h2><a name="down">Download</a></h2>
+
+<p>The <code>PicoLisp</code> system can be downloaded from the
+<a href="http://software-lab.de/down.html">PicoLisp Download</a> page.
+
+<script type="text/javascript">
+var sortBtn;
+
+if (document.querySelectorAll) {
+	sortBtn = document.createElement("input");
+	sortBtn.setAttribute("type", "button");
+	sortBtn.setAttribute("onclick", "sortFunWords()");
+	sortBtn.value = "Sort Words Alphabetically";
+	document.getElementById("sortBtnHome").appendChild(sortBtn);
+};
+
+function sortFunWords() {
+	var dls = document.querySelectorAll("dl"), funDl = dls[dls.length-1];
+	var cats = funDl.querySelectorAll("dd code");
+	for (var c=0; c<cats.length; c++) {
+		var aElems = cats[c].querySelectorAll("a"), aArr = [];
+		for (var i=0; i<aElems.length; i++) { aArr.push(aElems[i]); }
+		aArr.sort(function(a,b) { return (a.innerHTML < b.innerHTML) ? -1 : 1; });
+		var dd = cats[c].parentNode;
+		dd.removeChild(cats[c]);
+		var newCode = document.createElement("code");
+		dd.appendChild(newCode);
+		for (var i=0; i<aArr.length; i++) {
+			newCode.appendChild(aArr[i]);
+			newCode.appendChild(document.createTextNode(" "));
+		}
+	}
+	sortBtn.setAttribute("disabled", "disabled");
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>O</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>O</h1>
+
+<dl>
+    <dt><a name="+obj"><code>+obj</code></a>
+    <dd><code>+obj</code> is a base class used to turn a DB object into a first
+    class GUI item. See <a href="refO.html#+Obj">+Obj</a>, <a
+    href="refO.html#+ObjView">+ObjView</a> and <a
+    href="refO.html#+ObjVal">+ObjVal</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Obj"><code>+Obj</code></a>
+    <dd>Holds an object, like a '+NumField' holds (i.e. converts, checks etc. )
+    a number or a '+DateField' holds a date and so on. This way, a DB object
+    becomes a first class GUI item just like the primitives string, number etc.
+    In addition, <code>+Obj</code>supplies suggestions from the database, using
+    <code>dbHint</code>.
+
+    <pre><code>
+    (gui '(+E/R +Obj +TextField) '(pa : home obj) '(nm +Man) 30)
+    </code></pre>
+
+    Here, the <code>+TextField</code> is connected to the 'pa'- property of the
+    current form object. Since we are using <code>+Obj</code> in combination
+    with <code>+TextField</code>, the database will suggest names from the 'nm'-
+    property of the class <code>+Man</code>. See also <a
+    href="refN.html#+NumField">+NumField</a>, <a
+    href="refD.html#+DateField">+DateField</a>, <a
+    href="refD.html#dbHint">dbHint</a>, <a href="refH.html#+hint">+hint</a>, <a
+    href="refO.html#+obj">+obj</a>.
+</dl>
+
+<dl>
+    <dt><a name="+ObjView"><code>+ObjView</code></a>
+    <dd>Similar to <code>+Obj</code>, but not editable (view-only). Therefore it
+    is free to display an arbitrary attribute of an object, or even the result
+    of an arbitrary formatting expression, while still allowing to click on it
+    and jump to the object's GUI form, as determined by the url&gt;- method (or
+    a custom method supplied as an optional argument to <code>+ObjView</code>.
+    Such an optional method is accepted by all subclasses of <code>+obj</code>).
+    A common use of <code>+ObjView</code> is when presenting data in a
+    <code>chart</code>. Given the following 'put'- function:
+
+    <pre><code>
+    '((This) (list This This (: pa) (: ma) (: mate) (: job) (: dat)))
+    </code></pre>
+
+    The data can be displayed with the following table:
+    
+    <pre><code>
+      (&lt;table&gt; 'chart NIL
+         '((btn) (NIL "Name") (NIL "Father") (NIL "Mother") (NIL "Partner") (NIL "Occupation") (NIL "born"))
+         (do (cho)
+            (&lt;row&gt; (alternating)
+               (gui 1 '(+DstButton) Dst)
+               (gui 2 '(+ObjView +TextField) '(: nm))
+               (gui 3 '(+ObjView +TextField) '(: nm))
+               (gui 4 '(+ObjView +TextField) '(: nm))
+               (gui 5 '(+ObjView +TextField) '(: nm))
+               (gui 6 '(+TextField))
+               (gui 7 '(+DateField)) ) ) )
+    </code></pre>
+
+    Columns 2, 3 and 4 use <code>+ObjView</code> to display the name of the 'pa',
+    'ma' and 'mate' relations of the current object respectively. See also <a
+    href="refO.html#+Obj">+Obj</a>, <a href="refO.html#+obj">+obj</a>.
+</dl>
+
+<dl>
+    <dt><a name="+ObjVal"><code>+ObjVal</code></a>
+    <dd>Like <code>+Obj</code>, but automatically creates a new object if one
+    does not exist and an attribute value is entered into a field. See also <a
+    href="refO.html#+Obj">+Obj</a>, <a href="refO.html#+obj">+obj</a>.
+</dl>
+
+
+<dl>
+    <dt><a name="+OnClick"><code>+OnClick</code></a>
+    <dd>A prefix class used in combination with +Button. +OnClick takes
+    javascript code as an argument. This code is then executed by the browser
+    when the button is clicked. A short example would look like this:
+
+    <pre><code>
+    (gui '(+OnClick +Button) "alert('OK')" "Alert") 
+    </code></pre>
+
+    The <a href="http://picolisp.com">PicoLisp wiki</a> includes a <a
+    href="http://picolisp.com/wiki/?OnClickButton">good article</a> that
+    explains +OnClick in depth. See also <a href="refB.html#+Button">+Button</a>
+    and <a href="refG.html#gui">gui</a>.
+</dl>
+
+<dl>
+    <dt><a name="okButton"><code>(okButton 'Exe)</code></a>
+    <dd>A button with the label "Ok". If 'Exe' is passed in, the button uses the
+    prefix classes +Force and +Close, otherwise only +Close is used. See also <a
+    href="refF.html#+Force">+Force</a>, <a href="refC.html#+Close">+Close</a>,
+    <a href="refB.html#+Button">+Button</a> and <a href="refG.html#gui">gui</a>.
+</dl>
+
+</body>
+</html>

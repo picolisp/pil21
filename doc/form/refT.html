@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>T</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>T</h1>
+<dl>
+    <dt><a name="+TextField"><code>+TextField</code></a>
+    <dd>Apart from it's usage as an input field, +TextField is used as the basis
+    for a number of other components. The actual appearance depends on the
+    arguments supplied. Without any arguments, plain HTML text is created:
+
+    <pre><code>
+    (gui '(+TextField))
+    </code></pre>
+    
+    When supplied with a single numerical argument, a normal text field is
+    created:
+    
+    <pre><code>
+    (gui '(+TextField) 10)
+    </code></pre>
+    
+    If two numerical arguments are provided, a text area is created:
+    
+    <pre><code>
+    (gui '(+TextField) 10 4)
+    </code></pre>
+    
+    If the argument is a list of values, a drop-down selection is created:
+    
+    <pre><code>
+    (gui '(+TextField) '("Value 1" "Value 2" "Value 3"))
+    </code></pre>
+    
+    A string can be passed in as well. This will be used as a label:
+    
+    <pre><code>
+    (gui '(+TextField) 10 "Text field")
+    (gui '(+TextField) 10 4 "Text area")
+    (gui '(+TextField) '("Value 1" "Value 2" "Value 3") "Selection")
+    </code></pre>
+    
+    See also <a href="refG.html#gui">gui</a>, <a
+    href="refF.html#+field">+field</a> and <a
+    href="../app.html#inputFields">input fields</a>.
+</dl>
+
+<dl>
+    <dt><a name="*Throbber"><code>*Throbber</code></a>
+    <dd>A list of strings, used to provide an animated label form
+    <code>+Auto</code> buttons.
+
+    <pre><code>
+    (gui '(+Click +Auto +Button) 420 'This 1000 '(pop *Throbber)
+       '(...) )
+    </code></pre>
+    
+    See also <a href="refC.html#+Click">+Click</a>, <a
+    href="refA.html#+Auto">+Auto</a>, <a href="refB.html#+Button">+Button</a>.
+</dl>
+
+<dl>
+    <dt><a name="+TimeField"><code>+TimeField</code></a>
+    <dd>+TimeField accepts and returns a time value. An error is issued if the
+    input can not be converted to a time value.
+
+    <pre><code>
+    (gui '(+TimeField) 8)
+    </code></pre>
+
+    A +TimeField with the width set to '8', as in the example above, displays
+    time in the format HH:MM:SS. If the width is set to '5' instead, time will
+    be displayed using the format HH:MM. See also <a
+    href="refT.html#+TextField">+TextField</a>, <a
+    href="refD.html#+DateField">+DateField</a>, <a
+    href="refT.html#time">time</a> and <a href="../app.html#timeDateFields">Time
+    & Date</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Tiny"><code>+Tiny</code></a>
+    <dd><code>+Tiny</code> adds a css class, "tiny", and is often used when
+    creating buttons. The effect when using the css provided with the framework
+    is to produce a component with a smaller size.
+
+    <pre><code>
+    (class +PickButton +Tiny +Tip +Button)
+    </code></pre>
+</dl>
+
+<dl>
+    <dt><a name="+TelField"><code>+TelField</code></a>
+    <dd>+TelField handles telephone numbers, displays an error if the input is
+    not a valid telephone number according to the current locale.
+
+    <pre><code>
+    ,"Mobile" (gui '(+E/R +TelField) '(mob : home obj) 40)
+    </code></pre>
+
+    See also <a href="refU.html#+Url">+Url</a>, <a
+    href="refH.html#+HttpField">+HttpField</a>, <a
+    href="refM.html#+MailField">+MailField</a>, <a
+    href="refT.html#+TextField">+TextField</a> and <a
+    href="../app.html#telFields">Telephone numbers</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Tip"><code>+Tip</code></a>
+    <dd><code>+Tip</code> adds a tooltip text shown when hovering the mouse
+    pointer over the element where this prefix class is added. Controls the
+    "title"- attribute of the generated HTML.
+
+    <pre><code>
+    (gui '(+Tip +TextField) "Tooltip text shown on mouse-over" 30)
+    </code></pre>
+</dl>
+
+<dl>
+    <dt><a name="+Trim"><code>+Trim</code></a>  
+    <dd>Prefix class that trims trailing whitespace.
+    <pre><code>
+    "Name" (gui '(+Trim +TextField) 30)
+    </code></pre>
+</dl>
+
+</body>
+</html>

@@ -1,0 +1,217 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>D</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>D</h1>
+
+<dl>
+    <dt><a name="+DbHint"><code>+DbHint</code></a>
+    <dd><code>+DbHint</code> supplies autocomplete suggestions from the database.
+    
+    <pre><code>
+    (gui 'nam '(+Var +DbHint +TextField) '*UsrNam '(nam +User) 30)
+    </code></pre>
+    
+    This example shows a <code>+TextField</code> that has been extended with two
+    classes, <code>+Var</code> and <code>+DbHint</code>. <code>+Var</code>
+    connects the field to a variable and <code>+DbHint</code> fetches
+    autocomplete suggestions from the database. As you can see,
+    <code>+DbHint</code> is given the argument <code>'(nam +User)</code>. This
+    tells it to fetch the property "nam" from the class "+User". See also <a
+    href="refH.html#+hint">+hint</a>, <a href="refV.html#+Var">+Var</a> and <a
+    href="refT.html#+TextField">+TextField</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Dflt"><code>+Dflt</code></a>
+    <dd>A prefix to specify a default value for a field. This is different from
+    '+Init' which can be overwritten with an empty value (NIL). A '+Dflt' field
+    will never contain NIL (unless the default value itself evaluates to NIL).
+    See also <a href="refI.html#+Init">+Init</a>.
+</dl>
+
+<dl>
+    <dt><a name="diaform"><code>(diaform 'lst prg) </code></a>
+    <dd><code>diaForm</code> is a form that has a dual nature in that it can
+    behave both as a form and as a dialog. When called from a form, by pressing
+    a button (POST) it shows up as a dialog. Otherwise, when called via a link
+    (GET), it shows up as a form. <code>diaform</code> is commonly used in
+    search dialogs, often together with an <code>idForm</code>. This way,
+    functionality to search for, select and edit objects is combined in a single
+    page of the application.
+
+    <pre><code>
+    (de choItem (Dst)
+       (diaform '(Dst)
+          (&lt;grid&gt; "--.-."
+             ...
+             ... )
+          (gui 'query '(+QueryChart) (cho)
+             ...
+             ... )
+          (&lt;table&gt; 'chart (choTtl ,"Items" 'nr '+Item)
+             ...
+             ... )
+          (&lt;spread&gt;
+             ...
+             ... ) ) )
+    </code></pre>
+    
+    See also <a href="refF.html#form">form</a>, <a
+    href="refI.html#idForm">idForm</a>, <a href="refD.html#dialog">dialog</a>.
+</dl>
+
+<dl>
+    <dt><a name="dialog"><code>(dialog Env . Prg) </code></a>
+    <dd>Creates a dialog. 'Env' can contain additional css attributes, the
+    framework adds the css class 'dialog'. 'Prg' is the content you want to
+    populate the dialog with. See also <a href="../app.html#dialogs">Alerts and
+    dialogs</a>.
+</dl>
+
+<dl>
+    <dt><a name="disable"><code>(disable Flg)</code></a>
+    <dd>This function disables a form when called with a non-<code>NIL</code>
+    argument. It overrides the standard form enable/disable, in that it can
+    disable the form even if it would be otherwise enabled. This affects all
+    components in this form. The following example makes a form read-only until
+    Christmas:
+
+    <pre><code>
+    (form NIL
+       (disable (&gt; (12 24) (cdr (date (date)))))  # Disable whole form
+       (gui ..)
+       .. )
+    </code></pre>
+
+    In a disabled form, individual components can be activated using the
+    <code>+Rid</code> prefix class. See also <a href="refR.html#+Rid">+Rid</a>.
+</dl>
+
+<dl>
+    <dt><a name="delButton"><code>(delButton Able @Txt) </code></a>
+    <dd>A delete button, marks an object as deleted. Includes a confirmation
+    dialog. See also <a href="refA.html#ask">ask</a>, <a
+    href="refN.html#note">note</a>, <a href="refF.html#+Force"></a>, <a
+    href="refR.html#+Rid">+Rid</a>, <a href="refA.html#+Able">+Able</a>, <a
+    href="refT.html#+Tip">+Tip</a>, <a href="refB.html#+Button">+Button</a> and
+    <a href="refG.html#gui">gui</a>.
+</dl>
+
+<dl>
+    <dt><a name="+DelRowButton"><code>+DelRowButton</code></a>
+    <dd>A button used to delete one row from a chart. See also <a
+    href="refC.html#chart">chart</a>, <a href="refT.html#+Tiny">+Tiny</a>, <a
+    href="refR.html#+Rid">+Rid</a>, <a href="refJ.html#+JS">+JS</a>, <a
+    href="refA.html#+Able">+Able</a>, <a href="refT.html#+Tip">+Tip</a> and <a
+    href="refB.html#+Button">+Button</a>.
+</dl>
+
+<dl>
+    <dt><a name="+DnButton"><code>+DnButton</code></a>
+    <dd>A button used scroll a chart one row down. See also <a
+    href="refC.html#chart">chart</a>, <a href="refT.html#+Tiny">+Tiny</a>, <a
+    href="refR.html#+Rid">+Rid</a>, <a href="refJ.html#+JS">+JS</a>, <a
+    href="refA.html#+Able">+Able</a>, <a
+    href="refG.html#+GoButton">+GoButton</a>, <a
+    href="refB.html#+Button">+Button</a> and <a
+    href="../app.html#scrolling">scrolling</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Drop"><code>+Drop</code></a>
+    <dd>+Drop is a prefix class for +Button and makes the most sense in
+    combination with +UpField, for file uploads. The following example comes
+    from the demo app in the PicoLisp distribution, in app/item.l:
+
+    <pre><code>
+    (gui '(+Able +UpField) '(not (: home obj jpg)) 30)
+    (gui '(+Drop +Button) '(field -1)
+       '(if (: home obj jpg) ,"Uninstall" ,"Install")
+          '(cond
+             ((: home obj jpg)
+                (ask ,"Uninstall Picture?"
+                   (put!&gt; (: home top 1 obj) 'jpg NIL) ) )
+             ((: drop) (blob! (: home obj) 'jpg @)) ) )
+    </code></pre>
+
+    Note "'(field -1)" in the example above. This part refers to the +UpField.
+    See also <a href="refB.html#+Button">+Button</a>, <a
+    href="refF.html#field">field</a>, <a href="refA.html#+Able">+Able</a>, <a
+    href="refU.html#+UpField">+UpField</a> and <a href="refG.html#gui">gui</a>.
+</dl>
+
+<dl>
+    <dt><a name="+DstButton"><code>+DstButton</code></a>
+    <dd><code>+DstButton</code>, Destination button, has a dual behaviour,
+    manifesting itself as a button or a plain link. The button is always labeled
+    as "@", but if <code>+DstButton</code> is used in a dialog which chooses an
+    object to be stored in a field of the calling form it manifests as a button.
+    In this case, pressing the button stores the object in the destination
+    field. Otherwise, <code>+DstButton</code> manifests itself as a plain link
+    and clicking the link causes a jump to that object. Typical usage is in
+    choice (search) dialogs, which are used both for jumping to objects and for
+    selecting objects in other forms.<br>
+
+    The following example uses a <code>+DstButton</code> when presenting the
+    search result in a <code>QueryChart</code>. Since we are not about to choose
+    an object to be stored in a field of the calling form, this
+    <code>+DstButton</code> will manifest as a link and cause a jump to an
+    object.<br> Given the following 'put'- function:
+
+    <pre><code>
+    '((This) (list This This (: pa) (: ma) (: mate) (: job) (: dat)))
+    </code></pre>
+    And presenting the result in a table:
+    <pre><code>
+      (&lt;table&gt; 'chart NIL
+         '((btn) (NIL "Name") (NIL "Father") (NIL "Mother") (NIL "Partner") (NIL "Occupation") (NIL "born"))
+         (do (cho)
+            (&lt;row&gt; (alternating)
+               (gui 1 '(+DstButton) Dst)
+               (gui 2 '(+ObjView +TextField) '(: nm))
+               (gui 3 '(+ObjView +TextField) '(: nm))
+               (gui 4 '(+ObjView +TextField) '(: nm))
+               (gui 5 '(+ObjView +TextField) '(: nm))
+               (gui 6 '(+TextField))
+               (gui 7 '(+DateField)) ) ) )
+    </code></pre>
+
+    See also <a href="refS.html#+Set">+Set</a>, <a
+    href="refA.html#+Able">+Able</a>, <a href="refC.html#+Close">+Close</a>, <a
+    href="refP.html#+PickButton">+PickButton</a>.
+</dl>
+
+<dl>
+    <dt><a name="+DateField"><code>+DateField</code></a>
+    <dd>+DateField accepts and returns a date value.
+
+    <pre><code>
+    (gui '(+DateField) 10)
+    </code></pre>
+
+    The date format displayed and accepted by the +DateField is determined by
+    the current locale, and the field returns an error when a date not matching
+    the locale is entered. +DateField does some extra work to handle user input,
+    independant of locale. Entering a small number is expanded to mean day of
+    the current month, and entering larger numbers expand to day/ month or
+    day/month/year.
+
+    <ul>
+        <li>Entering "3" means the third day of the current month.</li>
+        <li>"031" or "0301" both expand to 3 January of the current year.</li>
+        <li>"01023" or "010203" expands to 1 February, 2003.</li>
+    </ul>
+
+    See also <a href="refT.html#+TextField">+TextField</a>, <a
+    href="refG.html#gui">gui</a>, <a href="refD.html#date">date</a> and <a
+    href="../app.html#timeDateFields">Time & Date</a>.
+</dl>
+
+</body>
+</html>

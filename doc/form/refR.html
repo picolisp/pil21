@@ -1,0 +1,129 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>R</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>R</h1>
+
+<dl>
+    <dt><a name="+/R"><code>+/R</code></a>
+    <dd>Base class for entity relations. <code>+/R</code> takes an entity
+    specification, which is a cons pair with a relation in its CAR and an
+    expression, evaluating to an object, in its CDR. For example:
+
+    <pre><code>
+    '(text : home obj)
+    </code></pre>
+    
+    <code>+/R</code> is used in locked, read-only, GUI components. It does not
+    modify the value in the object. However, that does not happen in '+Lock'ed
+    components anyway. See also <a href="refE.html#+E/R">+E/R</a>, <a
+    href="refL.html#+Lock">+Lock</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Radio"><code>+Radio</code></a>
+    <dd>A radio button component. Example:
+    <pre><code>
+    '(&lt;grid&gt; 2
+        "Radio A" (gui '(+Var +Radio) '*DemoRadio NIL "A")
+        "Radio B" (gui '(+Radio)  -1 "B")
+        "Radio C" (gui '(+Radio)  -2 "C") )
+    </code></pre>
+
+    <p>+Radio components only makes sense as a group. The first argument to a
+    +Radio component is either NIL or a field reference. If the first argument
+    is NIL, the component in question will be the 'leader component' of a radio
+    group. In the example above "Radio A" holds this position.</p> <p>The
+    following +Radio components in our example have a field reference as their
+    first argument. This reference points back to the 'leader component' of the
+    radio group. Our example uses a relative, numeric, offset to another field,
+    but the symbolic name of a field can also be used.</p> <p>The 'leader
+    component' of a radio group takes care of holding the resulting value. As
+    can be seen above, the first +Radio component uses a prefix class, +Var.
+    This class is used to connect a variable to a gui component. Since this is
+    the 'leader' of the radio group, its variable (*DemoRadio) will be populated
+    with the value that results from selecting one of the radio buttons.</p>
+
+    See also <a href="refG.html#gui">gui</a>, <a
+    href="refF.html#+field">+field</a> and <a
+    href="../app.html#inputFields">input fields</a>.
+</dl>
+
+<dl>
+    <dt><a name="+RedoButton"><code>+RedoButton</code></a>
+    <dd>A 'Redo' button. See <a href="refC.html#change">change</a>, <a
+    href="refU.html#+UndoButton">+UndoButton</a>.
+</dl>
+
+<dl>
+    <dt><a name="repl"><code>(repl Attr)</code></a>
+    <dd>A form with a Lisp REPL. Runs a REPL in the browser and opens up the
+    server completely, which is obviously a big security risk. Use with caution!
+</dl>
+
+<dl>
+   <dt><a name="+RgbPicker"><code>+RgbPicker</code></a>
+   <dd>A color picker component. Produces an html color picker, <code>&lt;input
+   type="color"...&gt; </code>. See also <a href="refF.html#+field">+field</a>.
+</dl>
+
+<dl>
+   <dt><a name="+Rid"><code>+Rid</code></a>
+   <dd>Prefix class used to remove the form lock from a certain component, i.e.
+   get rid of the lock.
+
+   <pre><code>
+   "Some text" (gui (+Rid +TextField) 30)
+   </code></pre>
+
+   The text field in the above example has had the lock removed by +Rid and is
+   editable even when the current form as such is locked. Worth noting though is
+   that the field may still have it's own <code>+Able</code> expression, which may
+   happen to disable it again. See also <a href="refA.html#+Able">+Able</a>.
+</dl>
+
+<dl>
+    <dt><a name="resetButton"><code>(resetButton Lst)</code></a>
+    <dd>This function creates a button that clears the content from a number of
+    GUI fields. Takes a list of fields to clear as argument. Often used in
+    search dialogs, as in the following example. This code comes from the demo
+    app included in the PicoLisp distribution, in gui.l. In this case, the
+    button created resets, clears, the GUI fields named nr, nm, pr, sup and
+    query.
+
+    <pre><code>
+    (resetButton '(nr nm pr sup query)))
+    </code></pre>
+
+    The list of fields to clear can also contain an expression used to populate
+    the field with a new value, instead of emptying the field.
+
+    <pre><code>
+    (resetButton '((dat date) nr nm))
+    </code></pre>
+
+    See also <a href="refF.html#+Force">+Force</a>, <a
+    href="refC.html#+ClrButton">+ClrButton</a>.
+</dl>
+
+<dl>
+    <dt><a name="row"><code>(row D)</code></a>
+    <dd>Returns the numeric offset of the current row (no arguments), or of a
+    relative neighbor row (numeric argument) of the current chart. The
+    implementation looks like this:
+
+    <pre><code>
+    (de row (D)
+       (+ (: chart 1 ofs) (: chart 2) -1 (or D 0)) )
+    </code></pre>
+    
+    See also <a href="refP.html#prev">prev</a>.
+</dl>
+
+</body>
+</html>

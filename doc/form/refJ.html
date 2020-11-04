@@ -1,0 +1,37 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>J</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>J</h1>
+
+<dl>
+    <dt><a name="+JS"><code>+JS</code></a>
+    <dd>+JS is a Javascript prefix class. When a +Button uses this prefix, it
+    will POST the page using Javascript. This may lead to a faster response and
+    avoids flicker caused by reloading and rendering the page. More information
+    is available in the <a href="../app.html#jsButtons">application
+    tutorial</a>. See also <a href="refB.html#+Button">+Button</a>.
+</dl>
+
+<dl>
+    <dt><a name="+JsField"><code>+JsField</code></a>
+    <dd>This field can be used to hold Javascript-driven context. Setting Google
+    Maps images would be one example:
+
+    <pre><code>
+    (gui '(+JS +Button) "@img/mapicon.gif" "@img/no.png"
+       '(set> (: home map) (path> (: home obj) 40)) )
+    ...
+    (&lt;p&gt; '((id . map) (style . "width: 600px; height: 400px"))
+       (gui 'map '(+JsField) "showMap") )
+    </code></pre>
+
+    See also <a href="refG.html#+gui">+gui</a>. 
+</dl>
+</body>
+</html>

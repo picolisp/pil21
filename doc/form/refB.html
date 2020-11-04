@@ -1,0 +1,67 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>B</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>B</h1>
+
+<dl>
+    <dt><a name="+BlobField"><code>+BlobField</code></a>
+    <dd>A field that handles data stored in external files, i.e. "Blob - binary
+    large object".
+
+    <pre><code>
+    (gui '(+BlobField) '(txt : home obj) 72 20)
+    </code></pre>
+    
+    The code above creates a textarea, size 72 x 20, and stores the text entered
+    there in an external file. A corresponding, global variable, is created in
+    main.l:
+
+    <pre><code>
+    (setq
+       *Pool "db/wiki/"
+       *Blob "db/wiki/blob/"
+       *Jnl (and (info "fifo/wiki") "fifo/wiki")
+       *Salt (16 . "$6$@1$")
+       *Css '("@lib.css" "wiki/lib.css")
+       *WikiCss "wiki/wiki.css"
+       *WikiPort 5000 )
+    </code></pre>
+    
+    Here, <code>*Blob</code> holds a path to the place where content from
+    <code>+BlobField</code> will be stored. See also <a
+    href="refR.html#+/R">+/R</a>, <a href="refT.html#+TextField">+TextField</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Button"><code>+Button</code></a>
+    <dd>A basic button. A +Button takes:
+    <ul>
+        <li>A label, which may be either a string or the name of an image file.</li>
+        <li>An optional, alternative label. This is shown when the button is disabled.</li>
+        <li>An executable expression</li>
+    </ul>
+    For example:<br/>
+
+    <pre><code>
+    (gui '(+Button) "Enabled" "Disabled" '(doSomething))
+    </code></pre>
+    
+    See also <a href="refG.html#+gui">+gui</a> and <a
+    href="../app.html#buttons">Buttons</a>.
+</dl>
+
+<dl>
+    <dt><a name="+BubbleButton"><code>+BubbleButton</code></a>
+    <dd>A button used to move a row of data upwards in a chart.
+    See also <a href="refC.html#chart">chart</a>, <a href="refT.html#+Tiny">+Tiny</a>,
+    <a href="refJ.html#+JS">+JS</a>, <a href="refA.html#+Able">+Able</a>,
+    <a href="refT.html#+Tip">+Tip</a> and <a href="refB.html#+Button">+Button</a>. 
+</dl>
+</body>
+</html>

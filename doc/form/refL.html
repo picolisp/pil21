@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>L</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>L</h1>
+
+<dl>
+    <dt><a name="+Limit"><code>+Limit</code></a>
+    <dd>Prefix class controlling the maxlength attribute of the generated HTML
+    input field, used to set a maximum limit of how many characters may be
+    entered into the field.
+
+    <pre><code>
+    (gui '(+Limit +TextField) 10 15)
+    </code></pre>
+</dl>
+
+<dl>
+    <dt><a name="+LinesField"><code>+LinesField</code></a>
+    <dd>A +LinesField maps text to a list of strings. +LinesField is typically
+    used as a textarea, i.e. created by passing two dimensions as arguments:
+
+    <pre><code>
+    (gui '(+LinesField) 10 4)
+    </code></pre>
+
+    Text entered in the textarea will be split in a list of string, using
+    newline as a delimiter: "I am a row of text<br /> and I am a second row of
+    text" -> ("I am a row of text" "and I am a second row of text") See also <a
+    href="refT.html#+TextField">+TextField.</a> and <a
+    href="../app.html#inputFields">input fields</a>.
+</dl>
+
+<dl>
+    <dt><a name="+ListTextField"><code>+ListTextField</code></a>
+    <dd>A +ListTextField maps text to a list of strings. Normally used as a
+    single line text field and takes a list of delimiters as argument:
+
+    <pre><code>
+    (gui '(+SetEAdr +E/R +ListTextField) '(to : home obj) '(", " "," " ") 60)
+    </code></pre>
+
+    The example above creates a text field connected to the 'to' property of the
+    current object. Entering e-mail addresses in this field, separated by a
+    comma followed by a space, just a comma or just a space will map the
+    addresses to a list: "foo@domain.com, bar@domain.com baz@domain.com" -->
+    ("foo@domain.com" "bar@domain.com" "baz@domain.com") See also <a
+    href="refG.html#gui">gui</a>, <a href="refT.html#+TextField">+TextField</a>
+    and <a href="../app.html#inputFields">input fields</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Lock"><code>+Lock</code></a>
+    <dd>Prefix class that unconditionally locks a GUI element. This class takes
+    no arguments.
+
+    <pre><code>
+    (gui '(+Lock +TextField) 30)
+    </code></pre>
+    See also <a href="refA.html#+Able">+Able</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Lowc"><code>+Lowc</code></a>
+    <dd>Prefix class, converts to lower case.
+    <pre><code>
+    "Lower case" (gui '(+Lowc +TextField) 30)
+    </code></pre>
+    See also <a href="refU.html#+Uppc">+Uppc</a>.
+</dl>
+
+</body>
+</html>

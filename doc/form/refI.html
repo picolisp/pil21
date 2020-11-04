@@ -1,0 +1,130 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>I</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>I</h1>
+
+<dl>
+    <dt><a name="&lt;id&gt;"><code>(&lt;id&gt; )</code></a>
+    <dd>Sets the object passed to a form in the '*ID' global via the URL into
+    the form's 'obj' property. Takes care of handling enable/disable, locking,
+    and displaying the object's name or similar property. Usually called in a
+    HTML '&lt;hN&gt;' tag, or implicitly in 'idForm'. See also <a
+    href="refI.html#idForm">idForm</a>.
+</dl>
+
+<dl>
+    <dt><a name="idForm"><code>(idForm Entity Cho Var Cls Able Del Lst . Prg)</code></a>
+    <dd><code>idForm</code> is used to display and edit objects in the system.
+    Here is an example from the demo application included with the PicoLisp
+    distribution, in item.l:
+
+    <pre><code>
+    (menu ,"Item"
+       (idForm ,"Item" '(choItem) 'nr '+Item T '(may Delete) '((: nr) " -- " (: nm))
+          (&lt;grid&gt; 4
+             ,"Number" NIL (gui '(+E/R +NumField) '(nr : home obj) 10) NIL
+             ,"Description" NIL (gui '(+E/R +Cue +TextField) '(nm : home obj) ,"Item" 30) NIL
+             ,"Supplier" (choCuSu 0)
+             (gui '(+E/R +Obj +TextField) '(sup : home obj) '(nm +CuSu) 30)
+             (gui '(+View +TextField) '(field -1 'obj 'ort) 30)
+             ,"Inventory" NIL (gui '(+E/R +NumField) '(inv : home obj) 12)
+             (gui '(+View +NumField) '(cnt&gt; (: home obj)) 12)
+             ,"Price" NIL (gui '(+E/R +FixField) '(pr : home obj) 2 12) )
+          (--)
+          (&lt;grid&gt; 2
+             ,"Memo" (gui '(+BlobField) '(txt : home obj) 60 8)
+             ,"Picture"
+             (prog
+                (gui '(+Able +UpField) '(not (: home obj jpg)) 30)
+                (gui '(+Drop +Button) '(field -1)
+                   '(if (: home obj jpg) ,"Uninstall" ,"Install")
+                   '(cond
+                      ((: home obj jpg)
+                         (ask ,"Uninstall Picture?"
+                            (put!&gt; (: home top 1 obj) 'jpg NIL) ) )
+                      ((: drop) (blob! (: home obj) 'jpg @)) ) ) ) )
+          (&lt;spread&gt; NIL (editButton T))
+          (gui '(+Upd +Img)
+             '(and (: home obj jpg) (allow (blob (: home obj) 'jpg)))
+             ,"Picture" ) ) )
+    </code></pre>
+
+    The first argument to <code>idForm</code> is used to create a header, in our
+    case "Item". This is followed by <code>'choItem()</code>, which is a search
+    function. This allows us to use both search and edit functionality from the
+    same page. Then we have two arguments, <code>'nr '+Item</code> used to count
+    how many objects of a certain type is in the database. <p>The <code>T</code>
+    argument that follows decides whether a user can edit objects in this form
+    or not. Next up is <code>'(may Delete)</code>, checking if the current user
+    has permission to delete objects. Finally, the list <code>'((: nr) "--" (:
+    nm))</code> is passed to the <code>idForm</code> function. This is used to
+    create a heading that is displayed when a single object has been selected.
+    Our example will use the 'nr' and 'nm' properties of an <code>+Item</code>
+    object combined with " -- ". The result is something like this: "Item: 2 --
+    Spare Part". </p> See also <a href="refD.html#diaform">diaform</a>, <a
+    href="refF.html#form">form</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Icon"><code>+Icon</code></a>
+    <dd>This class is somewhat similar to <a href="refI.html#+Img">+Img</a>, but
+    is more dynamic. +Icon takes an 'exe' which can be used to show different
+    icons depending on the situation.
+</dl>
+
+<dl>
+    <dt><a name="+Img"><code>+Img</code></a>
+    <dd>Image form field. This field can take 4 arguments that affect the
+    resulting html. These arguments are <code>Alt</code>, <code>Url</code>,
+    <code>Dx</code> and <code>Dy</code>.
+
+
+    <pre><code>
+    (gui '(+Upd +Img)
+    '(and (: home obj jpg) (allow (blob (: home obj) 'jpg)))
+    ,"Picture" "http://picolisp.com" 35 55) ) )
+    </code></pre>
+
+    <code>Alt</code>, <code>Dx</code> and <code>Dy</code> all set properties in
+    the resulting img tag:
+    
+    <pre><code>
+    &lt;img src="..." alt="Picture" width="35" height="55 id=".." /&gt;
+    </code></pre>
+    
+    Adding a <code>Url</code> argument turns the resulting image into a link:
+    
+    <pre><code>
+    &lt;a href="http://picolisp.com"&gt;&lt;img src="..." alt="Picture" width="35" height="55 id=".."/&gt;&lt;/a&gt;
+    </code></pre>
+
+    See also <a href="refG.html#+gui">+gui</a> and <a
+    href="refU.html#+Upd">+Upd</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Init"><code>+Init</code></a>
+    <dd>Prefix class used to give an initial value to a GUI component. Takes an
+    expression to give the field an initial value.
+
+    <pre><code>
+    (gui '(+Init +TextField) "Initial value" 30)
+    </code></pre>
+</dl>
+
+<dl>
+    <dt><a name="+InsRowButton"><code>+InsRowButton</code></a>
+    <dd>This button inserts a new, empty, row in a chart. See also <a
+    href="refT.html#+Tiny">+Tiny</a>, <a href="refJ.html#+JS">+JS</a>, <a
+    href="refA.html#+Able">+Able</a>, <a href="refT.html#+Tip">+Tip</a>, <a
+    href="refB.html#+Button">+Button</a>.
+</dl>
+
+</body>
+</html>

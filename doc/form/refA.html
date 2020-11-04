@@ -1,0 +1,134 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>A</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>A</h1>
+
+<dl>
+    <dt><a name="action"><code>(action Prg)</code></a>
+    <dd>Top level wrapper function for the form event handling. Typically
+    contains one or several calls to 'form'.
+    
+    <pre><code>
+    (app) # Start session
+
+    (action                                            # Action handler
+       (html 0 "Form" "@lib.css" NIL                   # HTTP/HTML protocol
+          (form NIL                                    # Form
+             (gui 'a '(+TextField) 10)                 # Text Field
+             (gui '(+Button) "Print"                   # Button
+                '(msg (val&gt; (: home a))) ) ) ) )
+    </code></pre>
+
+    See also <a href="../app.html#actionForms">Action Forms</a>.
+</dl>
+
+<dl>
+    <dt><a name="alert"><code>(alert Env . Prg)</code></a>
+    <dd>Creates an alert dialog. 'Env' can contain additional css attributes,
+    the framework adds the css class 'alert'. 'Prg' is the content you want to
+    populate the alert with. See also <a href="../app.html#dialogs">Alerts and
+    dialogs</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Align"><code>+Align</code></a>
+    <dd>A '+TextField' prefix which causes a right-alignment of its content.
+    Used internally to implement the numeric fields ('+NumField' and
+    '+FixField'). See also <a href="refT.html#+TextField">+TextField</a>, <a
+    href="refN.html#+NumField">+NumField</a>, <a
+    href="refF.html#+FixField">+FixField</a>.
+</dl>
+
+<dl>
+    <dt><a name="alternating"><code>(alternating)</code></a>
+    <dd><code>alternating</code> can be used to give table rows alternating
+    colors.
+
+    <pre><code>
+     (&lt;table&gt; 'chart (choTtl ,"Items" 'nr '+Item)
+        (quote
+           (btn) (align "#") (NIL ,"Description") (NIL ,"Supplier") (NIL
+           ,"City") (align ,"Price") )
+        (do (cho)
+           (&lt;row&gt; (alternating)
+              (gui 1 '(+DstButton) Dst) (gui 2 '(+NumField)) (gui 3 '(+ObjView
+              +TextField) '(: nm)) (gui 4 '(+ObjView +TextField) '(: nm)) (gui 5
+              '(+TextField)) (gui 6 '(+FixField) 2) ) ) )
+     </code></pre>
+     
+     The code above comes from the demo app included in the PicoLisp
+     distribution, in gui.l. It produces a table with rows of alternating
+     colors.
+</dl>
+
+<dl>
+    <dt><a name="ask"><code>(ask Str . Prg)</code></a>
+    <dd>Creates an alert dialog with a string, a 'Yes'- and a 'No'-button. 'Str'
+    is the text that will populate the alert, 'Prg' is the action triggered by
+    the 'Yes'- button. See also <a href="../app.html#dialogs">Alerts and
+    dialogs</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Able"><code>+Able</code></a>
+    <dd>Prefix class that takes an
+    'Exe' and disables a GUI component if the supplied 'Exe' returns NIL.
+
+    <pre><code>
+    (gui '(+Able +TextField) '(may Order) 30)
+    </code></pre>
+    
+    In the example above, the text field is enabled for users with "Order"
+    permissions.
+</dl>
+
+<dl>
+    <dt><a name="+Auto"><code>+Auto</code></a>
+    <dd>Prefix class that automatically presses a button. When called with
+    'This', it presses itself. +Auto can be used together with +Click to press a
+    button after a certain amount of time has passed:
+
+    <pre><code>
+    (gui '(+Click +Auto +Button) 420 'This 1000 "+" '(inc '*Number))
+    </code></pre>
+
+    <code>+Auto</code> can be used to create simple animations or status
+    updates:
+
+    <pre><code> (app) (action
+       (html 0 "Auto" "@lib.css" NIL
+          (form NIL
+             (gui '(+JS +Button) "Wait" '(wait 6000)) (----) (gui '(+Click +Auto
+             +Button) 2000 'This 2000 '(pop *Throbber)) ) ) )
+    </code></pre>
+
+    See also <a href="refC.html#+Click">+Click</a>, <a
+    href="refB.html#+Button">+Button</a>.
+</dl>
+
+<dl>
+    <dt><a name="+AtomField"><code>+AtomField</code></a>
+    <dd>A modified +NumField that allows text as well. Text is presented with a
+    monospaced font and numeric values are aligned. See also <a
+    href="refN.html#+NumField">+NumField</a>, <a
+    href="refM.html#+Mono">+Mono</a> and <a
+    href="refT.html#+TextField">+TextField</a>.
+</dl>
+
+<dl>
+    <dt><a name="+AO"><code>+AO</code></a>
+    <dd>+AO, "Able object", takes an <code>Exe</code> argument which is used to
+    determine whether the current object is editable or not. It also makes sure
+    that the current form has an object and the this object is not in "deleted"
+    state before evaluating the expression argument. See also <a
+    href="refA.html#+Able">+Able</a>
+</dl>
+
+</body>
+</html>

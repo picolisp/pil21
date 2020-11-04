@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>F</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>F</h1>
+
+<dl>
+    <dt><a name="+field"><code>+field</code></a>
+    <dd>Form field base class. See <a href="refC.html#+Checkbox">+CheckBox</a>,
+    <a href="refR.html#+Radio">+Radio</a>, <a
+    href="refT.html#+TextField">+TextField</a>, <a
+    href="refR.html#+RgbPicker">+RgbPicker</a>.
+</dl>
+
+<dl>
+    <dt><a name="field"><code>(field X . @)</code></a>
+    <dd>Function to access another field from the current field. The first
+    argument can be either a symbol (to access a named 'gui' component) or a
+    positive or negative number (to access a field relative to the current one).
+    In both cases the 'get' algorithm is applied to all following arguments.
+
+    <pre><code>
+    (gui '(+View +TextField) '(field -1 'obj 'ort) 30)
+    </code></pre>
+</dl>
+
+<dl>
+    <dt><a name="+FixField"><code>+FixField</code></a>
+    <dd>+FixField accepts and returns scaled fixpoint numbers. This field needs
+    an argument that determines the scale factor.
+
+    <pre><code>
+    (gui '(+FixField) 3 10)
+    </code></pre>
+
+    See also <a href="refN.html#+NumField">+NumField</a>, <a
+    href="refT.html#+TextField">+TextField</a> and <a
+    href="../app.html#inputFields">Input fields</a>.
+
+</dl>
+
+<dl>
+    <dt><a name="+FileField"><code>+FileField</code></a>
+    <dd>This field evaluates an 'exe' to find and open/create a file, then
+    loads/modifies/stores the text in that file. See also <a
+    href="refT.html#+TextField">+TextField</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Focus"><code>+Focus</code></a>
+    <dd><code>+Focus</code> is a prefix class used to set the keyboard focus on
+    a specific GUI element. For example, it can be used to put the initial focus
+    on a specific input field in a search dialog. Examples of this usage can be
+    found in the demo app supplied with the PicoLisp distribution, in gui.l:
+
+    <pre><code>
+    (de choCuSu (Dst)
+       (diaform '(Dst)
+          (&lt;grid&gt; "--.-.-."
+             ,"Number" (gui 'nr '(+Var +NumField) '*CuSuNr 10)
+             ,"Name" (gui 'nm '(+Focus +Var +TextField) '*CuSuNm 30)
+             ,"Phone" (gui 'tel '(+Var +TelField) '*CuSuTel 20)
+             (searchButton '(init&gt; (: home query)))
+             ,"Zip" (gui 'plz '(+Var +TextField) '*CuSuPlz 10)
+             ,"City" (gui 'ort '(+Var +TextField) '*CuSuOrt 30)
+             ,"Mobile" (gui 'mob '(+Var +TelField) '*CuSuMob 20)
+             (resetButton '(nr nm tel plz ort mob query)) )
+             .
+             .
+             .
+      </code></pre>
+
+      In the code above, <code>+Focus</code> is used to give initial focus to
+      the "Name" input field.
+</dl>
+
+<dl>
+    <dt><a name="+Force"><code>+Force</code></a>
+    <dd>Button prefix class which may force the action even if an error occurred.
+    Without it, an 'error' will always inhibit further button handling. See also
+    <a href="refB.html#+Button">+Button</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Fmt"><code>+Fmt</code></a>
+    <dd>+Fmt is a prefix class that combines <code>+Set</code> and
+    <code>+Val</code>, taking two functions as arguments. This example will
+    display upper case characters, while returning lower case characters
+    internally:
+
+    <pre><code>
+    (gui '(+Fmt +TextField) uppc lowc 30)
+    </code></pre>
+    
+    See also <a href="refS.html#+Set">+Set</a>, <a
+        href="refV.html#+Val">+Val</a> and <a href="../app.html#formatPrefix">formatting</a>.
+</dl>
+
+<dl>
+    <dt><a name="form"><code>form</code></a>
+    <dd>The basic form function. Handles operations common to the concrete form
+    types in the library. See <a href="refI.html#idForm">idForm</a>, <a
+    href="refD.html#diaform">diaform</a>.
+</dl>
+
+</body>
+</html>

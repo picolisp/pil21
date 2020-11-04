@@ -1,0 +1,90 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>N</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>N</h1>
+
+<dl>
+    <dt><a name="newButton"><code>(newButton Able Dst Args)</code></a>
+    <dd>This function makes a button used to create a new object. The following
+    code comes from the demo app supplied with the PicoLisp distribution, in
+    gui.l, and makes a button that when clicked creates a new object of the
+    class <code>+CuSu</code>. The new object is initialised with the values used
+    in a search for an existing one, if any such terms have been entered.
+
+    <pre><code>
+    (newButton T Dst '(+CuSu)
+       '(nr genKey 'nr '+CuSu)
+       'nm *CuSuNm
+       'plz *CuSuPlz
+       'ort *CuSuOrt
+       'tel *CuSuTel
+       'mob *CuSuMob )
+    </code></pre>
+
+    See also <a href="refR.html#+Rid">+Rid</a>, <a
+    href="refA.html#+Able">+Able</a>, <a href="refC.html#+Close">+Close</a>, <a
+    href="refT.html#+Tip">+Tip</a>, <a href="refB.html#+Button">+Button</a>.
+</dl>
+
+<dl>
+    <dt><a name="newUrl"><code>(newUrl @)</code></a>
+    <dd><code>newUrl</code> is used to create a new DB object. In this example,
+    it is used as action code for a button. Pressing the button will create a
+    new object of the class "+Bkng" and take the user to the page where such an
+    object can be edited.
+
+    <pre><code>
+    .
+    .
+    (gui 6 '(+Able +Button) T ,"Book"
+       '(newUrl '(+Bkng)
+          '(nr genKey 'nr '+Bkng)
+          'pos (curr)
+          'depd (: home obj depd)
+          'dept (: home obj dept)
+          'retd (: home obj retd)
+          'rett (: home obj rett)
+          'trsp (if (: home obj trf) ,"Yes" ,"No")
+          'htl (if (: home obj htl) ,"Yes" ,"No") ) )
+    .
+    .
+    </code></pre>
+</dl>
+
+<dl>
+    <dt><a name="noButton"><code>(noButton 'Exe) </code></a>
+    <dd>A 'no' button. See also <a href="refC.html#+Close">+Close</a>, <a
+    href="refB.html#+Button">+Button</a> and <a href="refG.html#gui">gui</a>.
+</dl>
+
+<dl>
+    <dt><a name="note"><code>(note Str Lst) </code></a>
+    <dd>An alert where Str is displayed as heading and the content of Lst is
+    shown with each item on a separate row. An 'Ok' button concludes the note.
+    See also <a href="refA.html#alert">alert</a>, <a
+    href="refO.html#okButton">okButton</a> and <a href="../app.html#dialogs">Alerts
+    and dialogs</a>.
+</dl>
+
+<dl>
+    <dt><a name="+NumField"><code>+NumField</code></a>
+    <dd>+NumField accepts a number and returns a number. An error message is
+    issued if a value that is not a number or cannot be converted to a number is
+    entered. Large numbers are displayed with a thousands-separator, as
+    determined by the current locale.
+
+    <pre><code>
+    (gui '(+NumField) 10)
+    </code></pre>
+    See also <a href="refT.html#+TextField">+TextField</a> and <a
+    href="../app.html#inputFields">Input fields</a>.
+</dl>
+
+</body>
+</html>

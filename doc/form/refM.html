@@ -1,0 +1,62 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>M</title>
+<link rel="stylesheet" href="../doc.css" type="text/css">
+</head>
+<body>
+
+<h1>M</h1>
+
+<dl>
+    <dt><a name="+MailField"><code>+MailField</code></a>
+    <dd>Handles e-mail addresses, creates "mailto:"- links.
+    <pre><code>
+    ,"EMail" (gui '(+E/R +MailField) '(em : home obj) 40) ) )
+    </code></pre>
+
+    See also <a href="refU.html#+Url">+Url</a>, <a
+    href="refH.html#+HttpField">+HttpField</a>, <a
+    href="refT.html#+TelField">+TelField</a> and <a
+    href="refT.html#+TextField">+TextField</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Map"><code>+Map</code></a>
+    <dd><code>+Map</code> is normally used with the combo box version of the
+    text fields. <code>+Map</code> does a two-way translation and uses a list of
+    cons pairs for lookup. The values in the CARs are displayed in the GUI and
+    are mapped internally to the values in the CDRs. The following code displays
+    "One", "Two" and "Three" to the user but uses 1, 2 and 3 internally.
+
+    <pre><code>
+    (app)
+
+    (action
+       (html 0 "+Map" "@lib.css" NIL
+          (form NIL
+             (gui '(+Map +TextField)
+                '(("One" . 1) ("Two" . 2) ("Three" . 3))
+                '("One" "Two" "Three") )
+             (gui '(+Button) "Print"
+                '(msg (val&gt; (field -1))) ) ) ) )
+    </code></pre>
+    See also <a href="refF.html#+Fmt">+Fmt</a>, <a
+    href="refT.html#+TextField">+TextField</a>.
+</dl>
+
+<dl>
+    <dt><a name="+Mono"><code>+Mono</code></a>
+    <dd><code>+Mono</code> is a style prefix class and is used to display text
+    in a monospace font. Adds the css class "mono" to the element where this
+    prefix class is used.
+
+    <pre><code>
+    (gui '(+Mono +TextField) 30)
+    </code></pre>
+    Text entered in the textfield above is rendered in a monospace font.
+</dl>
+
+</body>
+</html>

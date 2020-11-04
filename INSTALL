@@ -1,4 +1,4 @@
-# 27oct20 Software Lab. Alexander Burger
+# 04nov20 Software Lab. Alexander Burger
 
 
          PicoLisp Installation
@@ -25,7 +25,7 @@ systems.
 
 1. Install required packages
 
-   $ sudo apt install make clang llvm libffi libreadline-dev pkg-config
+   $ sudo apt install make clang llvm libffi-dev libssl-dev libreadline-dev pkg-config
 
 2. Unpack the tarball
 
