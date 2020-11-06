@@ -211,22 +211,8 @@ href="refL.html#lisp">lisp</a></code> and <code><a
 href="refE.html#errno">errno</a></code>.
 
 <pre><code>
-: (native "@" "getenv" 'S "TERM")  # Same as (sys "TERM")
--> "xterm"
-
-: (native "@" "printf" 'I "abc%d%s^J" (+ 3 4) (pack "X" "Y" "Z"))
-abc7XYZ
--> 8
-
-: (native "@" "printf" 'I "This is %.3f^J" (123456 . 1000))
-This is 123.456
--> 16
-
-: (use Tim
-   (native "@" "time" NIL '(Tim (8 B . 8)))  # time_t 8   # Get time_t structure
-   (native "@" "localtime" '(I . 9) (cons NIL (8) Tim)) ) # Read local time
--> (32 18 13 31 11 109 4 364 0)  # 13:18:32, Dec. 31st, 2009
-
+: (native "@" "unlink" 'I "file")  # Same as (%@ "unlink" 'I "file")
+-> 0
 : (native "libcrypto.so" "SHA1" '(B . 20) "abcd" 4 0)
 -> (129 254 139 254 135 87 108 62 203 34 66 111 142 87 132 115 130 145 122 207)
 </code></pre>
