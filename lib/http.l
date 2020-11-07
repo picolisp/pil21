@@ -1,8 +1,8 @@
-# 03nov20 Software Lab. Alexander Burger
+# 07nov20 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
-# *Post *Url *Timeout *SesId *ConId *Retire
+# *Post *Url *Timeout *SesAdr *SesId *ConId *Retire
 # *Referer *Cookies "*Cookies"
 
 (default
@@ -79,7 +79,9 @@
       ((not Pw) (println *Port) (bye))
       ((<> Pw (pw)) (quit "Bad pw"))
       ((ctty Tty)
-         (or *SesId (off *Run))
+         (if *SesId
+            (setq *Adr *SesAdr)
+            (off *Run) )
          (println *Pid)
          (off *Err)
          (quit) ) ) )
@@ -143,11 +145,14 @@
 
 # Application startup
 (de app ()
-   (unless *SesId
+   (if *SesId
+      (unless (= *Adr *SesAdr)
+         (forbidden) )
       (setq
-         *Port% (not *Gate)
+         *SesAdr *Adr
          *SesId (pack (in "/dev/urandom" (rd 7)) "~")
-         *Sock (port *HPorts '*Port) )
+         *Sock (port *HPorts '*Port)
+         *Port% (not *Gate) )
       (timeout *Timeout)
       (out 2 (prinl *Pid " = " *Port " " *SesId)) ) )
 
@@ -462,8 +467,9 @@
 (de redirect @
    (httpStat 303 "See Other" (pass pack "Location: ")) )
 
-(de forbidden ()
+(de forbidden (X)
    (httpStat 403 "No Permission")
+   (and X (msg *Pid " No permission: " @))
    (throw 'http) )
 
 (de http404 ()

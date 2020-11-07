@@ -1,4 +1,4 @@
-# 08oct20 Software Lab. Alexander Burger
+# 07nov20 Software Lab. Alexander Burger
 
 # *Salt *Login *Users *Perms
 
@@ -111,16 +111,17 @@
 
 (de must Args
    (unless
-      (if (cdr Args)
-         (find
-            '((X)
-               (if (atom X)
-                  (memq X (; *Login role perm))
-                  (eval X) ) )
-            @ )
-         *Login )
-      (msg *Pid " No permission: " (car Args))
-      (forbidden) ) )
+      (and
+         (= *Adr *SesAdr)
+         (if (cdr Args)
+            (find
+               '((X)
+                  (if (atom X)
+                     (memq X (; *Login role perm))
+                     (eval X) ) )
+               @ )
+            *Login ) )
+      (forbidden (car Args)) ) )
 
 ### GUI ###
 (de choUser (Dst)
