@@ -1,4 +1,4 @@
-// 07nov20 Software Lab. Alexander Burger
+// 24oct20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -487,8 +487,7 @@ ffi *ffiPrep(char *lib, char *fun, int64_t lst) {
       else
          p->args[i] = &ffi_type_pointer;
    }
-   if (ffi_prep_cif(&p->cif, FFI_DEFAULT_ABI, nargs, rtype, p->args) == FFI_OK  &&
-         (p->fun = dlsym(lib ?: RTLD_DEFAULT, fun)) )
+   if (ffi_prep_cif(&p->cif, FFI_DEFAULT_ABI, nargs, rtype, p->args) == FFI_OK  &&  (p->fun = dlsym(lib, fun)))
       return p;
    free(p);
    return NULL;
