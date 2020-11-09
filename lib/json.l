@@ -1,4 +1,4 @@
-# 08nov20 Software Lab. Alexander Burger
+# 09nov20 Software Lab. Alexander Burger
 
 (de checkJson (X Item)
    (unless (= X Item)
@@ -12,7 +12,7 @@
                (make
                   (for (X (recurse) (not (= "}" X)) (recurse))
                      (checkJson ":" (recurse))
-                     (link (cons X (recurse)))
+                     (link (cons (intern X) (recurse)))
                      (T (= "}" (setq X (recurse))))
                      (checkJson "," X) ) ) )
             ("["
@@ -35,7 +35,7 @@
          (make
             (for (X (readJson) (not (= "}" X)) (readJson))
                (checkJson ":" (readJson))
-               (link (cons X (readJson)))
+               (link (cons (intern X) (readJson)))
                (T (= "}" (setq X (readJson))))
                (checkJson "," X) ) ) )
       ("["
@@ -67,8 +67,9 @@
          (prin "{")
          (map
             '((X)
+               (prin "\"")
                (print (caar X))
-               (prin ": ")
+               (prin "\": ")
                (printJson (cdar X))
                (and (cdr X) (prin ", ")) )
             Item )
