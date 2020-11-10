@@ -706,11 +706,11 @@ href="refM.html#memq">memq</a></code>.
 </code></pre>
 
 <dt><a name="private"><code>(private) sym|lst</code></a>
-<dd>Intern symbols locally into an automatically created local namespace named
-'<code>priv</code>'. This namespace is inserted into the second position in the
-search order, behind the current namespace. <code>(private)</code> expects a
-single symbol or a list of symbols immediately following in the current input
-stream. See also <code><a href="refP.html#pico">pico</a></code>, <code><a
+<dd>Intern symbols locally into an internal special namespace named
+'<code>priv</code>'. This namespace is never inserted into the search order, but
+is always searched first. <code>(private)</code> expects a single symbol or a
+list of symbols immediately following in the current input stream. See also
+<code><a href="refP.html#pico">pico</a></code>, <code><a
 href="refS.html#symbols">symbols</a></code>, <code><a
 href="refL.html#local">local</a></code>, <code><a
 href="refE.html#export">export</a></code>, <code><a
@@ -724,7 +724,9 @@ myLib: (symbols)
 -> (myLib pico)
 myLib: (private) (foo bar)  # Intern 'foo' and 'bar' in 'priv'
 myLib: (symbols)
--> (myLib priv pico)
+-> (myLib pico)
+myLib: (all 'priv)
+-> (priv~foo priv~bar)
 </code></pre>
 
 <dt><a name="proc"><code>(proc 'sym ..) -> T</code></a>
