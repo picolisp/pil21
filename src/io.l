@@ -1,4 +1,4 @@
-# 24oct20 Software Lab. Alexander Burger
+# 10nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1534,7 +1534,11 @@ selectErr)
                      (and
                         (<> (setq C (call $Get)) (char "."))
                         (or (> (char "0") C) (> C (char "9"))) ) ) )
-               (symToNum (val 3 P) 0 (char ".") 0) ) )
+               (symToNum
+                  (val 3 P)
+                  (int (val $Scl))
+                  (char ".")
+                  0 ) ) )
          (T
             (let
                (Nm (xName 0 Set)
