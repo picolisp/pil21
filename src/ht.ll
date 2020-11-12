@@ -26,6 +26,7 @@ declare void @llvm.stackrestore(i8*)
 @$LineBuf = external global i8*
 @$LinePrmt = external global i8*
 @$ReplPrmt = external global i8*
+@$ContPrmt = external global i8*
 @$Ret = external global i64
 @$TtyPid = external global i32
 @$InFiles = external global i8**
@@ -86,7 +87,6 @@ declare void @llvm.stackrestore(i8*)
 @$InBye = external global i1
 @$Sync = external global i1
 @$Empty = constant [1 x i8] c"\00"
-@$Indent = constant [4 x i8] c"   \00"
 @$Delim = constant [16 x i8] c" \09\0A\0D\22'(),[]`{}~\00"
 declare i8* @malloc(i64)
 declare i8* @realloc(i8*, i64)

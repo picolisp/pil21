@@ -19,6 +19,7 @@
 (var $LineBuf i8* null)                # Console line buffer
 (var $LinePrmt i8* null)               # Console line prompt
 (var $ReplPrmt i8* null)               # REPL console prompt
+(var $ContPrmt i8* null)               # REPL continue prompt
 (var $Ret 0)                           # Secondary return value
 (var $TtyPid i32 0)                    # Terminal process ID
 (var $InFiles i8** null)               # Input files
@@ -662,5 +663,4 @@
 
 # Strings
 (str $Empty "")
-(str $Indent "   ")
 (str $Delim " \t\n\r\"'(),[]`{}~")

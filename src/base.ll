@@ -26,6 +26,7 @@ declare void @llvm.stackrestore(i8*)
 @$LineBuf = global i8* null
 @$LinePrmt = global i8* null
 @$ReplPrmt = global i8* null
+@$ContPrmt = global i8* null
 @$Ret = global i64 0
 @$TtyPid = global i32 0
 @$InFiles = global i8** null
@@ -1500,7 +1501,6 @@ declare void @llvm.stackrestore(i8*)
 @$InBye = global i1 0
 @$Sync = global i1 0
 @$Empty = constant [1 x i8] c"\00"
-@$Indent = constant [4 x i8] c"   \00"
 @$Delim = constant [16 x i8] c" \09\0A\0D\22'(),[]`{}~\00"
 declare i8* @malloc(i64)
 declare i8* @realloc(i8*, i64)
@@ -42856,8 +42856,8 @@ $20:
   %45 = phi i8* [%43, %$18] ; # P
 ; # (wrnl)
   %46 = call i64 @wrnl()
-; # (when (or (val $Bind) (== (val $LinePrmt) $Indent)) (err 0 0 $Emp...
-; # (or (val $Bind) (== (val $LinePrmt) $Indent))
+; # (when (or (val $Bind) (== (val $LinePrmt) (val $ContPrmt))) (err ...
+; # (or (val $Bind) (== (val $LinePrmt) (val $ContPrmt)))
 ; # (val $Bind)
   %47 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 8) to i64) to i64*
   %48 = load i64, i64* %47
@@ -42867,98 +42867,102 @@ $23:
   %50 = phi i8* [%45, %$20] ; # P
 ; # (val $LinePrmt)
   %51 = load i8*, i8** @$LinePrmt
-; # (== (val $LinePrmt) $Indent)
-  %52 = icmp eq i8* %51, bitcast ([4 x i8]* @$Indent to i8*)
+; # (val $ContPrmt)
+  %52 = load i8*, i8** @$ContPrmt
+; # (== (val $LinePrmt) (val $ContPrmt))
+  %53 = icmp eq i8* %51, %52
   br label %$22
 $22:
-  %53 = phi i8* [%45, %$20], [%50, %$23] ; # P
-  %54 = phi i1 [1, %$20], [%52, %$23] ; # ->
-  br i1 %54, label %$24, label %$25
+  %54 = phi i8* [%45, %$20], [%50, %$23] ; # P
+  %55 = phi i1 [1, %$20], [%53, %$23] ; # ->
+  br i1 %55, label %$24, label %$25
 $24:
-  %55 = phi i8* [%53, %$22] ; # P
+  %56 = phi i8* [%54, %$22] ; # P
 ; # (err 0 0 $Empty null)
   call void @err(i64 0, i64 0, i8* bitcast ([1 x i8]* @$Empty to i8*), i8* null)
   unreachable
 $25:
-  %56 = phi i8* [%53, %$22] ; # P
+  %57 = phi i8* [%54, %$22] ; # P
 ; # (bye 0)
   call void @bye(i32 0)
   unreachable
 $21:
-  %57 = phi i8* [%43, %$18] ; # P
-; # (set $LinePrmt $Indent)
-  store i8* bitcast ([4 x i8]* @$Indent to i8*), i8** @$LinePrmt
+  %58 = phi i8* [%43, %$18] ; # P
+; # (set $LinePrmt (val $ContPrmt))
+; # (val $ContPrmt)
+  %59 = load i8*, i8** @$ContPrmt
+  store i8* %59, i8** @$LinePrmt
 ; # (unless (or (=0 (val P)) (== @ 32) (and (currentLine) (=0 (strcmp...
 ; # (or (=0 (val P)) (== @ 32) (and (currentLine) (=0 (strcmp @ P))))...
 ; # (val P)
-  %58 = load i8, i8* %57
+  %60 = load i8, i8* %58
 ; # (=0 (val P))
-  %59 = icmp eq i8 %58, 0
-  br i1 %59, label %$26, label %$27
+  %61 = icmp eq i8 %60, 0
+  br i1 %61, label %$26, label %$27
 $27:
-  %60 = phi i8* [%57, %$21] ; # P
+  %62 = phi i8* [%58, %$21] ; # P
 ; # (== @ 32)
-  %61 = icmp eq i8 %58, 32
-  br i1 %61, label %$26, label %$28
+  %63 = icmp eq i8 %60, 32
+  br i1 %63, label %$26, label %$28
 $28:
-  %62 = phi i8* [%60, %$27] ; # P
+  %64 = phi i8* [%62, %$27] ; # P
 ; # (and (currentLine) (=0 (strcmp @ P)))
 ; # (currentLine)
-  %63 = call i8* @currentLine()
-  %64 = icmp ne i8* %63, null
-  br i1 %64, label %$30, label %$29
+  %65 = call i8* @currentLine()
+  %66 = icmp ne i8* %65, null
+  br i1 %66, label %$30, label %$29
 $30:
-  %65 = phi i8* [%62, %$28] ; # P
+  %67 = phi i8* [%64, %$28] ; # P
 ; # (strcmp @ P)
-  %66 = call i32 @strcmp(i8* %63, i8* %65)
+  %68 = call i32 @strcmp(i8* %65, i8* %67)
 ; # (=0 (strcmp @ P))
-  %67 = icmp eq i32 %66, 0
+  %69 = icmp eq i32 %68, 0
   br label %$29
 $29:
-  %68 = phi i8* [%62, %$28], [%65, %$30] ; # P
-  %69 = phi i1 [0, %$28], [%67, %$30] ; # ->
+  %70 = phi i8* [%64, %$28], [%67, %$30] ; # P
+  %71 = phi i1 [0, %$28], [%69, %$30] ; # ->
   br label %$26
 $26:
-  %70 = phi i8* [%57, %$21], [%60, %$27], [%68, %$29] ; # P
-  %71 = phi i1 [1, %$21], [1, %$27], [%69, %$29] ; # ->
-  br i1 %71, label %$32, label %$31
+  %72 = phi i8* [%58, %$21], [%62, %$27], [%70, %$29] ; # P
+  %73 = phi i1 [1, %$21], [1, %$27], [%71, %$29] ; # ->
+  br i1 %73, label %$32, label %$31
 $31:
-  %72 = phi i8* [%70, %$26] ; # P
+  %74 = phi i8* [%72, %$26] ; # P
 ; # (add_history P)
-  call void @add_history(i8* %72)
+  call void @add_history(i8* %74)
   br label %$32
 $32:
-  %73 = phi i8* [%70, %$26], [%72, %$31] ; # P
+  %75 = phi i8* [%72, %$26], [%74, %$31] ; # P
   br label %$19
 $19:
-  %74 = phi i8* [%38, %$7], [%73, %$32] ; # P
+  %76 = phi i8* [%38, %$7], [%75, %$32] ; # P
 ; # (nond ((val P) (set $LinePtr null) (char "^J")) (NIL (set $LinePt...
 ; # (val P)
-  %75 = load i8, i8* %74
-  %76 = icmp ne i8 %75, 0
-  br i1 %76, label %$34, label %$35
+  %77 = load i8, i8* %76
+  %78 = icmp ne i8 %77, 0
+  br i1 %78, label %$34, label %$35
 $35:
-  %77 = phi i8* [%74, %$19] ; # P
+  %79 = phi i8* [%76, %$19] ; # P
 ; # (set $LinePtr null)
   store i8* null, i8** @$LinePtr
   br label %$33
 $34:
-  %78 = phi i8* [%74, %$19] ; # P
+  %80 = phi i8* [%76, %$19] ; # P
 ; # (set $LinePtr (inc P))
 ; # (inc P)
-  %79 = getelementptr i8, i8* %78, i32 1
-  store i8* %79, i8** @$LinePtr
+  %81 = getelementptr i8, i8* %80, i32 1
+  store i8* %81, i8** @$LinePtr
 ; # (i32 @)
-  %80 = zext i8 %75 to i32
+  %82 = zext i8 %77 to i32
   br label %$33
 $33:
-  %81 = phi i8* [%77, %$35], [%78, %$34] ; # P
-  %82 = phi i32 [10, %$35], [%80, %$34] ; # ->
+  %83 = phi i8* [%79, %$35], [%80, %$34] ; # P
+  %84 = phi i32 [10, %$35], [%82, %$34] ; # ->
   br label %$2
 $2:
-  %83 = phi i32 [-1, %$4], [%37, %$15], [%82, %$33] ; # ->
-  store i32 %83, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 80) to i32*)
-  ret i32 %83
+  %85 = phi i32 [-1, %$4], [%37, %$15], [%84, %$33] ; # ->
+  store i32 %85, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 80) to i32*)
+  ret i32 %85
 }
 
 define i32 @getChar(i32) {
@@ -52504,7 +52508,9 @@ $26:
 $17:
   %161 = phi i64 [%126, %$19], [%139, %$23], [%140, %$26] ; # X
   %162 = phi i8* [null, %$19], [%1, %$23], [%156, %$26] ; # ->
-; # (prog1 (read1 (if (isatty 0) (char "^J") (i32 0))) (while (gt0 (v...
+; # (prog2 (set $ContPrmt ($ "   ")) (read1 (if (isatty 0) (char "^J"...
+; # (set $ContPrmt ($ "   "))
+  store i8* bitcast ([4 x i8]* @$45 to i8*), i8** @$ContPrmt
 ; # (if (isatty 0) (char "^J") (i32 0))
 ; # (isatty 0)
   %163 = call i32 @isatty(i32 0)
@@ -52522,6 +52528,10 @@ $29:
   %168 = phi i32 [10, %$27], [0, %$28] ; # ->
 ; # (read1 (if (isatty 0) (char "^J") (i32 0)))
   %169 = call i64 @read1(i32 %168)
+; # (set $LinePrmt (set $ContPrmt null))
+; # (set $ContPrmt null)
+  store i8* null, i8** @$ContPrmt
+  store i8* null, i8** @$LinePrmt
 ; # (while (gt0 (val $Chr)) (? (== (val $Chr) (char "^J")) (set $Chr ...
   br label %$30
 $30:
@@ -52678,7 +52688,7 @@ $52:
   %230 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 440) to i64) to i64*
   store i64 %225, i64* %230
 ; # (outString ($ "-> "))
-  call void @outString(i8* bitcast ([4 x i8]* @$45 to i8*))
+  call void @outString(i8* bitcast ([4 x i8]* @$46 to i8*))
 ; # (flushAll)
   call void @flushAll()
 ; # (print X)
@@ -52830,7 +52840,7 @@ $8:
 $9:
   %20 = phi i64 [%8, %$3] ; # X
 ; # (repl Exe ($ "> ") @)
-  %21 = call i64 @repl(i64 %0, i8* bitcast ([3 x i8]* @$46 to i8*), i64 %16)
+  %21 = call i64 @repl(i64 %0, i8* bitcast ([3 x i8]* @$47 to i8*), i64 %16)
   br label %$10
 $10:
   %22 = phi i64 [%18, %$8], [%20, %$9] ; # X
@@ -52855,7 +52865,7 @@ $12:
 define void @dbfErr(i64) {
 $1:
 ; # (err Exe 0 ($ "Bad DB file") null)
-  call void @err(i64 %0, i64 0, i8* bitcast ([12 x i8]* @$47 to i8*), i8* null)
+  call void @err(i64 %0, i64 0, i8* bitcast ([12 x i8]* @$48 to i8*), i8* null)
   unreachable
 }
 
@@ -52864,7 +52874,7 @@ $1:
 ; # (strErrno)
   %0 = call i8* @strErrno()
 ; # (err 0 0 ($ "DB read: %s") (strErrno))
-  call void @err(i64 0, i64 0, i8* bitcast ([12 x i8]* @$48 to i8*), i8* %0)
+  call void @err(i64 0, i64 0, i8* bitcast ([12 x i8]* @$49 to i8*), i8* %0)
   unreachable
 }
 
@@ -52873,14 +52883,14 @@ $1:
 ; # (strErrno)
   %0 = call i8* @strErrno()
 ; # (err 0 0 ($ "DB write: %s") (strErrno))
-  call void @err(i64 0, i64 0, i8* bitcast ([13 x i8]* @$49 to i8*), i8* %0)
+  call void @err(i64 0, i64 0, i8* bitcast ([13 x i8]* @$50 to i8*), i8* %0)
   unreachable
 }
 
 define void @jnlErr(i64) {
 $1:
 ; # (err Exe 0 ($ "Bad Journal") null)
-  call void @err(i64 %0, i64 0, i8* bitcast ([12 x i8]* @$50 to i8*), i8* null)
+  call void @err(i64 %0, i64 0, i8* bitcast ([12 x i8]* @$51 to i8*), i8* null)
   unreachable
 }
 
@@ -52889,7 +52899,7 @@ $1:
 ; # (strErrno)
   %1 = call i8* @strErrno()
 ; # (err Exe 0 ($ "DB fsync error: %s") (strErrno))
-  call void @err(i64 %0, i64 0, i8* bitcast ([19 x i8]* @$51 to i8*), i8* %1)
+  call void @err(i64 %0, i64 0, i8* bitcast ([19 x i8]* @$52 to i8*), i8* %1)
   unreachable
 }
 
@@ -53453,7 +53463,7 @@ $11:
 ; # (strErrno)
   %41 = call i8* @strErrno()
 ; # (err 0 0 ($ "Journal write: %s") (strErrno))
-  call void @err(i64 0, i64 0, i8* bitcast ([18 x i8]* @$52 to i8*), i8* %41)
+  call void @err(i64 0, i64 0, i8* bitcast ([18 x i8]* @$53 to i8*), i8* %41)
   unreachable
 $12:
   br label %$5
@@ -53551,7 +53561,7 @@ $4:
 ; # (strErrno)
   %25 = call i8* @strErrno()
 ; # (err 0 0 ($ "Log write: %s") (strErrno))
-  call void @err(i64 0, i64 0, i8* bitcast ([14 x i8]* @$53 to i8*), i8* %25)
+  call void @err(i64 0, i64 0, i8* bitcast ([14 x i8]* @$54 to i8*), i8* %25)
   unreachable
 $5:
   ret void
@@ -53623,7 +53633,7 @@ $5:
 $8:
   %30 = phi i64 [%28, %$5] ; # N
 ; # (err 0 0 ($ "DB Oversize") null)
-  call void @err(i64 0, i64 0, i8* bitcast ([12 x i8]* @$54 to i8*), i8* null)
+  call void @err(i64 0, i64 0, i8* bitcast ([12 x i8]* @$55 to i8*), i8* null)
   unreachable
 $7:
   %31 = phi i64 [%28, %$5] ; # N
@@ -54631,7 +54641,7 @@ $32:
 define void @ignLog() {
 $1:
 ; # (stderrMsg ($ "Discarding incomplete transaction^J") null)
-  %0 = call i8* @stderrMsg(i8* bitcast ([35 x i8]* @$55 to i8*), i8* null)
+  %0 = call i8* @stderrMsg(i8* bitcast ([35 x i8]* @$56 to i8*), i8* null)
   ret void
 }
 
@@ -54791,7 +54801,7 @@ $8:
 define void @restore(i64) {
 $1:
 ; # (stderrMsg ($ "Last transaction not completed: Rollback^J") null)...
-  %1 = call i8* @stderrMsg(i8* bitcast ([42 x i8]* @$56 to i8*), i8* null)
+  %1 = call i8* @stderrMsg(i8* bitcast ([42 x i8]* @$57 to i8*), i8* null)
 ; # (let Log (val $DbLog) (fseek0 Log) (let (Db (val $DbFiles) C (val...
 ; # (val $DbLog)
   %2 = load i8*, i8** @$DbLog
@@ -54969,7 +54979,7 @@ $4:
 ; # (strErrno)
   %6 = call i8* @strErrno()
 ; # (err Exe 0 ($ "Log truncate error: %s") (strErrno))
-  call void @err(i64 %0, i64 0, i8* bitcast ([23 x i8]* @$57 to i8*), i8* %6)
+  call void @err(i64 %0, i64 0, i8* bitcast ([23 x i8]* @$58 to i8*), i8* %6)
   unreachable
 $5:
   ret void
@@ -55543,7 +55553,7 @@ $38:
 ; # (pathString Nm (b8 (pathSize Nm)))
   %304 = call i8* @pathString(i64 %301, i8* %303)
 ; # (fopen (pathString Nm (b8 (pathSize Nm))) ($ "a"))
-  %305 = call i8* @fopen(i8* %304, i8* bitcast ([2 x i8]* @$58 to i8*))
+  %305 = call i8* @fopen(i8* %304, i8* bitcast ([2 x i8]* @$59 to i8*))
   %306 = icmp ne i8* %305, null
   br i1 %306, label %$41, label %$40
 $40:
@@ -55579,7 +55589,7 @@ $42:
 ; # (pathString Nm (b8 (pathSize Nm)))
   %316 = call i8* @pathString(i64 %313, i8* %315)
 ; # (fopen (pathString Nm (b8 (pathSize Nm))) ($ "a+"))
-  %317 = call i8* @fopen(i8* %316, i8* bitcast ([3 x i8]* @$59 to i8*))
+  %317 = call i8* @fopen(i8* %316, i8* bitcast ([3 x i8]* @$60 to i8*))
   %318 = icmp ne i8* %317, null
   br i1 %318, label %$45, label %$44
 $44:
@@ -55864,7 +55874,7 @@ $6:
 ; # (pathString Nm (b8 (pathSize Nm)))
   %27 = call i8* @pathString(i64 %24, i8* %26)
 ; # (fopen (pathString Nm (b8 (pathSize Nm))) ($ "r"))
-  %28 = call i8* @fopen(i8* %27, i8* bitcast ([2 x i8]* @$60 to i8*))
+  %28 = call i8* @fopen(i8* %27, i8* bitcast ([2 x i8]* @$61 to i8*))
 ; # (unless Fp (openErr Exe Sym))
   %29 = icmp ne i8* %28, null
   br i1 %29, label %$8, label %$7
@@ -57236,7 +57246,7 @@ $21:
   %157 = phi i64 [%146, %$3] ; # Nm
   %158 = phi i32 [%147, %$3] ; # F
 ; # (err Exe Sym ($ "Bad ID") null)
-  call void @err(i64 %0, i64 %1, i8* bitcast ([7 x i8]* @$61 to i8*), i8* null)
+  call void @err(i64 %0, i64 %1, i8* bitcast ([7 x i8]* @$62 to i8*), i8* null)
   unreachable
 $22:
   %159 = phi i64 [%146, %$3] ; # Nm
@@ -58161,7 +58171,7 @@ $50:
 ; # (strErrno)
   %301 = call i8* @strErrno()
 ; # (err Exe 0 ($ "Transaction fsync error: %s") (strErrno))
-  call void @err(i64 %0, i64 0, i8* bitcast ([28 x i8]* @$62 to i8*), i8* %301)
+  call void @err(i64 %0, i64 0, i8* bitcast ([28 x i8]* @$63 to i8*), i8* %301)
   unreachable
 $51:
   %302 = phi i64 [%287, %$49] ; # Args
@@ -59780,7 +59790,7 @@ $22:
   %91 = phi i64 [%82, %$20] ; # Syms
   %92 = phi i64 [%83, %$20] ; # Blks
 ; # (mkStr ($ "Circular free list"))
-  %93 = call i64 @mkStr(i8* bitcast ([19 x i8]* @$63 to i8*))
+  %93 = call i64 @mkStr(i8* bitcast ([19 x i8]* @$64 to i8*))
 ; # (goto 9)
   br label %$-9
 $23:
@@ -59899,7 +59909,7 @@ $33:
   %152 = phi i64 [%142, %$31] ; # P
   %153 = phi i8 [%143, %$31] ; # I
 ; # (mkStr ($ "Bad chain"))
-  %154 = call i64 @mkStr(i8* bitcast ([10 x i8]* @$64 to i8*))
+  %154 = call i64 @mkStr(i8* bitcast ([10 x i8]* @$65 to i8*))
 ; # (goto 9)
   br label %$-9
 $34:
@@ -60022,7 +60032,7 @@ $44:
   %225 = phi i64 [%220, %$39] ; # Syms
   %226 = phi i64 [%221, %$39] ; # Blks
 ; # (mkStr ($ "Bad count"))
-  %227 = call i64 @mkStr(i8* bitcast ([10 x i8]* @$65 to i8*))
+  %227 = call i64 @mkStr(i8* bitcast ([10 x i8]* @$66 to i8*))
   br label %$42
 $43:
   %228 = phi i64 [%218, %$39] ; # Y
@@ -67321,7 +67331,7 @@ $1:
 ; # (fun (void i8) _putStdout)
   store void(i8)* @_putStdout, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 88) to void(i8)**)
 ; # (outString ($ "# "))
-  call void @outString(i8* bitcast ([3 x i8]* @$66 to i8*))
+  call void @outString(i8* bitcast ([3 x i8]* @$67 to i8*))
 ; # (print Sym)
   call void @print(i64 %0)
 ; # (when Sym2 (space) (print @))
@@ -67335,7 +67345,7 @@ $2:
   br label %$3
 $3:
 ; # (outString ($ " redefined^J"))
-  call void @outString(i8* bitcast ([12 x i8]* @$67 to i8*))
+  call void @outString(i8* bitcast ([12 x i8]* @$68 to i8*))
 ; # (set (i8** $Put) Put $OutFile Out)
 ; # (i8** $Put)
   %9 = bitcast void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 88) to void(i8)**) to i8**
@@ -68487,7 +68497,7 @@ $20:
   %87 = phi i64 [%83, %$18] ; # Fun
   %88 = phi i64 [%84, %$18] ; # L
 ; # (err Exe Msg ($ "Bad message") null)
-  call void @err(i64 %0, i64 %19, i8* bitcast ([12 x i8]* @$68 to i8*), i8* null)
+  call void @err(i64 %0, i64 %19, i8* bitcast ([12 x i8]* @$69 to i8*), i8* null)
   unreachable
 $21:
   %89 = phi i64 [%82, %$18] ; # X
@@ -69755,7 +69765,7 @@ $11:
   br label %$13
 $12:
 ; # (err Exe Key ($ "Bad message") null)
-  call void @err(i64 %0, i64 %1, i8* bitcast ([12 x i8]* @$68 to i8*), i8* null)
+  call void @err(i64 %0, i64 %1, i8* bitcast ([12 x i8]* @$69 to i8*), i8* null)
   unreachable
 $13:
   %38 = phi i64 [%37, %$11] ; # ->
@@ -70749,7 +70759,7 @@ $16:
   br label %$18
 $17:
 ; # (err Exe Msg ($ "Bad message") null)
-  call void @err(i64 %0, i64 %15, i8* bitcast ([12 x i8]* @$68 to i8*), i8* null)
+  call void @err(i64 %0, i64 %15, i8* bitcast ([12 x i8]* @$69 to i8*), i8* null)
   unreachable
 $18:
   %57 = phi i64 [%56, %$16] ; # ->
@@ -70966,7 +70976,7 @@ $8:
 $9:
   %26 = phi i64 [%23, %$8] ; # Lst
 ; # (err Exe Key ($ "Bad super") null)
-  call void @err(i64 %0, i64 %12, i8* bitcast ([10 x i8]* @$69 to i8*), i8* null)
+  call void @err(i64 %0, i64 %12, i8* bitcast ([10 x i8]* @$70 to i8*), i8* null)
   unreachable
 $10:
   %27 = phi i64 [%23, %$8] ; # Lst
@@ -71204,7 +71214,7 @@ $1:
   br i1 %6, label %$2, label %$3
 $2:
 ; # (err Exe Key ($ "Bad extra") null)
-  call void @err(i64 %0, i64 %2, i8* bitcast ([10 x i8]* @$70 to i8*), i8* null)
+  call void @err(i64 %0, i64 %2, i8* bitcast ([10 x i8]* @$71 to i8*), i8* null)
   unreachable
 $3:
 ; # (let (TypS (val $Typ) KeyS (val $Key)) (set $Typ (val $Ret) $Key ...
@@ -78090,7 +78100,7 @@ $18:
 $14:
   %64 = phi i8* [%43, %$12] ; # Ca
 ; # (err Exe Tag ($ "Tag not found") null)
-  call void @err(i64 %0, i64 %15, i8* bitcast ([14 x i8]* @$71 to i8*), i8* null)
+  call void @err(i64 %0, i64 %15, i8* bitcast ([14 x i8]* @$72 to i8*), i8* null)
   unreachable
 }
 
@@ -78237,7 +78247,7 @@ $13:
 define void @reentErr(i64, i64) {
 $1:
 ; # (err Exe Tag ($ "Reentrant coroutine") null)
-  call void @err(i64 %0, i64 %1, i8* bitcast ([20 x i8]* @$72 to i8*), i8* null)
+  call void @err(i64 %0, i64 %1, i8* bitcast ([20 x i8]* @$73 to i8*), i8* null)
   unreachable
 }
 
@@ -78727,7 +78737,7 @@ $8:
   br i1 %213, label %$41, label %$40
 $41:
 ; # (err Exe 0 ($ "Can't stop main routine") null)
-  call void @err(i64 %0, i64 0, i8* bitcast ([24 x i8]* @$73 to i8*), i8* null)
+  call void @err(i64 %0, i64 0, i8* bitcast ([24 x i8]* @$74 to i8*), i8* null)
   unreachable
 $40:
 ; # (val $Coroutines)
@@ -78853,7 +78863,7 @@ $7:
 $12:
   %38 = phi i8* [%36, %$7] ; # Crt
 ; # (err Exe 0 ($ "No coroutines") null)
-  call void @err(i64 %0, i64 0, i8* bitcast ([14 x i8]* @$74 to i8*), i8* null)
+  call void @err(i64 %0, i64 0, i8* bitcast ([14 x i8]* @$75 to i8*), i8* null)
   unreachable
 $13:
   %39 = phi i8* [%36, %$7] ; # Crt
@@ -78911,7 +78921,7 @@ $18:
 $23:
   %62 = phi i8* [%60, %$18] ; # Crt
 ; # (err Exe Tag ($ "Coroutine not found") null)
-  call void @err(i64 %0, i64 %35, i8* bitcast ([20 x i8]* @$75 to i8*), i8* null)
+  call void @err(i64 %0, i64 %35, i8* bitcast ([20 x i8]* @$76 to i8*), i8* null)
   unreachable
 $24:
   %63 = phi i8* [%60, %$18] ; # Crt
@@ -78934,7 +78944,7 @@ $26:
 $25:
   %72 = phi i8* [%66, %$15] ; # Crt
 ; # (err Exe 0 ($ "Tag expected") null)
-  call void @err(i64 %0, i64 0, i8* bitcast ([13 x i8]* @$76 to i8*), i8* null)
+  call void @err(i64 %0, i64 0, i8* bitcast ([13 x i8]* @$77 to i8*), i8* null)
   unreachable
 $14:
   %73 = phi i8* [%64, %$19], [%71, %$26] ; # Crt
@@ -79990,7 +80000,7 @@ $8:
 ; # (newline)
   call void @newline()
 ; # (repl 0 ($ "! ") $Nil)
-  %57 = call i64 @repl(i64 0, i8* bitcast ([3 x i8]* @$77 to i8*), i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64))
+  %57 = call i64 @repl(i64 0, i8* bitcast ([3 x i8]* @$78 to i8*), i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64))
 ; # (popOutFiles)
   call void @popOutFiles()
 ; # (when Term (setRaw))
@@ -80106,7 +80116,7 @@ $1:
   br i1 %3, label %$3, label %$2
 $2:
 ; # (err Exe 0 ($ "No Break") null)
-  call void @err(i64 %0, i64 0, i8* bitcast ([9 x i8]* @$78 to i8*), i8* null)
+  call void @err(i64 %0, i64 0, i8* bitcast ([9 x i8]* @$79 to i8*), i8* null)
   unreachable
 $3:
 ; # (let (Dbg (save (val $Dbg)) At (save (val $At)) Run (save (val $R...
@@ -80468,7 +80478,7 @@ $3:
 ; # (trace (set $Trace (inc (val $Trace))) Y)
   call void @trace(i32 %56, i64 %48)
 ; # (outString ($ " :"))
-  call void @outString(i8* bitcast ([3 x i8]* @$79 to i8*))
+  call void @outString(i8* bitcast ([3 x i8]* @$80 to i8*))
 ; # (while (pair Z) (space) (print (val (++ Z))))
   br label %$16
 $16:
@@ -80637,7 +80647,7 @@ $29:
   %132 = sub i32 %131, 1
   store i32 %132, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 184) to i32*)
 ; # (outString ($ " = "))
-  call void @outString(i8* bitcast ([4 x i8]* @$80 to i8*))
+  call void @outString(i8* bitcast ([4 x i8]* @$81 to i8*))
 ; # (print @)
   call void @print(i64 %127)
 ; # (newline)
@@ -80909,7 +80919,7 @@ $17:
 $19:
   %68 = phi i64 [%65, %$17] ; # X
 ; # (err Exe 0 ($ "wait pid") null)
-  call void @err(i64 %0, i64 0, i8* bitcast ([9 x i8]* @$81 to i8*), i8* null)
+  call void @err(i64 %0, i64 0, i8* bitcast ([9 x i8]* @$82 to i8*), i8* null)
   unreachable
 $20:
   %69 = phi i64 [%65, %$17] ; # X
@@ -80974,7 +80984,7 @@ $30:
 $25:
   %93 = phi i64 [%78, %$24] ; # X
 ; # (repl 0 ($ "+ ") $Nil)
-  %94 = call i64 @repl(i64 0, i8* bitcast ([3 x i8]* @$82 to i8*), i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64))
+  %94 = call i64 @repl(i64 0, i8* bitcast ([3 x i8]* @$83 to i8*), i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64))
 ; # (when (val Termio) (tcsetpgrp 0 Pid))
 ; # (val Termio)
   %95 = load i8*, i8** @Termio
@@ -81246,7 +81256,7 @@ $9:
 define void @makeErr(i64) {
 $1:
 ; # (err Exe 0 ($ "Not making") null)
-  call void @err(i64 %0, i64 0, i8* bitcast ([11 x i8]* @$83 to i8*), i8* null)
+  call void @err(i64 %0, i64 0, i8* bitcast ([11 x i8]* @$84 to i8*), i8* null)
   unreachable
 }
 
@@ -98875,7 +98885,7 @@ $4:
   %26 = phi i64 [%14, %$2], [%15, %$5] ; # X
   %27 = phi i64 [0, %$2], [%25, %$5] ; # ->
 ; # (err 0 (if (atom (shift X)) 0 (eval (car X))) ($ "%s") Msg)
-  call void @err(i64 0, i64 %27, i8* bitcast ([3 x i8]* @$84 to i8*), i8* %8)
+  call void @err(i64 0, i64 %27, i8* bitcast ([3 x i8]* @$85 to i8*), i8* %8)
   unreachable
 }
 
@@ -99195,7 +99205,7 @@ $3:
   br label %$4
 $4:
   %12 = phi i64 [%6, %$2], [%7, %$3] ; # X
-  %13 = phi i8* [bitcast ([2 x i8]* @$85 to i8*), %$2], [%11, %$3] ; # ->
+  %13 = phi i8* [bitcast ([2 x i8]* @$86 to i8*), %$2], [%11, %$3] ; # ->
 ; # (getDir (if (nil? (evSym X)) ($ ".") (let Nm (xName Exe @) (pathS...
   %14 = call i8* @getDir(i8* %13)
   %15 = icmp ne i8* %14, null
@@ -100440,7 +100450,7 @@ $4:
 define void @natErr(i64) {
 $1:
 ; # (err 0 Spec ($ "Bad result spec") null)
-  call void @err(i64 0, i64 %0, i8* bitcast ([16 x i8]* @$86 to i8*), i8* null)
+  call void @err(i64 0, i64 %0, i8* bitcast ([16 x i8]* @$87 to i8*), i8* null)
   unreachable
 }
 
@@ -101028,7 +101038,7 @@ $7:
 $9:
   %30 = phi i64 [%23, %$7] ; # Spec
 ; # (err Exe 0 ($ "Bad ffi") null)
-  call void @err(i64 %0, i64 0, i8* bitcast ([8 x i8]* @$87 to i8*), i8* null)
+  call void @err(i64 %0, i64 0, i8* bitcast ([8 x i8]* @$88 to i8*), i8* null)
   unreachable
 $10:
   %31 = phi i64 [%23, %$7] ; # Spec
@@ -101756,7 +101766,7 @@ $16:
 ; # (dlerror)
   %45 = call i8* @dlerror()
 ; # (err Exe Y ($ "[DLL] %s") (dlerror))
-  call void @err(i64 %0, i64 %15, i8* bitcast ([9 x i8]* @$88 to i8*), i8* %45)
+  call void @err(i64 %0, i64 %15, i8* bitcast ([9 x i8]* @$89 to i8*), i8* %45)
   unreachable
 $17:
   %46 = phi i64 [%38, %$14] ; # X
@@ -102583,7 +102593,7 @@ $10:
   %32 = phi i64 [%29, %$8] ; # P
   %33 = phi i8** [%30, %$8] ; # Q
 ; # (err Exe 0 ($ "Too many callbacks") null)
-  call void @err(i64 %0, i64 0, i8* bitcast ([19 x i8]* @$89 to i8*), i8* null)
+  call void @err(i64 %0, i64 0, i8* bitcast ([19 x i8]* @$90 to i8*), i8* null)
   unreachable
 $11:
   %34 = phi i64 [%29, %$8] ; # P
@@ -104087,7 +104097,7 @@ $1:
 ; # (val P)
   %6 = load i8*, i8** %5
 ; # (strcmp (val P) ($ "+"))
-  %7 = call i32 @strcmp(i8* %6, i8* bitcast ([2 x i8]* @$90 to i8*))
+  %7 = call i32 @strcmp(i8* %6, i8* bitcast ([2 x i8]* @$91 to i8*))
   %8 = icmp ne i32 %7, 0
   br i1 %8, label %$3, label %$2
 $2:
@@ -104180,7 +104190,7 @@ $7:
   %41 = phi i8** [%17, %$4], [%40, %$13] ; # Av
 ; # (when (getenv ($ "HOME")) (set $UsrHome @ $UsrLen (strlen @)))
 ; # (getenv ($ "HOME"))
-  %42 = call i8* @getenv(i8* bitcast ([5 x i8]* @$91 to i8*))
+  %42 = call i8* @getenv(i8* bitcast ([5 x i8]* @$92 to i8*))
   %43 = icmp ne i8* %42, null
   br i1 %43, label %$14, label %$15
 $14:
@@ -104440,58 +104450,59 @@ $26:
 $27:
   %151 = phi i8** [%150, %$26], [%151, %$27] ; # Av
 ; # (repl 0 ($ ": ") $Nil)
-  %152 = call i64 @repl(i64 0, i8* bitcast ([3 x i8]* @$92 to i8*), i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64))
+  %152 = call i64 @repl(i64 0, i8* bitcast ([3 x i8]* @$93 to i8*), i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([850 x i64]* @SymTab to i8*), i32 8) to i64))
   br label %$27
 }
 
-@$92 = private constant [3 x i8] c": \00"
-@$91 = private constant [5 x i8] c"HOME\00"
-@$90 = private constant [2 x i8] c"+\00"
-@$89 = private constant [19 x i8] c"Too many callbacks\00"
-@$88 = private constant [9 x i8] c"[DLL] %s\00"
-@$87 = private constant [8 x i8] c"Bad ffi\00"
-@$86 = private constant [16 x i8] c"Bad result spec\00"
-@$85 = private constant [2 x i8] c".\00"
-@$84 = private constant [3 x i8] c"%s\00"
-@$83 = private constant [11 x i8] c"Not making\00"
-@$82 = private constant [3 x i8] c"+ \00"
-@$81 = private constant [9 x i8] c"wait pid\00"
-@$80 = private constant [4 x i8] c" = \00"
-@$79 = private constant [3 x i8] c" :\00"
-@$78 = private constant [9 x i8] c"No Break\00"
-@$77 = private constant [3 x i8] c"! \00"
-@$76 = private constant [13 x i8] c"Tag expected\00"
-@$75 = private constant [20 x i8] c"Coroutine not found\00"
-@$74 = private constant [14 x i8] c"No coroutines\00"
-@$73 = private constant [24 x i8] c"Can't stop main routine\00"
-@$72 = private constant [20 x i8] c"Reentrant coroutine\00"
-@$71 = private constant [14 x i8] c"Tag not found\00"
-@$70 = private constant [10 x i8] c"Bad extra\00"
-@$69 = private constant [10 x i8] c"Bad super\00"
-@$68 = private constant [12 x i8] c"Bad message\00"
-@$67 = private constant [12 x i8] c" redefined\0A\00"
-@$66 = private constant [3 x i8] c"# \00"
-@$65 = private constant [10 x i8] c"Bad count\00"
-@$64 = private constant [10 x i8] c"Bad chain\00"
-@$63 = private constant [19 x i8] c"Circular free list\00"
-@$62 = private constant [28 x i8] c"Transaction fsync error: %s\00"
-@$61 = private constant [7 x i8] c"Bad ID\00"
-@$60 = private constant [2 x i8] c"r\00"
-@$59 = private constant [3 x i8] c"a+\00"
-@$58 = private constant [2 x i8] c"a\00"
-@$57 = private constant [23 x i8] c"Log truncate error: %s\00"
-@$56 = private constant [42 x i8] c"Last transaction not completed: Rollback\0A\00"
-@$55 = private constant [35 x i8] c"Discarding incomplete transaction\0A\00"
-@$54 = private constant [12 x i8] c"DB Oversize\00"
-@$53 = private constant [14 x i8] c"Log write: %s\00"
-@$52 = private constant [18 x i8] c"Journal write: %s\00"
-@$51 = private constant [19 x i8] c"DB fsync error: %s\00"
-@$50 = private constant [12 x i8] c"Bad Journal\00"
-@$49 = private constant [13 x i8] c"DB write: %s\00"
-@$48 = private constant [12 x i8] c"DB read: %s\00"
-@$47 = private constant [12 x i8] c"Bad DB file\00"
-@$46 = private constant [3 x i8] c"> \00"
-@$45 = private constant [4 x i8] c"-> \00"
+@$93 = private constant [3 x i8] c": \00"
+@$92 = private constant [5 x i8] c"HOME\00"
+@$91 = private constant [2 x i8] c"+\00"
+@$90 = private constant [19 x i8] c"Too many callbacks\00"
+@$89 = private constant [9 x i8] c"[DLL] %s\00"
+@$88 = private constant [8 x i8] c"Bad ffi\00"
+@$87 = private constant [16 x i8] c"Bad result spec\00"
+@$86 = private constant [2 x i8] c".\00"
+@$85 = private constant [3 x i8] c"%s\00"
+@$84 = private constant [11 x i8] c"Not making\00"
+@$83 = private constant [3 x i8] c"+ \00"
+@$82 = private constant [9 x i8] c"wait pid\00"
+@$81 = private constant [4 x i8] c" = \00"
+@$80 = private constant [3 x i8] c" :\00"
+@$79 = private constant [9 x i8] c"No Break\00"
+@$78 = private constant [3 x i8] c"! \00"
+@$77 = private constant [13 x i8] c"Tag expected\00"
+@$76 = private constant [20 x i8] c"Coroutine not found\00"
+@$75 = private constant [14 x i8] c"No coroutines\00"
+@$74 = private constant [24 x i8] c"Can't stop main routine\00"
+@$73 = private constant [20 x i8] c"Reentrant coroutine\00"
+@$72 = private constant [14 x i8] c"Tag not found\00"
+@$71 = private constant [10 x i8] c"Bad extra\00"
+@$70 = private constant [10 x i8] c"Bad super\00"
+@$69 = private constant [12 x i8] c"Bad message\00"
+@$68 = private constant [12 x i8] c" redefined\0A\00"
+@$67 = private constant [3 x i8] c"# \00"
+@$66 = private constant [10 x i8] c"Bad count\00"
+@$65 = private constant [10 x i8] c"Bad chain\00"
+@$64 = private constant [19 x i8] c"Circular free list\00"
+@$63 = private constant [28 x i8] c"Transaction fsync error: %s\00"
+@$62 = private constant [7 x i8] c"Bad ID\00"
+@$61 = private constant [2 x i8] c"r\00"
+@$60 = private constant [3 x i8] c"a+\00"
+@$59 = private constant [2 x i8] c"a\00"
+@$58 = private constant [23 x i8] c"Log truncate error: %s\00"
+@$57 = private constant [42 x i8] c"Last transaction not completed: Rollback\0A\00"
+@$56 = private constant [35 x i8] c"Discarding incomplete transaction\0A\00"
+@$55 = private constant [12 x i8] c"DB Oversize\00"
+@$54 = private constant [14 x i8] c"Log write: %s\00"
+@$53 = private constant [18 x i8] c"Journal write: %s\00"
+@$52 = private constant [19 x i8] c"DB fsync error: %s\00"
+@$51 = private constant [12 x i8] c"Bad Journal\00"
+@$50 = private constant [13 x i8] c"DB write: %s\00"
+@$49 = private constant [12 x i8] c"DB read: %s\00"
+@$48 = private constant [12 x i8] c"Bad DB file\00"
+@$47 = private constant [3 x i8] c"> \00"
+@$46 = private constant [4 x i8] c"-> \00"
+@$45 = private constant [4 x i8] c"   \00"
 @$44 = private constant [4 x i8] c" . \00"
 @$43 = private constant [6 x i8] c"priv~\00"
 @$42 = private constant [27 x i8] c"Super parentheses mismatch\00"

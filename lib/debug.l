@@ -1,4 +1,4 @@
-# 27oct20 Software Lab. Alexander Burger
+# 12nov20 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -67,6 +67,7 @@
          (flush)
          (T (atom M) (prinl))
          (T (line) T)
+         (prinl)
          (Fun (++ M)) ) ) )
 
 (de less (X N)

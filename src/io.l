@@ -1,4 +1,4 @@
-# 10nov20 Software Lab. Alexander Burger
+# 12nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1178,10 +1178,10 @@ selectErr)
                      (flushAll)
                      (unless (setq P (set $LineBuf (readline (val $LinePrmt))))
                         (wrnl)
-                        (when (or (val $Bind) (== (val $LinePrmt) $Indent))
+                        (when (or (val $Bind) (== (val $LinePrmt) (val $ContPrmt)))
                            (err 0 0 $Empty null) )  # quit
                         (bye 0) )
-                     (set $LinePrmt $Indent)
+                     (set $LinePrmt (val $ContPrmt))
                      (unless
                         (or
                            (=0 (val P))
@@ -2662,11 +2662,13 @@ selectErr)
                            (bufString Nm P)
                            (strcpy (ofs P (dec N)) Prmt)
                            (set $LinePrmt P) ) ) )
-                  (prog1
+                  (prog2
+                     (set $ContPrmt ($ "   "))
                      (read1
                         (if (isatty 0)
                            (char "\n")
                            (i32 0) ) )
+                     (set $LinePrmt (set $ContPrmt null))
                      (while (gt0 (val $Chr))
                         (? (== (val $Chr) (char "\n"))
                            (set $Chr 0) )
