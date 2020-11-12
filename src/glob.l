@@ -1,4 +1,4 @@
-# 02nov20 Software Lab. Alexander Burger
+# 12nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -120,7 +120,6 @@
    ($At3 "@@@" $Nil)
    ($This "This" $Nil)
    ($Prompt "*Prompt" $Nil)
-   ($Complete "*Complete" $Nil)
    ($Zap "*Zap" $Nil)
    ($Ext "*Ext" $Nil)
    ($Scl "*Scl" ZERO)
@@ -139,6 +138,7 @@
    ($Fork "*Fork" $Nil)
    ($Bye "*Bye" $Nil)
    ($Dbg "*Dbg" $Nil)
+   ($Complete "complete" $Nil)
    # Garbage collection
    (NIL "gc" _gc)
    # Arithmetics

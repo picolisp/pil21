@@ -1,4 +1,4 @@
-# 03nov20 Software Lab. Alexander Burger
+# 12nov20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -341,9 +341,9 @@
          (push "Var" (cons Key Val)) ) ) )
 
 ### REPL ###
-(de *Complete (S)
+(de complete (S)
    (when S
-      (setq "*Tabs"
+      (setq "*Cmpl"
          (if (=T S)
             (list "   ")
             (conc
@@ -369,7 +369,7 @@
                                  (pack F "/")
                                  F ) ) ) )
                      (dir P T) ) ) ) ) ) )
-   (pop '"*Tabs") )
+   (pop '"*Cmpl") )
 
 ### Pretty Printing ###
 (de pretty (X N)
