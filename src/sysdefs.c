@@ -1,4 +1,4 @@
-// 30oct20 Software Lab. Alexander Burger
+// 14nov20 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdint.h>
@@ -80,6 +80,7 @@ int main(void) {
    num("addrinfo", sizeof(struct addrinfo));
    num("ai_family", (char*)&ai.ai_family - (char*)&ai);
    num("ai_socktype", (char*)&ai.ai_socktype - (char*)&ai);
+   num("socklen_t", sizeof(socklen_t));
    num("ai_addrlen", (char*)&ai.ai_addrlen - (char*)&ai);
    num("ai_addr", (char*)&ai.ai_addr - (char*)&ai);
    num("ai_next", (char*)&ai.ai_next - (char*)&ai);

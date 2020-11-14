@@ -1,4 +1,4 @@
-# 30oct20 Software Lab. Alexander Burger
+# 14nov20 Software Lab. Alexander Burger
 
 (sysdefs "errno")
 (sysdefs "networking")
@@ -108,7 +108,7 @@
                         (=0
                            (%@ "getnameinfo" 'I
                               (struct (+ P ai_addr) 'P)
-                              (struct (+ P ai_addrlen) 'N)
+                              (struct (+ P ai_addrlen) 'I)
                               Host
                               NI_MAXHOST
                               0
@@ -151,7 +151,7 @@
                         (=0
                            (%@ "connect" 'I Sd
                               (struct (+ P ai_addr) 'P)
-                              (struct (+ P ai_addrlen) 'N) ) )
+                              (struct (+ P ai_addrlen) 'I) ) )
                         (nil (close Sd)) ) )
                   (%@ "closeOnExec" NIL (cons T (up)) Sd)
                   (%@ "initInFile" NIL Sd 0)
@@ -185,7 +185,7 @@
                               0 ) )
                         (%@ "sendto" 'I @ Buf N 0
                            (struct (+ P ai_addr) 'P)
-                           (struct (+ P ai_addrlen) 'N) )
+                           (struct (+ P ai_addrlen) 'I) )
                         (close @)
                         (%@ "freeaddrinfo" 'I Lst)
                         Val )
