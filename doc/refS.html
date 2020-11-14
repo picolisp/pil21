@@ -294,31 +294,30 @@ href="ref.html#dbase">Database</a> and <a href="ref.html#pilog">Pilog</a>.
 
 <pre><code>
 : (select +Item)                       # Show all items
-{3-1} (+Item)
+{B1} (+Item)
    nr 1
    pr 29900
    inv 100
-   sup {2-1}
+   sup {C1}
    nm "Main Part"
-
-{3-2} (+Item)
+{B2} (+Item)
    nr 2
    pr 1250
    inv 100
-   sup {2-2}
+   sup {C2}
    nm "Spare Part"
 .                                      # Stop
--> {3-2}
+-> {B2}
 
 : (select +Item nr 3)                  # Show only item 3
-{3-3} (+Item)
+{B3} (+Item)
    nr 3
-   sup {2-1}
+   sup {C1}
    pr 15700
    nm "Auxiliary Construction"
    inv 100
 .                                      # Stop
--> {3-3}
+-> {B3}
 
 # Show selected attributes for items 3 through 3
 : (select nr nm pr (sup nm) +Item nr (3 . 5))
