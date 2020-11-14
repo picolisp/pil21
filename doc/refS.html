@@ -142,7 +142,7 @@ href="refT.html#tolr/3">tolr/3</a></code>.
       ((nr +Item @Nr) (nm +Item @Nm))
       (same @Nr @Item nr)
       (head @Nm @Item nm) ) )
- @Nr=2 @Nm="Spare" @Item={3-2}
+ @Nr=2 @Nm="Spare" @Item={B2}
 </code></pre>
 
 <dt><a name="scan"><code>(scan 'tree ['fun] ['any1] ['any2] ['flg])</code></a>
@@ -161,27 +161,26 @@ href="refS.html#step">step</a></code>.
 
 <pre><code>
 : (scan (tree 'nm '+Item))
-("ASLRSNSTRSTN" {3-3} . T) {3-3}
-("Additive" {3-4}) {3-4}
-("Appliance" {3-6}) {3-6}
-("Auxiliary Construction" . {3-3}) {3-3}
-("Construction" {3-3}) {3-3}
-("ENNSNNTTTF" {3-4} . T) {3-4}
-("Enhancement Additive" . {3-4}) {3-4}
-("Fittings" {3-5}) {3-5}
-("GTSTFLNS" {3-6} . T) {3-6}
-("Gadget Appliance" . {3-6}) {3-6}
+("ASLRSNSTRSTN" {B3} . T) {B3}
+("Additive" {B4}) {B4}
+("Appliance" {B6}) {B6}
+("Auxiliary Construction" . {B3}) {B3}
+("Construction" {B3}) {B3}
+("ENNSNNTTTF" {B4} . T) {B4}
+("Enhancement Additive" . {B4}) {B4}
+("Fittings" {B5}) {B5}
+("GTSTFLNS" {B6} . T) {B6}
+("Gadget Appliance" . {B6}) {B6}
 ...
 
 : (scan (tree 'nm '+Item) println NIL T T)  # 'flg' is non-NIL
-("Auxiliary Construction" . {3-3}) {3-3}
-("Enhancement Additive" . {3-4}) {3-4}
-("Gadget Appliance" . {3-6}) {3-6}
-("Main Part" . {3-1}) {3-1}
-("Metal Fittings" . {3-5}) {3-5}
-("Spare Part" . {3-2}) {3-2}
-("Testartikel" . {3-8}) {3-8}
--> {7-6}
+("Auxiliary Construction" . {B3}) {B3}
+("Enhancement Additive" . {B4}) {B4}
+("Gadget Appliance" . {B6}) {B6}
+("Main Part" . {B1}) {B1}
+("Metal Fittings" . {B5}) {B5}
+("Spare Part" . {B2}) {B2}
+-> NIL
 </code></pre>
 
 <dt><a name="scl"><code>(scl 'num [. prg]) -> num</code></a>
@@ -289,8 +288,8 @@ values (this is analog to 'SELECT * from CLS where VAR = VAL'). If between the
 are supplied, only these attribute (instead of the full <code>show</code>) are
 printed. These attribute specifications may also be lists, then the <code><a
 href="refG.html#get">get</a></code> algorithm will be used to retrieve related
-data. See also <code><a href="refU.html#update">update</a></code>, <a
-href="ref.html#dbase">Database</a> and <a href="ref.html#pilog">Pilog</a>.
+data. See also <a href="ref.html#dbase">Database</a> and <a
+href="ref.html#pilog">Pilog</a>.
 
 <pre><code>
 : (select +Item)                       # Show all items
@@ -300,6 +299,7 @@ href="ref.html#dbase">Database</a> and <a href="ref.html#pilog">Pilog</a>.
    inv 100
    sup {C1}
    nm "Main Part"
+
 {B2} (+Item)
    nr 2
    pr 1250
@@ -321,9 +321,9 @@ href="ref.html#dbase">Database</a> and <a href="ref.html#pilog">Pilog</a>.
 
 # Show selected attributes for items 3 through 3
 : (select nr nm pr (sup nm) +Item nr (3 . 5))
-3 "Auxiliary Construction" 157.00 "Active Parts Inc." {3-3}
-4 "Enhancement Additive" 9.99 "Seven Oaks Ltd." {3-4}
-5 "Metal Fittings" 79.80 "Active Parts Inc." {3-5}
+3 "Auxiliary Construction" 157.00 "Active Parts Inc." {B3}
+4 "Enhancement Additive" 9.99 "Seven Oaks Ltd." {B4}
+5 "Metal Fittings" 79.80 "Active Parts Inc." {B5}
 -> NIL
 </code></pre>
 
@@ -352,8 +352,8 @@ href="refR.html#remote/2">remote/2</a></code>.
       ((nr +Item @Nr) (nm +CuSu @Sup (sup +Item)))  # Generator clauses
       (range @Nr @Item nr)                          # Filter clauses
       (part @Sup @Item sup nm) ) )
- @Nr=(2 . 5) @Sup="Active" @Item={3-3}
- @Nr=(2 . 5) @Sup="Active" @Item={3-5}
+ @Nr=(2 . 5) @Sup="Active" @Item={B3}
+ @Nr=(2 . 5) @Sup="Active" @Item={B5}
 -> NIL
 </code></pre>
 
@@ -461,13 +461,13 @@ href="refS.html#show">show</a></code>.
 
 <pre><code>
 : (? (db nr +Item 2 @Item) (show @Item))
-{3-2} (+Item)
+{B2} (+Item)
    nm "Spare Part"
    nr 2
    pr 1250
    inv 100
-   sup {2-2}
- @Item={3-2}
+   sup {C2}
+ @Item={B2}
 -> NIL
 </code></pre>
 
@@ -760,7 +760,7 @@ href="refF.html#fetch">fetch</a></code>.
 
 <pre><code>
 : (setq Q (init (tree 'nr '+Item) 3 5))
--> (((3 . 5) ((3 NIL . {3-3}) (4 NIL . {3-4}) (5 NIL . {3-5}) (6 NIL . {3-6}) (7 NIL . {3-8}))))
+-> (((3 . 5) ((3 NIL . {B3}) (4 NIL . {B4}) (5 NIL . {B5}) (6 NIL . {B6}))))
 : (get (step Q) 'nr)
 -> 3
 : (get (step Q) 'nr)
@@ -781,7 +781,7 @@ database block size (defaulting to 256). When <code>any2</code> is
 href="refF.html#fetch">fetch</a></code>.
 
 <pre><code>
-: (store (tree 'nr '+Item) 2 '{3-2})
+: (store (tree 'nr '+Item) 2 '{B2})
 </code></pre>
 
 <dt><a name="str"><code>(str 'sym ['sym1]) -> lst</code></a>

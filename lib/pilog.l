@@ -1,4 +1,4 @@
-# 27oct20 Software Lab. Alexander Burger
+# 14nov20 Software Lab. Alexander Burger
 
 # *Rule
 
@@ -87,7 +87,8 @@
             (print '=)
             (print (cdr X))
             (flush) )
-         (T (line)) ) ) )
+         (T (line))
+         (prinl) ) ) )
 
 (de ? CL
    (let L

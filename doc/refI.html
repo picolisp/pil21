@@ -61,10 +61,10 @@ an external symbol, or an external symbol to a number or a pair of numbers.
 -> {7}
 : (id 1 2)
 -> {2}
-: (id '{1-2})
+: (id '{A2})
 -> 2
-: (id '{1-2} T)
--> (1 . 2)
+: (id '{A2} T)
+-> (2 . 2)
 </code></pre>
 
 <dt><a name="idx"><code>(idx 'var 'any 'flg) -> lst<br>
@@ -310,7 +310,7 @@ href="refS.html#scan">scan</a></code>.
 
 <pre><code>
 : (init (tree 'nr '+Item) 3 5)
--> (((3 . 5) ((3 NIL . {3-3}) (4 NIL . {3-4}) (5 NIL . {3-5}) (6 NIL . {3-6}) (7 NIL . {3-8}))))
+-> (((3 . 5) ((3 NIL . {B3}) (4 NIL . {B4}) (5 NIL . {B5}) (6 NIL . {B6}))))
 </code></pre>
 
 <dt><a name="insert"><code>(insert 'cnt 'lst 'any) -> lst</code></a>
@@ -376,7 +376,7 @@ href="refO.html#object">object</a></code>.
 
 <pre><code>
 : (isa '+Address Obj)
--> {1-17}
+-> {A17}
 : (isa '(+Male +Person) Obj)
 -> NIL
 </code></pre>
@@ -397,10 +397,10 @@ href="refT.html#tolr/3">tolr/3</a></code>.
 
 <pre><code>
 : (? (db nm +Person @Prs) (isa +Woman @Prs) (val @Nm @Prs nm))
- @Prs={2-Y} @Nm="Alexandra of Denmark"
- @Prs={2-1I} @Nm="Alice Maud Mary"
- @Prs={2-F} @Nm="Anne"
- @Prs={2-j} @Nm="Augusta Victoria".   # Stop
+ @Prs={A44} @Nm="Alexandra of Denmark"
+ @Prs={A124} @Nm="Alice Maud Mary"
+ @Prs={A21} @Nm="Anne"
+ @Prs={A57} @Nm="Augusta Victoria".  # Stop
 </code></pre>
 
 <dt><a name="iter"><code>(iter 'tree ['fun] ['any1] ['any2] ['flg])</code></a>
@@ -419,14 +419,13 @@ href="refS.html#step">step</a></code>.
 
 <pre><code>
 : (iter (tree 'nr '+Item))
-{3-1}
-{3-2}
-{3-3}
-{3-4}
-{3-5}
-{3-6}
-{3-8}
--> {7-1}
+{B1}
+{B2}
+{B3}
+{B4}
+{B5}
+{B6}
+-> NIL
 : (iter (tree 'nr '+Item) '((This) (println (: nm))))
 "Main Part"
 "Spare Part"
@@ -435,7 +434,7 @@ href="refS.html#step">step</a></code>.
 "Metal Fittings"
 "Gadget Appliance"
 "Testartikel"
--> {7-1}
+-> NIL
 </code></pre>
 
 </dl>

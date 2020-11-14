@@ -267,15 +267,15 @@ href="refP.html#pack">pack</a></code>.
 
 <pre><code>
 : (show (db 'nr '+Item 1))
-{3-1} (+Item)
+{B1} (+Item)
    jpg
    pr 29900
    inv 100
-   sup {2-1}
+   sup {C1}
    nm "Main Part"
    nr 1
--> {3-1}
-: (blob '{3-1} 'jpg)
+-> {B1}
+: (blob '{B1} 'jpg)
 -> "blob/app/3/-/1.jpg"
 </code></pre>
 
@@ -321,7 +321,7 @@ href="refT.html#tolr/3">tolr/3</a></code>.
 : (? @OK T           # Find orders where the 'ok' flag is set
    (db nr +Ord @Ord)
    (bool @OK @Ord ok) )
- @OK=T @Ord={3-7}
+ @OK=T @Ord={B7}
 -> NIL
 </code></pre>
 

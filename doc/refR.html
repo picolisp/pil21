@@ -166,8 +166,8 @@ href="refT.html#tolr/3">tolr/3</a></code>.
       ((nr +Item @Nr) (nm +Item @Nm))
       (range @Nr @Item nr)
       (part @Nm @Item nm) ) )
- @Nr=(1 . 5) @Nm="part" @Item={3-1}
- @Nr=(1 . 5) @Nm="part" @Item={3-2}
+ @Nr=(1 . 5) @Nm="part" @Item={B1}
+ @Nr=(1 . 5) @Nm="part" @Item={B2}
 -> NIL
 </code></pre>
 
@@ -469,13 +469,13 @@ href="refD.html#db/3">db/3</a></code>.
       (db nr +Item @Nr @Item)
       (val @Sup @Item sup nr) )
    (show @Item) )
-{L-2} (+Item)
+{AF2} (+Item)
    pr 1250
    inv 100
-   sup {K-2}
-   nm Spare Part
+   sup {AG2}
+   nm "Spare Part"
    nr 2
- @Nr=(1 . 3) @Sup=2 @Rsrc=((((X) (ext 20 (out 16 (pr X)))) NIL (ext 20 (in 16 (rd))))) @Item={L-2}
+ @Nr=(1 . 3) @Sup=2 @Rsrc=((((X) (ext 20 (out 3 (pr X)))) NIL (ext 20 (in 3 (rd))))) @Item={AF2}
 -> NIL
 </code></pre>
 
@@ -567,7 +567,7 @@ href="refO.html#obj">obj</a></code>.
 
 <pre><code>
 : (request '(+Item) 'nr 2)
--> {3-2}
+-> {B2}
 </code></pre>
 
 <dt><a name="request!"><code>(request! 'typ 'sym ['hook] 'val ..) -> obj</code></a>
@@ -710,7 +710,7 @@ href="refT.html#tree">tree</a></code>.
 
 <pre><code>
 : (root (tree 'nr '+Item))
--> (7 . {7-1})
+-> (6 . {H1})
 </code></pre>
 
 <dt><a name="rot"><code>(rot 'lst ['cnt]) -> lst</code></a>

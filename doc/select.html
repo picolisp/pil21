@@ -87,7 +87,7 @@ less than 100:
 </code></pre>
 
 <p>This expression will return, with the default database setup of "app/init.l",
-a list of exactly one item <code>({3-2})</code>, the item with the number 2.
+a list of exactly one item <code>({B2})</code>, the item with the number 2.
 
 <p>The <code><a href="refL.html#let">let</a></code> statement assigns values to
 the search parameters for number <code>Nr</code>, description <code>Nm</code>
@@ -177,16 +177,16 @@ B-Tree. The clause
 
 <pre><code>
 : (? (db nr +Item (1 . 4) @Item))
- @Item={3-1}
- @Item={3-2}
- @Item={3-3}
- @Item={3-4}
+ @Item={B1}
+ @Item={B2}
+ @Item={B3}
+ @Item={B4}
 -> NIL
 : (? (select (@Item) ((nr +Item (1 . 4)))))
- @Item={3-1}
- @Item={3-2}
- @Item={3-3}
- @Item={3-4}
+ @Item={B1}
+ @Item={B2}
+ @Item={B3}
+ @Item={B4}
 -> NIL
 </code></pre>
 

@@ -395,14 +395,14 @@ mechanism. All external symbol's file numbers are decremented by
 input.
 
 <pre><code>
-: (out 'a (ext 5 (pr '({6-2} ({8-9} . a) ({7-7} . b)))))
--> ({6-2} ({8-9} . a) ({7-7} . b))
+: (out 'a (ext 5 (pr '({A2} ({C4} . a) ({B7} . b)))))
+-> ({A2} ({C4} . a) ({B7} . b))
 
 : (in 'a (rd))
--> ({2} ({3-9} . a) ({2-7} . b))
+-> ({OOOL2} ({OOON4} . a) ({OOOM7} . b))
 
 : (in 'a (ext 5 (rd)))
--> ({6-2} ({8-9} . a) ({7-7} . b))
+-> ({A2} ({C4} . a) ({B7} . b))
 </code></pre>
 
 <dt><a name="ext?"><code>(ext? 'any) -> sym | NIL</code></a>

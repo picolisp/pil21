@@ -1,4 +1,4 @@
-# 21sep20 Software Lab. Alexander Burger
+# 14nov20 Software Lab. Alexander Burger
 
 # (select [var ..] cls [hook|T] [var val ..])
 (de select Lst
@@ -72,7 +72,8 @@
                         (T (print (get Obj Var))) )
                      (space) )
                   (print Obj) )
-               (T (line) Obj) ) ) ) ) )
+               (T (line) Obj)
+               (prinl) ) ) ) ) )
 
 (dm (print> . +relation) (Val)
    (print Val) )
@@ -82,11 +83,3 @@
 
 (dm (print> . +Date) (Val)
    (print (datStr Val)) )
-
-
-# (update 'obj ['var])
-(de update (Var Obj)
-   (bind Var
-      (set Var (get Obj Var))
-      (when (vi (list Var))
-         (put!> Obj Var (val Var)) ) ) )
