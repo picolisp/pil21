@@ -1,0 +1,5 @@
+#!/usr/bin/picolisp /usr/lib/picolisp/lib.l
+(load "@lib/net.l" "@lib/misc.l" "@lib/btree.l" "@lib/db.l" "@lib/pilog.l")
+
+`*Dbg
+(docs "@doc/")

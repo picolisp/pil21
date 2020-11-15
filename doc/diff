@@ -1,4 +1,4 @@
-# 06nov20 Software Lab. Alexander Burger
+# 15nov20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -15,6 +15,7 @@
 + 'native'
    * 'W', 'P' and 'T' result specifications
    * (T . any) direct Lisp argument
+   * Number of fixpoint arguments not limited
 + '%@' function
 + 'struct'
    * Useful atomic result specifications
