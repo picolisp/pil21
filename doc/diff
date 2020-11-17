@@ -1,4 +1,4 @@
-# 15nov20 Software Lab. Alexander Burger
+# 17nov20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -40,7 +40,6 @@
 - Second argument to 'name' (i.e. renaming) is not supported
 - Lambda-binding environment offset for 'eval' and 'run' only for '@'
 - 'T' argument to 'native' changed: No skipped call
-- Because of readline(3), '*Run' tasks are suspended while typing in the REPL
 - 'pil' is not needed
 
 % '*Run' cleared in children: 'forked' is not needed

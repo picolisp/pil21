@@ -42718,11 +42718,22 @@ $2:
   ret void
 }
 
-define i32 @waitTty() {
+define i32 @rlGetc(i64, i64) {
 $1:
+; # (if (waitFd 0 0 292MY) (stdinByte) 0)
 ; # (waitFd 0 0 292MY)
-  %0 = call i64 @waitFd(i64 0, i32 0, i64 9223372036854775807)
-  ret i32 0
+  %2 = call i64 @waitFd(i64 0, i32 0, i64 9223372036854775807)
+  %3 = icmp ne i64 %2, 0
+  br i1 %3, label %$2, label %$3
+$2:
+; # (stdinByte)
+  %4 = call i32 @stdinByte()
+  br label %$4
+$3:
+  br label %$4
+$4:
+  %5 = phi i32 [%4, %$2], [0, %$3] ; # ->
+  ret i32 %5
 }
 
 define i32 @_getStdin() {
