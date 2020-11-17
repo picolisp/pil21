@@ -42736,6 +42736,15 @@ $4:
   ret i32 %4
 }
 
+define i32 @rlAvail() {
+$1:
+; # (waitFd 0 0 60)
+  %0 = call i64 @waitFd(i64 0, i32 0, i64 60)
+; # (i32 (waitFd 0 0 60))
+  %1 = trunc i64 %0 to i32
+  ret i32 %1
+}
+
 define i32 @_getStdin() {
 $1:
 ; # (let In: (inFile (val $InFile)) (set $Chr (cond ((=0 (In:)) -1) (...

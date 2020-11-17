@@ -116,9 +116,11 @@ static char *tabEntry(const char *text, int stat) {
 
 void initReadline(void) {
    extern int rlGetc(FILE*);
+   extern int rlAvail(void);
 
    rl_catch_signals = 0;
    rl_getc_function = rlGetc;
+   rl_input_available_hook = rlAvail;
    rl_completion_entry_function = tabEntry;
    rl_special_prefixes = "$%&*+-<=>?@";
    rl_basic_quote_characters = NULL;

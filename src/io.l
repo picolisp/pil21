@@ -1155,6 +1155,9 @@ selectErr)
       (stdinByte)
       -1 ) )
 
+(de i32 rlAvail ()
+   (i32 (waitFd 0 0 60)) )
+
 (de i32 _getStdin ()
    (let In: (inFile (val $InFile))
       (set $Chr
