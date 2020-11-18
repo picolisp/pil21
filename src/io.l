@@ -1,4 +1,4 @@
-# 17nov20 Software Lab. Alexander Burger
+# 18nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1280,6 +1280,7 @@ selectErr)
          YES )
       (? (<> (char "\n") (setq Chr (call $Get)))  # Backslash: Skip '\'
          (case Chr
+            ((char "b") (set $Chr (char "\b")))
             ((char "n") (set $Chr (char "\n")))
             ((char "r") (set $Chr (char "\r")))
             ((char "t") (set $Chr (char "\t")))

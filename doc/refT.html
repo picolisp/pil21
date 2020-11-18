@@ -581,6 +581,21 @@ href="refE.html#extra">extra</a></code>.
 -> NIL
 </code></pre>
 
+<dt><a name="tty"><code>(tty . prg) -> any</code></a>
+<dd>Redirects the current output channel to the terminal (stdout) during the
+execution of <code>prg</code>. The current output channel and the state of
+<code>readline(3)</code> will be saved and restored appropriately. See also
+<code><a href="refO.html#out">out</a></code>.
+
+<pre><code>
+: (task -2000 0 (tty (println (inc (0)))))
+-> (-2000 0 (tty (println (inc (0)))))
+1
+2
+3
+: (* 3 4)  # Typed while numbers are printed
+</code></pre>
+
 <dt><a name="type"><code>(type 'any) -> lst</code></a>
 <dd>Return the type (list of classes) of the object <code>sym</code>. See also
 <a href="ref.html#oop">OO Concepts</a>, <code><a

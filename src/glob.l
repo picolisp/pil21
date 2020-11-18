@@ -1,4 +1,4 @@
-# 12nov20 Software Lab. Alexander Burger
+# 17nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -484,6 +484,7 @@
    (NIL "group" _group)
    (NIL "sort" _sort)
    # System functions
+   (NIL "tty" _tty)
    (NIL "raw" _raw)
    (NIL "alarm" _alarm)
    (NIL "sigio" _sigio)

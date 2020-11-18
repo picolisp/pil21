@@ -1,4 +1,4 @@
-// 21sep20 Software Lab. Alexander Burger
+// 18nov20 Software Lab. Alexander Burger
 
 #include <stdint.h>
 #include <string.h>
@@ -19,8 +19,6 @@
 #include <sys/time.h>
 #include <sys/stat.h>
 #include <sys/socket.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 
 typedef void (*sighandler_t)(int);
 

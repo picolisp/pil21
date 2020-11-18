@@ -1,4 +1,4 @@
-// 17nov20 Software Lab. Alexander Burger
+// 18nov20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -107,6 +107,9 @@ char *getDir(char *nm) {
 }
 
 // Readline
+#include <readline/readline.h>
+#include <readline/history.h>
+
 static char *tabEntry(const char *text, int stat) {
    extern char *tabComplete(const char*);
 
@@ -126,6 +129,22 @@ void initReadline(void) {
    rl_basic_quote_characters = NULL;
 }
 
+void rlHide(void) {
+   int i = rl_end;
+
+   if (rl_readline_state & RL_STATE_INITIALIZED  &&  !(rl_readline_state & RL_STATE_DONE)) {
+      do  //? rl_clear_visible_line()
+         putchar('\b'), putchar(' '), putchar('\b');
+      while (i-- >= 0);  // Length + 2
+      fflush(stdout);
+   }
+}
+
+void rlShow(void) {
+   if (rl_readline_state & RL_STATE_INITIALIZED  &&  !(rl_readline_state & RL_STATE_DONE))
+      rl_forced_update_display();
+}
+
 void rlSigBeg(void) {
    rl_free_line_state();
    rl_cleanup_after_signal();
@@ -135,7 +154,7 @@ void rlSigEnd(void) {
    rl_reset_after_signal();
 }
 
-char *currentLine() {
+char *currentLine(void) {
    HIST_ENTRY *h;
 
    return (h = history_get(history_length))? h->line : NULL;

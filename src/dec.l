@@ -1,4 +1,4 @@
-# 24oct20 Software Lab. Alexander Burger
+# 18nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -179,9 +179,11 @@ truncate0 socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (de T void fcntlSetOwn(i32 i32))
 (de T i8* getDir (i8*))
 
-(local) (initReadline rlSigBeg rlSigEnd currentLine)
+(local) (initReadline rlHide rlShow rlSigBeg rlSigEnd currentLine)
 
 (de T void initReadline ())
+(de T void rlHide ())
+(de T void rlShow ())
 (de T void rlSigBeg ())
 (de T void rlSigEnd ())
 (de T i8* currentLine ())

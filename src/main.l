@@ -1,4 +1,4 @@
-# 02nov20 Software Lab. Alexander Burger
+# 18nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -429,6 +429,18 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                         (? (or (nil? (car Z)) (t? (car Z)))
                            0 ) )
                      (? (not (nil? Y)) 0) ) ) ) ) ) ) )
+
+# (tty . prg) -> any
+(de _tty (Exe)
+   (let (Out (val $OutFile)  Put (val (i8** $Put)))
+      (set
+         $OutFile (val 2 (val $OutFiles))  # Stdout
+         $Put (fun (void i8) _putStdout) )
+      (rlHide)
+      (prog1
+         (run (cdr Exe))
+         (rlShow)
+         (set (i8** $Put) Put  $OutFile Out) ) ) )
 
 # (raw ['flg]) -> flg
 (de _raw (Exe)

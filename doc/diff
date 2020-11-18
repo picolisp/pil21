@@ -1,4 +1,4 @@
-# 17nov20 Software Lab. Alexander Burger
+# 18nov20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -26,6 +26,7 @@
 + 'intern' accepts namespace argument
 + 'plio' function
 + 'buf' function
++ 'tty' function
 + Various runtime checks
 + Lists of symbols as function parameters (destructuring, one-dimensional)
 + '*Winch' global SIGWINCH handler
