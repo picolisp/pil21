@@ -1,4 +1,4 @@
-# 09oct20 Software Lab. Alexander Burger
+# 19nov20 Software Lab. Alexander Burger
 
 # *JS "*JS" *Style *SsEvts *Menu *Tab *ID
 
@@ -483,10 +483,10 @@
                   ((=T (car L))
                      (nond
                         ((setq U (eval (cadr L) E))
-                           (<li> (pack 'cmd N)
+                           (<li> (pack "cmd" N)
                               (ht:Prin (eval (car L) E)) ) )
                         ((pair U)
-                           (<li> (pack (if (= U *Url) 'act 'cmd) N)
+                           (<li> (pack (if (= U *Url) "act" "cmd") N)
                               (<tip> "-->"
                                  (<href> (eval (car L) E)
                                     (urlMT U *Menu (if (= U *Url) *Tab 1)
@@ -495,7 +495,7 @@
                         (NIL
                            (<href> (eval (car L) E) (car U) (cdr U)) ) ) )
                   ((bit? M *Menu)
-                     (<li> (pack 'sub N)
+                     (<li> (pack "sub" N)
                         (<tip> ,"Open submenu"
                            (<href>
                               (eval (cadr L) E)
@@ -507,7 +507,7 @@
                               (recurse X)
                               (setq M (>> -1 M)) ) ) ) )
                   (NIL
-                     (<li> (pack 'top N)
+                     (<li> (pack "top" N)
                         (<tip> ,"Close submenu"
                            (<href>
                               (eval (cadr L) E)
@@ -524,11 +524,11 @@
 
 # Tabs
 (de <tab> Lst
-   (<table> 'tab NIL NIL
+   (<table> "tab" NIL NIL
       (for (N . L) Lst
          (if (= N *Tab)
-            (<td> 'top (ht:Prin (eval (car L) 1)))
-            (<td> 'sub
+            (<td> "top" (ht:Prin (eval (car L) 1)))
+            (<td> "sub"
                (<href> (eval (car L) 1) (urlMT *Url *Menu N *ID)) ) ) ) )
    (htPrin (get Lst *Tab -1)) )
 
