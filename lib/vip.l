@@ -1193,14 +1193,15 @@ nextBuf shell shFile prCmd reset command vi)
       (inc (:: posY) (dec (length L))) ) )
 
 (de evCmd Prg
-   (out (tmp "repl")
-      (err NIL
-         (catch '(NIL)
-            (setq @ *@  *@ (run Prg 1) *Msg)
-            (println '-> *@) ) )
-      (and *Msg (prinl @)) )
-   (in (tmp "repl")
-      (prCmd (rdLines)) ) )
+   (let R (tmp "repl")
+      (out R
+         (err NIL
+            (catch '(NIL)
+               (setq @ *@  *@ (run Prg 1) *Msg)
+               (println '-> *@) ) )
+         (and *Msg (prinl @)) )
+      (in R
+         (prCmd (rdLines)) ) ) )
 
 (de reset ()
    (off *Count *Change)
