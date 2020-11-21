@@ -43491,7 +43491,7 @@ $13:
   br i1 %25, label %$16, label %$15
 $16:
   %26 = phi i32 [%24, %$13] ; # Chr
-; # (case Chr ((char "b") (set $Chr (char "^H"))) ((char "n") (set $C...
+; # (case Chr ((char "b") (set $Chr (char "b"))) ((char "n") (set $Ch...
   switch i32 %26, label %$17 [
     i32 98, label %$19
     i32 110, label %$20
@@ -43500,8 +43500,8 @@ $16:
   ]
 $19:
   %27 = phi i32 [%26, %$16] ; # Chr
-; # (set $Chr (char "^H"))
-  store i32 8, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 80) to i32*)
+; # (set $Chr (char "b"))
+  store i32 98, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 80) to i32*)
   br label %$18
 $20:
   %28 = phi i32 [%26, %$16] ; # Chr
@@ -43594,7 +43594,7 @@ $26:
   br label %$18
 $18:
   %59 = phi i32 [%27, %$19], [%28, %$20], [%29, %$21], [%30, %$22], [%58, %$26] ; # Chr
-  %60 = phi i32 [8, %$19], [10, %$20], [13, %$21], [9, %$22], [%58, %$26] ; # ->
+  %60 = phi i32 [98, %$19], [10, %$20], [13, %$21], [9, %$22], [%58, %$26] ; # ->
   br label %$4
 $15:
   %61 = phi i32 [%24, %$13] ; # Chr
