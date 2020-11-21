@@ -3950,11 +3950,11 @@ $1:
   %2 = bitcast void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 88) to void(i8)**) to i8**
 ; # (val (i8** $Put))
   %3 = load i8*, i8** %2
-; # (set $OutFile (val 2 (val $OutFiles)) $Put (fun (void i8) _putStd...
+; # (set $OutFile (val 3 (val $OutFiles)) $Put (fun (void i8) _putStd...
 ; # (val $OutFiles)
   %4 = load i8**, i8*** @$OutFiles
-; # (val 2 (val $OutFiles))
-  %5 = getelementptr i8*, i8** %4, i32 1
+; # (val 3 (val $OutFiles))
+  %5 = getelementptr i8*, i8** %4, i32 2
   %6 = load i8*, i8** %5
   store i8* %6, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([24 x i64]* @env to i8*), i32 112) to i8**)
 ; # (fun (void i8) _putStdout)

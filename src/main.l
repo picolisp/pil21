@@ -1,4 +1,4 @@
-# 18nov20 Software Lab. Alexander Burger
+# 21nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -434,7 +434,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de _tty (Exe)
    (let (Out (val $OutFile)  Put (val (i8** $Put)))
       (set
-         $OutFile (val 2 (val $OutFiles))  # Stdout
+         $OutFile (val 3 (val $OutFiles))  # Stderr
          $Put (fun (void i8) _putStdout) )
       (rlHide)
       (prog1
