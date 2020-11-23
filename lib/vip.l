@@ -1,4 +1,4 @@
-# 20nov20 Software Lab. Alexander Burger
+# 23nov20 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1352,6 +1352,13 @@ nextBuf shell shFile prCmd reset command vi)
                            (get (: buffer text)
                               (=: posY
                                  (min1 (: posY) (length (: buffer text))) ) ) ) ) )
+                  (when
+                     (or
+                        (> (: winX) (: posX))
+                        (> (: winY) (: posY)) )
+                     (=: winX (min1 (: posX) (: winX)))
+                     (=: winY (min1 (: posY) (: winY)))
+                     (redraw) )
                   (cursor)
                   (case (getch)
                      ("0"
