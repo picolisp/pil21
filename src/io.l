@@ -1,4 +1,4 @@
-# 18nov20 Software Lab. Alexander Burger
+# 23nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2651,13 +2651,12 @@ selectErr)
             (let Y
                (ifn (== (val $InFile) (val (val $InFiles)))  # Stdin
                   (read1 0)
-                  (cond
-                     ((=0 Prmt) (set $LinePrmt null))
-                     ((or
+                  (set $LinePrmt
+                     (if
+                        (or
                            (nil? (runAt (val $Prompt)))
                            (not (symb? @)) )
-                        (set $LinePrmt Prmt) )
-                     (T
+                        Prmt
                         (let
                            (Nm (name (val (tail @)))
                               N (bufSize Nm)
@@ -2666,7 +2665,7 @@ selectErr)
                                  (alloc (val $ReplPrmt) (+ N (strlen Prmt))) ) )
                            (bufString Nm P)
                            (strcpy (ofs P (dec N)) Prmt)
-                           (set $LinePrmt P) ) ) )
+                           P ) ) )
                   (prog2
                      (set $ContPrmt ($ "   "))
                      (read1

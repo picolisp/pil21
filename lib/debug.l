@@ -1,9 +1,9 @@
-# 12nov20 Software Lab. Alexander Burger
+# 23nov20 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
    (unless (== 'pico (car (symbols)))
-      (or (name (car (symbols))) "$") ) )
+      (name (car (symbols))) ) )
 
 (private) (_who _match nest nst1 nst2 C D M S X Y Z Fun Prg Who dep1 dep2)
 

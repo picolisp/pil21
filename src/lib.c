@@ -1,4 +1,4 @@
-// 18nov20 Software Lab. Alexander Burger
+// 23nov20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -130,12 +130,8 @@ void initReadline(void) {
 }
 
 void rlHide(void) {
-   int i = rl_end;
-
    if (rl_readline_state & RL_STATE_INITIALIZED  &&  !(rl_readline_state & RL_STATE_DONE)) {
-      do  //? rl_clear_visible_line()
-         putchar('\b'), putchar(' '), putchar('\b');
-      while (i-- >= 0);  // Length + 2
+      rl_clear_visible_line();
       fflush(stdout);
    }
 }
