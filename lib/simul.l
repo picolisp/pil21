@@ -1,4 +1,4 @@
-# 04oct20 Software Lab. Alexander Burger
+# 25nov20 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -156,7 +156,7 @@
    (: 0 -1 -1) )
 
 (local) (disp border)
-(private) (Grid How Fun X Y DX DY)
+(private) (Grid How Fun X Y DX DY N Sp)
 
 (de disp (Grid How Fun X Y DX DY)
    (setq Grid
