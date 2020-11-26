@@ -335,10 +335,7 @@
          (if (pair X)  # Not empty
             (loop
                (let (S (car X)  Nm (name (val (tail S))))
-                  (? (== Name Nm)  # Found name
-                     (if (=0 Sym)
-                        S  # Found symbol
-                        (set X Sym) ) )  # Store argument symbol
+                  (? (== Name Nm) S)  # Found symbol
                   (let Y (cdr X)  # Get link cell
                      (cond
                         ((> Name Nm)  # Symbol is smaller
@@ -357,10 +354,7 @@
          (if (pair X)  # Not empty
             (loop
                (let (S (car X)  Nm (name (val (tail S))))
-                  (? (=0 (cmpLong Nm Name))
-                     (if (=0 Sym)
-                        S  # Found symbol
-                        (set X Sym) ) )  # Store argument symbol
+                  (? (=0 (cmpLong Nm Name)) S)  # Found symbol
                   (let Y (cdr X)  # Get link cell
                      (cond
                         ((lt0 @)  # Symbol is smaller
@@ -690,7 +684,7 @@
                (cond
                   ((nil? (eval (car X)))
                      (let L (val $Intern)
-                        (intern 0 0 Nm (cdar (car L)) (cdr L)) ) )
+                        (intern Sym 0 Nm (cdar (car L)) (cdr L)) ) )
                   ((t? @)
                      (intern Sym 0 Nm (cdar (car (val $Intern))) $Nil) )
                   (T (intern Sym 0 Nm (cdar @) $Nil)) ) ) ) ) ) )
