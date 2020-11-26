@@ -1,4 +1,4 @@
-# 03nov20 Software Lab. Alexander Burger
+# 26nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -563,7 +563,7 @@
 # Build sorted list from tree
 (de consTree (P Lst)
    (if (atom P)
-      P
+      Lst
       (let
          (Q (link (push P NIL))
             L (link (push Lst NIL))

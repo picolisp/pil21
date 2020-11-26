@@ -1,4 +1,4 @@
-# 25nov20 Software Lab. Alexander Burger
+# 26nov20 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -124,7 +124,7 @@
                         (link
                            (if (> DX 26)
                               (box)
-                              (intern (pack (char (+ X 96)) Y)) ) )
+                              (intern (pack (char (+ X 96)) Y) T) ) )
                         (cons (cons) (cons)) ) ) ) ) ) )
       (let West (and FX (last Grid))
          (for (Lst Grid  Lst)

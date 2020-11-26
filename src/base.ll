@@ -23337,7 +23337,7 @@ $7:
 
 define i64 @consTree(i64, i64) {
 $1:
-; # (if (atom P) P (let (Q (link (push P NIL)) L (link (push Lst NIL)...
+; # (if (atom P) Lst (let (Q (link (push P NIL)) L (link (push Lst NI...
 ; # (atom P)
   %2 = and i64 %0, 15
   %3 = icmp ne i64 %2, 0
@@ -23568,7 +23568,7 @@ $11:
   br label %$5
 $4:
   %114 = phi i64 [%4, %$2] ; # P
-  %115 = phi i64 [%4, %$2] ; # ->
+  %115 = phi i64 [%1, %$2] ; # ->
   ret i64 %115
 }
 
