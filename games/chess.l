@@ -1,4 +1,4 @@
-# 25nov20 Software Lab. Alexander Burger
+# 27nov20 Software Lab. Alexander Burger
 # ./pil games/chess.l -chess~main +
 
 (load "@games/libChess.l")
@@ -7,13 +7,18 @@
 
 (local) (display main go ppos)
 
-### Game ###
+(dm (img> . +White) ()
+   (pack " " (name> This) " ") )
+
+(dm (img> . +Black) ()
+   (pack "<" (name> This) ">") )
+
 (de display (Res)
    (when Res
       (disp *Board T
          '((This)
             (cond
-               ((: piece) (name> @))
+               ((: piece) (img> @))
                ((: color) " - ")
                (T "   ") ) ) ) )
    (and (inCheck *You) (prinl "(+)"))
