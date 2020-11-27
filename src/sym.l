@@ -1,4 +1,4 @@
-# 26nov20 Software Lab. Alexander Burger
+# 27nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -329,13 +329,16 @@
 (local) (intern requestSym extern delNode unintern)
 
 # Intern a symbol/name
-(de intern (Sym Val Name Tree More)
+(de intern (Sym Val Name Tree More (i1 . Rpl))
    (if (cnt? Name)  # Short name
       (let X (car Tree)  # First tree
          (if (pair X)  # Not empty
             (loop
                (let (S (car X)  Nm (name (val (tail S))))
-                  (? (== Name Nm) S)  # Found symbol
+                  (? (== Name Nm)  # Found name
+                     (if Rpl
+                        (set X Sym)  # Replace with argument symbol
+                        S ) )  # Return found symbol
                   (let Y (cdr X)  # Get link cell
                      (cond
                         ((> Name Nm)  # Symbol is smaller
@@ -354,7 +357,10 @@
          (if (pair X)  # Not empty
             (loop
                (let (S (car X)  Nm (name (val (tail S))))
-                  (? (=0 (cmpLong Nm Name)) S)  # Found symbol
+                  (? (=0 (cmpLong Nm Name))  # Found name
+                     (if Rpl
+                        (set X Sym)  # Replace with argument symbol
+                        S ) )  # Return found symbol
                   (let Y (cdr X)  # Get link cell
                      (cond
                         ((lt0 @)  # Symbol is smaller
@@ -374,7 +380,8 @@
       @
       (intern 0 $Nil Name
          (cdar (car (val $Intern)))
-         (cdr (val $Intern)) ) ) )
+         (cdr (val $Intern))
+         NO ) ) )
 
 # Intern an external symbol
 (de extern (Name)
@@ -681,13 +688,18 @@
          ((== (name @) ZERO) $Nil)  # Anonymous symbol
          (T
             (let Nm @
-               (cond
-                  ((nil? (eval (car X)))
-                     (let L (val $Intern)
-                        (intern Sym 0 Nm (cdar (car L)) (cdr L)) ) )
-                  ((t? @)
-                     (intern Sym 0 Nm (cdar (car (val $Intern))) $Nil) )
-                  (T (intern Sym 0 Nm (cdar @) $Nil)) ) ) ) ) ) )
+               (if (nil? (eval (car X)))
+                  (let L (val $Intern)
+                     (intern Sym 0 Nm
+                        (cdar (car L))
+                        (cdr L)
+                        NO ) )
+                  (intern Sym 0 Nm
+                     (if (t? @)
+                        (cdar (car (val $Intern)))
+                        (cdar @) )
+                     $Nil
+                     NO ) ) ) ) ) ) )
 
 # (box? 'any) -> sym | NIL
 (de _boxQ (Exe)

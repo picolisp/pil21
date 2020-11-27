@@ -1,4 +1,4 @@
-# 23nov20 Software Lab. Alexander Burger
+# 27nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1341,11 +1341,11 @@ selectErr)
             (cond
                ((== Nm ZERO) (badInput))
                ((== L (any $Cell))
-                  (intern 0 $Nil Nm (cdar (car @)) $Nil) )
+                  (intern 0 $Nil Nm (cdar (car @)) $Nil NO) )
                ((symToNum Nm (int (val $Scl)) (char ".") 0) @)
                ((anonymous Nm) @)
                ((and (== (car L) $priv) (nil? (cdr L)))
-                  (intern (consSym Nm $Nil) 0 Nm $PrivT $Nil) )
+                  (intern (consSym Nm $Nil) 0 Nm $PrivT $Nil YES) )
                (T (requestSym Nm)) ) )
          (set $Intern Int) ) ) )
 
@@ -1458,7 +1458,7 @@ selectErr)
                      (unless (testEsc C) (eofErr)) )
                   (call $Get)  # Skip "\""
                   (drop Q
-                     (intern 0 0 (val Q) $Transient $Nil) ) ) ) )
+                     (intern 0 0 (val Q) $Transient $Nil NO) ) ) ) )
          ((== C (char "{"))
             (prog1
                (if (== (setq C (call $Get)) (char "}"))

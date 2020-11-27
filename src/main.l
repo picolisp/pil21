@@ -1,4 +1,4 @@
-# 21nov20 Software Lab. Alexander Burger
+# 27nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1718,7 +1718,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (loop
          (let Nm (val (tail P))
             (when (num? Nm)
-               (intern P 0 @ (cdr $Pico) $Nil)
+               (intern P 0 @ (cdr $Pico) $Nil NO)
                (? (== P $LastSym))
                (when (big? Nm)  # Max 15 chars
                   (setq P (ofs P 2)) ) ) )
