@@ -1,4 +1,4 @@
-# 17oct20 Software Lab. Alexander Burger
+# 29nov20 Software Lab. Alexander Burger
 
 (allow "!jsDraw" )
 (push1 '*JS (allow "@lib/plio.js") (allow "@lib/canvas.js"))
@@ -55,6 +55,7 @@
       (csLineJoin V)
       (csMiterLimit V)
       (csGlobalCompositeOperation V)
+      (csDelay N)
       (csPost) )
    (def (car L)
       (list

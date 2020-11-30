@@ -1,4 +1,4 @@
-# 27nov20 Software Lab. Alexander Burger
+# 30nov20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -291,40 +291,36 @@
 (local) (intern1 intern2 internRight internLeft)
 
 (inline intern1 (Sym Val Name Node More)
-   (let Found (isLstIntern Name More)
-      (if (and Found (or (=0 Sym) (== Found Sym)))
-         Found
-         (unless Sym  # New symbol
-            (setq Sym (consSym Name Val)) )
-         (set Node (cons Sym $Nil))
-         Sym ) ) )
+   (if (isLstIntern Name More)
+      @
+      (unless Sym  # New symbol
+         (setq Sym (consSym Name Val)) )
+      (set Node (cons Sym $Nil))
+      Sym ) )
 
 (inline intern2 (Sym Val Name Node More)
-   (let Found (isLstIntern Name More)
-      (if (and Found (or (=0 Sym) (== Found Sym)))
-         Found
-         (unless Sym  # New symbol
-            (setq Sym (consSym Name Val)) )
-         (set 2 Node (cons Sym $Nil))
-         Sym ) ) )
+   (if (isLstIntern Name More)
+      @
+      (unless Sym  # New symbol
+         (setq Sym (consSym Name Val)) )
+      (set 2 Node (cons Sym $Nil))
+      Sym ) )
 
 (inline internRight (Sym Val Name Node More)
-   (let Found (isLstIntern Name More)
-      (if (and Found (or (=0 Sym) (== Found Sym)))
-         Found
-         (unless Sym  # New symbol
-            (setq Sym (consSym Name Val)) )
-         (set 2 Node (cons $Nil (cons Sym $Nil)))
-         Sym ) ) )
+   (if (isLstIntern Name More)
+      @
+      (unless Sym  # New symbol
+         (setq Sym (consSym Name Val)) )
+      (set 2 Node (cons $Nil (cons Sym $Nil)))
+      Sym ) )
 
 (inline internLeft (Sym Val Name Node More)
-   (let Found (isLstIntern Name More)
-      (if (and Found (or (=0 Sym) (== Found Sym)))
-         Found
-         (unless Sym  # New symbol
-            (setq Sym (consSym Name Val)) )
-         (set 2 Node (cons (cons Sym $Nil) $Nil))
-         Sym ) ) )
+   (if (isLstIntern Name More)
+      @
+      (unless Sym  # New symbol
+         (setq Sym (consSym Name Val)) )
+      (set 2 Node (cons (cons Sym $Nil) $Nil))
+      Sym ) )
 
 (local) (intern requestSym extern delNode unintern)
 
@@ -378,10 +374,11 @@
 (de requestSym (Name)
    (if (isIntern Name $PrivT)
       @
-      (intern 0 $Nil Name
-         (cdar (car (val $Intern)))
-         (cdr (val $Intern))
-         NO ) ) )
+      (let L (val $Intern)
+         (intern 0 $Nil Name
+            (cdar (car L))
+            (cdr L)
+            NO ) ) ) )
 
 # Intern an external symbol
 (de extern (Name)

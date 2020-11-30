@@ -334,10 +334,10 @@ href="refR.html#replace">replace</a></code>.
 <dt><a name="intern"><code>(intern 'sym ['nsp]) -> sym</code></a>
 <dd>Creates or finds an internal symbol. If a symbol with the name
 <code>sym</code> is already intern, it is returned. Otherwise, <code>sym</code>
-is interned and returned. If <code>nsp</code> is non-<code>NIL</code>,
-<code>sym</code> is always interned in the current namespace (if
-<code>nsp</code> is <code>T</code>) or in the given namespace, even if it is
-found in other namespaces. See also <code><a
+is interned in the current namespace and returned. If <code>nsp</code> is
+non-<code>NIL</code>, <code>sym</code> is <i>always</i> interned in the current
+namespace (if <code>nsp</code> is <code>T</code>) or in the given namespace,
+even if it is found in other namespaces. See also <code><a
 href="refS.html#symbols">symbols</a></code>, <code><a
 href="refZ.html#zap">zap</a></code>, <code><a
 href="refI.html#import">import</a></code> and <code><a
