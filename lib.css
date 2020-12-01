@@ -1,4 +1,4 @@
-/* 23feb19abu
+/* 01dec20abu
  * 17nov12jk
  * (c) Software Lab. Alexander Burger
  */
@@ -12,10 +12,13 @@
 .align {text-align: right}
 .center {text-align: center}
 .black {color: black}
+.white {color: white}
 .red {color: red}
 .green {color: green}
 .blue {color: blue}
 .yellow {color: yellow}
+.larger {font-size: larger}
+.smaller {font-size: smaller}
 .bold {font-weight: bold}
 .mono {font-family: monospace}
 .wrap {white-space: normal}
