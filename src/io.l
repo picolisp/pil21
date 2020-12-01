@@ -1,4 +1,4 @@
-# 27nov20 Software Lab. Alexander Burger
+# 01dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1321,10 +1321,19 @@ selectErr)
 (de rdAtom ((i32 . Chr))
    (let
       (Int (save (val $Intern))  # Current symbol namespaces
-         P (push 4 NIL ZERO NIL) )  # [cnt last name link]
+         P (push 4 NIL ZERO NIL)  # [cnt last name link]
+         C (val $Chr) )
+      (when
+         (and
+            (== Chr (char "%"))
+            (== C (char "~")) )
+         (when (nil? (cdr Int))
+            (symNspErr 0 $rem) )
+         (set $Intern @)
+         (setq Chr (call $Get)  C (call $Get)) )
       (link (ofs P 2))
       (charSym Chr P)  # Pack first char
-      (setq Chr (val $Chr))
+      (setq Chr C)
       (while (ge0 Chr)
          (if (== Chr (char "~"))  # Namespace
             (let S (requestSym (val 3 P))  # Find or create symbol

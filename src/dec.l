@@ -1,4 +1,4 @@
-# 18nov20 Software Lab. Alexander Burger
+# 01dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -472,5 +472,5 @@ box64 eval run)
 
 (inline needNsp (Exe X)
    (unless (and (pair (val X)) (== $Tilde (car @)))
-      (symNspErr 0 X) )
+      (symNspErr Exe X) )
    X )
