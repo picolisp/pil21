@@ -1,4 +1,4 @@
-# 01oct20 Software Lab. Alexander Burger
+# 02dec20 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *Evt *Lock *Spans
 
@@ -322,7 +322,7 @@
       (let Tim (+ (time T) (/ (cadr (assoc -1 *Run)) 1000))
          (if *TZO
             (tim$ (% (- Tim -86400 @) 86400))
-            (javascript NIL
+            (<javascript>
                "lisp(null, 'tzOffs', (new Date()).getTimezoneOffset())" )
             (pack (tim$ (% Tim 86400)) " UTC") ) ) ) )
 
@@ -982,7 +982,7 @@
    (and
       (atom *Err)
       (eval (: clk))
-      (javascript NIL
+      (<javascript>
          "window.setTimeout(\"document.getElementById('"
          "i" *Form "-" (: id)
          "').click()\","
@@ -996,7 +996,7 @@
    (extra Var)
    (when (and (able) (not *Foc))
       (on *Foc)
-      (javascript NIL "idFocus('" "i" *Form "-" (: id) "')") ) )
+      (<javascript> "idFocus('" "i" *Form "-" (: id) "')") ) )
 
 
 ### Styles ###

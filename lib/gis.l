@@ -1,4 +1,4 @@
-# 05jun19 Software Lab. Alexander Burger
+# 02dec20 Software Lab. Alexander Burger
 
 (symbols 'gis 'pico)
 
@@ -137,7 +137,7 @@
 
 (de <poi> (Lat Lon Img X Y Txt DY Col Url Drag Upd Hover)
    (with *Top
-      (javascript NIL
+      (<javascript>
          "poi(" Lat ", " Lon ", '" (sesId Img) "', " X ", " Y ", '"
          Txt "', " DY ", '" Col "', '" (and Url (sesId @)) "', "
          (if2 (and Drag (: able)) Upd 2 1 0 0) ")" )
@@ -146,7 +146,7 @@
 
 (de <line> (Col Lat1 Lon1 Lat2 Lon2)
    (with *Top
-      (javascript NIL
+      (<javascript>
          "line('" Col "', " Lat1 ", " Lon1 ", " Lat2 ", " Lon2 ")" ) ) )
 
 # Google Maps

@@ -1,4 +1,4 @@
-# 19nov20 Software Lab. Alexander Burger
+# 02dec20 Software Lab. Alexander Burger
 
 # *JS "*JS" *Style *SsEvts *Menu *Tab *ID
 
@@ -124,7 +124,7 @@
       (and *SesId (<javascript> "SesId='" @ "'"))
       (mapc javascript *JS)
       ## (when (=0 Upd)
-      ##    (javascript NIL
+      ##    (<javascript>
       ##       "document.addEventListener('visibilitychange', function() {if (!document.hidden) window.location.replace(location.href)})" ) )
       (prinl "</head>")
       (tag "body" Attr 2 Prg)
@@ -180,7 +180,7 @@
    (respond) )
 
 (de <ping> (Min)
-   (javascript NIL "onload=ping(" Min ")") )
+   (<javascript> "onload=ping(" Min ")") )
 
 (de <div> (Attr . Prg)
    (tag "div" Attr 2 Prg)
