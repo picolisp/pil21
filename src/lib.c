@@ -1,4 +1,4 @@
-// 23nov20 Software Lab. Alexander Burger
+// 06dec20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -367,7 +367,7 @@ void pollIgn(struct pollfd *p) {
    p->fd = -1;
 }
 
-int32_t gPoll(struct pollfd *fds, int64_t nfds, int64_t timeout) {
+int32_t gPoll(struct pollfd *fds, int32_t nfds, int64_t timeout) {
    return (int32_t)poll(fds, (nfds_t)nfds, (int)timeout);
 }
 
