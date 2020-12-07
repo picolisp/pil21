@@ -1,4 +1,4 @@
-# 06dec20 Software Lab. Alexander Burger
+# 07dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1178,7 +1178,9 @@ selectErr)
             (T
                (let P (val $LinePtr)
                   (unless P
-                     (free (val $LineBuf))
+                     (when (val $LineBuf)
+                        (free @)
+                        (set $LineBuf null) )
                      (flushAll)
                      (unless (setq P (set $LineBuf (readline (val $LinePrmt))))
                         (wrnl)
