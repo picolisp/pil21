@@ -1,4 +1,4 @@
-// 06dec20 Software Lab. Alexander Burger
+// 07dec20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -142,12 +142,15 @@ void rlShow(void) {
 }
 
 void rlSigBeg(void) {
+   rl_save_prompt();
    rl_free_line_state();
    rl_cleanup_after_signal();
 }
 
 void rlSigEnd(void) {
    rl_reset_after_signal();
+   rl_initialize();
+   rl_restore_prompt();
 }
 
 char *currentLine(void) {
@@ -368,6 +371,13 @@ void pollIgn(struct pollfd *p) {
 }
 
 int32_t gPoll(struct pollfd *fds, int32_t nfds, int64_t timeout) {
+   if (timeout == 9223372036854775807) {  // 292MY
+      int i = nfds;
+      do
+         if (--i < 0)
+            return 0;
+      while (fds[i].fd < 0);
+   }
    return (int32_t)poll(fds, (nfds_t)nfds, (int)timeout);
 }
 
