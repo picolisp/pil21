@@ -1,4 +1,4 @@
-# 02dec20 Software Lab. Alexander Burger
+# 08dec20 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *Evt *Lock *Spans
 
@@ -306,6 +306,10 @@
                   (NIL (args))
                   (link "&") ) ) ) )
       (throw 'stop) ) )
+
+(de post Prg
+   (run Prg)
+   (url *Url) )
 
 # Active <span> elements
 (de span Args
