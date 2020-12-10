@@ -1,4 +1,4 @@
-// 07dec20 Software Lab. Alexander Burger
+// 09dec20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -7,11 +7,6 @@ const char TgCPU[] = _CPU;
 
 // I/O
 const int32_t PipeBufSize = PIPE_BUF;
-
-int64_t stderrNum(char *fmt, int64_t n) {
-   fprintf(stderr, fmt, (unsigned long)n);
-   return n;
-}
 
 char *stderrMsg(char *fmt, char *s) {
    fprintf(stderr, fmt, s);

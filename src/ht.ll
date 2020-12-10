@@ -145,7 +145,6 @@ declare void @clear_history()
 @TgOS = external global i8
 @TgCPU = external global i8
 @PipeBufSize = external global i32
-declare i64 @stderrNum(i8*, i64)
 declare i8* @stderrMsg(i8*, i8*)
 declare i32 @gPrintf(i8*, i32, i8*, i8*)
 declare i8* @strErrno()

@@ -1562,7 +1562,6 @@ declare void @clear_history()
 @TgOS = external global i8
 @TgCPU = external global i8
 @PipeBufSize = external global i32
-declare i64 @stderrNum(i8*, i64)
 declare i8* @stderrMsg(i8*, i8*)
 declare i32 @gPrintf(i8*, i32, i8*, i8*)
 declare i8* @strErrno()
@@ -20229,54 +20228,60 @@ $4:
 
 define i8 @firstByte(i64) {
 $1:
-; # (cond ((sym? (val (tail Sym))) 0) ((cnt? (name @)) (int @)) (T (v...
-; # (tail Sym)
-  %1 = add i64 %0, -8
-; # (val (tail Sym))
-  %2 = inttoptr i64 %1 to i64*
-  %3 = load i64, i64* %2
-; # (sym? (val (tail Sym)))
-  %4 = and i64 %3, 8
-  %5 = icmp ne i64 %4, 0
-  br i1 %5, label %$4, label %$3
+; # (cond ((nil? Sym) 0) ((sym? (val (tail Sym))) 0) ((cnt? (name @))...
+; # (nil? Sym)
+  %1 = icmp eq i64 %0, ptrtoint (i8* getelementptr (i8, i8* bitcast ([852 x i64]* @SymTab to i8*), i32 8) to i64)
+  br i1 %1, label %$4, label %$3
 $4:
   br label %$2
 $3:
-; # (name @)
-  br label %$5
-$5:
-  %6 = phi i64 [%3, %$3], [%12, %$6] ; # Tail
-  %7 = and i64 %6, 6
-  %8 = icmp ne i64 %7, 0
-  br i1 %8, label %$7, label %$6
+; # (tail Sym)
+  %2 = add i64 %0, -8
+; # (val (tail Sym))
+  %3 = inttoptr i64 %2 to i64*
+  %4 = load i64, i64* %3
+; # (sym? (val (tail Sym)))
+  %5 = and i64 %4, 8
+  %6 = icmp ne i64 %5, 0
+  br i1 %6, label %$6, label %$5
 $6:
-  %9 = phi i64 [%6, %$5] ; # Tail
-  %10 = inttoptr i64 %9 to i64*
-  %11 = getelementptr i64, i64* %10, i32 1
-  %12 = load i64, i64* %11
-  br label %$5
-$7:
-  %13 = phi i64 [%6, %$5] ; # Tail
-; # (cnt? (name @))
-  %14 = and i64 %13, 2
-  %15 = icmp ne i64 %14, 0
-  br i1 %15, label %$9, label %$8
-$9:
-; # (int @)
-  %16 = lshr i64 %13, 4
   br label %$2
+$5:
+; # (name @)
+  br label %$7
+$7:
+  %7 = phi i64 [%4, %$5], [%13, %$8] ; # Tail
+  %8 = and i64 %7, 6
+  %9 = icmp ne i64 %8, 0
+  br i1 %9, label %$9, label %$8
 $8:
+  %10 = phi i64 [%7, %$7] ; # Tail
+  %11 = inttoptr i64 %10 to i64*
+  %12 = getelementptr i64, i64* %11, i32 1
+  %13 = load i64, i64* %12
+  br label %$7
+$9:
+  %14 = phi i64 [%7, %$7] ; # Tail
+; # (cnt? (name @))
+  %15 = and i64 %14, 2
+  %16 = icmp ne i64 %15, 0
+  br i1 %16, label %$11, label %$10
+$11:
+; # (int @)
+  %17 = lshr i64 %14, 4
+  br label %$2
+$10:
 ; # (dig @)
-  %17 = add i64 %13, -4
+  %18 = add i64 %14, -4
 ; # (val (dig @))
-  %18 = inttoptr i64 %17 to i64*
-  %19 = load i64, i64* %18
+  %19 = inttoptr i64 %18 to i64*
+  %20 = load i64, i64* %19
   br label %$2
 $2:
-  %20 = phi i64 [0, %$4], [%16, %$9], [%19, %$8] ; # ->
-; # (i8 (cond ((sym? (val (tail Sym))) 0) ((cnt? (name @)) (int @)) (...
-  %21 = trunc i64 %20 to i8
-  ret i8 %21
+  %21 = phi i64 [0, %$4], [0, %$6], [%17, %$11], [%20, %$10] ; # ->
+; # (i8 (cond ((nil? Sym) 0) ((sym? (val (tail Sym))) 0) ((cnt? (name...
+  %22 = trunc i64 %21 to i8
+  ret i8 %22
 }
 
 define i32 @firstChar(i64) {

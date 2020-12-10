@@ -1,4 +1,4 @@
-# 30nov20 Software Lab. Alexander Burger
+# 10dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -118,6 +118,7 @@
 (de i8 firstByte (Sym)
    (i8
       (cond
+         ((nil? Sym) 0)
          ((sym? (val (tail Sym))) 0)
          ((cnt? (name @)) (int @))
          (T (val (dig @))) ) ) )

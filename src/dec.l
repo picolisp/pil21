@@ -1,4 +1,4 @@
-# 06dec20 Software Lab. Alexander Burger
+# 09dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -153,11 +153,10 @@ tcsetpgrp waitpid setjmp longjmp kill exit)
 (var TgCPU i8 NIL)  # Target CPU
 (var PipeBufSize i32 NIL)  # PIPE_BUF
 
-(local) (stderrNum stderrMsg gPrintf strErrno openRd openWr openRdWr
-openRdWrExcl openRdWrCreate openRdWrAppend openWrAppend fseekOfs fseek0 seek0
-truncate0 socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
+(local) (stderrMsg gPrintf strErrno openRd openWr openRdWr openRdWrExcl
+openRdWrCreate openRdWrAppend openWrAppend fseekOfs fseek0 seek0 truncate0
+socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 
-(de T i64 stderrNum (i8* i64))
 (de T i8* stderrMsg (i8* i8*))
 (de T i32 gPrintf (i8* i32 i8* i8*))
 (de T i8* strErrno ())
