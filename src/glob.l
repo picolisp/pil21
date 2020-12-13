@@ -1,4 +1,4 @@
-# 01dec20 Software Lab. Alexander Burger
+# 13dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -15,6 +15,8 @@
 (var $ExtSkip i64 0)                   # External tree skip
 (var $StkSize i64 STACK)               # Coroutine stack segment size
 (var $StkLimit i8* null)               # Stack limit: StackN-Size+4096
+(var $Stdin i8* null)                  # Stdin frame
+(var $Stdout i8* null)                 # Stdout frame
 (var $LinePtr i8* null)                # Console line pointer
 (var $LineBuf i8* null)                # Console line buffer
 (var $LinePrmt i8* null)               # Console line prompt
@@ -25,11 +27,16 @@
 (var $InFiles i8** null)               # Input files
 (var $InFDs i32 0)                     # Number of input files
 (var $OutFiles i8** null)              # Output files
+(var $InFile i8* null)                 # Input file
+(var $OutFile i8* null)                # Output file
+(var $Chr i32 0)                       # Single-char look ahead
+(var $Put (void i8) '_putStdout)       # Character output function
+(var $Get (i32) '_getStdin)            # Character input function
+(var $PutBin (void i8) null)           # Binary output function
+(var $GetBin (i32) null)               # Binary input function
 (var $OutFDs i32 0)                    # Number of ourput files
 (var $Poll i64* null)                  # Poll entries
 (var $Nfds i32 0)                      # Number of poll entries
-(var $PutBin (void i8) null)           # Binary output function
-(var $GetBin (i32) null)               # Binary input function
 (var $SeedL i64 0)                     # Random seed low
 (var $SeedH i64 0)                     # Random seed high
 (var $USec i64 0)                      # Startup microseconds
@@ -620,11 +627,6 @@
    ($OutFrames i8* null)         # Output frames
    ($ErrFrames i8* null)         # Error frames
    ($CtlFrames i8* null)         # Control frames
-   ($Chr i32 0)                  # Single-char look ahead
-   ($Put (void i8) _putStdout)   # Character output function
-   ($Get (i32) _getStdin)        # Character input function
-   ($InFile i8* null)            # Input file
-   ($OutFile i8* null)           # Output file
    ($Parser i64* null)           # String parser
    ($Intern $Pico1)              # Current namespaces of internal symbols
    ($Next $Nil)                  # Next vararg

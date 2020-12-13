@@ -1,4 +1,4 @@
-# 27nov20 Software Lab. Alexander Burger
+# 13dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -35,12 +35,16 @@
    X )
 
 
-(local) (popInFiles popOutFiles popErrFiles popCtlFiles stop unwind)
+(local) (tosInFile popInFiles tosOutFile popOutFiles popErrFiles popCtlFiles)
 
+(de void tosInFile ())
 (de void popInFiles ())
+(de void tosOutFile ())
 (de void popOutFiles ())
 (de void popErrFiles ())
 (de void popCtlFiles ())
+
+(local) (stop unwind)
 
 # Stop coroutine
 (de void stop ((i8* . Crt))
@@ -69,8 +73,10 @@
                (popErrFiles) )
             (until (== (val $OutFrames) (Ca: (env $OutFrames i8*)))
                (popOutFiles) )
+            (tosOutFile)
             (until (== (val $InFrames) (Ca: (env $InFrames i8*)))
                (popInFiles) )
+            (tosInFile)
             (memcpy (env) (Ca: (env)) (env T))
             (eval (Ca: fin))  # Evaluate 'finally' expression
             (set $Catch (Ca: link))
@@ -85,10 +91,12 @@
          (popCtlFiles) )
       (while (val $ErrFrames)
          (popErrFiles) )
-      (while (val $OutFrames)
+      (until (== (val $OutFrames) (val $Stdout))
          (popOutFiles) )
-      (while (val $InFrames)
-         (popInFiles) ) ) )
+      (tosOutFile)
+      (until (== (val $InFrames) (val $Stdin))
+         (popInFiles) )
+      (tosInFile) ) )
 
 # Exit
 (local) (finish giveup bye execErr)
@@ -217,10 +225,10 @@
       (set $Protect 0) ) )
 
 # Error handling
-(local) (pushOutFiles err stkErr argErr cntErr numErr symErr extErr nameErr
+(local) (pushOutFile err stkErr argErr cntErr numErr symErr extErr nameErr
 atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
-(de void pushOutFiles (i8*))
+(de void pushOutFile (i8* i8* i32))
 
 (de NIL err (Exe X (i8* . Fmt) (i8* . Arg))
    (set $Up (if Exe @ $Nil))
@@ -250,46 +258,43 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (set $Break 0)
       (set $LinePtr null)
       (set $Alarm (set $Sigio $Nil))
-      (let Io: (ioFrame (b8 (ioFrame T)))
-         (Io: fd 2)  # Stderr
-         (Io: pid 0)
-         (pushOutFiles (Io:))
-         (let In: (inFile (val $InFile))
-            (when (and (In:) (In: name))
-               (call $Put (char "["))
-               (outString (In: name))
-               (call $Put (char ":"))
-               (outWord (i64 (In: src)))
-               (call $Put (char "]"))
-               (space) ) )
-         (when Exe
-            (outString ($ "!? "))
-            (print Exe)
-            (newline) )
-         (when X
-            (print X)
-            (outString ($ " -- ")) )
-         (when (val Msg)
-            (outString Msg)
-            (newline)
-            (unless (or (nil? (val $Err)) (val $Jam))
-               (set $Jam YES)
-               (execAt (val $Err))
-               (set $Jam NO) )
-            (unless (and (isatty 0) (isatty 1))
-               (bye 1) )
-            (repl 0 ($ "? ") $Nil) )
-         (unwind null)
-         (set
-            $Link 0
-            $Protect 0
-            $Next $Nil
-            $Make 0
-            $Yoke 0
-            $Trace 0 )
-         (set $Put (fun (void i8) _putStdout))
-         (set $Get (fun (i32) _getStdin))
-         (longjmp QuitRst 1) ) ) )
+      (pushOutFile (b8 (ioFrame T)) (val 3 (val $OutFiles)) 0)  # Stderr
+      (let In: (inFile (val $InFile))
+         (when (and (In:) (In: name))
+            (call $Put (char "["))
+            (outString (In: name))
+            (call $Put (char ":"))
+            (outWord (i64 (In: src)))
+            (call $Put (char "]"))
+            (space) ) )
+      (when Exe
+         (outString ($ "!? "))
+         (print Exe)
+         (newline) )
+      (when X
+         (print X)
+         (outString ($ " -- ")) )
+      (when (val Msg)
+         (outString Msg)
+         (newline)
+         (unless (or (nil? (val $Err)) (val $Jam))
+            (set $Jam YES)
+            (execAt (val $Err))
+            (set $Jam NO) )
+         (unless (and (isatty 0) (isatty 1))
+            (bye 1) )
+         (repl 0 ($ "? ") $Nil) )
+      (unwind null)
+      (set
+         $Link 0
+         $Protect 0
+         $Next $Nil
+         $Make 0
+         $Yoke 0
+         $Trace 0 )
+      (set $Put (fun (void i8) _putStdout))
+      (set $Get (fun (i32) _getStdin))
+      (longjmp QuitRst 1) ) )
 
 (de NIL stkErr (Exe)
    (set $StkLimit null)
@@ -1000,7 +1005,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                      (In: (inFile (val (val $InFiles)))  # Stdin
                         Out: (outFile (val 2 (val $OutFiles))) )  # Stdout
                      (In: ix (In: cnt 0))
-                     (In: next 0)
+                     (In: chr 0)
                      (set Tio (=0 (tcgetattr 0 OrgTermio)))  # Save terminal I/O
                      (Out: ix 0)
                      (Out: tty YES)
@@ -1731,9 +1736,15 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       $DB $Db1  # Database root constant
       (tail $Db1) DB1  # Name of external root symbol '{1}'
       $Extern (cons $Db1 $Nil) )  # External symbol tree root node
-   (initOutFile 2)  # Standard error
-   (set $OutFile (initOutFile 1))  # Standard output
-   (set $InFile (initInFile 0 null))  # Standard input
+   (pushOutFile (b8 (ioFrame T)) (initOutFile 2) 0)  # Standard error
+   (pushOutFile
+      (set $Stdout (b8 (ioFrame T)))
+      (initOutFile 1)  # Standard output
+      0 )
+   (pushInFile
+      (set $Stdin (b8 (ioFrame T)))
+      (initInFile 0 null)  # Standard input
+      0 )
    (set Tio (=0 (tcgetattr 0 OrgTermio)))  # Save terminal I/O
    (sigUnblock 0)  # Set all signals to unblocked
    (iSignal (val SIGHUP Sig) (fun sig))

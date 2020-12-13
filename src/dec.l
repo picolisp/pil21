@@ -1,4 +1,4 @@
-# 09dec20 Software Lab. Alexander Burger
+# 12dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -6,20 +6,30 @@
 
 # I/O
 (struct inFile
-   (ix 8 i32)           # Buffer index
-   (cnt 8 i32)          # Buffer byte count
+   (name 8 i8*)         # File name
    (fd 4 i32)           # File descriptor
-   (next 4 i32)         # Saved next character
-   (name 8 i8*)         # Current file name
+   (chr 4 i32)          # Next character
    (line 4 i32)         # Current line number
    (src 4 i32)          # Source start line
+   (ix 4 i32)           # Buffer index
+   (cnt 4 i32)          # Buffer byte count
    (buf BUFSIZ i8) )    # Buffer
 
 (struct outFile
-   (ix 8 i32)           # Buffer index
    (fd 4 i32)           # File descriptor
+   (ix 4 i32)           # Buffer index
    (buf BUFSIZ i8)      # Buffer
    (tty 1 i1) )         # TTY flag
+
+(struct ioFrame
+   (link 8 i8*)         # Frame link
+   (file 8 i8*)         # File structure
+   (fun 8 i8*)          # I/O function
+   (pid 4 i32) )        # Process ID
+
+(struct ctFrame
+   (link 8 i8*)         # Frame link
+   (fd 4 i32) )         # File descriptor
 
 (struct dbFile
    (fd 4 i32)           # File descriptor
@@ -31,12 +41,6 @@
    (flu 8 i64)          # Free list use count
    (lck 1 i1)           # Lock flag
    (drt 1 i1) )         # Dirty flag
-
-(struct ioFrame
-   (link 8 i8*)         # Frame link
-   (fd 4 i32)           # File descriptor
-   (pid 4 i32)          # Process ID
-   (fun 8 i8*) )        # Function pointer
 
 # Catch/throw
 (local) caFrame
@@ -73,9 +77,9 @@
 (local) child
 
 (struct child
-   (buf 8 i8*)          # Buffer pointer
-   (ofs 8 i32)          # Buffer offset
-   (cnt 8 i32)          # Buffer byte count
+   (buf 8 i8*)          # Buffer
+   (ofs 4 i32)          # Buffer offset
+   (cnt 4 i32)          # Buffer byte count
    (pid 4 i32)          # Process ID
    (hear 4 i32)         # Hear pipe
    (tell 4 i32) )       # Tell pipe

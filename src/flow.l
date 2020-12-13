@@ -1,4 +1,4 @@
-# 30oct20 Software Lab. Alexander Burger
+# 13dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1096,6 +1096,8 @@
    (let Crt: (coroutine (set $Current Crt))
       (set $StkLimit (+ (Crt: lim) 4096))
       (memcpy (env) (Crt: (env)) (env T))
+      (tosInFile)
+      (tosOutFile)
       (set $At (Crt: at))
       (Crt: at 0)  # Running
       (val $Ret) ) )
@@ -1209,8 +1211,8 @@
             (Lnk (any 0)
                Bnd (any 0)
                Ca (i8* null)
-               In (i8* null)
-               Out (i8* null)
+               In (val $Stdin)
+               Out (val $Stdout)
                Err (i8* null)
                Ctl (i8* null) )
             (unless (t? (Src: tag))
@@ -1289,7 +1291,7 @@
                   (Src: (env $ErrFrames i8*) P) )
                (let P (val $OutFrames)  # Restore OutFrames
                   (Src: out P)
-                  (while Out
+                  (until (== Out (val $Stdout))
                      (let Out: (ioFrame Out)
                         (setq Out (Out: link))
                         (Out: link P)
@@ -1297,7 +1299,7 @@
                   (Src: (env $OutFrames i8*) P) )
                (let P (val $InFrames)  # Restore InFrames
                   (Src: in P)
-                  (while In
+                  (until (== In (val $Stdin))
                      (let In: (ioFrame In)
                         (setq In (In: link))
                         (In: link P)
@@ -1343,14 +1345,12 @@
       (let Term (val Termio)
          (when Term
             (setCooked) )
-         (let (Out (b8 (ioFrame T))  Io: (ioFrame Out))
-            (Io: fd 1)  # Stdout
-            (Io: pid 0)
-            (pushOutFiles Out)
-            (print Exe)
-            (newline)
-            (repl 0 ($ "! ") $Nil)
-            (popOutFiles) )
+         (pushOutFile (b8 (ioFrame T)) (val 2 (val $OutFiles)) 0)  # Stdout
+         (print Exe)
+         (newline)
+         (repl 0 ($ "! ") $Nil)
+         (popOutFiles)
+         (tosOutFile)
          (when Term
             (setRaw) ) )
       (setq Exe (val $Up))
@@ -1384,15 +1384,17 @@
             $Dbg $Nil
             $Run (val P)
             $At (val (val 3 (val 3 P))) )
-         (let (In (val $InFrames)  Out (val $OutFrames))
+         (let (In: (ioFrame (val $InFrames))  Out: (ioFrame (val $OutFrames)))
             (popInFiles)
+            (tosInFile)
             (popOutFiles)
+            (tosOutFile)
             (prog1
                (if (pair (cdr Exe))
                   (run @)
                   (eval (val $Up)) )
-               (pushOutFiles Out)
-               (pushInFiles In)
+               (pushOutFile (Out:) (Out: file) (Out: pid))
+               (pushInFile (In:) (In: file) (In: pid))
                (set $Run Run  $At At  $Dbg Dbg) ) ) ) ) )
 
 (local) trace
