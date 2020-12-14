@@ -1,4 +1,4 @@
-# 13dec20 Software Lab. Alexander Burger
+# 14dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -71,12 +71,16 @@
                (popCtlFiles) )
             (until (== (val $ErrFrames) (Ca: (env $ErrFrames i8*)))
                (popErrFiles) )
-            (until (== (val $OutFrames) (Ca: (env $OutFrames i8*)))
-               (popOutFiles) )
-            (tosOutFile)
-            (until (== (val $InFrames) (Ca: (env $InFrames i8*)))
-               (popInFiles) )
-            (tosInFile)
+            (unless (== (val $OutFrames) (Ca: (env $OutFrames i8*)))
+               (loop
+                  (popOutFiles)
+                  (? (== (val $OutFrames) (Ca: (env $OutFrames i8*)))) )
+               (tosOutFile) )
+            (unless (== (val $InFrames) (Ca: (env $InFrames i8*)))
+               (loop
+                  (popInFiles)
+                  (? (== (val $InFrames) (Ca: (env $InFrames i8*)))) )
+               (tosInFile) )
             (memcpy (env) (Ca: (env)) (env T))
             (eval (Ca: fin))  # Evaluate 'finally' expression
             (set $Catch (Ca: link))
@@ -91,12 +95,16 @@
          (popCtlFiles) )
       (while (val $ErrFrames)
          (popErrFiles) )
-      (until (== (val $OutFrames) (val $Stdout))
-         (popOutFiles) )
-      (tosOutFile)
-      (until (== (val $InFrames) (val $Stdin))
-         (popInFiles) )
-      (tosInFile) ) )
+      (unless (== (val $OutFrames) (val $Stdout))
+         (loop
+            (popOutFiles)
+            (? (== (val $OutFrames) (val $Stdout))) )
+         (tosOutFile) )
+      (unless (== (val $InFrames) (val $Stdin))
+         (loop
+            (popInFiles)
+            (? (== (val $InFrames) (val $Stdin))) )
+         (tosInFile) ) ) )
 
 # Exit
 (local) (finish giveup bye execErr)

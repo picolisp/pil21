@@ -1,4 +1,4 @@
-# 13dec20 Software Lab. Alexander Burger
+# 14dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1090,6 +1090,10 @@
 (de void saveCoEnv ((i8* . Crt))
    (let Crt: (coroutine Crt)
       (Crt: at (val $At))  # Not running
+      ((ioFrame (val $OutFrames)) fun (val (i8** $Put)))
+      (let Io: (ioFrame (val $InFrames))
+         (Io: fun (val (i8** $Get)))
+         ((inFile (Io: file)) chr (val $Chr)) )
       (memcpy (Crt: (env)) (env) (env T)) ) )
 
 (de loadCoEnv ((i8* . Crt))

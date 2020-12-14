@@ -1,4 +1,4 @@
-# 13dec20 Software Lab. Alexander Burger
+# 14dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -583,19 +583,21 @@ selectErr)
    (let Io: (ioFrame Io)
       (when (val $InFile)
          ((inFile @) chr (val $Chr)) )
+      (when (Io: link (val $InFrames))
+         ((ioFrame @) fun (val (i8** $Get))) )
+      (set $Get (fun (i32) _getStdin))
       (set $Chr
          ((inFile (Io: file (set $InFile In))) chr) )
-      (Io: fun (val (i8** $Get)))
       (Io: pid Pid)
-      (Io: link (val $InFrames))
       (set $InFrames (Io:)) ) )
 
 (de void pushOutFile ((i8* . Io) (i8* . Out) (i32 . Pid))
    (let Io: (ioFrame Io)
+      (when (Io: link (val $OutFrames))
+         ((ioFrame @) fun (val (i8** $Put))) )
+      (set $Put (fun (void i8) _putStdout))
       (Io: file (set $OutFile Out))
-      (Io: fun (val (i8** $Put)))
       (Io: pid Pid)
-      (Io: link (val $OutFrames))
       (set $OutFrames (Io:)) ) )
 
 (de void pushErrFile ((i8* . Ct))
@@ -606,13 +608,7 @@ selectErr)
    ((ctFrame Ct) link (val $CtlFrames))
    (set $CtlFrames Ct) )
 
-(local) (tosInFile popInFiles tosOutFile popOutFiles popErrFiles popCtlFiles)
-
-(de void tosInFile ()
-   (let Io: (ioFrame (val $InFrames))
-      (set
-         $Chr ((inFile (set $InFile (Io: file))) chr)
-         (i8** $Get) (Io: fun) ) ) )
+(local) (popInFiles tosInFile popOutFiles tosOutFile popErrFiles popCtlFiles)
 
 (de void popInFiles ()
    (let (Io: (ioFrame (val $InFrames))  In: (inFile (Io: file)))
@@ -624,11 +620,11 @@ selectErr)
             (waitFile @) ) )
       (set $InFrames (Io: link)) ) )
 
-(de void tosOutFile ()
-   (let Io: (ioFrame (val $OutFrames))
+(de void tosInFile ()
+   (let Io: (ioFrame (val $InFrames))
       (set
-         $OutFile (Io: file)
-         (i8** $Put) (Io: fun) ) ) )
+         $Chr ((inFile (set $InFile (Io: file))) chr)
+         (i8** $Get) (Io: fun) ) ) )
 
 (de void popOutFiles ()
    (flush (val $OutFile))
@@ -639,6 +635,12 @@ selectErr)
          (when (> (Io: pid) 1)
             (waitFile @) ) )
       (set $OutFrames (Io: link)) ) )
+
+(de void tosOutFile ()
+   (let Io: (ioFrame (val $OutFrames))
+      (set
+         $OutFile (Io: file)
+         (i8** $Put) (Io: fun) ) ) )
 
 (de void popErrFiles ()
    (let Ct: (ctFrame (val $ErrFrames))

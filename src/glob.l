@@ -1,4 +1,4 @@
-# 13dec20 Software Lab. Alexander Burger
+# 14dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -30,8 +30,8 @@
 (var $InFile i8* null)                 # Input file
 (var $OutFile i8* null)                # Output file
 (var $Chr i32 0)                       # Single-char look ahead
-(var $Put (void i8) '_putStdout)       # Character output function
-(var $Get (i32) '_getStdin)            # Character input function
+(var $Put (void i8) null)              # Character output function
+(var $Get (i32) null)                  # Character input function
 (var $PutBin (void i8) null)           # Binary output function
 (var $GetBin (i32) null)               # Binary input function
 (var $OutFDs i32 0)                    # Number of ourput files

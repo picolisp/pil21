@@ -1,4 +1,4 @@
-# 06oct20 Software Lab. Alexander Burger
+# 14dec20 Software Lab. Alexander Burger
 
 ### quote ###
 (test (1 2 3) (quote 1 2 3))
@@ -431,16 +431,15 @@
 
 
 ### co yield ###
-(when co
-   (test (1 2 3 (1 2 3))
-      (make
-         (do 4
-            (link
-               (co "co123"
-                  (make
-                     (yield (link 1))
-                     (yield (link 2))
-                     (yield (link 3)) ) ) ) ) ) ) )
+(test (1 2 3 (1 2 3))
+   (make
+      (do 4
+         (link
+            (co "co123"
+               (make
+                  (yield (link 1))
+                  (yield (link 2))
+                  (yield (link 3)) ) ) ) ) ) )
 
 
 ### exec ###
