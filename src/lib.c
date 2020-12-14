@@ -1,4 +1,4 @@
-// 09dec20 Software Lab. Alexander Burger
+// 14dec20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -137,15 +137,19 @@ void rlShow(void) {
 }
 
 void rlSigBeg(void) {
-   rl_save_prompt();
-   rl_free_line_state();
-   rl_cleanup_after_signal();
+   if (rl_readline_state & RL_STATE_INITIALIZED) {
+      rl_save_prompt();
+      rl_free_line_state();
+      rl_cleanup_after_signal();
+   }
 }
 
 void rlSigEnd(void) {
-   rl_reset_after_signal();
-   rl_initialize();
-   rl_restore_prompt();
+   if (rl_readline_state & RL_STATE_SIGHANDLER) {
+      rl_reset_after_signal();
+      rl_initialize();
+      rl_restore_prompt();
+   }
 }
 
 char *currentLine(void) {
