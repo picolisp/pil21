@@ -1,4 +1,4 @@
-# 14dec20 Software Lab. Alexander Burger
+# 17dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -670,7 +670,7 @@ selectErr)
                (i64*
                   (alloc
                      (i8* (val $Poll))
-                     (* 8 (i64 (set $Nfds (+ Fd 1)))) ) ) )
+                     (* 8 #{pollfd}# (i64 (set $Nfds (+ Fd 1)))) ) ) )
             (loop
                (pollIgn (ofs P I))
                (? (== I Fd))
