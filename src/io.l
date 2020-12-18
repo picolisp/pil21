@@ -1,4 +1,4 @@
-# 17dec20 Software Lab. Alexander Burger
+# 18dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -66,9 +66,12 @@ selectErr)
                (set (ofs P I) null)
                (? (== I Fd))
                (inc 'I) ) ) ) )
-   (let
-      (P (ofs (val $InFiles) Fd)
-         In: (inFile (set P (alloc (val P) (inFile T)))) )
+   (let In:
+      (inFile
+         (let P (ofs (val $InFiles) Fd)
+            (if (val P)
+               @
+               (set P (alloc null (inFile T))) ) ) )
       (In: name Nm)
       (In: fd Fd)
       (In: chr 0)
@@ -89,32 +92,36 @@ selectErr)
                (set (ofs P I) null)
                (? (== I Fd))
                (inc 'I) ) ) ) )
-   (let
-      (P (ofs (val $OutFiles) Fd)
-         Out: (outFile (set P (alloc (val P) (outFile T)))) )
+   (let Out:
+      (outFile
+         (let P (ofs (val $OutFiles) Fd)
+            (if (val P)
+               @
+               (set P (alloc null (outFile T))) ) ) )
       (Out: tty (n0 (isatty (Out: fd Fd))))
       (Out: ix 0)
       (Out:) ) )
 
 (de void closeInFile ((i32 . Fd))
    (when (> (val $InFDs) Fd)
-      (let (P (ofs (val $InFiles) Fd)  V (val P))
-         (when V
-            (when (== V (val $InFile))
-               (set $Chr
-                  ((inFile (set $InFile (val (val $InFiles)))) chr) ) )   # Stdin
-            (free ((inFile V) name))
-            (free V)
-            (set P null) ) ) ) )
+      (let (P (ofs (val $InFiles) Fd)  In (val P))
+         (when (== In (val $InFile))
+            (set $Chr
+               ((inFile (set $InFile (val (val $InFiles)))) chr) ) )   # Stdin
+ #(set P null)
+         (when In
+            (let In: (inFile @)
+               (free (In: name))
+               (In: name null)
+               (In: fd -1) ) ) ) ) )
 
 (de void closeOutFile ((i32 . Fd))
    (when (> (val $OutFDs) Fd)
-      (let (P (ofs (val $OutFiles) Fd)  V (val P))
-         (when V
-            (when (== V (val $OutFile))
-               (set $OutFile (val 2 (val $OutFiles))) )  # Stdout
-            (free V)
-            (set P null) ) ) ) )
+      (let (P (ofs (val $OutFiles) Fd)  Out (val P))
+         (when (== Out (val $OutFile))
+            (set $OutFile (val 2 (val $OutFiles))) )  # Stdout
+         (when Out
+            ((outFile @) fd -1) ) ) ) )
 
 (local) (slow slowNb rdBytes rdBytesNb wrBytes clsChild wrChild flush flushAll)
 
@@ -251,7 +258,7 @@ selectErr)
    (let In: (inFile (val (val $InFiles)))  # Stdin
       (cond
          ((and
-               (In:)
+               (ge0 (In: fd))
                (or
                   (<> (In: ix) (In: cnt))
                   (and (ge0 @) (slow (In:))) ) )
@@ -612,12 +619,13 @@ selectErr)
 
 (de void popInFiles ()
    (let (Io: (ioFrame (val $InFrames))  In: (inFile (Io: file)))
-      (ifn (Io: pid)
-         (In: chr (val $Chr))
-         (close (In: fd))
-         (closeInFile (In: fd))
-         (when (> (Io: pid) 1)
-            (waitFile @) ) )
+      (when (ge0 (In: fd))
+         (ifn (Io: pid)
+            (In: chr (val $Chr))
+            (close (In: fd))
+            (closeInFile (In: fd))
+            (when (> (Io: pid) 1)
+               (waitFile @) ) ) )
       (set $InFrames (Io: link)) ) )
 
 (de void tosInFile ()
@@ -629,11 +637,12 @@ selectErr)
 (de void popOutFiles ()
    (flush (val $OutFile))
    (let (Io: (ioFrame (val $OutFrames))  Out: (outFile (Io: file)))
-      (when (Io: pid)
-         (close (Out: fd))
-         (closeOutFile (Out: fd))
-         (when (> (Io: pid) 1)
-            (waitFile @) ) )
+      (when (ge0 (Out: fd))
+         (when (Io: pid)
+            (close (Out: fd))
+            (closeOutFile (Out: fd))
+            (when (> (Io: pid) 1)
+               (waitFile @) ) ) )
       (set $OutFrames (Io: link)) ) )
 
 (de void tosOutFile ()
@@ -682,7 +691,9 @@ selectErr)
       (> (val $InFDs) Fd)
       (val (ofs (val $InFiles) Fd))
       (let In: (inFile @)
-         (> (In: cnt) (In: ix)) ) ) )
+         (and
+            (ge0 (In: fd))
+            (> (In: cnt) (In: ix)) ) ) ) )
 
 (de i1 inReady ((i32 . Fd) (i1 . Flg))
    (let P (pollfd Fd)
@@ -693,11 +704,13 @@ selectErr)
             (readyIn P) )
          (T
             (let In: (inFile @)
-               (or
-                  (> (In: cnt) (In: ix))
-                  (and
-                     (readyIn P)
-                     (or Flg (ge0 (slowNb (In:)))) ) ) ) ) ) ) )
+               (if (lt0 (In: fd))
+                  (readyIn P)
+                  (or
+                     (> (In: cnt) (In: ix))
+                     (and
+                        (readyIn P)
+                        (or Flg (ge0 (slowNb (In:)))) ) ) ) ) ) ) ) )
 
 (de i64 waitFd (Exe (i32 . Fd) (i64 . Ms))
    (let
@@ -905,7 +918,8 @@ selectErr)
          (or
             (lt0 Fd)
             (>= Fd (val $InFDs))
-            (=0 (val (ofs (val $InFiles) Fd))) )
+            (=0 (val (ofs (val $InFiles) Fd)))
+            (lt0 ((inFile @) fd)) )
          (badFd Exe X) )
       (when (val $Hear)
          (close @)
@@ -947,7 +961,7 @@ selectErr)
       (when (or (lt0 Fd) (>= Fd (val $InFDs)))
          (badFd Exe C) )
       (let In: (inFile (val (ofs (val $InFiles) Fd)))
-         (ifn (In:)
+         (ifn (and (In:) (ge0 (In: fd)))
             $Nil
             (let Poll (b64 1)
                (pollIn Fd Poll)
@@ -1161,7 +1175,7 @@ selectErr)
    (let In: (inFile (val $InFile))
       (set $Chr
          (cond
-            ((=0 (In:)) -1)  # EOF
+            ((lt0 (In: fd)) -1)  # EOF
             ((or (In: fd) (=0 (isatty 0)))  # Not stdin
                (if
                   (and
@@ -1416,10 +1430,8 @@ selectErr)
 
 (de read0 ((i1 . Top))
    (let C (skip)
-      (and
-         Top
-         (val $InFile)
-         (let In: (inFile @)
+      (when Top
+         (let In: (inFile (val $InFile))
             (In: src (In: line)) ) )
       (cond
          ((lt0 C)
@@ -2480,7 +2492,7 @@ selectErr)
 (de _rd (Exe)
    (let X (save (eval (cadr Exe)))
       (cond
-         ((=0 (val $InFile)) $Nil)
+         ((lt0 ((inFile (val $InFile)) fd)) $Nil)
          ((num? X)
             (let
                (P (push 3 NIL ZERO NIL)  # [cnt last name link]
