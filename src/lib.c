@@ -1,4 +1,4 @@
-// 14dec20 Software Lab. Alexander Burger
+// 22dec20 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -219,14 +219,6 @@ void sigChld(int n __attribute__((unused))) {
       if (WIFSIGNALED(stat))
          fprintf(stderr, "%d SIG-%d\n", (int)pid, WTERMSIG(stat));
    errno = e;
-}
-
-int32_t waitWuntraced(int32_t pid, int32_t *res) {
-   return waitpid((pid_t)pid, (int*)res, WUNTRACED);
-}
-
-int32_t wifStopped(int32_t *res) {
-   return WIFSTOPPED(*(int*)res);
 }
 
 int32_t nErrno(void) {

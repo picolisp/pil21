@@ -1,4 +1,4 @@
-# 12dec20 Software Lab. Alexander Burger
+# 22dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -89,7 +89,7 @@
 setpgid execvp isatty tcgetattr read write pread pwrite fread fwrite
 putc_unlocked getc_unlocked fopen fflush feof fclose fileno fsync pipe memcmp
 strlen strcpy strdup strcmp strchr strrchr dlsym dlerror dup dup2 close signal
-tcsetpgrp waitpid setjmp longjmp kill exit)
+waitpid setjmp longjmp kill exit)
 
 (de T i8* malloc (i64))
 (de T i8* realloc (i8* i64))
@@ -135,7 +135,6 @@ tcsetpgrp waitpid setjmp longjmp kill exit)
 (de T i32 dup2 (i32 i32))
 (de T i32 close (i32))
 (de T i8* signal (i32 i8*))
-(de T i32 tcsetpgrp (i32 i32))
 (de T i32 waitpid (i32 i32* i32))
 (de T i32 setjmp (i8*))
 (de T NIL longjmp (i8* i32))
@@ -198,14 +197,12 @@ socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (var SigDfl i8* NIL)
 (var SigIgn i8* NIL)
 
-(local) (gSignal sigUnblock iSignal sigChld waitWuntraced wifStopped)
+(local) (gSignal sigUnblock iSignal sigChld)
 
 (de T i32 gSignal (i32))
 (de T void sigUnblock (i32))
 (de T void iSignal (i32 i8*))
 (de T void sigChld (i32))
-(de T i32 waitWuntraced (i32 i32*))
-(de T i32 wifStopped (i32*))
 
 (local) (nErrno gErrno)
 (de T i32 nErrno ())
