@@ -1,4 +1,4 @@
-# 18dec20 Software Lab. Alexander Burger
+# 22dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -108,7 +108,6 @@ selectErr)
          (when (== In (val $InFile))
             (set $Chr
                ((inFile (set $InFile (val (val $InFiles)))) chr) ) )   # Stdin
- #(set P null)
          (when In
             (let In: (inFile @)
                (free (In: name))
