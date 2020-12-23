@@ -1,4 +1,4 @@
-# 08dec20 Software Lab. Alexander Burger
+# 23dec20 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *Evt *Lock *Spans
 
@@ -1232,7 +1232,9 @@
       (list 'scroll> (lit *Chart) Exe) ) )
 
 (de jsDn ()
-   (when (> (length (; *Chart data)) (; *Chart ofs))
+   (and
+      (; *Chart data)
+      (> (length @) (; *Chart ofs))
       (scroll> *Chart 1) ) )
 
 (class +UpButton +Tiny +Rid +JS +Able +Button)
