@@ -1497,13 +1497,18 @@
       (let (Pid @  Res (b32 1))
          (setpgid Pid 0)  # Set process group
          (tcsetpgrp 0 Pid)
-         (while (lt0 (waitpid Pid Res 0))
-            (unless (== (gErrno) EINTR)
-               (err Exe 0 ($ "wait pid") null) )
-            (sigChk Exe) )
+         (loop
+            (while (lt0 (waitWuntraced Pid Res))
+               (unless (== (gErrno) EINTR)
+                  (err Exe 0 ($ "wait pid") null) )
+               (sigChk Exe) )
          (tcsetpgrp 0 (getpgrp))
-         (set $At2 (cnt (i64 (val Res))))
-         (if (val Res) $Nil $T) ) ) )
+         (? (=0 (wifStopped Res))
+            (set $At2 (cnt (i64 (val Res))))
+            (if (val Res) $Nil $T) )
+         (repl 0 ($ "+ ") $Nil)
+         (tcsetpgrp 0 Pid)
+         (kill Pid (val SIGCONT Sig)) ) ) ) )
 
 # (ipid) -> pid | NIL
 (de _ipid (Exe)

@@ -1,4 +1,4 @@
-# 21jul20 Software Lab. Alexander Burger
+# 23dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -671,12 +671,12 @@
          P (boxNum (val (dig A)))
          U (link (push P NIL))  # Dividend 'u'
          V (link (push B NIL))  # Divisor 'v'
-         V1 NIL
+         V1 T
          V2 0  # Last cell
          M 0  # 'm'
          N 1  # 'n'
          D 0
-         Q NIL )
+         Q T )
       # Copy dividend
       (while (big? (setq A (val (big A))))
          (setq P

@@ -1,4 +1,4 @@
-# 14dec20 Software Lab. Alexander Burger
+# 23dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1054,7 +1054,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (let
       (X (cdr Exe)
          Nm (xName Exe (set $At2 (evSym X)))
-         Size (i64* (push NIL)) )
+         Size (b64 1) )
       (if
          (lt0
             (fileInfo

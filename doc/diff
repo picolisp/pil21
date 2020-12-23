@@ -1,4 +1,4 @@
-# 22dec20 Software Lab. Alexander Burger
+# 01dec20 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -48,4 +48,3 @@
 % Main coroutine has a tag 'T'
 % 'file' returns NIL instead of "./"
 % 'edit' functionality is handled by 'vi' (Vip)
-% Ctrl-Z in 'call' does not drop into a REPL
