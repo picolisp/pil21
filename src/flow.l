@@ -1,4 +1,4 @@
-# 22dec20 Software Lab. Alexander Burger
+# 23dec20 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1490,14 +1490,18 @@
       (cond
          ((lt0 (fork)) (forkErr Exe))
          ((=0 @)  # In child
+            (setpgid 0 0)  # Set process group
             (execvp (val Av) Av)  # Execute program
             (execErr (val Av)) ) )  # Error if failed
       # In parent
       (let (Pid @  Res (b32 1))
+         (setpgid Pid 0)  # Set process group
+         (tcsetpgrp 0 Pid)
          (while (lt0 (waitpid Pid Res 0))
             (unless (== (gErrno) EINTR)
                (err Exe 0 ($ "wait pid") null) )
             (sigChk Exe) )
+         (tcsetpgrp 0 (getpgrp))
          (set $At2 (cnt (i64 (val Res))))
          (if (val Res) $Nil $T) ) ) )
 

@@ -1551,6 +1551,7 @@ declare i32 @dup(i32)
 declare i32 @dup2(i32, i32)
 declare i32 @close(i32)
 declare i8* @signal(i32, i8*)
+declare i32 @tcsetpgrp(i32, i32)
 declare i32 @waitpid(i32, i32*, i32)
 declare i32 @setjmp(i8*)
 declare void @longjmp(i8*, i32)
@@ -80959,7 +80960,7 @@ $7:
   store i8* null, i8** %40
 ; # (flushAll)
   call void @flushAll()
-; # (cond ((lt0 (fork)) (forkErr Exe)) ((=0 @) (execvp (val Av) Av) (...
+; # (cond ((lt0 (fork)) (forkErr Exe)) ((=0 @) (setpgid 0 0) (execvp ...
 ; # (fork)
   %41 = call i32 @fork()
 ; # (lt0 (fork))
@@ -80977,84 +80978,94 @@ $9:
   br i1 %45, label %$12, label %$11
 $12:
   %46 = phi i64 [%44, %$9] ; # X
+; # (setpgid 0 0)
+  %47 = call i32 @setpgid(i32 0, i32 0)
 ; # (val Av)
-  %47 = load i8*, i8** %17
+  %48 = load i8*, i8** %17
 ; # (execvp (val Av) Av)
-  %48 = call i32 @execvp(i8* %47, i8** %17)
+  %49 = call i32 @execvp(i8* %48, i8** %17)
 ; # (val Av)
-  %49 = load i8*, i8** %17
+  %50 = load i8*, i8** %17
 ; # (execErr (val Av))
-  call void @execErr(i8* %49)
+  call void @execErr(i8* %50)
   unreachable
 $11:
-  %50 = phi i64 [%44, %$9] ; # X
+  %51 = phi i64 [%44, %$9] ; # X
   br label %$8
 $8:
-  %51 = phi i64 [%50, %$11] ; # X
-  %52 = phi i64 [0, %$11] ; # ->
-; # (let (Pid @ Res (b32 1)) (while (lt0 (waitpid Pid Res 0)) (unless...
+  %52 = phi i64 [%51, %$11] ; # X
+  %53 = phi i64 [0, %$11] ; # ->
+; # (let (Pid @ Res (b32 1)) (setpgid Pid 0) (tcsetpgrp 0 Pid) (while...
 ; # (b32 1)
-  %53 = alloca i32, i64 1
+  %54 = alloca i32, i64 1
+; # (setpgid Pid 0)
+  %55 = call i32 @setpgid(i32 %41, i32 0)
+; # (tcsetpgrp 0 Pid)
+  %56 = call i32 @tcsetpgrp(i32 0, i32 %41)
 ; # (while (lt0 (waitpid Pid Res 0)) (unless (== (gErrno) EINTR) (err...
   br label %$13
 $13:
-  %54 = phi i64 [%51, %$8], [%61, %$19] ; # X
+  %57 = phi i64 [%52, %$8], [%64, %$19] ; # X
 ; # (waitpid Pid Res 0)
-  %55 = call i32 @waitpid(i32 %41, i32* %53, i32 0)
+  %58 = call i32 @waitpid(i32 %41, i32* %54, i32 0)
 ; # (lt0 (waitpid Pid Res 0))
-  %56 = icmp slt i32 %55, 0
-  br i1 %56, label %$14, label %$15
+  %59 = icmp slt i32 %58, 0
+  br i1 %59, label %$14, label %$15
 $14:
-  %57 = phi i64 [%54, %$13] ; # X
+  %60 = phi i64 [%57, %$13] ; # X
 ; # (unless (== (gErrno) EINTR) (err Exe 0 ($ "wait pid") null))
 ; # (gErrno)
-  %58 = call i32 @gErrno()
+  %61 = call i32 @gErrno()
 ; # (== (gErrno) EINTR)
-  %59 = icmp eq i32 %58, 2
-  br i1 %59, label %$17, label %$16
+  %62 = icmp eq i32 %61, 2
+  br i1 %62, label %$17, label %$16
 $16:
-  %60 = phi i64 [%57, %$14] ; # X
+  %63 = phi i64 [%60, %$14] ; # X
 ; # (err Exe 0 ($ "wait pid") null)
   call void @err(i64 %0, i64 0, i8* bitcast ([9 x i8]* @$82 to i8*), i8* null)
   unreachable
 $17:
-  %61 = phi i64 [%57, %$14] ; # X
+  %64 = phi i64 [%60, %$14] ; # X
 ; # (sigChk Exe)
-  %62 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
-  %63 = icmp ne i32 %62, 0
-  br i1 %63, label %$18, label %$19
+  %65 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %66 = icmp ne i32 %65, 0
+  br i1 %66, label %$18, label %$19
 $18:
   call void @sighandler(i64 %0)
   br label %$19
 $19:
   br label %$13
 $15:
-  %64 = phi i64 [%54, %$13] ; # X
+  %67 = phi i64 [%57, %$13] ; # X
+; # (getpgrp)
+  %68 = call i32 @getpgrp()
+; # (tcsetpgrp 0 (getpgrp))
+  %69 = call i32 @tcsetpgrp(i32 0, i32 %68)
 ; # (set $At2 (cnt (i64 (val Res))))
 ; # (val Res)
-  %65 = load i32, i32* %53
+  %70 = load i32, i32* %54
 ; # (i64 (val Res))
-  %66 = sext i32 %65 to i64
+  %71 = sext i32 %70 to i64
 ; # (cnt (i64 (val Res)))
-  %67 = shl i64 %66, 4
-  %68 = or i64 %67, 2
-  %69 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([852 x i64]* @SymTab to i8*), i32 456) to i64) to i64*
-  store i64 %68, i64* %69
+  %72 = shl i64 %71, 4
+  %73 = or i64 %72, 2
+  %74 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([852 x i64]* @SymTab to i8*), i32 456) to i64) to i64*
+  store i64 %73, i64* %74
 ; # (if (val Res) $Nil $T)
 ; # (val Res)
-  %70 = load i32, i32* %53
-  %71 = icmp ne i32 %70, 0
-  br i1 %71, label %$20, label %$21
+  %75 = load i32, i32* %54
+  %76 = icmp ne i32 %75, 0
+  br i1 %76, label %$20, label %$21
 $20:
-  %72 = phi i64 [%64, %$15] ; # X
+  %77 = phi i64 [%67, %$15] ; # X
   br label %$22
 $21:
-  %73 = phi i64 [%64, %$15] ; # X
+  %78 = phi i64 [%67, %$15] ; # X
   br label %$22
 $22:
-  %74 = phi i64 [%72, %$20], [%73, %$21] ; # X
-  %75 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([852 x i64]* @SymTab to i8*), i32 8) to i64), %$20], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([852 x i64]* @SymTab to i8*), i32 280) to i64), %$21] ; # ->
-  ret i64 %75
+  %79 = phi i64 [%77, %$20], [%78, %$21] ; # X
+  %80 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([852 x i64]* @SymTab to i8*), i32 8) to i64), %$20], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([852 x i64]* @SymTab to i8*), i32 280) to i64), %$21] ; # ->
+  ret i64 %80
 }
 
 define i64 @_ipid(i64) {
