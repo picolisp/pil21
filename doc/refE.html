@@ -236,13 +236,13 @@ href="refN.html#native">native</a></code>.
 -> 2                                   # Returned 'ENOENT'
 </code></pre>
 
-<dt><a name="eval"><code>(eval 'any ['cnt ['lst]]) -> any</code></a>
+<dt><a name="eval"><code>(eval 'any ['cnt]) -> any</code></a>
 <dd>Evaluates <code>any</code>. Note that because of the standard argument
-evaluation, <code>any</code> is actually evaluated twice. If a lambda-binding
-environment offset <code>cnt</code> is given, the second evaluation takes place
-in the corresponding environment, and an optional <code>lst</code> of excluded
-symbols can be supplied. <code>cnt</code> should be greater than zero. See also
-<code><a href="refR.html#run">run</a></code> and <code><a
+evaluation, <code>any</code> is actually evaluated twice. If an offset
+<code>cnt</code> is given, the value of <code><a
+href="ref.html#atres">@</a></code> in the <code>cnt</code>'th call environment
+is used during the second evaluation. <code>cnt</code> should be greater than
+zero. See also <code><a href="refR.html#run">run</a></code> and <code><a
 href="refU.html#up">up</a></code>.
 
 <pre><code>

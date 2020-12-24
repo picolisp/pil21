@@ -757,14 +757,14 @@ href="ref.html#pilog">Pilog</a> and <code><a href="refB.html#be">be</a></code>.
 -> append
 </code></pre>
 
-<dt><a name="run"><code>(run 'any ['cnt ['lst]]) -> any</code></a>
+<dt><a name="run"><code>(run 'any ['cnt]) -> any</code></a>
 <dd>If <code>any</code> is an atom, <code>run</code> behaves like <code><a
 href="refE.html#eval">eval</a></code>. Otherwise <code>any</code> is a list,
-which is evaluated in sequence. The last result is returned. If a lambda-binding
-environment offset <code>cnt</code> is given, that evaluation takes place in the
-corresponding environment, and an optional <code>lst</code> of excluded symbols
-can be supplied. <code>cnt</code> should be greater than zero. See also <code><a
-href="refU.html#up">up</a></code>.
+which is evaluated in sequence. The last result is returned. If an offset
+<code>cnt</code> is given, the value of <code><a
+href="ref.html#atres">@</a></code> in the <code>cnt</code>'th call environment
+is used during that evaluation. <code>cnt</code> should be greater than zero.
+See also <code><a href="refU.html#up">up</a></code>.
 
 <pre><code>
 : (run '((println (+ 1 2 3)) (println 'OK)))
