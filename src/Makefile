@@ -1,8 +1,9 @@
-# 21nov20 Software Lab. Alexander Burger
+# 24dec20 Software Lab. Alexander Burger
 
 .SILENT:
 
 CC = clang
+PIL = ../pil  # pil
 ASM = opt -O3  # llvm-as
 MAIN = -rdynamic -lc -lm -ldl -lreadline -lffi
 SHARED = -shared
@@ -34,7 +35,7 @@ base.bc: base.ll
 	$(ASM) -o base.bc base.ll
 
 base.ll: $(INC) $(SRC)
-	../pil lib/llvm.l main.l -bye > base.ll
+	$(PIL) lib/llvm.l main.l -bye > base.ll
 	mv base.map $(LIB)/map
 
 lib.bc: pico.h lib.c
@@ -49,7 +50,7 @@ ext.bc: ext.ll
 	$(ASM) -o ext.bc ext.ll
 
 ext.ll: $(INC) ext.l
-	../pil lib/llvm.l ext.l -bye > ext.ll
+	$(PIL) lib/llvm.l ext.l -bye > ext.ll
 
 $(LIB)/ht.so: ht.bc
 	llc ht.bc -relocation-model=pic -o ht.s
@@ -59,7 +60,7 @@ ht.bc: ht.ll
 	$(ASM) -o ht.bc ht.ll
 
 ht.ll: $(INC) ht.l
-	../pil lib/llvm.l ht.l -bye > ht.ll
+	$(PIL) lib/llvm.l ht.l -bye > ht.ll
 
 # Tools
 $(BIN)/balance: balance.c
