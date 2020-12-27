@@ -1,4 +1,4 @@
-# 12nov20 Software Lab. Alexander Burger
+# 27dec20 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -249,6 +249,9 @@
          (or
             (loc S (car X))
             (loc S (cdr X)) ) ) ) )
+
+(de -symbols ()
+   (symbols (cons (intern (opt)) (symbols))) )
 
 (de private ()
    (symbols '(priv) (read)) )

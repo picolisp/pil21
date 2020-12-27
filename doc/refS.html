@@ -1038,6 +1038,7 @@ namespace if its value is <code>NIL</code> and not modified otherwise, and
 <code>sym1</code>, <code>sym2</code> and all following arguments are set as the
 current namespace list. See also <code><a href="refP.html#pico">pico</a></code>,
 <code><a href="refN.html#nsp">nsp</a></code>, <code><a
+href="refS.html#-symbols">-symbols</a></code>, <code><a
 href="refP.html#private">private</a></code>, <code><a
 href="refL.html#local">local</a></code>, <code><a
 href="refE.html#export">export</a></code>, <code><a
@@ -1067,6 +1068,21 @@ myLib: (pp 'foo)
    (bar (inc X)) )
 -> foo
 myLib:
+</code></pre>
+
+<dt><a name="-symbols"><code>(-symbols) -> lst</code></a>
+<dd>Command line frontend to <code><a
+href="refS.html#symbols">symbols</a></code>. Inserts the next command line
+argument as the first namespace into the current search order. <code>--symbols
+myLib</code> on the command line (see <a href="ref.html#invoc">Invocation</a>)
+is equivalent to <code>-"symbols '(myLib ...)"</code>. See also <code><a
+href="refO.html#opt">opt</a></code>.
+
+<pre><code>
+$ ./pil lib/gis.l lib/simul.l  --symbols gis  --symbols simul  +
+simul: (symbols)
+-> (simul gis pico)
+simul:
 </code></pre>
 
 <dt><a name="sync"><code>(sync) -> flg</code></a>
