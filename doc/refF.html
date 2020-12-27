@@ -278,10 +278,12 @@ function accepting a node and returning a list of connected nodes, and
 <code>lst2</code> a list of seed nodes.
 
 <pre><code>
+(load "@lib/simul.l")
+
 : (setq *Graph (1 2 3 4 5))         # For simplicity, a one-dimensional "graph"
 -> (1 2 3 4 5)
 
-: (flood
+: (simul~flood
    (maplist prog *Graph)            # List of relevant cells
    '((X)                            # Flood the three central cells (2 3 4)
       (when (member (car X) (2 3))  # 2 -> 3 and 3 -> 4

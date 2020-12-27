@@ -1,4 +1,4 @@
-# 26nov20 Software Lab. Alexander Burger
+# 27dec20 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -52,6 +52,8 @@
                (unless (memq X (made))
                   (link X)
                   (recurse (cdr (asoq X G))) ) ) ) ) ) )
+
+(def 'flood 'doc "@doc/refF.html")
 
 # Genetic Algorithm
 (local) gen
