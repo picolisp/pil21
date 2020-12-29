@@ -1,0 +1,17 @@
+# Bash completion for picolisp + pil
+# Alexander Burger <abu@software-lab.de>
+
+_pil()
+{
+    local -a ARGS
+    local IFS=$'\n'
+
+    for A in "${COMP_WORDS[@]:1:$((COMP_CWORD-1))}"
+    do
+        test "${A:0:1}" = "-" || ARGS[${#ARGS[@]}]="${A//\\ / }"
+    done
+    COMPREPLY=($(${COMP_WORDS[0]} ${ARGS[@]} /usr/lib/picolisp/lib/complete.l "${COMP_WORDS[$COMP_CWORD]}" -bye + 2>&1))
+    return 0
+} &&
+complete -o nospace  -F _pil  picolisp  &&
+complete -o nospace  -F _pil  pil
