@@ -1,4 +1,4 @@
-# 23nov20 Software Lab. Alexander Burger
+# 31dec20 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1603,16 +1603,17 @@ nextBuf shell shFile prCmd reset command vi)
 
 (de pico~vi ("X" C)
    (and
-      (vi
-         (list
-            (cond
-               ((pair "X") @)
-               ((if C
-                     (get @ '*Dbg -1 "X")
-                     (get "X" '*Dbg 1) )
-                  (apply symbols (cddr @))
-                  (cons (car @) (cadr @)) )
-               (T "X") ) ) )
+      (symbols (symbols)
+         (vi
+            (list
+               (cond
+                  ((pair "X") @)
+                  ((if C
+                        (get @ '*Dbg -1 "X")
+                        (get "X" '*Dbg 1) )
+                     (apply symbols (cddr @))
+                     (cons (car @) (cadr @)) )
+                  (T "X") ) ) ) )
       "X" ) )
 
 (de pico~v Lst
