@@ -271,8 +271,9 @@ somewhere in their value or property list.
 
 <pre><code>
 : (who 'print)
--> (query pretty pp msg more view show (print> . +Date) rules select
-(print> . +relation))</code></pre>
+-> (query _pretty spPrt prtty1 prtty2 prtty3 pretty ("syms>" . "+Buffer")
+msg more show view (print> . +Date) rules select (print> . +relation) pico)
+</code></pre>
 
 <p>A dotted pair indicates either a method definition or a property entry. So
 <code>(print> . +relation)</code> denotes the <code>print&gt;</code> method of

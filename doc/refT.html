@@ -170,8 +170,8 @@ href="refT.html#tasks">tasks</a></code> and <code><a
 href="refT.html#timeout">timeout</a></code>.
 
 <pre><code>
-: (task -10000 5000 N 0 (msg (inc 'N)))            # Install task
--> (-10000 5000 (job '((N . 0)) (msg (inc 'N))))   # for every 10 seconds
+: (task -10000 5000 N 0 (tty (println (inc 'N))))  # Install task for every 10 seconds
+-> (-10000 5000 (job '((N . 0)) (tty (println (inc 'N)))))
 : 1                                                # ... after 5 seconds
 2                                                  # ... after 10 seconds
 3                                                  # ... after 10 seconds
@@ -198,7 +198,7 @@ href="refT.html#timeout">timeout</a></code>.
 <pre><code>
 (tasks  # Three iterations with varying timeout
    (let X (pop '(((-1000 . a) (-4000 . b) (-1000 . c))))
-      (msg (cdr X))
+      (tty (println (cdr X)))
       (car X) ) )
 
 (tasks
@@ -206,11 +206,11 @@ href="refT.html#timeout">timeout</a></code>.
       (use S
          (loop  # Loop infinitely
             (yield -4000)  # First wait 4 seconds
-            (msg 'OK)
+            (tty (println 'OK))
             (yield  # Then wait for remote data
                (setq S
                   (pipe (exec "sh" "-c" "sleep 2; echo 7")) ) )
-            (msg (in S (read)))
+            (tty (println (in S (read))))
             (close S) ) ) ) )
 </code></pre>
 
