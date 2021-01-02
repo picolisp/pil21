@@ -1939,6 +1939,15 @@ abbreviations:
 <p>Arguments evaluated by the function (depending on the context) are quoted
 (prefixed with the single quote character "<code>'</code>").
 
+<p>For example, the function <code><a href="refS.html#setq">setq</a></code>
+evaluates every second argument (giving any kind of value), while it does
+<i>not</i> evaluate the others (<code>var</code>s, here typically symbols). This
+could be specified as:
+
+<pre><code>
+   (setq var1 'any1 var2 'any2 ..) -> any
+</code></pre>
+
 <p>
 <a href="refA.html">A</a>
 <a href="refB.html">B</a>
