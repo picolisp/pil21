@@ -1,4 +1,4 @@
-# 02dec20 Software Lab. Alexander Burger
+# 03jan21 Software Lab. Alexander Burger
 
 # *JS "*JS" *Style *SsEvts *Menu *Tab *ID
 
@@ -474,8 +474,8 @@
 (private) (Lst M N E U L)
 
 (de <menu> Lst
-   (let (M 1  N 1  E 2  U)
-      (recur (Lst N E)
+   (let (M 1  E 2  U)
+      (recur (Lst E)
          (<ul> NIL
             (for L Lst
                (nond
@@ -483,10 +483,10 @@
                   ((=T (car L))
                      (nond
                         ((setq U (eval (cadr L) E))
-                           (<li> (pack "cmd" N)
+                           (<li> "cmd"
                               (ht:Prin (eval (car L) E)) ) )
                         ((pair U)
-                           (<li> (pack (if (= U *Url) "act" "cmd") N)
+                           (<li> (if (= U *Url) "act" "cmd")
                               (<tip> "-->"
                                  (<href> (eval (car L) E)
                                     (urlMT U *Menu (if (= U *Url) *Tab 1)
@@ -495,7 +495,7 @@
                         (NIL
                            (<href> (eval (car L) E) (car U) (cdr U)) ) ) )
                   ((bit? M *Menu)
-                     (<li> (pack "sub" N)
+                     (<li> "sub"
                         (<tip> ,"Open submenu"
                            (<href>
                               (eval (cadr L) E)
@@ -507,13 +507,13 @@
                               (recurse X)
                               (setq M (>> -1 M)) ) ) ) )
                   (NIL
-                     (<li> (pack "top" N)
+                     (<li> "top"
                         (<tip> ,"Close submenu"
                            (<href>
                               (eval (cadr L) E)
                               (urlMT *Url (x| M *Menu) *Tab *ID) ) )
                         (setq M (>> -1 M))
-                        (recurse (cddr L) (inc N) (inc E)) ) ) ) ) ) ) ) )
+                        (recurse (cddr L) (inc E)) ) ) ) ) ) ) ) )
 
 # Update link
 (de updLink ()

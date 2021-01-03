@@ -1,4 +1,4 @@
-/* 01dec20abu
+/* 03jan21abu
  * 17nov12jk
  * (c) Software Lab. Alexander Burger
  */
@@ -112,17 +112,17 @@ a:hover {
    margin: 0;
 }
 
-.menu .cmd1, .act1, .cmd2, .act2, .cmd3, .act3, .cmd4, .act4 {
+.menu .cmd, .act {
    list-style-position: inside;
    list-style-type: circle;
    padding: 0 0 0 2em;
 }
 
-.menu .act1, .act2, .act3, .act4 {
+.menu .act {
    list-style-type: disc;
 }
 
-.menu .sub1, .top1, .sub2, .top2, .sub3, .top3, .sub4, .top4 {
+.menu .sub, .top {
    list-style-position: inside;
    padding: 0 0 0 1em;
 }
