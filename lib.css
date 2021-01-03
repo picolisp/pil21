@@ -127,43 +127,6 @@ a:hover {
    padding: 0 0 0 1em;
 }
 
-.bar {
-   white-space: nowrap;
-}
-
-.bar ul {
-   list-style: none;
-   padding: 0;
-   margin: 0;
-}
-
-.bar li {
-   float: left;
-   position: relative;
-   background-color: #d0d0d0;
-}
-
-.bar li ul {
-   position: absolute;
-}
-
-.bar li ul li {
-   clear: both;
-   width: 100%;
-   border-left: 1px solid;
-   border-right: 1px solid;
-   border-bottom: 1px solid;
-}
-
-.bar .cmd, .act, .sub, .top {
-   z-index: 9999;
-   padding: 6px;
-}
-
-.bar .act {
-   list-style-position: inside;
-   list-style-type: disc;
-}
 
 #expires {
    position: absolute;
