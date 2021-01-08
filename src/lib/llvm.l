@@ -1,4 +1,4 @@
-# 21oct20 Software Lab. Alexander Burger
+# 08jan21 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -1172,7 +1172,7 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
                'any ) )
          (ssa (inc '*Ssa) "alloca "
             (type Typ) ", i64 " (length Lst)
-            (and (cdr Lst) ", align 16") )
+            ", align " (if (cdr Lst) 16 8) )
          (when (== 'any Typ)
             (ssa (inc '*Ssa) "ptrtoint i64* %" (dec *Ssa) " to i64") )
          (let P (def (pack "%" *Ssa) (ptr Typ))

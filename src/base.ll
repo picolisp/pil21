@@ -8040,7 +8040,7 @@ define i64 @zapZero(i64) {
 $1:
 ; # (let (P (push N) X P Y P Z T) (until (cnt? (setq Z (val (big N)))...
 ; # (push N)
-  %1 = alloca i64, i64 1
+  %1 = alloca i64, i64 1, align 8
   %2 = ptrtoint i64* %1 to i64
   %3 = inttoptr i64 %2 to i64*
   store i64 %0, i64* %3
@@ -38676,7 +38676,7 @@ $2:
 ; # (let Fd @ (unless (wrBytes Fd (i8* (push 0)) 8) (close Fd) (set $...
 ; # (unless (wrBytes Fd (i8* (push 0)) 8) (close Fd) (set $Tell 0))
 ; # (push 0)
-  %2 = alloca i64, i64 1
+  %2 = alloca i64, i64 1, align 8
   store i64 0, i64* %2
 ; # (i8* (push 0))
   %3 = bitcast i64* %2 to i8*
@@ -89366,7 +89366,7 @@ $2:
   store i64 %17, i64* %22
   %23 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
   store i64 %19, i64* %23
-; # (if (atom X) L (let (R L N 1 A) (loop (setq A (link (push (eval (...
+; # (if (atom X) L (let (R L N 1 A T) (loop (setq A (link (push (eval...
 ; # (atom X)
   %24 = and i64 %7, 15
   %25 = icmp ne i64 %24, 0
@@ -89378,7 +89378,7 @@ $7:
 $8:
   %28 = phi i64 [%7, %$2] ; # X
   %29 = phi i64 [%15, %$2] ; # L
-; # (let (R L N 1 A) (loop (setq A (link (push (eval (car X))))) (? (...
+; # (let (R L N 1 A T) (loop (setq A (link (push (eval (car X))))) (?...
 ; # (loop (setq A (link (push (eval (car X))))) (? (atom (shift X))) ...
   br label %$10
 $10:
@@ -89409,7 +89409,7 @@ $14:
 $11:
   %43 = phi i64 [%35, %$13], [%41, %$15], [%42, %$14] ; # ->
 ; # (push (eval (car X)))
-  %44 = alloca i64, i64 1
+  %44 = alloca i64, i64 1, align 8
   %45 = ptrtoint i64* %44 to i64
   %46 = inttoptr i64 %45 to i64*
   store i64 %43, i64* %46
@@ -101379,7 +101379,7 @@ $53:
   %142 = phi i64 [%140, %$50] ; # Spec
 ; # (let (Ptr (i8** (push Val)) S (++ Spec) R (natRetBuf S Ptr)) (unl...
 ; # (push Val)
-  %143 = alloca i64, i64 1
+  %143 = alloca i64, i64 1, align 8
   store i64 %45, i64* %143
 ; # (i8** (push Val))
   %144 = bitcast i64* %143 to i8**
@@ -102196,7 +102196,7 @@ $28:
   %80 = phi i64 [%73, %$26] ; # X
   %81 = phi i8* [%74, %$26] ; # P
 ; # (push N)
-  %82 = alloca i64, i64 1
+  %82 = alloca i64, i64 1, align 8
   store i64 %27, i64* %82
 ; # (i8** (push N))
   %83 = bitcast i64* %82 to i8**

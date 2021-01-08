@@ -1,4 +1,4 @@
-# 23oct20 Software Lab. Alexander Burger
+# 08jan21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -680,7 +680,7 @@
    (let (X (cdr Exe)  L (save (eval (++ X))))
       (if (atom X)
          L
-         (let (R L  N 1  A)
+         (let (R L  N 1  A T)
             (loop
                (setq A (link (push (eval (car X)))))
                (? (atom (shift X)))
