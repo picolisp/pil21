@@ -1,4 +1,4 @@
-// 14dec20 Software Lab. Alexander Burger
+// 08jan21 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -252,7 +252,7 @@ int Tio;
 struct termios OrgTermio, *Termio;
 
 static void tcSet(struct termios *p) {
-   if (Termio)
+   if (Tio)
       while (tcsetattr(STDIN_FILENO, TCSADRAIN, p)  &&  errno == EINTR);
 }
 
@@ -262,7 +262,8 @@ void stopTerm(void) {
    tcSet(&OrgTermio);
    sigUnblock(SIGTSTP);
    signal(SIGTSTP, SIG_DFL),  raise(SIGTSTP);
-   tcSet(Termio);
+   if (Termio)
+      tcSet(Termio);
 }
 
 void setRaw(void) {

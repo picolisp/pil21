@@ -1,3 +1,7 @@
+08jan21
+   Improved terminal reset
+      src/lib.c
+
 05jan21
    Debian release
 
