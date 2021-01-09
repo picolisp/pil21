@@ -1,6 +1,6 @@
 08jan21
-   Stack alignments
-      src/lib/llvm.l
+   Minor cosmetics
+      src/subr.l
    Improved terminal reset
       src/lib.c
 
