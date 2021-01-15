@@ -1,4 +1,4 @@
-# 23sep20 Software Lab. Alexander Burger
+# 15jan21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -26,18 +26,19 @@
       (X (cdr Exe)
          E (push NIL $Nil ZERO (eval (++ X)) NIL) )
       (set E (link (ofs E 3) T))
-      (let (L (val $Next)  P E)
+      (let P E
          (while (pair X)
             (setq P
                (set 2 P
                   (push NIL $Nil ZERO (eval (++ X)) NIL) ) )
             (set P (link (ofs P 3))) )
-         (while (pair L)
-            (setq P
-               (set 2 P (push NIL $Nil ZERO (cdr L) NIL)) )
-            (set P (link (ofs P 3)))
-            (setq L (car L)) )
-         (evList E) ) ) )
+         (let L (val $Next)
+            (while (pair L)
+               (setq P
+                  (set 2 P (push NIL $Nil ZERO (cdr L) NIL)) )
+               (set P (link (ofs P 3)))
+               (setq L (car L)) ) ) )
+      (evList E) ) )
 
 # (maps 'fun 'sym ['lst ..]) -> any
 (de _maps (Exe)

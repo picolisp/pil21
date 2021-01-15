@@ -1,4 +1,4 @@
-# 23dec20 Software Lab. Alexander Burger
+# 14jan21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1350,10 +1350,12 @@
                (while (big? Z)
                   (unless (big? Y)
                      (ret $Nil) )
-                  (let (A (val (dig Y))  B (val (dig Z)))
-                     (unless (== B (& A B))
-                        (ret $Nil) )
-                     (setq Y A  Z B) ) )
+                  (let A (val (dig Z))
+                     (unless (== A (& A (val (dig Y))))
+                        (ret $Nil) ) )
+                  (setq
+                     Y (val (big Y))
+                     Z (val (big Z)) ) )
                (when (big? Y)
                   (setq Z (int Z)  Y (val (dig Y))) )
                (? (<> Z (& Y Z)) $Nil) ) ) ) ) )

@@ -1,4 +1,4 @@
-# 22dec20 Software Lab. Alexander Burger
+# 15jan21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1568,7 +1568,7 @@ selectErr)
          (T
             (let
                (Nm (xName 0 Set)
-                  S (pathString Nm (b8 (pathSize Nm))) )
+                  S (bufString Nm (b8 (bufSize Nm))) )
                (if
                   (or
                      (== C (char "+"))

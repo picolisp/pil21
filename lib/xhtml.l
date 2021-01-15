@@ -1,6 +1,32 @@
-# 03jan21 Software Lab. Alexander Burger
+# 15jan21 Software Lab. Alexander Burger
 
-# *JS "*JS" *Style *SsEvts *Menu *Tab *ID
+(de xhtml (Path)
+   (for X
+      (quote
+         ("html" . *XhtmlHtml)
+         ("layout" . *XhtmlLayout)
+         ("menu" . *XhtmlMenu)
+         ("tab" . *XhtmlTab)
+         ("input" . *XhtmlInput)
+         ("textarea" . *XhtmlTextarea)
+         ("select" . *XhtmlSelect)
+         ("submit" . *XhtmlSubmit) )
+      (when (info (pack Path (++ X)))
+         (set X
+            (in @@
+               (make
+                  (until (eof)
+                     (let? L (clip (line))
+                        (while (= " " (peek))
+                           (conc L (list "\n") (clip (line))) )
+                        (setq L (split (replace L "~" *SesId) "@"))
+                        (link
+                           (cond
+                              ((= L '(("<" ">"))))
+                              ((cdr L) (mapcar pack L))
+                              (T (pack (car L))) ) ) ) ) ) ) ) ) ) )
+
+(xhtml "@lib/xhtml/")
 
 (mapc allow '(*JS *Menu *Tab *ID "!ping"))
 (setq *Menu 0  *Tab 1)
@@ -105,30 +131,28 @@
 ### XHTML output ###
 (de html (Upd Ttl Css Attr . Prg)
    (httpHead NIL Upd)
-   (ht:Out *Chunked
-      (prinl "<!DOCTYPE html>")
-      (prinl "<html lang=\"" (or *Lang "en") "\">")
-      (prinl "<head>")
-      (prinl "<meta name=\"viewport\" content=\"width=device-width\"/>")
-      (and (fin Ttl) (<tag> "title" NIL @) (prinl))
-      (mapc prinl Ttl)
-      (and *Host *Port (prinl "<base href=\"" (baseHRef) "\"/>"))
-      (when Css
-         (if (atom Css)
-            (css Css)
-            (mapc css Css)
-            (when (fin Css)
-               (prinl "<style type=\"text/css\">")
-               (prinl @)
-               (prinl "</style>") ) ) )
-      (and *SesId (<javascript> "SesId='" @ "'"))
-      (mapc javascript *JS)
-      ## (when (=0 Upd)
-      ##    (<javascript>
-      ##       "document.addEventListener('visibilitychange', function() {if (!document.hidden) window.location.replace(location.href)})" ) )
-      (prinl "</head>")
-      (tag "body" Attr 2 Prg)
-      (prinl "</html>") ) )
+   (let ((Beg (LangA LangZ) HeadA Head (BodyA BodyZ) End) *XhtmlHtml)
+      (ht:Out *Chunked
+         (prinl Beg)
+         (prinl LangA (or *Lang "en") LangZ)
+         (prinl HeadA)
+         (and (fin Ttl) (<tag> "title" NIL @) (prinl))
+         (mapc prinl Ttl)
+         (and *Host *Port (prinl "<base href=\"" (baseHRef) "\"/>"))
+         (when Css
+            (if (atom Css)
+               (css Css)
+               (mapc css Css)
+               (when (fin Css)
+                  (prinl "<style type=\"text/css\">")
+                  (prinl @)
+                  (prinl "</style>") ) ) )
+         (and *SesId (<javascript> "SesId='" @ "'"))
+         (mapc javascript *JS)
+         (prinl Head)
+         (prinl BodyA (and Attr (htStyle @)) BodyZ)
+         (htPrin Prg 2)
+         (prinl End) ) ) )
 
 (de css (Css)
    (prinl "<link rel=\"stylesheet\" type=\"text/css\" href=\"" (srcUrl Css) "\"/>") )
@@ -426,36 +450,44 @@
 # Layout
 (de <layout> Lst
    (let
-      (P (and (=T (car Lst)) (++ Lst))
+      (Lay (car *XhtmlLayout)
+         P (and (=T (car Lst)) (++ Lst))
          LayX 0
          LayY 0 )
-      (recur (Lst LayX)
-         (use (LayX LayY)
+      (ifn Lay
+         (recur (Lst LayX)
+            (use (LayX LayY)
+               (for L Lst
+                  (let
+                     (Args (mapcar eval (cddar L))
+                        DX (eval (caar L))
+                        DY (eval (cadar L))
+                        Cls (unless (sub? ":" (car Args)) (++ Args))
+                        Style
+                        (cons 'style
+                           (glue "; "
+                              (cons
+                                 "position:absolute"
+                                 (pack "top:" LayY (if P "%" "px"))
+                                 (pack "left:" LayX (if P "%" "px"))
+                                 (cond
+                                    ((=0 DX) "min-width:100%")
+                                    (DX (pack "width:" DX (if P "%" "px"))) )
+                                 (cond
+                                    ((=0 DY) "min-height:100%")
+                                    (DY (pack "height:" DY (if P "%" "px"))) )
+                                 Args ) ) ) )
+                     (prog1
+                        (if Cls (list Cls Style) Style)  # -> '@'
+                        (eval (cadr L)) )
+                     (recurse (cddr L) (+ LayX DX))
+                     (inc 'LayY DY) ) ) ) )
+         (recur (Lst)
             (for L Lst
-               (let
-                  (Args (mapcar eval (cddar L))
-                     DX (eval (caar L))
-                     DY (eval (cadar L))
-                     Cls (unless (sub? ":" (car Args)) (++ Args))
-                     Style
-                     (cons 'style
-                        (glue "; "
-                           (cons
-                              "position:absolute"
-                              (pack "top:" LayY (if P "%" "px"))
-                              (pack "left:" LayX (if P "%" "px"))
-                              (cond
-                                 ((=0 DX) "min-width:100%")
-                                 (DX (pack "width:" DX (if P "%" "px"))) )
-                              (cond
-                                 ((=0 DY) "min-height:100%")
-                                 (DY (pack "height:" DY (if P "%" "px"))) )
-                              Args ) ) ) )
-                  (prog1
-                     (if Cls (list Cls Style) Style)  # -> '@'
-                     (eval (cadr L)) )
-                  (recurse (cddr L) (+ LayX DX))
-                  (inc 'LayY DY) ) ) ) ) ) )
+               (prinl (++ Lay))
+               (run (cddadr L))
+               (recurse (cddr L)) ) )
+         (prinl (car Lay)) ) ) )
 
 (private) (Url Str)
 
@@ -474,46 +506,75 @@
 (private) (Lst M N E U L)
 
 (de <menu> Lst
-   (let (M 1  E 2  U)
+   (let
+      ((Beg
+            BegL
+            (A Z)  # Plain
+            (DisA DisZ)  # Disabled
+            (CmdA Cmd CmdZ)  # Command
+            (ActA Act ActZ)  # Active command
+            (SubA Sub SubZ)  # Closed submenu
+            (TopA Top TopZ)  # Open submenu
+            TopEnd
+            EndL
+            End )
+         *XhtmlMenu
+         M 1
+         E 2
+         U )
+      (prin Beg)
       (recur (Lst E)
-         (<ul> NIL
-            (for L Lst
-               (nond
-                  ((car L) (<li> NIL (htPrin (cdr L))))
-                  ((=T (car L))
-                     (nond
-                        ((setq U (eval (cadr L) E))
-                           (<li> "cmd"
-                              (ht:Prin (eval (car L) E)) ) )
-                        ((pair U)
-                           (<li> (if (= U *Url) "act" "cmd")
-                              (<tip> "-->"
-                                 (<href> (eval (car L) E)
-                                    (urlMT U *Menu (if (= U *Url) *Tab 1)
-                                       (eval (caddr L))
-                                       (eval (cadddr L)) ) ) ) ) )
-                        (NIL
-                           (<href> (eval (car L) E) (car U) (cdr U)) ) ) )
-                  ((bit? M *Menu)
-                     (<li> "sub"
-                        (<tip> ,"Open submenu"
-                           (<href>
-                              (eval (cadr L) E)
-                              (urlMT *Url (| M *Menu) *Tab *ID) ) ) )
-                     (setq M (>> -1 M))
-                     (recur (L)
-                        (for X (cddr L)
-                           (when (=T (car X))
-                              (recurse X)
-                              (setq M (>> -1 M)) ) ) ) )
-                  (NIL
-                     (<li> "top"
-                        (<tip> ,"Close submenu"
-                           (<href>
-                              (eval (cadr L) E)
-                              (urlMT *Url (x| M *Menu) *Tab *ID) ) )
-                        (setq M (>> -1 M))
-                        (recurse (cddr L) (inc E)) ) ) ) ) ) ) ) )
+         (prin BegL)
+         (for L Lst
+            (nond
+               ((car L)
+                  (prin A)
+                  (htPrin (cdr L))
+                  (prinl Z) )
+               ((=T (car L))
+                  (nond
+                     ((setq U (eval (cadr L) E))
+                        (prin DisA)
+                        (ht:Prin (eval (car L) E))
+                        (prinl DisZ) )
+                     ((pair U)
+                        (prin
+                           (if (= U *Url) ActA CmdA)
+                           (sesId
+                              (urlMT U *Menu (if (= U *Url) *Tab 1)
+                                 (eval (caddr L))
+                                 (eval (cadddr L)) ) )
+                           (if (= U *Url) Act Cmd) )
+                        (ht:Prin (eval (car L) E))
+                        (prinl (if (= U *Url) ActZ CmdZ)) )
+                     (NIL
+                        #!
+                        (<href> (eval (car L) E) (car U) (cdr U)) ) ) )
+               ((bit? M *Menu)
+                  (prin
+                     SubA
+                     (sesId (urlMT *Url (| M *Menu) *Tab *ID))
+                     Sub )
+                  (ht:Prin (eval (cadr L) E))
+                  (setq M (>> -1 M))
+                  (recur (L)
+                     (for X (cddr L)
+                        (when (=T (car X))
+                           (recurse X)
+                           (setq M (>> -1 M)) ) ) )
+                  (prinl SubZ) )
+               (NIL
+                  (prin
+                     TopA
+                     (sesId (urlMT *Url (x| M *Menu) *Tab *ID))
+                     Top )
+                  (ht:Prin (eval (cadr L) E))
+                  (prinl TopZ)
+                  (setq M (>> -1 M))
+                  (recurse (cddr L) (inc E))
+                  (prinl TopEnd) ) ) )
+         (prin EndL) )
+      (prinl End) ) )
 
 # Update link
 (de updLink ()
@@ -524,13 +585,19 @@
 
 # Tabs
 (de <tab> Lst
-   (<table> "tab" NIL NIL
+   (let ((Beg (TopA TopZ) (SubA Sub SubZ) End) *XhtmlTab)
+      (prin Beg)
       (for (N . L) Lst
          (if (= N *Tab)
-            (<td> "top" (ht:Prin (eval (car L) 1)))
-            (<td> "sub"
-               (<href> (eval (car L) 1) (urlMT *Url *Menu N *ID)) ) ) ) )
-   (htPrin (get Lst *Tab -1)) )
+            (prog
+               (prin TopA)
+               (ht:Prin (eval (car L) 1))
+               (prin TopZ) )
+            (prin SubA (sesId (urlMT *Url *Menu N *ID)) Sub)
+            (ht:Prin (eval (car L) 1))
+            (prin SubZ) ) )
+      (prinl End)
+      (htPrin (get Lst *Tab -1)) ) )
 
 ### DB Linkage ###
 (de mkUrl (Lst)
@@ -677,7 +744,7 @@
    (tag "label" Attr 2 Prg) )
 
 (de <field> (N "Var" Max Flg)
-   (prin "<input type=\"text\" ")
+   (prin (caar *XhtmlInput) "text" (cadar *XhtmlInput))
    (htmlVar "Var")
    (prin " value=\"")
    (ht:Prin (htmlVal "Var"))
@@ -691,7 +758,7 @@
       (htJs) )
    (dfltCss "field")
    (and Flg (prin " disabled=\"disabled\""))
-   (prinl "/>") )
+   (prinl (caddar *XhtmlInput)) )
 
 (de <hidden> ("Var" Val)
    (prin "<input type=\"hidden\" ")
@@ -701,7 +768,7 @@
    (prinl "\"/>") )
 
 (de <passwd> (N "Var" Max Flg)
-   (prin "<input type=\"password\" ")
+   (prin (caar *XhtmlInput) "password" (cadar *XhtmlInput))
    (htmlVar "Var")
    (prin " value=\"")
    (ht:Prin (htmlVal "Var"))
@@ -712,10 +779,10 @@
       (htJs) )
    (dfltCss "passwd")
    (and Flg (prin " disabled=\"disabled\""))
-   (prinl "/>") )
+   (prinl (caddar *XhtmlInput)) )
 
 (de <upload> (N "Var" Flg)
-   (prin "<input type=\"file\" ")
+   (prin (caar *XhtmlInput) "file" (cadar *XhtmlInput))
    (htmlVar "Var")
    (prin " value=\"")
    (ht:Prin (htmlVal "Var"))
@@ -725,10 +792,10 @@
       (htJs) )
    (dfltCss "upload")
    (and Flg (prin " disabled=\"disabled\""))
-   (prinl "/>") )
+   (prinl (caddar *XhtmlInput)) )
 
 (de <rgb> ("Var" Flg)
-   (prin "<input type=\"color\" ")
+   (prin (caar *XhtmlInput) "color" (cadar *XhtmlInput))
    (htmlVar "Var")
    (prin " value=\"")
    (ht:Prin (htmlVal "Var"))
@@ -738,10 +805,10 @@
       (htJs) )
    (dfltCss "rgb")
    (and Flg (prin " disabled=\"disabled\""))
-   (prinl "/>") )
+   (prinl (caddar *XhtmlInput)) )
 
 (de <area> (Cols Rows "Var" Flg)
-   (prin "<textarea ")
+   (prin (caar *XhtmlTextarea))
    (htmlVar "Var")
    (prin " cols=\"" Cols "\" rows=\"" Rows "\" wrap=\"off\"")
    (when *JS
@@ -749,39 +816,40 @@
       (htJs) )
    (dfltCss "area")
    (and Flg (prin " disabled=\"disabled\""))
-   (prin ">")
+   (prin (cadar *XhtmlTextarea))
    (ht:Prin (htmlVal "Var"))
-   (prinl "</textarea>") )
+   (prinl (cadr *XhtmlTextarea)) )
 
 (de <select> (Lst "Var" Flg)
-   (prin "<select ")
-   (htmlVar "Var")
-   (when *JS
-      (prin " onchange=\"return fldChg(this)\"")
-      (htJs) )
-   (dfltCss "select")
-   (prin ">")
-   (for "X" Lst
-      (let "V" (if (atom "X") "X" (car "X"))
-         (prin "<option")
-         (when (pair "X")
-            (and (pair (cdr "X")) (htStyle (car @)))
-            (and (fin "X") (prin " title=\"" @ "\"")) )
-         (prin
-            (cond
-               ((= "V" (htmlVal "Var")) " selected=\"selected\"")
-               (Flg " disabled=\"disabled\"") )
-            ">" )
-         (ht:Prin "V") )
-      (prin "</option>") )
-   (prinl "</select>") )
+   (let (((SelA SelZ) (OptA OptB OptZ) End) *XhtmlSelect)
+      (prin SelA)
+      (htmlVar "Var")
+      (when *JS
+         (prin " onchange=\"return fldChg(this)\"")
+         (htJs) )
+      (dfltCss "select")
+      (prin SelZ)
+      (for "X" Lst
+         (let "V" (if (atom "X") "X" (car "X"))
+            (prin OptA)
+            (when (pair "X")
+               (and (pair (cdr "X")) (htStyle (car @)))
+               (and (fin "X") (prin " title=\"" @ "\"")) )
+            (prin
+               (cond
+                  ((= "V" (htmlVal "Var")) " selected=\"selected\"")
+                  (Flg " disabled=\"disabled\"") )
+               OptB )
+            (ht:Prin "V") )
+         (prin OptZ) )
+      (prinl End) ) )
 
 (de <check> ("Var" Flg)
    (let Val (htmlVal "Var")
       (prin "<input type=\"hidden\" ")
       (htmlVar "Var")
       (prin " value=\"" (and Flg Val T) "\">")
-      (prin "<input type=\"checkbox\" ")
+      (prin (caar *XhtmlInput) "checkbox" (cadar *XhtmlInput))
       (htmlVar "Var")
       (prin " value=\"T\"" (and Val " checked=\"checked\""))
       (when *JS
@@ -789,10 +857,10 @@
          (htJs) )
       (dfltCss "check")
       (and Flg (prin " disabled=\"disabled\""))
-      (prinl "/>") ) )
+      (prinl (caddar *XhtmlInput)) ) )
 
 (de <radio> ("Var" Val Flg)
-   (prin "<input type=\"radio\" ")
+   (prin (caar *XhtmlInput) "radio" (cadar *XhtmlInput))
    (htmlVar "Var")
    (prin " value=\"")
    (ht:Prin Val)
@@ -802,10 +870,10 @@
       (htJs) )
    (dfltCss "radio")
    (and Flg (prin " disabled=\"disabled\""))
-   (prinl "/>") )
+   (prinl (caddar *XhtmlInput)) )
 
 (de <submit> (S "Var" Flg JS)
-   (prin "<input type=\"submit\"")
+   (prin (caar *XhtmlSubmit) "submit" (cadar *XhtmlSubmit))
    (and "Var" (space) (htmlVar "Var"))
    (prin " value=\"")
    (ht:Prin S)
@@ -816,10 +884,10 @@
       (htJs) )
    (dfltCss "submit")
    (and Flg (prin " disabled=\"disabled\""))
-   (prinl "/>") )
+   (prinl (caddar *XhtmlSubmit)) )
 
 (de <image> (Src "Var" Flg JS)
-   (prin "<input type=\"image\"")
+   (prin (caar *XhtmlSubmit) "image" (cadar *XhtmlSubmit))
    (and "Var" (space) (htmlVar "Var"))
    (prin " src=\"" (sesId Src) "\"")
    (when *JS
@@ -828,12 +896,4 @@
       (htJs) )
    (dfltCss "image")
    (and Flg (prin " disabled=\"disabled\""))
-   (prinl "/>") )
-
-(de <reset> (S Flg)
-   (prin "<input type=\"reset\" value=\"")
-   (ht:Prin S)
-   (prin "\"")
-   (dfltCss "reset")
-   (and Flg (prin " disabled=\"disabled\""))
-   (prinl "/>") )
+   (prinl (caddar *XhtmlSubmit)) )

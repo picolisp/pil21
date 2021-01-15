@@ -1,3 +1,16 @@
+15jan21
+   Micro-templates
+      lib/xhtml.l
+      lib/xhtml/
+   Bug in 'pass'
+      src/apply.l
+   Call 'bufString' instead of 'pathString' in 'token'
+      src/io.l
+
+14jan21
+   Bug in 'bit?'
+      src/big.l
+
 08jan21
    Minor cosmetics
       src/subr.l
