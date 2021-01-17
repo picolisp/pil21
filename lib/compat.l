@@ -1,4 +1,4 @@
-# 29dec20 Software Lab. Alexander Burger
+# 17jan21 Software Lab. Alexander Burger
 # Some pil64 compatibility
 
 (private) *Arg
@@ -16,6 +16,9 @@
       (set X (con X)) )
    (let X (all '(T . T))
       (set X (con X)) ) )
+
+(de pil @
+   (pass pack "~/.pil/") )
 
 (de lines @
    (let Cnt 0
