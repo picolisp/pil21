@@ -1,3 +1,7 @@
+18jan21
+   Bug in 'pack' of external symbol names
+      src/sym.l
+
 17jan21
    'pil' backport
       lib/compat.l

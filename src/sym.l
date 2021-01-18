@@ -1,4 +1,4 @@
-# 10dec20 Software Lab. Alexander Burger
+# 18jan21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -201,7 +201,7 @@
       ((num? X) (fmtNum X 0 0 0 P))
       ((sym? (val (tail X)))
          (byteSym (char "{") P)
-         (packExtNm (& (name @) -9) P)
+         (packExtNm (& (name (& @ -9)) -9) P)
          (byteSym (char "}") P) )
       (T
          (let Q (push 0 (name @))  # [cnt name]
