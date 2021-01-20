@@ -1,4 +1,4 @@
-# 22jul20 Software Lab. Alexander Burger
+# 20jan21 Software Lab. Alexander Burger
 
 ### TinyMCE Interface ###
 (allow "@tinymce/" T)
@@ -140,7 +140,7 @@ Using the TinyMCE 4.x Javascript/HTML WYSIWYG editor in PicoLisp applications
 2. In the application's runtime directory, create a link to the tinymce
    installation, e.g.:
 
-   $ ln -s /some/path/tinymce/js/tinymce tinymce
+   $ ln -s /some/path/tinymce
 
 3. Load "@lib/tinymce.l" at startup
 
