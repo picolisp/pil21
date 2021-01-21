@@ -1479,7 +1479,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 18,
-  i64 322
+  i64 338
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -66583,7 +66583,7 @@ $1:
 ; # (set P V)
   %4 = inttoptr i64 %2 to i64*
   store i64 %1, i64* %4
-; # (nond ((nil? (evList E)) (set R (cons V (val R)))) ((atom V) (unl...
+; # (nond ((nil? (evList E)) (set R (cons V (val R)))) ((atom V) (stk...
 ; # (evList E)
   %5 = call i64 @evList(i64 %0)
 ; # (nil? (evList E))
@@ -66605,24 +66605,33 @@ $3:
   %12 = icmp ne i64 %11, 0
   br i1 %12, label %$5, label %$6
 $6:
+; # (stkChk 0)
+  %13 = load i8*, i8** @$StkLimit
+  %14 = call i8* @llvm.stacksave()
+  %15 = icmp ugt i8* %13, %14
+  br i1 %15, label %$7, label %$8
+$7:
+  call void @stkErr(i64 0)
+  unreachable
+$8:
 ; # (unless (nil? (cdr V)) (fish E @ P R))
 ; # (cdr V)
-  %13 = inttoptr i64 %1 to i64*
-  %14 = getelementptr i64, i64* %13, i32 1
-  %15 = load i64, i64* %14
-; # (nil? (cdr V))
-  %16 = icmp eq i64 %15, ptrtoint (i8* getelementptr (i8, i8* bitcast ([852 x i64]* @SymTab to i8*), i32 8) to i64)
-  br i1 %16, label %$8, label %$7
-$7:
-; # (fish E @ P R)
-  call void @fish(i64 %0, i64 %15, i64 %2, i64 %3)
-  br label %$8
-$8:
-; # (car V)
-  %17 = inttoptr i64 %1 to i64*
+  %16 = inttoptr i64 %1 to i64*
+  %17 = getelementptr i64, i64* %16, i32 1
   %18 = load i64, i64* %17
+; # (nil? (cdr V))
+  %19 = icmp eq i64 %18, ptrtoint (i8* getelementptr (i8, i8* bitcast ([852 x i64]* @SymTab to i8*), i32 8) to i64)
+  br i1 %19, label %$10, label %$9
+$9:
+; # (fish E @ P R)
+  call void @fish(i64 %0, i64 %18, i64 %2, i64 %3)
+  br label %$10
+$10:
+; # (car V)
+  %20 = inttoptr i64 %1 to i64*
+  %21 = load i64, i64* %20
 ; # (fish E (car V) P R)
-  tail call void @fish(i64 %0, i64 %18, i64 %2, i64 %3)
+  tail call void @fish(i64 %0, i64 %21, i64 %2, i64 %3)
   br label %$2
 $5:
   br label %$2

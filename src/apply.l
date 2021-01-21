@@ -1,4 +1,4 @@
-# 15jan21 Software Lab. Alexander Burger
+# 21jan21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -621,6 +621,7 @@
       ((nil? (evList E))
          (set R (cons V (val R))) )
       ((atom V)
+         (stkChk 0)
          (unless (nil? (cdr V))
             (fish E @ P R) )
          (tailcall (fish E (car V) P R)) ) ) )
