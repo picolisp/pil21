@@ -1,4 +1,4 @@
-# 31dec20 Software Lab. Alexander Burger
+# 23jan21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -267,13 +267,16 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
          (printsp "S")
          (fish
             '(("X")
-               (and
-                  (str? "X")
-                  (val "X")
-                  (n== @ "X")
-                  (intern "X" 'priv) )
-               NIL )
-            (val "S") )
+               (if (circ? "X")
+                  "skip"
+                  (and
+                     (str? "X")
+                     (val "X")
+                     (n== @ "X")
+                     (intern "X" 'priv) )
+                  NIL ) )
+            (val "S")
+            "skip" )
          (pretty (val "S"))
          (prinl)
          (for "X" (sort (getl "S"))

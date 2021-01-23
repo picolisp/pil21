@@ -1479,7 +1479,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 18,
-  i64 338
+  i64 370
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -66578,62 +66578,69 @@ $18:
   ret i64 %228
 }
 
-define void @fish(i64, i64, i64, i64) {
+define void @fish(i64, i64, i64, i64, i64) {
 $1:
 ; # (set P V)
-  %4 = inttoptr i64 %2 to i64*
-  store i64 %1, i64* %4
-; # (nond ((nil? (evList E)) (set R (cons V (val R)))) ((atom V) (stk...
+  %5 = inttoptr i64 %2 to i64*
+  store i64 %1, i64* %5
+; # (cond ((nil? (evList E)) (when (pair V) (stkChk 0) (unless (nil? ...
 ; # (evList E)
-  %5 = call i64 @evList(i64 %0)
+  %6 = call i64 @evList(i64 %0)
 ; # (nil? (evList E))
-  %6 = icmp eq i64 %5, ptrtoint (i8* getelementptr (i8, i8* bitcast ([852 x i64]* @SymTab to i8*), i32 8) to i64)
-  br i1 %6, label %$3, label %$4
+  %7 = icmp eq i64 %6, ptrtoint (i8* getelementptr (i8, i8* bitcast ([852 x i64]* @SymTab to i8*), i32 8) to i64)
+  br i1 %7, label %$4, label %$3
 $4:
-; # (set R (cons V (val R)))
-; # (val R)
-  %7 = inttoptr i64 %3 to i64*
-  %8 = load i64, i64* %7
-; # (cons V (val R))
-  %9 = call i64 @cons(i64 %1, i64 %8)
-  %10 = inttoptr i64 %3 to i64*
-  store i64 %9, i64* %10
-  br label %$2
-$3:
-; # (atom V)
-  %11 = and i64 %1, 15
-  %12 = icmp ne i64 %11, 0
-  br i1 %12, label %$5, label %$6
-$6:
+; # (when (pair V) (stkChk 0) (unless (nil? (cdr V)) (fish E @ P R S)...
+; # (pair V)
+  %8 = and i64 %1, 15
+  %9 = icmp eq i64 %8, 0
+  br i1 %9, label %$5, label %$6
+$5:
 ; # (stkChk 0)
-  %13 = load i8*, i8** @$StkLimit
-  %14 = call i8* @llvm.stacksave()
-  %15 = icmp ugt i8* %13, %14
-  br i1 %15, label %$7, label %$8
+  %10 = load i8*, i8** @$StkLimit
+  %11 = call i8* @llvm.stacksave()
+  %12 = icmp ugt i8* %10, %11
+  br i1 %12, label %$7, label %$8
 $7:
   call void @stkErr(i64 0)
   unreachable
 $8:
-; # (unless (nil? (cdr V)) (fish E @ P R))
+; # (unless (nil? (cdr V)) (fish E @ P R S))
 ; # (cdr V)
-  %16 = inttoptr i64 %1 to i64*
-  %17 = getelementptr i64, i64* %16, i32 1
-  %18 = load i64, i64* %17
+  %13 = inttoptr i64 %1 to i64*
+  %14 = getelementptr i64, i64* %13, i32 1
+  %15 = load i64, i64* %14
 ; # (nil? (cdr V))
-  %19 = icmp eq i64 %18, ptrtoint (i8* getelementptr (i8, i8* bitcast ([852 x i64]* @SymTab to i8*), i32 8) to i64)
-  br i1 %19, label %$10, label %$9
+  %16 = icmp eq i64 %15, ptrtoint (i8* getelementptr (i8, i8* bitcast ([852 x i64]* @SymTab to i8*), i32 8) to i64)
+  br i1 %16, label %$10, label %$9
 $9:
-; # (fish E @ P R)
-  call void @fish(i64 %0, i64 %18, i64 %2, i64 %3)
+; # (fish E @ P R S)
+  call void @fish(i64 %0, i64 %15, i64 %2, i64 %3, i64 %4)
   br label %$10
 $10:
 ; # (car V)
-  %20 = inttoptr i64 %1 to i64*
-  %21 = load i64, i64* %20
-; # (fish E (car V) P R)
-  tail call void @fish(i64 %0, i64 %21, i64 %2, i64 %3)
+  %17 = inttoptr i64 %1 to i64*
+  %18 = load i64, i64* %17
+; # (fish E (car V) P R S)
+  call void @fish(i64 %0, i64 %18, i64 %2, i64 %3, i64 %4)
+  br label %$6
+$6:
   br label %$2
-$5:
+$3:
+; # (<> @ S)
+  %19 = icmp ne i64 %6, %4
+  br i1 %19, label %$12, label %$11
+$12:
+; # (set R (cons V (val R)))
+; # (val R)
+  %20 = inttoptr i64 %3 to i64*
+  %21 = load i64, i64* %20
+; # (cons V (val R))
+  %22 = call i64 @cons(i64 %1, i64 %21)
+  %23 = inttoptr i64 %3 to i64*
+  store i64 %22, i64* %23
+  br label %$2
+$11:
   br label %$2
 $2:
   ret void
@@ -66721,55 +66728,78 @@ $2:
   store i64 %40, i64* %45
   %46 = inttoptr i64 %31 to i64*
   store i64 %40, i64* %46
-; # (let V (save (eval (car X))) (fish E V (ofs P 3) R) (val R))
-; # (car X)
+; # (++ X)
   %47 = inttoptr i64 %21 to i64*
   %48 = load i64, i64* %47
-; # (eval (car X))
-  %49 = and i64 %48, 6
-  %50 = icmp ne i64 %49, 0
-  br i1 %50, label %$9, label %$8
+  %49 = getelementptr i64, i64* %47, i32 1
+  %50 = load i64, i64* %49
+; # (eval (++ X))
+  %51 = and i64 %48, 6
+  %52 = icmp ne i64 %51, 0
+  br i1 %52, label %$9, label %$8
 $9:
   br label %$7
 $8:
-  %51 = and i64 %48, 8
-  %52 = icmp ne i64 %51, 0
-  br i1 %52, label %$11, label %$10
+  %53 = and i64 %48, 8
+  %54 = icmp ne i64 %53, 0
+  br i1 %54, label %$11, label %$10
 $11:
-  %53 = inttoptr i64 %48 to i64*
-  %54 = load i64, i64* %53
+  %55 = inttoptr i64 %48 to i64*
+  %56 = load i64, i64* %55
   br label %$7
 $10:
-  %55 = call i64 @evList(i64 %48)
+  %57 = call i64 @evList(i64 %48)
   br label %$7
 $7:
-  %56 = phi i64 [%48, %$9], [%54, %$11], [%55, %$10] ; # ->
-; # (save (eval (car X)))
-  %57 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
-  %58 = load i64, i64* %57
-  %59 = alloca i64, i64 2, align 16
-  %60 = ptrtoint i64* %59 to i64
-  %61 = inttoptr i64 %60 to i64*
-  store i64 %56, i64* %61
-  %62 = add i64 %60, 8
+  %58 = phi i64 [%48, %$9], [%56, %$11], [%57, %$10] ; # ->
+; # (save (eval (++ X)))
+  %59 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %60 = load i64, i64* %59
+  %61 = alloca i64, i64 2, align 16
+  %62 = ptrtoint i64* %61 to i64
   %63 = inttoptr i64 %62 to i64*
   store i64 %58, i64* %63
-  %64 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %60, i64* %64
+  %64 = add i64 %62, 8
+  %65 = inttoptr i64 %64 to i64*
+  store i64 %60, i64* %65
+  %66 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %62, i64* %66
 ; # (ofs P 3)
-  %65 = add i64 %13, 24
-; # (fish E V (ofs P 3) R)
-  call void @fish(i64 %31, i64 %56, i64 %65, i64 %5)
+  %67 = add i64 %13, 24
+; # (car X)
+  %68 = inttoptr i64 %50 to i64*
+  %69 = load i64, i64* %68
+; # (eval (car X))
+  %70 = and i64 %69, 6
+  %71 = icmp ne i64 %70, 0
+  br i1 %71, label %$14, label %$13
+$14:
+  br label %$12
+$13:
+  %72 = and i64 %69, 8
+  %73 = icmp ne i64 %72, 0
+  br i1 %73, label %$16, label %$15
+$16:
+  %74 = inttoptr i64 %69 to i64*
+  %75 = load i64, i64* %74
+  br label %$12
+$15:
+  %76 = call i64 @evList(i64 %69)
+  br label %$12
+$12:
+  %77 = phi i64 [%69, %$14], [%75, %$16], [%76, %$15] ; # ->
+; # (fish E (save (eval (++ X))) (ofs P 3) R (eval (car X)))
+  call void @fish(i64 %31, i64 %58, i64 %67, i64 %5, i64 %77)
 ; # (val R)
-  %66 = inttoptr i64 %5 to i64*
-  %67 = load i64, i64* %66
+  %78 = inttoptr i64 %5 to i64*
+  %79 = load i64, i64* %78
 ; # (drop *Safe)
-  %68 = inttoptr i64 %5 to i64*
-  %69 = getelementptr i64, i64* %68, i32 1
-  %70 = load i64, i64* %69
-  %71 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %70, i64* %71
-  ret i64 %67
+  %80 = inttoptr i64 %5 to i64*
+  %81 = getelementptr i64, i64* %80, i32 1
+  %82 = load i64, i64* %81
+  %83 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %82, i64* %83
+  ret i64 %79
 }
 
 define i64 @_by(i64) {

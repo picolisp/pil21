@@ -1,3 +1,13 @@
+23jan21
+   'fish' function "skip" return value
+      src/apply.l
+      doc/refF.html
+      lib/vip.l
+
+22jan21
+   em80, em90 and em100 styles
+      lib.css
+
 21jan21
    Stack check in 'fish'
       src/apply.l

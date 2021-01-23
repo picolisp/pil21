@@ -1,4 +1,4 @@
-# 21jan21 Software Lab. Alexander Burger
+# 23jan21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -615,18 +615,19 @@
 
 (local) fish
 
-(de void fish (E V P R)
+(de void fish (E V P R S)
    (set P V)
-   (nond
+   (cond
       ((nil? (evList E))
-         (set R (cons V (val R))) )
-      ((atom V)
-         (stkChk 0)
-         (unless (nil? (cdr V))
-            (fish E @ P R) )
-         (tailcall (fish E (car V) P R)) ) ) )
+         (when (pair V)
+            (stkChk 0)
+            (unless (nil? (cdr V))
+               (fish E @ P R S) )
+            (fish E (car V) P R S) ) )
+      ((<> @ S)
+         (set R (cons V (val R))) ) ) )
 
-# (fish 'fun 'any) -> lst
+# (fish 'fun 'any ['any2]) -> lst
 (de _fish (Exe)
    (let
       (X (cdr Exe)
@@ -636,9 +637,12 @@
       (set
          P (ofs P 3)
          E (link (ofs E 3)) )
-      (let V (save (eval (car X)))
-         (fish E V (ofs P 3) R)
-         (val R) ) ) )
+      (fish E
+         (save (eval (++ X)))
+         (ofs P 3)
+         R
+         (eval (car X)) )
+      (val R) ) )
 
 # (by 'fun1 'fun2 'lst ..) -> lst
 (de _by (Exe)
