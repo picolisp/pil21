@@ -1,3 +1,7 @@
+25jan21
+   Remove 'evCmd' from custom function keys
+      lib/vip.l
+
 23jan21
    'fish' function "skip" return value
       src/apply.l

@@ -1,4 +1,4 @@
-# 23jan21 Software Lab. Alexander Burger
+# 25jan21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1556,12 +1556,12 @@ nextBuf shell shFile prCmd reset command vi)
                               (nextBuf T) )
                            ("^[[17~"  # [F6] Next buffer
                               (nextBuf) )
-                           ("^[[18~" (evCmd (run *F7)))  # [F7] Custom key
-                           ("^[[19~" (evCmd (run *F8)))  # [F8] Custom key
-                           ("^[[20~" (evCmd (run *F9)))  # [F9] Custom key
-                           ("^[[21~" (evCmd (run *F10)))  # [F10] Custom key
-                           ("^[[23~" (evCmd (run *F11)))  # [F11] Custom key
-                           ("^[[24~" (evCmd (run *F12)))  # [F12] Custom key
+                           ("^[[18~" (run *F7))  # [F7] Custom key
+                           ("^[[19~" (run *F8))  # [F8] Custom key
+                           ("^[[20~" (run *F9))  # [F9] Custom key
+                           ("^[[21~" (run *F10))  # [F10] Custom key
+                           ("^[[23~" (run *F11))  # [F11] Custom key
+                           ("^[[24~" (run *F12))  # [F12] Custom key
                            ("\\"  # Select or toggle buffer
                               (nextBuf
                                  (if *Count
