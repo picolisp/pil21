@@ -1,3 +1,20 @@
+03feb21
+   Load @lib/sq.l in 'psh'
+      lib/http.l
+
+02feb21
+   Optional insert string in config keys
+      src/httpGate.c
+      doc/httpGate.html
+
+01feb21
+   Typo ".pil" -> "./pil"
+      doc/httpGate.html
+
+28jan21
+   Typo "none" -> "nond"
+      doc/tut.html
+
 25jan21
    Remove 'evCmd' from custom function keys
       lib/vip.l

@@ -1,4 +1,4 @@
-// 24oct20 Software Lab. Alexander Burger
+// 02feb21 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -24,7 +24,7 @@
 typedef enum {NO,YES} bool;
 
 typedef struct name {
-   char *key;
+   char *key, *ins;
    struct name *less, *more;
    int port;
    uid_t uid;
@@ -71,8 +71,14 @@ static int readNames(void) {
          ++p;
       if (*p  &&  *p != '\n'  &&  *p != '#') {
          np = malloc(sizeof(name));
-         np->key = strdup(strtok(p, delim));
          np->less = np->more = NULL;
+         p = strtok(p, delim);
+         np->ins = NULL;
+         if (q = strchr(p, '/')) {
+            *q++ = '\0';
+            np->ins = strdup(q);
+         }
+         np->key = strdup(p);
          if ((np->port = atoi(ps = strtok(NULL, delim))) == 0)
             np->dir = strdup(strtok(NULL, delim));
          else {
@@ -468,7 +474,9 @@ int main(int ac, char *av[]) {
             }
 
             wrBytes(SrvSock, buf, p - buf);
-            if (*q == '/')
+            if (np  &&  (p = np->ins))
+               wrBytes(SrvSock, p, strlen(p));
+            else if (*q == '/')
                ++q;
             p = q;
             while (*p++ != '\n')

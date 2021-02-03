@@ -127,13 +127,16 @@ holds six whitespace separated tokens, for example:
 <li>"tom" is the user under whose ID the server should run.
 <li>"/home/tom" is the working directory where the server should start.
 <li>"log/app" is a log file to redirect stdout/stderr to.
-<li>The rest of the line ".pil app/main.l ..." is the command to start the application.
+<li>The rest of the line "./pil app/main.l ..." is the command to start the application.
 </ol>
 
 <p>Empty lines, and lines starting with a "#", are ignored. If the key in a
 config file record is the special name "@", then it denotes the default
 application for this machine. URLs without name will be forwarded to that port.
-Optional tokens (e.g. log files) or empty arguments to the commands must be
+If the key contains a slash followed by a string (e.g. "app/foo") then this
+string is inserted in front of URLs.
+
+<p>Optional tokens (e.g. log files) or empty arguments to the commands must be
 written as single caret (^) characters to denote empty strings. Double or single
 quotes are not parsed.
 
