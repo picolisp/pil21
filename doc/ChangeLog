@@ -1,3 +1,7 @@
+05feb21
+   Load @lib/too.l always in 'psh'
+      lib/http.l
+
 03feb21
    Load @lib/sq.l in 'psh'
       lib/http.l

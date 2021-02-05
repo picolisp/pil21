@@ -1,4 +1,4 @@
-# 03feb21 Software Lab. Alexander Burger
+# 05feb21 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -87,7 +87,8 @@
             (on *Dbg)
             (symbols '(pico)
                (and (info "~/.pil/rc") (load @@))
-               (load "@lib/debug.l" "@lib/vip.l" "@lib/sq.l" "@lib/too.l") ) )
+               (load "@lib/debug.l" "@lib/vip.l" "@lib/sq.l") ) )
+         (load "@lib/too.l")
          (off *Err)
          (quit) ) ) )
 
