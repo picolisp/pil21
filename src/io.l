@@ -1,4 +1,4 @@
-# 15jan21 Software Lab. Alexander Burger
+# 05feb21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2473,18 +2473,21 @@ selectErr)
             (if (cnt? (needNum Exe (eval (++ X))))
                (int @)
                (val (dig @)) ) ) )
-      (set
-         $Extn (val $ExtN)  # Set external symbol offset
-         $Ptr P )
-      (if (pair X)
-         (let (N (evCnt Exe X)  Y (eval (car (shift X))))
-            (set
-               $PutBin (fun (void i8) putPlio)
-               $End (ofs P N) )
-            (binPrint Y)
-            (cnt (- (val $Ptr) P)) )
-         (set $GetBin (fun (i32) getPlio))
-         (if (binRead) @ $Nil) ) ) )
+      (let (Ptr (val $Ptr)  End (val $End))
+         (set
+            $Extn (val $ExtN)  # Set external symbol offset
+            $Ptr P )
+         (prog1
+            (if (pair X)
+               (let (N (evCnt Exe X)  Y (eval (car (shift X))))
+                  (set
+                     $PutBin (fun (void i8) putPlio)
+                     $End (ofs P N) )
+                  (binPrint Y)
+                  (cnt (- (val $Ptr) P)) )
+               (set $GetBin (fun (i32) getPlio))
+               (if (binRead) @ $Nil) )
+            (set $Ptr Ptr  $End End) ) ) ) )
 
 # (rd ['sym]) -> any
 # (rd 'cnt) -> num | NIL

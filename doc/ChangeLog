@@ -1,4 +1,6 @@
 05feb21
+   'plio' must preserve $Ptr and $End
+      src/io.l
    Load @lib/too.l always in 'psh'
       lib/http.l
 

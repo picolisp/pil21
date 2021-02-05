@@ -51225,89 +51225,98 @@ $11:
   %27 = phi i64 [%21, %$9], [%25, %$10] ; # ->
 ; # (i8* (if (cnt? (needNum Exe (eval (++ X)))) (int @) (val (dig @))...
   %28 = inttoptr i64 %27 to i8*
+; # (let (Ptr (val $Ptr) End (val $End)) (set $Extn (val $ExtN) $Ptr ...
+; # (val $Ptr)
+  %29 = load i8*, i8** @$Ptr
+; # (val $End)
+  %30 = load i8*, i8** @$End
 ; # (set $Extn (val $ExtN) $Ptr P)
 ; # (val $ExtN)
-  %29 = load i32, i32* @$ExtN
-  store i32 %29, i32* @$Extn
+  %31 = load i32, i32* @$ExtN
+  store i32 %31, i32* @$Extn
   store i8* %28, i8** @$Ptr
+; # (prog1 (if (pair X) (let (N (evCnt Exe X) Y (eval (car (shift X))...
 ; # (if (pair X) (let (N (evCnt Exe X) Y (eval (car (shift X)))) (set...
 ; # (pair X)
-  %30 = and i64 %26, 15
-  %31 = icmp eq i64 %30, 0
-  br i1 %31, label %$12, label %$13
+  %32 = and i64 %26, 15
+  %33 = icmp eq i64 %32, 0
+  br i1 %33, label %$12, label %$13
 $12:
-  %32 = phi i64 [%26, %$11] ; # X
+  %34 = phi i64 [%26, %$11] ; # X
 ; # (let (N (evCnt Exe X) Y (eval (car (shift X)))) (set $PutBin (fun...
 ; # (evCnt Exe X)
-  %33 = call i64 @evCnt(i64 %0, i64 %32)
+  %35 = call i64 @evCnt(i64 %0, i64 %34)
 ; # (shift X)
-  %34 = inttoptr i64 %32 to i64*
-  %35 = getelementptr i64, i64* %34, i32 1
-  %36 = load i64, i64* %35
-; # (car (shift X))
-  %37 = inttoptr i64 %36 to i64*
+  %36 = inttoptr i64 %34 to i64*
+  %37 = getelementptr i64, i64* %36, i32 1
   %38 = load i64, i64* %37
+; # (car (shift X))
+  %39 = inttoptr i64 %38 to i64*
+  %40 = load i64, i64* %39
 ; # (eval (car (shift X)))
-  %39 = and i64 %38, 6
-  %40 = icmp ne i64 %39, 0
-  br i1 %40, label %$17, label %$16
+  %41 = and i64 %40, 6
+  %42 = icmp ne i64 %41, 0
+  br i1 %42, label %$17, label %$16
 $17:
   br label %$15
 $16:
-  %41 = and i64 %38, 8
-  %42 = icmp ne i64 %41, 0
-  br i1 %42, label %$19, label %$18
+  %43 = and i64 %40, 8
+  %44 = icmp ne i64 %43, 0
+  br i1 %44, label %$19, label %$18
 $19:
-  %43 = inttoptr i64 %38 to i64*
-  %44 = load i64, i64* %43
+  %45 = inttoptr i64 %40 to i64*
+  %46 = load i64, i64* %45
   br label %$15
 $18:
-  %45 = call i64 @evList(i64 %38)
+  %47 = call i64 @evList(i64 %40)
   br label %$15
 $15:
-  %46 = phi i64 [%38, %$17], [%44, %$19], [%45, %$18] ; # ->
+  %48 = phi i64 [%40, %$17], [%46, %$19], [%47, %$18] ; # ->
 ; # (set $PutBin (fun (void i8) putPlio) $End (ofs P N))
 ; # (fun (void i8) putPlio)
   store void(i8)* @putPlio, void(i8)** @$PutBin
 ; # (ofs P N)
-  %47 = getelementptr i8, i8* %28, i64 %33
-  store i8* %47, i8** @$End
+  %49 = getelementptr i8, i8* %28, i64 %35
+  store i8* %49, i8** @$End
 ; # (binPrint Y)
-  call void @binPrint(i64 %46)
+  call void @binPrint(i64 %48)
 ; # (val $Ptr)
-  %48 = load i8*, i8** @$Ptr
+  %50 = load i8*, i8** @$Ptr
 ; # (- (val $Ptr) P)
-  %49 = ptrtoint i8* %48 to i64
-  %50 = ptrtoint i8* %28 to i64
-  %51 = sub i64 %49, %50
+  %51 = ptrtoint i8* %50 to i64
+  %52 = ptrtoint i8* %28 to i64
+  %53 = sub i64 %51, %52
 ; # (cnt (- (val $Ptr) P))
-  %52 = shl i64 %51, 4
-  %53 = or i64 %52, 2
+  %54 = shl i64 %53, 4
+  %55 = or i64 %54, 2
   br label %$14
 $13:
-  %54 = phi i64 [%26, %$11] ; # X
+  %56 = phi i64 [%26, %$11] ; # X
 ; # (set $GetBin (fun (i32) getPlio))
 ; # (fun (i32) getPlio)
   store i32()* @getPlio, i32()** @$GetBin
 ; # (if (binRead) @ $Nil)
 ; # (binRead)
-  %55 = call i64 @binRead()
-  %56 = icmp ne i64 %55, 0
-  br i1 %56, label %$20, label %$21
+  %57 = call i64 @binRead()
+  %58 = icmp ne i64 %57, 0
+  br i1 %58, label %$20, label %$21
 $20:
-  %57 = phi i64 [%54, %$13] ; # X
+  %59 = phi i64 [%56, %$13] ; # X
   br label %$22
 $21:
-  %58 = phi i64 [%54, %$13] ; # X
+  %60 = phi i64 [%56, %$13] ; # X
   br label %$22
 $22:
-  %59 = phi i64 [%57, %$20], [%58, %$21] ; # X
-  %60 = phi i64 [%55, %$20], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([852 x i64]* @SymTab to i8*), i32 8) to i64), %$21] ; # ->
+  %61 = phi i64 [%59, %$20], [%60, %$21] ; # X
+  %62 = phi i64 [%57, %$20], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([852 x i64]* @SymTab to i8*), i32 8) to i64), %$21] ; # ->
   br label %$14
 $14:
-  %61 = phi i64 [%36, %$15], [%59, %$22] ; # X
-  %62 = phi i64 [%53, %$15], [%60, %$22] ; # ->
-  ret i64 %62
+  %63 = phi i64 [%38, %$15], [%61, %$22] ; # X
+  %64 = phi i64 [%55, %$15], [%62, %$22] ; # ->
+; # (set $Ptr Ptr $End End)
+  store i8* %29, i8** @$Ptr
+  store i8* %30, i8** @$End
+  ret i64 %64
 }
 
 define i64 @_rd(i64) {
