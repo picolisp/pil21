@@ -555,8 +555,9 @@
                      SubA
                      (sesId (urlMT *Url (| M *Menu) *Tab *ID))
                      SubB
-                     ,"Open submenu"
-                     SubC )
+                     "\"" )
+                  (ht:Prin ,"Open submenu")
+                  (prin "\"" SubC)
                   (ht:Prin (eval (cadr L) E))
                   (setq M (>> -1 M))
                   (recur (L)
@@ -570,8 +571,9 @@
                      TopA
                      (sesId (urlMT *Url (x| M *Menu) *Tab *ID))
                      TopB
-                     ,"Close submenu"
-                     TopC )
+                     "\"" )
+                  (ht:Prin ,"Close submenu")
+                  (prin "\"" TopC)
                   (ht:Prin (eval (cadr L) E))
                   (prinl TopZ)
                   (setq M (>> -1 M))
