@@ -4,8 +4,8 @@
 <li class="cmd">@</li>
 <li class="cmd"><a href="@" title="--&gt;">@</a></li>
 <li class="act"><a href="@" title="--&gt;">@</a></li>
-<li class="sub"><a href="@" title="Open submenu">@</a></li>
-<li class="top"><a href="@" title="Close submenu">@</a>
+<li class="sub"><a href="@" title=@>@</a></li>
+<li class="top"><a href="@" title=@>@</a>
 </li>
 </ul>
 <>

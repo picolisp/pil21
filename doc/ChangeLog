@@ -1,3 +1,8 @@
+06feb21
+   Variable titles in menu
+      lib/xhtml.l
+      lib/xhtml/
+
 05feb21
    'plio' must preserve $Ptr and $End
       src/io.l
