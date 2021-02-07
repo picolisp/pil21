@@ -1,7 +1,9 @@
 07feb21
    Variable titles in menu
+   Layout template line format
       lib/xhtml.l
-      lib/xhtml/
+      lib/xhtml/menu
+      lib/xhtml/layout
 
 05feb21
    'plio' must preserve $Ptr and $End

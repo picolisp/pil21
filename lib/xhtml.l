@@ -484,10 +484,10 @@
                      (inc 'LayY DY) ) ) ) )
          (recur (Lst)
             (for L Lst
-               (prinl (++ Lay))
+               (prinl (caar Lay))
                (run (cddadr L))
-               (recurse (cddr L)) ) )
-         (prinl (car Lay)) ) ) )
+               (prinl (cadr (++ Lay)))
+               (recurse (cddr L)) ) ) ) ) )
 
 (private) (Url Str)
 
