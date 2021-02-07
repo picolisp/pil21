@@ -1,4 +1,4 @@
-# 06feb21 Software Lab. Alexander Burger
+# 07feb21 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -450,7 +450,7 @@
 # Layout
 (de <layout> Lst
    (let
-      (Lay (car *XhtmlLayout)
+      (Lay *XhtmlLayout
          P (and (=T (car Lst)) (++ Lst))
          LayX 0
          LayY 0 )
@@ -554,10 +554,9 @@
                   (prin
                      SubA
                      (sesId (urlMT *Url (| M *Menu) *Tab *ID))
-                     SubB
-                     "\"" )
+                     SubB )
                   (ht:Prin ,"Open submenu")
-                  (prin "\"" SubC)
+                  (prin SubC)
                   (ht:Prin (eval (cadr L) E))
                   (setq M (>> -1 M))
                   (recur (L)
@@ -570,10 +569,9 @@
                   (prin
                      TopA
                      (sesId (urlMT *Url (x| M *Menu) *Tab *ID))
-                     TopB
-                     "\"" )
+                     TopB )
                   (ht:Prin ,"Close submenu")
-                  (prin "\"" TopC)
+                  (prin TopC)
                   (ht:Prin (eval (cadr L) E))
                   (prinl TopZ)
                   (setq M (>> -1 M))
