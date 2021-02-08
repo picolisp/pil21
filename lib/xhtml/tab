@@ -1,4 +1,4 @@
-<table ontouchstart="return tblTouch(event)" ontouchmove="return tblMove(this,event)" class="tab">
+<table class="tab">
 <td class="top">@</td>
 <td class="sub"><a href="@">@</a></td>
 </table>
