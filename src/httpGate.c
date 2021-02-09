@@ -1,4 +1,4 @@
-// 02feb21 Software Lab. Alexander Burger
+// 09feb21 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -377,7 +377,7 @@ int main(int ac, char *av[]) {
    }
    for (n = 1; n < cnt; ++n)
       ports[n] = atoi(av[n+3]);
-   signal(SIGCHLD,SIG_IGN);  /* Prevent zombies */
+   signal(SIGCHLD, SIG_IGN);  /* Prevent zombies */
    if ((n = fork()) < 0)
       giveup("detach");
    if (n)
@@ -385,6 +385,8 @@ int main(int ac, char *av[]) {
    setsid();
    if (Config)
       iSignal(SIGHUP, doSigHup);
+   else
+      signal(SIGHUP, SIG_IGN);
    for (;;) {
       if (Hup) {
          Hup = NO;

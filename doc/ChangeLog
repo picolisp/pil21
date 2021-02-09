@@ -1,3 +1,7 @@
+09feb21
+   Ignore SIGHUP for non-config calls
+      src/httpGate.c
+
 08feb21
    Start task in first 'heartbeat' call
       lib/heartbeat.l
