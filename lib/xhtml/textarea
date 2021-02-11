@@ -1,2 +1,2 @@
-<textarea @>
+<textarea wrap="off" cols="@" rows="@" @>
 </textarea>

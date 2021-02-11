@@ -1,3 +1,8 @@
+11feb21
+   Elaborate '<area>'
+      lib/xhtml.l
+      lib/xhtml/textarea
+
 09feb21
    Ignore SIGHUP for non-config calls
       src/httpGate.c

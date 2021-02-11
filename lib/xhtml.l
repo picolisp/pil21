@@ -1,4 +1,4 @@
-# 07feb21 Software Lab. Alexander Burger
+# 11feb21 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -812,17 +812,17 @@
    (prinl (caddar *XhtmlInput)) )
 
 (de <area> (Cols Rows "Var" Flg)
-   (prin (caar *XhtmlTextarea))
-   (htmlVar "Var")
-   (prin " cols=\"" Cols "\" rows=\"" Rows "\" wrap=\"off\"")
-   (when *JS
-      (prin " onchange=\"return fldChg(this)\"")
-      (htJs) )
-   (dfltCss "area")
-   (and Flg (prin " disabled=\"disabled\""))
-   (prin (cadar *XhtmlTextarea))
-   (ht:Prin (htmlVal "Var"))
-   (prinl (cadr *XhtmlTextarea)) )
+   (let (((Beg C R Z) End) *XhtmlTextarea)
+      (prin Beg Cols C Rows R)
+      (htmlVar "Var")
+      (when *JS
+         (prin " onchange=\"return fldChg(this)\"")
+         (htJs) )
+      (dfltCss "area")
+      (and Flg (prin " disabled=\"disabled\""))
+      (prin Z)
+      (ht:Prin (htmlVal "Var"))
+      (prinl End) ) )
 
 (de <select> (Lst "Var" Flg)
    (let (((SelA SelZ) (OptA OptB OptZ) End) *XhtmlSelect)
