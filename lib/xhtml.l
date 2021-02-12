@@ -1,4 +1,4 @@
-# 11feb21 Software Lab. Alexander Burger
+# 12feb21 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -8,7 +8,8 @@
          ("menu" . *XhtmlMenu)
          ("tab" . *XhtmlTab)
          ("input" . *XhtmlInput)
-         ("textarea" . *XhtmlTextarea)
+         ("field" . *XhtmlField)
+         ("area" . *XhtmlArea)
          ("select" . *XhtmlSelect)
          ("submit" . *XhtmlSubmit) )
       (when (info (pack Path (++ X)))
@@ -748,7 +749,7 @@
    (tag "label" Attr 2 Prg) )
 
 (de <field> (N "Var" Max Flg)
-   (prin (caar *XhtmlInput) "text" (cadar *XhtmlInput))
+   (prin (caar *XhtmlField) "text" (cadar *XhtmlInput))
    (htmlVar "Var")
    (prin " value=\"")
    (ht:Prin (htmlVal "Var"))
@@ -762,7 +763,7 @@
       (htJs) )
    (dfltCss "field")
    (and Flg (prin " disabled=\"disabled\""))
-   (prinl (caddar *XhtmlInput)) )
+   (prinl (caddar *XhtmlField)) )
 
 (de <hidden> ("Var" Val)
    (prin "<input type=\"hidden\" ")
@@ -812,7 +813,7 @@
    (prinl (caddar *XhtmlInput)) )
 
 (de <area> (Cols Rows "Var" Flg)
-   (let (((Beg C R Z) End) *XhtmlTextarea)
+   (let (((Beg C R Z) End) *XhtmlArea)
       (prin Beg Cols C Rows R)
       (htmlVar "Var")
       (when *JS

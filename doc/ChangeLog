@@ -1,3 +1,9 @@
+12feb21
+   Rename file to "area", add "field"
+      lib/xhtml.l
+      lib/xhtml/area
+      lib/xhtml/field
+
 11feb21
    Elaborate '<area>'
       lib/xhtml.l
