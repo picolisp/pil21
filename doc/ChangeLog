@@ -1,3 +1,8 @@
+16feb21
+   Case insensitive search with "~" prefix
+   Increase escape delay to 80 ms
+      lib/vip.l
+
 12feb21
    Rename file to "area", add "field"
       lib/xhtml.l

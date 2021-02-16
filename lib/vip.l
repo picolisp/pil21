@@ -1,4 +1,4 @@
-# 25jan21 Software Lab. Alexander Burger
+# 16feb21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -485,11 +485,11 @@ nextBuf shell shFile prCmd reset command vi)
 
 (de getch ()
    (if (= "^[" (setq *Chr (key)))
-      (when (key 60)
+      (when (key 80)
          (loop
             (setq *Chr (pack *Chr @))
             (T (member *Chr '("^[[A" "^[[B" "^[[C" "^[[D")) *Chr)
-            (NIL (key 40) *Chr) ) )
+            (NIL (key 80) *Chr) ) )
       *Chr ) )
 
 (de getch2 (C)
@@ -1102,16 +1102,23 @@ nextBuf shell shFile prCmd reset command vi)
       (setq *Search
          (if (= "\\" (car Pat))
             (let @Pat (cdr Pat)
-               (curry (@Pat) (L) (head '@Pat L)) )
-            (let @Pat
-               (if (= "$" (last Pat))
-                  (head -1 Pat)
-                  (append Pat '(@)) )
-               (ifn (= "\^" (car @Pat))
-                  (curry (@Pat) (L) (match '@Pat L))
-                  (++ @Pat)
-                  (curry (@Pat) (L C)
-                     (unless C (match '@Pat L)) ) ) ) ) ) ) )
+               (curry (@Pat) (L)
+                  (head '@Pat L) ) )
+            (let @Lst 'L
+               (when (= "~" (car Pat))
+                  (setq
+                     Pat (mapcar lowc (cdr Pat))
+                     @Lst '(mapcar lowc L) ) )
+               (let @Pat
+                  (if (= "$" (last Pat))
+                     (head -1 Pat)
+                     (append Pat '(@)) )
+                  (ifn (= "\^" (car @Pat))
+                     (curry (@Pat @Lst) (L)
+                        (match '@Pat @Lst) )
+                     (++ @Pat)
+                     (curry (@Pat @Lst) (L C)
+                        (unless C (match '@Pat @Lst)) ) ) ) ) ) ) ) )
 
 (de parMatch (Fun1 @Par1 @Sup1 @ParO @ParC @SupO @SupC)
    (moveSearch Fun1
