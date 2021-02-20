@@ -1,4 +1,4 @@
-# 16feb21 Software Lab. Alexander Burger
+# 20feb21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -79,10 +79,12 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
    (=: fmt 80) )
 
 (de mkLoc (File)
-   (let P (pwd)
-      (if (head (conc (chop P) '("/")) File)
-         (cddr (nth File (length P)))
-         File ) ) )
+   (let P (conc (chop (pwd)) '("/"))
+      (when (head P File)
+         (setq File (cdr (nth File (length P)))) ) )
+   (if (pat? (car File))
+      (cons (name ".") (name "/") File)
+      File ) )
 
 (de fName (File)
    (when (setq File (path File))
@@ -212,14 +214,14 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
                         (sort
                            (extract
                               '((F)
-                                 (unless (= "." F)
-                                    (setq F (pack D F))
-                                    (when (info F T)
-                                       (cons
-                                          (- (cadr @))
-                                          (- (cddr @))
-                                          F
-                                          (car @) ) ) ) )
+                                 (and
+                                    (<> "." F)
+                                    (info (pack D F) T)
+                                    (cons
+                                       (- (cadr @))
+                                       (- (cddr @))
+                                       @@
+                                       (car @) ) ) )
                               (dir File T) ) ) ) )
                   (gc (+ 4 (*/ (car I) 32768)))  # 2 cells / char
                   (if (sys "CCRYPT" (: key))

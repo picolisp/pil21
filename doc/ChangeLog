@@ -1,3 +1,7 @@
+20feb21
+   Prefix "@" with "./" in directory listings
+      lib/vip.l
+
 16feb21
    Case insensitive search with "~" prefix
    Increase escape delay to 80 ms
