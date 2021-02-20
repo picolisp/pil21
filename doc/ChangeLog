@@ -1,5 +1,6 @@
 20feb21
    Prefix "@" with "./" in directory listings
+   Recurse into subdirectories with ":E"
       lib/vip.l
 
 16feb21

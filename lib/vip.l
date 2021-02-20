@@ -2,7 +2,7 @@
 
 (symbols 'vip 'pico)
 
-(local) (*Shell *CmdWin *StatNm *Chr *Complete *Repeat *Change *Count *Cnt
+(local) (*Shell *CmdWin *StatNm *Chr *Complete *Repeat *Change *Count *Cnt *SubD
 *Search *Clip *Lines *Columns *TagStack *Spell *F7 *F8 *F9 *F10 *F11 *F12 *@)
 
 (local) (TIOCGWINSZ winsize ws_row ws_col setTermSize)
@@ -187,42 +187,44 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
          (let? File (: file)
             (let? I (info File)
                (if (=T (car I))
-                  (let D (chop File)
-                     (unless (= "/" (last D))
-                        (conc D (list (name "/"))) )
-                     (mapcar
-                        '((X)
-                           (let (S (cdddr X)  F (caddr X))
-                              (conc
-                                 (chop (dat$ (- (car X)) "-"))
-                                 (list (name " "))
-                                 (chop (tim$ (- (cadr X)) T))
-                                 (list (name " "))
-                                 (mkLoc (chop F))
-                                 (cond
-                                    ((=T S) (list (name "/")))
-                                    ((not S)
-                                       (conc
-                                          (chop " -> ")
-                                          (in (list "readlink" F)
-                                             (line) ) ) )
-                                    (T
-                                       (conc
-                                          (chop " (")
-                                          (chop (/ (+ S 1023) 1024))
-                                          (chop ")") ) ) ) ) ) )
-                        (sort
-                           (extract
-                              '((F)
-                                 (and
-                                    (<> "." F)
-                                    (info (pack D F) T)
-                                    (cons
-                                       (- (cadr @))
-                                       (- (cddr @))
-                                       @@
-                                       (car @) ) ) )
-                              (dir File T) ) ) ) )
+                  (mapcar
+                     '((X)
+                        (let (S (cdddr X)  F (caddr X))
+                           (conc
+                              (chop (dat$ (- (car X)) "-"))
+                              (list (name " "))
+                              (chop (tim$ (- (cadr X)) T))
+                              (list (name " "))
+                              (mkLoc (chop F))
+                              (cond
+                                 ((=T S) (list (name "/")))
+                                 ((not S)
+                                    (conc
+                                       (chop " -> ")
+                                       (in (list "readlink" F)
+                                          (line) ) ) )
+                                 (T
+                                    (conc
+                                       (chop " (")
+                                       (chop (/ (+ S 1023) 1024))
+                                       (chop ")") ) ) ) ) ) )
+                     (sort
+                        (make
+                           (recur (File)
+                              (let D (chop File)
+                                 (unless (= "/" (last D))
+                                    (conc D (list (name "/"))) )
+                                 (for F (dir File T)
+                                    (unless (member F '("." ".."))
+                                       (let? I (info (pack D F) T)
+                                          (if (and (=T (car I)) *SubD)
+                                             (recurse @@)
+                                             (link
+                                                (cons
+                                                   (- (cadr I))
+                                                   (- (cddr I))
+                                                   @@
+                                                   (car I) ) ) ) ) ) ) ) ) ) ) )
                   (gc (+ 4 (*/ (car I) 32768)))  # 2 cells / char
                   (if (sys "CCRYPT" (: key))
                      (pipe
@@ -1276,6 +1278,7 @@ nextBuf shell shFile prCmd reset command vi)
                   ("N" (nextBuf T))  # Previous buffer
                   (("ta" "tag") (tag (any Line)))
                   ("e" (reload (rplFile Line)))  # (Edit) Reload buffer
+                  ("E" (onOff *SubD) (reload (rplFile Line)))  # (Edit) Toggle subdir recursion and reload buffer
                   ("r"  # Read file contents
                      (let F (fName (rplFile Line))
                         (when (info F)
