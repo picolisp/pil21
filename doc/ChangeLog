@@ -1,3 +1,7 @@
+26feb21
+   Remove Access-Control-Allow-Origin header
+      lib/http.l
+
 20feb21
    Prefix "@" with "./" in directory listings
    Recurse into subdirectories with ":E"
