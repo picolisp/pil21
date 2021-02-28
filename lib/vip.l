@@ -1,4 +1,4 @@
-# 20feb21 Software Lab. Alexander Burger
+# 28feb21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -145,7 +145,7 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
                         (set C T) )
                      (string 'string
                         (set C T)
-                        (and (= "\\" C) L (set (++ L) T)) )
+                        (and (= "\\" C) L (++ L) (set @ T)) )
                      (skip (and (sp? C) 'skip)
                         (set C) )
                      (skip (and (= "\"" C) 'text)
