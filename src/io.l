@@ -1,4 +1,4 @@
-# 05feb21 Software Lab. Alexander Burger
+# 02mar21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1973,6 +1973,7 @@ selectErr)
                               (close Fd)
                               (closeInFile Fd)
                               (closeOutFile Fd) ) ) ) ) )
+               (set $Bye $Nil)
                (set $Run $Nil)
                (free (val Termio))  # Give up terminal control
                (set Termio null)

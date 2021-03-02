@@ -1,4 +1,4 @@
-# 27dec20 Software Lab. Alexander Burger
+# 02mar21 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -44,6 +44,7 @@
 - 'T' argument to 'native' changed: No skipped call
 - 'pil' is not needed
 
+% '*Bye' cleared in children
 % '*Run' cleared in children: 'forked' is not needed
 % Main coroutine has a tag 'T'
 % 'file' returns NIL instead of "./"

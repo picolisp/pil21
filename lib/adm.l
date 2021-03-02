@@ -1,4 +1,4 @@
-# 08dec20 Software Lab. Alexander Burger
+# 02mar21 Software Lab. Alexander Burger
 
 # *Salt *Login *Users *Perms
 
@@ -40,7 +40,6 @@
       (msg *Pid " * " (stamp) " " Nm)
       (tell 'hi *Pid Nm *Adr)
       (push1 '*Bye '(logout))
-      (push1 '*Fork '(del '(logout) '*Bye))
       (when *Timeout
          (timeout (setq *Timeout `(* 3600 1000))) ) )
    *Login )

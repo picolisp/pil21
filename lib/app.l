@@ -1,4 +1,4 @@
-# 14nov20 Software Lab. Alexander Burger
+# 02mar21 Software Lab. Alexander Burger
 
 # Exit on error
 (de *Err
@@ -41,4 +41,6 @@
    '((msg *Pid " + " (stamp) " [" *Adr " " (host *Adr) (and *Cipher (pack " / " @)) "] " *Agent)) )
 
 # Bye message
-(push1 '*Bye '(and *SesId (msg *Pid " - " (stamp))))
+(push '*Fork
+   '(push '*Bye
+      '(and *SesId (msg *Pid " - " (stamp))) ) )

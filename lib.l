@@ -1,4 +1,4 @@
-# 27dec20 Software Lab. Alexander Burger
+# 02mar21 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -198,7 +198,7 @@
 (de tmp @
    (unless *Tmp
       (push '*Bye '(call "rm" "-r" *Tmp))
-      (push '*Fork '(off *Tmp) '(del '(call "rm" "-r" *Tmp) '*Bye))
+      (push '*Fork '(off *Tmp))
       (call "mkdir" "-p"
          (setq *Tmp (pack (path "~/.pil/tmp/") *Pid "/")) ) )
    (pass pack *Tmp) )
