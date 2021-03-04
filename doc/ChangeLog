@@ -1,5 +1,10 @@
 02mar21
    '*Bye' cleared in children
+      src/io.l
+      lib.l
+      lib/adm.l
+      lib/app.l
+      doc/diff
 
 28feb21
    Missing check for NIL
