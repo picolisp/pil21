@@ -1,3 +1,8 @@
+05mar21
+   Subdirectory recursion buffer-local
+   Recurse when no trailing "/"
+      lib/vip.l
+
 02mar21
    '*Bye' cleared in children
       src/io.l

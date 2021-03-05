@@ -1,8 +1,8 @@
-# 28feb21 Software Lab. Alexander Burger
+# 05mar21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
-(local) (*Shell *CmdWin *StatNm *Chr *Complete *Repeat *Change *Count *Cnt *SubD
+(local) (*Shell *CmdWin *StatNm *Chr *Complete *Repeat *Change *Count *Cnt
 *Search *Clip *Lines *Columns *TagStack *Spell *F7 *F8 *F9 *F10 *F11 *F12 *@)
 
 (local) (TIOCGWINSZ winsize ws_row ws_col setTermSize)
@@ -69,7 +69,7 @@ showCsr screen1 screen2)
 arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
 
 (class +Buffer)
-# text file key undo redo dirt posX posY lastX lastY flat fmt syms <c>
+# text file key undo redo dirt posX posY lastX lastY subd flat fmt syms <c>
 
 (dm T (File Y)
    (and (=: file File) (queue '*Buffers This))
@@ -102,10 +102,12 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
    (pack (replace (chop File) "%" (: buffer file))) )
 
 (de fileBuffer (File Y)
-   (setq File (fName File))
-   (or
-      (find '((This) (= File (: file))) *Buffers)
-      (new '(+Buffer) File Y) ) )
+   (let F (fName File)
+      (prog1
+         (or
+            (find '((This) (= F (: file))) *Buffers)
+            (new '(+Buffer) F Y) )
+         (put @ 'subd (<> "/" (last (chop File)))) ) ) )
 
 (de rdLines ()
    (make (until (eof) (link (line)))) )
@@ -195,7 +197,7 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
                               (list (name " "))
                               (chop (tim$ (- (cadr X)) T))
                               (list (name " "))
-                              (mkLoc (chop F))
+                              (mkLoc F)
                               (cond
                                  ((=T S) (list (name "/")))
                                  ((not S)
@@ -210,21 +212,20 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
                                        (chop ")") ) ) ) ) ) )
                      (sort
                         (make
-                           (recur (File)
-                              (let D (chop File)
-                                 (unless (= "/" (last D))
-                                    (conc D (list (name "/"))) )
-                                 (for F (dir File T)
-                                    (unless (member F '("." ".."))
-                                       (let? I (info (pack D F) T)
-                                          (if (and (=T (car I)) *SubD)
-                                             (recurse @@)
-                                             (link
-                                                (cons
-                                                   (- (cadr I))
-                                                   (- (cddr I))
-                                                   @@
-                                                   (car I) ) ) ) ) ) ) ) ) ) ) )
+   (unless (= "/" (last (setq File (chop File))))
+      (conc File (list (name "/"))) )
+   (recur (File)
+      (for F (dir File T)
+         (unless (member F '("." ".."))
+            (let? I (info (setq F (append File (chop F))) T)
+               (if (and (=T (car I)) (: subd))
+                  (recurse (conc F (list (name "/"))))
+                  (link
+                     (cons
+                        (- (cadr I))
+                        (- (cddr I))
+                        F
+                        (car I) ) ) ) ) ) ) ) ) ) )
                   (gc (+ 4 (*/ (car I) 32768)))  # 2 cells / char
                   (if (sys "CCRYPT" (: key))
                      (pipe
@@ -1278,7 +1279,9 @@ nextBuf shell shFile prCmd reset command vi)
                   ("N" (nextBuf T))  # Previous buffer
                   (("ta" "tag") (tag (any Line)))
                   ("e" (reload (rplFile Line)))  # (Edit) Reload buffer
-                  ("E" (onOff *SubD) (reload (rplFile Line)))  # (Edit) Toggle subdir recursion and reload buffer
+                  ("E"  # (Edit) Toggle subdir recursion and reload buffer
+                     (=: buffer subd (not (: buffer subd)))
+                     (reload (rplFile Line)) )
                   ("r"  # Read file contents
                      (let F (fName (rplFile Line))
                         (when (info F)
