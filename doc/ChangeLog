@@ -1,9 +1,9 @@
 10mar21
    Renamed "UK.l" to "UA.l", restored "UK.l" and renamed to "GB.l"
-   Renamed "uk" to "ua", "gr" to "el" and "jp" to "ja"
+   Renamed "gr" to "el" and "jp" to "ja"
       loc/UA.l
       loc/GB.l
-      loc/ua
+      loc/uk
    Symbolic links
       UK.l -> GB.l
       gr -> el
