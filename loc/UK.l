@@ -1,8 +1,8 @@
 (setq
-   *Sep0 ","
-   *Sep3 " "
-   *CtryCode "380"
+   *Sep0 "."
+   *Sep3 ","
+   *CtryCode "44"
    *NatTrunkPrf '("0")
-   *DateFmt '(@D "." @M "." @Y)
-   *DayFmt '("Понеділок" "Вівторок" "Середа" "Четвер" "П’ятниця" "Субота" "Неділя")
-   *MonFmt '("Січень" "Лютий" "Березень" "Квітень" "Травень" "Червень" "Липень" "Серпень" "Вересень" "Жовтень" "Листопад" "Грудень") )
+   *DateFmt '(@D "/" @M "/" @Y)
+   *DayFmt '("Monday" "Tuesday" "Wednesday" "Thursday" "Friday" "Saturday" "Sunday")
+   *MonFmt '("January" "February" "March" "April" "May" "June" "July" "August" "September" "October" "November" "December") )
