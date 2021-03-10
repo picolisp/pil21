@@ -1,10 +1,13 @@
 10mar21
-   UK.l -> UA.l
-   Restored UK.l
-   uk -> ua
+   Renamed "UK.l" to "UA.l", restored "UK.l" and renamed to "GB.l"
+   Renamed "uk" to "ua", "gr" to "el" and "jp" to "ja"
       loc/UA.l
-      loc/UK.l
+      loc/GB.l
       loc/ua
+   Symbolic links
+      UK.l -> GB.l
+      gr -> el
+      jp -> ja
 
 08mar21
    Missing file
