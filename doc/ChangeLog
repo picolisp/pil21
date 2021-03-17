@@ -1,6 +1,10 @@
 17mar21
    Still missing
       @lib/xm.l
+   Ukrainian and russian localization (Constantine Bitensky)
+      loc/RU.l
+      loc/uk
+      loc/ru
 
 10mar21
    Renamed "UK.l" to "UA.l", restored "UK.l" and renamed to "GB.l"

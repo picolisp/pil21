@@ -1,6 +1,6 @@
 (setq
    *Sep0 ","
-   *Sep3 " "
+   *Sep3 " "
    *CtryCode "7"
    *NatTrunkPrf '("8")
    *DateFmt '(@D "." @M "." @Y)

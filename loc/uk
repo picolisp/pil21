@@ -1,13 +1,13 @@
-# 07mar21abu
+# 17mar21abu
 # Constantine Bytensky <kostya3@gmail.com>
 
 "Language" "Мова"
 
 # lib/db.l
-"Boolean input expected" "Очікується тип Boolean"
-"Numeric input expected" "Очікується тип Numeric"
-"Symbolic type expected" "Очікується тип Symbol"
-"String type expected" "Очікується тип String"
+"Boolean input expected" "Очікується булевий тип"
+"Numeric input expected" "Очікується числовий тип"
+"Symbolic type expected" "Очікується символьний тип"
+"String type expected" "Очікується строковий тип"
 "Type error" "Помилка типу"
 "Not unique" "Не унікальний"
 "Input required" "Потребується введення"
@@ -22,8 +22,8 @@
 "Bad date format" "Неправильний формат дати"
 "Bad time format" "Неправильний формат часу"
 "Bad phone number format" "Неправильний формат номера телефону"
-"male" "чоловічий"
-"female" "жіночий"
+"male" "чоловіча"
+"female" "жіноча"
 "New" "Новий"
 "Edit" "Редагувати"
 "Save" "Зберегти"
@@ -76,13 +76,13 @@
 "Go to last line" "Перейти до останнього рядка"
 "Insert empty row" "Вставити пустий рядок"
 "Delete row" "Видалити рядок"
-"Shift row up" "Перемістити рядок вгору"
+"Shift row up" "Зсунути рядок вгору"
 "Clear all input fields" "Очистити усі поля введення"
 "Release exclusive write access for this object" "Звільнити ексклюзивний доступ на запис цього об’єкту"
 "Gain exclusive write access for this object" "Отримати ексклюзивний доступ на запис цього об’єкту"
 "Start search" "Почати пошук"
 "Create new object" "Створити новый об’єкт"
 "Create a new copy of this object" "Створити нову копію цього об’єкту"
-"Mark this object as \"not deleted\"" "Відмітити цей об’єкт як «не видаленний»"
-"Mark this object as \"deleted\"" "Відмітити цей об’єкт як «видаленний»"
+"Mark this object as \"not deleted\"" "Позначити цей об’єкт як «не видаленний»"
+"Mark this object as \"deleted\"" "Позначити цей об’єкт як «видаленний»"
 "Update" "Оновити"
