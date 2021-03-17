@@ -1479,7 +1479,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 50,
-  i64 162
+  i64 274
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
