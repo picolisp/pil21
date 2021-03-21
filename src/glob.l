@@ -1,4 +1,4 @@
-# 14dec20 Software Lab. Alexander Burger
+# 21mar21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -160,6 +160,7 @@
    (NIL "/" _div)
    ($rem "%" _rem)
    (NIL ">>" _shr)
+   (NIL "rev" _rev)
    (NIL "lt0" _lt0)
    (NIL "le0" _le0)
    (NIL "ge0" _ge0)

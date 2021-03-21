@@ -1,3 +1,13 @@
+21mar21
+   'rev' function
+      src/big.l
+      src/glob.l
+      doc/ref.html
+      doc/refR.html
+      doc/refH.html
+      doc/refI.html
+      doc/ref_.html
+
 17mar21
    Still missing
       @lib/xm.l

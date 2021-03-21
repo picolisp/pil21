@@ -1,4 +1,4 @@
-# 14jan21 Software Lab. Alexander Burger
+# 21mar21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1294,6 +1294,16 @@
                      (setq Y (safe (twice Y))) ) ) )  # Shift left (destructive)
             (: 9
                (if Sign (neg Y) Y) ) ) ) ) )
+
+# (rev 'cnt) -> cnt
+(de _rev (Exe)
+   (let (N (evCnt Exe (cdr Exe))  C 32  R 0)
+      (loop
+         (setq
+            R (+ R R (& N 1))
+            N (shr N 1) )
+         (? (=0 (dec 'C))) )
+      (cnt R) ) )
 
 # (lt0 'any) -> num | NIL
 (de _lt0 (Exe)
