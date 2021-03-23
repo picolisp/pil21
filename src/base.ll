@@ -1482,7 +1482,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 50,
-  i64 338
+  i64 370
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -17909,46 +17909,52 @@ $14:
 
 define i64 @_rev(i64) {
 $1:
-; # (let (N (evCnt Exe (cdr Exe)) C 32 R 0) (loop (setq R (+ R R (& N...
+; # (let (X (cdr Exe) C (evCnt Exe X) N (evCnt Exe (cdr X)) R 0) (loo...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
-; # (evCnt Exe (cdr Exe))
+; # (evCnt Exe X)
   %4 = call i64 @evCnt(i64 %0, i64 %3)
+; # (cdr X)
+  %5 = inttoptr i64 %3 to i64*
+  %6 = getelementptr i64, i64* %5, i32 1
+  %7 = load i64, i64* %6
+; # (evCnt Exe (cdr X))
+  %8 = call i64 @evCnt(i64 %0, i64 %7)
 ; # (loop (setq R (+ R R (& N 1)) N (shr N 1)) (? (=0 (dec 'C))))
   br label %$2
 $2:
-  %5 = phi i64 [%4, %$1], [%14, %$3] ; # N
-  %6 = phi i64 [32, %$1], [%15, %$3] ; # C
-  %7 = phi i64 [0, %$1], [%16, %$3] ; # R
+  %9 = phi i64 [%4, %$1], [%18, %$3] ; # C
+  %10 = phi i64 [%8, %$1], [%19, %$3] ; # N
+  %11 = phi i64 [0, %$1], [%20, %$3] ; # R
 ; # (& N 1)
-  %8 = and i64 %5, 1
+  %12 = and i64 %10, 1
 ; # (+ R R (& N 1))
-  %9 = add i64 %7, %7
-  %10 = add i64 %9, %8
+  %13 = add i64 %11, %11
+  %14 = add i64 %13, %12
 ; # (shr N 1)
-  %11 = lshr i64 %5, 1
+  %15 = lshr i64 %10, 1
 ; # (? (=0 (dec 'C)))
 ; # (dec 'C)
-  %12 = sub i64 %6, 1
+  %16 = sub i64 %9, 1
 ; # (=0 (dec 'C))
-  %13 = icmp eq i64 %12, 0
-  br i1 %13, label %$4, label %$3
+  %17 = icmp eq i64 %16, 0
+  br i1 %17, label %$4, label %$3
 $3:
-  %14 = phi i64 [%11, %$2] ; # N
-  %15 = phi i64 [%12, %$2] ; # C
-  %16 = phi i64 [%10, %$2] ; # R
+  %18 = phi i64 [%16, %$2] ; # C
+  %19 = phi i64 [%15, %$2] ; # N
+  %20 = phi i64 [%14, %$2] ; # R
   br label %$2
 $4:
-  %17 = phi i64 [%11, %$2] ; # N
-  %18 = phi i64 [%12, %$2] ; # C
-  %19 = phi i64 [%10, %$2] ; # R
-  %20 = phi i64 [0, %$2] ; # ->
+  %21 = phi i64 [%16, %$2] ; # C
+  %22 = phi i64 [%15, %$2] ; # N
+  %23 = phi i64 [%14, %$2] ; # R
+  %24 = phi i64 [0, %$2] ; # ->
 ; # (cnt R)
-  %21 = shl i64 %19, 4
-  %22 = or i64 %21, 2
-  ret i64 %22
+  %25 = shl i64 %23, 4
+  %26 = or i64 %25, 2
+  ret i64 %26
 }
 
 define i64 @_lt0(i64) {

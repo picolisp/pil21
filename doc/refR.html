@@ -644,17 +644,19 @@ href="refA.html#assertz/1">assertz/1</a></code>.
 -> a
 </code></pre>
 
-<dt><a name="rev"><code>(rev 'cnt) -> cnt</code></a>
-<dd>Reverses the lowest 32 bits of <code>cnt</code>. See also <code><a
-href="ref_.html#&gt;&gt;">&gt;&gt;</a></code> and <code><a
+<dt><a name="rev"><code>(rev 'cnt1 'cnt2) -> cnt</code></a>
+<dd>Reverses the lowest <code>cnt1</code> bits of <code>cnt2</code>. See also
+<code><a href="ref_.html#&gt;&gt;">&gt;&gt;</a></code> and <code><a
 href="refH.html#hash">hash</a></code>.
 
 <pre><code>
-: (rev 1)
+: (bin (rev 4 (bin "0101")))
+-> "1010"
+: (rev 32 1)
 -> 2147483648
 : (hex @)
 -> "80000000"
-: (rev (hex "E0000000"))
+: (rev 32 (hex "E0000000"))
 -> 7
 </code></pre>
 
