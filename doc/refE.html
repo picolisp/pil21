@@ -144,6 +144,48 @@ successfully completed. See also <code><a href="refF.html#from">from</a></code>.
 : (out "x2.l" (in "x.l" (echo)))  # Copy file "x.l" to "x2.l"
 </code></pre>
 
+<dt><a name="enum"><code>(enum 'var 'cnt 'any) -> any<br>
+(enum 'var 'cnt) -> any</code></a>
+<dd>Enumerates <code>any</code> values by maintaining a binary tree in
+<code>var</code>. Only the values are stored, the keys are implicit from the
+enumerated <code>cnt</code>s. The resulting tree is balanced, independent from
+the insertion order. <code>enum</code> can be used to emulate (possibly sparse)
+arrays. See also <code><a href="refI.html#idx">idx</a></code> and <code><a
+href="refH.html#hash">hash</a></code>.
+
+<pre><code>
+: (for (I . S) '(a b c d e f g h i j k l m n o)
+   (enum 'E I S) )
+-> o
+: E
+-> (a (b (d (h) l) f (j) n) c (e (i) m) g (k) o)
+: (view E T)
+         o
+      g
+         k
+   c
+         m
+      e
+         i
+a
+         n
+      f
+         j
+   b
+         l
+      d
+         h
+-> NIL
+: (enum 'E 6)
+-> f
+$: (enum 'E 1)
+-> a
+: (enum 'E 12)
+-> l
+: (enum 'E 99)
+-> NIL
+</code></pre>
+
 <dt><a name="env"><code>(env ['lst] | ['sym 'val] ..) -> lst</code></a>
 <dd>Return a list of symbol-value pairs of all dynamically bound symbols if
 called without arguments, or of the symbols or symbol-value pairs in

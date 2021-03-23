@@ -1,4 +1,11 @@
 23mar21
+   'enum' function
+      src/sym.l
+      src/glob.l
+      doc/ref.html
+      doc/refE.html
+      doc/refH.html
+      doc/refI.html
    'rev' function bit count argument
       src/big.l
       doc/refR.html

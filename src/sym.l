@@ -1,4 +1,4 @@
-# 18jan21 Software Lab. Alexander Burger
+# 23mar21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1089,6 +1089,54 @@
             (T
                (set 2 V (cdr @))  # Remove
                (car @) ) ) ) ) )  # and return
+
+# (enum 'var 'cnt 'any) -> any
+# (enum 'var 'cnt) -> any
+(de _enum (Exe)
+   (let
+      (X (cdr Exe)
+         Var (save (needChkVar Exe (eval (++ X))))
+         Cnt (evCnt Exe X)
+         Lst (val Var) )
+      (if (atom (shift X))
+         (loop
+            (let N (shr Cnt 1)
+               (? (=0 N) (car Lst))
+               (setq Lst
+                  (if (& Cnt 1) (cddr Lst) (cadr Lst)) )
+               (? (atom Lst) $Nil)
+               (setq Cnt N) ) )
+         (let Val (save (eval (car X)))
+            (loop
+               (let N (shr Cnt 1)
+                  (? (=0 N)
+                     (if (pair Lst)
+                        (set @ Val)
+                        (set Var (cons Val $Nil))
+                        Val ) )
+                  (if (& Cnt 1)
+                     (cond
+                        ((atom Lst)
+                           (let Y (cons $Nil (setq Lst $Nil))
+                              (set Var (cons $Nil Y))
+                              (setq Var (ofs Y 1)) ) )
+                        ((atom (cdr Lst))
+                           (setq Var
+                              (ofs
+                                 (set 2 Lst (cons $Nil (setq Lst $Nil)))
+                                 1 ) ) )
+                        (T
+                           (setq Lst (val (setq Var (ofs @ 1)))) ) )
+                     (cond
+                        ((atom Lst)
+                           (let Y (cons (setq Lst $Nil) $Nil)
+                              (set Var (cons $Nil Y))
+                              (setq Var Y) ) )
+                        ((atom (cdr Lst))
+                           (setq Var
+                              (set 2 Lst (cons (setq Lst $Nil) $Nil)) ) )
+                        (T (setq Lst (val (setq Var @)))) ) )
+                  (setq Cnt N) ) ) ) ) ) )
 
 (local) (idxPut idxGet idxDel)
 
