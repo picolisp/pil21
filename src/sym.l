@@ -1,4 +1,4 @@
-# 23mar21 Software Lab. Alexander Burger
+# 24mar21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1096,17 +1096,17 @@
    (let
       (X (cdr Exe)
          Var (save (needChkVar Exe (eval (++ X))))
-         Cnt (evCnt Exe X)
-         Lst (val Var) )
+         Cnt (evCnt Exe X) )
       (if (atom (shift X))
-         (loop
-            (let N (shr Cnt 1)
-               (? (=0 N) (car Lst))
-               (setq Lst
-                  (if (& Cnt 1) (cddr Lst) (cadr Lst)) )
-               (? (atom Lst) $Nil)
-               (setq Cnt N) ) )
-         (let Val (save (eval (car X)))
+         (let Lst (val Var)
+            (loop
+               (let N (shr Cnt 1)
+                  (? (=0 N) (car Lst))
+                  (setq Lst
+                     (if (& Cnt 1) (cddr Lst) (cadr Lst)) )
+                  (? (atom Lst) $Nil)
+                  (setq Cnt N) ) ) )
+         (let (Val (save (eval (car X)))  Lst (val Var))
             (loop
                (let N (shr Cnt 1)
                   (? (=0 N)
