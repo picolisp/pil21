@@ -1,4 +1,4 @@
-# 06oct20 Software Lab. Alexander Burger
+# 25mar21 Software Lab. Alexander Burger
 
 ### name ###
 (test "abc" (name 'abc))
@@ -289,6 +289,15 @@
    (test '((1 . A) (2 . B) (3 . C) (4 . D) (5 . E) (6 . F) (7 . G))
          (lup X 0 9) ) )
 
+
+### enum ###
+(let E NIL
+   (for (I . S) '(a b c d e f g h i j k l m n o)
+      (enum 'E I S) )
+   (test '(a (b (d (h) l) f (j) n) c (e (i) m) g (k) o)
+      E )
+   (test '(a b c d e f g h i j k l m n o)
+      (make (for I 15 (link (enum 'E I)))) ) )
 
 ### put get prop ; =: : :: putl getl ###
 (let (A (box)  B (box A)  C (box (cons A B)))

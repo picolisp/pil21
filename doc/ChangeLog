@@ -1,4 +1,6 @@
 25mar21
+   Unit tests for 'enum'
+      test/src/sym.l
    '*Term' signal handling (Constantine Bitensky)
       src/main.l
       src/glob.l
