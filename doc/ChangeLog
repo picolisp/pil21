@@ -1,4 +1,6 @@
 25mar21
+   Return NIL from 'enum' if key <= 0
+      src/sym.l
    Unit tests for 'enum'
       test/src/sym.l
    '*Term' signal handling (Constantine Bitensky)

@@ -297,7 +297,11 @@
    (test '(a (b (d (h) l) f (j) n) c (e (i) m) g (k) o)
       E )
    (test '(a b c d e f g h i j k l m n o)
-      (make (for I 15 (link (enum 'E I)))) ) )
+      (make (for I 15 (link (enum 'E I)))) )
+   (test NIL
+      (enum 'E 0) )
+   (test NIL
+      (enum 'E 99) ) )
 
 ### put get prop ; =: : :: putl getl ###
 (let (A (box)  B (box A)  C (box (cons A B)))
