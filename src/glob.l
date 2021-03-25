@@ -1,4 +1,4 @@
-# 23mar21 Software Lab. Alexander Burger
+# 25mar21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -139,6 +139,7 @@
    ($Winch "*Winch" $Nil)
    ($TStp1 "*TStp1" $Nil)
    ($TStp2 "*TStp2" $Nil)
+   ($Term "*Term" $Nil)
    ($Up "\^" $Nil)
    ($Err "*Err" $Nil)
    ($Msg "*Msg" $Nil)

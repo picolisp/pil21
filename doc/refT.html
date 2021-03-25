@@ -11,6 +11,23 @@
 
 <dl>
 
+<dt><a name="*Term"><code>*Term</code></a>
+<dd>Global variable holding a (possibly empty) <code>prg</code> body, which will
+be executed when a SIGTERM signal is sent to the current process. If it returns
+non-<code>NIL</code>, the signal is ignored.
+See also
+<code><a href="refA.html#alarm">alarm</a></code>, <code><a
+href="refS.html#sigio">sigio</a></code>, <code><a
+href="refS.html#*Hup">*Hup</a></code>, <code><a
+href="refW.html#*Winch">*Winch</a></code>, <code><a
+href="refS.html#*Sig1">*Sig[12]</a></code> and <code><a
+href="refT.html#*TStp1">*TStp[12]</a></code>.
+
+<pre><code>
+: (de *Term (msg 'SIGTERM) T)
+-> *Term
+</code></pre>
+
 <dt><a name="*TStp1"><code>*TStp1</code></a>
 <dt><a name="*TStp2"><code>*TStp2</code></a>
 <dd>Global variables holding (possibly empty) <code>prg</code> bodies, which
@@ -19,8 +36,9 @@ will be executed when a SIGTSTP signal (<code>*TStp1</code>) or a SIGCONT signal
 href="refA.html#alarm">alarm</a></code>, <code><a
 href="refS.html#sigio">sigio</a></code>, <code><a
 href="refH.html#*Hup">*Hup</a></code>, <code><a
+href="refW.html#*Winch">*Winch</a></code>, <code><a
 href="refS.html#*Sig1">*Sig[12]</a></code> and <code><a
-href="refW.html#*Winch">*Winch</a></code>.
+href="refT.html#*Term">*Term</a></code>.
 
 <pre><code>
 : (de *TStp1 (msg 'SIGTSTP))

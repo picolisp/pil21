@@ -1,3 +1,14 @@
+25mar21
+   '*Term' signal handling (Constantine Bitensky)
+      src/main.l
+      src/glob.l
+      doc/ref.html
+      doc/refT.html
+      doc/refA.html
+      doc/refH.html
+      doc/refS.html
+      doc/refW.html
+
 24mar21
    'enum' function
       src/sym.l
