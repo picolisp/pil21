@@ -1119,10 +1119,11 @@
                            M (shl M 1) ) ) )
                   (set Q P)  # Save tree
                   (loop
-                     (set R
-                        (cons  # (cnt . any)
-                           (cons (cnt (| Cnt M)) (car P))
-                           (val R) ) )
+                     (unless (nil? (car P))
+                        (set R
+                           (cons  # (cnt . any)
+                              (cons (cnt (| Cnt M)) @)
+                              (val R) ) ) )
                      (let Y (cdr P)
                         (? (pair (car Y))  # Left subtree
                            (let Z P  # Go left
