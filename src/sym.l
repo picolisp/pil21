@@ -1,4 +1,4 @@
-# 25mar21 Software Lab. Alexander Burger
+# 26mar21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -564,8 +564,7 @@
    (if (atom P)
       Lst
       (let
-         (Q (link (push P NIL))
-            L (link (push Lst NIL))
+         (Q (link (push NIL NIL))
             Tos (link (push -ZERO NIL)))
          (loop
             (loop
@@ -577,7 +576,7 @@
                      (set Tos Y) ) ) )
             (set Q P)  # Save tree
             (loop
-               (set L (cons (car P) (val L)))  # Cons symbol
+               (setq Lst (cons (car P) Lst))  # Cons symbol
                (let X (cdr P)
                   (? (pair (car X))  # Left subtree
                      (let Y P  # Go left
@@ -589,7 +588,7 @@
                   (let X (val Tos)
                      (when (== -ZERO X)
                         (drop Q)
-                        (ret (val L)) )
+                        (ret Lst) )
                      (? (=0 (& X 8))  # Second visit
                         (let Y (cdr X)  # Nodes
                            (set Tos (cdr Y))  # TOS on up link
@@ -1092,53 +1091,109 @@
 
 # (enum 'var 'cnt 'any) -> any
 # (enum 'var 'cnt) -> any
+# (enum 'var) -> lst
 (de _enum (Exe)
    (let
       (X (cdr Exe)
          Var (save (needChkVar Exe (eval (++ X))))
-         Cnt (evCnt Exe X) )
+         Cnt T )
       (cond
-         ((le0 Cnt) $Nil)
+         ((atom X)
+            (setq Cnt 0)
+            (let
+               (Q (link (push NIL NIL))
+                  Tos (link (push -ZERO NIL))
+                  R (link (push $Nil NIL))
+                  P (val Var)
+                  M 1 )
+               (loop
+                  (loop
+                     (let Y (cdr P)  # Get subtrees
+                        (? (atom (cdr Y)))  # Right subtree
+                        (let Z P  # Go right
+                           (setq P @)  # Invert tree
+                           (set 2 Y (val Tos))
+                           (set Tos Z) )
+                        (setq
+                           Cnt (| Cnt M)
+                           M (shl M 1) ) ) )
+                  (set Q P)  # Save tree
+                  (loop
+                     (set R
+                        (cons  # (cnt . any)
+                           (cons (cnt (| Cnt M)) (car P))
+                           (val R) ) )
+                     (let Y (cdr P)
+                        (? (pair (car Y))  # Left subtree
+                           (let Z P  # Go left
+                              (setq P @)  # Invert tree
+                              (set Y (val Tos))
+                              (set Tos (| Z 8))  # First visit
+                              (set Q P) )  # Save tree
+                           (setq M (shl M 1)) ) )
+                     (loop
+                        (let Y (val Tos)
+                           (when (== -ZERO Y)
+                              (ret (val R)) )
+                           (? (=0 (& Y 8))  # Second visit
+                              (setq
+                                 M (shr M 1)
+                                 Cnt (& Cnt (x| M -1)) )
+                              (let Z (cdr Y)  # Nodes
+                                 (set Tos (cdr Z))  # TOS on up link
+                                 (set 2 Z P)
+                                 (setq P Y)
+                                 (set Q P) ) )  # Save tree
+                           (setq
+                              Y (& Y -9)  # Clear visit bit
+                              M (shr M 1)
+                              Cnt (& Cnt (x| M -1)) )
+                           (let Z (cdr Y)  # Nodes
+                              (set Tos (car Z))
+                              (set Z P)
+                              (setq P Y)
+                              (set Q P) ) ) ) ) ) ) )  # Save tree
+         ((le0 (setq Cnt (evCnt Exe X))) $Nil)
          ((atom (shift X))
-            (let Lst (val Var)
+            (let P (val Var)
                (loop
                   (let N (shr Cnt 1)
-                     (? (=0 N) (car Lst))
-                     (setq Lst
-                        (if (& Cnt 1) (cddr Lst) (cadr Lst)) )
-                     (? (atom Lst) $Nil)
+                     (? (=0 N) (car P))
+                     (setq P
+                        (if (& Cnt 1) (cddr P) (cadr P)) )
+                     (? (atom P) $Nil)
                      (setq Cnt N) ) ) ) )
          (T
-            (let (Val (save (eval (car X)))  Lst (val Var))
+            (let (Val (save (eval (car X)))  P (val Var))
                (loop
                   (let N (shr Cnt 1)
                      (? (=0 N)
-                        (if (pair Lst)
+                        (if (pair P)
                            (set @ Val)
                            (set Var (cons Val $Nil))
                            Val ) )
                      (if (& Cnt 1)
                         (cond
-                           ((atom Lst)
-                              (let Y (cons $Nil (setq Lst $Nil))
+                           ((atom P)
+                              (let Y (cons $Nil (setq P $Nil))
                                  (set Var (cons $Nil Y))
                                  (setq Var (ofs Y 1)) ) )
-                           ((atom (cdr Lst))
+                           ((atom (cdr P))
                               (setq Var
                                  (ofs
-                                    (set 2 Lst (cons $Nil (setq Lst $Nil)))
+                                    (set 2 P (cons $Nil (setq P $Nil)))
                                     1 ) ) )
                            (T
-                              (setq Lst (val (setq Var (ofs @ 1)))) ) )
+                              (setq P (val (setq Var (ofs @ 1)))) ) )
                         (cond
-                           ((atom Lst)
-                              (let Y (cons (setq Lst $Nil) $Nil)
+                           ((atom P)
+                              (let Y (cons (setq P $Nil) $Nil)
                                  (set Var (cons $Nil Y))
                                  (setq Var Y) ) )
-                           ((atom (cdr Lst))
+                           ((atom (cdr P))
                               (setq Var
-                                 (set 2 Lst (cons (setq Lst $Nil) $Nil)) ) )
-                           (T (setq Lst (val (setq Var @)))) ) )
+                                 (set 2 P (cons (setq P $Nil) $Nil)) ) )
+                           (T (setq P (val (setq Var @)))) ) )
                      (setq Cnt N) ) ) ) ) ) ) )
 
 (local) (idxPut idxGet idxDel)
@@ -1245,7 +1300,7 @@
                (save Key)
                (let
                   (Key2 (save (eval (car X)))
-                     Q (link (push P NIL))
+                     Q (link (push NIL NIL))
                      Tos (link (push -ZERO NIL))
                      R $Nil )
                   (loop

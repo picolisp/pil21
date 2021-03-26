@@ -145,11 +145,15 @@ successfully completed. See also <code><a href="refF.html#from">from</a></code>.
 </code></pre>
 
 <dt><a name="enum"><code>(enum 'var 'cnt 'any) -> any<br>
-(enum 'var 'cnt) -> any</code></a>
+(enum 'var 'cnt) -> any</code><br>
+(enum 'var) -> lst</code></a>
 <dd>Enumerates <code>any</code> values by maintaining a binary tree in
 <code>var</code>. Only the values are stored, the keys are implicit from the
 enumerated <code>cnt</code>s. The resulting tree is balanced, independent from
-the insertion order. <code>enum</code> can be used to emulate (possibly sparse)
+the insertion order. In the first form <code>any</code> is destructively
+inserted into the tree. In the second form the value for <code>cnt</code> is
+looked up. The third form returns an unsorted association list of all key-value
+pairs in the tree. <code>enum</code> can be used to emulate (possibly sparse)
 arrays. See also <code><a href="refI.html#idx">idx</a></code> and <code><a
 href="refH.html#hash">hash</a></code>.
 
@@ -184,6 +188,8 @@ $: (enum 'E 1)
 -> l
 : (enum 'E 99)
 -> NIL
+: (enum 'E)
+-> ((8 . h) (4 . d) (12 . l) (2 . b) (10 . j) (6 . f) (14 . n) (1 . a) (9 . i) (5 . e) (13 . m) (3 . c) (11 . k) (7 . g) (15 . o))
 </code></pre>
 
 <dt><a name="env"><code>(env ['lst] | ['sym 'val] ..) -> lst</code></a>

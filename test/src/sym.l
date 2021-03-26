@@ -1,4 +1,4 @@
-# 25mar21 Software Lab. Alexander Burger
+# 26mar21 Software Lab. Alexander Burger
 
 ### name ###
 (test "abc" (name 'abc))
@@ -301,7 +301,9 @@
    (test NIL
       (enum 'E 0) )
    (test NIL
-      (enum 'E 99) ) )
+      (enum 'E 99) )
+   (test '((8 . h) (4 . d) (12 . l) (2 . b) (10 . j) (6 . f) (14 . n) (1 . a) (9 . i) (5 . e) (13 . m) (3 . c) (11 . k) (7 . g) (15 . o))
+      (enum 'E) ) )
 
 ### put get prop ; =: : :: putl getl ###
 (let (A (box)  B (box A)  C (box (cons A B)))
