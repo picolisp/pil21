@@ -1,3 +1,8 @@
+29mar21
+   Note about the default browser for 'doc' calls
+      man/man1/picolisp.1
+      doc/man.html
+
 26mar21
    'enum' with single argument returns association list
       src/sym.l
