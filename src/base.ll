@@ -1488,7 +1488,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 50,
-  i64 466
+  i64 482
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -16877,8 +16877,8 @@ $11:
 ; # (loop (? (atom (shift X)) (let N (val R) (if Sign (neg N) N))) (l...
   br label %$12
 $12:
-  %38 = phi i64 [%16, %$11], [%87, %$32] ; # X
-  %39 = phi i1 [%28, %$11], [%88, %$32] ; # Sign
+  %38 = phi i64 [%16, %$11], [%94, %$34] ; # X
+  %39 = phi i1 [%28, %$11], [%95, %$34] ; # Sign
 ; # (? (atom (shift X)) (let N (val R) (if Sign (neg N) N)))
 ; # (shift X)
   %40 = inttoptr i64 %38 to i64*
@@ -16923,7 +16923,7 @@ $18:
 $13:
   %59 = phi i64 [%42, %$12] ; # X
   %60 = phi i1 [%39, %$12] ; # Sign
-; # (let N (eval (car X)) (? (nil? N) N) (when (sign? (needNum Exe N)...
+; # (let N (eval (car X)) (? (nil? N) N) (? (== N ZERO) N) (when (sig...
 ; # (car X)
   %61 = inttoptr i64 %59 to i64*
   %62 = load i64, i64* %61
@@ -16959,59 +16959,72 @@ $27:
   %75 = phi i64 [%59, %$22] ; # X
   %76 = phi i1 [%60, %$22] ; # Sign
   %77 = phi i64 [%70, %$22] ; # N
+; # (? (== N ZERO) N)
+; # (== N ZERO)
+  %78 = icmp eq i64 %77, 2
+  br i1 %78, label %$30, label %$29
+$30:
+  %79 = phi i64 [%75, %$27] ; # X
+  %80 = phi i1 [%76, %$27] ; # Sign
+  %81 = phi i64 [%77, %$27] ; # N
+  br label %$14
+$29:
+  %82 = phi i64 [%75, %$27] ; # X
+  %83 = phi i1 [%76, %$27] ; # Sign
+  %84 = phi i64 [%77, %$27] ; # N
 ; # (when (sign? (needNum Exe N)) (setq Sign (not Sign) N (pos N)))
 ; # (needNum Exe N)
-  %78 = and i64 %77, 6
-  %79 = icmp ne i64 %78, 0
-  br i1 %79, label %$30, label %$29
-$29:
-  call void @numErr(i64 %0, i64 %77)
-  unreachable
-$30:
-; # (sign? (needNum Exe N))
-  %80 = and i64 %77, 8
-  %81 = icmp ne i64 %80, 0
-  br i1 %81, label %$31, label %$32
+  %85 = and i64 %84, 6
+  %86 = icmp ne i64 %85, 0
+  br i1 %86, label %$32, label %$31
 $31:
-  %82 = phi i64 [%75, %$30] ; # X
-  %83 = phi i1 [%76, %$30] ; # Sign
-  %84 = phi i64 [%77, %$30] ; # N
-; # (not Sign)
-  %85 = icmp eq i1 %83, 0
-; # (pos N)
-  %86 = and i64 %84, -9
-  br label %$32
+  call void @numErr(i64 %0, i64 %84)
+  unreachable
 $32:
-  %87 = phi i64 [%75, %$30], [%82, %$31] ; # X
-  %88 = phi i1 [%76, %$30], [%85, %$31] ; # Sign
-  %89 = phi i64 [%77, %$30], [%86, %$31] ; # N
+; # (sign? (needNum Exe N))
+  %87 = and i64 %84, 8
+  %88 = icmp ne i64 %87, 0
+  br i1 %88, label %$33, label %$34
+$33:
+  %89 = phi i64 [%82, %$32] ; # X
+  %90 = phi i1 [%83, %$32] ; # Sign
+  %91 = phi i64 [%84, %$32] ; # N
+; # (not Sign)
+  %92 = icmp eq i1 %90, 0
+; # (pos N)
+  %93 = and i64 %91, -9
+  br label %$34
+$34:
+  %94 = phi i64 [%82, %$32], [%89, %$33] ; # X
+  %95 = phi i1 [%83, %$32], [%92, %$33] ; # Sign
+  %96 = phi i64 [%84, %$32], [%93, %$33] ; # N
 ; # (safe N)
-  %90 = inttoptr i64 %20 to i64*
-  store i64 %89, i64* %90
+  %97 = inttoptr i64 %20 to i64*
+  store i64 %96, i64* %97
 ; # (set R (mulu (val R) N))
 ; # (val R)
-  %91 = inttoptr i64 %31 to i64*
-  %92 = load i64, i64* %91
+  %98 = inttoptr i64 %31 to i64*
+  %99 = load i64, i64* %98
 ; # (mulu (val R) N)
-  %93 = call i64 @mulu(i64 %92, i64 %89)
-  %94 = inttoptr i64 %31 to i64*
-  store i64 %93, i64* %94
+  %100 = call i64 @mulu(i64 %99, i64 %96)
+  %101 = inttoptr i64 %31 to i64*
+  store i64 %100, i64* %101
   br label %$12
 $14:
-  %95 = phi i64 [%56, %$18], [%72, %$28] ; # X
-  %96 = phi i1 [%57, %$18], [%73, %$28] ; # Sign
-  %97 = phi i64 [%58, %$18], [%74, %$28] ; # ->
+  %102 = phi i64 [%56, %$18], [%72, %$28], [%79, %$30] ; # X
+  %103 = phi i1 [%57, %$18], [%73, %$28], [%80, %$30] ; # Sign
+  %104 = phi i64 [%58, %$18], [%74, %$28], [%81, %$30] ; # ->
 ; # drop
-  %98 = inttoptr i64 %20 to i64*
-  %99 = getelementptr i64, i64* %98, i32 1
-  %100 = load i64, i64* %99
-  %101 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %100, i64* %101
+  %105 = inttoptr i64 %20 to i64*
+  %106 = getelementptr i64, i64* %105, i32 1
+  %107 = load i64, i64* %106
+  %108 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %107, i64* %108
   br label %$9
 $9:
-  %102 = phi i64 [%15, %$7], [%95, %$14] ; # X
-  %103 = phi i64 [%13, %$7], [%97, %$14] ; # ->
-  ret i64 %103
+  %109 = phi i64 [%15, %$7], [%102, %$14] ; # X
+  %110 = phi i64 [%13, %$7], [%104, %$14] ; # ->
+  ret i64 %110
 }
 
 define i64 @_mulDiv(i64) {
@@ -17095,12 +17108,12 @@ $11:
   %38 = inttoptr i64 %16 to i64*
   %39 = getelementptr i64, i64* %38, i32 1
   %40 = load i64, i64* %39
-; # (loop (let N (eval (car X)) (? (nil? N) N) (when (sign? (needNum ...
+; # (loop (let N (eval (car X)) (? (nil? N) N) (? (== N ZERO) N) (whe...
   br label %$12
 $12:
-  %41 = phi i64 [%40, %$11], [%115, %$25] ; # X
-  %42 = phi i1 [%28, %$11], [%116, %$25] ; # Sign
-; # (let N (eval (car X)) (? (nil? N) N) (when (sign? (needNum Exe N)...
+  %41 = phi i64 [%40, %$11], [%122, %$27] ; # X
+  %42 = phi i1 [%28, %$11], [%123, %$27] ; # Sign
+; # (let N (eval (car X)) (? (nil? N) N) (? (== N ZERO) N) (when (sig...
 ; # (car X)
   %43 = inttoptr i64 %41 to i64*
   %44 = load i64, i64* %43
@@ -17136,144 +17149,157 @@ $18:
   %57 = phi i64 [%41, %$13] ; # X
   %58 = phi i1 [%42, %$13] ; # Sign
   %59 = phi i64 [%52, %$13] ; # N
+; # (? (== N ZERO) N)
+; # (== N ZERO)
+  %60 = icmp eq i64 %59, 2
+  br i1 %60, label %$22, label %$21
+$22:
+  %61 = phi i64 [%57, %$18] ; # X
+  %62 = phi i1 [%58, %$18] ; # Sign
+  %63 = phi i64 [%59, %$18] ; # N
+  br label %$19
+$21:
+  %64 = phi i64 [%57, %$18] ; # X
+  %65 = phi i1 [%58, %$18] ; # Sign
+  %66 = phi i64 [%59, %$18] ; # N
 ; # (when (sign? (needNum Exe N)) (setq Sign (not Sign) N (pos N)))
 ; # (needNum Exe N)
-  %60 = and i64 %59, 6
-  %61 = icmp ne i64 %60, 0
-  br i1 %61, label %$22, label %$21
-$21:
-  call void @numErr(i64 %0, i64 %59)
-  unreachable
-$22:
-; # (sign? (needNum Exe N))
-  %62 = and i64 %59, 8
-  %63 = icmp ne i64 %62, 0
-  br i1 %63, label %$23, label %$24
+  %67 = and i64 %66, 6
+  %68 = icmp ne i64 %67, 0
+  br i1 %68, label %$24, label %$23
 $23:
-  %64 = phi i64 [%57, %$22] ; # X
-  %65 = phi i1 [%58, %$22] ; # Sign
-  %66 = phi i64 [%59, %$22] ; # N
-; # (not Sign)
-  %67 = icmp eq i1 %65, 0
-; # (pos N)
-  %68 = and i64 %66, -9
-  br label %$24
+  call void @numErr(i64 %0, i64 %66)
+  unreachable
 $24:
-  %69 = phi i64 [%57, %$22], [%64, %$23] ; # X
-  %70 = phi i1 [%58, %$22], [%67, %$23] ; # Sign
-  %71 = phi i64 [%59, %$22], [%68, %$23] ; # N
+; # (sign? (needNum Exe N))
+  %69 = and i64 %66, 8
+  %70 = icmp ne i64 %69, 0
+  br i1 %70, label %$25, label %$26
+$25:
+  %71 = phi i64 [%64, %$24] ; # X
+  %72 = phi i1 [%65, %$24] ; # Sign
+  %73 = phi i64 [%66, %$24] ; # N
+; # (not Sign)
+  %74 = icmp eq i1 %72, 0
+; # (pos N)
+  %75 = and i64 %73, -9
+  br label %$26
+$26:
+  %76 = phi i64 [%64, %$24], [%71, %$25] ; # X
+  %77 = phi i1 [%65, %$24], [%74, %$25] ; # Sign
+  %78 = phi i64 [%66, %$24], [%75, %$25] ; # N
 ; # (safe N)
-  %72 = inttoptr i64 %20 to i64*
-  store i64 %71, i64* %72
+  %79 = inttoptr i64 %20 to i64*
+  store i64 %78, i64* %79
 ; # (? (atom (shift X)) (when (== N ZERO) (divErr Exe)) (let Half (sa...
 ; # (shift X)
-  %73 = inttoptr i64 %69 to i64*
-  %74 = getelementptr i64, i64* %73, i32 1
-  %75 = load i64, i64* %74
+  %80 = inttoptr i64 %76 to i64*
+  %81 = getelementptr i64, i64* %80, i32 1
+  %82 = load i64, i64* %81
 ; # (atom (shift X))
-  %76 = and i64 %75, 15
-  %77 = icmp ne i64 %76, 0
-  br i1 %77, label %$26, label %$25
-$26:
-  %78 = phi i64 [%75, %$24] ; # X
-  %79 = phi i1 [%70, %$24] ; # Sign
-  %80 = phi i64 [%71, %$24] ; # N
+  %83 = and i64 %82, 15
+  %84 = icmp ne i64 %83, 0
+  br i1 %84, label %$28, label %$27
+$28:
+  %85 = phi i64 [%82, %$26] ; # X
+  %86 = phi i1 [%77, %$26] ; # Sign
+  %87 = phi i64 [%78, %$26] ; # N
 ; # (when (== N ZERO) (divErr Exe))
 ; # (== N ZERO)
-  %81 = icmp eq i64 %80, 2
-  br i1 %81, label %$27, label %$28
-$27:
-  %82 = phi i64 [%78, %$26] ; # X
-  %83 = phi i1 [%79, %$26] ; # Sign
-  %84 = phi i64 [%80, %$26] ; # N
+  %88 = icmp eq i64 %87, 2
+  br i1 %88, label %$29, label %$30
+$29:
+  %89 = phi i64 [%85, %$28] ; # X
+  %90 = phi i1 [%86, %$28] ; # Sign
+  %91 = phi i64 [%87, %$28] ; # N
 ; # (divErr Exe)
   call void @divErr(i64 %0)
   unreachable
-$28:
-  %85 = phi i64 [%78, %$26] ; # X
-  %86 = phi i1 [%79, %$26] ; # Sign
-  %87 = phi i64 [%80, %$26] ; # N
+$30:
+  %92 = phi i64 [%85, %$28] ; # X
+  %93 = phi i1 [%86, %$28] ; # Sign
+  %94 = phi i64 [%87, %$28] ; # N
 ; # (let Half (save (shru N)) (setq N (divu (set R (addu (val R) Half...
 ; # (shru N)
-  %88 = call i64 @shru(i64 %87)
+  %95 = call i64 @shru(i64 %94)
 ; # (save (shru N))
-  %89 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
-  %90 = load i64, i64* %89
-  %91 = alloca i64, i64 2, align 16
-  %92 = ptrtoint i64* %91 to i64
-  %93 = inttoptr i64 %92 to i64*
-  store i64 %88, i64* %93
-  %94 = add i64 %92, 8
-  %95 = inttoptr i64 %94 to i64*
-  store i64 %90, i64* %95
   %96 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %92, i64* %96
+  %97 = load i64, i64* %96
+  %98 = alloca i64, i64 2, align 16
+  %99 = ptrtoint i64* %98 to i64
+  %100 = inttoptr i64 %99 to i64*
+  store i64 %95, i64* %100
+  %101 = add i64 %99, 8
+  %102 = inttoptr i64 %101 to i64*
+  store i64 %97, i64* %102
+  %103 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %99, i64* %103
 ; # (set R (addu (val R) Half))
 ; # (val R)
-  %97 = inttoptr i64 %31 to i64*
-  %98 = load i64, i64* %97
+  %104 = inttoptr i64 %31 to i64*
+  %105 = load i64, i64* %104
 ; # (addu (val R) Half)
-  %99 = call i64 @addu(i64 %98, i64 %88)
-  %100 = inttoptr i64 %31 to i64*
-  store i64 %99, i64* %100
+  %106 = call i64 @addu(i64 %105, i64 %95)
+  %107 = inttoptr i64 %31 to i64*
+  store i64 %106, i64* %107
 ; # (divu (set R (addu (val R) Half)) N)
-  %101 = call i64 @divu(i64 %99, i64 %87)
+  %108 = call i64 @divu(i64 %106, i64 %94)
 ; # (if Sign (neg N) N)
-  br i1 %86, label %$29, label %$30
-$29:
-  %102 = phi i64 [%85, %$28] ; # X
-  %103 = phi i1 [%86, %$28] ; # Sign
-  %104 = phi i64 [%101, %$28] ; # N
-; # (neg N)
-  %105 = icmp eq i64 %104, 2
-  br i1 %105, label %$32, label %$33
-$32:
-  br label %$34
-$33:
-  %106 = xor i64 %104, 8
-  br label %$34
-$34:
-  %107 = phi i64 [%104, %$32], [%106, %$33] ; # ->
-  br label %$31
-$30:
-  %108 = phi i64 [%85, %$28] ; # X
-  %109 = phi i1 [%86, %$28] ; # Sign
-  %110 = phi i64 [%101, %$28] ; # N
-  br label %$31
+  br i1 %93, label %$31, label %$32
 $31:
-  %111 = phi i64 [%102, %$34], [%108, %$30] ; # X
-  %112 = phi i1 [%103, %$34], [%109, %$30] ; # Sign
-  %113 = phi i64 [%104, %$34], [%110, %$30] ; # N
-  %114 = phi i64 [%107, %$34], [%110, %$30] ; # ->
+  %109 = phi i64 [%92, %$30] ; # X
+  %110 = phi i1 [%93, %$30] ; # Sign
+  %111 = phi i64 [%108, %$30] ; # N
+; # (neg N)
+  %112 = icmp eq i64 %111, 2
+  br i1 %112, label %$34, label %$35
+$34:
+  br label %$36
+$35:
+  %113 = xor i64 %111, 8
+  br label %$36
+$36:
+  %114 = phi i64 [%111, %$34], [%113, %$35] ; # ->
+  br label %$33
+$32:
+  %115 = phi i64 [%92, %$30] ; # X
+  %116 = phi i1 [%93, %$30] ; # Sign
+  %117 = phi i64 [%108, %$30] ; # N
+  br label %$33
+$33:
+  %118 = phi i64 [%109, %$36], [%115, %$32] ; # X
+  %119 = phi i1 [%110, %$36], [%116, %$32] ; # Sign
+  %120 = phi i64 [%111, %$36], [%117, %$32] ; # N
+  %121 = phi i64 [%114, %$36], [%117, %$32] ; # ->
   br label %$19
-$25:
-  %115 = phi i64 [%75, %$24] ; # X
-  %116 = phi i1 [%70, %$24] ; # Sign
-  %117 = phi i64 [%71, %$24] ; # N
+$27:
+  %122 = phi i64 [%82, %$26] ; # X
+  %123 = phi i1 [%77, %$26] ; # Sign
+  %124 = phi i64 [%78, %$26] ; # N
 ; # (set R (mulu (val R) N))
 ; # (val R)
-  %118 = inttoptr i64 %31 to i64*
-  %119 = load i64, i64* %118
+  %125 = inttoptr i64 %31 to i64*
+  %126 = load i64, i64* %125
 ; # (mulu (val R) N)
-  %120 = call i64 @mulu(i64 %119, i64 %117)
-  %121 = inttoptr i64 %31 to i64*
-  store i64 %120, i64* %121
+  %127 = call i64 @mulu(i64 %126, i64 %124)
+  %128 = inttoptr i64 %31 to i64*
+  store i64 %127, i64* %128
   br label %$12
 $19:
-  %122 = phi i64 [%54, %$20], [%111, %$31] ; # X
-  %123 = phi i1 [%55, %$20], [%112, %$31] ; # Sign
-  %124 = phi i64 [%56, %$20], [%114, %$31] ; # ->
+  %129 = phi i64 [%54, %$20], [%61, %$22], [%118, %$33] ; # X
+  %130 = phi i1 [%55, %$20], [%62, %$22], [%119, %$33] ; # Sign
+  %131 = phi i64 [%56, %$20], [%63, %$22], [%121, %$33] ; # ->
 ; # drop
-  %125 = inttoptr i64 %20 to i64*
-  %126 = getelementptr i64, i64* %125, i32 1
-  %127 = load i64, i64* %126
-  %128 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %127, i64* %128
+  %132 = inttoptr i64 %20 to i64*
+  %133 = getelementptr i64, i64* %132, i32 1
+  %134 = load i64, i64* %133
+  %135 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %134, i64* %135
   br label %$9
 $9:
-  %129 = phi i64 [%15, %$7], [%122, %$19] ; # X
-  %130 = phi i64 [%13, %$7], [%124, %$19] ; # ->
-  ret i64 %130
+  %136 = phi i64 [%15, %$7], [%129, %$19] ; # X
+  %137 = phi i64 [%13, %$7], [%131, %$19] ; # ->
+  ret i64 %137
 }
 
 define i64 @_div(i64) {
@@ -17356,8 +17382,8 @@ $11:
 ; # (loop (? (atom (shift X)) (let N (val R) (if Sign (neg N) N))) (l...
   br label %$12
 $12:
-  %38 = phi i64 [%16, %$11], [%94, %$34] ; # X
-  %39 = phi i1 [%28, %$11], [%95, %$34] ; # Sign
+  %38 = phi i64 [%16, %$11], [%101, %$36] ; # X
+  %39 = phi i1 [%28, %$11], [%102, %$36] ; # Sign
 ; # (? (atom (shift X)) (let N (val R) (if Sign (neg N) N)))
 ; # (shift X)
   %40 = inttoptr i64 %38 to i64*
@@ -17402,7 +17428,7 @@ $18:
 $13:
   %59 = phi i64 [%42, %$12] ; # X
   %60 = phi i1 [%39, %$12] ; # Sign
-; # (let N (eval (car X)) (? (nil? N) N) (when (== N ZERO) (divErr Ex...
+; # (let N (eval (car X)) (? (nil? N) N) (? (== N ZERO) N) (when (== ...
 ; # (car X)
   %61 = inttoptr i64 %59 to i64*
   %62 = load i64, i64* %61
@@ -17438,74 +17464,87 @@ $27:
   %75 = phi i64 [%59, %$22] ; # X
   %76 = phi i1 [%60, %$22] ; # Sign
   %77 = phi i64 [%70, %$22] ; # N
-; # (when (== N ZERO) (divErr Exe))
+; # (? (== N ZERO) N)
 ; # (== N ZERO)
   %78 = icmp eq i64 %77, 2
-  br i1 %78, label %$29, label %$30
-$29:
+  br i1 %78, label %$30, label %$29
+$30:
   %79 = phi i64 [%75, %$27] ; # X
   %80 = phi i1 [%76, %$27] ; # Sign
   %81 = phi i64 [%77, %$27] ; # N
-; # (divErr Exe)
-  call void @divErr(i64 %0)
-  unreachable
-$30:
+  br label %$14
+$29:
   %82 = phi i64 [%75, %$27] ; # X
   %83 = phi i1 [%76, %$27] ; # Sign
   %84 = phi i64 [%77, %$27] ; # N
-; # (when (sign? (needNum Exe N)) (setq Sign (not Sign) N (pos N)))
-; # (needNum Exe N)
-  %85 = and i64 %84, 6
-  %86 = icmp ne i64 %85, 0
-  br i1 %86, label %$32, label %$31
+; # (when (== N ZERO) (divErr Exe))
+; # (== N ZERO)
+  %85 = icmp eq i64 %84, 2
+  br i1 %85, label %$31, label %$32
 $31:
-  call void @numErr(i64 %0, i64 %84)
+  %86 = phi i64 [%82, %$29] ; # X
+  %87 = phi i1 [%83, %$29] ; # Sign
+  %88 = phi i64 [%84, %$29] ; # N
+; # (divErr Exe)
+  call void @divErr(i64 %0)
   unreachable
 $32:
-; # (sign? (needNum Exe N))
-  %87 = and i64 %84, 8
-  %88 = icmp ne i64 %87, 0
-  br i1 %88, label %$33, label %$34
+  %89 = phi i64 [%82, %$29] ; # X
+  %90 = phi i1 [%83, %$29] ; # Sign
+  %91 = phi i64 [%84, %$29] ; # N
+; # (when (sign? (needNum Exe N)) (setq Sign (not Sign) N (pos N)))
+; # (needNum Exe N)
+  %92 = and i64 %91, 6
+  %93 = icmp ne i64 %92, 0
+  br i1 %93, label %$34, label %$33
 $33:
-  %89 = phi i64 [%82, %$32] ; # X
-  %90 = phi i1 [%83, %$32] ; # Sign
-  %91 = phi i64 [%84, %$32] ; # N
-; # (not Sign)
-  %92 = icmp eq i1 %90, 0
-; # (pos N)
-  %93 = and i64 %91, -9
-  br label %$34
+  call void @numErr(i64 %0, i64 %91)
+  unreachable
 $34:
-  %94 = phi i64 [%82, %$32], [%89, %$33] ; # X
-  %95 = phi i1 [%83, %$32], [%92, %$33] ; # Sign
-  %96 = phi i64 [%84, %$32], [%93, %$33] ; # N
+; # (sign? (needNum Exe N))
+  %94 = and i64 %91, 8
+  %95 = icmp ne i64 %94, 0
+  br i1 %95, label %$35, label %$36
+$35:
+  %96 = phi i64 [%89, %$34] ; # X
+  %97 = phi i1 [%90, %$34] ; # Sign
+  %98 = phi i64 [%91, %$34] ; # N
+; # (not Sign)
+  %99 = icmp eq i1 %97, 0
+; # (pos N)
+  %100 = and i64 %98, -9
+  br label %$36
+$36:
+  %101 = phi i64 [%89, %$34], [%96, %$35] ; # X
+  %102 = phi i1 [%90, %$34], [%99, %$35] ; # Sign
+  %103 = phi i64 [%91, %$34], [%100, %$35] ; # N
 ; # (safe N)
-  %97 = inttoptr i64 %20 to i64*
-  store i64 %96, i64* %97
+  %104 = inttoptr i64 %20 to i64*
+  store i64 %103, i64* %104
 ; # (set R (divu (val R) N))
 ; # (val R)
-  %98 = inttoptr i64 %31 to i64*
-  %99 = load i64, i64* %98
+  %105 = inttoptr i64 %31 to i64*
+  %106 = load i64, i64* %105
 ; # (divu (val R) N)
-  %100 = call i64 @divu(i64 %99, i64 %96)
-  %101 = inttoptr i64 %31 to i64*
-  store i64 %100, i64* %101
+  %107 = call i64 @divu(i64 %106, i64 %103)
+  %108 = inttoptr i64 %31 to i64*
+  store i64 %107, i64* %108
   br label %$12
 $14:
-  %102 = phi i64 [%56, %$18], [%72, %$28] ; # X
-  %103 = phi i1 [%57, %$18], [%73, %$28] ; # Sign
-  %104 = phi i64 [%58, %$18], [%74, %$28] ; # ->
+  %109 = phi i64 [%56, %$18], [%72, %$28], [%79, %$30] ; # X
+  %110 = phi i1 [%57, %$18], [%73, %$28], [%80, %$30] ; # Sign
+  %111 = phi i64 [%58, %$18], [%74, %$28], [%81, %$30] ; # ->
 ; # drop
-  %105 = inttoptr i64 %20 to i64*
-  %106 = getelementptr i64, i64* %105, i32 1
-  %107 = load i64, i64* %106
-  %108 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %107, i64* %108
+  %112 = inttoptr i64 %20 to i64*
+  %113 = getelementptr i64, i64* %112, i32 1
+  %114 = load i64, i64* %113
+  %115 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %114, i64* %115
   br label %$9
 $9:
-  %109 = phi i64 [%15, %$7], [%102, %$14] ; # X
-  %110 = phi i64 [%13, %$7], [%104, %$14] ; # ->
-  ret i64 %110
+  %116 = phi i64 [%15, %$7], [%109, %$14] ; # X
+  %117 = phi i64 [%13, %$7], [%111, %$14] ; # ->
+  ret i64 %117
 }
 
 define i64 @_rem(i64) {
@@ -17588,7 +17627,7 @@ $11:
 ; # (loop (? (atom (shift X)) (let N (val R) (if Sign (neg N) N))) (l...
   br label %$12
 $12:
-  %38 = phi i64 [%16, %$11], [%70, %$32] ; # X
+  %38 = phi i64 [%16, %$11], [%73, %$34] ; # X
 ; # (? (atom (shift X)) (let N (val R) (if Sign (neg N) N)))
 ; # (shift X)
   %39 = inttoptr i64 %38 to i64*
@@ -17628,7 +17667,7 @@ $18:
   br label %$14
 $13:
   %54 = phi i64 [%41, %$12] ; # X
-; # (let N (eval (car X)) (? (nil? N) N) (when (== N ZERO) (divErr Ex...
+; # (let N (eval (car X)) (? (nil? N) N) (? (== N ZERO) N) (when (== ...
 ; # (car X)
   %55 = inttoptr i64 %54 to i64*
   %56 = load i64, i64* %55
@@ -17660,53 +17699,62 @@ $28:
   br label %$14
 $27:
   %67 = phi i64 [%54, %$22] ; # X
-; # (when (== N ZERO) (divErr Exe))
+; # (? (== N ZERO) N)
 ; # (== N ZERO)
   %68 = icmp eq i64 %64, 2
-  br i1 %68, label %$29, label %$30
-$29:
+  br i1 %68, label %$30, label %$29
+$30:
   %69 = phi i64 [%67, %$27] ; # X
+  br label %$14
+$29:
+  %70 = phi i64 [%67, %$27] ; # X
+; # (when (== N ZERO) (divErr Exe))
+; # (== N ZERO)
+  %71 = icmp eq i64 %64, 2
+  br i1 %71, label %$31, label %$32
+$31:
+  %72 = phi i64 [%70, %$29] ; # X
 ; # (divErr Exe)
   call void @divErr(i64 %0)
   unreachable
-$30:
-  %70 = phi i64 [%67, %$27] ; # X
+$32:
+  %73 = phi i64 [%70, %$29] ; # X
 ; # (set R (remu (val R) (safe (pos (needNum Exe N)))))
 ; # (val R)
-  %71 = inttoptr i64 %31 to i64*
-  %72 = load i64, i64* %71
+  %74 = inttoptr i64 %31 to i64*
+  %75 = load i64, i64* %74
 ; # (needNum Exe N)
-  %73 = and i64 %64, 6
-  %74 = icmp ne i64 %73, 0
-  br i1 %74, label %$32, label %$31
-$31:
+  %76 = and i64 %64, 6
+  %77 = icmp ne i64 %76, 0
+  br i1 %77, label %$34, label %$33
+$33:
   call void @numErr(i64 %0, i64 %64)
   unreachable
-$32:
+$34:
 ; # (pos (needNum Exe N))
-  %75 = and i64 %64, -9
+  %78 = and i64 %64, -9
 ; # (safe (pos (needNum Exe N)))
-  %76 = inttoptr i64 %20 to i64*
-  store i64 %75, i64* %76
+  %79 = inttoptr i64 %20 to i64*
+  store i64 %78, i64* %79
 ; # (remu (val R) (safe (pos (needNum Exe N))))
-  %77 = call i64 @remu(i64 %72, i64 %75)
-  %78 = inttoptr i64 %31 to i64*
-  store i64 %77, i64* %78
+  %80 = call i64 @remu(i64 %75, i64 %78)
+  %81 = inttoptr i64 %31 to i64*
+  store i64 %80, i64* %81
   br label %$12
 $14:
-  %79 = phi i64 [%52, %$18], [%66, %$28] ; # X
-  %80 = phi i64 [%53, %$18], [%64, %$28] ; # ->
+  %82 = phi i64 [%52, %$18], [%66, %$28], [%69, %$30] ; # X
+  %83 = phi i64 [%53, %$18], [%64, %$28], [%64, %$30] ; # ->
 ; # drop
-  %81 = inttoptr i64 %20 to i64*
-  %82 = getelementptr i64, i64* %81, i32 1
-  %83 = load i64, i64* %82
-  %84 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %83, i64* %84
+  %84 = inttoptr i64 %20 to i64*
+  %85 = getelementptr i64, i64* %84, i32 1
+  %86 = load i64, i64* %85
+  %87 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %86, i64* %87
   br label %$9
 $9:
-  %85 = phi i64 [%15, %$7], [%79, %$14] ; # X
-  %86 = phi i64 [%13, %$7], [%80, %$14] ; # ->
-  ret i64 %86
+  %88 = phi i64 [%15, %$7], [%82, %$14] ; # X
+  %89 = phi i64 [%13, %$7], [%83, %$14] ; # ->
+  ret i64 %89
 }
 
 define i64 @_shr(i64) {

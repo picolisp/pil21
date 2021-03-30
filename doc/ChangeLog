@@ -1,3 +1,7 @@
+30mar21
+   Exit '*', '/*', '/' and '%' upon zero
+      src/big.l
+
 29mar21
    Note about the default browser for 'doc' calls
       man/man1/picolisp.1
