@@ -1,4 +1,4 @@
-# 22sep20 Software Lab. Alexander Burger
+# 31mar21 Software Lab. Alexander Burger
 
 (private) (Prg C Q X Y CL Cls Name)
 
@@ -240,9 +240,13 @@
 ### Database file management ###
 (de dbfCheck ()
    (for Cls (all)
-      (when (and (= `(char "+") (char Cls)) (isa '+Entity Cls))
+      (when
+         (and
+            (= `(char "+") (char Cls))
+            (isa '+Entity Cls)
+            (not (isa '+Remote Cls)) )
          (or
-            (get Cls 'Dbf)
+            (; Cls Dbf)
             (meta Cls 'Dbf)
             (println 'dbfCheck Cls) )
          (for Rel (getl Cls)

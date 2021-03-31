@@ -1,3 +1,8 @@
+31mar21
+   '+Remote' entity class
+      lib/db.l
+      lib/too.l
+
 30mar21
    Exit '*', '/*', '/' and '%' upon zero
       src/big.l

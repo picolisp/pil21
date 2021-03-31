@@ -1,4 +1,4 @@
-# 28sep20 Software Lab. Alexander Burger
+# 31mar21 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1259,6 +1259,30 @@
          (%@ "symlink" 'I
             (pack (glue "/" (chop Obj)) "." Var)
             (pack "=" (name Obj) "." Var) ) ) ) )
+
+
+# Remote entities
+(class +Remote)
+
+(dm zap> ())
+(dm put> (Var Val))
+(dm put!> (Var Val))
+(dm del> (Var Val))
+(dm del!> (Var Val))
+(dm inc> (Var Val))
+(dm inc!> (Var Val))
+(dm dec> (Var Val))
+(dm dec!> (Var Val))
+(dm mis> (Var Val))
+(dm lose1> (Var))
+(dm lose> (Lst))
+(dm lose!> (Lst))
+(dm keep1> (Var))
+(dm keep> (Lst))
+(dm keep?> (Lst))
+(dm keep!> (Lst))
+(dm set> (Val))
+(dm set!> (Val))
 
 
 # Default syncronization function
