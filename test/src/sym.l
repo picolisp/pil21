@@ -1,4 +1,4 @@
-# 26mar21 Software Lab. Alexander Burger
+# 01apr21 Software Lab. Alexander Burger
 
 ### name ###
 (test "abc" (name 'abc))
@@ -293,15 +293,13 @@
 ### enum ###
 (let E NIL
    (for (I . S) '(a b c d e f g h i j k l m n o)
-      (enum 'E I S) )
+      (set (enum 'E I) S) )
    (test '(a (b (d (h) l) f (j) n) c (e (i) m) g (k) o)
       E )
    (test '(a b c d e f g h i j k l m n o)
-      (make (for I 15 (link (enum 'E I)))) )
+      (make (for I 15 (link (val (enum 'E I))))) )
    (test NIL
       (enum 'E 0) )
-   (test NIL
-      (enum 'E 99) )
    (test '((8 . h) (4 . d) (12 . l) (2 . b) (10 . j) (6 . f) (14 . n) (1 . a) (9 . i) (5 . e) (13 . m) (3 . c) (11 . k) (7 . g) (15 . o))
       (enum 'E) ) )
 

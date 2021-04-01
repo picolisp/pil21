@@ -1,4 +1,9 @@
 01apr21
+   'enum' returns cell instead of value
+      src/sym.l
+      doc/refE.html
+      test/src/sym.l
+      doc/faq.html
    Bug in '*Term' signal handling
       src/main.l
 

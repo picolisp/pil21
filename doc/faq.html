@@ -630,12 +630,11 @@ any type of sequentially arranged data.
 
 <p>We believe that arrays are usually overrated. Textbook wisdom tells that they
 have a constant access time O(1) when the index is known. Many other operations
-like splits or insertions are rather expensive. Access with a known (numeric)
-index is not really typical for Lisp, and even then the advantage of an array is
-significant only if it is relatively long. Holding lots of data in long arrays,
-however, smells quite like a program design error, and we suspect that often
-more structured representations like trees or interconnected objects would be
-better.
+like splits or insertions are expensive. Access with a known (numeric) index is
+not typical for Lisp, and even then the advantage of an array is significant
+only if it is relatively long. Holding lots of data in long arrays, however,
+smells quite like a program design error, and we suspect that often more
+structured representations like trees or interconnected objects would be better.
 
 <p>In practice, most arrays are rather short, or the program can be designed in
 such a way that long arrays (or at least an indexed access) are avoided.
@@ -644,6 +643,11 @@ such a way that long arrays (or at least an indexed access) are avoided.
 functions that uniformly operate on lists. There is no separate data type that
 has to be handled by the interpreter, garbage collector, I/O, database and so
 on. Lists can be made circular. And lists don't cause memory fragmentation.
+
+<p>Still, if there is really a need to access large amounts of data with a
+numeric index, <code><a href="refE.html#enum">enum</a></code> can be used. It
+emulates a multidimensional - possibly sparse - array. It takes roughly 1.5 the
+space a linear list would require, and is very fast.
 
 
 <p><hr>

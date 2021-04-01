@@ -1,4 +1,4 @@
-# 26mar21 Software Lab. Alexander Burger
+# 01apr21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1089,90 +1089,24 @@
                (set 2 V (cdr @))  # Remove
                (car @) ) ) ) ) )  # and return
 
-# (enum 'var 'cnt 'any) -> any
-# (enum 'var 'cnt) -> any
+# (enum 'var 'cnt ['cnt ..]) -> lst
 # (enum 'var) -> lst
 (de _enum (Exe)
    (let
       (X (cdr Exe)
          Var (save (needChkVar Exe (eval (++ X))))
          Cnt T )
-      (cond
-         ((atom X)
-            (setq Cnt 0)
-            (let
-               (Q (link (push NIL NIL))
-                  Tos (link (push -ZERO NIL))
-                  R (link (push $Nil NIL))
-                  P (val Var)
-                  M 1 )
-               (loop
-                  (loop
-                     (let Y (cdr P)  # Get subtrees
-                        (? (atom (cdr Y)))  # Right subtree
-                        (let Z P  # Go right
-                           (setq P @)  # Invert tree
-                           (set 2 Y (val Tos))
-                           (set Tos Z) )
-                        (setq
-                           Cnt (| Cnt M)
-                           M (shl M 1) ) ) )
-                  (set Q P)  # Save tree
-                  (loop
-                     (unless (nil? (car P))
-                        (set R
-                           (cons  # (cnt . any)
-                              (cons (cnt (| Cnt M)) @)
-                              (val R) ) ) )
-                     (let Y (cdr P)
-                        (? (pair (car Y))  # Left subtree
-                           (let Z P  # Go left
-                              (setq P @)  # Invert tree
-                              (set Y (val Tos))
-                              (set Tos (| Z 8))  # First visit
-                              (set Q P) )  # Save tree
-                           (setq M (shl M 1)) ) )
-                     (loop
-                        (let Y (val Tos)
-                           (when (== -ZERO Y)
-                              (ret (val R)) )
-                           (? (=0 (& Y 8))  # Second visit
-                              (setq
-                                 M (shr M 1)
-                                 Cnt (& Cnt (x| M -1)) )
-                              (let Z (cdr Y)  # Nodes
-                                 (set Tos (cdr Z))  # TOS on up link
-                                 (set 2 Z P)
-                                 (setq P Y)
-                                 (set Q P) ) )  # Save tree
-                           (setq
-                              Y (& Y -9)  # Clear visit bit
-                              M (shr M 1)
-                              Cnt (& Cnt (x| M -1)) )
-                           (let Z (cdr Y)  # Nodes
-                              (set Tos (car Z))
-                              (set Z P)
-                              (setq P Y)
-                              (set Q P) ) ) ) ) ) ) )  # Save tree
-         ((le0 (setq Cnt (evCnt Exe X))) $Nil)
-         ((atom (shift X))
+      (if (pair X)
+         (loop
+            (? (le0 (setq Cnt (evCnt Exe X))) $Nil)
             (let P (val Var)
                (loop
                   (let N (shr Cnt 1)
-                     (? (=0 N) (car P))
-                     (setq P
-                        (if (& Cnt 1) (cddr P) (cadr P)) )
-                     (? (atom P) $Nil)
-                     (setq Cnt N) ) ) ) )
-         (T
-            (let (Val (save (eval (car X)))  P (val Var))
-               (loop
-                  (let N (shr Cnt 1)
                      (? (=0 N)
-                        (if (pair P)
-                           (set @ Val)
-                           (set Var (cons Val $Nil))
-                           Val ) )
+                        (setq Var
+                           (if (pair P)
+                              @
+                              (set Var (cons $Nil $Nil)) ) ) )
                      (if (& Cnt 1)
                         (cond
                            ((atom P)
@@ -1195,7 +1129,63 @@
                               (setq Var
                                  (set 2 P (cons (setq P $Nil) $Nil)) ) )
                            (T (setq P (val (setq Var @)))) ) )
-                     (setq Cnt N) ) ) ) ) ) ) )
+                     (setq Cnt N) ) ) )
+            (? (atom (shift X)) Var) )
+         (setq Cnt 0)
+         (let
+            (Q (link (push NIL NIL))
+               Tos (link (push -ZERO NIL))
+               R (link (push $Nil NIL))
+               P (val Var)
+               M 1 )
+            (loop
+               (loop
+                  (let Y (cdr P)  # Get subtrees
+                     (? (atom (cdr Y)))  # Right subtree
+                     (let Z P  # Go right
+                        (setq P @)  # Invert tree
+                        (set 2 Y (val Tos))
+                        (set Tos Z) )
+                     (setq
+                        Cnt (| Cnt M)
+                        M (shl M 1) ) ) )
+               (set Q P)  # Save tree
+               (loop
+                  (unless (nil? (car P))
+                     (set R
+                        (cons  # (cnt . any)
+                           (cons (cnt (| Cnt M)) @)
+                           (val R) ) ) )
+                  (let Y (cdr P)
+                     (? (pair (car Y))  # Left subtree
+                        (let Z P  # Go left
+                           (setq P @)  # Invert tree
+                           (set Y (val Tos))
+                           (set Tos (| Z 8))  # First visit
+                           (set Q P) )  # Save tree
+                        (setq M (shl M 1)) ) )
+                  (loop
+                     (let Y (val Tos)
+                        (when (== -ZERO Y)
+                           (ret (val R)) )
+                        (? (=0 (& Y 8))  # Second visit
+                           (setq
+                              M (shr M 1)
+                              Cnt (& Cnt (x| M -1)) )
+                           (let Z (cdr Y)  # Nodes
+                              (set Tos (cdr Z))  # TOS on up link
+                              (set 2 Z P)
+                              (setq P Y)
+                              (set Q P) ) )  # Save tree
+                        (setq
+                           Y (& Y -9)  # Clear visit bit
+                           M (shr M 1)
+                           Cnt (& Cnt (x| M -1)) )
+                        (let Z (cdr Y)  # Nodes
+                           (set Tos (car Z))
+                           (set Z P)
+                           (setq P Y)
+                           (set Q P) ) ) ) ) ) ) ) ) )  # Save tree
 
 (local) (idxPut idxGet idxDel)
 

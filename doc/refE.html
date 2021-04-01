@@ -144,22 +144,22 @@ successfully completed. See also <code><a href="refF.html#from">from</a></code>.
 : (out "x2.l" (in "x.l" (echo)))  # Copy file "x.l" to "x2.l"
 </code></pre>
 
-<dt><a name="enum"><code>(enum 'var 'cnt 'any) -> any<br>
-(enum 'var 'cnt) -> any</code><br>
-(enum 'var) -> lst</code></a>
-<dd>Enumerates <code>any</code> values by maintaining a binary tree in
-<code>var</code>. Only the values are stored, the keys are implicit from the
-enumerated <code>cnt</code>s. The resulting tree is balanced, independent from
-the insertion order. In the first form <code>any</code> is destructively
-inserted into the tree. In the second form the value for <code>cnt</code> is
-looked up. The third form returns an unsorted association list of all key-value
-pairs in the tree. <code>enum</code> can be used to emulate (possibly sparse)
-arrays. See also <code><a href="refI.html#idx">idx</a></code> and <code><a
+<dt><a name="enum"><code>(enum 'var 'cnt ['cnt ..]) -> lst</code></a>
+<dt><code>(enum 'var) -> lst</code>
+<dd>Enumerates cells by maintaining a binary tree in <code>var</code>. The keys
+are implicit from the enumerated <code>cnt</code>s, and the resulting tree is
+balanced (independent from the insertion order). In the first form, the
+corresponding cell is returned. If it does not exist yet, it is (destructively)
+inserted into the tree. If more than one <code>cnt</code> argument is given, the
+returned cell is subsequently taken as the next tree to be processed. The second
+form returns an unsorted association list of all key-value pairs in the tree.
+<code>enum</code> can be used to emulate (possibly sparse) arrays. See also
+<code><a href="refI.html#idx">idx</a></code> and <code><a
 href="refH.html#hash">hash</a></code>.
 
 <pre><code>
 : (for (I . S) '(a b c d e f g h i j k l m n o)
-   (enum 'E I S) )
+   (set (enum 'E I) S) )
 -> o
 : E
 -> (a (b (d (h) l) f (j) n) c (e (i) m) g (k) o)
@@ -181,15 +181,29 @@ a
          h
 -> NIL
 : (enum 'E 6)
+-> (f (j) n)
+: (val (enum 'E 6))
 -> f
-$: (enum 'E 1)
+$: (val (enum 'E 1))
 -> a
-: (enum 'E 12)
+: (val (enum 'E 12))
 -> l
-: (enum 'E 99)
--> NIL
 : (enum 'E)
 -> ((8 . h) (4 . d) (12 . l) (2 . b) (10 . j) (6 . f) (14 . n) (1 . a) (9 . i) (5 . e) (13 . m) (3 . c) (11 . k) (7 . g) (15 . o))
+
+: (let A NIL  # 2-dimensional array
+   (for I 4
+      (for J 4
+         (set (enum 'A I J) (pack I "-" J)) ) )
+   (for I 4
+      (for J 4
+         (prin " " (val (enum 'A I J))) )
+      (prinl) ) )
+ 1-1 1-2 1-3 1-4
+ 2-1 2-2 2-3 2-4
+ 3-1 3-2 3-3 3-4
+ 4-1 4-2 4-3 4-4
+-> NIL
 </code></pre>
 
 <dt><a name="env"><code>(env ['lst] | ['sym 'val] ..) -> lst</code></a>
