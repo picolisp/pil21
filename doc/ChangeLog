@@ -1,3 +1,7 @@
+01apr21
+   Bug in '*Term' signal handling
+      src/main.l
+
 31mar21
    '+Remote' entity class
       lib/db.l

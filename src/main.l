@@ -1,4 +1,4 @@
-# 25mar21 Software Lab. Alexander Burger
+# 01apr21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -213,9 +213,7 @@
                   (execAt (val $TStp2))  # Run 'TStp2'
                   (rlSigEnd) )
                ((val (setq P (ofs $Signal SIGTERM)))
-                  (set P (dec @))
-                  (set $Signal (dec (val $Signal)))
-                  (when (nil? (run (val $Term)))
+                  (if (nil? (run (val $Term)))
                      (let
                         (Cld (val $Child)  # Iterate children
                            <Cld (ofs Cld (* (val $Children) (child T)))
@@ -231,7 +229,9 @@
                         (? Flg)
                         (set $Signal 0)
                         (rlSigBeg)
-                        (bye 0) ) ) ) )
+                        (bye 0) )
+                     (set P (dec (val P)))
+                     (set $Signal (dec (val $Signal))) ) ) )
             (? (=0 (val $Signal))) ) )
       (set $Protect 0) ) )
 
