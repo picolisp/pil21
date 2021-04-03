@@ -1,3 +1,7 @@
+03apr21
+   Bug in 'stem' (for -O2 or -O3)
+      src/subr.l
+
 01apr21
    'enum' returns cell instead of value
       src/sym.l

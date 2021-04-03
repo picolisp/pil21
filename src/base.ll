@@ -1488,7 +1488,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 66,
-  i64 18
+  i64 50
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -90276,8 +90276,8 @@ $7:
 $8:
   %28 = phi i64 [%7, %$2] ; # X
   %29 = phi i64 [%15, %$2] ; # L
-; # (let (R L N 1 A T) (loop (setq A (link (push (eval (car X))))) (?...
-; # (loop (setq A (link (push (eval (car X))))) (? (atom (shift X))) ...
+; # (let (R L N 1 A T) (loop (setq A (link (push (eval (car X)) NIL))...
+; # (loop (setq A (link (push (eval (car X)) NIL))) (? (atom (shift X...
   br label %$10
 $10:
   %30 = phi i64 [%28, %$8], [%57, %$16] ; # X
@@ -90306,12 +90306,12 @@ $14:
   br label %$11
 $11:
   %43 = phi i64 [%35, %$13], [%41, %$15], [%42, %$14] ; # ->
-; # (push (eval (car X)))
-  %44 = alloca i64, i64 1
+; # (push (eval (car X)) NIL)
+  %44 = alloca i64, i64 2, align 16
   %45 = ptrtoint i64* %44 to i64
   %46 = inttoptr i64 %45 to i64*
   store i64 %43, i64* %46
-; # (link (push (eval (car X))))
+; # (link (push (eval (car X)) NIL))
   %47 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
   %48 = load i64, i64* %47
   %49 = inttoptr i64 %45 to i64*
