@@ -1,4 +1,4 @@
-# 12oct20 Software Lab. Alexander Burger
+# 04apr21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -17,7 +17,7 @@ mkChar evCnt getChar)
 (de T void begString (i64*))
 (de T void tglString (i64*))
 (de T endString ())
-(de T findSym (any any any))
+(de T i1 findSym (any any any))
 (de T void prSym (any))
 (de T mkChar (i32))
 (de T i64 evCnt (any any))

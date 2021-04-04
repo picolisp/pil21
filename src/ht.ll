@@ -256,7 +256,7 @@ declare void @prExt(i64)
 declare void @begString(i64*)
 declare void @tglString(i64*)
 declare i64 @endString()
-declare i64 @findSym(i64, i64, i64)
+declare i1 @findSym(i64, i64, i64)
 declare void @prSym(i64)
 declare i64 @mkChar(i32)
 declare i64 @evCnt(i64, i64)
@@ -756,56 +756,55 @@ $19:
   %53 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 88) to i64) to i64*
   %54 = load i64, i64* %53
 ; # (findSym X Nm (val $Intern))
-  %55 = call i64 @findSym(i64 %49, i64 %47, i64 %54)
-  %56 = icmp ne i64 %55, 0
-  br i1 %56, label %$22, label %$21
+  %55 = call i1 @findSym(i64 %49, i64 %47, i64 %54)
+  br i1 %55, label %$22, label %$21
 $22:
-  %57 = phi i64 [%49, %$19] ; # X
+  %56 = phi i64 [%49, %$19] ; # X
 ; # (call $Put (char "$"))
-  %58 = load void(i8)*, void(i8)** @$Put
-  call void %58(i8 36)
+  %57 = load void(i8)*, void(i8)** @$Put
+  call void %57(i8 36)
 ; # (htEncode B P)
   call void @htEncode(i8 %52, i64* %50)
   br label %$20
 $21:
-  %59 = phi i64 [%49, %$19] ; # X
+  %58 = phi i64 [%49, %$19] ; # X
 ; # (or (== B (char "$")) (== B (char "+")) (== B (char "-")))
 ; # (== B (char "$"))
-  %60 = icmp eq i8 %52, 36
-  br i1 %60, label %$23, label %$24
+  %59 = icmp eq i8 %52, 36
+  br i1 %59, label %$23, label %$24
 $24:
-  %61 = phi i64 [%59, %$21] ; # X
+  %60 = phi i64 [%58, %$21] ; # X
 ; # (== B (char "+"))
-  %62 = icmp eq i8 %52, 43
-  br i1 %62, label %$23, label %$25
+  %61 = icmp eq i8 %52, 43
+  br i1 %61, label %$23, label %$25
 $25:
-  %63 = phi i64 [%61, %$24] ; # X
+  %62 = phi i64 [%60, %$24] ; # X
 ; # (== B (char "-"))
-  %64 = icmp eq i8 %52, 45
+  %63 = icmp eq i8 %52, 45
   br label %$23
 $23:
-  %65 = phi i64 [%59, %$21], [%61, %$24], [%63, %$25] ; # X
-  %66 = phi i1 [1, %$21], [1, %$24], [%64, %$25] ; # ->
-  br i1 %66, label %$27, label %$26
+  %64 = phi i64 [%58, %$21], [%60, %$24], [%62, %$25] ; # X
+  %65 = phi i1 [1, %$21], [1, %$24], [%63, %$25] ; # ->
+  br i1 %65, label %$27, label %$26
 $27:
-  %67 = phi i64 [%65, %$23] ; # X
+  %66 = phi i64 [%64, %$23] ; # X
 ; # (putHex B)
   call void @putHex(i8 %52)
 ; # (symByte P)
-  %68 = call i8 @symByte(i64* %50)
+  %67 = call i8 @symByte(i64* %50)
 ; # (htEncode (symByte P) P)
-  call void @htEncode(i8 %68, i64* %50)
+  call void @htEncode(i8 %67, i64* %50)
   br label %$20
 $26:
-  %69 = phi i64 [%65, %$23] ; # X
+  %68 = phi i64 [%64, %$23] ; # X
 ; # (htEncode B P)
   call void @htEncode(i8 %52, i64* %50)
   br label %$20
 $20:
-  %70 = phi i64 [%57, %$22], [%67, %$27], [%69, %$26] ; # X
+  %69 = phi i64 [%56, %$22], [%66, %$27], [%68, %$26] ; # X
   br label %$2
 $2:
-  %71 = phi i64 [%0, %$1], [%5, %$5], [%20, %$10], [%28, %$15], [%39, %$18], [%70, %$20] ; # X
+  %70 = phi i64 [%0, %$1], [%5, %$5], [%20, %$10], [%28, %$15], [%39, %$18], [%69, %$20] ; # X
   ret void
 }
 

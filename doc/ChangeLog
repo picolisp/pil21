@@ -1,3 +1,7 @@
+04apr21
+   Wrong external declaration
+      src/ht.l
+
 03apr21
    Bug in 'stem' (for -O2 or -O3)
       src/subr.l
