@@ -1187,19 +1187,23 @@
                            (setq P Y)
                            (set Q P) ) ) ) ) ) ) ) ) )  # Save tree
 
-# (enum? 'lst 'cnt ['cnt ..]) -> any
+# (enum? 'lst 'cnt ['cnt ..]) -> lst | NIL
 (de _enumQ (Exe)
-   (let (X (cdr Exe)  P (eval (++ X))  Cnt T)
+   (let
+      (X (cdr Exe)
+         P (save (eval (++ X)))
+         Cnt T )
       (loop
          (? (le0 (setq Cnt (evCnt Exe X))) $Nil)
          (loop
             (let N (shr Cnt 1)
-               (? (=0 N) (setq P (car P)))
+               (? (=0 N))
                (setq P
                   (if (& Cnt 1) (cddr P) (cadr P)) )
                (? (atom P) (ret $Nil))
                (setq Cnt N) ) )
-         (? (atom (shift X)) P) ) ) )
+         (? (atom (shift X)) P)
+         (setq P (car P)) ) ) )
 
 (local) (idxPut idxGet idxDel)
 

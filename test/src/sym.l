@@ -302,16 +302,16 @@
       (enum 'E 0) )
    (test '((8 . h) (4 . d) (12 . l) (2 . b) (10 . j) (6 . f) (14 . n) (1 . a) (9 . i) (5 . e) (13 . m) (3 . c) (11 . k) (7 . g) (15 . o))
       (enum 'E) )
-   (test 'g (enum? E 7))
+   (test '(g . @) (enum? E 7))
    (test NIL (enum? E 16)) )
 
 (let G NIL
    (for I 4
       (for J 4
          (set (enum 'G I J) (* I J)) ) )
-   (test 1 (enum? G 1 1))
-   (test 6 (enum? G 2 3))
-   (test 12 (enum? G 3 4))
+   (test (1 . @) (enum? G 1 1))
+   (test (6 . @) (enum? G 2 3))
+   (test (12 . @) (enum? G 3 4))
    (test NIL (enum? G 5))
    (test NIL (enum? G 1 5)) )
 
