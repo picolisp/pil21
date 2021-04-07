@@ -1,4 +1,4 @@
-# 01apr21 Software Lab. Alexander Burger
+# 07apr21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1186,6 +1186,20 @@
                            (set Z P)
                            (setq P Y)
                            (set Q P) ) ) ) ) ) ) ) ) )  # Save tree
+
+# (enum? 'lst 'cnt ['cnt ..]) -> any
+(de _enumQ (Exe)
+   (let (X (cdr Exe)  P (eval (++ X))  Cnt T)
+      (loop
+         (? (le0 (setq Cnt (evCnt Exe X))) $Nil)
+         (loop
+            (let N (shr Cnt 1)
+               (? (=0 N) (setq P (car P)))
+               (setq P
+                  (if (& Cnt 1) (cddr P) (cadr P)) )
+               (? (atom P) (ret $Nil))
+               (setq Cnt N) ) )
+         (? (atom (shift X)) P) ) ) )
 
 (local) (idxPut idxGet idxDel)
 

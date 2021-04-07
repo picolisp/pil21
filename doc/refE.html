@@ -154,7 +154,8 @@ inserted into the tree. If more than one <code>cnt</code> argument is given, the
 returned cell is subsequently taken as the next tree to be processed. The second
 form returns an unsorted association list of all key-value pairs in the tree.
 <code>enum</code> can be used to emulate (possibly sparse) arrays. See also
-<code><a href="refI.html#idx">idx</a></code> and <code><a
+<code><a href="refE.html#enum?">enum?</a></code>, <code><a
+href="refI.html#idx">idx</a></code> and <code><a
 href="refH.html#hash">hash</a></code>.
 
 <pre><code>
@@ -205,6 +206,19 @@ a
  4-1 4-2 4-3 4-4
 -> NIL
 </code></pre>
+
+<dt><a name="enum?"><code>(enum? 'lst 'cnt ['cnt ..]) -> any</code></a>
+<dd>Tests a binary <code><a href="refE.html#enum">enum</a></code> tree for the
+keys in the <code>cnt</code> arguments. Returns the corresponding value, or
+<code>NIL</code> if not found. The tree is not modified.
+
+<pre><code>
+: (enum? E 7)
+-> g
+: (enum? E 16)
+-> NIL
+</code></pre>
+
 
 <dt><a name="env"><code>(env ['lst] | ['sym 'val] ..) -> lst</code></a>
 <dd>Return a list of symbol-value pairs of all dynamically bound symbols if

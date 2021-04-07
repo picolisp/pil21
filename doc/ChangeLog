@@ -1,3 +1,11 @@
+07apr21
+   'enum?' function
+      src/sym.l
+      src/glob.l
+      doc/ref.html
+      doc/refE.html
+      test/src/sym.l
+
 04apr21
    Wrong external declaration
       src/ht.l
