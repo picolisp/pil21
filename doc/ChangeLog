@@ -4,6 +4,7 @@
       src/glob.l
       doc/ref.html
       doc/refE.html
+      doc/refL.html
       test/src/sym.l
 
 04apr21
