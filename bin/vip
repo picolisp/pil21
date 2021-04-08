@@ -1,5 +1,5 @@
 #!/usr/bin/picolisp /usr/lib/picolisp/lib.l
-# 30sep20abu
+# 08apr21abu
 
 (unless *Dbg
    (load "@lib/vip.l") )
@@ -8,16 +8,18 @@
    (if
       (vip~vi  ## [+<pat> | +[<num>]] <file1>  [+[<num>]] <file2> ..
          (make
-            (for (L (argv)  L)
-               (let S (++ L)
-                  (link
-                     (if (pre? "+" S)
-                        (cons
-                           (cond
-                              ((= "+" S) T)
-                              ((format S) @)
-                              (T (cdr (chop S))) )
-                           (++ L) )
-                        S ) ) ) ) ) )
+            (while (opt)
+               (let S @
+                  (cond
+                     ((pre? "+" S)
+                        (link
+                           (cons
+                              (cond
+                                 ((= "+" S) T)
+                                 ((format S) @)
+                                 (T (cdr (chop S))) )
+                              (opt) ) ) )
+                     ((pre? "-" S) (load S))
+                     (T (link S)) ) ) ) ) )
       0
       1 ) )
