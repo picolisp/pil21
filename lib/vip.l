@@ -1,4 +1,4 @@
-# 05mar21 Software Lab. Alexander Burger
+# 10apr21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -212,20 +212,20 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
                                        (chop ")") ) ) ) ) ) )
                      (sort
                         (make
-   (unless (= "/" (last (setq File (chop File))))
-      (conc File (list (name "/"))) )
-   (recur (File)
-      (for F (dir File T)
-         (unless (member F '("." ".."))
-            (let? I (info (setq F (append File (chop F))) T)
-               (if (and (=T (car I)) (: subd))
-                  (recurse (conc F (list (name "/"))))
-                  (link
-                     (cons
-                        (- (cadr I))
-                        (- (cddr I))
-                        F
-                        (car I) ) ) ) ) ) ) ) ) ) )
+                           (unless (= "/" (last (setq File (chop File))))
+                              (conc File (list (name "/"))) )
+                           (recur (File)
+                              (for F (dir File T)
+                                 (unless (member F '("." ".."))
+                                    (let? I (info (setq F (append File (chop F))) T)
+                                       (if (and (=T (car I)) (: subd))
+                                          (recurse (conc F (list (name "/"))))
+                                          (link
+                                             (cons
+                                                (- (cadr I))
+                                                (- (cddr I))
+                                                F
+                                                (car I) ) ) ) ) ) ) ) ) ) )
                   (gc (+ 4 (*/ (car I) 32768)))  # 2 cells / char
                   (if (sys "CCRYPT" (: key))
                      (pipe
