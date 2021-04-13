@@ -1,4 +1,4 @@
-# 23dec20 Software Lab. Alexander Burger
+# 13apr21 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *Evt *Lock *Spans
 
@@ -335,6 +335,8 @@
    (pass get *Chart) )
 
 # REPL form
+(private) Str
+
 (de repl (Attr DX DY)
    (default DX 80  DY 25)
    (form Attr

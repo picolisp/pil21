@@ -1,4 +1,4 @@
-# 09oct20 Software Lab. Alexander Burger
+# 13apr21 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -104,6 +104,22 @@
 (de clearCache ()
    (java (; CONTEXT GUI) 'runOnUiThread
       (java (; CONTEXT GUI PilView) 0 'clearCache T) ) )
+
+# Get permissions
+(local) permit
+
+(de permit (Str)
+   (or
+      (=0
+         (java  "android.support.v4.content.ContextCompat"
+            'checkSelfPermission
+            (; CONTEXT GUI)
+            Str ) )
+      (java  "android.support.v4.app.ActivityCompat"
+         'requestPermissions
+         (; CONTEXT GUI)
+         (list Str)
+         0 ) ) )
 
 # Wake lock
 (local) (*Wake wake)
@@ -232,7 +248,7 @@
 (local) (*LocMan *LocLsn location? gps)
 
 (de location? ()
-   (java (; CONTEXT GUI) 'permit "android.permission.ACCESS_FINE_LOCATION") )
+   (permit "android.permission.ACCESS_FINE_LOCATION") )
 
 (de gps ()
    (unless *LocMan
@@ -267,7 +283,7 @@
 (de camera? ()
    (and
       (java (java CONTEXT 'getPackageManager) 'hasSystemFeature "android.hardware.camera")
-      (java (; CONTEXT GUI) 'permit "android.permission.CAMERA") ) )
+      (permit "android.permission.CAMERA") ) )
 
 ## '((Intent)
 ##    (setq *Picture (tmp "img"))

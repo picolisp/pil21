@@ -1,3 +1,9 @@
+13apr21
+   ContextCompat 'permit' function
+      lib/android.l
+   'Str' in 'repl' private
+      lib/form.l
+
 10apr21
    Indentation
       lib/vip.l
