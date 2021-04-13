@@ -1,4 +1,4 @@
-# 12feb21 Software Lab. Alexander Burger
+# 13apr21 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -370,7 +370,7 @@
       (when (find cdr Head)
          (<tr> NIL
             (for H Head
-               (<th> (car H) (ht:Prin (cdr H))) ) ) )
+               (<th> (car H) (htPrin (cdr H) 5)) ) ) )
       (htPrin Prg 3) ) )
 
 (de alternating ()

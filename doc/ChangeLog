@@ -1,4 +1,6 @@
 13apr21
+   Bug in '<table>': Header text not evaluated
+      lib/xhtml.l
    ContextCompat 'permit' function
       lib/android.l
    'Str' in 'repl' private
