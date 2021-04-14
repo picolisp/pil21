@@ -277,41 +277,43 @@ int main(int ac, char *av[]) {
                   closedir(dp);
                }
             }
-            if (*av[4])
-               for (;;) {
-                  if ((sd = sslConnect(ssl, av[1], av[2])) >= 0) {
-                     if (SSL_write(ssl, get, getLen) == getLen  &&
-                           sslFile(ssl,av[4])  &&                    // key
-                           SSL_write(ssl, len, lenLen) == lenLen  && // length
-                           SSL_write(ssl, data, size) == size  &&    // data
-                           SSL_write(ssl, "T", 1) == 1  &&           // ack
-                           SSL_read(ssl, buf, 1) == 1  &&  buf[0] == 'T' ) {
-                        sslClose(ssl,sd);
-                        if ((fd = open(file, O_RDWR)) < 0)
-                           giveup("Can't re-open");
-                        if (size2 = lockFile(fd) - size) {
-                           if ((data = realloc(data, size2)) == NULL)
-                              giveup("Can't re-alloc");
-                           if (pread(fd, data, size2, size) != size2)
-                              giveup("Can't re-read");
-                           Hold = YES;
-                           if (pwrite(fd, data, size2, 0) != size2)
-                              giveup("Can't re-write");
-                        }
-                        if (ftruncate(fd, size2) < 0)
-                           giveup("Can't truncate");
-                        close(fd);
-                        Hold = NO;
-                        if (Done)
-                           exit(0);
-                        break;
-                     }
+            if (!*av[4])
+               goto truncate;
+            for (;;) {
+               if ((sd = sslConnect(ssl, av[1], av[2])) >= 0) {
+                  if (SSL_write(ssl, get, getLen) == getLen  &&
+                        sslFile(ssl,av[4])  &&                    // key
+                        SSL_write(ssl, len, lenLen) == lenLen  && // length
+                        SSL_write(ssl, data, size) == size  &&    // data
+                        SSL_write(ssl, "T", 1) == 1  &&           // ack
+                        SSL_read(ssl, buf, 1) == 1  &&  buf[0] == 'T' ) {
                      sslClose(ssl,sd);
+                  truncate:
+                     if ((fd = open(file, O_RDWR)) < 0)
+                        giveup("Can't re-open");
+                     if (size2 = lockFile(fd) - size) {
+                        if ((data = realloc(data, size2)) == NULL)
+                           giveup("Can't re-alloc");
+                        if (pread(fd, data, size2, size) != size2)
+                           giveup("Can't re-read");
+                        Hold = YES;
+                        if (pwrite(fd, data, size2, 0) != size2)
+                           giveup("Can't re-write");
+                     }
+                     if (ftruncate(fd, size2) < 0)
+                        giveup("Can't truncate");
+                     close(fd);
+                     Hold = NO;
+                     if (Done)
+                        exit(0);
+                     break;
                   }
-                  if (dbg)
-                     ERR_print_errors_fp(stderr);
-                  sleep(sec);
+                  sslClose(ssl,sd);
                }
+               if (dbg)
+                  ERR_print_errors_fp(stderr);
+               sleep(sec);
+            }
             alarm(lim);
             free(data);
          }
