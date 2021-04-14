@@ -1,3 +1,7 @@
+14apr21
+   Skip remote replication if 'key' is empty
+      src/ssl.c
+
 13apr21
    Bug in '<table>': Header text not evaluated
       lib/xhtml.l

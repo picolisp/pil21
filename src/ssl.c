@@ -1,4 +1,4 @@
-// 31oct20 Software Lab. Alexander Burger
+// 14apr21 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -277,45 +277,46 @@ int main(int ac, char *av[]) {
                   closedir(dp);
                }
             }
-            for (;;) {
-               if ((sd = sslConnect(ssl, av[1], av[2])) >= 0) {
-                  if (SSL_write(ssl, get, getLen) == getLen  &&
-                        (!*av[4] || sslFile(ssl,av[4]))  &&       // key
-                        SSL_write(ssl, len, lenLen) == lenLen  && // length
-                        SSL_write(ssl, data, size) == size  &&    // data
-                        SSL_write(ssl, "T", 1) == 1  &&           // ack
-                        SSL_read(ssl, buf, 1) == 1  &&  buf[0] == 'T' ) {
-                     sslClose(ssl,sd);
-                     if ((fd = open(file, O_RDWR)) < 0)
-                        giveup("Can't re-open");
-                     if (size2 = lockFile(fd) - size) {
-                        if ((data = realloc(data, size2)) == NULL)
-                           giveup("Can't re-alloc");
-                        if (pread(fd, data, size2, size) != size2)
-                           giveup("Can't re-read");
-                        Hold = YES;
-                        if (pwrite(fd, data, size2, 0) != size2)
-                           giveup("Can't re-write");
+            if (*av[4])
+               for (;;) {
+                  if ((sd = sslConnect(ssl, av[1], av[2])) >= 0) {
+                     if (SSL_write(ssl, get, getLen) == getLen  &&
+                           sslFile(ssl,av[4])  &&                    // key
+                           SSL_write(ssl, len, lenLen) == lenLen  && // length
+                           SSL_write(ssl, data, size) == size  &&    // data
+                           SSL_write(ssl, "T", 1) == 1  &&           // ack
+                           SSL_read(ssl, buf, 1) == 1  &&  buf[0] == 'T' ) {
+                        sslClose(ssl,sd);
+                        if ((fd = open(file, O_RDWR)) < 0)
+                           giveup("Can't re-open");
+                        if (size2 = lockFile(fd) - size) {
+                           if ((data = realloc(data, size2)) == NULL)
+                              giveup("Can't re-alloc");
+                           if (pread(fd, data, size2, size) != size2)
+                              giveup("Can't re-read");
+                           Hold = YES;
+                           if (pwrite(fd, data, size2, 0) != size2)
+                              giveup("Can't re-write");
+                        }
+                        if (ftruncate(fd, size2) < 0)
+                           giveup("Can't truncate");
+                        close(fd);
+                        Hold = NO;
+                        if (Done)
+                           exit(0);
+                        break;
                      }
-                     if (ftruncate(fd, size2) < 0)
-                        giveup("Can't truncate");
-                     close(fd);
-                     Hold = NO;
-                     if (Done)
-                        exit(0);
-                     break;
+                     sslClose(ssl,sd);
                   }
-                  sslClose(ssl,sd);
+                  if (dbg)
+                     ERR_print_errors_fp(stderr);
+                  sleep(sec);
                }
-               if (dbg)
-                  ERR_print_errors_fp(stderr);
-               sleep(sec);
-            }
             alarm(lim);
             free(data);
          }
       }
-      if (*dir && (dp = opendir(dir))) {
+      if (*av[4] && *dir && (dp = opendir(dir))) {
          while (p = readdir(dp)) {
             if (p->d_name[0] == '=') {
                snprintf(nm, sizeof(nm), "%s%s", dir, p->d_name);
@@ -325,7 +326,7 @@ int main(int ac, char *av[]) {
                   alarm(lim);
                   if ((sd = sslConnect(ssl, av[1], av[2])) >= 0) {
                      if (SSL_write(ssl, get, getLen) == getLen  &&
-                           (!*av[4] || sslFile(ssl,av[4]))  &&       // key
+                           sslFile(ssl,av[4])  &&                    // key
                            SSL_write(ssl, buf, n) == n  &&           // path
                            SSL_write(ssl, len, lenLen) == lenLen  && // length
                            sslFile(ssl, nm)  &&                      // file
