@@ -377,6 +377,7 @@ int32_t gPoll(struct pollfd *fds, int32_t nfds, int64_t timeout) {
          if (--i < 0)
             return 0;
       while (fds[i].fd < 0);
+      timeout = -1;
    }
 #if (int)-1 == 0xFFFFFFFF
    if (timeout > 2147483647)  // Fit into 32 bits (max 24 days)
