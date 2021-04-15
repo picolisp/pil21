@@ -1,3 +1,8 @@
+15apr21
+   Infinite timeout for values greater than 24 days in '*Run', 'wait' and 'key'
+   (only on systems with sizeof(int) == 4)
+      src/lib.c
+
 14apr21
    Skip remote replication if 'key' is empty
       src/ssl.c
