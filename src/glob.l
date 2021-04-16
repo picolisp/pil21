@@ -1,4 +1,4 @@
-# 07apr21 Software Lab. Alexander Burger
+# 16apr21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -13,6 +13,7 @@
 (var $Extern 0)                        # External symbol tree
 (var $ExtCnt i64 1)                    # External symbol count
 (var $ExtSkip i64 0)                   # External tree skip
+(var $StkSizeT i64 (* 4 STACK))        # Coroutine main stack segment size
 (var $StkSize i64 STACK)               # Coroutine stack segment size
 (var $StkLimit i8* null)               # Stack limit: StackN-Size+4096
 (var $Stdin i8* null)                  # Stdin frame

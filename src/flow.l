@@ -1118,7 +1118,7 @@
                   (Main: nxt null)
                   (Main: org null)
                   (Main: prg $Nil)
-                  (let Siz (* 4 (val $StkSize))
+                  (let Siz (val $StkSizeT)
                      (memset
                         (Main: lim (ofs (stack) (- Siz)))
                         7 (- Siz 256) T ) )

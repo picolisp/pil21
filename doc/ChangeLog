@@ -1,4 +1,9 @@
 16apr21
+   Independent size of main stack segment
+      src/main.l
+      src/glob.l
+      src/flow.l
+      doc/refS.html
    'stack' returns unused spaces
       src/main.l
       doc/refS.html

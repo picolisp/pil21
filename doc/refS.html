@@ -650,22 +650,24 @@ from <code>host</code>.
 -> "&lt;!DOCTYPE html&gt;"
 </code></pre>
 
-<dt><a name="stack"><code>(stack ['cnt]) -> cnt | (.. sym . cnt)</code></a>
-<dd>Maintains the stack segment size for <a
-href="ref.html#coroutines">coroutines</a> (the main stack segment is limited -
-while at least one coroutine is running - to four times that size). If called
-without a <code>cnt</code> argument, or if already one or more coroutines are
+<dt><a name="stack"><code>(stack ['cnt ['cnt]]) -> cnt | (.. sym . cnt)</code></a>
+<dd>Maintains the stack segment sizes for <a
+href="ref.html#coroutines">coroutines</a>. By default, the main stack segment
+size is 255 kB and coroutine sizes are 64 kB each. These sizes can only be
+changed when no coroutine is running (before starting any or after stopping all
+coroutines). If called without arguments, or if at least one coroutine is
 running, the current size in kilobytes is returned. Otherwise, the stack segment
-size is set to the new value (default 64 kB). If there are running coroutines,
-pairs of their tags and unused stack spaces will be <code><a
+size is set to the first <code>cnt</code> argument, and optionally the main
+segment size is set to the second <code>cnt</code> argument. If there are
+running coroutines, pairs of their tags and unused stack spaces will be <code><a
 href="refC.html#cons">cons</a></code>ed in front of the size. See also <code><a
 href="refH.html#heap">heap</a></code>.
 
 <pre><code>
 $ ulimit -s unlimited  &&  pil +  # Guarantee stack space
-: (stack)      # Current size
--> 64          # 64 kB
-: (stack 20)   # Reduce to 20 kB
+: (stack)        # Current size
+-> 64            # 64 kB
+: (stack 20 80)  # Reduce to 20 kB
 -> 20
 : (co 'inc (let N 0 (loop (yield (inc 'N)))))  # Create two coroutines
 -> 1
