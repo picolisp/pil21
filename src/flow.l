@@ -1118,10 +1118,11 @@
                   (Main: nxt null)
                   (Main: org null)
                   (Main: prg $Nil)
-                  (let Siz (val $StkSizeT)
+                  (let (Siz (val $StkSizeT)  Stk (stack))
                      (memset
-                        (Main: lim (ofs (stack) (- Siz)))
-                        7 (- Siz 256) T ) )
+                        (Main: lim (stack (ofs Stk (- Siz))))
+                        7 (- Siz 256) T )
+                     (stack Stk) )
                   (Main: at 0)
                   (set $Coroutines (set $Current (Main:))) ) )
             (let
@@ -1157,10 +1158,11 @@
                   (Dst: tag Tag)
                   (Dst: org (val $Current))
                   (Dst: prg X)
-                  (let Siz (val $StkSize)
+                  (let (Siz (val $StkSize)  Stk (stack))
                      (memset
-                        (Dst: lim (ofs P (- Siz)))
-                        7 (- Siz 256) T ) )
+                        (Dst: lim (stack (ofs P (- Siz))))
+                        7 (- Siz 256) T )
+                     (stack Stk) )
                   (Dst: at 0)
                   (Dst: lnk (val $Link))
                   (Dst: bnd

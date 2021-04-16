@@ -1152,7 +1152,9 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
 (asm ()
    ((P)
       (if P
-         (link (pack "call void @llvm.stackrestore(i8* " P ")"))
+         (prog
+            (link (pack "call void @llvm.stackrestore(i8* " P ")"))
+            P )
          (ssa (inc '*Ssa) "call i8* @llvm.stacksave()")
          (def (pack "%" *Ssa) 'i8*) ) )
    (llvm~stack) )
