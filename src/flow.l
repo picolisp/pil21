@@ -1,4 +1,4 @@
-# 23dec20 Software Lab. Alexander Burger
+# 16apr21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1043,7 +1043,7 @@
       (Ca: link (val $Catch))
       (set $Catch (Ca:))
       (Ca: fin ZERO)
-      (memcpy (Ca: (env)) (env) (env T))
+      (memcpy (Ca: (env)) (env) (env T) T)
       (prog1
          (if (setjmp (Ca: (rst)))
             (val $Ret)
@@ -1075,7 +1075,7 @@
       (Ca: link (val $Catch))
       (set $Catch (Ca:))
       (Ca: fin (++ X))
-      (memcpy (Ca: (env)) (env) (env T))
+      (memcpy (Ca: (env)) (env) (env T) T)
       (prog1
          (save (run X))
          (eval (Ca: fin))
@@ -1094,12 +1094,12 @@
       (let Io: (ioFrame (val $InFrames))
          (Io: fun (val (i8** $Get)))
          ((inFile (Io: file)) chr (val $Chr)) )
-      (memcpy (Crt: (env)) (env) (env T)) ) )
+      (memcpy (Crt: (env)) (env) (env T) T) ) )
 
 (de loadCoEnv ((i8* . Crt))
    (let Crt: (coroutine (set $Current Crt))
       (set $StkLimit (+ (Crt: lim) 4096))
-      (memcpy (env) (Crt: (env)) (env T))
+      (memcpy (env) (Crt: (env)) (env T) T)
       (tosInFile)
       (tosOutFile)
       (set $At (Crt: at))
@@ -1164,7 +1164,7 @@
                   (Dst: out (val $OutFrames))
                   (Dst: err (val $ErrFrames))
                   (Dst: ctl (val $CtlFrames))
-                  (memcpy (Dst: (env)) (env) (env T))
+                  (memcpy (Dst: (env)) (env) (env T) T)
                   (set  # Init local env
                      $Next $Nil
                      $Make 0

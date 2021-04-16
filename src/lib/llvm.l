@@ -1,4 +1,4 @@
-# 21oct20 Software Lab. Alexander Burger
+# 16apr21 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -1104,16 +1104,17 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
          (def (pack "%" (- *Ssa 2)) 'any) ) )
    (llvm~xchg) )
 
-(asm (@Op @Typ)
-   ((X Y Z)
+(asm (@Op @Ptr)
+   ((X Y Z Flg)
       (link
          (pack
-            "call void @llvm." @Op ".p0i8.p0i8.i64(i8* " X
-            ", " @Typ " " Y
+            "call void @llvm." @Op ".p0i8.p0i8.i64(i8* "
+            (and Flg "align 8 ") X
+            ", " 'i8 @Ptr " " Y
             ", i64 " Z
             ", i1 0)" ) ) )
-   (llvm~memcpy "memcpy" 'i8*)
-   (llvm~memset "memset" 'i8) )
+   (llvm~memcpy "memcpy" "*")
+   (llvm~memset "memset") )
 
 (asm ()
    (Lst

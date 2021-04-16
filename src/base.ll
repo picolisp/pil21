@@ -1491,7 +1491,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 66,
-  i64 242
+  i64 258
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -2114,8 +2114,8 @@ $26:
   %111 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i8*
 ; # (Ca: (env))
   %112 = getelementptr i8, i8* %12, i32 24
-; # (memcpy (env) (Ca: (env)) (env T))
-  call void @llvm.memcpy.p0i8.p0i8.i64(i8* %111, i8* %112, i64 152, i1 0)
+; # (memcpy (env) (Ca: (env)) (env T) T)
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 8 %111, i8* %112, i64 152, i1 0)
 ; # (Ca: fin)
   %113 = getelementptr i8, i8* %12, i32 16
   %114 = ptrtoint i8* %113 to i64
@@ -54757,8 +54757,8 @@ $2:
   call void @blkPoke(i64 0, i8* %4, i32 12)
 ; # (i64 Siz)
   %35 = sext i32 %3 to i64
-; # (memset P 0 (i64 Siz))
-  call void @llvm.memset.p0i8.p0i8.i64(i8* %4, i8 0, i64 %35, i1 0)
+; # (memset P 0 (i64 Siz) T)
+  call void @llvm.memset.p0i8.p0i8.i64(i8* align 8 %4, i8 0, i64 %35, i1 0)
 ; # (Db: sh)
   %36 = getelementptr i8, i8* %0, i32 8
   %37 = bitcast i8* %36 to i32*
@@ -56466,8 +56466,8 @@ $28:
   %203 = alloca i8, i32 %199
 ; # (i64 N)
   %204 = sext i32 %199 to i64
-; # (memset Blk 0 (i64 N))
-  call void @llvm.memset.p0i8.p0i8.i64(i8* %203, i8 0, i64 %204, i1 0)
+; # (memset Blk 0 (i64 N) T)
+  call void @llvm.memset.p0i8.p0i8.i64(i8* align 8 %203, i8 0, i64 %204, i1 0)
 ; # (if (== (Db:) (val $DbFiles)) (* 2 BLKSIZE) BLKSIZE)
 ; # (Db:)
 ; # (val $DbFiles)
@@ -56514,7 +56514,7 @@ $31:
   store i8 %227, i8* %228
 ; # (blkPoke 0 Blk N)
   call void @blkPoke(i64 0, i8* %203, i32 %199)
-; # (when (== (Db:) (val $DbFiles)) (memset Blk 0 16) (setAdr 1 Blk) ...
+; # (when (== (Db:) (val $DbFiles)) (memset Blk 0 16 T) (setAdr 1 Blk...
 ; # (Db:)
 ; # (val $DbFiles)
   %229 = load i8*, i8** @$DbFiles
@@ -56527,8 +56527,8 @@ $32:
   %233 = phi i8* [%219, %$31] ; # Db
   %234 = phi i32 [%220, %$31] ; # Fnr
   %235 = phi i32 [%221, %$31] ; # Max
-; # (memset Blk 0 16)
-  call void @llvm.memset.p0i8.p0i8.i64(i8* %203, i8 0, i64 16, i1 0)
+; # (memset Blk 0 16 T)
+  call void @llvm.memset.p0i8.p0i8.i64(i8* align 8 %203, i8 0, i64 16, i1 0)
 ; # (setAdr 1 Blk)
   call void @setAdr(i64 1, i8* %203)
 ; # (Db: siz)
@@ -60951,8 +60951,8 @@ $28:
   %120 = phi i64 [%112, %$25] ; # P
 ; # (inc 'Cnt BLKSIZE)
   %121 = add i64 %117, 64
-; # (memcpy Blk Buf BLK)
-  call void @llvm.memcpy.p0i8.p0i8.i64(i8* %113, i8* %15, i64 6, i1 0)
+; # (memcpy Blk Buf BLK T)
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 8 %113, i8* %15, i64 6, i1 0)
 ; # (wrBlock)
   call void @wrBlock()
 ; # (setAdr P Buf)
@@ -79029,8 +79029,8 @@ $2:
   %27 = getelementptr i8, i8* %6, i32 24
 ; # (i8* $Link)
   %28 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i8*
-; # (memcpy (Ca: (env)) (env) (env T))
-  call void @llvm.memcpy.p0i8.p0i8.i64(i8* %27, i8* %28, i64 152, i1 0)
+; # (memcpy (Ca: (env)) (env) (env T) T)
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 8 %27, i8* %28, i64 152, i1 0)
 ; # (prog1 (if (setjmp (Ca: (rst))) (val $Ret) (run X)) (set $Catch (...
 ; # (if (setjmp (Ca: (rst))) (val $Ret) (run X))
 ; # (Ca: (rst))
@@ -79282,8 +79282,8 @@ $1:
   %19 = getelementptr i8, i8* %6, i32 24
 ; # (i8* $Link)
   %20 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i8*
-; # (memcpy (Ca: (env)) (env) (env T))
-  call void @llvm.memcpy.p0i8.p0i8.i64(i8* %19, i8* %20, i64 152, i1 0)
+; # (memcpy (Ca: (env)) (env) (env T) T)
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 8 %19, i8* %20, i64 152, i1 0)
 ; # (prog1 (save (run X)) (eval (Ca: fin)) (set $Catch (Ca: link)))
 ; # (run X)
   br label %$2
@@ -79431,8 +79431,8 @@ $1:
   %22 = getelementptr i8, i8* %0, i32 112
 ; # (i8* $Link)
   %23 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i8*
-; # (memcpy (Crt: (env)) (env) (env T))
-  call void @llvm.memcpy.p0i8.p0i8.i64(i8* %22, i8* %23, i64 152, i1 0)
+; # (memcpy (Crt: (env)) (env) (env T) T)
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 8 %22, i8* %23, i64 152, i1 0)
   ret void
 }
 
@@ -79453,8 +79453,8 @@ $1:
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i8*
 ; # (Crt: (env))
   %6 = getelementptr i8, i8* %0, i32 112
-; # (memcpy (env) (Crt: (env)) (env T))
-  call void @llvm.memcpy.p0i8.p0i8.i64(i8* %5, i8* %6, i64 152, i1 0)
+; # (memcpy (env) (Crt: (env)) (env T) T)
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 8 %5, i8* %6, i64 152, i1 0)
 ; # (tosInFile)
   call void @tosInFile()
 ; # (tosOutFile)
@@ -79820,8 +79820,8 @@ $28:
   %174 = getelementptr i8, i8* %122, i32 112
 ; # (i8* $Link)
   %175 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i8*
-; # (memcpy (Dst: (env)) (env) (env T))
-  call void @llvm.memcpy.p0i8.p0i8.i64(i8* %174, i8* %175, i64 152, i1 0)
+; # (memcpy (Dst: (env)) (env) (env T) T)
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 8 %174, i8* %175, i64 152, i1 0)
 ; # (set $Next $Nil $Make 0 $Yoke 0 $Current (Dst:) $StkLimit (+ (Dst...
   %176 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 96) to i64) to i64*
   store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([860 x i64]* @SymTab to i8*), i32 8) to i64), i64* %176

@@ -1,4 +1,4 @@
-# 23oct20 Software Lab. Alexander Burger
+# 16apr21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -191,7 +191,7 @@
                (err 0 0 ($ "DB Oversize") null) )
             (T (setAdr (+ N BLKSIZE) (ofs P BLK))) )  # Increment next
          (blkPoke 0 P (* 2 BLK))  # Write back
-         (memset P 0 (i64 Siz))  # Init new block
+         (memset P 0 (i64 Siz) T)  # Init new block
          (blkPoke (shl N (i64 (Db: sh))) P Siz)
          N ) ) )
 
@@ -513,7 +513,7 @@
                               (N (shl (i32 BLKSIZE) (Db: sh))
                                  Stk (stack)
                                  Blk (b8 (Db: siz N)) )
-                              (memset Blk 0 (i64 N))  # 'free' is null
+                              (memset Blk 0 (i64 N) T)  # 'free' is null
                               (setAdr
                                  (if (== (Db:) (val $DbFiles))  # First file
                                     (* 2 BLKSIZE)  # Block zero plus DB root
@@ -524,7 +524,7 @@
                                  (i8 (Db: sh)) )
                               (blkPoke 0 Blk N)  # Write DB block zero
                               (when (== (Db:) (val $DbFiles))  # First file
-                                 (memset Blk 0 16)  # Clear 'next' link in buffer
+                                 (memset Blk 0 16 T)  # Clear 'next' link in buffer
                                  (setAdr 1 Blk)  # First block for DB root into link field
                                  (blkPoke (i64 (Db: siz)) Blk N) )  # has block size position
                               (stack Stk) ) )
@@ -1233,7 +1233,7 @@
                   (case (& (val Blk) BLKTAG)
                      (0  # Free block
                         (inc 'Cnt BLKSIZE)
-                        (memcpy Blk Buf BLK)
+                        (memcpy Blk Buf BLK T)
                         (wrBlock)
                         (setAdr P Buf)
                         (blkPoke 0 Buf BLK) )

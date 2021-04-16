@@ -1,3 +1,10 @@
+16apr21
+   Optional alignment for 'memcpy' and 'memset'
+      src/lib/llvm.l
+      src/main.l
+      src/db.l
+      src/flow.l
+
 15apr21
    Infinite timeout for values greater than 24 days in '*Run', 'wait' and 'key'
    (only on systems with sizeof(int) == 4)

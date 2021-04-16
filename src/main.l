@@ -1,4 +1,4 @@
-# 01apr21 Software Lab. Alexander Burger
+# 16apr21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -81,7 +81,7 @@
                   (popInFiles)
                   (? (== (val $InFrames) (Ca: (env $InFrames i8*)))) )
                (tosInFile) )
-            (memcpy (env) (Ca: (env)) (env T))
+            (memcpy (env) (Ca: (env)) (env T) T)
             (eval (Ca: fin))  # Evaluate 'finally' expression
             (set $Catch (Ca: link))
             (when (== Ca Catch)
