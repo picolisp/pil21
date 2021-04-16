@@ -1,4 +1,4 @@
-# 24oct20 Software Lab. Alexander Burger
+# 16apr21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -269,7 +269,7 @@
       Y ) )
 
 # Cell allocation (consing)
-(local) (cons cons3 consSym consStr consExt boxNum consNum box)
+(local) (cons cons2 cons3 consSym consStr consExt boxNum consNum box)
 
 (de cons (Car Cdr)
    (let P (val $Avail)
@@ -281,6 +281,28 @@
       (set P Car)
       (set 2 P Cdr)
       P ) )
+
+(de cons2 (Car1 Cdr1 Cdr2)
+   (let P (val $Avail)
+      (when P
+         (let Q (val P)
+            (when Q
+               (set $Avail (car Q))
+               (set P Car1)
+               (set 2 P Cdr1)
+               (set Q P)
+               (set 2 Q Cdr2)
+               (ret Q) ) ) ) )
+   (save2 Car1 Cdr1
+      (save Cdr2
+         (gc) ) )
+   (let (P (val $Avail)  Q (val P))
+      (set $Avail (car Q))
+      (set P Car1)
+      (set 2 P Cdr1)
+      (set Q P)
+      (set 2 Q Cdr2)
+      Q ) )
 
 (de cons3 (Car1 Cdr1 Car2 Cdr2)
    (let P (val $Avail)
@@ -309,7 +331,6 @@
       (set R P)
       (set 2 R Q)
       R ) )
-
 
 (de consSym (Name Val)
    (let P (val $Avail)

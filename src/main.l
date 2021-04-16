@@ -522,7 +522,14 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (while Crt
                (let Crt: (coroutine Crt)
                   (when (Crt: tag)  # In use
-                     (setq R (cons @ R)) )
+                     (let P (Crt: lim)
+                        (while (== 7 (val P))
+                           (inc 'P) )
+                        (setq R
+                           (cons2
+                              (Crt: tag)
+                              (cnt (shr (- P (Crt: lim)) 10))
+                              R ) ) ) )
                   (setq Crt (Crt: nxt)) ) )
             R )
          (let
@@ -531,8 +538,10 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                New (shl N 10) )
             (set $StkSize New)
             (when Crt
-               ((coroutine Crt) lim
-                  (ofs ((coroutine Crt) lim) (- Old New)) ) )
+               (let Siz (* 4 New)
+                  (memset
+                     ((coroutine Crt) lim (ofs (stack) (- Siz)))
+                     7 (- Siz 256) T ) ) )
             (cnt N) ) ) ) )
 
 # Date and time

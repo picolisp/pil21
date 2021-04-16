@@ -1,4 +1,12 @@
 16apr21
+   'stack' returns unused spaces
+      src/main.l
+      doc/refS.html
+   'llvm~cons2' function
+      src/dec.l
+      src/gc.l
+   Coroutine structure 'prv'
+      doc/structures
    Optional alignment for 'memcpy' and 'memset'
       src/lib/llvm.l
       src/main.l

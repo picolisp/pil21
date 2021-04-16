@@ -657,21 +657,22 @@ while at least one coroutine is running - to four times that size). If called
 without a <code>cnt</code> argument, or if already one or more coroutines are
 running, the current size in kilobytes is returned. Otherwise, the stack segment
 size is set to the new value (default 64 kB). If there are running coroutines,
-their tags will be <code><a href="refC.html#cons">cons</a></code>ed in front of
-the size. See also <code><a href="refH.html#heap">heap</a></code>.
+pairs of their tags and unused stack spaces will be <code><a
+href="refC.html#cons">cons</a></code>ed in front of the size. See also <code><a
+href="refH.html#heap">heap</a></code>.
 
 <pre><code>
 $ ulimit -s unlimited  &&  pil +  # Guarantee stack space
 : (stack)      # Current size
 -> 64          # 64 kB
-: (stack 200)  # Set to 200 kB
--> 200
+: (stack 20)   # Reduce to 20 kB
+-> 20
 : (co 'inc (let N 0 (loop (yield (inc 'N)))))  # Create two coroutines
 -> 1
 : (co 'dec (let N 0 (loop (yield (dec 'N)))))
 -> -1
 : (stack)
--> (dec inc . 200)
+-> ((dec . 19) (inc . 19) (T . 75) . 20)
 </code></pre>
 
 <dt><a name="stamp"><code>(stamp ['dat 'tim]|['T]) -> sym</code></a>

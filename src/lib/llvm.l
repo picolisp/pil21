@@ -63,7 +63,7 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
    (prinl "declare i64 @llvm.fshl.i64(i64, i64, i64)")
    (prinl "declare i64 @llvm.fshr.i64(i64, i64, i64)")
    (prinl "declare void @llvm.memcpy.p0i8.p0i8.i64(i8*, i8*, i64, i1)")
-   (prinl "declare void @llvm.memset.p0i8.p0i8.i64(i8*, i8, i64, i1)")
+   (prinl "declare void @llvm.memset.p0i8.i64(i8*, i8, i64, i1)")
    (prinl "declare i8* @llvm.stacksave()")
    (prinl "declare void @llvm.stackrestore(i8*)")
    (prinl)
@@ -1104,17 +1104,27 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
          (def (pack "%" (- *Ssa 2)) 'any) ) )
    (llvm~xchg) )
 
-(asm (@Op @Ptr)
+(asm ()
    ((X Y Z Flg)
       (link
          (pack
-            "call void @llvm." @Op ".p0i8.p0i8.i64(i8* "
+            "call void @llvm.memcpy.p0i8.p0i8.i64(i8* "
             (and Flg "align 8 ") X
-            ", " 'i8 @Ptr " " Y
+            ", " 'i8* " " Y
             ", i64 " Z
             ", i1 0)" ) ) )
-   (llvm~memcpy "memcpy" "*")
-   (llvm~memset "memset") )
+   (llvm~memcpy) )
+
+(asm ()
+   ((X Y Z Flg)
+      (link
+         (pack
+            "call void @llvm.memset.p0i8.i64(i8* "
+            (and Flg "align 8 ") X
+            ", " 'i8 " " Y
+            ", i64 " Z
+            ", i1 0)" ) ) )
+   (llvm~memset) )
 
 (asm ()
    (Lst

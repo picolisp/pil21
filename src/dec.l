@@ -1,4 +1,4 @@
-# 12dec20 Software Lab. Alexander Burger
+# 16apr21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -289,9 +289,11 @@ socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (de evList (any))
 
 # gc.l
-(local) (cons consStr)
+(local) (cons cons2 cons3 consStr)
 
 (de cons (any any))
+(de cons2 (any any any))
+(de cons3 (any any any any))
 (de consStr (any))
 
 # sym.l
