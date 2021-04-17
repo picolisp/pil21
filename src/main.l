@@ -514,7 +514,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (setq P (car P)) )
          (cnt (shr N (- 20 4))) ) ) )  # Divide by CELLS (1M/16)
 
-# (stack ['cnt ['cnt]]) -> cnt | (.. sym . cnt)
+# (stack ['cnt ['cnt]]) -> cnt | (.. (sym . cnt) . cnt)
 (de _stack (Exe)
    (let (X (cdr Exe)  Crt (val $Coroutines))
       (if (or (atom X) (and Crt ((coroutine Crt) nxt)))

@@ -650,7 +650,7 @@ from <code>host</code>.
 -> "&lt;!DOCTYPE html&gt;"
 </code></pre>
 
-<dt><a name="stack"><code>(stack ['cnt ['cnt]]) -> cnt | (.. sym . cnt)</code></a>
+<dt><a name="stack"><code>(stack ['cnt ['cnt]]) -> cnt | (.. (sym . cnt) . cnt)</code></a>
 <dd>Maintains the stack segment sizes for <a
 href="ref.html#coroutines">coroutines</a>. By default, the main stack segment
 size is 255 kB and coroutine sizes are 64 kB each. These sizes can only be

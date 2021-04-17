@@ -1,4 +1,7 @@
 17apr21
+   'stack' return value fix
+      src/main.l
+      doc/refS.html
    Infinite timeout for values greater than 24 days in '*Run', 'wait' and 'key'
    on non-Linux systems (using ppoll(2) on Linux)
       src/lib.c
