@@ -1,4 +1,4 @@
-// 15apr21 Software Lab. Alexander Burger
+// 17apr21 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -371,19 +371,38 @@ void pollIgn(struct pollfd *p) {
 }
 
 int32_t gPoll(struct pollfd *fds, int32_t nfds, int64_t timeout) {
+#ifdef __linux__
+   struct timespec ts, *tp;
+
    if (timeout == 9223372036854775807) {  // 292MY
       int i = nfds;
       do
          if (--i < 0)
             return 0;
       while (fds[i].fd < 0);
-      timeout = -1;
+      tp = NULL;
    }
-#if (int)-1 == 0xFFFFFFFF
-   else if (timeout > 2147483647)  // Fit into 32 bits (max 24 days)
-      timeout = -1;
+   else {
+      ts.tv_sec = timeout / 1000;
+      ts.tv_nsec = timeout % 1000 * 1000000;
+      tp = &ts;
+   }
+   return (int32_t)ppoll(fds, (nfds_t)nfds, tp, NULL);
+#else
+   int to;
+
+   if (timeout > 2147483647) {  // Fit into 32 bits (max 24 days)
+      int i = nfds;
+      do
+         if (--i < 0)
+            return 0;
+      while (fds[i].fd < 0);
+      to = -1;
+   }
+   else
+      to = (int)timeout;
+   return (int32_t)poll(fds, (nfds_t)nfds, to);
 #endif
-   return (int32_t)poll(fds, (nfds_t)nfds, (int)timeout);
 }
 
 int readyIn(struct pollfd *p) {

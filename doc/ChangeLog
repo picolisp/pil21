@@ -1,4 +1,7 @@
 17apr21
+   Infinite timeout for values greater than 24 days in '*Run', 'wait' and 'key'
+   on non-Linux systems (using ppoll(2) on Linux)
+      src/lib.c
    'stack' continued
       src/main.l
 
