@@ -1492,7 +1492,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 66,
-  i64 258
+  i64 274
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -4713,26 +4713,30 @@ $17:
 $18:
   %95 = phi i64 [%88, %$7], [%91, %$17] ; # X
   %96 = phi i8* [%83, %$7], [%92, %$17] ; # Crt
-; # (when Crt (let Siz (val $StkSizeT) (memset ((coroutine Crt) lim (...
+; # (when Crt (let (Siz (val $StkSizeT) Stk (stack)) (memset ((corout...
   %97 = icmp ne i8* %96, null
   br i1 %97, label %$19, label %$20
 $19:
   %98 = phi i64 [%95, %$18] ; # X
   %99 = phi i8* [%96, %$18] ; # Crt
-; # (let Siz (val $StkSizeT) (memset ((coroutine Crt) lim (ofs (stack...
+; # (let (Siz (val $StkSizeT) Stk (stack)) (memset ((coroutine Crt) l...
 ; # (val $StkSizeT)
   %100 = load i64, i64* @$StkSizeT
-; # ((coroutine Crt) lim (ofs (stack) (- Siz)))
-  %101 = getelementptr i8, i8* %99, i32 40
-  %102 = bitcast i8* %101 to i8**
-  %103 = call i8* @llvm.stacksave()
+; # (stack)
+  %101 = call i8* @llvm.stacksave()
+; # ((coroutine Crt) lim (stack (ofs Stk (- Siz))))
+  %102 = getelementptr i8, i8* %99, i32 40
+  %103 = bitcast i8* %102 to i8**
   %104 = sub i64 0, %100
-  %105 = getelementptr i8, i8* %103, i64 %104
-  store i8* %105, i8** %102
+  %105 = getelementptr i8, i8* %101, i64 %104
+  call void @llvm.stackrestore(i8* %105)
+  store i8* %105, i8** %103
 ; # (- Siz 256)
   %106 = sub i64 %100, 256
-; # (memset ((coroutine Crt) lim (ofs (stack) (- Siz))) 7 (- Siz 256)...
+; # (memset ((coroutine Crt) lim (stack (ofs Stk (- Siz)))) 7 (- Siz ...
   call void @llvm.memset.p0i8.i64(i8* align 8 %105, i8 7, i64 %106, i1 0)
+; # (stack Stk)
+  call void @llvm.stackrestore(i8* %101)
   br label %$20
 $20:
   %107 = phi i64 [%95, %$18], [%98, %$19] ; # X

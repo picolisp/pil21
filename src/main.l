@@ -1,4 +1,4 @@
-# 16apr21 Software Lab. Alexander Burger
+# 17apr21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -537,10 +537,11 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (when (pair (shift X))
                (set $StkSizeT (shl (evCnt Exe X) 10)) )
             (when Crt
-               (let Siz (val $StkSizeT)
+               (let (Siz (val $StkSizeT)  Stk (stack))
                   (memset
-                     ((coroutine Crt) lim (ofs (stack) (- Siz)))
-                     7 (- Siz 256) T ) ) )
+                     ((coroutine Crt) lim (stack (ofs Stk (- Siz))))
+                     7 (- Siz 256) T )
+                  (stack Stk) ) )
             (cnt N) ) ) ) )
 
 # Date and time
