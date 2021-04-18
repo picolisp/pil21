@@ -1,3 +1,7 @@
+18apr21
+   's-expr' function, evaluate with "^E"
+      lib/vip.l
+
 17apr21
    'stack' return value fix
       src/main.l

@@ -1,4 +1,4 @@
-# 10apr21 Software Lab. Alexander Burger
+# 18apr21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -336,7 +336,7 @@ goLeft goRight goUp goDown goAbs goFind tword word lword end lend getWord
 _forward goForward _backward goBackward goPFore goPBack shift shiftY indent cutX
 cutN paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe
 evRpt move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN
-nextBuf shell shFile prCmd reset command vi)
+nextBuf shell shFile prCmd reset s-expr command vi)
 
 (de delwin ()
    (when (=: prev next (: next))
@@ -1218,6 +1218,14 @@ nextBuf shell shFile prCmd reset command vi)
       (in R
          (prCmd (rdLines)) ) ) )
 
+(de s-expr ()
+   (let (*Change "y"  *Clip (box))
+      (case (get (: buffer text) (: posY) (: posX))
+         ("(" (parMatch 'goForward 1 0 "(" ")" "[" "]"))
+         ("[" (parMatch 'goForward 0 (0 . 0) "(" ")" "[" "]"))
+         (T (move 'goForward 'end 1)) )
+      (any (pack (val *Clip))) ) )
+
 (de reset ()
    (off *Count *Change)
    (setq *Clip '\"\") )
@@ -1509,6 +1517,7 @@ nextBuf shell shFile prCmd reset command vi)
                            ("^X" (evRpt (list 'incNum (- *Cnt))))
                            ("u" (undo))  # Undo
                            ("^R" (redo))  # Redo
+                           ("^E" (evCmd (eval (s-expr))))  # Evaluate expression
                            ("g"  # ["Go" prefix]
                               (case (getch)
                                  ("f" (reload (pack (getWord T))))  # [gf] Edit file under cursor
