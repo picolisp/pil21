@@ -336,7 +336,7 @@ goLeft goRight goUp goDown goAbs goFind tword word lword end lend getWord
 _forward goForward _backward goBackward goPFore goPBack shift shiftY indent cutX
 cutN paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe
 evRpt move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN
-nextBuf shell shFile prCmd reset s-expr command vi)
+nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
 
 (de delwin ()
    (when (=: prev next (: next))
@@ -1218,13 +1218,21 @@ nextBuf shell shFile prCmd reset s-expr command vi)
       (in R
          (prCmd (rdLines)) ) ) )
 
-(de s-expr ()
+(de posChar ()
+   (get (: buffer text) (: posY) (: posX)) )
+
+(de getText Prg
    (let (*Change "y"  *Clip (box))
-      (case (get (: buffer text) (: posY) (: posX))
-         ("(" (parMatch 'goForward 1 0 "(" ")" "[" "]"))
-         ("[" (parMatch 'goForward 0 (0 . 0) "(" ")" "[" "]"))
-         (T (move 'goForward 'end 1)) )
-      (any (pack (val *Clip))) ) )
+      (run Prg 1)
+      (pack (val *Clip)) ) )
+
+(de s-expr ()
+   (any
+      (getText
+         (case (posChar)
+            ("(" (parMatch 'goForward 1 0 "(" ")" "[" "]"))
+            ("[" (parMatch 'goForward 0 (0 . 0) "(" ")" "[" "]"))
+            (T (move 'goForward 'end 1)) ) ) ) )
 
 (de reset ()
    (off *Count *Change)
@@ -1465,7 +1473,7 @@ nextBuf shell shFile prCmd reset s-expr command vi)
                            ("#"  # Search word under cursor backward
                               (and (getWord T "~") (moveSearch 'goBackward (wordFun @))) )
                            ("%"  # Matching parenthesis
-                              (case (get (: buffer text) (: posY) (: posX))
+                              (case (posChar)
                                  ("(" (parMatch 'goForward 1 0 "(" ")" "[" "]"))
                                  ("[" (parMatch 'goForward 0 (0 . 0) "(" ")" "[" "]"))
                                  (")" (parMatch 'goBackward 1 0 ")" "(" "]" "["))
