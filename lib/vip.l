@@ -1224,12 +1224,13 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
 (de getText Prg
    (let (*Change "y"  *Clip (box))
       (run Prg 1)
-      (pack (val *Clip)) ) )
+      (glue "\n" (val *Clip)) ) )
 
 (de s-expr ()
    (any
       (getText
          (case (posChar)
+            ("\"" (move 'goFind "\"" 0 1))
             ("(" (parMatch 'goForward 1 0 "(" ")" "[" "]"))
             ("[" (parMatch 'goForward 0 (0 . 0) "(" ")" "[" "]"))
             (T (move 'goForward 'end 1)) ) ) ) )
