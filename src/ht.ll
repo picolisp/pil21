@@ -266,7 +266,7 @@ declare i64 @evCnt(i64, i64)
 declare i32 @getChar(i32)
 declare i1 @flush(i8*)
 
-define i64 @Prin(i64) {
+define i64 @Prin(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (eval (car X)) (unless (nil? Y) (if...
 ; # (cdr Exe)
@@ -503,7 +503,7 @@ $36:
   ret i64 %90
 }
 
-define void @putHex(i8) {
+define void @putHex(i8) align 8 {
 $1:
 ; # (call $Put (char "%"))
   %1 = load void(i8)*, void(i8)** @$Put
@@ -551,7 +551,7 @@ $7:
   ret void
 }
 
-define void @htEncode(i8, i64*) {
+define void @htEncode(i8, i64*) align 8 {
 $1:
 ; # (while B (if (strchr ($ " \"#%&:;<=>?\\_") (i32 B)) (putHex B) (c...
   br label %$2
@@ -634,7 +634,7 @@ $4:
   ret void
 }
 
-define void @htFmt(i64) {
+define void @htFmt(i64) align 8 {
 $1:
 ; # (cond ((nil? X)) ((num? X) (call $Put (char "+")) (prin X)) ((pai...
 ; # (nil? X)
@@ -811,7 +811,7 @@ $2:
   ret void
 }
 
-define i64 @Fmt(i64) {
+define i64 @Fmt(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) P (push 4 NIL ZERO NIL NIL NIL)) (begString P) ...
 ; # (cdr Exe)
@@ -881,7 +881,7 @@ $9:
   ret i64 %26
 }
 
-define i8 @getHex(i64) {
+define i8 @getHex(i64) align 8 {
 $1:
 ; # (if (> (- (firstByte Sym) (char "0")) 9) (- (& @ (hex "DF")) 7) @...
 ; # (firstByte Sym)
@@ -904,7 +904,7 @@ $4:
   ret i8 %6
 }
 
-define i64 @head(i8*, i64) {
+define i64 @head(i8*, i64) align 8 {
 $1:
 ; # (let B (val S) (loop (? (<> B (firstByte (++ Lst))) 0) (? (=0 (se...
 ; # (val S)
@@ -961,7 +961,7 @@ $4:
   ret i64 %30
 }
 
-define i64 @Pack(i64) {
+define i64 @Pack(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Lst (save (eval (++ X))) Flg (nil? (eval (car X...
 ; # (cdr Exe)
@@ -1297,7 +1297,7 @@ $14:
   ret i64 %161
 }
 
-define i64 @Read(i64) {
+define i64 @Read(i64) align 8 {
 $1:
 ; # (let (N (evCnt Exe (cdr Exe)) C (val $Chr)) (if (or (le0 N) (and ...
 ; # (cdr Exe)
@@ -1554,7 +1554,7 @@ $8:
 @$SvPut = global void(i8)* null
 @$CnkBuf = global [4000 x i8] zeroinitializer
 
-define i32 @chrHex(i32) {
+define i32 @chrHex(i32) align 8 {
 $1:
 ; # (cond ((and (>= C (char "0")) (>= (char "9") C)) (- C 48)) ((and ...
 ; # (and (>= C (char "0")) (>= (char "9") C))
@@ -1606,7 +1606,7 @@ $2:
   ret i32 %19
 }
 
-define void @chunkSize() {
+define void @chunkSize() align 8 {
 $1:
 ; # (let C (val $Chr) (unless C (setq C (call $SvGet))) (when (ge0 (s...
 ; # (val $Chr)
@@ -1707,7 +1707,7 @@ $5:
   ret void
 }
 
-define i32 @getChunked() {
+define i32 @getChunked() align 8 {
 $1:
 ; # (if (le0 (val $CnkCnt)) (set $Chr -1) (call $SvGet) (when (=0 (se...
 ; # (val $CnkCnt)
@@ -1750,7 +1750,7 @@ $4:
   ret i32 %11
 }
 
-define i64 @In(i64) {
+define i64 @In(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (++ X))) (run X) (set (i8** $SvG...
 ; # (cdr Exe)
@@ -1918,7 +1918,7 @@ $9:
   ret i64 %78
 }
 
-define void @outHex(i32) {
+define void @outHex(i32) align 8 {
 $1:
 ; # (when (> N 15) (outHex (shr N 4)) (setq N (& N 15)))
 ; # (> N 15)
@@ -1956,7 +1956,7 @@ $5:
   ret void
 }
 
-define void @wrChunk(i32) {
+define void @wrChunk(i32) align 8 {
 $1:
 ; # (outHex Cnt)
   call void @outHex(i32 %0)
@@ -2002,7 +2002,7 @@ $4:
   ret void
 }
 
-define void @putChunked(i8) {
+define void @putChunked(i8) align 8 {
 $1:
 ; # (let I (val $CnkCnt) (set (ofs $CnkBuf I) B) (ifn (== (inc I) CHU...
 ; # (val $CnkCnt)
@@ -2032,7 +2032,7 @@ $4:
   ret void
 }
 
-define i64 @Out(i64) {
+define i64 @Out(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) F (eval (++ X))) (if (nil? F) (setq X (run X)) ...
 ; # (cdr Exe)

@@ -1,4 +1,4 @@
-# 16apr21 Software Lab. Alexander Burger
+# 19apr21 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -547,7 +547,7 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
                   (prin ", " A) ) ) )
          (cond
             (Ext (prinl ")"))
-            (Body (prinl ") {")) )
+            (Body (prinl ") align 8 {")) )
          (def This
             (list 'pico~@
                (make

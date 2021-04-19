@@ -1492,7 +1492,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 66,
-  i64 290
+  i64 306
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -1653,7 +1653,7 @@ declare i1 @isLetterOrDigit(i32)
 declare i32 @toUpperCase(i32)
 declare i32 @toLowerCase(i32)
 
-define i64 @execAt(i64) {
+define i64 @execAt(i64) align 8 {
 $1:
 ; # (let At (save (val $At)) (exec Prg) (set $At At))
 ; # (val $At)
@@ -1709,7 +1709,7 @@ $6:
   ret i64 %2
 }
 
-define i64 @runAt(i64) {
+define i64 @runAt(i64) align 8 {
 $1:
 ; # (let At (save (val $At)) (prog1 (run Prg) (set $At At)))
 ; # (val $At)
@@ -1789,14 +1789,14 @@ $4:
   ret i64 %36
 }
 
-define i64 @wrnl() {
+define i64 @wrnl() align 8 {
 $1:
 ; # (write 1 ($ "^J") 1)
   %0 = call i64 @write(i32 1, i8* bitcast ([2 x i8]* @$1 to i8*), i64 1)
   ret i64 %0
 }
 
-define i64 @dbg(i64, i64) {
+define i64 @dbg(i64, i64) align 8 {
 $1:
 ; # (let (Out (val $OutFile) Put (val (i8** $Put))) (set $OutFile (va...
 ; # (val $OutFile)
@@ -1836,7 +1836,7 @@ $3:
   ret i64 %1
 }
 
-define void @stop(i8*) {
+define void @stop(i8*) align 8 {
 $1:
 ; # ((coroutine Crt) tag 0)
   %1 = ptrtoint i8* %0 to i64
@@ -1883,7 +1883,7 @@ $7:
   ret void
 }
 
-define void @unwind(i8*) {
+define void @unwind(i8*) align 8 {
 $1:
 ; # (when (val $Current) (unless (== @ (val $Coroutines)) (stop @) (s...
 ; # (val $Current)
@@ -2315,7 +2315,7 @@ $52:
   ret void
 }
 
-define void @finish(i32) {
+define void @finish(i32) align 8 {
 $1:
 ; # (setCooked)
   call void @setCooked()
@@ -2324,7 +2324,7 @@ $1:
   unreachable
 }
 
-define void @giveup(i8*, i8*) {
+define void @giveup(i8*, i8*) align 8 {
 $1:
 ; # (stderrMsg Fmt Msg)
   %2 = call i8* @stderrMsg(i8* %0, i8* %1)
@@ -2333,7 +2333,7 @@ $1:
   unreachable
 }
 
-define void @bye(i32) {
+define void @bye(i32) align 8 {
 $1:
 ; # (unless (val $InBye) (set $InBye YES) (unwind null) (exec (val $B...
 ; # (val $InBye)
@@ -2382,7 +2382,7 @@ $3:
   unreachable
 }
 
-define void @execErr(i8*) {
+define void @execErr(i8*) align 8 {
 $1:
 ; # (stderrMsg ($ "%s: Can't exec^J") Cmd)
   %1 = call i8* @stderrMsg(i8* bitcast ([16 x i8]* @$2 to i8*), i8* %0)
@@ -2391,7 +2391,7 @@ $1:
   unreachable
 }
 
-define i8* @alloc(i8*, i64) {
+define i8* @alloc(i8*, i64) align 8 {
 $1:
 ; # (unless (realloc Ptr Siz) (giveup ($ "No memory") null))
 ; # (realloc Ptr Siz)
@@ -2406,7 +2406,7 @@ $3:
   ret i8* %2
 }
 
-define void @heapAlloc() {
+define void @heapAlloc() align 8 {
 $1:
 ; # (let (H (any (alloc null (* 8 (inc HEAP)))) P (ofs H HEAP) A (val...
 ; # (inc HEAP)
@@ -2452,7 +2452,7 @@ $4:
   ret void
 }
 
-define void @sig(i32) {
+define void @sig(i32) align 8 {
 $1:
 ; # (if (val $TtyPid) (kill @ N) (set $Signal (+ (val $Signal) 1)) (l...
 ; # (val $TtyPid)
@@ -2487,7 +2487,7 @@ $4:
   ret void
 }
 
-define void @sigTerm(i32) {
+define void @sigTerm(i32) align 8 {
 $1:
 ; # (if (val $TtyPid) (kill @ N) (set $Signal (+ (val $Signal) 1)) (l...
 ; # (val $TtyPid)
@@ -2525,7 +2525,7 @@ $4:
   ret void
 }
 
-define void @sighandler(i64) {
+define void @sighandler(i64) align 8 {
 $1:
 ; # (unless (val $Protect) (set $Protect 1) (let P T (loop (cond ((va...
 ; # (val $Protect)
@@ -2978,7 +2978,7 @@ $3:
   ret void
 }
 
-define void @err(i64, i64, i8*, i8*) {
+define void @err(i64, i64, i8*, i8*) align 8 {
 $1:
 ; # (set $Up (if Exe @ $Nil))
 ; # (if Exe @ $Nil)
@@ -3307,7 +3307,7 @@ $31:
   unreachable
 }
 
-define void @stkErr(i64) {
+define void @stkErr(i64) align 8 {
 $1:
 ; # (set $StkLimit null)
   store i8* null, i8** @$StkLimit
@@ -3316,91 +3316,91 @@ $1:
   unreachable
 }
 
-define void @argErr(i64, i64) {
+define void @argErr(i64, i64) align 8 {
 $1:
 ; # (err Exe X ($ "Bad argument") null)
   call void @err(i64 %0, i64 %1, i8* bitcast ([13 x i8]* @$8 to i8*), i8* null)
   unreachable
 }
 
-define void @cntErr(i64, i64) {
+define void @cntErr(i64, i64) align 8 {
 $1:
 ; # (err Exe X ($ "Small number expected") null)
   call void @err(i64 %0, i64 %1, i8* bitcast ([22 x i8]* @$9 to i8*), i8* null)
   unreachable
 }
 
-define void @numErr(i64, i64) {
+define void @numErr(i64, i64) align 8 {
 $1:
 ; # (err Exe X ($ "Number expected") null)
   call void @err(i64 %0, i64 %1, i8* bitcast ([16 x i8]* @$10 to i8*), i8* null)
   unreachable
 }
 
-define void @symErr(i64, i64) {
+define void @symErr(i64, i64) align 8 {
 $1:
 ; # (err Exe X ($ "Symbol expected") null)
   call void @err(i64 %0, i64 %1, i8* bitcast ([16 x i8]* @$11 to i8*), i8* null)
   unreachable
 }
 
-define void @extErr(i64, i64) {
+define void @extErr(i64, i64) align 8 {
 $1:
 ; # (err Exe X ($ "External symbol expected") null)
   call void @err(i64 %0, i64 %1, i8* bitcast ([25 x i8]* @$12 to i8*), i8* null)
   unreachable
 }
 
-define void @nameErr(i64, i64) {
+define void @nameErr(i64, i64) align 8 {
 $1:
 ; # (err Exe X ($ "Name expected") null)
   call void @err(i64 %0, i64 %1, i8* bitcast ([14 x i8]* @$13 to i8*), i8* null)
   unreachable
 }
 
-define void @atomErr(i64, i64) {
+define void @atomErr(i64, i64) align 8 {
 $1:
 ; # (err Exe X ($ "Atom expected") null)
   call void @err(i64 %0, i64 %1, i8* bitcast ([14 x i8]* @$14 to i8*), i8* null)
   unreachable
 }
 
-define void @pairErr(i64, i64) {
+define void @pairErr(i64, i64) align 8 {
 $1:
 ; # (err Exe X ($ "Cons pair expected") null)
   call void @err(i64 %0, i64 %1, i8* bitcast ([19 x i8]* @$15 to i8*), i8* null)
   unreachable
 }
 
-define void @lstErr(i64, i64) {
+define void @lstErr(i64, i64) align 8 {
 $1:
 ; # (err Exe X ($ "List expected") null)
   call void @err(i64 %0, i64 %1, i8* bitcast ([14 x i8]* @$16 to i8*), i8* null)
   unreachable
 }
 
-define void @varErr(i64, i64) {
+define void @varErr(i64, i64) align 8 {
 $1:
 ; # (err Exe X ($ "Variable expected") null)
   call void @err(i64 %0, i64 %1, i8* bitcast ([18 x i8]* @$17 to i8*), i8* null)
   unreachable
 }
 
-define void @itemErr(i64, i64) {
+define void @itemErr(i64, i64) align 8 {
 $1:
 ; # (err Exe X ($ "Item not found") null)
   call void @err(i64 %0, i64 %1, i8* bitcast ([15 x i8]* @$18 to i8*), i8* null)
   unreachable
 }
 
-define void @protErr(i64, i64) {
+define void @protErr(i64, i64) align 8 {
 $1:
 ; # (err Exe X ($ "Protected") null)
   call void @err(i64 %0, i64 %1, i8* bitcast ([10 x i8]* @$19 to i8*), i8* null)
   unreachable
 }
 
-define void @lockErr() {
+define void @lockErr() align 8 {
 $1:
 ; # (strErrno)
   %0 = call i8* @strErrno()
@@ -3409,21 +3409,21 @@ $1:
   unreachable
 }
 
-define void @forkErr(i64) {
+define void @forkErr(i64) align 8 {
 $1:
 ; # (err Exe 0 ($ "Can't fork") null)
   call void @err(i64 %0, i64 0, i8* bitcast ([11 x i8]* @$21 to i8*), i8* null)
   unreachable
 }
 
-define void @symNspErr(i64, i64) {
+define void @symNspErr(i64, i64) align 8 {
 $1:
 ; # (err Exe X ($ "Bad symbol namespace") null)
   call void @err(i64 %0, i64 %1, i8* bitcast ([21 x i8]* @$22 to i8*), i8* null)
   unreachable
 }
 
-define i64 @xCnt(i64, i64) {
+define i64 @xCnt(i64, i64) align 8 {
 $1:
 ; # (let N (int (needCnt Exe X)) (if (sign? X) (- N) N))
 ; # (needCnt Exe X)
@@ -3452,7 +3452,7 @@ $6:
   ret i64 %8
 }
 
-define i64 @evCnt(i64, i64) {
+define i64 @evCnt(i64, i64) align 8 {
 $1:
 ; # (car X)
   %2 = inttoptr i64 %1 to i64*
@@ -3481,7 +3481,7 @@ $2:
   ret i64 %12
 }
 
-define i64 @evLst(i64) {
+define i64 @evLst(i64) align 8 {
 $1:
 ; # (let X (eval (car Exe)) (unless (or (pair X) (nil? X)) (lstErr Ex...
 ; # (car Exe)
@@ -3527,7 +3527,7 @@ $10:
   ret i64 %10
 }
 
-define i64 @xSym(i64) {
+define i64 @xSym(i64) align 8 {
 $1:
 ; # (if (symb? X) X (let P (push 4 NIL ZERO NIL) (link (ofs P 2) T) (...
 ; # (symb? X)
@@ -3574,7 +3574,7 @@ $4:
   ret i64 %20
 }
 
-define i64 @evSym(i64) {
+define i64 @evSym(i64) align 8 {
 $1:
 ; # (car Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -3603,7 +3603,7 @@ $2:
   ret i64 %11
 }
 
-define i64 @xName(i64, i64) {
+define i64 @xName(i64, i64) align 8 {
 $1:
 ; # (cond ((nil? Sym) ZERO) ((sym? (val (tail Sym))) (nameErr Exe Sym...
 ; # (nil? Sym)
@@ -3647,7 +3647,7 @@ $2:
   ret i64 %16
 }
 
-define i64 @circ(i64) {
+define i64 @circ(i64) align 8 {
 $1:
 ; # (if (atom X) 0 (let Y X (loop (set Y (| (val Y) 1)) (? (atom (shi...
 ; # (atom X)
@@ -3802,7 +3802,7 @@ $4:
   ret i64 %77
 }
 
-define i64 @funq(i64) {
+define i64 @funq(i64) align 8 {
 $1:
 ; # (cond ((cnt? X) X) ((or (big? X) (sym? X)) 0) ((circ X) 0) (T (le...
 ; # (cnt? X)
@@ -4113,7 +4113,7 @@ $2:
   ret i64 %156
 }
 
-define i64 @_tty(i64) {
+define i64 @_tty(i64) align 8 {
 $1:
 ; # (let (Out (val $OutFile) Put (val (i8** $Put))) (set $OutFile (va...
 ; # (val $OutFile)
@@ -4197,7 +4197,7 @@ $4:
   ret i64 %35
 }
 
-define i64 @_raw(i64) {
+define i64 @_raw(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (cond ((atom X) (if (val Termio) $T $Nil)) ((nil...
 ; # (cdr Exe)
@@ -4261,7 +4261,7 @@ $2:
   ret i64 %20
 }
 
-define i64 @_alarm(i64) {
+define i64 @_alarm(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (prog1 (cnt (i64 (alarm (i32 (evCnt Exe X))))) (...
 ; # (cdr Exe)
@@ -4290,7 +4290,7 @@ $1:
   ret i64 %9
 }
 
-define i64 @_sigio(i64) {
+define i64 @_sigio(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Fd (evCnt Exe X)) (set $Sigio (cdr X)) (fcntlSe...
 ; # (cdr Exe)
@@ -4323,7 +4323,7 @@ $1:
   ret i64 %15
 }
 
-define i64 @_kids(i64) {
+define i64 @_kids(i64) align 8 {
 $1:
 ; # (let (X $Nil Cld (val $Child) <Cld (ofs Cld (* (val $Children) (c...
 ; # (val $Child)
@@ -4375,7 +4375,7 @@ $4:
   ret i64 %23
 }
 
-define i64 @_protect(i64) {
+define i64 @_protect(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (prog2 (set $Protect (+ (val $Protect) 1)) (run ...
 ; # (cdr Exe)
@@ -4447,7 +4447,7 @@ $4:
   ret i64 %31
 }
 
-define i64 @_heap(i64) {
+define i64 @_heap(i64) align 8 {
 $1:
 ; # (if (nil? (eval (cadr Exe))) (let (N 1 P (val $Heaps)) (while (se...
 ; # (cadr Exe)
@@ -4542,7 +4542,7 @@ $9:
   ret i64 %43
 }
 
-define i64 @_stack(i64) {
+define i64 @_stack(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Crt (val $Coroutines)) (if (or (atom X) (and Cr...
 ; # (cdr Exe)
@@ -4752,7 +4752,7 @@ $8:
   ret i64 %113
 }
 
-define i64 @tmDate(i64, i64, i64) {
+define i64 @tmDate(i64, i64, i64) align 8 {
 $1:
 ; # (if (and (gt0 Y) (gt0 M) (>= 12 M) (gt0 D) (or (>= (i64 (val (ofs...
 ; # (and (gt0 Y) (gt0 M) (>= 12 M) (gt0 D) (or (>= (i64 (val (ofs $Mo...
@@ -4865,7 +4865,7 @@ $17:
   ret i64 %43
 }
 
-define i64 @tmTime(i64, i64, i64) {
+define i64 @tmTime(i64, i64, i64) align 8 {
 $1:
 ; # (if (and (ge0 H) (ge0 M) (> 60 M) (ge0 S) (> 60 S)) (cnt (+ (* H ...
 ; # (and (ge0 H) (ge0 M) (> 60 M) (ge0 S) (> 60 S))
@@ -4910,7 +4910,7 @@ $9:
   ret i64 %15
 }
 
-define i64 @_date(i64) {
+define i64 @_date(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (cond ((atom X) (let N (getDate) (tmDate (& N (h...
 ; # (cdr Exe)
@@ -5161,7 +5161,7 @@ $2:
   ret i64 %127
 }
 
-define i64 @_time(i64) {
+define i64 @_time(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (cond ((atom X) (cnt (getTime))) ((t? (eval (car...
 ; # (cdr Exe)
@@ -5380,7 +5380,7 @@ $2:
   ret i64 %110
 }
 
-define i64 @_usec(i64) {
+define i64 @_usec(i64) align 8 {
 $1:
 ; # (if (nil? (eval (cadr Exe))) (- (getUsec YES) (val $USec)) (getUs...
 ; # (cadr Exe)
@@ -5431,7 +5431,7 @@ $9:
   ret i64 %21
 }
 
-define i1 @sharedLib(i64) {
+define i1 @sharedLib(i64) align 8 {
 $1:
 ; # (let (Nm (xName 0 Sym) S (bufString Nm (b8 (bufSize Nm))) P (strc...
 ; # (xName 0 Sym)
@@ -5548,7 +5548,7 @@ $2:
   ret i1 %47
 }
 
-define void @mark(i64) {
+define void @mark(i64) align 8 {
 $1:
 ; # (let Tos 0 (loop (until (cnt? E) (let (P (any (& E -16)) Q (cdr P...
 ; # (loop (until (cnt? E) (let (P (any (& E -16)) Q (cdr P)) (? (=0 (...
@@ -5727,7 +5727,7 @@ $17:
   br label %$2
 }
 
-define void @gc() {
+define void @gc() align 8 {
 $1:
 ; # (set $DB -ZERO)
   %0 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([860 x i64]* @SymTab to i8*), i32 232) to i64) to i64*
@@ -7061,7 +7061,7 @@ $100:
   ret void
 }
 
-define void @need3() {
+define void @need3() align 8 {
 $1:
 ; # (let P (val $Avail) (unless (and P (setq P (car P)) (car P)) (gc)...
 ; # (val $Avail)
@@ -7098,7 +7098,7 @@ $6:
   ret void
 }
 
-define i64 @_gc(i64) {
+define i64 @_gc(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X))) (set $At $Nil $At2 $Nil) (if ...
 ; # (cdr Exe)
@@ -7181,7 +7181,7 @@ $9:
   ret i64 %13
 }
 
-define i64 @cons(i64, i64) {
+define i64 @cons(i64, i64) align 8 {
 $1:
 ; # (let P (val $Avail) (unless P (save2 Car Cdr (gc)) (setq P (val $...
 ; # (val $Avail)
@@ -7238,7 +7238,7 @@ $3:
   ret i64 %23
 }
 
-define i64 @cons2(i64, i64, i64) {
+define i64 @cons2(i64, i64, i64) align 8 {
 $1:
 ; # (let P (val $Avail) (when P (let Q (val P) (when Q (set $Avail (c...
 ; # (val $Avail)
@@ -7352,7 +7352,7 @@ $3:
   ret i64 %47
 }
 
-define i64 @cons3(i64, i64, i64, i64) {
+define i64 @cons3(i64, i64, i64, i64) align 8 {
 $1:
 ; # (let P (val $Avail) (when P (let Q (val P) (when Q (let R (val Q)...
 ; # (val $Avail)
@@ -7500,7 +7500,7 @@ $3:
   ret i64 %61
 }
 
-define i64 @consSym(i64, i64) {
+define i64 @consSym(i64, i64) align 8 {
 $1:
 ; # (let P (val $Avail) (unless P (if Val (save2 Name Val (gc)) (save...
 ; # (val $Avail)
@@ -7602,7 +7602,7 @@ $9:
   ret i64 %43
 }
 
-define i64 @consStr(i64) {
+define i64 @consStr(i64) align 8 {
 $1:
 ; # (if (== Name ZERO) $Nil (tailcall (consSym Name 0)))
 ; # (== Name ZERO)
@@ -7619,7 +7619,7 @@ $4:
   ret i64 %3
 }
 
-define i64 @consExt(i64) {
+define i64 @consExt(i64) align 8 {
 $1:
 ; # (set $ExtCnt (+ (val $ExtCnt) 1))
 ; # (val $ExtCnt)
@@ -7634,7 +7634,7 @@ $1:
   ret i64 %4
 }
 
-define i64 @boxNum(i64) {
+define i64 @boxNum(i64) align 8 {
 $1:
 ; # (let P (val $Avail) (unless P (gc) (setq P (val $Avail))) (set $A...
 ; # (val $Avail)
@@ -7668,7 +7668,7 @@ $3:
   ret i64 %11
 }
 
-define i64 @consNum(i64, i64) {
+define i64 @consNum(i64, i64) align 8 {
 $1:
 ; # (let P (val $Avail) (unless P (save Big (gc)) (setq P (val $Avail...
 ; # (val $Avail)
@@ -7720,7 +7720,7 @@ $3:
   ret i64 %24
 }
 
-define i64 @box(i64) {
+define i64 @box(i64) align 8 {
 $1:
 ; # (if (ge0 N) (box64 N) (sign (box64 (- N))))
 ; # (ge0 N)
@@ -7765,14 +7765,14 @@ $4:
   ret i64 %16
 }
 
-define void @divErr(i64) {
+define void @divErr(i64) align 8 {
 $1:
 ; # (err Exe 0 ($ "Div/0") null)
   call void @err(i64 %0, i64 0, i8* bitcast ([6 x i8]* @$25 to i8*), i8* null)
   unreachable
 }
 
-define i8 @symByte(i64*) {
+define i8 @symByte(i64*) align 8 {
 $1:
 ; # (let C (val P) (unless C (let Nm (val 2 P) (cond ((== Nm ZERO) (r...
 ; # (val P)
@@ -7842,7 +7842,7 @@ $3:
   ret i8 %26
 }
 
-define i32 @symChar(i64*) {
+define i32 @symChar(i64*) align 8 {
 $1:
 ; # (let C (i32 (symByte P)) (cond ((>= 127 C) C) ((== C (hex "FF")) ...
 ; # (symByte P)
@@ -7927,7 +7927,7 @@ $2:
   ret i32 %29
 }
 
-define void @byteNum(i8, i64*) {
+define void @byteNum(i8, i64*) align 8 {
 $1:
 ; # (let (Cnt (val P) Nm (val 3 P)) (if (cnt? Nm) (cond ((== Cnt 67) ...
 ; # (val P)
@@ -8106,7 +8106,7 @@ $4:
   ret void
 }
 
-define void @byteSym(i8, i64*) {
+define void @byteSym(i8, i64*) align 8 {
 $1:
 ; # (let (Cnt (val P) Nm (val 3 P)) (if (cnt? Nm) (if (> 60 Cnt) (set...
 ; # (val P)
@@ -8221,7 +8221,7 @@ $4:
   ret void
 }
 
-define void @charSym(i32, i64*) {
+define void @charSym(i32, i64*) align 8 {
 $1:
 ; # (cond ((>= 127 C) (byteSym (i8 C) P)) ((== TOP C) (byteSym (hex "...
 ; # (>= 127 C)
@@ -8330,7 +8330,7 @@ $2:
   ret void
 }
 
-define i64 @zapZero(i64) {
+define i64 @zapZero(i64) align 8 {
 $1:
 ; # (let (P (push N) X P Y P Z T) (until (cnt? (setq Z (val (big N)))...
 ; # (push N)
@@ -8493,7 +8493,7 @@ $8:
   ret i64 %96
 }
 
-define i64 @twiceBig(i64) {
+define i64 @twiceBig(i64) align 8 {
 $1:
 ; # (let (X N A (val (dig X)) Y (val (big X))) (set (dig X) (shl A 1)...
 ; # (dig X)
@@ -8583,7 +8583,7 @@ $7:
   ret i64 %0
 }
 
-define i64 @twice(i64) {
+define i64 @twice(i64) align 8 {
 $1:
 ; # (if (cnt? N) (let X (add N N) (if @@ (boxNum (shr N 3)) (x| X 6))...
 ; # (cnt? N)
@@ -8620,7 +8620,7 @@ $4:
   ret i64 %11
 }
 
-define i64 @half(i64) {
+define i64 @half(i64) align 8 {
 $1:
 ; # (if (cnt? N) (| (& (shr N 1) -10) 2) (let (X N A (shr (val (dig X...
 ; # (cnt? N)
@@ -8846,7 +8846,7 @@ $4:
   ret i64 %121
 }
 
-define i64 @tenfold(i64) {
+define i64 @tenfold(i64) align 8 {
 $1:
 ; # (if (cnt? N) (box64 (* 10 (int N))) (let (X N Lo (mul 10 (val (di...
 ; # (cnt? N)
@@ -8969,7 +8969,7 @@ $4:
   ret i64 %63
 }
 
-define i64 @shlu(i64) {
+define i64 @shlu(i64) align 8 {
 $1:
 ; # (if (cnt? N) (let X (add N N) (if @@ (boxNum (shr N 3)) (x| X 6))...
 ; # (cnt? N)
@@ -9106,7 +9106,7 @@ $4:
   ret i64 %65
 }
 
-define i64 @shru(i64) {
+define i64 @shru(i64) align 8 {
 $1:
 ; # (if (cnt? N) (| (& (shr N 1) -10) 2) (let A (shr (val (dig N)) 1)...
 ; # (cnt? N)
@@ -9353,7 +9353,7 @@ $4:
   ret i64 %134
 }
 
-define i64 @andu(i64, i64) {
+define i64 @andu(i64, i64) align 8 {
 $1:
 ; # (cond ((cnt? A) (& A (if (cnt? B) B (cnt (val (dig B)))))) ((cnt?...
 ; # (cnt? A)
@@ -9577,7 +9577,7 @@ $2:
   ret i64 %125
 }
 
-define i64 @oru(i64, i64) {
+define i64 @oru(i64, i64) align 8 {
 $1:
 ; # (cond ((cnt? A) (if (cnt? B) (| A B) (consNum (| (int A) (val (di...
 ; # (cnt? A)
@@ -9827,7 +9827,7 @@ $2:
   ret i64 %138
 }
 
-define i64 @xoru(i64, i64) {
+define i64 @xoru(i64, i64) align 8 {
 $1:
 ; # (cond ((cnt? A) (if (cnt? B) (| (x| A B) 2) (zapZero (consNum (x|...
 ; # (cnt? A)
@@ -10087,7 +10087,7 @@ $2:
   ret i64 %143
 }
 
-define i64 @addu(i64, i64) {
+define i64 @addu(i64, i64) align 8 {
 $1:
 ; # (cond ((cnt? A) (if (cnt? B) (box64 (+ (int A) (int B))) (xchg 'A...
 ; # (cnt? A)
@@ -10616,7 +10616,7 @@ $2:
   ret i64 %312
 }
 
-define i64 @sub1(i64, i64) {
+define i64 @sub1(i64, i64) align 8 {
 $1:
 ; # (dig B)
   %2 = add i64 %0, -4
@@ -10821,7 +10821,7 @@ $2:
   ret i64 %111
 }
 
-define i64 @subu(i64, i64) {
+define i64 @subu(i64, i64) align 8 {
 $1:
 ; # (cond ((cnt? A) (if (cnt? B) (let N (sub A (& B -3)) (if @@ (+ (x...
 ; # (cnt? A)
@@ -11353,7 +11353,7 @@ $2:
   ret i64 %327
 }
 
-define i64 @mulu(i64, i64) {
+define i64 @mulu(i64, i64) align 8 {
 $1:
 ; # (cond ((== A ZERO) A) ((cnt? A) (setq A (int A)) (if (cnt? B) (le...
 ; # (== A ZERO)
@@ -12156,7 +12156,7 @@ $2:
   ret i64 %528
 }
 
-define i64 @div1(i64, i64, i1) {
+define i64 @div1(i64, i64, i1) align 8 {
 $1:
 ; # (let (R (save ZERO) P (boxNum (val (dig A))) U (link (push P NIL)...
 ; # (save ZERO)
@@ -13618,7 +13618,7 @@ $60:
   ret i64 %1104
 }
 
-define i64 @divu(i64, i64) {
+define i64 @divu(i64, i64) align 8 {
 $1:
 ; # (cond ((big? A) (div1 A B NO)) ((big? B) ZERO) (T (cnt (/ (int A)...
 ; # (big? A)
@@ -13652,7 +13652,7 @@ $2:
   ret i64 %12
 }
 
-define i64 @remu(i64, i64) {
+define i64 @remu(i64, i64) align 8 {
 $1:
 ; # (cond ((big? A) (div1 A B YES)) ((big? B) A) (T (cnt (% (int A) (...
 ; # (big? A)
@@ -13686,7 +13686,7 @@ $2:
   ret i64 %12
 }
 
-define i64 @incs(i64) {
+define i64 @incs(i64) align 8 {
 $1:
 ; # (if (sign? A) (neg (subu (pos A) ONE)) (addu A ONE))
 ; # (sign? A)
@@ -13718,7 +13718,7 @@ $4:
   ret i64 %9
 }
 
-define i64 @decs(i64) {
+define i64 @decs(i64) align 8 {
 $1:
 ; # (if (sign? A) (neg (addu (pos A) ONE)) (subu A ONE))
 ; # (sign? A)
@@ -13750,7 +13750,7 @@ $4:
   ret i64 %9
 }
 
-define i64 @adds(i64, i64) {
+define i64 @adds(i64, i64) align 8 {
 $1:
 ; # (ifn (sign? A) (ifn (sign? B) (addu A B) (subu A (pos B))) (neg (...
 ; # (sign? A)
@@ -13814,7 +13814,7 @@ $4:
   ret i64 %21
 }
 
-define i64 @subs(i64, i64) {
+define i64 @subs(i64, i64) align 8 {
 $1:
 ; # (ifn (sign? A) (ifn (sign? B) (subu A B) (addu A (pos B))) (neg (...
 ; # (sign? A)
@@ -13878,7 +13878,7 @@ $4:
   ret i64 %21
 }
 
-define i64 @cmpu(i64, i64) {
+define i64 @cmpu(i64, i64) align 8 {
 $1:
 ; # (if (cnt? A) (cond ((or (big? B) (> B A)) -1) ((== B A) 0) (T 1))...
 ; # (cnt? A)
@@ -14268,7 +14268,7 @@ $4:
   ret i64 %238
 }
 
-define i64 @cmpNum(i64, i64) {
+define i64 @cmpNum(i64, i64) align 8 {
 $1:
 ; # (ifn (sign? A) (ifn (sign? B) (cmpu A B) 1) (ifn (sign? B) -1 (cm...
 ; # (sign? A)
@@ -14314,7 +14314,7 @@ $4:
   ret i64 %14
 }
 
-define i64 @symToNum(i64, i64, i8, i8) {
+define i64 @symToNum(i64, i64, i8, i8) align 8 {
 $1:
 ; # (let (P (push 0 Name) Num (push ZERO NIL) Sign NO Frac NO B T) (u...
 ; # (push 0 Name)
@@ -14847,7 +14847,7 @@ $50:
   ret i64 %331
 }
 
-define i64 @fmtWord(i64, i64, i8, i8, i64*) {
+define i64 @fmtWord(i64, i64, i8, i8, i64*) align 8 {
 $1:
 ; # (when (> N 9) (setq Scl (fmtWord (/ N 10) Scl Sep Ign P)) (cond (...
 ; # (> N 9)
@@ -14925,7 +14925,7 @@ $3:
   ret i64 %35
 }
 
-define i64 @fmtNum(i64, i64, i8, i8, i64*) {
+define i64 @fmtNum(i64, i64, i8, i8, i64*) align 8 {
 $1:
 ; # (let (Sign (sign? Num) Len (+ 19 17)) (let N (setq Num (& Num -9)...
 ; # (sign? Num)
@@ -15839,7 +15839,7 @@ $33:
   ret i64 %595
 }
 
-define i64 @_format(i64) {
+define i64 @_format(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) A (save (eval (++ X))) Y (eval (++ X)) Scl (if ...
 ; # (cdr Exe)
@@ -16181,7 +16181,7 @@ $33:
   ret i64 %174
 }
 
-define i64 @_add(i64) {
+define i64 @_add(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (save -ZERO (let R (...
 ; # (cdr Exe)
@@ -16341,7 +16341,7 @@ $9:
   ret i64 %72
 }
 
-define i64 @_sub(i64) {
+define i64 @_sub(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (eval (++ X))) (if (nil? N) N (needNum Exe N)...
 ; # (cdr Exe)
@@ -16525,7 +16525,7 @@ $9:
   ret i64 %82
 }
 
-define i64 @_inc(i64) {
+define i64 @_inc(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (cond ((nil? (eval (car X))) @) ((num? @) (incs ...
 ; # (cdr Exe)
@@ -16768,7 +16768,7 @@ $2:
   ret i64 %104
 }
 
-define i64 @_dec(i64) {
+define i64 @_dec(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (cond ((nil? (eval (car X))) @) ((num? @) (decs ...
 ; # (cdr Exe)
@@ -17011,7 +17011,7 @@ $2:
   ret i64 %104
 }
 
-define i64 @_mul(i64) {
+define i64 @_mul(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (save -ZERO (let (Si...
 ; # (cdr Exe)
@@ -17241,7 +17241,7 @@ $9:
   ret i64 %110
 }
 
-define i64 @_mulDiv(i64) {
+define i64 @_mulDiv(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (save -ZERO (let (Si...
 ; # (cdr Exe)
@@ -17516,7 +17516,7 @@ $9:
   ret i64 %137
 }
 
-define i64 @_div(i64) {
+define i64 @_div(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (save -ZERO (let (Si...
 ; # (cdr Exe)
@@ -17761,7 +17761,7 @@ $9:
   ret i64 %117
 }
 
-define i64 @_rem(i64) {
+define i64 @_rem(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (save -ZERO (let (Si...
 ; # (cdr Exe)
@@ -17971,7 +17971,7 @@ $9:
   ret i64 %89
 }
 
-define i64 @_shr(i64) {
+define i64 @_shr(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (evCnt Exe X) Y (eval (cadr X))) (if (or (=0 ...
 ; # (cdr Exe)
@@ -18246,7 +18246,7 @@ $14:
   ret i64 %131
 }
 
-define i64 @_rev(i64) {
+define i64 @_rev(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) C (evCnt Exe X) N (evCnt Exe (cdr X)) R 0) (loo...
 ; # (cdr Exe)
@@ -18296,7 +18296,7 @@ $4:
   ret i64 %26
 }
 
-define i64 @_lt0(i64) {
+define i64 @_lt0(i64) align 8 {
 $1:
 ; # (if (and (num? (eval (cadr Exe))) (sign? @)) @ $Nil)
 ; # (and (num? (eval (cadr Exe))) (sign? @))
@@ -18346,7 +18346,7 @@ $11:
   ret i64 %19
 }
 
-define i64 @_le0(i64) {
+define i64 @_le0(i64) align 8 {
 $1:
 ; # (if (and (num? (eval (cadr Exe))) (or (== @ ZERO) (sign? @))) @ $...
 ; # (and (num? (eval (cadr Exe))) (or (== @ ZERO) (sign? @)))
@@ -18404,7 +18404,7 @@ $13:
   ret i64 %21
 }
 
-define i64 @_ge0(i64) {
+define i64 @_ge0(i64) align 8 {
 $1:
 ; # (if (and (num? (eval (cadr Exe))) (not (sign? @))) @ $Nil)
 ; # (and (num? (eval (cadr Exe))) (not (sign? @)))
@@ -18456,7 +18456,7 @@ $11:
   ret i64 %20
 }
 
-define i64 @_gt0(i64) {
+define i64 @_gt0(i64) align 8 {
 $1:
 ; # (if (and (num? (eval (cadr Exe))) (<> @ ZERO) (not (sign? @))) @ ...
 ; # (and (num? (eval (cadr Exe))) (<> @ ZERO) (not (sign? @)))
@@ -18512,7 +18512,7 @@ $12:
   ret i64 %21
 }
 
-define i64 @_abs(i64) {
+define i64 @_abs(i64) align 8 {
 $1:
 ; # (if (nil? (eval (cadr Exe))) @ (pos (needNum Exe @)))
 ; # (cadr Exe)
@@ -18562,7 +18562,7 @@ $9:
   ret i64 %18
 }
 
-define i64 @_bitQ(i64) {
+define i64 @_bitQ(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (save (pos (needNum Exe (eval (++ X)))))) (lo...
 ; # (cdr Exe)
@@ -18808,7 +18808,7 @@ $11:
   ret i64 %120
 }
 
-define i64 @_bitAnd(i64) {
+define i64 @_bitAnd(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (save -ZERO (let R (...
 ; # (cdr Exe)
@@ -18972,7 +18972,7 @@ $9:
   ret i64 %74
 }
 
-define i64 @_bitOr(i64) {
+define i64 @_bitOr(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (save -ZERO (let R (...
 ; # (cdr Exe)
@@ -19136,7 +19136,7 @@ $9:
   ret i64 %74
 }
 
-define i64 @_bitXor(i64) {
+define i64 @_bitXor(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (save -ZERO (let R (...
 ; # (cdr Exe)
@@ -19300,7 +19300,7 @@ $9:
   ret i64 %74
 }
 
-define i64 @_sqrt(i64) {
+define i64 @_sqrt(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (when (sign? (needNu...
 ; # (cdr Exe)
@@ -19770,7 +19770,7 @@ $9:
   ret i64 %246
 }
 
-define i64 @initSeed(i64) {
+define i64 @initSeed(i64) align 8 {
 $1:
 ; # (let C 0 (while (pair X) (inc 'C (initSeed (++ X)))) (unless (nil...
 ; # (while (pair X) (inc 'C (initSeed (++ X))))
@@ -19917,7 +19917,7 @@ $6:
   ret i64 %74
 }
 
-define i64 @_seed(i64) {
+define i64 @_seed(i64) align 8 {
 $1:
 ; # (let N (mul 6364136223846793005 (initSeed (eval (cadr Exe)))) (se...
 ; # (cadr Exe)
@@ -19966,7 +19966,7 @@ $2:
   ret i64 %22
 }
 
-define i64 @_hash(i64) {
+define i64 @_hash(i64) align 8 {
 $1:
 ; # (let (N (initSeed (eval (cadr Exe))) C 64 R 0) (loop (when (& (x|...
 ; # (cadr Exe)
@@ -20048,7 +20048,7 @@ $11:
   ret i64 %41
 }
 
-define i64 @_rand(i64) {
+define i64 @_rand(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X)) N (add (mul 6364136223846793005...
 ; # (cdr Exe)
@@ -20185,7 +20185,7 @@ $7:
   ret i64 %64
 }
 
-define i64 @bufSize(i64) {
+define i64 @bufSize(i64) align 8 {
 $1:
 ; # (let N 1 (while (big? Nm) (inc 'N 8) (setq Nm (val (big Nm)))) (s...
 ; # (while (big? Nm) (inc 'N 8) (setq Nm (val (big Nm))))
@@ -20234,7 +20234,7 @@ $7:
   ret i64 %22
 }
 
-define i64 @pathSize(i64) {
+define i64 @pathSize(i64) align 8 {
 $1:
 ; # (let (Len (bufSize Nm) N (if (cnt? Nm) (int @) (val (dig @))) B (...
 ; # (bufSize Nm)
@@ -20330,7 +20330,7 @@ $5:
   ret i64 %30
 }
 
-define i8* @bufString(i64, i8*) {
+define i8* @bufString(i64, i8*) align 8 {
 $1:
 ; # (let Q (push 0 Nm) (prog1 P (while (set P (symByte Q)) (inc 'P)))...
 ; # (push 0 Nm)
@@ -20359,7 +20359,7 @@ $4:
   ret i8* %1
 }
 
-define i8* @pathString(i64, i8*) {
+define i8* @pathString(i64, i8*) align 8 {
 $1:
 ; # (let (Q (push 0 Nm) B (symByte Q)) (prog1 P (when (== B (char "+"...
 ; # (push 0 Nm)
@@ -20470,7 +20470,7 @@ $14:
   ret i8* %1
 }
 
-define i64 @mkChar(i32) {
+define i64 @mkChar(i32) align 8 {
 $1:
 ; # (cond ((>= 127 C) (i64 C)) ((== TOP C) (hex "FF")) ((> (hex "800"...
 ; # (>= 127 C)
@@ -20590,7 +20590,7 @@ $2:
   ret i64 %49
 }
 
-define i64 @mkStr(i8*) {
+define i64 @mkStr(i8*) align 8 {
 $1:
 ; # (if Str (let P (push 4 NIL ZERO NIL) (link (ofs P 2) T) (while (v...
   %1 = icmp ne i8* %0, null
@@ -20652,7 +20652,7 @@ $4:
   ret i64 %27
 }
 
-define i64 @mkStrE(i8*, i8*) {
+define i64 @mkStrE(i8*, i8*) align 8 {
 $1:
 ; # (let P (push 4 NIL ZERO NIL) (link (ofs P 2) T) (loop (? (== Str ...
 ; # (push 4 NIL ZERO NIL)
@@ -20711,7 +20711,7 @@ $4:
   ret i64 %22
 }
 
-define i8 @firstByte(i64) {
+define i8 @firstByte(i64) align 8 {
 $1:
 ; # (cond ((nil? Sym) 0) ((sym? (val (tail Sym))) 0) ((cnt? (name @))...
 ; # (nil? Sym)
@@ -20769,7 +20769,7 @@ $2:
   ret i8 %22
 }
 
-define i32 @firstChar(i64) {
+define i32 @firstChar(i64) align 8 {
 $1:
 ; # (cond ((nil? Sym) 0) ((sym? (val (tail Sym))) 0) (T (symChar (pus...
 ; # (nil? Sym)
@@ -20818,7 +20818,7 @@ $2:
   ret i32 %18
 }
 
-define i1 @isBlank(i64) {
+define i1 @isBlank(i64) align 8 {
 $1:
 ; # (or (nil? X) (and (symb? X) (not (sym? (val (tail X)))) (let P (p...
 ; # (nil? X)
@@ -20896,7 +20896,7 @@ $2:
   ret i1 %26
 }
 
-define i64 @extNm(i32, i64) {
+define i64 @extNm(i32, i64) align 8 {
 $1:
 ; # (& Obj (hex "FFFFF"))
   %2 = and i64 %1, 1048575
@@ -20936,7 +20936,7 @@ $1:
   ret i64 %19
 }
 
-define i32 @objFile(i64) {
+define i32 @objFile(i64) align 8 {
 $1:
 ; # (shr Name 24)
   %1 = lshr i64 %0, 24
@@ -20955,7 +20955,7 @@ $1:
   ret i32 %7
 }
 
-define i64 @objId(i64) {
+define i64 @objId(i64) align 8 {
 $1:
 ; # (shr Name 4)
   %1 = lshr i64 %0, 4
@@ -20976,7 +20976,7 @@ $1:
   ret i64 %8
 }
 
-define void @packAO(i32, i64*) {
+define void @packAO(i32, i64*) align 8 {
 $1:
 ; # (when (> File 15) (packAO (shr File 4) P))
 ; # (> File 15)
@@ -21000,7 +21000,7 @@ $3:
   ret void
 }
 
-define void @packOct(i64, i64*) {
+define void @packOct(i64, i64*) align 8 {
 $1:
 ; # (when (> Obj 7) (packOct (shr Obj 3) P))
 ; # (> Obj 7)
@@ -21024,7 +21024,7 @@ $3:
   ret void
 }
 
-define void @packExtNm(i64, i64*) {
+define void @packExtNm(i64, i64*) align 8 {
 $1:
 ; # (when (objFile Name) (packAO @ P))
 ; # (objFile Name)
@@ -21043,7 +21043,7 @@ $3:
   ret void
 }
 
-define void @pack(i64, i64*) {
+define void @pack(i64, i64*) align 8 {
 $1:
 ; # (when (pair X) (stkChk 0) (loop (pack (++ X) P) (? (atom X))))
 ; # (pair X)
@@ -21184,7 +21184,7 @@ $9:
   ret void
 }
 
-define i64 @chopExtNm(i64) {
+define i64 @chopExtNm(i64) align 8 {
 $1:
 ; # (let (R (link (push $Nil NIL)) N (objId Name)) (loop (let A (+ (&...
 ; # (push $Nil NIL)
@@ -21341,7 +21341,7 @@ $10:
   ret i64 %71
 }
 
-define i64 @cmpLong(i64, i64) {
+define i64 @cmpLong(i64, i64) align 8 {
 $1:
 ; # (loop (? (sub (val (dig X)) (val (dig Y))) (if @@ -1 1)) (setq X ...
   br label %$2
@@ -21465,7 +21465,7 @@ $4:
   ret i64 %64
 }
 
-define i64 @isIntern(i64, i64) {
+define i64 @isIntern(i64, i64) align 8 {
 $1:
 ; # (if (cnt? Name) (let X (car Tree) (loop (? (atom X) 0) (let (S (c...
 ; # (cnt? Name)
@@ -21646,7 +21646,7 @@ $4:
   ret i64 %88
 }
 
-define i64 @isLstIntern(i64, i64) {
+define i64 @isLstIntern(i64, i64) align 8 {
 $1:
 ; # (loop (? (atom Lst) 0) (? (isIntern Name (cdar (car Lst))) @) (sh...
   br label %$2
@@ -21692,7 +21692,7 @@ $4:
   ret i64 %22
 }
 
-define i1 @findSym(i64, i64, i64) {
+define i1 @findSym(i64, i64, i64) align 8 {
 $1:
 ; # (loop (? (atom Lst) NO) (? (== Sym (isIntern Name (cdar (car Lst)...
   br label %$2
@@ -21739,7 +21739,7 @@ $4:
   ret i1 %23
 }
 
-define i64 @intern(i64, i64, i64, i64, i64, i1) {
+define i64 @intern(i64, i64, i64, i64, i64, i1) align 8 {
 $1:
 ; # (if (cnt? Name) (let X (car Tree) (if (pair X) (loop (let (S (car...
 ; # (cnt? Name)
@@ -22305,7 +22305,7 @@ $4:
   ret i64 %283
 }
 
-define i64 @requestSym(i64) {
+define i64 @requestSym(i64) align 8 {
 $1:
 ; # (if (isIntern Name $PrivT) @ (let L (val $Intern) (intern 0 $Nil ...
 ; # (isIntern Name $PrivT)
@@ -22340,7 +22340,7 @@ $4:
   ret i64 %16
 }
 
-define i64 @extern(i64) {
+define i64 @extern(i64) align 8 {
 $1:
 ; # (need3)
   call void @need3()
@@ -22846,7 +22846,7 @@ $20:
   ret i64 %292
 }
 
-define void @delNode(i64, i64) {
+define void @delNode(i64, i64) align 8 {
 $1:
 ; # (let Y (cdr X) (cond ((atom (car Y)) (set P (cdr Y))) ((atom (cdr...
 ; # (cdr X)
@@ -22995,7 +22995,7 @@ $2:
   ret void
 }
 
-define void @unintern(i64, i64, i64) {
+define void @unintern(i64, i64, i64) align 8 {
 $1:
 ; # (if (cnt? Name) (loop (let X (car P) (? (atom X)) (let (S (car X)...
 ; # (cnt? Name)
@@ -23211,7 +23211,7 @@ $4:
   ret void
 }
 
-define i64 @_name(i64) {
+define i64 @_name(i64) align 8 {
 $1:
 ; # (let Tail (val (tail (needSymb Exe (eval (cadr Exe))))) (if (sym?...
 ; # (cadr Exe)
@@ -23331,7 +23331,7 @@ $11:
   ret i64 %56
 }
 
-define i64 @_nsp(i64) {
+define i64 @_nsp(i64) align 8 {
 $1:
 ; # (let Sym (needSymb Exe (eval (cadr Exe))) (if (sym? (val (tail Sy...
 ; # (cadr Exe)
@@ -23449,7 +23449,7 @@ $11:
   ret i64 %53
 }
 
-define i64 @_spQ(i64) {
+define i64 @_spQ(i64) align 8 {
 $1:
 ; # (if (isBlank (eval (cadr Exe))) $T $Nil)
 ; # (cadr Exe)
@@ -23489,7 +23489,7 @@ $9:
   ret i64 %15
 }
 
-define i64 @_patQ(i64) {
+define i64 @_patQ(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (and (symb? X) (== (firstChar X) (ch...
 ; # (cadr Exe)
@@ -23542,7 +23542,7 @@ $11:
   ret i64 %20
 }
 
-define i64 @_funQ(i64) {
+define i64 @_funQ(i64) align 8 {
 $1:
 ; # (if (funq (eval (cadr Exe))) @ $Nil)
 ; # (cadr Exe)
@@ -23583,7 +23583,7 @@ $9:
   ret i64 %16
 }
 
-define i64 @_getd(i64) {
+define i64 @_getd(i64) align 8 {
 $1:
 ; # (let (X (eval (cadr Exe)) V T) (cond ((not (symb? X)) $Nil) ((fun...
 ; # (cadr Exe)
@@ -23661,7 +23661,7 @@ $7:
   ret i64 %33
 }
 
-define i64 @consTree(i64, i64) {
+define i64 @consTree(i64, i64) align 8 {
 $1:
 ; # (if (atom P) Lst (let (Q (link (push NIL NIL)) Tos (link (push -Z...
 ; # (atom P)
@@ -23891,7 +23891,7 @@ $4:
   ret i64 %118
 }
 
-define i64 @_all(i64) {
+define i64 @_all(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (cond ((nil? X) (let Y (val $Intern) (lo...
 ; # (cadr Exe)
@@ -24139,7 +24139,7 @@ $7:
   ret i64 %128
 }
 
-define i64 @_symbols(i64) {
+define i64 @_symbols(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (atom X) (val $Intern) (let Y (eval (++ X)) ...
 ; # (cdr Exe)
@@ -24546,7 +24546,7 @@ $4:
   ret i64 %199
 }
 
-define i64 @_intern(i64) {
+define i64 @_intern(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Sym (save (needSymb Exe (eval (++ X))))) (cond ...
 ; # (cdr Exe)
@@ -24726,7 +24726,7 @@ $9:
   ret i64 %83
 }
 
-define i64 @_boxQ(i64) {
+define i64 @_boxQ(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (and (symb? X) (not (sym? (val (tail...
 ; # (cadr Exe)
@@ -24804,7 +24804,7 @@ $15:
   ret i64 %33
 }
 
-define i64 @_strQ(i64) {
+define i64 @_strQ(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (cond ((not (symb? X)) $Nil) ((or (sym? ...
 ; # (cadr Exe)
@@ -24887,7 +24887,7 @@ $7:
   ret i64 %35
 }
 
-define i64 @_zap(i64) {
+define i64 @_zap(i64) align 8 {
 $1:
 ; # (let Sym (needSymb Exe (eval (cadr Exe))) (if (sym? (val (tail Sy...
 ; # (cadr Exe)
@@ -24973,7 +24973,7 @@ $11:
   ret i64 %13
 }
 
-define i64 @_chop(i64) {
+define i64 @_chop(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (or (pair X) (nil? X)) X (let Tail (...
 ; # (cadr Exe)
@@ -25155,7 +25155,7 @@ $11:
   ret i64 %85
 }
 
-define i64 @_pack(i64) {
+define i64 @_pack(i64) align 8 {
 $1:
 ; # (save -ZERO (let (X (cdr Exe) P (push 4 NIL ZERO NIL)) (link (ofs...
   %1 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
@@ -25246,7 +25246,7 @@ $4:
   ret i64 %41
 }
 
-define i64 @_glue(i64) {
+define i64 @_glue(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X)))) (if (atom (eval (++ X))...
 ; # (cdr Exe)
@@ -25397,7 +25397,7 @@ $14:
   ret i64 %74
 }
 
-define i64 @_text(i64) {
+define i64 @_text(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (evSym X)) (if (nil? Y) Y (let (P (push 0 (xN...
 ; # (cdr Exe)
@@ -25677,7 +25677,7 @@ $4:
   ret i64 %156
 }
 
-define i1 @preStr(i64, i8, i64*) {
+define i1 @preStr(i64, i8, i64*) align 8 {
 $1:
 ; # (let (Q (push 0 (i64 Nm)) C (symByte Q)) (loop (? (<> B C) NO) (?...
 ; # (i64 Nm)
@@ -25738,7 +25738,7 @@ $4:
   ret i1 %27
 }
 
-define i1 @subStr(i64, i64) {
+define i1 @subStr(i64, i64) align 8 {
 $1:
 ; # (or (nil? X) (== ZERO (setq X (xName 0 X))) (let (P (push 0 (xNam...
 ; # (nil? X)
@@ -25811,7 +25811,7 @@ $2:
   ret i1 %30
 }
 
-define i64 @_preQ(i64) {
+define i64 @_preQ(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (evSym X)) Z (evSym (shift X))) (cond (...
 ; # (cdr Exe)
@@ -25901,7 +25901,7 @@ $2:
   ret i64 %37
 }
 
-define i64 @_subQ(i64) {
+define i64 @_subQ(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (evSym X)) Z (evSym (shift X))) (if (su...
 ; # (cdr Exe)
@@ -25947,7 +25947,7 @@ $4:
   ret i64 %18
 }
 
-define i64 @_val(i64) {
+define i64 @_val(i64) align 8 {
 $1:
 ; # (let V (needVar Exe (eval (cadr Exe))) (when (and (sym? V) (sym? ...
 ; # (cadr Exe)
@@ -26013,7 +26013,7 @@ $12:
   ret i64 %25
 }
 
-define i64 @_set(i64) {
+define i64 @_set(i64) align 8 {
 $1:
 ; # (save -ZERO (let X (cdr Exe) (loop (let Y (safe (needChkVar Exe (...
   %1 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
@@ -26163,7 +26163,7 @@ $24:
   ret i64 %61
 }
 
-define i64 @_setq(i64) {
+define i64 @_setq(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (set (needChkVar Exe (++ X)) (eval ...
 ; # (cdr Exe)
@@ -26244,7 +26244,7 @@ $15:
   ret i64 %32
 }
 
-define i64 @_swap(i64) {
+define i64 @_swap(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (needChkVar Exe (eval (++ X))))) (when ...
 ; # (cdr Exe)
@@ -26369,7 +26369,7 @@ $17:
   ret i64 %48
 }
 
-define i64 @_xchg(i64) {
+define i64 @_xchg(i64) align 8 {
 $1:
 ; # (save -ZERO (let X (cdr Exe) (loop (let Y (safe (needChkVar Exe (...
   %1 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
@@ -26577,7 +26577,7 @@ $34:
   ret i64 %87
 }
 
-define i64 @_on(i64) {
+define i64 @_on(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (set (needChkVar Exe (++ X)) $T) (? (atom ...
 ; # (cdr Exe)
@@ -26633,7 +26633,7 @@ $10:
   ret i64 %20
 }
 
-define i64 @_off(i64) {
+define i64 @_off(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (set (needChkVar Exe (++ X)) $Nil) (? (ato...
 ; # (cdr Exe)
@@ -26689,7 +26689,7 @@ $10:
   ret i64 %20
 }
 
-define i64 @_onOff(i64) {
+define i64 @_onOff(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let (Y (needChkVar Exe (++ X)) Z (if (nil...
 ; # (cdr Exe)
@@ -26762,7 +26762,7 @@ $13:
   ret i64 %27
 }
 
-define i64 @_zero(i64) {
+define i64 @_zero(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (set (needChkVar Exe (++ X)) ZERO) (? (ato...
 ; # (cdr Exe)
@@ -26818,7 +26818,7 @@ $10:
   ret i64 %20
 }
 
-define i64 @_one(i64) {
+define i64 @_one(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (set (needChkVar Exe (++ X)) ONE) (? (atom...
 ; # (cdr Exe)
@@ -26874,7 +26874,7 @@ $10:
   ret i64 %20
 }
 
-define i64 @_default(i64) {
+define i64 @_default(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (needChkVar Exe (++ X)) (when (nil?...
 ; # (cdr Exe)
@@ -26972,7 +26972,7 @@ $17:
   ret i64 %40
 }
 
-define i64 @_push(i64) {
+define i64 @_push(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (needChkVar Exe (eval (++ X))))) (when ...
 ; # (cdr Exe)
@@ -27123,7 +27123,7 @@ $24:
   ret i64 %63
 }
 
-define i64 @_push1(i64) {
+define i64 @_push1(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (needChkVar Exe (eval (++ X))))) (when ...
 ; # (cdr Exe)
@@ -27309,7 +27309,7 @@ $32:
   ret i64 %80
 }
 
-define i64 @_push1q(i64) {
+define i64 @_push1q(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (needChkVar Exe (eval (++ X))))) (when ...
 ; # (cdr Exe)
@@ -27495,7 +27495,7 @@ $32:
   ret i64 %80
 }
 
-define i64 @_pop(i64) {
+define i64 @_pop(i64) align 8 {
 $1:
 ; # (let X (needChkVar Exe (eval (cadr Exe))) (when (and (sym? X) (sy...
 ; # (cadr Exe)
@@ -27594,7 +27594,7 @@ $19:
   ret i64 %37
 }
 
-define i64 @_popq(i64) {
+define i64 @_popq(i64) align 8 {
 $1:
 ; # (let X (needChkVar Exe (cadr Exe)) (if (atom (val X)) @ (set X (c...
 ; # (cadr Exe)
@@ -27650,7 +27650,7 @@ $10:
   ret i64 %21
 }
 
-define i64 @_cut(i64) {
+define i64 @_cut(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (evCnt Exe X)) (if (le0 N) $Nil (let Y (needC...
 ; # (cdr Exe)
@@ -27852,7 +27852,7 @@ $4:
   ret i64 %100
 }
 
-define i64 @_del(i64) {
+define i64 @_del(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Var (save (needChkVar Ex...
 ; # (cdr Exe)
@@ -28142,7 +28142,7 @@ $29:
   ret i64 %137
 }
 
-define i64 @_queue(i64) {
+define i64 @_queue(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (needChkVar Exe (eval (++ X))))) (when ...
 ; # (cdr Exe)
@@ -28308,7 +28308,7 @@ $24:
   ret i64 %46
 }
 
-define i64 @_fifo(i64) {
+define i64 @_fifo(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (needChkVar Exe (eval (++ X))))) (when ...
 ; # (cdr Exe)
@@ -28588,7 +28588,7 @@ $17:
   ret i64 %137
 }
 
-define i64 @_enum(i64) {
+define i64 @_enum(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Var (save (needChkVar Exe (eval (++ X)))) Cnt T...
 ; # (cdr Exe)
@@ -29250,7 +29250,7 @@ $15:
   ret i64 %380
 }
 
-define i64 @_enumQ(i64) {
+define i64 @_enumQ(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) P (save (eval (++ X))) Cnt T) (loop (? (le0 (se...
 ; # (cdr Exe)
@@ -29426,7 +29426,7 @@ $9:
   ret i64 %97
 }
 
-define i64 @idxPut(i64, i64) {
+define i64 @idxPut(i64, i64) align 8 {
 $1:
 ; # (let X (val Var) (if (pair X) (loop (? (=0 (compare (car X) Key))...
 ; # (val Var)
@@ -29578,7 +29578,7 @@ $4:
   ret i64 %72
 }
 
-define i64 @idxGet(i64, i64) {
+define i64 @idxGet(i64, i64) align 8 {
 $1:
 ; # (let X (val Var) (loop (? (atom X) $Nil) (? (=0 (compare (car X) ...
 ; # (val Var)
@@ -29644,7 +29644,7 @@ $4:
   ret i64 %29
 }
 
-define i64 @idxDel(i64, i64) {
+define i64 @idxDel(i64, i64) align 8 {
 $1:
 ; # (loop (let X (val Var) (? (atom X) $Nil) (let Y (cdr X) (let I (c...
   br label %$2
@@ -29875,7 +29875,7 @@ $4:
   ret i64 %130
 }
 
-define i64 @_idx(i64) {
+define i64 @_idx(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Var (needChkVar Exe (eval (++ X)))) (if (atom X...
 ; # (cdr Exe)
@@ -30053,7 +30053,7 @@ $15:
   ret i64 %83
 }
 
-define i64 @_lup(i64) {
+define i64 @_lup(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) P (save (eval (++ X)))) (if (atom P) P (let Key...
 ; # (cdr Exe)
@@ -30629,7 +30629,7 @@ $9:
   ret i64 %312
 }
 
-define void @put(i64, i64, i64) {
+define void @put(i64, i64, i64) align 8 {
 $1:
 ; # (let Tail (val (tail Sym)) (unless (num? Tail) (let (L (any (& Ta...
 ; # (tail Sym)
@@ -31159,7 +31159,7 @@ $55:
   ret void
 }
 
-define void @putn(i64, i64, i64, i64) {
+define void @putn(i64, i64, i64, i64) align 8 {
 $1:
 ; # (nond ((num? Key) (loop (let X (car Lst) (? (and (pair X) (== Key...
 ; # (num? Key)
@@ -31301,7 +31301,7 @@ $2:
   ret void
 }
 
-define i64 @get(i64, i64) {
+define i64 @get(i64, i64) align 8 {
 $1:
 ; # (if (== Key ZERO) (val Sym) (let Tail (val (tail Sym)) (unless (n...
 ; # (== Key ZERO)
@@ -31542,7 +31542,7 @@ $4:
   ret i64 %116
 }
 
-define i64 @getn(i64, i64, i64) {
+define i64 @getn(i64, i64, i64) align 8 {
 $1:
 ; # (when (num? X) (argErr Exe X))
 ; # (num? X)
@@ -31706,7 +31706,7 @@ $6:
   ret i64 %80
 }
 
-define i64 @prop(i64, i64) {
+define i64 @prop(i64, i64) align 8 {
 $1:
 ; # (let Tail (val (tail Sym)) (unless (num? Tail) (let (L (any (& Ta...
 ; # (tail Sym)
@@ -31955,7 +31955,7 @@ $29:
   ret i64 %109
 }
 
-define i64 @_put(i64) {
+define i64 @_put(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Key T) (loop (setq Key (...
 ; # (cdr Exe)
@@ -32210,7 +32210,7 @@ $24:
   ret i64 %77
 }
 
-define i64 @_get(i64) {
+define i64 @_get(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (when (pair X) (save Y (loop (...
 ; # (cdr Exe)
@@ -32321,7 +32321,7 @@ $8:
   ret i64 %56
 }
 
-define i64 @_prop(i64) {
+define i64 @_prop(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Key T) (loop (setq Key (...
 ; # (cdr Exe)
@@ -32487,7 +32487,7 @@ $18:
   ret i64 %81
 }
 
-define i64 @_semicol(i64) {
+define i64 @_semicol(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (when (pair X) (save Y (loop (...
 ; # (cdr Exe)
@@ -32579,7 +32579,7 @@ $8:
   ret i64 %48
 }
 
-define i64 @_setCol(i64) {
+define i64 @_setCol(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (val $This) Key T) (loop (setq Key (++ X)) (?...
 ; # (cdr Exe)
@@ -32760,7 +32760,7 @@ $14:
   ret i64 %42
 }
 
-define i64 @_col(i64) {
+define i64 @_col(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (val $This)) (loop (setq Y (getn Exe Y (++ X)...
 ; # (cdr Exe)
@@ -32802,7 +32802,7 @@ $4:
   ret i64 %21
 }
 
-define i64 @_propCol(i64) {
+define i64 @_propCol(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (val $This) Key T) (loop (setq Key (++ X)) (?...
 ; # (cdr Exe)
@@ -32894,7 +32894,7 @@ $8:
   ret i64 %46
 }
 
-define i64 @_putl(i64) {
+define i64 @_putl(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z T) (loop (setq Z (eval...
 ; # (cdr Exe)
@@ -33186,7 +33186,7 @@ $34:
   ret i64 %47
 }
 
-define i64 @_getl(i64) {
+define i64 @_getl(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (while (pair (shift X)...
 ; # (cdr Exe)
@@ -33383,7 +33383,7 @@ $21:
   ret i64 %96
 }
 
-define void @wipe(i64, i64) {
+define void @wipe(i64, i64) align 8 {
 $1:
 ; # (let (Tail (val (tail (needSymb Exe X))) Nm (name (& Tail -9))) (...
 ; # (needSymb Exe X)
@@ -33473,7 +33473,7 @@ $9:
   ret void
 }
 
-define i64 @_wipe(i64) {
+define i64 @_wipe(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (unless (nil? X) (if (atom X) (wipe Exe ...
 ; # (cadr Exe)
@@ -33546,7 +33546,7 @@ $8:
   ret i64 %13
 }
 
-define i64 @meta(i64, i64) {
+define i64 @meta(i64, i64) align 8 {
 $1:
 ; # (loop (? (atom X) $Nil) (let Y (car X) (when (symb? Y) (? (not (n...
   br label %$2
@@ -33626,7 +33626,7 @@ $4:
   ret i64 %33
 }
 
-define i64 @_meta(i64) {
+define i64 @_meta(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X)))) (when (num? Y) (argErr ...
 ; # (cdr Exe)
@@ -33797,7 +33797,7 @@ $20:
   ret i64 %80
 }
 
-define i64 @_lowQ(i64) {
+define i64 @_lowQ(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (and (symb? X) (isLowc (firstChar X)...
 ; # (cadr Exe)
@@ -33850,7 +33850,7 @@ $11:
   ret i64 %20
 }
 
-define i64 @_uppQ(i64) {
+define i64 @_uppQ(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (and (symb? X) (isUppc (firstChar X)...
 ; # (cadr Exe)
@@ -33903,7 +33903,7 @@ $11:
   ret i64 %20
 }
 
-define i64 @_lowc(i64) {
+define i64 @_lowc(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (or (not (symb? X)) (nil? X)) X (let...
 ; # (cadr Exe)
@@ -34018,7 +34018,7 @@ $11:
   ret i64 %51
 }
 
-define i64 @_uppc(i64) {
+define i64 @_uppc(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (or (not (symb? X)) (nil? X)) X (let...
 ; # (cadr Exe)
@@ -34149,7 +34149,7 @@ $11:
   ret i64 %55
 }
 
-define i64 @_fold(i64) {
+define i64 @_fold(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (if (or (not (symb? Y)) (nil? ...
 ; # (cdr Exe)
@@ -34303,7 +34303,7 @@ $11:
   ret i64 %69
 }
 
-define i1 @equal(i64, i64) {
+define i1 @equal(i64, i64) align 8 {
 $1:
 ; # (cond ((== X Y) YES) ((cnt? X) NO) ((big? X) (if (cnt? Y) NO (whe...
 ; # (== X Y)
@@ -34993,7 +34993,7 @@ $2:
   ret i1 %404
 }
 
-define i64 @compare(i64, i64) {
+define i64 @compare(i64, i64) align 8 {
 $1:
 ; # (cond ((== X Y) 0) ((nil? X) -1) ((t? X) 1) ((num? X) (cond ((num...
 ; # (== X Y)
@@ -35735,14 +35735,14 @@ $2:
   ret i64 %432
 }
 
-define void @undefined(i64, i64) {
+define void @undefined(i64, i64) align 8 {
 $1:
 ; # (err Exe Fun ($ "Undefined") null)
   call void @err(i64 %1, i64 %0, i8* bitcast ([10 x i8]* @$26 to i8*), i8* null)
   unreachable
 }
 
-define i64 @evExpr(i64, i64) {
+define i64 @evExpr(i64, i64) align 8 {
 $1:
 ; # (stkChk Exe)
   %2 = load i8*, i8** @$StkLimit
@@ -36588,7 +36588,7 @@ $112:
   ret i64 %432
 }
 
-define i64 @evList(i64) {
+define i64 @evList(i64) align 8 {
 $1:
 ; # (let Fun (car Exe) (cond ((num? Fun) Exe) ((sym? Fun) (loop (sigC...
 ; # (car Exe)
@@ -36821,7 +36821,7 @@ $2:
   ret i64 %107
 }
 
-define void @openErr(i64, i64) {
+define void @openErr(i64, i64) align 8 {
 $1:
 ; # (strErrno)
   %2 = call i8* @strErrno()
@@ -36830,7 +36830,7 @@ $1:
   unreachable
 }
 
-define void @closeErr() {
+define void @closeErr() align 8 {
 $1:
 ; # (strErrno)
   %0 = call i8* @strErrno()
@@ -36839,7 +36839,7 @@ $1:
   unreachable
 }
 
-define void @pipeErr(i64) {
+define void @pipeErr(i64) align 8 {
 $1:
 ; # (strErrno)
   %1 = call i8* @strErrno()
@@ -36848,21 +36848,21 @@ $1:
   unreachable
 }
 
-define void @sizeErr(i64) {
+define void @sizeErr(i64) align 8 {
 $1:
 ; # (err Exe 0 ($ "Size overflow") null)
   call void @err(i64 %0, i64 0, i8* bitcast ([14 x i8]* @$30 to i8*), i8* null)
   unreachable
 }
 
-define void @eofErr() {
+define void @eofErr() align 8 {
 $1:
 ; # (err 0 0 ($ "EOF Overrun") null)
   call void @err(i64 0, i64 0, i8* bitcast ([12 x i8]* @$31 to i8*), i8* null)
   unreachable
 }
 
-define void @badInput() {
+define void @badInput() align 8 {
 $1:
 ; # (let S (b8 2) (set S (i8 (val $Chr))) (set 2 S 0) (err 0 0 ($ "Ba...
 ; # (b8 2)
@@ -36881,14 +36881,14 @@ $1:
   unreachable
 }
 
-define void @badFd(i64, i64) {
+define void @badFd(i64, i64) align 8 {
 $1:
 ; # (err Exe Fd ($ "Bad FD") null)
   call void @err(i64 %0, i64 %1, i8* bitcast ([7 x i8]* @$33 to i8*), i8* null)
   unreachable
 }
 
-define void @writeErr(i8*) {
+define void @writeErr(i8*) align 8 {
 $1:
 ; # (strErrno)
   %1 = call i8* @strErrno()
@@ -36897,7 +36897,7 @@ $1:
   unreachable
 }
 
-define void @selectErr(i64) {
+define void @selectErr(i64) align 8 {
 $1:
 ; # (strErrno)
   %1 = call i8* @strErrno()
@@ -36906,7 +36906,7 @@ $1:
   unreachable
 }
 
-define void @closeOnExec(i64, i32) {
+define void @closeOnExec(i64, i32) align 8 {
 $1:
 ; # (when (lt0 (fcntlCloExec Fd)) (err Exe 0 ($ "SETFD %s") (strErrno...
 ; # (fcntlCloExec Fd)
@@ -36924,7 +36924,7 @@ $3:
   ret void
 }
 
-define void @rdLockWait(i32, i64) {
+define void @rdLockWait(i32, i64) align 8 {
 $1:
 ; # (while (lt0 (rdLock Fd 0 Len YES)) (unless (== (gErrno) EINTR) (l...
   br label %$2
@@ -36951,7 +36951,7 @@ $4:
   ret void
 }
 
-define void @wrLockWait(i32, i64) {
+define void @wrLockWait(i32, i64) align 8 {
 $1:
 ; # (while (lt0 (wrLock Fd 0 Len YES)) (unless (== (gErrno) EINTR) (l...
   br label %$2
@@ -36978,7 +36978,7 @@ $4:
   ret void
 }
 
-define i8* @initInFile(i32, i8*) {
+define i8* @initInFile(i32, i8*) align 8 {
 $1:
 ; # (let I (val $InFDs) (when (>= Fd I) (let P (set $InFiles (i8** (a...
 ; # (val $InFDs)
@@ -37081,7 +37081,7 @@ $9:
   ret i8* %25
 }
 
-define i8* @initOutFile(i32) {
+define i8* @initOutFile(i32) align 8 {
 $1:
 ; # (let I (val $OutFDs) (when (>= Fd I) (let P (set $OutFiles (i8** ...
 ; # (val $OutFDs)
@@ -37171,7 +37171,7 @@ $9:
   ret i8* %24
 }
 
-define void @closeInFile(i32) {
+define void @closeInFile(i32) align 8 {
 $1:
 ; # (when (> (val $InFDs) Fd) (let (P (ofs (val $InFiles) Fd) In (val...
 ; # (val $InFDs)
@@ -37232,7 +37232,7 @@ $3:
   ret void
 }
 
-define void @closeOutFile(i32) {
+define void @closeOutFile(i32) align 8 {
 $1:
 ; # (when (> (val $OutFDs) Fd) (let (P (ofs (val $OutFiles) Fd) Out (...
 ; # (val $OutFDs)
@@ -37278,7 +37278,7 @@ $3:
   ret void
 }
 
-define i32 @slow(i8*) {
+define i32 @slow(i8*) align 8 {
 $1:
 ; # (let In: (inFile In) (In: ix 0) (loop (? (ge0 (i32 (read (In: fd)...
 ; # (In: ix 0)
@@ -37336,7 +37336,7 @@ $4:
   ret i32 %18
 }
 
-define i32 @slowNb(i8*) {
+define i32 @slowNb(i8*) align 8 {
 $1:
 ; # (let In: (inFile In) (loop (let (Flg (nonBlocking (In: fd)) N (i3...
 ; # (loop (let (Flg (nonBlocking (In: fd)) N (i32 (read (In: fd) (In:...
@@ -37431,7 +37431,7 @@ $4:
   ret i32 %33
 }
 
-define i1 @rdBytes(i32, i8*, i32) {
+define i1 @rdBytes(i32, i8*, i32) align 8 {
 $1:
 ; # (loop (loop (? (gt0 (i32 (read Fd P (i64 Cnt)))) (inc 'P @) (dec ...
   br label %$2
@@ -37521,7 +37521,7 @@ $14:
   ret i1 %41
 }
 
-define i64 @rdBytesNb(i32, i8*, i32) {
+define i64 @rdBytesNb(i32, i8*, i32) align 8 {
 $1:
 ; # (loop (let (Flg (nonBlocking Fd) N (i32 (read Fd P (i64 Cnt)))) (...
   br label %$2
@@ -37689,7 +37689,7 @@ $18:
   ret i64 %81
 }
 
-define i1 @wrBytes(i32, i8*, i32) {
+define i1 @wrBytes(i32, i8*, i32) align 8 {
 $1:
 ; # (loop (let N (i32 (write Fd P (i64 Cnt))) (if (lt0 N) (let E (gEr...
   br label %$2
@@ -37811,7 +37811,7 @@ $7:
   ret i1 %52
 }
 
-define void @clsChild(i8*) {
+define void @clsChild(i8*) align 8 {
 $1:
 ; # (let Cld: (child Cld) (when (== (Cld: pid) (val $Talking)) (set $...
 ; # (when (== (Cld: pid) (val $Talking)) (set $Talking 0))
@@ -37853,7 +37853,7 @@ $3:
   ret void
 }
 
-define void @wrChild(i8*, i8*, i32) {
+define void @wrChild(i8*, i8*, i32) align 8 {
 $1:
 ; # (let (Cld: (child Cld) C (Cld: cnt)) (unless C (loop (let N (i32 ...
 ; # (Cld: cnt)
@@ -38014,7 +38014,7 @@ $19:
   ret void
 }
 
-define i1 @flush(i8*) {
+define i1 @flush(i8*) align 8 {
 $1:
 ; # (ifn Out YES (let Out: (outFile Out) (ifn (Out: ix) YES (Out: ix ...
   %1 = icmp ne i8* %0, null
@@ -38053,7 +38053,7 @@ $4:
   ret i1 %13
 }
 
-define void @flushAll() {
+define void @flushAll() align 8 {
 $1:
 ; # (let (A (val $OutFiles) N (val $OutFDs) I (i32 0)) (while (> N I)...
 ; # (val $OutFiles)
@@ -38084,7 +38084,7 @@ $4:
   ret void
 }
 
-define i32 @stdinByte() {
+define i32 @stdinByte() align 8 {
 $1:
 ; # (let In: (inFile (val (val $InFiles))) (cond ((and (ge0 (In: fd))...
 ; # (val $InFiles)
@@ -38169,7 +38169,7 @@ $2:
   ret i32 %31
 }
 
-define i32 @getBinary() {
+define i32 @getBinary() align 8 {
 $1:
 ; # (let (In: (inFile (val $InFile)) I (In: ix)) (when (== I (In: cnt...
 ; # (val $InFile)
@@ -38230,7 +38230,7 @@ $3:
   ret i32 %24
 }
 
-define i64 @binRead() {
+define i64 @binRead() align 8 {
 $1:
 ; # (case (call $GetBin) (NIX $Nil) (BEG (ifn (binRead) 0 (let (X (co...
 ; # (call $GetBin)
@@ -38763,7 +38763,7 @@ $3:
   ret i64 %209
 }
 
-define void @prCnt(i8, i64) {
+define void @prCnt(i8, i64) align 8 {
 $1:
 ; # (let N Num (while (setq N (shr N 8)) (inc 'Tag 4)))
 ; # (while (setq N (shr N 8)) (inc 'Tag 4))
@@ -38817,7 +38817,7 @@ $7:
   ret void
 }
 
-define void @binPrint(i64) {
+define void @binPrint(i64) align 8 {
 $1:
 ; # (cond ((cnt? X) (tailcall (prCnt (+ NUMBER 4) (shr X 3)))) ((big?...
 ; # (cnt? X)
@@ -39690,7 +39690,7 @@ $2:
   ret void
 }
 
-define void @pr(i64) {
+define void @pr(i64) align 8 {
 $1:
 ; # (set $PutBin (fun (void i8) _putStdout))
 ; # (fun (void i8) _putStdout)
@@ -39700,7 +39700,7 @@ $1:
   ret void
 }
 
-define void @putTell(i8) {
+define void @putTell(i8) align 8 {
 $1:
 ; # (let P (val $Ptr) (set P B) (when (== (set $Ptr (inc P)) (val $En...
 ; # (val $Ptr)
@@ -39725,7 +39725,7 @@ $3:
   ret void
 }
 
-define void @prTell(i64) {
+define void @prTell(i64) align 8 {
 $1:
 ; # (set $PutBin (fun (void i8) putTell) $Extn 0)
 ; # (fun (void i8) putTell)
@@ -39736,7 +39736,7 @@ $1:
   ret void
 }
 
-define void @tellBeg(i8*) {
+define void @tellBeg(i8*) align 8 {
 $1:
 ; # (set $TellBuf P $End (ofs P (dec (val PipeBufSize))) (inc 'P 8) B...
   store i8* %0, i8** @$TellBuf
@@ -39756,7 +39756,7 @@ $1:
   ret void
 }
 
-define void @tellEnd(i32) {
+define void @tellEnd(i32) align 8 {
 $1:
 ; # (let (P (val $Ptr) Q (val $TellBuf)) (set P END) (inc 'P) (let (D...
 ; # (val $Ptr)
@@ -39898,7 +39898,7 @@ $8:
   ret void
 }
 
-define void @unsync() {
+define void @unsync() align 8 {
 $1:
 ; # (when (val $Tell) (let Fd @ (unless (wrBytes Fd (i8* (push 0)) 8)...
 ; # (val $Tell)
@@ -39930,7 +39930,7 @@ $3:
   ret void
 }
 
-define void @waitFile(i32) {
+define void @waitFile(i32) align 8 {
 $1:
 ; # (let Res (b32 1) (while (lt0 (waitpid Pid Res 0)) (unless (== (gE...
 ; # (b32 1)
@@ -39978,7 +39978,7 @@ $4:
   ret void
 }
 
-define i32 @currFd(i64) {
+define i32 @currFd(i64) align 8 {
 $1:
 ; # (let (In (val $InFrames) Out (val $OutFrames)) (nond ((or In Out)...
 ; # (val $InFrames)
@@ -40070,7 +40070,7 @@ $2:
   ret i32 %36
 }
 
-define void @pushInFile(i8*, i8*, i32) {
+define void @pushInFile(i8*, i8*, i32) align 8 {
 $1:
 ; # (let Io: (ioFrame Io) (when (val $InFile) ((inFile @) chr (val $C...
 ; # (when (val $InFile) ((inFile @) chr (val $Chr)))
@@ -40126,7 +40126,7 @@ $5:
   ret void
 }
 
-define void @pushOutFile(i8*, i8*, i32) {
+define void @pushOutFile(i8*, i8*, i32) align 8 {
 $1:
 ; # (let Io: (ioFrame Io) (when (Io: link (val $OutFrames)) ((ioFrame...
 ; # (when (Io: link (val $OutFrames)) ((ioFrame @) fun (val (i8** $Pu...
@@ -40163,7 +40163,7 @@ $3:
   ret void
 }
 
-define void @pushErrFile(i8*) {
+define void @pushErrFile(i8*) align 8 {
 $1:
 ; # ((ctFrame Ct) link (val $ErrFrames))
   %1 = bitcast i8* %0 to i8**
@@ -40174,7 +40174,7 @@ $1:
   ret void
 }
 
-define void @pushCtlFile(i8*) {
+define void @pushCtlFile(i8*) align 8 {
 $1:
 ; # ((ctFrame Ct) link (val $CtlFrames))
   %1 = bitcast i8* %0 to i8**
@@ -40185,7 +40185,7 @@ $1:
   ret void
 }
 
-define void @popInFiles() {
+define void @popInFiles() align 8 {
 $1:
 ; # (let (Io: (ioFrame (val $InFrames)) In: (inFile (Io: file))) (whe...
 ; # (val $InFrames)
@@ -40255,7 +40255,7 @@ $3:
   ret void
 }
 
-define void @tosInFile() {
+define void @tosInFile() align 8 {
 $1:
 ; # (let Io: (ioFrame (val $InFrames)) (set $Chr ((inFile (set $InFil...
 ; # (val $InFrames)
@@ -40282,7 +40282,7 @@ $1:
   ret void
 }
 
-define void @popOutFiles() {
+define void @popOutFiles() align 8 {
 $1:
 ; # (val $OutFile)
   %0 = load i8*, i8** @$OutFile
@@ -40346,7 +40346,7 @@ $3:
   ret void
 }
 
-define void @tosOutFile() {
+define void @tosOutFile() align 8 {
 $1:
 ; # (let Io: (ioFrame (val $OutFrames)) (set $OutFile (Io: file) (i8*...
 ; # (val $OutFrames)
@@ -40367,7 +40367,7 @@ $1:
   ret void
 }
 
-define void @popErrFiles() {
+define void @popErrFiles() align 8 {
 $1:
 ; # (let Ct: (ctFrame (val $ErrFrames)) (dup2 (Ct: fd) 2) (close (Ct:...
 ; # (val $ErrFrames)
@@ -40392,7 +40392,7 @@ $1:
   ret void
 }
 
-define void @popCtlFiles() {
+define void @popCtlFiles() align 8 {
 $1:
 ; # (let Ct: (ctFrame (val $CtlFrames)) (if (ge0 (Ct: fd)) (close @) ...
 ; # (val $CtlFrames)
@@ -40425,7 +40425,7 @@ $4:
   ret void
 }
 
-define i64 @_path(i64) {
+define i64 @_path(i64) align 8 {
 $1:
 ; # (let Nm (xName Exe (evSym (cdr Exe))) (mkStr (pathString Nm (b8 (...
 ; # (cdr Exe)
@@ -40447,7 +40447,7 @@ $1:
   ret i64 %9
 }
 
-define i64* @pollfd(i32) {
+define i64* @pollfd(i32) align 8 {
 $1:
 ; # (let I (val $Nfds) (when (>= Fd I) (let P (set $Poll (i64* (alloc...
 ; # (val $Nfds)
@@ -40507,7 +40507,7 @@ $3:
   ret i64* %20
 }
 
-define i1 @hasData(i32) {
+define i1 @hasData(i32) align 8 {
 $1:
 ; # (and (> (val $InFDs) Fd) (val (ofs (val $InFiles) Fd)) (let In: (...
 ; # (val $InFDs)
@@ -40554,7 +40554,7 @@ $2:
   ret i1 %19
 }
 
-define i1 @inReady(i32, i1) {
+define i1 @inReady(i32, i1) align 8 {
 $1:
 ; # (let P (pollfd Fd) (cond ((>= Fd (val $InFDs)) (readyIn P)) ((=0 ...
 ; # (pollfd Fd)
@@ -40642,7 +40642,7 @@ $2:
   ret i1 %30
 }
 
-define i64 @waitFd(i64, i32, i64) {
+define i64 @waitFd(i64, i32, i64) align 8 {
 $1:
 ; # (let (Run (save (val $Run)) At (save (val $At)) Buf (b8 (val Pipe...
 ; # (val $Run)
@@ -42149,7 +42149,7 @@ $149:
   ret i64 %865
 }
 
-define i64 @_wait(i64) {
+define i64 @_wait(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (if (nil? (eval (++ X))) 292MY (xCnt Exe @)))...
 ; # (cdr Exe)
@@ -42365,7 +42365,7 @@ $12:
   ret i64 %101
 }
 
-define i64 @_sync(i64) {
+define i64 @_sync(i64) align 8 {
 $1:
 ; # (cond ((or (=0 (val $Mic)) (=0 (val $Hear))) $Nil) ((val $Sync) $...
 ; # (or (=0 (val $Mic)) (=0 (val $Hear)))
@@ -42479,7 +42479,7 @@ $2:
   ret i64 %38
 }
 
-define i64 @_hear(i64) {
+define i64 @_hear(i64) align 8 {
 $1:
 ; # (let (X (eval (cadr Exe)) Fd (i32 (xCnt Exe X))) (when (or (lt0 F...
 ; # (cadr Exe)
@@ -42567,7 +42567,7 @@ $14:
   ret i64 %13
 }
 
-define i64 @_tell(i64) {
+define i64 @_tell(i64) align 8 {
 $1:
 ; # (cond ((and (=0 (val $Tell)) (=0 (val $Children))) $Nil) ((atom (...
 ; # (and (=0 (val $Tell)) (=0 (val $Children)))
@@ -42752,7 +42752,7 @@ $2:
   ret i64 %77
 }
 
-define i64 @_poll(i64) {
+define i64 @_poll(i64) align 8 {
 $1:
 ; # (let (C (eval (cadr Exe)) Fd (i32 (xCnt Exe C))) (when (or (lt0 F...
 ; # (cadr Exe)
@@ -42902,7 +42902,7 @@ $15:
   ret i64 %46
 }
 
-define void @rdOpen(i64, i64, i8*) {
+define void @rdOpen(i64, i64, i8*) align 8 {
 $1:
 ; # (let Io: (ioFrame Io) (cond ((nil? X) (pushInFile Io (val (val $I...
 ; # (cond ((nil? X) (pushInFile Io (val (val $InFiles)) 0)) ((num? X)...
@@ -43313,7 +43313,7 @@ $2:
   ret void
 }
 
-define void @wrOpen(i64, i64, i8*) {
+define void @wrOpen(i64, i64, i8*) align 8 {
 $1:
 ; # (let Io: (ioFrame Io) (cond ((nil? X) (pushOutFile Io (val 2 (val...
 ; # (cond ((nil? X) (pushOutFile Io (val 2 (val $OutFiles)) 0)) ((num...
@@ -43715,7 +43715,7 @@ $2:
   ret void
 }
 
-define void @erOpen(i64, i64, i8*) {
+define void @erOpen(i64, i64, i8*) align 8 {
 $1:
 ; # (let Ct: (ctFrame Ct) (Ct: fd (dup 2)) (let Fd (if (nil? (needSym...
 ; # (Ct: fd (dup 2))
@@ -43831,7 +43831,7 @@ $6:
   ret void
 }
 
-define void @ctOpen(i64, i64, i8*) {
+define void @ctOpen(i64, i64, i8*) align 8 {
 $1:
 ; # (let Ct: (ctFrame Ct) (cond ((nil? (needSymb Exe X)) (Ct: fd -1) ...
 ; # (cond ((nil? (needSymb Exe X)) (Ct: fd -1) (rdLockWait (currFd Ex...
@@ -43957,7 +43957,7 @@ $2:
   ret void
 }
 
-define i32 @rlGetc(i8*) {
+define i32 @rlGetc(i8*) align 8 {
 $1:
 ; # (if (waitFd 0 0 292MY) (stdinByte) -1)
 ; # (waitFd 0 0 292MY)
@@ -43975,7 +43975,7 @@ $4:
   ret i32 %4
 }
 
-define i32 @rlAvail() {
+define i32 @rlAvail() align 8 {
 $1:
 ; # (waitFd 0 0 60)
   %0 = call i64 @waitFd(i64 0, i32 0, i64 60)
@@ -43984,7 +43984,7 @@ $1:
   ret i32 %1
 }
 
-define i32 @_getStdin() {
+define i32 @_getStdin() align 8 {
 $1:
 ; # (let In: (inFile (val $InFile)) (set $Chr (cond ((lt0 (In: fd)) -...
 ; # (val $InFile)
@@ -44241,7 +44241,7 @@ $2:
   ret i32 %95
 }
 
-define i32 @getChar(i32) {
+define i32 @getChar(i32) align 8 {
 $1:
 ; # (cond ((>= 127 C) C) ((== C (hex "FF")) (i32 TOP)) (T (let B (ifn...
 ; # (>= 127 C)
@@ -44320,7 +44320,7 @@ $2:
   ret i32 %27
 }
 
-define i32 @skipc(i32) {
+define i32 @skipc(i32) align 8 {
 $1:
 ; # (let Chr (val $Chr) (loop (while (>= 32 Chr) (when (lt0 (setq Chr...
 ; # (val $Chr)
@@ -44395,7 +44395,7 @@ $12:
   br label %$2
 }
 
-define void @comment() {
+define void @comment() align 8 {
 $1:
 ; # (let Chr (call $Get) (if (== Chr (char "{")) (let N 0 (loop (? (l...
 ; # (call $Get)
@@ -44523,7 +44523,7 @@ $4:
   ret void
 }
 
-define i32 @skip() {
+define i32 @skip() align 8 {
 $1:
 ; # (loop (let Chr (val $Chr) (when (lt0 Chr) (ret Chr)) (while (>= (...
   br label %$2
@@ -44581,7 +44581,7 @@ $11:
   br label %$2
 }
 
-define i1 @testEsc(i32) {
+define i1 @testEsc(i32) align 8 {
 $1:
 ; # (loop (? (lt0 Chr) NO) (? (== Chr (char "\^")) (when (== (setq Ch...
   br label %$2
@@ -44799,7 +44799,7 @@ $4:
   ret i1 %74
 }
 
-define i64 @anonymous(i64) {
+define i64 @anonymous(i64) align 8 {
 $1:
 ; # (let P (push 0 Nm) (unless (== (symByte P) (char "$")) (ret 0)) (...
 ; # (push 0 Nm)
@@ -44876,7 +44876,7 @@ $8:
   ret i64 %24
 }
 
-define i64 @rdAtom(i32) {
+define i64 @rdAtom(i32) align 8 {
 $1:
 ; # (let (Int (save (val $Intern)) P (push 4 NIL ZERO NIL) C (val $Ch...
 ; # (val $Intern)
@@ -45179,7 +45179,7 @@ $21:
   ret i64 %146
 }
 
-define void @rdl(i64, i64) {
+define void @rdl(i64, i64) align 8 {
 $1:
 ; # (loop (? (== (skip) (char ")")) (call $Get)) (? (== @ (char "]"))...
   br label %$2
@@ -45374,7 +45374,7 @@ $4:
   ret void
 }
 
-define i64 @rdList() {
+define i64 @rdList() align 8 {
 $1:
 ; # (stkChk 0)
   %0 = load i8*, i8** @$StkLimit
@@ -45538,7 +45538,7 @@ $6:
   ret i64 %70
 }
 
-define i64 @read0(i1) {
+define i64 @read0(i1) align 8 {
 $1:
 ; # (let C (skip) (when Top (let In: (inFile (val $InFile)) (In: src ...
 ; # (skip)
@@ -46054,7 +46054,7 @@ $4:
   ret i64 %232
 }
 
-define i64 @read1(i32) {
+define i64 @read1(i32) align 8 {
 $1:
 ; # (unless (val $Chr) (call $Get))
 ; # (val $Chr)
@@ -46084,7 +46084,7 @@ $6:
   ret i64 %8
 }
 
-define i64 @token(i64, i32) {
+define i64 @token(i64, i32) align 8 {
 $1:
 ; # (let C (val $Chr) (unless C (setq C (call $Get))) (cond ((lt0 (sk...
 ; # (val $Chr)
@@ -46508,7 +46508,7 @@ $4:
   ret i64 %190
 }
 
-define i64 @_read(i64) {
+define i64 @_read(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (prog1 (if (atom X) (read1 0) (let Y (save (need...
 ; # (cdr Exe)
@@ -46660,7 +46660,7 @@ $22:
   ret i64 %57
 }
 
-define i64 @_key(i64) {
+define i64 @_key(i64) align 8 {
 $1:
 ; # (flushAll)
   call void @flushAll()
@@ -46811,7 +46811,7 @@ $27:
   ret i64 %47
 }
 
-define i64 @_peek(i64) {
+define i64 @_peek(i64) align 8 {
 $1:
 ; # (let Chr (val $Chr) (unless Chr (setq Chr (call $Get))) (if (lt0 ...
 ; # (val $Chr)
@@ -46845,7 +46845,7 @@ $6:
   ret i64 %12
 }
 
-define i64 @_char(i64) {
+define i64 @_char(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (cond ((atom X) (let Chr (val $Chr) (unless Chr ...
 ; # (cdr Exe)
@@ -46970,7 +46970,7 @@ $2:
   ret i64 %47
 }
 
-define i64 @_skip(i64) {
+define i64 @_skip(i64) align 8 {
 $1:
 ; # (if (lt0 (skipc (firstChar (evSym (cdr Exe))))) $Nil (mkChar @))
 ; # (cdr Exe)
@@ -46997,7 +46997,7 @@ $4:
   ret i64 %9
 }
 
-define i64 @_eol(i64) {
+define i64 @_eol(i64) align 8 {
 $1:
 ; # (let C (if (val $Chr) @ (call $Get)) (if (or (le0 C) (== C (char ...
 ; # (if (val $Chr) @ (call $Get))
@@ -47035,7 +47035,7 @@ $9:
   ret i64 %9
 }
 
-define i64 @_eof(i64) {
+define i64 @_eof(i64) align 8 {
 $1:
 ; # (nond ((nil? (eval (cadr Exe))) (set $Chr -1) $T) ((=0 (val $Chr)...
 ; # (cadr Exe)
@@ -47108,7 +47108,7 @@ $2:
   ret i64 %23
 }
 
-define i64 @_from(i64) {
+define i64 @_from(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N 1 Y (evSym X) Nm (xName Exe Y) L (link (push ...
 ; # (cdr Exe)
@@ -47484,7 +47484,7 @@ $9:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([860 x i64]* @SymTab to i8*), i32 8) to i64)
 }
 
-define i64 @_till(i64) {
+define i64 @_till(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Nm (xName Exe (evSym X)) S (bufString Nm (b8 (b...
 ; # (cdr Exe)
@@ -47696,7 +47696,7 @@ $5:
   ret i64 %101
 }
 
-define i1 @eol(i32) {
+define i1 @eol(i32) align 8 {
 $1:
 ; # (cond ((lt0 C) YES) ((== C (char "^J")) (set $Chr 0) YES) ((== C ...
 ; # (lt0 C)
@@ -47737,7 +47737,7 @@ $2:
   ret i1 %7
 }
 
-define i64 @_line(i64) {
+define i64 @_line(i64) align 8 {
 $1:
 ; # (let C (val $Chr) (unless C (setq C (call $Get))) (if (eol C) $Ni...
 ; # (val $Chr)
@@ -48332,7 +48332,7 @@ $6:
   ret i64 %329
 }
 
-define i64 @_in(i64) {
+define i64 @_in(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (rdOpen Exe (eval (++ X)) (b8 (ioFrame T))) (pro...
 ; # (cdr Exe)
@@ -48424,7 +48424,7 @@ $9:
   ret i64 %42
 }
 
-define i64 @_out(i64) {
+define i64 @_out(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (wrOpen Exe (eval (++ X)) (b8 (ioFrame T))) (pro...
 ; # (cdr Exe)
@@ -48516,7 +48516,7 @@ $9:
   ret i64 %42
 }
 
-define i64 @_err(i64) {
+define i64 @_err(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (erOpen Exe (eval (++ X)) (b8 (ctFrame T))) (pro...
 ; # (cdr Exe)
@@ -48606,7 +48606,7 @@ $9:
   ret i64 %42
 }
 
-define i64 @_ctl(i64) {
+define i64 @_ctl(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (ctOpen Exe (eval (++ X)) (b8 (ctFrame T))) (pro...
 ; # (cdr Exe)
@@ -48696,7 +48696,7 @@ $9:
   ret i64 %42
 }
 
-define i64 @_fd(i64) {
+define i64 @_fd(i64) align 8 {
 $1:
 ; # (currFd Exe)
   %1 = call i32 @currFd(i64 %0)
@@ -48708,7 +48708,7 @@ $1:
   ret i64 %4
 }
 
-define i32 @forkLisp(i64) {
+define i32 @forkLisp(i64) align 8 {
 $1:
 ; # (flushAll)
   call void @flushAll()
@@ -49286,7 +49286,7 @@ $14:
   ret i32 %261
 }
 
-define i64 @_pipe(i64) {
+define i64 @_pipe(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (++ X) Pfd (b32 2) Io: (ioFrame (b8 (ioFrame ...
 ; # (cdr Exe)
@@ -49506,7 +49506,7 @@ $11:
   ret i64 %85
 }
 
-define i64 @_open(i64) {
+define i64 @_open(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Nm (xName Exe (evSym X)) S (pathString Nm (b8 (...
 ; # (cdr Exe)
@@ -49608,7 +49608,7 @@ $12:
   ret i64 %37
 }
 
-define i64 @_close(i64) {
+define i64 @_close(i64) align 8 {
 $1:
 ; # (let (X (eval (cadr Exe)) Fd (i32 (xCnt Exe X))) (loop (? (=0 (cl...
 ; # (cadr Exe)
@@ -49679,7 +49679,7 @@ $9:
   ret i64 %22
 }
 
-define i64 @_echo(i64) {
+define i64 @_echo(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (cond ((and (nil? Y) (atom X))...
 ; # (cdr Exe)
@@ -50889,7 +50889,7 @@ $7:
   ret i64 %825
 }
 
-define void @_putStdout(i8) {
+define void @_putStdout(i8) align 8 {
 $1:
 ; # (let Out: (outFile (val $OutFile)) (when (Out:) (let I (Out: ix) ...
 ; # (val $OutFile)
@@ -50972,7 +50972,7 @@ $3:
   ret void
 }
 
-define void @newline() {
+define void @newline() align 8 {
 $1:
 ; # (call $Put (char "^J"))
   %0 = load void(i8)*, void(i8)** @$Put
@@ -50980,7 +50980,7 @@ $1:
   ret void
 }
 
-define void @space() {
+define void @space() align 8 {
 $1:
 ; # (call $Put (char " "))
   %0 = load void(i8)*, void(i8)** @$Put
@@ -50988,7 +50988,7 @@ $1:
   ret void
 }
 
-define void @outWord(i64) {
+define void @outWord(i64) align 8 {
 $1:
 ; # (when (> N 9) (outWord (/ N 10)) (setq N (% N 10)))
 ; # (> N 9)
@@ -51015,7 +51015,7 @@ $3:
   ret void
 }
 
-define void @outNum(i64) {
+define void @outNum(i64) align 8 {
 $1:
 ; # (when (sign? X) (call $Put (char "-")))
 ; # (sign? X)
@@ -51036,7 +51036,7 @@ $3:
   ret void
 }
 
-define void @outOct(i64) {
+define void @outOct(i64) align 8 {
 $1:
 ; # (when (> N 7) (outOct (shr N 3)) (setq N (& N 7)))
 ; # (> N 7)
@@ -51063,7 +51063,7 @@ $3:
   ret void
 }
 
-define void @outAo(i32) {
+define void @outAo(i32) align 8 {
 $1:
 ; # (when (> N 15) (outAo (shr N 4)) (setq N (& N 15)))
 ; # (> N 15)
@@ -51090,7 +51090,7 @@ $3:
   ret void
 }
 
-define i8* @bufAo(i8*, i32) {
+define i8* @bufAo(i8*, i32) align 8 {
 $1:
 ; # (when (> N 15) (setq P (bufAo P (shr N 4)) N (& N 15)))
 ; # (> N 15)
@@ -51120,7 +51120,7 @@ $3:
   ret i8* %12
 }
 
-define void @prExt(i64) {
+define void @prExt(i64) align 8 {
 $1:
 ; # (when (objFile Nm) (outAo @))
 ; # (objFile Nm)
@@ -51139,7 +51139,7 @@ $3:
   ret void
 }
 
-define void @outString(i8*) {
+define void @outString(i8*) align 8 {
 $1:
 ; # (while (val S) (call $Put @) (inc 'S))
   br label %$2
@@ -51162,7 +51162,7 @@ $4:
   ret void
 }
 
-define void @prName(i64) {
+define void @prName(i64) align 8 {
 $1:
 ; # (let P (push 0 Nm) (while (symByte P) (call $Put @)))
 ; # (push 0 Nm)
@@ -51186,7 +51186,7 @@ $4:
   ret void
 }
 
-define void @prSym(i64) {
+define void @prSym(i64) align 8 {
 $1:
 ; # (tail Sym)
   %1 = add i64 %0, -8
@@ -51213,7 +51213,7 @@ $4:
   ret void
 }
 
-define void @printName(i64) {
+define void @printName(i64) align 8 {
 $1:
 ; # (ifn (== Nm (hex "2E2")) (let (P (push 0 Nm) B (symByte P)) (when...
 ; # (== Nm (hex "2E2"))
@@ -51297,7 +51297,7 @@ $4:
   ret void
 }
 
-define void @printSym(i64) {
+define void @printSym(i64) align 8 {
 $1:
 ; # (tail Sym)
   %1 = add i64 %0, -8
@@ -51324,7 +51324,7 @@ $4:
   ret void
 }
 
-define void @print(i64) {
+define void @print(i64) align 8 {
 $1:
 ; # (sigChk 0)
   %1 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
@@ -51853,7 +51853,7 @@ $4:
   ret void
 }
 
-define void @prin(i64) {
+define void @prin(i64) align 8 {
 $1:
 ; # (sigChk 0)
   %1 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
@@ -52009,7 +52009,7 @@ $5:
   ret void
 }
 
-define i64 @_prin(i64) {
+define i64 @_prin(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (eval (++ X)) (prin Y) (? (atom X) ...
 ; # (cdr Exe)
@@ -52064,7 +52064,7 @@ $9:
   ret i64 %22
 }
 
-define i64 @_prinl(i64) {
+define i64 @_prinl(i64) align 8 {
 $1:
 ; # (prog1 (_prin Exe) (newline))
 ; # (_prin Exe)
@@ -52074,7 +52074,7 @@ $1:
   ret i64 %1
 }
 
-define i64 @_space(i64) {
+define i64 @_space(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (ifn (nil? X) (let N (xCnt Exe X) (while...
 ; # (cadr Exe)
@@ -52136,7 +52136,7 @@ $9:
   ret i64 %21
 }
 
-define i64 @_print(i64) {
+define i64 @_print(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (eval (++ X)) (print Y) (? (atom X)...
 ; # (cdr Exe)
@@ -52193,7 +52193,7 @@ $9:
   ret i64 %22
 }
 
-define i64 @_printsp(i64) {
+define i64 @_printsp(i64) align 8 {
 $1:
 ; # (prog1 (_print Exe) (space))
 ; # (_print Exe)
@@ -52203,7 +52203,7 @@ $1:
   ret i64 %1
 }
 
-define i64 @_println(i64) {
+define i64 @_println(i64) align 8 {
 $1:
 ; # (prog1 (_print Exe) (newline))
 ; # (_print Exe)
@@ -52213,7 +52213,7 @@ $1:
   ret i64 %1
 }
 
-define i64 @_flush(i64) {
+define i64 @_flush(i64) align 8 {
 $1:
 ; # (if (flush (val $OutFile)) $T $Nil)
 ; # (val $OutFile)
@@ -52230,7 +52230,7 @@ $4:
   ret i64 %3
 }
 
-define i64 @_rewind(i64) {
+define i64 @_rewind(i64) align 8 {
 $1:
 ; # (let Out: (outFile (val $OutFile)) (if (and (Out:) (let Fd (Out: ...
 ; # (val $OutFile)
@@ -52272,7 +52272,7 @@ $8:
   ret i64 %11
 }
 
-define i64 @_ext(i64) {
+define i64 @_ext(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (evCnt Exe X) Old (val $ExtN)) (set $ExtN (i3...
 ; # (cdr Exe)
@@ -52346,7 +52346,7 @@ $4:
   ret i64 %35
 }
 
-define i32 @getPlio() {
+define i32 @getPlio() align 8 {
 $1:
 ; # (let P (val $Ptr) (set $Ptr (inc P)) (i32 (val P)))
 ; # (val $Ptr)
@@ -52362,7 +52362,7 @@ $1:
   ret i32 %3
 }
 
-define void @putPlio(i8) {
+define void @putPlio(i8) align 8 {
 $1:
 ; # (let P (val $Ptr) (set P B) (when (== (set $Ptr (inc P)) (val $En...
 ; # (val $Ptr)
@@ -52387,7 +52387,7 @@ $3:
   ret void
 }
 
-define i64 @_plio(i64) {
+define i64 @_plio(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) P (i8* (if (cnt? (needNum Exe (eval (++ X)))) (...
 ; # (cdr Exe)
@@ -52543,7 +52543,7 @@ $14:
   ret i64 %64
 }
 
-define i64 @_rd(i64) {
+define i64 @_rd(i64) align 8 {
 $1:
 ; # (let X (save (eval (cadr Exe))) (cond ((lt0 ((inFile (val $InFile...
 ; # (cadr Exe)
@@ -52801,7 +52801,7 @@ $7:
   ret i64 %106
 }
 
-define i64 @_pr(i64) {
+define i64 @_pr(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (eval (++ X)) (set $Extn (val $ExtN...
 ; # (cdr Exe)
@@ -52860,7 +52860,7 @@ $9:
   ret i64 %23
 }
 
-define i64 @_wr(i64) {
+define i64 @_wr(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let N (eval (++ X)) (_putStdout (i8 (int ...
 ; # (cdr Exe)
@@ -52919,7 +52919,7 @@ $9:
   ret i64 %24
 }
 
-define i32 @getParse() {
+define i32 @getParse() align 8 {
 $1:
 ; # (let P (val $Parser) (set $Chr (if (i32 (symByte P)) @ (let C (va...
 ; # (val $Parser)
@@ -52964,7 +52964,7 @@ $4:
   ret i32 %12
 }
 
-define i64 @parse(i64, i1, i64, i64) {
+define i64 @parse(i64, i1, i64, i64) align 8 {
 $1:
 ; # (let (Chr (val $Chr) Get (val (i8** $Get)) Pars (val $Parser)) (s...
 ; # (val $Chr)
@@ -53084,7 +53084,7 @@ $4:
   ret i64 %43
 }
 
-define void @putString(i8) {
+define void @putString(i8) align 8 {
 $1:
 ; # (val $StrP)
   %1 = load i64*, i64** @$StrP
@@ -53093,7 +53093,7 @@ $1:
   ret void
 }
 
-define void @begString(i64*) {
+define void @begString(i64*) align 8 {
 $1:
 ; # (set 6 P (i64 (val $StrP)))
 ; # (val $StrP)
@@ -53127,7 +53127,7 @@ $1:
   ret void
 }
 
-define void @tglString(i64*) {
+define void @tglString(i64*) align 8 {
 $1:
 ; # (ofs P 4)
   %1 = getelementptr i64, i64* %0, i32 4
@@ -53147,7 +53147,7 @@ $1:
   ret void
 }
 
-define i64 @endString() {
+define i64 @endString() align 8 {
 $1:
 ; # (let (P (val $StrP) Q (ofs P 2)) (set (i64* $Put) (val 5 P) $StrP...
 ; # (val $StrP)
@@ -53181,7 +53181,7 @@ $1:
   ret i64 %10
 }
 
-define i64 @_any(i64) {
+define i64 @_any(i64) align 8 {
 $1:
 ; # (cond ((nil? (needSymb Exe (eval (cadr Exe)))) @) ((sym? (val (ta...
 ; # (cadr Exe)
@@ -53259,7 +53259,7 @@ $2:
   ret i64 %32
 }
 
-define i64 @_sym(i64) {
+define i64 @_sym(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (begString (push 4 NIL ZERO NIL NIL NIL)...
 ; # (cadr Exe)
@@ -53301,7 +53301,7 @@ $2:
   ret i64 %16
 }
 
-define i64 @_str(i64) {
+define i64 @_str(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X))) (cond ((nil? Y) Y) ((num? Y) ...
 ; # (cdr Exe)
@@ -53506,7 +53506,7 @@ $7:
   ret i64 %106
 }
 
-define i64 @repl(i64, i8*, i64) {
+define i64 @repl(i64, i8*, i64) align 8 {
 $1:
 ; # (when (num? X) (argErr Exe X))
 ; # (num? X)
@@ -54045,7 +54045,7 @@ $8:
   ret i64 %243
 }
 
-define i64 @loadAll(i64) {
+define i64 @loadAll(i64) align 8 {
 $1:
 ; # (let X $Nil (loop (let (A (val $AV) P (val A)) (? (or (=0 P) (and...
 ; # (loop (let (A (val $AV) P (val A)) (? (or (=0 P) (and (== (val P)...
@@ -54103,7 +54103,7 @@ $8:
   ret i64 %20
 }
 
-define i64 @_load(i64) {
+define i64 @_load(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (if (t? (eval (++ X))) (loadAll Exe...
 ; # (cdr Exe)
@@ -54173,14 +54173,14 @@ $12:
   ret i64 %29
 }
 
-define void @dbfErr(i64) {
+define void @dbfErr(i64) align 8 {
 $1:
 ; # (err Exe 0 ($ "Bad DB file") null)
   call void @err(i64 %0, i64 0, i8* bitcast ([12 x i8]* @$48 to i8*), i8* null)
   unreachable
 }
 
-define void @dbRdErr() {
+define void @dbRdErr() align 8 {
 $1:
 ; # (strErrno)
   %0 = call i8* @strErrno()
@@ -54189,7 +54189,7 @@ $1:
   unreachable
 }
 
-define void @dbWrErr() {
+define void @dbWrErr() align 8 {
 $1:
 ; # (strErrno)
   %0 = call i8* @strErrno()
@@ -54198,14 +54198,14 @@ $1:
   unreachable
 }
 
-define void @jnlErr(i64) {
+define void @jnlErr(i64) align 8 {
 $1:
 ; # (err Exe 0 ($ "Bad Journal") null)
   call void @err(i64 %0, i64 0, i8* bitcast ([12 x i8]* @$51 to i8*), i8* null)
   unreachable
 }
 
-define void @dbSyncErr(i64) {
+define void @dbSyncErr(i64) align 8 {
 $1:
 ; # (strErrno)
   %1 = call i8* @strErrno()
@@ -54214,7 +54214,7 @@ $1:
   unreachable
 }
 
-define i64 @getAdr(i8*) {
+define i64 @getAdr(i8*) align 8 {
 $1:
 ; # (val 6 P)
   %1 = getelementptr i8, i8* %0, i32 5
@@ -54268,7 +54268,7 @@ $1:
   ret i64 %27
 }
 
-define void @setAdr(i64, i8*) {
+define void @setAdr(i64, i8*) align 8 {
 $1:
 ; # (set P (i8 N))
 ; # (i8 N)
@@ -54312,7 +54312,7 @@ $1:
   ret void
 }
 
-define i8* @dbfBuf(i8*) {
+define i8* @dbfBuf(i8*) align 8 {
 $1:
 ; # (let N (| (shl (i32 (val 2 P)) 8) (i32 (val P))) (if (> (val $DBs...
 ; # (val 2 P)
@@ -54351,7 +54351,7 @@ $4:
   ret i8* %13
 }
 
-define void @rdLockDb() {
+define void @rdLockDb() align 8 {
 $1:
 ; # (unless (t? (val $Solo)) (rdLockWait ((dbFile (val $DbFiles)) fd)...
 ; # (val $Solo)
@@ -54373,7 +54373,7 @@ $3:
   ret void
 }
 
-define void @wrLockDb() {
+define void @wrLockDb() align 8 {
 $1:
 ; # (unless (t? (val $Solo)) (wrLockWait ((dbFile (val $DbFiles)) fd)...
 ; # (val $Solo)
@@ -54395,7 +54395,7 @@ $3:
   ret void
 }
 
-define void @unLockDb(i64) {
+define void @unLockDb(i64) align 8 {
 $1:
 ; # (unless (t? (val $Solo)) (unless Len (let (Db (val $DbFiles) C (v...
 ; # (val $Solo)
@@ -54472,7 +54472,7 @@ $3:
   ret void
 }
 
-define i32 @tryLock(i8*, i64, i64) {
+define i32 @tryLock(i8*, i64, i64) align 8 {
 $1:
 ; # (let Db: (dbFile DbFile) (loop (? (ge0 (wrLock (Db: fd) N Len NO)...
 ; # (loop (? (ge0 (wrLock (Db: fd) N Len NO)) (Db: lck YES) (nond (N ...
@@ -54579,7 +54579,7 @@ $4:
   ret i32 %28
 }
 
-define void @lockJnl() {
+define void @lockJnl() align 8 {
 $1:
 ; # (val $DbJnl)
   %0 = load i8*, i8** @$DbJnl
@@ -54590,7 +54590,7 @@ $1:
   ret void
 }
 
-define void @unLockJnl() {
+define void @unLockJnl() align 8 {
 $1:
 ; # (let Jnl (val $DbJnl) (fflush Jnl) (unLock (fileno Jnl) 0 0))
 ; # (val $DbJnl)
@@ -54604,7 +54604,7 @@ $1:
   ret void
 }
 
-define void @blkPeek(i64, i8*, i32) {
+define void @blkPeek(i64, i8*, i32) align 8 {
 $1:
 ; # (let (S (i64 Siz) Db: (dbFile (val $DbFile))) (unless (== S (prea...
 ; # (i64 Siz)
@@ -54628,7 +54628,7 @@ $3:
   ret void
 }
 
-define i8* @rdBlock(i64) {
+define i8* @rdBlock(i64) align 8 {
 $1:
 ; # (let (Db: (dbFile (val $DbFile)) Blk (val $DbBlock)) (blkPeek (sh...
 ; # (val $DbFile)
@@ -54670,7 +54670,7 @@ $1:
   ret i8* %2
 }
 
-define void @blkPoke(i64, i8*, i32) {
+define void @blkPoke(i64, i8*, i32) align 8 {
 $1:
 ; # (let Db: (dbFile (val $DbFile)) (unless (== Siz (i32 (pwrite (Db:...
 ; # (val $DbFile)
@@ -54782,7 +54782,7 @@ $5:
   ret void
 }
 
-define void @wrBlock() {
+define void @wrBlock() align 8 {
 $1:
 ; # (let Db: (dbFile (val $DbFile)) (blkPoke (shl (val $BlkIndex) (i6...
 ; # (val $DbFile)
@@ -54808,7 +54808,7 @@ $1:
   ret void
 }
 
-define void @logBlock() {
+define void @logBlock() align 8 {
 $1:
 ; # (let (Db: (dbFile (val $DbFile)) Log (val $DbLog) P (b8 (+ BLK 2)...
 ; # (val $DbFile)
@@ -54878,7 +54878,7 @@ $5:
   ret void
 }
 
-define i64 @newBlock() {
+define i64 @newBlock() align 8 {
 $1:
 ; # (let (Db: (dbFile (val $DbFile)) Siz (Db: siz) P (b8 Siz)) (blkPe...
 ; # (val $DbFile)
@@ -54977,7 +54977,7 @@ $2:
   ret i64 %34
 }
 
-define i64 @newId(i64, i32) {
+define i64 @newId(i64, i32) align 8 {
 $1:
 ; # (when (>= (dec 'N) (val $DBs)) (dbfErr Exe))
 ; # (dec 'N)
@@ -55058,7 +55058,7 @@ $7:
   ret i64 %22
 }
 
-define i1 @isLife(i64) {
+define i1 @isLife(i64) align 8 {
 $1:
 ; # (let (Nm (name (& (val (tail Sym)) -9)) F (objFile Nm) N (shl (ob...
 ; # (tail Sym)
@@ -55200,7 +55200,7 @@ $6:
   ret i1 0
 }
 
-define i64 @_extQ(i64) {
+define i64 @_extQ(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (and (symb? X) (sym? (val (tail X)))...
 ; # (cadr Exe)
@@ -55261,7 +55261,7 @@ $12:
   ret i64 %24
 }
 
-define void @cleanUp(i64) {
+define void @cleanUp(i64) align 8 {
 $1:
 ; # (let (P (b8 BLK) Db: (dbFile (val $DbFile))) (blkPeek 0 P BLK) (l...
 ; # (b8 BLK)
@@ -55321,7 +55321,7 @@ $4:
   ret void
 }
 
-define i32 @getBlock() {
+define i32 @getBlock() align 8 {
 $1:
 ; # (let P (val $BlkPtr) (when (== P (val $BlkEnd)) (unless (val $Blk...
 ; # (val $BlkPtr)
@@ -55363,7 +55363,7 @@ $3:
   ret i32 %13
 }
 
-define void @putBlock(i8) {
+define void @putBlock(i8) align 8 {
 $1:
 ; # (let P (val $BlkPtr) (when (== P (val $BlkEnd)) (let Link (val $B...
 ; # (val $BlkPtr)
@@ -55445,7 +55445,7 @@ $3:
   ret void
 }
 
-define i64 @_rollback(i64) {
+define i64 @_rollback(i64) align 8 {
 $1:
 ; # (if (and (=0 (val $DBs)) (atom (val $Ext))) $Nil (let (Tos 0 P (v...
 ; # (and (=0 (val $DBs)) (atom (val $Ext)))
@@ -55705,7 +55705,7 @@ $6:
   ret i64 %119
 }
 
-define i64 @_extern(i64) {
+define i64 @_extern(i64) align 8 {
 $1:
 ; # (let (Sym (needSymb Exe (eval (cadr Exe))) Nm (name (& (val (tail...
 ; # (cadr Exe)
@@ -55949,14 +55949,14 @@ $32:
   ret i64 %127
 }
 
-define void @ignLog() {
+define void @ignLog() align 8 {
 $1:
 ; # (stderrMsg ($ "Discarding incomplete transaction^J") null)
   %0 = call i8* @stderrMsg(i8* bitcast ([35 x i8]* @$56 to i8*), i8* null)
   ret void
 }
 
-define i1 @transaction() {
+define i1 @transaction() align 8 {
 $1:
 ; # (let (Log (val $DbLog) Blk (b8 BLK)) (fseek0 Log) (if (fread Blk ...
 ; # (val $DbLog)
@@ -56045,7 +56045,7 @@ $4:
   ret i1 %24
 }
 
-define void @fsyncDB(i64) {
+define void @fsyncDB(i64) align 8 {
 $1:
 ; # (let (Db (val $DbFiles) C (val $DBs)) (loop (let Db: (dbFile Db) ...
 ; # (val $DbFiles)
@@ -56109,7 +56109,7 @@ $8:
   ret void
 }
 
-define void @restore(i64) {
+define void @restore(i64) align 8 {
 $1:
 ; # (stderrMsg ($ "Last transaction not completed: Rollback^J") null)...
   %1 = call i8* @stderrMsg(i8* bitcast ([42 x i8]* @$57 to i8*), i8* null)
@@ -56267,7 +56267,7 @@ $9:
   ret void
 }
 
-define void @truncLog(i64) {
+define void @truncLog(i64) align 8 {
 $1:
 ; # (let Log (val $DbLog) (unless (and (fseek0 Log) (truncate0 (filen...
 ; # (val $DbLog)
@@ -56296,7 +56296,7 @@ $5:
   ret void
 }
 
-define i64 @_pool(i64) {
+define i64 @_pool(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Sym1 (save (evSym X)) Dbs (save (evLst (shift X...
 ; # (cdr Exe)
@@ -56944,7 +56944,7 @@ $12:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([860 x i64]* @SymTab to i8*), i32 280) to i64)
 }
 
-define i64 @_pool2(i64) {
+define i64 @_pool2(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Sym (evSym X) Nm (xName Exe Sym) Jnl (val $DbJn...
 ; # (cdr Exe)
@@ -57122,7 +57122,7 @@ $12:
   ret i64 %80
 }
 
-define i64 @_journal(i64) {
+define i64 @_journal(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Sym (evSym X) Jnl (val $DbJnl) Log (val $DbLog)...
 ; # (cdr Exe)
@@ -57362,7 +57362,7 @@ $26:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([860 x i64]* @SymTab to i8*), i32 280) to i64)
 }
 
-define i64 @_id(i64) {
+define i64 @_id(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (if (cnt? Y) (extern (if (nil?...
 ; # (cdr Exe)
@@ -57559,7 +57559,7 @@ $9:
   ret i64 %82
 }
 
-define i64 @_blk(i64) {
+define i64 @_blk(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Db: (dbFile (b8 (dbFile T)))) (Db: fd (i32 (evC...
 ; # (cdr Exe)
@@ -57814,7 +57814,7 @@ $4:
   ret i64 %113
 }
 
-define i64 @_seq(i64) {
+define i64 @_seq(i64) align 8 {
 $1:
 ; # (let (X (eval (cadr Exe)) F (dec (i32 (int X))) N 0 Buf (b8 BLK))...
 ; # (cadr Exe)
@@ -58010,7 +58010,7 @@ $20:
   ret i64 %86
 }
 
-define i64 @_lieu(i64) {
+define i64 @_lieu(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (nond ((symb? X) $Nil) ((sym? (val (tail...
 ; # (cadr Exe)
@@ -58133,7 +58133,7 @@ $7:
   ret i64 %55
 }
 
-define i64 @_lock(i64) {
+define i64 @_lock(i64) align 8 {
 $1:
 ; # (if (if (nil? (eval (cadr Exe))) (tryLock (val $DbFiles) 0 0) (le...
 ; # (if (nil? (eval (cadr Exe))) (tryLock (val $DbFiles) 0 0) (let X ...
@@ -58281,7 +58281,7 @@ $23:
   ret i64 %58
 }
 
-define void @db(i64, i64, i64) {
+define void @db(i64, i64, i64) align 8 {
 $1:
 ; # (save Sym)
   %3 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
@@ -58690,7 +58690,7 @@ $4:
   ret void
 }
 
-define void @dbFetch(i64, i64) {
+define void @dbFetch(i64, i64) align 8 {
 $1:
 ; # (let Nm (val (tail Sym)) (when (and (num? Nm) (prog (setq Nm (add...
 ; # (tail Sym)
@@ -58743,7 +58743,7 @@ $6:
   ret void
 }
 
-define void @dbTouch(i64, i64) {
+define void @dbTouch(i64, i64) align 8 {
 $1:
 ; # (let (Q (tail Sym) Nm (val Q)) (unless (num? Nm) (setq Nm (any (&...
 ; # (tail Sym)
@@ -58825,7 +58825,7 @@ $8:
   ret void
 }
 
-define i64 @_touch(i64) {
+define i64 @_touch(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (when (and (symb? X) (sym? (val (tail X)...
 ; # (cadr Exe)
@@ -58881,7 +58881,7 @@ $10:
   ret i64 %13
 }
 
-define void @dbZap(i64) {
+define void @dbZap(i64) align 8 {
 $1:
 ; # (let Tail (val (tail Sym)) (unless (num? Tail) (setq Tail (& Tail...
 ; # (tail Sym)
@@ -58937,7 +58937,7 @@ $3:
   ret void
 }
 
-define i64 @_commit(i64) {
+define i64 @_commit(i64) align 8 {
 $1:
 ; # (let (Args (cdr Exe) Rpc (save (eval (++ Args))) Notify NO) (set ...
 ; # (cdr Exe)
@@ -60515,7 +60515,7 @@ $132:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([860 x i64]* @SymTab to i8*), i32 280) to i64)
 }
 
-define i64 @_mark(i64) {
+define i64 @_mark(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (if (== Y ZERO) (let (Db (val ...
 ; # (cdr Exe)
@@ -60799,7 +60799,7 @@ $9:
   ret i64 %128
 }
 
-define i64 @_free(i64) {
+define i64 @_free(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) F (dec (i32 (evCnt Exe X))) Buf (b8 (* BLK 2)))...
 ; # (cdr Exe)
@@ -60906,7 +60906,7 @@ $6:
   ret i64 %19
 }
 
-define i64 @_dbck(i64) {
+define i64 @_dbck(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X)) Jnl (val $DbJnl) Buf (b8 (* BL...
 ; # (cdr Exe)
@@ -61414,7 +61414,7 @@ $48:
   ret i64 %260
 }
 
-define i64 @_apply(i64) {
+define i64 @_apply(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (push NIL $Nil ZERO (eval (++ X)) NIL)) (set ...
 ; # (cdr Exe)
@@ -61643,7 +61643,7 @@ $22:
   ret i64 %122
 }
 
-define i64 @_pass(i64) {
+define i64 @_pass(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (push NIL $Nil ZERO (eval (++ X)) NIL)) (set ...
 ; # (cdr Exe)
@@ -61839,7 +61839,7 @@ $17:
   ret i64 %103
 }
 
-define i64 @_maps(i64) {
+define i64 @_maps(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R $Nil E (push NIL $Nil ZERO (eval (++ X)) NIL)...
 ; # (cdr Exe)
@@ -62292,7 +62292,7 @@ $30:
   ret i64 %260
 }
 
-define i64 @_map(i64) {
+define i64 @_map(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R $Nil E (push NIL $Nil ZERO (eval (car X)) NIL...
 ; # (cdr Exe)
@@ -62511,7 +62511,7 @@ $17:
   ret i64 %116
 }
 
-define i64 @_mapc(i64) {
+define i64 @_mapc(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R $Nil E (push NIL $Nil ZERO (eval (++ X)) NIL)...
 ; # (cdr Exe)
@@ -62844,7 +62844,7 @@ $18:
   ret i64 %190
 }
 
-define i64 @_maplist(i64) {
+define i64 @_maplist(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save $Nil) L 0 E (push NIL $Nil ZERO (eval (...
 ; # (cdr Exe)
@@ -63117,7 +63117,7 @@ $17:
   ret i64 %152
 }
 
-define i64 @_mapcar(i64) {
+define i64 @_mapcar(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save $Nil) L 0 E (push NIL $Nil ZERO (eval (...
 ; # (cdr Exe)
@@ -63508,7 +63508,7 @@ $18:
   ret i64 %230
 }
 
-define i64 @_mapcon(i64) {
+define i64 @_mapcon(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save $Nil) L 0 E (push NIL $Nil ZERO (eval (...
 ; # (cdr Exe)
@@ -63825,7 +63825,7 @@ $17:
   ret i64 %181
 }
 
-define i64 @_mapcan(i64) {
+define i64 @_mapcan(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save $Nil) L 0 E (push NIL $Nil ZERO (eval (...
 ; # (cdr Exe)
@@ -64255,7 +64255,7 @@ $18:
   ret i64 %254
 }
 
-define i64 @_filter(i64) {
+define i64 @_filter(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save $Nil) L 0 E (push NIL $Nil ZERO (eval (...
 ; # (cdr Exe)
@@ -64664,7 +64664,7 @@ $18:
   ret i64 %241
 }
 
-define i64 @_extract(i64) {
+define i64 @_extract(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save $Nil) L 0 E (push NIL $Nil ZERO (eval (...
 ; # (cdr Exe)
@@ -65068,7 +65068,7 @@ $18:
   ret i64 %237
 }
 
-define i64 @_seek(i64) {
+define i64 @_seek(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (push NIL $Nil ZERO (eval (car X)) NIL)) (set...
 ; # (cdr Exe)
@@ -65300,7 +65300,7 @@ $17:
   ret i64 %118
 }
 
-define i64 @_find(i64) {
+define i64 @_find(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (push NIL $Nil ZERO (eval (++ X)) NIL) A (pus...
 ; # (cdr Exe)
@@ -65641,7 +65641,7 @@ $19:
   ret i64 %184
 }
 
-define i64 @_pick(i64) {
+define i64 @_pick(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (push NIL $Nil ZERO (eval (++ X)) NIL) A (pus...
 ; # (cdr Exe)
@@ -65974,7 +65974,7 @@ $19:
   ret i64 %179
 }
 
-define i64 @_fully(i64) {
+define i64 @_fully(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (push NIL $Nil ZERO (eval (++ X)) NIL) A (pus...
 ; # (cdr Exe)
@@ -66305,7 +66305,7 @@ $19:
   ret i64 %178
 }
 
-define i64 @_cnt(i64) {
+define i64 @_cnt(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R ZERO E (push NIL $Nil ZERO (eval (++ X)) NIL)...
 ; # (cdr Exe)
@@ -66651,7 +66651,7 @@ $18:
   ret i64 %196
 }
 
-define i64 @_sum(i64) {
+define i64 @_sum(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save ZERO) E (push NIL $Nil ZERO (eval (++ X...
 ; # (cdr Exe)
@@ -67031,7 +67031,7 @@ $18:
   ret i64 %218
 }
 
-define i64 @_maxi(i64) {
+define i64 @_maxi(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R $Nil R2 (save $Nil) E (push NIL $Nil ZERO (ev...
 ; # (cdr Exe)
@@ -67421,7 +67421,7 @@ $18:
   ret i64 %228
 }
 
-define i64 @_mini(i64) {
+define i64 @_mini(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R $Nil R2 (save $T) E (push NIL $Nil ZERO (eval...
 ; # (cdr Exe)
@@ -67811,7 +67811,7 @@ $18:
   ret i64 %228
 }
 
-define void @fish(i64, i64, i64, i64, i64) {
+define void @fish(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (set P V)
   %5 = inttoptr i64 %2 to i64*
@@ -67879,7 +67879,7 @@ $2:
   ret void
 }
 
-define i64 @_fish(i64) {
+define i64 @_fish(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (link (push $Nil NIL) T) P (push NIL $Nil ZER...
 ; # (cdr Exe)
@@ -68035,7 +68035,7 @@ $12:
   ret i64 %79
 }
 
-define i64 @_by(i64) {
+define i64 @_by(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save $Nil) L 0 E (push NIL $Nil ZERO (eval (...
 ; # (cdr Exe)
@@ -68523,7 +68523,7 @@ $23:
   ret i64 %288
 }
 
-define i8* @tabComplete(i8*) {
+define i8* @tabComplete(i8*) align 8 {
 $1:
 ; # (if (nil? (val $Complete)) null (let (V (push NIL $Nil ZERO NIL N...
 ; # (val $Complete)
@@ -68659,7 +68659,7 @@ $4:
   ret i8* %62
 }
 
-define void @redefMsg(i64, i64) {
+define void @redefMsg(i64, i64) align 8 {
 $1:
 ; # (let (Out (val $OutFile) Put (val (i8** $Put))) (set $OutFile (va...
 ; # (val $OutFile)
@@ -68701,7 +68701,7 @@ $3:
   ret void
 }
 
-define void @putSrc(i64, i64) {
+define void @putSrc(i64, i64) align 8 {
 $1:
 ; # (unless (or (nil? (val $Dbg)) (sym? (val (tail Sym)))) (let In: (...
 ; # (or (nil? (val $Dbg)) (sym? (val (tail Sym))))
@@ -68867,7 +68867,7 @@ $5:
   ret void
 }
 
-define void @redefine(i64, i64, i64) {
+define void @redefine(i64, i64, i64) align 8 {
 $1:
 ; # (needChkVar Exe Sym)
   %3 = and i64 %1, 6
@@ -68922,7 +68922,7 @@ $12:
   ret void
 }
 
-define i64 @_quote(i64) {
+define i64 @_quote(i64) align 8 {
 $1:
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -68931,7 +68931,7 @@ $1:
   ret i64 %3
 }
 
-define i64 @_as(i64) {
+define i64 @_as(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (cdr X)))
 ; # (cdr Exe)
@@ -68977,7 +68977,7 @@ $9:
   ret i64 %18
 }
 
-define i64 @_lit(i64) {
+define i64 @_lit(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (or (num? X) (nil? X) (t? X) (and (p...
 ; # (cadr Exe)
@@ -69050,7 +69050,7 @@ $15:
   ret i64 %27
 }
 
-define i64 @_eval(i64) {
+define i64 @_eval(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (save (eval (car X)))) (when (pair (cdr X)) (...
 ; # (cdr Exe)
@@ -69228,7 +69228,7 @@ $24:
   ret i64 %79
 }
 
-define i64 @_run(i64) {
+define i64 @_run(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (eval (car X))) (cond ((num? E) E) ((sym? E) ...
 ; # (cdr Exe)
@@ -69410,7 +69410,7 @@ $7:
   ret i64 %83
 }
 
-define i64 @_def(i64) {
+define i64 @_def(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Sym (save (needSymb Exe (eval (++ X)))) Y (save...
 ; # (cdr Exe)
@@ -69660,7 +69660,7 @@ $16:
   ret i64 %15
 }
 
-define i64 @_de(i64) {
+define i64 @_de(i64) align 8 {
 $1:
 ; # (let S (cadr Exe) (redefine Exe S (cddr Exe)) S)
 ; # (cadr Exe)
@@ -69681,7 +69681,7 @@ $1:
   ret i64 %5
 }
 
-define i64 @_dm(i64) {
+define i64 @_dm(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (car X) Fun (cdr X) Msg (if (atom Y) Y (car Y...
 ; # (cdr Exe)
@@ -70019,7 +70019,7 @@ $29:
   ret i64 %19
 }
 
-define i64 @evMethod(i64, i64, i64, i64, i64) {
+define i64 @evMethod(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (let (Y (car Exe) P (set $Bind (push (val $At) $At (val $Bind) Ex...
 ; # (car Exe)
@@ -70916,7 +70916,7 @@ $110:
   ret i64 %461
 }
 
-define i64 @method(i64, i64) {
+define i64 @method(i64, i64) align 8 {
 $1:
 ; # (when (pair (val Obj)) (let L @ (while (pair (car L)) (let Y @ (w...
 ; # (val Obj)
@@ -71026,7 +71026,7 @@ $3:
   ret i64 0
 }
 
-define i64 @__meth(i64, i64) {
+define i64 @__meth(i64, i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Obj (save (eval (car X)))) (when (sym? (val (ta...
 ; # (cdr Exe)
@@ -71123,7 +71123,7 @@ $13:
   ret i64 %38
 }
 
-define i64 @_box(i64) {
+define i64 @_box(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -71155,7 +71155,7 @@ $2:
   ret i64 %14
 }
 
-define i64 @_new(i64) {
+define i64 @_new(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X)) Obj (save (cond ((pair Y) (cons...
 ; # (cdr Exe)
@@ -71416,7 +71416,7 @@ $22:
   ret i64 %43
 }
 
-define i64 @_type(i64) {
+define i64 @_type(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X))) (ifn (symb? Y) $Nil (when (sy...
 ; # (cdr Exe)
@@ -71584,7 +71584,7 @@ $9:
   ret i64 %69
 }
 
-define i1 @isa(i64, i64) {
+define i1 @isa(i64, i64) align 8 {
 $1:
 ; # (let (V (val Obj) Z V) (loop (? (atom V) NO) (? (atom (car V)) (s...
 ; # (val Obj)
@@ -71711,7 +71711,7 @@ $4:
   ret i1 %52
 }
 
-define i64 @_isa(i64) {
+define i64 @_isa(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X))) (ifn (...
 ; # (cdr Exe)
@@ -71875,7 +71875,7 @@ $14:
   ret i64 %72
 }
 
-define i64 @_method(i64) {
+define i64 @_method(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Msg (save (eval (++ X))) Obj (needSymb Exe (eva...
 ; # (cdr Exe)
@@ -71984,7 +71984,7 @@ $18:
   ret i64 %44
 }
 
-define i64 @_send(i64) {
+define i64 @_send(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Msg (save (eval (++ X))) Obj (save (needSymb Ex...
 ; # (cdr Exe)
@@ -72117,7 +72117,7 @@ $18:
   ret i64 %57
 }
 
-define i64 @_try(i64) {
+define i64 @_try(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Msg (save (eval (++ X))) Obj (save (eval (car X...
 ; # (cdr Exe)
@@ -72262,7 +72262,7 @@ $14:
   ret i64 %59
 }
 
-define i64 @_super(i64) {
+define i64 @_super(i64) align 8 {
 $1:
 ; # (let (Lst (val (if (val $Typ) (car @) (val $This))) Key (val $Key...
 ; # (if (val $Typ) (car @) (val $This))
@@ -72373,7 +72373,7 @@ $12:
   ret i64 %48
 }
 
-define i64 @extra(i64, i64) {
+define i64 @extra(i64, i64) align 8 {
 $1:
 ; # (let Lst (val Obj) (while (pair (car Lst)) (shift Lst)) (loop (? ...
 ; # (val Obj)
@@ -72542,7 +72542,7 @@ $7:
   ret i64 %72
 }
 
-define i64 @_extra(i64) {
+define i64 @_extra(i64) align 8 {
 $1:
 ; # (let Key (val $Key) (when (le0 (extra (val $This) Key)) (err Exe ...
 ; # (val $Key)
@@ -72587,7 +72587,7 @@ $3:
   ret i64 %14
 }
 
-define i64 @_and(i64) {
+define i64 @_and(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (eval (car X)) (? (nil? Y) Y) (set ...
 ; # (cdr Exe)
@@ -72654,7 +72654,7 @@ $9:
   ret i64 %27
 }
 
-define i64 @_or(i64) {
+define i64 @_or(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (eval (car X)) (? (not (nil? Y)) (s...
 ; # (cdr Exe)
@@ -72723,7 +72723,7 @@ $9:
   ret i64 %28
 }
 
-define i64 @_nand(i64) {
+define i64 @_nand(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (eval (car X)) (? (nil? Y) $T) (set...
 ; # (cdr Exe)
@@ -72790,7 +72790,7 @@ $9:
   ret i64 %27
 }
 
-define i64 @_nor(i64) {
+define i64 @_nor(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (eval (car X)) (? (not (nil? Y)) (s...
 ; # (cdr Exe)
@@ -72859,7 +72859,7 @@ $9:
   ret i64 %28
 }
 
-define i64 @_xor(i64) {
+define i64 @_xor(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (++ X))) (if (nil? (eval (car X)...
 ; # (cdr Exe)
@@ -72976,7 +72976,7 @@ $9:
   ret i64 %50
 }
 
-define i64 @_bool(i64) {
+define i64 @_bool(i64) align 8 {
 $1:
 ; # (if (nil? (eval (cadr Exe))) @ $T)
 ; # (cadr Exe)
@@ -73016,7 +73016,7 @@ $9:
   ret i64 %15
 }
 
-define i64 @_not(i64) {
+define i64 @_not(i64) align 8 {
 $1:
 ; # (if (nil? (eval (cadr Exe))) $T (set $At @) $Nil)
 ; # (cadr Exe)
@@ -73059,7 +73059,7 @@ $9:
   ret i64 %16
 }
 
-define i64 @_nil(i64) {
+define i64 @_nil(i64) align 8 {
 $1:
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -73094,7 +73094,7 @@ $6:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([860 x i64]* @SymTab to i8*), i32 8) to i64)
 }
 
-define i64 @_t(i64) {
+define i64 @_t(i64) align 8 {
 $1:
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -73129,7 +73129,7 @@ $6:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([860 x i64]* @SymTab to i8*), i32 280) to i64)
 }
 
-define i64 @_prog(i64) {
+define i64 @_prog(i64) align 8 {
 $1:
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -73187,7 +73187,7 @@ $4:
   ret i64 %29
 }
 
-define i64 @_prog1(i64) {
+define i64 @_prog1(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (prog1 (set $At (save (eval (++ X)))) (exec X)))...
 ; # (cdr Exe)
@@ -73269,7 +73269,7 @@ $11:
   ret i64 %15
 }
 
-define i64 @_prog2(i64) {
+define i64 @_prog2(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (prog2 (eval (++ X)) (set $At (save (eval (++ X)...
 ; # (cdr Exe)
@@ -73375,7 +73375,7 @@ $16:
   ret i64 %27
 }
 
-define i64 @_if(i64) {
+define i64 @_if(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (++ X))) (run (cdr X)) (set $At ...
 ; # (cdr Exe)
@@ -73500,7 +73500,7 @@ $9:
   ret i64 %60
 }
 
-define i64 @_ifn(i64) {
+define i64 @_ifn(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (++ X))) (eval (car X)) (set $At...
 ; # (cdr Exe)
@@ -73625,7 +73625,7 @@ $9:
   ret i64 %60
 }
 
-define i64 @_if2(i64) {
+define i64 @_if2(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (++ X))) (if (nil? (eval (++ X))...
 ; # (cdr Exe)
@@ -73891,7 +73891,7 @@ $9:
   ret i64 %131
 }
 
-define i64 @_when(i64) {
+define i64 @_when(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (++ X))) @ (set $At @) (run X)))...
 ; # (cdr Exe)
@@ -73990,7 +73990,7 @@ $9:
   ret i64 %47
 }
 
-define i64 @_unless(i64) {
+define i64 @_unless(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (++ X))) (run X) (set $At @) $Ni...
 ; # (cdr Exe)
@@ -74089,7 +74089,7 @@ $9:
   ret i64 %47
 }
 
-define i64 @_cond(i64) {
+define i64 @_cond(i64) align 8 {
 $1:
 ; # (let X Exe (loop (? (atom (shift X)) $Nil) (let Y (car X) (? (not...
 ; # (loop (? (atom (shift X)) $Nil) (let Y (car X) (? (not (nil? (eva...
@@ -74210,7 +74210,7 @@ $4:
   ret i64 %56
 }
 
-define i64 @_nond(i64) {
+define i64 @_nond(i64) align 8 {
 $1:
 ; # (let X Exe (loop (? (atom (shift X)) $Nil) (let Y (car X) (? (nil...
 ; # (loop (? (atom (shift X)) $Nil) (let Y (car X) (? (nil? (eval (ca...
@@ -74329,7 +74329,7 @@ $4:
   ret i64 %55
 }
 
-define i64 @_case(i64) {
+define i64 @_case(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) A (set $At (eval (car X)))) (loop (? (atom (shi...
 ; # (cdr Exe)
@@ -74507,7 +74507,7 @@ $9:
   ret i64 %85
 }
 
-define i64 @_casq(i64) {
+define i64 @_casq(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) A (set $At (eval (car X)))) (loop (? (atom (shi...
 ; # (cdr Exe)
@@ -74674,7 +74674,7 @@ $9:
   ret i64 %80
 }
 
-define i64 @_state(i64) {
+define i64 @_state(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Var (save (needChkVar Exe (eval (car X))))) (lo...
 ; # (cdr Exe)
@@ -74936,7 +74936,7 @@ $15:
   ret i64 %123
 }
 
-define i64 @_while(i64) {
+define i64 @_while(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (++ X) R (save $Nil)) (until (nil? (eval E)) ...
 ; # (cdr Exe)
@@ -75055,7 +75055,7 @@ $9:
   ret i64 %55
 }
 
-define i64 @_until(i64) {
+define i64 @_until(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (++ X) R (save $Nil)) (while (nil? (eval E)) ...
 ; # (cdr Exe)
@@ -75174,7 +75174,7 @@ $9:
   ret i64 %54
 }
 
-define i64 @_at(i64) {
+define i64 @_at(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (needPair Exe (eval (car X))) Z (cdr Y)) (con...
 ; # (cdr Exe)
@@ -75298,7 +75298,7 @@ $9:
   ret i64 %55
 }
 
-define i64 @loop1(i64) {
+define i64 @loop1(i64) align 8 {
 $1:
 ; # (loop (let E (car X) (unless (num? E) (setq E (cond ((sym? E) (va...
   br label %$2
@@ -75581,7 +75581,7 @@ $16:
   ret i64 %144
 }
 
-define i64 @loop2(i64) {
+define i64 @loop2(i64) align 8 {
 $1:
 ; # (loop (let X Y (loop (let E (car X) (when (pair E) (cond ((nil? (...
   br label %$2
@@ -75846,7 +75846,7 @@ $48:
   br label %$2
 }
 
-define i64 @_do(i64) {
+define i64 @_do(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (cond ((nil? Y) Y) ((cnt? Y) (...
 ; # (cdr Exe)
@@ -75961,7 +75961,7 @@ $7:
   ret i64 %44
 }
 
-define i64 @_loop(i64) {
+define i64 @_loop(i64) align 8 {
 $1:
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -75972,7 +75972,7 @@ $1:
   ret i64 %4
 }
 
-define i64 @_for(i64) {
+define i64 @_for(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (++ X) R $Nil) (cond ((atom Y) (needChkVar Ex...
 ; # (cdr Exe)
@@ -77053,7 +77053,7 @@ $2:
   ret i64 %571
 }
 
-define i64 @_with(i64) {
+define i64 @_with(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (needVar Exe (eval (++ X)))) (if (nil? Y) Y (...
 ; # (cdr Exe)
@@ -77191,7 +77191,7 @@ $11:
   ret i64 %65
 }
 
-define i64 @_bind(i64) {
+define i64 @_bind(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (cond ((num? Y) (argErr Exe Y)...
 ; # (cdr Exe)
@@ -77623,7 +77623,7 @@ $7:
   ret i64 %210
 }
 
-define i64 @_job(i64) {
+define i64 @_job(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) P (val $Bind) Q P) (whil...
 ; # (cdr Exe)
@@ -77843,7 +77843,7 @@ $29:
   ret i64 %86
 }
 
-define void @setDestruct(i64, i64) {
+define void @setDestruct(i64, i64) align 8 {
 $1:
 ; # (loop (when (atom Val) (setq Val $Nil)) (let (P (++ Pat) V (++ Va...
   br label %$2
@@ -77938,7 +77938,7 @@ $11:
   ret void
 }
 
-define i64 @_let(i64) {
+define i64 @_let(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (++ X)) (if (atom Y) (let P (set $Bind (push ...
 ; # (cdr Exe)
@@ -78607,7 +78607,7 @@ $4:
   ret i64 %352
 }
 
-define i64 @_letQ(i64) {
+define i64 @_letQ(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (needChkVar Exe (++ X))) (if (nil? (eval (car...
 ; # (cdr Exe)
@@ -78764,7 +78764,7 @@ $15:
   ret i64 %73
 }
 
-define i64 @_use(i64) {
+define i64 @_use(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (++ X)) (if (atom Y) (let P (set $Bind (push ...
 ; # (cdr Exe)
@@ -79007,7 +79007,7 @@ $4:
   ret i64 %128
 }
 
-define i64 @_buf(i64) {
+define i64 @_buf(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (needChkVar Exe (++ X)) Z (needCnt Exe (eval ...
 ; # (cdr Exe)
@@ -79178,7 +79178,7 @@ $20:
   ret i64 %74
 }
 
-define i64 @_catch(i64) {
+define i64 @_catch(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Ca: (caFrame (b8 (+ (val JmpBufSize) (caFrame T...
 ; # (cdr Exe)
@@ -79312,7 +79312,7 @@ $9:
   ret i64 %62
 }
 
-define i64 @_throw(i64) {
+define i64 @_throw(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Tag (save (eval (++ X))) R (save (eval (car X))...
 ; # (cdr Exe)
@@ -79449,7 +79449,7 @@ $14:
   unreachable
 }
 
-define i64 @_finally(i64) {
+define i64 @_finally(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Ca: (caFrame (b8 (+ (val JmpBufSize) (caFrame T...
 ; # (cdr Exe)
@@ -79589,14 +79589,14 @@ $13:
   ret i64 %46
 }
 
-define void @reentErr(i64, i64) {
+define void @reentErr(i64, i64) align 8 {
 $1:
 ; # (err Exe Tag ($ "Reentrant coroutine") null)
   call void @err(i64 %0, i64 %1, i8* bitcast ([20 x i8]* @$73 to i8*), i8* null)
   unreachable
 }
 
-define void @saveCoEnv(i8*) {
+define void @saveCoEnv(i8*) align 8 {
 $1:
 ; # (let Crt: (coroutine Crt) (Crt: at (val $At)) ((ioFrame (val $Out...
 ; # (Crt: at (val $At))
@@ -79641,7 +79641,7 @@ $1:
   ret void
 }
 
-define i64 @loadCoEnv(i8*) {
+define i64 @loadCoEnv(i8*) align 8 {
 $1:
 ; # (let Crt: (coroutine (set $Current Crt)) (set $StkLimit (+ (Crt: ...
 ; # (set $Current Crt)
@@ -79682,7 +79682,7 @@ $1:
   ret i64 %15
 }
 
-define i64 @_co(i64) {
+define i64 @_co(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Tag (eval (++ X))) (cond ((pair X) (unless (val...
 ; # (cdr Exe)
@@ -80185,7 +80185,7 @@ $7:
   ret i64 %233
 }
 
-define i64 @_yield(i64) {
+define i64 @_yield(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Val (save (eval (++ X))) Tag (eval (++ X)) Crt ...
 ; # (cdr Exe)
@@ -81283,7 +81283,7 @@ $53:
   ret i64 %695
 }
 
-define i64 @brkLoad(i64) {
+define i64 @brkLoad(i64) align 8 {
 $1:
 ; # (when (and (isatty 0) (isatty 1) (=0 (val $Break))) (let P (val $...
 ; # (and (isatty 0) (isatty 1) (=0 (val $Break)))
@@ -81463,7 +81463,7 @@ $6:
   ret i64 %84
 }
 
-define i64 @_break(i64) {
+define i64 @_break(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (unless (nil? (val $Dbg)) (setq X (brkLoad X))) ...
 ; # (cdr Exe)
@@ -81506,7 +81506,7 @@ $4:
   ret i64 %17
 }
 
-define i64 @_e(i64) {
+define i64 @_e(i64) align 8 {
 $1:
 ; # (let P (val $Break) (unless P (err Exe 0 ($ "No Break") null)) (l...
 ; # (val $Break)
@@ -81725,7 +81725,7 @@ $6:
   ret i64 %90
 }
 
-define void @trace(i32, i64) {
+define void @trace(i32, i64) align 8 {
 $1:
 ; # (when (> C 64) (setq C 64))
 ; # (> C 64)
@@ -81790,7 +81790,7 @@ $9:
   ret void
 }
 
-define i64 @_trace(i64) {
+define i64 @_trace(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (val $Dbg)) (run (cddr X)) (let (Out (...
 ; # (cdr Exe)
@@ -82087,7 +82087,7 @@ $4:
   ret i64 %135
 }
 
-define i64 @_exec(i64) {
+define i64 @_exec(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Av (b8* (inc (length X))) Cmd (xName Exe (evSym...
 ; # (cdr Exe)
@@ -82182,7 +82182,7 @@ $7:
   unreachable
 }
 
-define i64 @_call(i64) {
+define i64 @_call(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Av (b8* (inc (length X))) Cmd (xName Exe (evSym...
 ; # (cdr Exe)
@@ -82402,7 +82402,7 @@ $22:
   ret i64 %92
 }
 
-define i64 @_ipid(i64) {
+define i64 @_ipid(i64) align 8 {
 $1:
 ; # (let Io: (ioFrame (val $InFrames)) (if (and (Io:) (> (Io: pid) 1)...
 ; # (val $InFrames)
@@ -82441,7 +82441,7 @@ $6:
   ret i64 %14
 }
 
-define i64 @_opid(i64) {
+define i64 @_opid(i64) align 8 {
 $1:
 ; # (let Io: (ioFrame (val $OutFrames)) (if (and (Io:) (> (Io: pid) 1...
 ; # (val $OutFrames)
@@ -82480,7 +82480,7 @@ $6:
   ret i64 %14
 }
 
-define i64 @_kill(i64) {
+define i64 @_kill(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Pid (i32 (evCnt Exe X))) (if (kill Pid (if (ato...
 ; # (cdr Exe)
@@ -82533,7 +82533,7 @@ $7:
   ret i64 %24
 }
 
-define i64 @_fork(i64) {
+define i64 @_fork(i64) align 8 {
 $1:
 ; # (if (forkLisp Exe) (cnt (i64 @)) $Nil)
 ; # (forkLisp Exe)
@@ -82554,7 +82554,7 @@ $4:
   ret i64 %6
 }
 
-define i64 @_detach(i64) {
+define i64 @_detach(i64) align 8 {
 $1:
 ; # (prog1 (val $PPid) (unless (nil? @) (set $PPid $Nil) (close (val ...
 ; # (val $PPid)
@@ -82600,7 +82600,7 @@ $3:
   ret i64 %2
 }
 
-define i64 @_bye(i64) {
+define i64 @_bye(i64) align 8 {
 $1:
 ; # (if (nil? (eval (cadr Exe))) 0 (i32 (xCnt Exe @)))
 ; # (cadr Exe)
@@ -82646,14 +82646,14 @@ $9:
   unreachable
 }
 
-define void @makeErr(i64) {
+define void @makeErr(i64) align 8 {
 $1:
 ; # (err Exe 0 ($ "Not making") null)
   call void @err(i64 %0, i64 0, i8* bitcast ([11 x i8]* @$84 to i8*), i8* null)
   unreachable
 }
 
-define i64 @_car(i64) {
+define i64 @_car(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -82693,7 +82693,7 @@ $8:
   ret i64 %17
 }
 
-define i64 @_cdr(i64) {
+define i64 @_cdr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -82740,7 +82740,7 @@ $10:
   ret i64 %20
 }
 
-define i64 @_caar(i64) {
+define i64 @_caar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -82790,7 +82790,7 @@ $10:
   ret i64 %21
 }
 
-define i64 @_cadr(i64) {
+define i64 @_cadr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -82847,7 +82847,7 @@ $12:
   ret i64 %24
 }
 
-define i64 @_cdar(i64) {
+define i64 @_cdar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -82904,7 +82904,7 @@ $12:
   ret i64 %24
 }
 
-define i64 @_cddr(i64) {
+define i64 @_cddr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -82968,7 +82968,7 @@ $14:
   ret i64 %27
 }
 
-define i64 @_caaar(i64) {
+define i64 @_caaar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -83028,7 +83028,7 @@ $12:
   ret i64 %25
 }
 
-define i64 @_caadr(i64) {
+define i64 @_caadr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -83095,7 +83095,7 @@ $14:
   ret i64 %28
 }
 
-define i64 @_cadar(i64) {
+define i64 @_cadar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -83162,7 +83162,7 @@ $14:
   ret i64 %28
 }
 
-define i64 @_caddr(i64) {
+define i64 @_caddr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -83236,7 +83236,7 @@ $16:
   ret i64 %31
 }
 
-define i64 @_cdaar(i64) {
+define i64 @_cdaar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -83303,7 +83303,7 @@ $14:
   ret i64 %28
 }
 
-define i64 @_cdadr(i64) {
+define i64 @_cdadr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -83377,7 +83377,7 @@ $16:
   ret i64 %31
 }
 
-define i64 @_cddar(i64) {
+define i64 @_cddar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -83451,7 +83451,7 @@ $16:
   ret i64 %31
 }
 
-define i64 @_cdddr(i64) {
+define i64 @_cdddr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -83532,7 +83532,7 @@ $18:
   ret i64 %34
 }
 
-define i64 @_caaaar(i64) {
+define i64 @_caaaar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -83602,7 +83602,7 @@ $14:
   ret i64 %29
 }
 
-define i64 @_caaadr(i64) {
+define i64 @_caaadr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -83679,7 +83679,7 @@ $16:
   ret i64 %32
 }
 
-define i64 @_caadar(i64) {
+define i64 @_caadar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -83756,7 +83756,7 @@ $16:
   ret i64 %32
 }
 
-define i64 @_caaddr(i64) {
+define i64 @_caaddr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -83840,7 +83840,7 @@ $18:
   ret i64 %35
 }
 
-define i64 @_cadaar(i64) {
+define i64 @_cadaar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -83917,7 +83917,7 @@ $16:
   ret i64 %32
 }
 
-define i64 @_cadadr(i64) {
+define i64 @_cadadr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -84001,7 +84001,7 @@ $18:
   ret i64 %35
 }
 
-define i64 @_caddar(i64) {
+define i64 @_caddar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -84085,7 +84085,7 @@ $18:
   ret i64 %35
 }
 
-define i64 @_cadddr(i64) {
+define i64 @_cadddr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -84176,7 +84176,7 @@ $20:
   ret i64 %38
 }
 
-define i64 @_cdaaar(i64) {
+define i64 @_cdaaar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -84253,7 +84253,7 @@ $16:
   ret i64 %32
 }
 
-define i64 @_cdaadr(i64) {
+define i64 @_cdaadr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -84337,7 +84337,7 @@ $18:
   ret i64 %35
 }
 
-define i64 @_cdadar(i64) {
+define i64 @_cdadar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -84421,7 +84421,7 @@ $18:
   ret i64 %35
 }
 
-define i64 @_cdaddr(i64) {
+define i64 @_cdaddr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -84512,7 +84512,7 @@ $20:
   ret i64 %38
 }
 
-define i64 @_cddaar(i64) {
+define i64 @_cddaar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -84596,7 +84596,7 @@ $18:
   ret i64 %35
 }
 
-define i64 @_cddadr(i64) {
+define i64 @_cddadr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -84687,7 +84687,7 @@ $20:
   ret i64 %38
 }
 
-define i64 @_cdddar(i64) {
+define i64 @_cdddar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -84778,7 +84778,7 @@ $20:
   ret i64 %38
 }
 
-define i64 @_cddddr(i64) {
+define i64 @_cddddr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -84876,7 +84876,7 @@ $22:
   ret i64 %41
 }
 
-define i64 @_nth(i64) {
+define i64 @_nth(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X)))) (loop (? (atom Y) Y) (l...
 ; # (cdr Exe)
@@ -85011,7 +85011,7 @@ $9:
   ret i64 %68
 }
 
-define i64 @_con(i64) {
+define i64 @_con(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (set 2 (save (needPair Exe (eval (++ X)))) (eval...
 ; # (cdr Exe)
@@ -85097,7 +85097,7 @@ $9:
   ret i64 %35
 }
 
-define i64 @_cons(i64) {
+define i64 @_cons(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (cons (eval (car X)) $Nil) R (save Y)) (while...
 ; # (cdr Exe)
@@ -85227,7 +85227,7 @@ $15:
   ret i64 %14
 }
 
-define i64 @_conc(i64) {
+define i64 @_conc(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X)) R (save Y)) (while (pair (shif...
 ; # (cdr Exe)
@@ -85373,7 +85373,7 @@ $9:
   ret i64 %74
 }
 
-define i64 @_circ(i64) {
+define i64 @_circ(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (cons (eval (car X)) $Nil) R (save Y)) (while...
 ; # (cdr Exe)
@@ -85477,7 +85477,7 @@ $9:
   ret i64 %14
 }
 
-define i64 @_rot(i64) {
+define i64 @_rot(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (eval (car X))) (when (pair R) (let (Y R A (+...
 ; # (cdr Exe)
@@ -85674,7 +85674,7 @@ $8:
   ret i64 %13
 }
 
-define i64 @_list(i64) {
+define i64 @_list(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (cons (eval (car X)) $Nil) R (save Y)) (while...
 ; # (cdr Exe)
@@ -85774,7 +85774,7 @@ $9:
   ret i64 %14
 }
 
-define i64 @_need(i64) {
+define i64 @_need(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) C (evCnt Exe X) R (save (eval (car (shift X))))...
 ; # (cdr Exe)
@@ -86056,7 +86056,7 @@ $18:
   ret i64 %150
 }
 
-define i64 @_range(i64) {
+define i64 @_range(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (needNum Exe (eval (++ X))) R (save (cons N $...
 ; # (cdr Exe)
@@ -86307,7 +86307,7 @@ $32:
   ret i64 %18
 }
 
-define i64 @_full(i64) {
+define i64 @_full(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (loop (? (atom X) $T) (? (nil? (car X)) ...
 ; # (cadr Exe)
@@ -86372,7 +86372,7 @@ $9:
   ret i64 %28
 }
 
-define i64 @_make(i64) {
+define i64 @_make(i64) align 8 {
 $1:
 ; # (let (Make (val $Make) Yoke (val $Yoke) R (link (push $Nil NIL)))...
 ; # (val $Make)
@@ -86446,7 +86446,7 @@ $6:
   ret i64 %36
 }
 
-define i64 @_made(i64) {
+define i64 @_made(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (unless (val $Make) (makeErr Exe)) (when (pair X...
 ; # (cdr Exe)
@@ -86581,7 +86581,7 @@ $5:
   ret i64 %64
 }
 
-define i64 @_chain(i64) {
+define i64 @_chain(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (unless (val $Make) (makeErr Exe)) (loop (let Y ...
 ; # (cdr Exe)
@@ -86689,7 +86689,7 @@ $16:
   ret i64 %47
 }
 
-define i64 @_link(i64) {
+define i64 @_link(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (unless (val $Make) (makeErr Exe)) (loop (let Y ...
 ; # (cdr Exe)
@@ -86768,7 +86768,7 @@ $11:
   ret i64 %33
 }
 
-define i64 @_yoke(i64) {
+define i64 @_yoke(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (unless (val $Make) (makeErr Exe)) (loop (let Y ...
 ; # (cdr Exe)
@@ -86874,7 +86874,7 @@ $11:
   ret i64 %47
 }
 
-define i64 @_copy(i64) {
+define i64 @_copy(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (atom (setq X (eval (car X)))) X (let (Y (co...
 ; # (cdr Exe)
@@ -86996,7 +86996,7 @@ $9:
   ret i64 %63
 }
 
-define i64 @_mix(i64) {
+define i64 @_mix(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X))) (nond ((or (pair Y) (nil? Y))...
 ; # (cdr Exe)
@@ -87277,7 +87277,7 @@ $7:
   ret i64 %152
 }
 
-define i64 @_append(i64) {
+define i64 @_append(i64) align 8 {
 $1:
 ; # (let X Exe (loop (? (atom (cdr (shift X))) (eval (car X))) (? (pa...
 ; # (loop (? (atom (cdr (shift X))) (eval (car X))) (? (pair (eval (c...
@@ -87545,7 +87545,7 @@ $4:
   ret i64 %142
 }
 
-define i64 @_delete(i64) {
+define i64 @_delete(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) L (save (eval (++ X))) F...
 ; # (cdr Exe)
@@ -87800,7 +87800,7 @@ $19:
   ret i64 %130
 }
 
-define i64 @_delq(i64) {
+define i64 @_delq(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) L (save (eval (++ X))) F...
 ; # (cdr Exe)
@@ -88053,7 +88053,7 @@ $19:
   ret i64 %129
 }
 
-define i64 @_replace(i64) {
+define i64 @_replace(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) L (save (eval (car X)))) (if (atom L) @ (let (A...
 ; # (cdr Exe)
@@ -88425,7 +88425,7 @@ $9:
   ret i64 %231
 }
 
-define i64 @_insert(i64) {
+define i64 @_insert(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (evCnt Exe X) L (save (eval (car (shift X))))...
 ; # (cdr Exe)
@@ -88621,7 +88621,7 @@ $16:
   ret i64 %107
 }
 
-define i64 @_remove(i64) {
+define i64 @_remove(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (evCnt Exe X) L (save (eval (car (shift X))))...
 ; # (cdr Exe)
@@ -88806,7 +88806,7 @@ $7:
   ret i64 %98
 }
 
-define i64 @_place(i64) {
+define i64 @_place(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (evCnt Exe X) L (save (eval (car (shift X))))...
 ; # (cdr Exe)
@@ -89044,7 +89044,7 @@ $12:
   ret i64 %129
 }
 
-define i64 @_strip(i64) {
+define i64 @_strip(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (while (and (pair X) (== $Quote (car X))...
 ; # (cadr Exe)
@@ -89111,7 +89111,7 @@ $11:
   ret i64 %29
 }
 
-define i64 @_split(i64) {
+define i64 @_split(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) L (save (eval (car X)))) (if (atom L) @ (let (A...
 ; # (cdr Exe)
@@ -89515,7 +89515,7 @@ $9:
   ret i64 %253
 }
 
-define i64 @_reverse(i64) {
+define i64 @_reverse(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X))) Z $Nil) (while (pair Y)...
 ; # (cdr Exe)
@@ -89588,7 +89588,7 @@ $9:
   ret i64 %34
 }
 
-define i64 @_flip(i64) {
+define i64 @_flip(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X))) (if (atom Y) Y (let Z (cdr Y)...
 ; # (cdr Exe)
@@ -89828,7 +89828,7 @@ $9:
   ret i64 %140
 }
 
-define i64 @trim(i64) {
+define i64 @trim(i64) align 8 {
 $1:
 ; # (if (atom X) X (stkChk 0) (let Y (trim (cdr X)) (if (and (nil? Y)...
 ; # (atom X)
@@ -89886,7 +89886,7 @@ $4:
   ret i64 %19
 }
 
-define i64 @_trim(i64) {
+define i64 @_trim(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -89936,7 +89936,7 @@ $2:
   ret i64 %22
 }
 
-define i64 @_clip(i64) {
+define i64 @_clip(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X))) (while (and (pair Y) (isBlank...
 ; # (cdr Exe)
@@ -90018,7 +90018,7 @@ $11:
   ret i64 %36
 }
 
-define i64 @_head(i64) {
+define i64 @_head(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (cond ((nil? Y) Y) ((pair Y) (...
 ; # (cdr Exe)
@@ -90346,7 +90346,7 @@ $7:
   ret i64 %171
 }
 
-define i64 @_tail(i64) {
+define i64 @_tail(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (cond ((nil? Y) Y) ((pair Y) (...
 ; # (cdr Exe)
@@ -90627,7 +90627,7 @@ $7:
   ret i64 %135
 }
 
-define i64 @_stem(i64) {
+define i64 @_stem(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) L (save (eval (++ X)))) (if (atom X) L (let (R ...
 ; # (cdr Exe)
@@ -90865,7 +90865,7 @@ $9:
   ret i64 %141
 }
 
-define i64 @_fin(i64) {
+define i64 @_fin(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (while (pair X) (shift X)) X)
 ; # (cadr Exe)
@@ -90913,7 +90913,7 @@ $9:
   ret i64 %21
 }
 
-define i64 @_last(i64) {
+define i64 @_last(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (atom X) X (while (pair (cdr X)) (se...
 ; # (cadr Exe)
@@ -90978,7 +90978,7 @@ $9:
   ret i64 %29
 }
 
-define i64 @_eq(i64) {
+define i64 @_eq(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (loop (? (atom (shift ...
 ; # (cdr Exe)
@@ -91081,7 +91081,7 @@ $9:
   ret i64 %44
 }
 
-define i64 @_neq(i64) {
+define i64 @_neq(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (loop (? (atom (shift ...
 ; # (cdr Exe)
@@ -91184,7 +91184,7 @@ $9:
   ret i64 %44
 }
 
-define i64 @_equal(i64) {
+define i64 @_equal(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (loop (? (atom (shift ...
 ; # (cdr Exe)
@@ -91289,7 +91289,7 @@ $9:
   ret i64 %45
 }
 
-define i64 @_nequal(i64) {
+define i64 @_nequal(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (loop (? (atom (shift ...
 ; # (cdr Exe)
@@ -91394,7 +91394,7 @@ $9:
   ret i64 %45
 }
 
-define i64 @_eq0(i64) {
+define i64 @_eq0(i64) align 8 {
 $1:
 ; # (if (== (eval (cadr Exe)) ZERO) @ $Nil)
 ; # (cadr Exe)
@@ -91434,7 +91434,7 @@ $9:
   ret i64 %15
 }
 
-define i64 @_eq1(i64) {
+define i64 @_eq1(i64) align 8 {
 $1:
 ; # (if (== (eval (cadr Exe)) ONE) @ $Nil)
 ; # (cadr Exe)
@@ -91474,7 +91474,7 @@ $9:
   ret i64 %15
 }
 
-define i64 @_eqT(i64) {
+define i64 @_eqT(i64) align 8 {
 $1:
 ; # (if (t? (eval (cadr Exe))) @ $Nil)
 ; # (cadr Exe)
@@ -91514,7 +91514,7 @@ $9:
   ret i64 %15
 }
 
-define i64 @_neq0(i64) {
+define i64 @_neq0(i64) align 8 {
 $1:
 ; # (if (== (eval (cadr Exe)) ZERO) $Nil $T)
 ; # (cadr Exe)
@@ -91554,7 +91554,7 @@ $9:
   ret i64 %15
 }
 
-define i64 @_neqT(i64) {
+define i64 @_neqT(i64) align 8 {
 $1:
 ; # (if (t? (eval (cadr Exe))) $Nil $T)
 ; # (cadr Exe)
@@ -91594,7 +91594,7 @@ $9:
   ret i64 %15
 }
 
-define i64 @_lt(i64) {
+define i64 @_lt(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (loop (? (atom (shift ...
 ; # (cdr Exe)
@@ -91709,7 +91709,7 @@ $9:
   ret i64 %52
 }
 
-define i64 @_le(i64) {
+define i64 @_le(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (loop (? (atom (shift ...
 ; # (cdr Exe)
@@ -91824,7 +91824,7 @@ $9:
   ret i64 %52
 }
 
-define i64 @_gt(i64) {
+define i64 @_gt(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (loop (? (atom (shift ...
 ; # (cdr Exe)
@@ -91939,7 +91939,7 @@ $9:
   ret i64 %52
 }
 
-define i64 @_ge(i64) {
+define i64 @_ge(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (loop (? (atom (shift ...
 ; # (cdr Exe)
@@ -92054,7 +92054,7 @@ $9:
   ret i64 %52
 }
 
-define i64 @_max(i64) {
+define i64 @_max(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save (eval (car X)))) (while (pair (shift X)...
 ; # (cdr Exe)
@@ -92163,7 +92163,7 @@ $9:
   ret i64 %49
 }
 
-define i64 @_min(i64) {
+define i64 @_min(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save (eval (car X)))) (while (pair (shift X)...
 ; # (cdr Exe)
@@ -92272,7 +92272,7 @@ $9:
   ret i64 %49
 }
 
-define i64 @_atom(i64) {
+define i64 @_atom(i64) align 8 {
 $1:
 ; # (if (atom (eval (cadr Exe))) $T $Nil)
 ; # (cadr Exe)
@@ -92313,7 +92313,7 @@ $9:
   ret i64 %16
 }
 
-define i64 @_pair(i64) {
+define i64 @_pair(i64) align 8 {
 $1:
 ; # (if (pair (eval (cadr Exe))) @ $Nil)
 ; # (cadr Exe)
@@ -92354,7 +92354,7 @@ $9:
   ret i64 %16
 }
 
-define i64 @_circQ(i64) {
+define i64 @_circQ(i64) align 8 {
 $1:
 ; # (if (circ (eval (cadr Exe))) @ $Nil)
 ; # (cadr Exe)
@@ -92395,7 +92395,7 @@ $9:
   ret i64 %16
 }
 
-define i64 @_lstQ(i64) {
+define i64 @_lstQ(i64) align 8 {
 $1:
 ; # (if (or (pair (eval (cadr Exe))) (nil? @)) $T $Nil)
 ; # (or (pair (eval (cadr Exe))) (nil? @))
@@ -92444,7 +92444,7 @@ $11:
   ret i64 %18
 }
 
-define i64 @_numQ(i64) {
+define i64 @_numQ(i64) align 8 {
 $1:
 ; # (if (num? (eval (cadr Exe))) @ $Nil)
 ; # (cadr Exe)
@@ -92485,7 +92485,7 @@ $9:
   ret i64 %16
 }
 
-define i64 @_symQ(i64) {
+define i64 @_symQ(i64) align 8 {
 $1:
 ; # (if (symb? (eval (cadr Exe))) $T $Nil)
 ; # (cadr Exe)
@@ -92527,7 +92527,7 @@ $9:
   ret i64 %17
 }
 
-define i64 @_flgQ(i64) {
+define i64 @_flgQ(i64) align 8 {
 $1:
 ; # (if (or (t? (eval (cadr Exe))) (nil? @)) $T $Nil)
 ; # (or (t? (eval (cadr Exe))) (nil? @))
@@ -92575,7 +92575,7 @@ $11:
   ret i64 %17
 }
 
-define i64 @_member(i64) {
+define i64 @_member(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X)) H Z) (l...
 ; # (cdr Exe)
@@ -92705,7 +92705,7 @@ $14:
   ret i64 %56
 }
 
-define i64 @_memq(i64) {
+define i64 @_memq(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X)) H Z) (l...
 ; # (cdr Exe)
@@ -92835,7 +92835,7 @@ $14:
   ret i64 %56
 }
 
-define i64 @_mmeq(i64) {
+define i64 @_mmeq(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X))) (while...
 ; # (cdr Exe)
@@ -92998,7 +92998,7 @@ $14:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([860 x i64]* @SymTab to i8*), i32 8) to i64)
 }
 
-define i64 @_sect(i64) {
+define i64 @_sect(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (save (eval (car X))) ...
 ; # (cdr Exe)
@@ -93184,7 +93184,7 @@ $14:
   ret i64 %94
 }
 
-define i64 @_diff(i64) {
+define i64 @_diff(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (save (eval (car X))) ...
 ; # (cdr Exe)
@@ -93370,7 +93370,7 @@ $14:
   ret i64 %94
 }
 
-define i64 @_index(i64) {
+define i64 @_index(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X)) Cnt 1 U...
 ; # (cdr Exe)
@@ -93500,7 +93500,7 @@ $14:
   ret i64 %62
 }
 
-define i64 @_offset(i64) {
+define i64 @_offset(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X)) Cnt 1) ...
 ; # (cdr Exe)
@@ -93616,7 +93616,7 @@ $14:
   ret i64 %55
 }
 
-define i64 @_prior(i64) {
+define i64 @_prior(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X))) (when ...
 ; # (cdr Exe)
@@ -93743,7 +93743,7 @@ $15:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([860 x i64]* @SymTab to i8*), i32 8) to i64)
 }
 
-define i64 @_length(i64) {
+define i64 @_length(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (cond ((num? X) (fmtNum X -2 0 0 null)) ...
 ; # (cadr Exe)
@@ -94012,7 +94012,7 @@ $7:
   ret i64 %139
 }
 
-define i64 @size(i64) {
+define i64 @size(i64) align 8 {
 $1:
 ; # (let (C 1 X L Y (car X)) (loop (when (pair Y) (stkChk 0) (inc 'C ...
 ; # (car X)
@@ -94213,7 +94213,7 @@ $8:
   ret i64 %116
 }
 
-define i64 @binSize(i64) {
+define i64 @binSize(i64) align 8 {
 $1:
 ; # (cond ((cnt? X) (setq X (shr X 3)) (: 1 (let C 2 (while (setq X (...
 ; # (cnt? X)
@@ -94522,7 +94522,7 @@ $2:
   ret i64 %147
 }
 
-define i64 @_size(i64) {
+define i64 @_size(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (cond ((cnt? X) (setq X (shr X 3)) (let ...
 ; # (cadr Exe)
@@ -94920,7 +94920,7 @@ $7:
   ret i64 %208
 }
 
-define i64 @_bytes(i64) {
+define i64 @_bytes(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -94955,7 +94955,7 @@ $2:
   ret i64 %16
 }
 
-define i64 @_assoc(i64) {
+define i64 @_assoc(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X))) (loop ...
 ; # (cdr Exe)
@@ -95078,7 +95078,7 @@ $14:
   ret i64 %55
 }
 
-define i64 @_rassoc(i64) {
+define i64 @_rassoc(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X))) (loop ...
 ; # (cdr Exe)
@@ -95202,7 +95202,7 @@ $14:
   ret i64 %56
 }
 
-define i64 @_asoq(i64) {
+define i64 @_asoq(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X))) (loop ...
 ; # (cdr Exe)
@@ -95325,7 +95325,7 @@ $14:
   ret i64 %55
 }
 
-define i64 @_rank(i64) {
+define i64 @_rank(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (save (eval (++ X))) R...
 ; # (cdr Exe)
@@ -95521,7 +95521,7 @@ $19:
   ret i64 %100
 }
 
-define i1 @match(i64, i64) {
+define i1 @match(i64, i64) align 8 {
 $1:
 ; # (loop (? (atom Pat) (if (or (num? Pat) (<> (firstByte Pat) (char ...
   br label %$2
@@ -95763,7 +95763,7 @@ $4:
   ret i1 %124
 }
 
-define i64 @_match(i64) {
+define i64 @_match(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (match (save (eval (++ X))) (save (eval (car...
 ; # (cdr Exe)
@@ -95862,7 +95862,7 @@ $14:
   ret i64 %46
 }
 
-define i64 @fill(i64, i64) {
+define i64 @fill(i64, i64) align 8 {
 $1:
 ; # (cond ((num? X) 0) ((sym? X) (let V (val X) (cond ((== X V) 0) ((...
 ; # (num? X)
@@ -96211,7 +96211,7 @@ $2:
   ret i64 %180
 }
 
-define i64 @_fill(i64) {
+define i64 @_fill(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X)))) (if (fill Y (save (eval...
 ; # (cdr Exe)
@@ -96310,7 +96310,7 @@ $14:
 @$Penv = global i64 0
 @$Pnl = global i64 0
 
-define i1 @unify(i64, i64, i64, i64) {
+define i1 @unify(i64, i64, i64, i64) align 8 {
 $1:
 ; # (let Penv (val $Penv) (: 1 (when (and (symb? X1) (== (firstByte X...
 ; # (val $Penv)
@@ -96850,7 +96850,7 @@ $24:
   ret i1 %342
 }
 
-define i64 @lup(i64, i64) {
+define i64 @lup(i64, i64) align 8 {
 $1:
 ; # (stkChk 0)
   %2 = load i8*, i8** @$StkLimit
@@ -97032,7 +97032,7 @@ $17:
   ret i64 %102
 }
 
-define i64 @lookup(i64, i64) {
+define i64 @lookup(i64, i64) align 8 {
 $1:
 ; # (if (and (symb? (setq X (lup N X))) (== (firstByte X) (char "@"))...
 ; # (and (symb? (setq X (lup N X))) (== (firstByte X) (char "@")))
@@ -97066,7 +97066,7 @@ $6:
   ret i64 %14
 }
 
-define i64 @uniFill(i64) {
+define i64 @uniFill(i64) align 8 {
 $1:
 ; # (cond ((num? X) X) ((sym? X) (lup (car (val (val $Pnl))) X)) (T (...
 ; # (num? X)
@@ -97140,7 +97140,7 @@ $2:
   ret i64 %34
 }
 
-define i64 @_prove(i64) {
+define i64 @_prove(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (atom (eval (car X))) $Nil (let (Q (save @) ...
 ; # (cdr Exe)
@@ -98431,7 +98431,7 @@ $9:
   ret i64 %781
 }
 
-define i64 @_arrow(i64) {
+define i64 @_arrow(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) L (val (val $Pnl))) (when (cnt? (cadr X)) (let ...
 ; # (cdr Exe)
@@ -98494,7 +98494,7 @@ $3:
   ret i64 %32
 }
 
-define i64 @_unify(i64) {
+define i64 @_unify(i64) align 8 {
 $1:
 ; # (let (X (save (eval (cadr Exe))) L (val (val $Pnl))) (if (unify (...
 ; # (cadr Exe)
@@ -98572,7 +98572,7 @@ $9:
   ret i64 %36
 }
 
-define i64 @_group(i64) {
+define i64 @_group(i64) align 8 {
 $1:
 ; # (let X (save (eval (cadr Exe))) (if (atom X) $Nil (let Y (cons (c...
 ; # (cadr Exe)
@@ -98821,7 +98821,7 @@ $9:
   ret i64 %138
 }
 
-define i64 @_sort(i64) {
+define i64 @_sort(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (cond ((atom Y) @) ((atom X) (...
 ; # (cdr Exe)
@@ -100220,7 +100220,7 @@ $7:
   ret i64 %909
 }
 
-define i64 @_quit(i64) {
+define i64 @_quit(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Nm (xName Exe (evSym X)) Msg (bufString Nm (b8 ...
 ; # (cdr Exe)
@@ -100282,7 +100282,7 @@ $4:
   unreachable
 }
 
-define i64 @_sys(i64) {
+define i64 @_sys(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Nm (xName Exe (evSym X)) S (bufString Nm (b8 (b...
 ; # (cdr Exe)
@@ -100349,7 +100349,7 @@ $4:
   ret i64 %30
 }
 
-define i64 @_pwd(i64) {
+define i64 @_pwd(i64) align 8 {
 $1:
 ; # (let P (getcwd null 0) (if P (prog1 (mkStr P) (free P)) $Nil))
 ; # (getcwd null 0)
@@ -100371,7 +100371,7 @@ $4:
   ret i64 %4
 }
 
-define i64 @_cd(i64) {
+define i64 @_cd(i64) align 8 {
 $1:
 ; # (let (Nm (xName Exe (evSym (cdr Exe))) P (getcwd null 0)) (if P (...
 ; # (cdr Exe)
@@ -100419,7 +100419,7 @@ $4:
   ret i64 %15
 }
 
-define i64 @_ctty(i64) {
+define i64 @_ctty(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (cond ((cnt? X) (set $TtyPid (i32 (int @...
 ; # (cadr Exe)
@@ -100538,7 +100538,7 @@ $7:
   ret i64 %48
 }
 
-define i64 @_cmd(i64) {
+define i64 @_cmd(i64) align 8 {
 $1:
 ; # (if (nil? (evSym (cdr Exe))) (mkStr (val $AV0)) (bufString (xName...
 ; # (cdr Exe)
@@ -100569,7 +100569,7 @@ $4:
   ret i64 %11
 }
 
-define i64 @_dir(i64) {
+define i64 @_dir(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (getDir (if (nil? (evSym X)) ($ ".") (let Nm...
 ; # (cdr Exe)
@@ -100764,7 +100764,7 @@ $7:
   ret i64 %96
 }
 
-define i64 @_info(i64) {
+define i64 @_info(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Nm (xName Exe (set $At2 (evSym X))) Size (b64 1...
 ; # (cdr Exe)
@@ -100894,7 +100894,7 @@ $9:
   ret i64 %59
 }
 
-define i64 @_file(i64) {
+define i64 @_file(i64) align 8 {
 $1:
 ; # (let In: (inFile (val $InFile)) (ifn (and (In:) (In: name)) $Nil ...
 ; # (val $InFile)
@@ -100984,7 +100984,7 @@ $6:
   ret i64 %41
 }
 
-define i64 @_argv(i64) {
+define i64 @_argv(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) A (val $AV) P (val A)) (when (and P (== (val P)...
 ; # (cdr Exe)
@@ -101322,7 +101322,7 @@ $9:
   ret i64 %181
 }
 
-define i64 @_opt(i64) {
+define i64 @_opt(i64) align 8 {
 $1:
 ; # (let (A (val $AV) P (val A)) (if (or (=0 P) (and (== (val P) (cha...
 ; # (val $AV)
@@ -101369,7 +101369,7 @@ $8:
   ret i64 %13
 }
 
-define i64 @_errno(i64) {
+define i64 @_errno(i64) align 8 {
 $1:
 ; # (nErrno)
   %1 = call i32 @nErrno()
@@ -101381,7 +101381,7 @@ $1:
   ret i64 %4
 }
 
-define i32 @fetchChar(i8**) {
+define i32 @fetchChar(i8**) align 8 {
 $1:
 ; # (let (P (val Ptr) C (i32 (val P))) (prog2 (inc 'P) (cond ((>= 127...
 ; # (val Ptr)
@@ -101493,7 +101493,7 @@ $2:
   ret i32 %45
 }
 
-define i64 @natBuf(i64, i8*) {
+define i64 @natBuf(i64, i8*) align 8 {
 $1:
 ; # (if (atom Val) (if (sign? Val) (let P (i32* Ptr) (set P (i32 (int...
 ; # (atom Val)
@@ -101837,14 +101837,14 @@ $4:
   ret i64 %187
 }
 
-define void @natErr(i64) {
+define void @natErr(i64) align 8 {
 $1:
 ; # (err 0 Spec ($ "Bad result spec") null)
   call void @err(i64 0, i64 %0, i8* bitcast ([16 x i8]* @$87 to i8*), i8* null)
   unreachable
 }
 
-define i64 @natRetBuf(i64, i8**) {
+define i64 @natRetBuf(i64, i8**) align 8 {
 $1:
 ; # (cond ((t? Spec) (let P (i64* (val Ptr)) (set Ptr (i8* (inc P))) ...
 ; # (t? Spec)
@@ -102364,7 +102364,7 @@ $2:
   ret i64 %252
 }
 
-define i64 @ffi(i64, i8*, i64, i64) {
+define i64 @ffi(i64, i8*, i64, i64) align 8 {
 $1:
 ; # (let (Spec (car Args) Val (ffiCall (cond ((cnt? Fun) (i8* (int Fu...
 ; # (car Args)
@@ -102897,7 +102897,7 @@ $14:
   ret i64 %267
 }
 
-define i64 @_nat(i64) {
+define i64 @_nat(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Fun (save (eval (++ X))) Args (save (cons (eval...
 ; # (cdr Exe)
@@ -103054,7 +103054,7 @@ $14:
   ret i64 %80
 }
 
-define i64 @_native(i64) {
+define i64 @_native(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X)) Lib (cond ((cnt? Y) (i8* (int Y...
 ; # (cdr Exe)
@@ -103332,7 +103332,7 @@ $33:
   ret i64 %133
 }
 
-define i64 @_struct(i64) {
+define i64 @_struct(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (if (cnt? (needNum Exe (eval (++ X)))) (int @...
 ; # (cdr Exe)
@@ -103520,7 +103520,7 @@ $25:
   ret i64 %87
 }
 
-define i64 @cbl(i64, i64, i64, i64, i64, i64) {
+define i64 @cbl(i64, i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (let Exe (push NIL NIL ZERO Fun) (set Exe (ofs Exe 3)) (let P (se...
 ; # (push NIL NIL ZERO Fun)
@@ -103648,7 +103648,7 @@ $1:
   ret i64 %72
 }
 
-define i64 @_cb1(i64, i64, i64, i64, i64) {
+define i64 @_cb1(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 2 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103659,7 +103659,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb2(i64, i64, i64, i64, i64) {
+define i64 @_cb2(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 4 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103670,7 +103670,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb3(i64, i64, i64, i64, i64) {
+define i64 @_cb3(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 6 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103681,7 +103681,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb4(i64, i64, i64, i64, i64) {
+define i64 @_cb4(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 8 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103692,7 +103692,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb5(i64, i64, i64, i64, i64) {
+define i64 @_cb5(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 10 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103703,7 +103703,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb6(i64, i64, i64, i64, i64) {
+define i64 @_cb6(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 12 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103714,7 +103714,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb7(i64, i64, i64, i64, i64) {
+define i64 @_cb7(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 14 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103725,7 +103725,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb8(i64, i64, i64, i64, i64) {
+define i64 @_cb8(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 16 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103736,7 +103736,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb9(i64, i64, i64, i64, i64) {
+define i64 @_cb9(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 18 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103747,7 +103747,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb10(i64, i64, i64, i64, i64) {
+define i64 @_cb10(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 20 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103758,7 +103758,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb11(i64, i64, i64, i64, i64) {
+define i64 @_cb11(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 22 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103769,7 +103769,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb12(i64, i64, i64, i64, i64) {
+define i64 @_cb12(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 24 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103780,7 +103780,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb13(i64, i64, i64, i64, i64) {
+define i64 @_cb13(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 26 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103791,7 +103791,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb14(i64, i64, i64, i64, i64) {
+define i64 @_cb14(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 28 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103802,7 +103802,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb15(i64, i64, i64, i64, i64) {
+define i64 @_cb15(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 30 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103813,7 +103813,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb16(i64, i64, i64, i64, i64) {
+define i64 @_cb16(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 32 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103824,7 +103824,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb17(i64, i64, i64, i64, i64) {
+define i64 @_cb17(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 34 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103835,7 +103835,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb18(i64, i64, i64, i64, i64) {
+define i64 @_cb18(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 36 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103846,7 +103846,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb19(i64, i64, i64, i64, i64) {
+define i64 @_cb19(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 38 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103857,7 +103857,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb20(i64, i64, i64, i64, i64) {
+define i64 @_cb20(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 40 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103868,7 +103868,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb21(i64, i64, i64, i64, i64) {
+define i64 @_cb21(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 42 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103879,7 +103879,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb22(i64, i64, i64, i64, i64) {
+define i64 @_cb22(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 44 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103890,7 +103890,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb23(i64, i64, i64, i64, i64) {
+define i64 @_cb23(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 46 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103901,7 +103901,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb24(i64, i64, i64, i64, i64) {
+define i64 @_cb24(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 48 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([52 x i64]* @gcData to i8*), i32 32) to i64) to i64*
@@ -103912,7 +103912,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_lisp(i64) {
+define i64 @_lisp(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (evSym X)) (let (P $Lisp Q (i8** (cbFuns))) (...
 ; # (cdr Exe)
@@ -104053,7 +104053,7 @@ $19:
   ret i64 %66
 }
 
-define i64 @_args(i64) {
+define i64 @_args(i64) align 8 {
 $1:
 ; # (if (pair (val $Next)) $T $Nil)
 ; # (val $Next)
@@ -104072,7 +104072,7 @@ $4:
   ret i64 %5
 }
 
-define i64 @_next(i64) {
+define i64 @_next(i64) align 8 {
 $1:
 ; # (let X (val $Next) (set $Next (car X)) (cdr X))
 ; # (val $Next)
@@ -104091,7 +104091,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_arg(i64) {
+define i64 @_arg(i64) align 8 {
 $1:
 ; # (if (le0 (evCnt Exe (cdr Exe))) $Nil (let (N @ X (val $Next)) (wh...
 ; # (cdr Exe)
@@ -104140,7 +104140,7 @@ $4:
   ret i64 %21
 }
 
-define i64 @_rest(i64) {
+define i64 @_rest(i64) align 8 {
 $1:
 ; # (let X (val $Next) (if (atom X) X (let (Y (cons (cdr X) $Nil) R (...
 ; # (val $Next)
@@ -104217,7 +104217,7 @@ $4:
   ret i64 %40
 }
 
-define i64 @_adr(i64) {
+define i64 @_adr(i64) align 8 {
 $1:
 ; # (cond ((cnt? (eval (cadr Exe))) (int @)) ((big? @) (val (dig @)))...
 ; # (cadr Exe)
@@ -104285,7 +104285,7 @@ $2:
   ret i64 %28
 }
 
-define i64 @_byte(i64) {
+define i64 @_byte(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) P (i8* (if (cnt? (needNum Exe (eval (++ X)))) (...
 ; # (cdr Exe)
@@ -104415,7 +104415,7 @@ $14:
   ret i64 %50
 }
 
-define i64 @_env(i64) {
+define i64 @_env(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save $Nil)) (if (atom X) (let Bnd (val $Bind...
 ; # (cdr Exe)
@@ -104736,7 +104736,7 @@ $4:
   ret i64 %176
 }
 
-define i64 @_trail(i64) {
+define i64 @_trail(i64) align 8 {
 $1:
 ; # (let (F (not (nil? (eval (cadr Exe)))) Bnd (val $Bind) R $Nil) (w...
 ; # (cadr Exe)
@@ -104896,7 +104896,7 @@ $19:
   ret i64 %84
 }
 
-define i64 @_up(i64) {
+define i64 @_up(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (car X) N 1 Bnd (val $Bind)) (when (num? Y) (...
 ; # (cdr Exe)
@@ -105214,7 +105214,7 @@ $6:
   ret i64 %199
 }
 
-define i64 @_history(i64) {
+define i64 @_history(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (atom X) (let P (history_list) (if (and P (v...
 ; # (cdr Exe)
@@ -105387,7 +105387,7 @@ $4:
   ret i64 %72
 }
 
-define i64 @_version(i64) {
+define i64 @_version(i64) align 8 {
 $1:
 ; # (when (nil? (eval (cadr Exe))) (outWord (int (val $Y))) (call $Pu...
 ; # (cadr Exe)
@@ -105468,7 +105468,7 @@ $8:
   ret i64 %34
 }
 
-define i32 @main(i32, i8**) {
+define i32 @main(i32, i8**) align 8 {
 $1:
 ; # (set $AV0 (val Av))
 ; # (val Av)

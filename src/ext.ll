@@ -458,7 +458,7 @@ declare i8* @initOutFile(i32)
   i8 78
 ]
 
-define i64 @Snx(i64) {
+define i64 @Snx(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (evSym X)) @ (let (P (push 0 (xName Ex...
 ; # (cdr Exe)
@@ -770,7 +770,7 @@ $4:
   ret i64 %169
 }
 
-define i64 @FD(i64) {
+define i64 @FD(i64) align 8 {
 $1:
 ; # (prog1 (eval (cadr Exe)) (when (ge0 (i32 (xCnt Exe @))) (initInFi...
 ; # (cadr Exe)
@@ -819,7 +819,7 @@ $8:
 @$Stat64 = global i32 0
 @$Next64 = global i32 0
 
-define i64 @Base64(i64) {
+define i64 @Base64(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (cond ((atom X) (let C (val $Chr) (while (and (g...
 ; # (cdr Exe)
