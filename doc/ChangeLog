@@ -1,3 +1,7 @@
+20apr21
+   Bug in 'till' reading UTF-8
+      src/io.l
+
 19apr21
    Align SUBRs to 8 bytes
       src/lib/llvm.l

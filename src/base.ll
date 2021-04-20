@@ -1492,7 +1492,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 66,
-  i64 306
+  i64 322
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -47589,7 +47589,7 @@ $16:
   br label %$17
 $17:
   %48 = phi i32 [%36, %$16], [%60, %$20] ; # C
-  %49 = phi i64 [%39, %$16], [%63, %$20] ; # Y
+  %49 = phi i64 [%39, %$16], [%64, %$20] ; # Y
 ; # (or (le0 (setq C (call $Get))) (strchr S C))
 ; # (call $Get)
   %50 = load i32()*, i32()** @$Get
@@ -47612,88 +47612,90 @@ $18:
 $20:
   %60 = phi i32 [%57, %$18] ; # C
   %61 = phi i64 [%58, %$18] ; # Y
-; # (set 2 Y (cons (mkChar C) $Nil))
-; # (mkChar C)
-  %62 = call i64 @mkChar(i32 %60)
-; # (cons (mkChar C) $Nil)
-  %63 = call i64 @cons(i64 %62, i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([860 x i64]* @SymTab to i8*), i32 8) to i64))
-  %64 = inttoptr i64 %61 to i64*
-  %65 = getelementptr i64, i64* %64, i32 1
-  store i64 %63, i64* %65
+; # (set 2 Y (cons (mkChar (getChar C)) $Nil))
+; # (getChar C)
+  %62 = call i32 @getChar(i32 %60)
+; # (mkChar (getChar C))
+  %63 = call i64 @mkChar(i32 %62)
+; # (cons (mkChar (getChar C)) $Nil)
+  %64 = call i64 @cons(i64 %63, i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([860 x i64]* @SymTab to i8*), i32 8) to i64))
+  %65 = inttoptr i64 %61 to i64*
+  %66 = getelementptr i64, i64* %65, i32 1
+  store i64 %64, i64* %66
   br label %$17
 $21:
-  %66 = phi i32 [%57, %$18] ; # C
-  %67 = phi i64 [%58, %$18] ; # Y
+  %67 = phi i32 [%57, %$18] ; # C
+  %68 = phi i64 [%58, %$18] ; # Y
 ; # (drop *Safe)
-  %68 = inttoptr i64 %43 to i64*
-  %69 = getelementptr i64, i64* %68, i32 1
-  %70 = load i64, i64* %69
-  %71 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %70, i64* %71
+  %69 = inttoptr i64 %43 to i64*
+  %70 = getelementptr i64, i64* %69, i32 1
+  %71 = load i64, i64* %70
+  %72 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %71, i64* %72
   br label %$5
 $15:
-  %72 = phi i32 [%21, %$10] ; # C
+  %73 = phi i32 [%21, %$10] ; # C
 ; # (let (P (push 4 NIL ZERO NIL) Q (link (ofs P 2))) (loop (charSym ...
 ; # (push 4 NIL ZERO NIL)
-  %73 = alloca i64, i64 4, align 16
-  store i64 4, i64* %73
-  %74 = getelementptr i64, i64* %73, i32 2
-  store i64 2, i64* %74
+  %74 = alloca i64, i64 4, align 16
+  store i64 4, i64* %74
+  %75 = getelementptr i64, i64* %74, i32 2
+  store i64 2, i64* %75
 ; # (ofs P 2)
-  %75 = getelementptr i64, i64* %73, i32 2
+  %76 = getelementptr i64, i64* %74, i32 2
 ; # (link (ofs P 2))
-  %76 = ptrtoint i64* %75 to i64
-  %77 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
-  %78 = load i64, i64* %77
-  %79 = inttoptr i64 %76 to i64*
-  %80 = getelementptr i64, i64* %79, i32 1
-  store i64 %78, i64* %80
-  %81 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %76, i64* %81
+  %77 = ptrtoint i64* %76 to i64
+  %78 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %79 = load i64, i64* %78
+  %80 = inttoptr i64 %77 to i64*
+  %81 = getelementptr i64, i64* %80, i32 1
+  store i64 %79, i64* %81
+  %82 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %77, i64* %82
 ; # (loop (charSym (getChar C) P) (? (le0 (setq C (call $Get)))) (? (...
   br label %$22
 $22:
-  %82 = phi i32 [%72, %$15], [%90, %$25] ; # C
+  %83 = phi i32 [%73, %$15], [%91, %$25] ; # C
 ; # (getChar C)
-  %83 = call i32 @getChar(i32 %82)
+  %84 = call i32 @getChar(i32 %83)
 ; # (charSym (getChar C) P)
-  call void @charSym(i32 %83, i64* %73)
+  call void @charSym(i32 %84, i64* %74)
 ; # (? (le0 (setq C (call $Get))))
 ; # (call $Get)
-  %84 = load i32()*, i32()** @$Get
-  %85 = call i32 %84()
+  %85 = load i32()*, i32()** @$Get
+  %86 = call i32 %85()
 ; # (le0 (setq C (call $Get)))
-  %86 = icmp sle i32 %85, 0
-  br i1 %86, label %$24, label %$23
+  %87 = icmp sle i32 %86, 0
+  br i1 %87, label %$24, label %$23
 $23:
-  %87 = phi i32 [%85, %$22] ; # C
+  %88 = phi i32 [%86, %$22] ; # C
 ; # (? (strchr S C))
 ; # (strchr S C)
-  %88 = call i8* @strchr(i8* %8, i32 %87)
-  %89 = icmp ne i8* %88, null
-  br i1 %89, label %$24, label %$25
+  %89 = call i8* @strchr(i8* %8, i32 %88)
+  %90 = icmp ne i8* %89, null
+  br i1 %90, label %$24, label %$25
 $25:
-  %90 = phi i32 [%87, %$23] ; # C
+  %91 = phi i32 [%88, %$23] ; # C
   br label %$22
 $24:
-  %91 = phi i32 [%85, %$22], [%87, %$23] ; # C
-  %92 = phi i64 [0, %$22], [0, %$23] ; # ->
+  %92 = phi i32 [%86, %$22], [%88, %$23] ; # C
+  %93 = phi i64 [0, %$22], [0, %$23] ; # ->
 ; # (drop Q (consStr (val 3 P)))
 ; # (val 3 P)
-  %93 = getelementptr i64, i64* %73, i32 2
-  %94 = load i64, i64* %93
+  %94 = getelementptr i64, i64* %74, i32 2
+  %95 = load i64, i64* %94
 ; # (consStr (val 3 P))
-  %95 = call i64 @consStr(i64 %94)
-  %96 = inttoptr i64 %76 to i64*
-  %97 = getelementptr i64, i64* %96, i32 1
-  %98 = load i64, i64* %97
-  %99 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %98, i64* %99
+  %96 = call i64 @consStr(i64 %95)
+  %97 = inttoptr i64 %77 to i64*
+  %98 = getelementptr i64, i64* %97, i32 1
+  %99 = load i64, i64* %98
+  %100 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([19 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %99, i64* %100
   br label %$5
 $5:
-  %100 = phi i32 [%20, %$9], [%66, %$21], [%91, %$24] ; # C
-  %101 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([860 x i64]* @SymTab to i8*), i32 8) to i64), %$9], [%39, %$21], [%95, %$24] ; # ->
-  ret i64 %101
+  %101 = phi i32 [%20, %$9], [%67, %$21], [%92, %$24] ; # C
+  %102 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([860 x i64]* @SymTab to i8*), i32 8) to i64), %$9], [%39, %$21], [%96, %$24] ; # ->
+  ret i64 %102
 }
 
 define i1 @eol(i32) align 8 {

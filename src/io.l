@@ -1,4 +1,4 @@
-# 02mar21 Software Lab. Alexander Burger
+# 20apr21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1758,7 +1758,7 @@ selectErr)
                         (le0 (setq C (call $Get)))
                         (strchr S C) )
                      (setq Y
-                        (set 2 Y (cons (mkChar C) $Nil)) ) )
+                        (set 2 Y (cons (mkChar (getChar C)) $Nil)) ) )
                   R ) )
             (T
                (let
