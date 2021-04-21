@@ -1,4 +1,4 @@
-# 18apr21 Software Lab. Alexander Burger
+# 21apr21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -193,33 +193,33 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
                      '((X)
                         (let (S (cdddr X)  F (caddr X))
                            (conc
-                              (chop (dat$ (- (car X)) "-"))
-                              (list (name " "))
-                              (chop (tim$ (- (cadr X)) T))
-                              (list (name " "))
                               (mkLoc F)
                               (cond
-                                 ((=T S) (list (name "/")))
+                                 ((=T S) (chop "/  "))
                                  ((not S)
                                     (conc
                                        (chop " -> ")
                                        (in (list "readlink" F)
-                                          (line) ) ) )
+                                          (line) )
+                                       (chop "  ") ) )
                                  (T
                                     (conc
                                        (chop " (")
                                        (chop (/ (+ S 1023) 1024))
-                                       (chop ")") ) ) ) ) ) )
+                                       (chop ")  ") ) ) )
+                              (chop (dat$ (- (car X)) "-"))
+                              (chop " ")
+                              (chop (tim$ (- (cadr X)) T)) ) ) )
                      (sort
                         (make
                            (unless (= "/" (last (setq File (chop File))))
-                              (conc File (list (name "/"))) )
+                              (conc File (chop "/")) )
                            (recur (File)
                               (for F (dir File T)
                                  (unless (member F '("." ".."))
                                     (let? I (info (setq F (append File (chop F))) T)
                                        (if (and (=T (car I)) (: subd))
-                                          (recurse (conc F (list (name "/"))))
+                                          (recurse (conc F (chop "/")))
                                           (link
                                              (cons
                                                 (- (cadr I))

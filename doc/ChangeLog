@@ -1,3 +1,7 @@
+21apr21
+   File in first column of directory listings
+      lib/vip.l
+
 20apr21
    Bug in 'till' reading UTF-8
       src/io.l
