@@ -1,3 +1,7 @@
+22apr21
+   Show thousands-separator in total counts in search dialogs
+      lib/form.l
+
 21apr21
    File in first column of directory listings
       lib/vip.l

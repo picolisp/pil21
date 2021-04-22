@@ -1,4 +1,4 @@
-# 13apr21 Software Lab. Alexander Burger
+# 22apr21 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *Evt *Lock *Spans
 
@@ -1938,7 +1938,9 @@
             2 '((Obj) (list Obj Obj)) )
          (<table> 'chart
             (pack
-               (or (get (or Hook *DB) (last Rel) 0) 0)
+               (format
+                  (or (get (or Hook *DB) (last Rel) 0) 0)
+                  NIL NIL *Sep3 )
                " "
                Ttl )
             '((btn) NIL)
@@ -1965,10 +1967,12 @@
 
 (de choTtl (Ttl X . @)
    (pack
-      (if (next)
-         (with (or (get @ X) (meta @ X))
-            (count (tree (: var) (: cls) (next))) )
-         (or (get *DB X 0) 0) )
+      (format
+         (if (next)
+            (with (or (get @ X) (meta @ X))
+               (count (tree (: var) (: cls) (next))) )
+            (or (get *DB X 0) 0) )
+         NIL NIL *Sep3 )
       " "
       Ttl ) )
 
