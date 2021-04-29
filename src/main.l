@@ -1,4 +1,4 @@
-# 17apr21 Software Lab. Alexander Burger
+# 29apr21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -44,7 +44,27 @@
 (de void popErrFiles ())
 (de void popCtlFiles ())
 
-(local) (stop unwind)
+(local) (saveCoEnv loadCoEnv stop unwind)
+
+# Switch coroutines
+(de void saveCoEnv ((i8* . Crt))
+   (let Crt: (coroutine Crt)
+      (Crt: at (val $At))  # Not running
+      ((ioFrame (val $OutFrames)) fun (val (i8** $Put)))
+      (let Io: (ioFrame (val $InFrames))
+         (Io: fun (val (i8** $Get)))
+         ((inFile (Io: file)) chr (val $Chr)) )
+      (memcpy (Crt: (env)) (env) (env T) T) ) )
+
+(de loadCoEnv ((i8* . Crt))
+   (let Crt: (coroutine (set $Current Crt))
+      (set $StkLimit (+ (Crt: lim) 4096))
+      (memcpy (env) (Crt: (env)) (env T) T)
+      (tosInFile)
+      (tosOutFile)
+      (set $At (Crt: at))
+      (Crt: at 0)  # Running
+      (val $Ret) ) )
 
 # Stop coroutine
 (de void stop ((i8* . Crt))
@@ -58,9 +78,10 @@
 # Unwind stack
 (de void unwind ((i8* . Catch))
    (when (val $Current)
-      (unless (== @ (val $Coroutines))
-         (stop @)
-         (set $Current (val $Coroutines)) ) )
+      (let Crt (val $Coroutines)
+         (unless (== @ Crt)
+            (stop @)
+            (loadCoEnv Crt) ) ) )
    (let (Ca (val $Catch)  Bnd (val $Bind))
       (while Ca
          (let Ca: (caFrame Ca)

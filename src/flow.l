@@ -1,4 +1,4 @@
-# 16apr21 Software Lab. Alexander Burger
+# 29apr21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1082,29 +1082,10 @@
          (set $Catch (Ca: link)) ) ) )
 
 # Coroutines
-(local) (reentErr saveCoEnv loadCoEnv)
+(local) reentErr
 
 (de NIL reentErr (Exe Tag)
    (err Exe Tag ($ "Reentrant coroutine") null) )
-
-(de void saveCoEnv ((i8* . Crt))
-   (let Crt: (coroutine Crt)
-      (Crt: at (val $At))  # Not running
-      ((ioFrame (val $OutFrames)) fun (val (i8** $Put)))
-      (let Io: (ioFrame (val $InFrames))
-         (Io: fun (val (i8** $Get)))
-         ((inFile (Io: file)) chr (val $Chr)) )
-      (memcpy (Crt: (env)) (env) (env T) T) ) )
-
-(de loadCoEnv ((i8* . Crt))
-   (let Crt: (coroutine (set $Current Crt))
-      (set $StkLimit (+ (Crt: lim) 4096))
-      (memcpy (env) (Crt: (env)) (env T) T)
-      (tosInFile)
-      (tosOutFile)
-      (set $At (Crt: at))
-      (Crt: at 0)  # Running
-      (val $Ret) ) )
 
 # (co 'sym [. prg]) -> any
 (de _co (Exe)

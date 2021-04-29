@@ -20,6 +20,7 @@ declare void @llvm.stackrestore(i8*)
 @$Extern = external global i64
 @$ExtCnt = external global i64
 @$ExtSkip = external global i64
+@$Current = external global i8*
 @$Coroutines = external global i8*
 @$StkSizeT = external global i64
 @$StkSize = external global i64
@@ -85,7 +86,7 @@ declare void @llvm.stackrestore(i8*)
 @SymTab = external global [860 x i64]
 @gcData = external global [52 x i64]
 @cbFuns = external global [24 x i64]
-@env = external global [18 x i64]
+@env = external global [17 x i64]
 @$Cell = external global [2 x i64]
 @$Version = external global [3 x i64]
 @$TBuf = external global [2 x i8]
@@ -520,12 +521,12 @@ $7:
   %25 = getelementptr i64, i64* %9, i32 1
 ; # (link (ofs P 1) T)
   %26 = ptrtoint i64* %25 to i64
-  %27 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([18 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %27 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
   %28 = load i64, i64* %27
   %29 = inttoptr i64 %26 to i64*
   %30 = getelementptr i64, i64* %29, i32 1
   store i64 %28, i64* %30
-  %31 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([18 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %31 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
   store i64 %26, i64* %31
 ; # (push 4 NIL ZERO NIL)
   %32 = alloca i64, i64 4, align 16
@@ -559,12 +560,12 @@ $12:
   %47 = getelementptr i64, i64* %32, i32 2
 ; # (link (ofs R 2))
   %48 = ptrtoint i64* %47 to i64
-  %49 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([18 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %49 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
   %50 = load i64, i64* %49
   %51 = inttoptr i64 %48 to i64*
   %52 = getelementptr i64, i64* %51, i32 1
   store i64 %50, i64* %52
-  %53 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([18 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %53 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
   store i64 %48, i64* %53
 ; # (when (or (and (>= C (char "a")) (>= (char "z") C)) (== C 128) (a...
 ; # (or (and (>= C (char "a")) (>= (char "z") C)) (== C 128) (and (>=...
@@ -762,7 +763,7 @@ $24:
   %164 = inttoptr i64 %26 to i64*
   %165 = getelementptr i64, i64* %164, i32 1
   %166 = load i64, i64* %165
-  %167 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([18 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %167 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
   store i64 %166, i64* %167
   br label %$4
 $4:

@@ -13,6 +13,7 @@
 (var $Extern 0)                        # External symbol tree
 (var $ExtCnt i64 1)                    # External symbol count
 (var $ExtSkip i64 0)                   # External tree skip
+(var $Current i8* null)                # Current coroutine
 (var $Coroutines i8* null)             # Coroutines
 (var $StkSizeT i64 (* 4 STACK))        # Coroutine main stack segment size
 (var $StkSize i64 STACK)               # Coroutine stack segment size
@@ -627,7 +628,6 @@
    ($Bind 0)                     # Bind frames
    ($Break 0)                    # Breakpoint
    ($Catch i8* null)             # Catch frames
-   ($Current i8* null)           # Current coroutine
    ($InFrames i8* null)          # Input frames
    ($OutFrames i8* null)         # Output frames
    ($ErrFrames i8* null)         # Error frames
