@@ -1,3 +1,7 @@
+29apr21
+   Remove '$Coroutines' from catch/throw environment
+      src/glob.l
+
 22apr21
    Show thousands-separator in total counts in search dialogs
       lib/form.l
