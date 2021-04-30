@@ -1,0 +1,2708 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>PicoLisp Application Development</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+    <a href="mailto:abu@software-lab.de">abu@software-lab.de</a><br>
+<a href="mailto:mattias@inogu.se">mattias@inogu.se</a>
+
+<h1>PicoLisp Application Development</h1>
+
+<p align=right>(c) Software Lab. Alexander Burger, Mattias Sundblad
+
+<p>This document presents an introduction to writing browser-based applications
+in PicoLisp.
+
+<p>It concentrates on the XHTML/CSS GUI-Framework (as opposed to the previous
+Java-AWT, Java-Swing and Plain-HTML frameworks), which is easier to use, more
+flexible in layout design, and does not depend on plug-ins, JavaScript, cookies
+or CSS.
+
+<p>A plain HTTP/HTML GUI has various advantages: It runs on any browser, and can
+be fully driven by scripts ("@lib/scrape.l").
+
+<p>To be precise: CSS <i>can</i> be used to enhance the layout. And browsers
+<i>with</i> JavaScript will respond faster and smoother. But this framework
+works just fine in browsers which do not know anything about CSS or JavaScript.
+All examples were also tested using the w3m text browser.
+
+<p>For basic informations about the PicoLisp system please look at the <a
+href="ref.html">PicoLisp Reference</a> and the <a href="tut.html">PicoLisp
+Tutorial</a>. Knowledge of HTML, and a bit of CSS and HTTP is assumed.
+
+<p>The examples assume that PicoLisp was started from a global installation (see
+<a href="ref.html#inst">Installation</a>).
+
+<p><ul>
+<li><a href="#static">Static Pages</a>
+   <ul>
+   <li><a href="#hello">Hello World</a>
+      <ul>
+      <li><a href="#server">Start the application server</a>
+      <li><a href="#how">How does it work?</a>
+      </ul>
+   <li><a href="#urlSyntax">URL Syntax</a>
+   <li><a href="#security">Security</a>
+      <ul>
+      <li><a href="#pw">The ".pw" File</a>
+      </ul>
+   <li><a href="#htmlFoo">The <code>html</code> Function</a>
+   <li><a href="#cssAttr">CSS Attributes</a>
+   <li><a href="#tags">Tag Functions</a>
+      <ul>
+      <li><a href="#simple">Simple Tags</a>
+      <li><a href="#lists">(Un)ordered Lists</a>
+      <li><a href="#tables">Tables</a>
+      <li><a href="#menus">Menus and Tabs</a>
+      </ul>
+   </ul>
+<li><a href="#forms">Interactive Forms</a>
+   <ul>
+   <li><a href="#sessions">Sessions</a>
+   <li><a href="#actionForms">Action Forms</a>
+      <ul>
+      <li><a href="#guiFoo">The <code>gui</code> Function</a>
+      <li><a href="#ctlFlow">Control Flow</a>
+      <li><a href="#switching">Switching URLs</a>
+      <li><a href="#dialogs">Alerts and Dialogs</a>
+      <li><a href="#calc">A Calculator Example</a>
+      </ul>
+   <li><a href="#charts">Charts</a>
+      <ul>
+      <li><a href="#scrolling">Scrolling</a>
+      <li><a href="#putGet">Put and Get Functions</a>
+      </ul>
+   </ul>
+<li><a href="#guiClasses">GUI Classes</a>
+   <ul>
+   <li><a href="#inputFields">Input Fields</a>
+      <ul>
+      <li><a href="#numberFields">Numeric Input Fields</a>
+      <li><a href="#timeDateFields">Time &amp; Date</a>
+      <li><a href="#telFields">Telephone Numbers</a>
+      <li><a href="#checkboxes">Checkboxes</a>
+      </ul>
+   <li><a href="#fieldPrefix">Field Prefix Classes</a>
+      <ul>
+      <li><a href="#initPrefix">Initialization</a>
+      <li><a href="#ablePrefix">Disabling and Enabling</a>
+      <li><a href="#formatPrefix">Formatting</a>
+      <li><a href="#sideEffects">Side Effects</a>
+      <li><a href="#validPrefix">Validation</a>
+      <li><a href="#linkage">Data Linkage</a>
+      </ul>
+   <li><a href="#buttons">Buttons</a>
+      <ul>
+      <li><a href="#dialogButtons">Dialog Buttons</a>
+      <li><a href="#jsButtons">Active JavaScript</a>
+      </ul>
+   </ul>
+<a name="minAppRef"></a>
+<li><a href="#minApp">A Minimal Complete Application</a>
+   <ul>
+   <li><a href="#getStarted">Getting Started</a>
+      <ul>
+      <li><a href="#localization">Localization</a>
+      <li><a href="#navigation">Navigation</a>
+      <li><a href="#choosing">Choosing Objects</a>
+      <li><a href="#editing">Editing</a>
+      <li><a href="#btnLinks">Buttons vs. Links</a>
+      </ul>
+   <li><a href="#dataModel">The Data Model</a>
+   <li><a href="#usage">Usage</a>
+      <ul>
+      <li><a href="#cuSu">Customer/Supplier</a>
+      <li><a href="#item">Item</a>
+      <li><a href="#order">Order</a>
+      <li><a href="#reports">Reports</a>
+      </ul>
+   <li><a href="#bugs">Bugs</a>
+   </ul>
+</ul>
+
+
+<p><hr>
+<h2><a name="static">Static Pages</a></h2>
+
+<p>You can use PicoLisp to generate static HTML pages. This does not make much
+sense in itself, because you could directly write HTML code as well, but it
+forms the base for interactive applications, and allows us to introduce the
+application server and other fundamental concepts.
+
+<p><hr>
+<h3><a name="hello">Hello World</a></h3>
+
+<p>To begin with a minimal application, please enter the following two lines
+into a generic source file named "project.l" in the PicoLisp installation
+directory.
+
+<pre><code>
+########################################################################
+(html 0 "Hello" "@lib.css" NIL
+   "Hello World!" )
+########################################################################
+</code></pre>
+
+<p>(We will modify and use this file in all following examples and experiments.
+Whenever you find such a program snippet between hash ('#') lines, just copy and
+paste it into your "project.l" file, and press the "reload" button of your
+browser to view the effects)
+
+
+<h4><a name="server">Start the application server</a></h4>
+
+<p>Open a second terminal window, and start a PicoLisp application server
+
+<pre><code>
+$ pil @lib/http.l @lib/xhtml.l @lib/form.l  --server 8080 project.l  +
+</code></pre>
+
+<p>No prompt appears. The server just sits, and waits for connections. You can
+stop it later by hitting <code>Ctrl-C</code> in that terminal, or by executing
+'<code>killall pil</code>' in some other window.
+
+<p>(In the following, we assume that this HTTP server is up and running)
+
+<p>Now open the URL '<code><a
+href="http://localhost:8080">http://localhost:8080</a></code>' with your
+browser. You should see an empty page with a single line of text.
+
+
+<h4><a name="how">How does it work?</a></h4>
+
+<p>The above line loads the debugger (via the '+' switch), the HTTP server code
+("@lib/http.l"), the XHTML functions ("@lib/xhtml.l") and the input form
+framework ("@lib/form.l", it will be needed later for <a
+href="#forms">interactive forms</a>).
+
+<p>Then the <code>-server</code> function is called (a front-end to
+<code>server</code>) with a port number and a default URL. It will listen on
+that port for incoming HTTP requests in an endless loop. Whenever a GET request
+arrives on port 8080, the file "project.l" will be <code><a
+href="refL.html#load">(load)</a></code>ed, causing the evaluation (= execution)
+of all its Lisp expressions.
+
+<p>During that execution, all data written to the current output channel is sent
+directly to the browser. The code in "project.l" is responsible to produce HTML
+(or anything else the browser can understand).
+
+
+<p><hr>
+<h3><a name="urlSyntax">URL Syntax</a></h3>
+
+<p>The PicoLisp application server uses a slightly specialized syntax when
+communicating URLs to and from a client. The "path" part of an URL - which
+remains when
+
+<p><ul>
+<li>the preceding protocol, host and port specifications,
+<li>and the trailing question mark plus arguments
+</ul>
+
+are stripped off - is interpreted according so some rules. The most prominent
+ones are:
+
+<p><ul>
+<li>If a path starts with an exclamation-mark ('!'), the rest (without the '!')
+is taken as the name of a Lisp function to be called. All arguments following
+the question mark are passed to that function.
+
+<li>If a path ends with ".l" (a dot and a lower case 'L'), it is taken as a Lisp
+source file name to be <code><a href="refL.html#load">(load)</a></code>ed. This
+is the most common case, and we use it in our example "project.l".
+
+<li>If the extension of a file name matches an entry in the global mime type
+table <code>*Mimes</code>, the file is sent to the client with mime-type and
+max-age values taken from that table.
+
+<li>Otherwise, the file is sent to the client with a mime-type of
+"application/octet-stream" and a max-age of 1 second.
+
+</ul>
+
+<p>An application is free to extend or modify the <code>*Mimes</code> table with
+the <code>mime</code> function. For example
+
+<pre><code>
+(mime "doc" "application/msword" 60)
+</code></pre>
+
+<p>defines a new mime type with a max-age of one minute.
+
+<p>Argument values in URLs, following the path and the question mark, are
+encoded in such a way that Lisp data types are preserved:
+
+<p><ul>
+<li>An internal symbol starts with a dollar sign ('$')
+<li>A number starts with a plus sign ('+')
+<li>An external (database) symbol starts with dash ('-')
+<li>A list (one level only) is encoded with underscores ('_')
+<li>Otherwise, it is a transient symbol (a plain string)
+
+</ul>
+
+<p>In that way, high-level data types can be directly passed to functions
+encoded in the URL, or assigned to global variables before a file is loaded.
+
+
+<p><hr>
+<h3><a name="security">Security</a></h3>
+
+<p>It is, of course, a huge security hole that - directly from the URL - any
+Lisp source file can be loaded, and any Lisp function can be called. For that
+reason, applications must take care to declare exactly which files and functions
+are to be allowed in URLs. The server checks a global variable <code><a
+href="refA.html#*Allow">*Allow</a></code>, and - when its value is
+non-<code>NIL</code> - denies access to anything that does not match its
+contents.
+
+<p>Normally, <code>*Allow</code> is not manipulated directly, but set with the
+<code><a href="refA.html#allowed">allowed</a></code> and <code><a
+href="refA.html#allow">allow</a></code> functions
+
+<pre><code>
+(allowed ("app/")
+   "!start" "!stop" "@lib.css" "!psh" )
+</code></pre>
+
+<p>This is usually called at the beginning of an application, and allows access
+to the directory "app/", to the functions 'start', 'stop' and 'psh', and to the
+file "@lib.css".
+
+<p>Later in the program, <code>*Allow</code> may be dynamically extended with
+<code>allow</code>
+
+<pre><code>
+(allow "!foo")
+(allow "newdir/" T)
+</code></pre>
+
+<p>This adds the function 'foo', and the directory "newdir/", to the set of
+allowed items.
+
+
+<h4><a name="pw">The ".pw" File</a></h4>
+
+<p>For a variety of security checks (most notably for using the <code>psh</code>
+function, as in some later examples) it is necessary to create a file named
+".pw" in the PicoLisp installation directory. This file should contain a single
+line of arbitrary data, to be used as a password for identifying local
+resources.
+
+<p>The recommeded way to create this file is to call the <code>pw</code>
+function, defined in "@lib/http.l"
+
+<pre><code>
+$ pil @lib/http.l -'pw 12' -bye
+</code></pre>
+
+<p>Please execute this command.
+
+
+<p><hr>
+<h3><a name="htmlFoo">The <code>html</code> Function</a></h3>
+
+<p>Now back to our "Hello World" example. In principle, you could write
+"project.l" as a sequence of print statements
+
+<pre><code>
+########################################################################
+(prinl "HTTP/1.0 200 OK^M")
+(prinl "Content-Type: text/html; charset=utf-8")
+(prinl "^M")
+(prinl "&lt;html&gt;")
+(prinl "Hello World!")
+(prinl "&lt;/html&gt;")
+########################################################################
+</code></pre>
+
+<p>but using the <code>html</code> function is much more convenient.
+
+<p>Moreover, <code>html</code> <b>is</b> nothing more than a printing function.
+You can see this easily if you connect a PicoLisp Shell (<code>psh</code>) to
+the server process (you must have generated a <a href="#pw">".pw" file</a> for
+this), and enter the <code>html</code> statement
+
+<pre><code>
+$ /usr/lib/picolisp/bin/psh 8080
+: (html 0 "Hello" "@lib.css" NIL "Hello World!")
+HTTP/1.0 200 OK
+Server: PicoLisp
+Date: Fri, 29 Dec 2006 07:28:58 GMT
+Cache-Control: max-age=0
+Cache-Control: no-cache
+Content-Type: text/html; charset=utf-8
+
+&lt;!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"&gt;
+&lt;html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"&gt;
+&lt;head&gt;
+&lt;title&gt;Hello&lt;/title&gt;
+&lt;base href="http://localhost:8080/"/&gt;
+&lt;link rel="stylesheet" type="text/css" href="http://localhost:8080/@lib.css"/&gt;
+&lt;/head&gt;
+&lt;body&gt;Hello World!&lt;/body&gt;
+&lt;/html&gt;
+-&gt; &lt;/html&gt;
+:  # (type Ctrl-D here to terminate PicoLisp)
+</code></pre>
+
+<p>These are the arguments to <code>html</code>:
+
+<ol>
+
+<li><code>0</code>: A max-age value for cache-control (in seconds, zero means
+"no-cache"). You might pass a higher value for pages that change seldom, or
+<code>NIL</code> for no cache-control at all.
+
+<li><code>"Hello"</code>: The page title.
+
+<li><code>"@lib.css"</code>: A CSS-File name. Pass <code>NIL</code> if you do
+not want to use any CSS-File, or a list of file names if you want to give more
+than one CSS-File.
+
+<li><code>NIL</code>: A CSS style attribute specification (see the description
+of <a href="#cssAttr">CSS Attributes</a> below). It will be passed to the
+<code>body</code> tag.
+
+</ol>
+
+<p>After these four arguments, an arbitrary number of expressions may follow.
+They form the body of the resulting page, and are evaluated according to a
+special rule. <a name="tagRule">This rule</a> is slightly different from the
+evaluation of normal Lisp expressions:
+
+<p><ul>
+
+<li>If an argument is an atom (a number or a symbol (string)), its value is
+printed immediately.
+
+<li>Otherwise (a list), it is evaluated as a Lisp function (typically some form
+of print statement).
+
+</ul>
+
+<p>Therefore, our source file might as well be written as:
+
+<pre><code>
+########################################################################
+(html 0 "Hello" "@lib.css" NIL
+   (prinl "Hello World!") )
+########################################################################
+</code></pre>
+
+<p>The most typical print statements will be some HTML-tags:
+
+<pre><code>
+########################################################################
+(html 0 "Hello" "@lib.css" NIL
+   (&lt;h1&gt; NIL "Hello World!")
+   (&lt;br&gt; "This is some text.")
+   (ht:Prin "And this is a number: " (+ 1 2 3)) )
+########################################################################
+</code></pre>
+
+<p><code>&lt;h1&gt;</code> and <code>&lt;br&gt;</code> are tag functions.
+<code>&lt;h1&gt;</code> takes a CSS attribute as its first argument.
+
+<p>Note the use of <code>ht:Prin</code> instead of <code>prin</code>.
+<code>ht:Prin</code> should be used for all direct printing in HTML pages,
+because it takes care to escape special characters.
+
+
+<p><hr>
+<h3><a name="cssAttr">CSS Attributes</a></h3>
+
+<p>The <a href="#htmlFoo"><code>html</code> function</a> above, and many of the
+HTML <a href="#tags">tag functions</a>, accept a CSS attribute specification.
+This may be either an atom, a cons pair, or a list of cons pairs. We demonstrate
+the effects with the <code>&lt;h1&gt;</code> tag function.
+
+<p>An atom (usually a symbol or a string) is taken as a CSS class name
+
+<pre><code>
+: (&lt;h1&gt; 'foo "Title")
+&lt;h1 class="foo"&gt;Title&lt;/h1&gt;
+</code></pre>
+
+<p>For a cons pair, the CAR is taken as an attribute name, and the CDR as the
+attribute's value
+
+<pre><code>
+: (&lt;h1&gt; '(id . bar) "Title")
+&lt;h1 id="bar"&gt;Title&lt;/h1&gt;
+</code></pre>
+
+<p>Consequently, a list of cons pairs gives a set of attribute-value pairs
+
+<pre><code>
+: (&lt;h1&gt; '((id . "abc") (lang . "de")) "Title")
+&lt;h1 id="abc" lang="de"&gt;Title&lt;/h1&gt;
+</code></pre>
+
+
+<p><hr>
+<h3><a name="tags">Tag Functions</a></h3>
+
+<p>All pre-defined XHTML tag functions can be found in "@lib/xhtml.l". We
+recommend to look at their sources, and to experiment a bit, by executing them
+at a PicoLisp prompt, or by pressing the browser's "Reload" button after editing
+the "project.l" file.
+
+<p>For a suitable PicoLisp prompt, either execute (in a separate terminal
+window) the PicoLisp Shell (<code>psh</code>) command (works only if the
+application server is running, and you did generate a <a href="#pw">".pw"
+file</a>)
+
+<pre><code>
+$ /usr/lib/picolisp/bin/psh 8080
+:
+</code></pre>
+
+<p>or start the interpreter stand-alone, with "@lib/xhtml.l" loaded
+
+<pre><code>
+$ pil @lib/http.l @lib/xhtml.l +
+:
+</code></pre>
+
+<p>Note that for all these tag functions the above <a href="#tagRule">tag body
+evaluation rule</a> applies.
+
+
+<h4><a name="simple">Simple Tags</a></h4>
+
+<p>Most tag functions are simple and straightforward. Some of them just print
+their arguments
+
+<pre><code>
+: (&lt;br&gt; "Hello world")
+Hello world&lt;br/&gt;
+
+: (&lt;em&gt; "Hello world")
+&lt;em&gt;Hello world&lt;/em&gt;
+</code></pre>
+
+<p>while most of them take a <a href="#cssAttr">CSS attribute specification</a>
+as their first argument (like the <code>&lt;h1&gt;</code> tag above)
+
+<pre><code>
+: (&lt;div&gt; 'main "Hello world")
+&lt;div class="main"&gt;Hello world&lt;/div&gt;
+
+: (&lt;p&gt; NIL "Hello world")
+&lt;p&gt;Hello world&lt;/p&gt;
+
+: (&lt;p&gt; 'info "Hello world")
+&lt;p class="info"&gt;Hello world&lt;/p&gt;
+</code></pre>
+
+<p>All of these functions take an arbitrary number of arguments, and may nest to
+an arbitrary depth (as long as the resulting HTML is legal)
+
+<pre><code>
+: (&lt;div&gt; 'main
+   (&lt;h1&gt; NIL "Head")
+   (&lt;p&gt; NIL
+      (&lt;br&gt; "Line 1")
+      "Line"
+      (&lt;nbsp&gt;)
+      (prin (+ 1 1)) ) )
+&lt;div class="main"&gt;&lt;h1&gt;Head&lt;/h1&gt;
+&lt;p&gt;Line 1&lt;br/&gt;
+Line&nbsp;2&lt;/p&gt;
+&lt;/div&gt;
+</code></pre>
+
+
+<h4><a name="lists">(Un)ordered Lists</a></h4>
+
+<p>HTML-lists, implemented by the <code>&lt;ol&gt;</code> and
+<code>&lt;ul&gt;</code> tags, let you define hierarchical structures. You might
+want to paste the following code into your copy of "project.l":
+
+<pre><code>
+########################################################################
+(html 0 "Unordered List" "@lib.css" NIL
+   (&lt;ul&gt; NIL
+      (&lt;li&gt; NIL "Item 1")
+      (&lt;li&gt; NIL
+         "Sublist 1"
+         (&lt;ul&gt; NIL
+            (&lt;li&gt; NIL "Item 1-1")
+            (&lt;li&gt; NIL "Item 1-2") ) )
+      (&lt;li&gt; NIL "Item 2")
+      (&lt;li&gt; NIL
+         "Sublist 2"
+         (&lt;ul&gt; NIL
+            (&lt;li&gt; NIL "Item 2-1")
+            (&lt;li&gt; NIL "Item 2-2") ) )
+      (&lt;li&gt; NIL "Item 3") ) )
+########################################################################
+</code></pre>
+
+<p>Here, too, you can put arbitrary code into each node of that tree, including
+other tag functions.
+
+
+<h4><a name="tables">Tables</a></h4>
+
+<p>Like the hierarchical structures with the list functions, you can generate
+two-dimensional tables with the <code>&lt;table&gt;</code> and
+<code>&lt;row&gt;</code> functions.
+
+<p>The following example prints a table of numbers and their squares:
+
+<pre><code>
+########################################################################
+(html 0 "Table" "@lib.css" NIL
+   (&lt;table&gt; NIL NIL NIL
+      (for N 10                                    # A table with 10 rows
+         (&lt;row&gt; NIL N (prin (* N N))) ) ) )     # and 2 columns
+########################################################################
+</code></pre>
+
+<p>The first argument to <code>&lt;table&gt;</code> is the usual CSS attribute,
+the second an optional title ("caption"), and the third an optional list
+specifying the column headers. In that list, you may supply a list for a each
+column, with a CSS attribute in its CAR, and a tag body in its CDR for the
+contents of the column header.
+
+<p>The body of <code>&lt;table&gt;</code> contains calls to the
+<code>&lt;row&gt;</code> function. This function is special in that each
+expression in its body will go to a separate column of the table. If both for
+the column header and the row function an CSS attribute is given, they will be
+combined by a space and passed to the HTML <code>&lt;td&gt;</code> tag. This
+permits distinct CSS specifications for each column and row.
+
+<p>As an extension of the above table example, let's pass some attributes for
+the table itself (not recommended - better define such styles in a CSS file and
+then just pass the class name to <code>&lt;table&gt;</code>), right-align both
+columns, and print each row in an alternating red and blue color
+
+<pre><code>
+########################################################################
+(html 0 "Table" "@lib.css" NIL
+   (&lt;table&gt;
+      '((width . "200px") (style . "border: dotted 1px;"))    # table style
+      "Square Numbers"                                        # caption
+      '((align "Number") (align "Square"))                    # 2 headers
+      (for N 10                                                  # 10 rows
+         (&lt;row&gt; (xchg '(red) '(blue))                         # red or blue
+            N                                                 # 2 columns
+            (prin (* N N) ) ) ) ) )
+########################################################################
+</code></pre>
+
+<p>If you wish to concatenate two or more cells in a table, so that a single
+cell spans several columns, you can pass the symbol '<code>-</code>' for the
+additional cell data to <code>&lt;row&gt;</code>. This will cause the data given
+to the left of the '<code>-</code>' symbols to expand to the right.
+
+<p>You can also directly specify table structures with the simple
+<code>&lt;th&gt;</code>, <code>&lt;tr&gt;</code> and <code>&lt;td&gt;</code> tag
+functions.
+
+<p>If you just need a two-dimensional arrangement of components, the even
+simpler <code>&lt;grid&gt;</code> function might be convenient:
+
+<pre><code>
+########################################################################
+(html 0 "Grid" "@lib.css" NIL
+   (&lt;grid&gt; 3
+      "A" "B" "C"
+      123 456 789 ) )
+########################################################################
+</code></pre>
+
+<p>It just takes a specification for the number of columns (here: 3) as its
+first argument, and then a single expression for each cell. Instead of a number,
+you can also pass a list of CSS attributes. Then the length of that list will
+determine the number of columns. You can change the second line in the above
+example to
+
+<pre><code>
+   (&lt;grid&gt; '(NIL NIL right)
+</code></pre>
+
+<p>Then the third column will be right aligned.
+
+
+<h4><a name="menus">Menus and Tabs</a></h4>
+
+<p>The two most powerful tag functions are <code>&lt;menu&gt;</code> and
+<code>&lt;tab&gt;</code>. Used separately or in combination, they form a
+navigation framework with
+
+<p><ul>
+<li>menu items which open and close submenus
+<li>submenu items which switch to different pages
+<li>tabs which switch to different subpages
+</ul>
+
+<p>The following example is not very useful, because the URLs of all items link
+to the same "project.l" page, but it should suffice to demonstrate the
+functionality:
+
+<pre><code>
+########################################################################
+(html 0 "Menu+Tab" "@lib.css" NIL
+   (&lt;div&gt; '(id . menu)
+      (&lt;menu&gt;
+         ("Item" "project.l")                      # Top level item
+         (NIL (&lt;hr&gt;))                              # Plain HTML
+         (T "Submenu 1"                            # Submenu
+            ("Subitem 1.1" "project.l")
+            (T "Submenu 1.2"
+               ("Subitem 1.2.1" "project.l")
+               ("Subitem 1.2.2" "project.l")
+               ("Subitem 1.2.3" "project.l") )
+            ("Subitem 1.3" "project.l") )
+         (T "Submenu 2"
+            ("Subitem 2.1" "project.l")
+            ("Subitem 2.2" "project.l") ) ) )
+   (&lt;div&gt; '(id . main)
+      (&lt;h1&gt; NIL "Menu+Tab")
+      (&lt;tab&gt;
+         ("Tab1"
+            (&lt;h3&gt; NIL "This is Tab 1") )
+         ("Tab2"
+            (&lt;h3&gt; NIL "This is Tab 2") )
+         ("Tab3"
+            (&lt;h3&gt; NIL "This is Tab 3") ) ) ) )
+########################################################################
+</code></pre>
+
+<p><code>&lt;menu&gt;</code> takes a sequence of menu items. Each menu item is a
+list, with its CAR either
+
+<p><ul>
+<li><code>NIL</code>: The entry is not an active menu item, and the rest of the
+list may consist of arbitrary code (usually HTML tags).
+
+<li><code>T</code>: The second element is taken as a submenu name, and a click
+on that name will open or close the corresponding submenu. The rest of the list
+recursively specifies the submenu items (may nest to arbitrary depth).
+
+<li>Otherwise: The menu item specifies a direct action (instead of opening a
+submenu), where the first list element gives the item's name, and the second
+element the corresponding URL.
+
+</ul>
+
+<p><code>&lt;tab&gt;</code> takes a list of subpages. Each page is simply a tab
+name, followed by arbitrary code (typically HTML tags).
+
+<p>Note that only a single menu and a single tab may be active at the same time.
+
+
+<p><hr>
+<h2><a name="forms">Interactive Forms</a></h2>
+
+<p>In HTML, the only possibility for user input is via <code>&lt;form&gt;</code>
+and <code>&lt;input&gt;</code> elements, using the HTTP POST method to
+communicate with the server.
+
+<p>"@lib/xhtml.l" defines a function called <code>&lt;post&gt;</code>, and a
+collection of input tag functions, which allow direct programming of HTML forms.
+We will supply only one simple example:
+
+<pre><code>
+########################################################################
+(html 0 "Simple Form" "@lib.css" NIL
+   (&lt;post&gt; NIL "project.l"
+      (&lt;field&gt; 10 '*Text)
+      (&lt;submit&gt; "Save") ) )
+########################################################################
+</code></pre>
+
+<p>This associates a text input field with a global variable <code>*Text</code>.
+The field displays the current value of <code>*Text</code>, and pressing the
+submit button causes a reload of "project.l" with <code>*Text</code> set to any
+string entered by the user.
+
+<p>An application program could then use that variable to do something useful,
+for example store its value in a database.
+
+<p>The problem with such a straightforward use of forms is that
+
+<p><ol>
+<li>they require the application programmer to take care of maintaining lots of
+global variables. Each input field on the page needs an associated variable for
+the round trip between server and client.
+
+<li>they do not preserve an application's internal state. Each POST request
+spawns an individual process on the server, which sets the global variables to
+their new values, generates the HTML page, and terminates thereafter. The
+application state has to be passed along explicitly, e.g. using
+<code>&lt;hidden&gt;</code> tags.
+
+<li>they are not very interactive. There is typically only a single submit
+button. The user fills out a possibly large number of input fields, but changes
+will take effect only when the submit button is pressed.
+
+</ol>
+
+<p>Though we wrote a few applications in that style, we recommend the GUI
+framework provided by "@lib/form.l". It does not need any variables for the
+client/server communication, but implements a class hierarchy of GUI components
+for the abstraction of application logic, button actions and data linkage.
+
+
+<p><hr>
+<h3><a name="sessions">Sessions</a></h3>
+
+<p>First of all, we need to establish a persistent environment on the server, to
+handle each individual session (for each connected client).
+
+<p>Technically, this is just a child process of the server we started <a
+href="#server">above</a>, which does not terminate immediately after it sent its
+page to the browser. It is achieved by calling the <code>app</code> function
+somewhere in the application's startup code.
+
+<pre><code>
+########################################################################
+(app)  # Start a session
+
+(html 0 "Simple Session" "@lib.css" NIL
+   (&lt;post&gt; NIL "project.l"
+      (&lt;field&gt; 10 '*Text)
+      (&lt;submit&gt; "Save") ) )
+########################################################################
+</code></pre>
+
+<p>Nothing else changed from the previous example. However, when you connect
+your browser and then look at the terminal window where you started the
+application server, you'll notice a colon, the PicoLisp prompt
+
+<pre><code>
+$ pil @lib/http.l @lib/xhtml.l @lib/form.l  --server 8080 project.l  +
+:
+</code></pre>
+
+<p>Tools like the Unix <code>ps</code> utility will tell you that now two
+<code>picolisp</code> processes are running, the first being the parent of the
+second.
+
+<p>If you enter some text, say "abcdef", into the text field in the browser
+window, press the submit button, and inspect the Lisp <code>*Text</code>
+variable,
+
+<pre><code>
+: *Text
+-> "abcdef"
+</code></pre>
+
+<p>you see that we now have a dedicated PicoLisp process, "connected" to the
+client.
+
+<p>You can terminate this process (like any interactive PicoLisp) by hitting
+<code>Ctrl-D</code> on an empty line. Otherwise, it will terminate by itself if
+no other browser requests arrive within a default timeout period of 5 minutes.
+
+<p>To start a (non-debug) production version, the server is commonly started
+without the '+' flag, and with <code>-wait</code>
+
+<pre><code>
+$ pil @lib/http.l @lib/xhtml.l @lib/form.l  --server 8080 project.l  -wait
+</code></pre>
+
+<p>In that way, no command line prompt appears when a client connects.
+
+
+<p><hr>
+<h3><a name="actionForms">Action Forms</a></h3>
+
+<p>Now that we have a persistent session for each client, we can set up an
+active GUI framework.
+
+<p>This is done by wrapping the call to the <code>html</code> function with
+<code>action</code>. Inside the body of <code>html</code> can be - in addition
+to all other kinds of tag functions - one or more calls to <code>form</code>
+
+<pre><code>
+########################################################################
+(app)                                              # Start session
+
+(action                                            # Action handler
+   (html 0 "Form" "@lib.css" NIL                   # HTTP/HTML protocol
+      (form NIL                                    # Form
+         (gui 'a '(+TextField) 10)                 # Text Field
+         (gui '(+Button) "Print"                   # Button
+            '(msg (val&gt; (: home a))) ) ) ) )
+########################################################################
+</code></pre>
+
+<p>Note that there is no longer a global variable like <code>*Text</code> to
+hold the contents of the input field. Instead, we gave a local, symbolic name
+'<code>a</code>' to a <code>+TextField</code> component
+
+<pre><code>
+         (gui 'a '(+TextField) 10)                 # Text Field
+</code></pre>
+
+<p>Other components can refer to it
+
+<pre><code>
+            '(msg (val&gt; (: home a)))
+</code></pre>
+
+<p><code>(: home)</code> is always the form which contains this GUI component.
+So <code>(: home a)</code> evaluates to the component '<code>a</code>' in the
+current form. As <code><a href="refM.html#msg">msg</a></code> prints its
+argument to standard error, and the <code>val&gt;</code> method retrieves the
+current contents of a component, we will see on the console the text typed into
+the text field when we press the button.
+
+<p>An <code>action</code> without embedded <code>form</code>s - or a
+<code>form</code> without a surrounding <code>action</code> - does not make much
+sense by itself. Inside <code>html</code> and <code>form</code>, however, calls
+to HTML functions (and any other Lisp functions, for that matter) can be freely
+mixed.
+
+<p>In general, a typical page may have the form
+
+<pre><code>
+(action                                            # Action handler
+   (html ..                                        # HTTP/HTML protocol
+      (&lt;h1&gt; ..)                                    # HTML tags
+      (form NIL                                    # Form
+         (&lt;h3&gt; ..)
+         (gui ..)                                  # GUI component(s)
+         (gui ..)
+         .. )
+      (&lt;h2&gt; ..)
+      (form NIL                                    # Another form
+         (&lt;h3&gt; ..)
+         (gui ..)                                  # GUI component(s)
+         .. )
+      (&lt;br&gt; ..)
+      .. ) )
+</code></pre>
+
+
+<h4><a name="guiFoo">The <code>gui</code> Function</a></h4>
+
+<p>The most prominent function in a <code>form</code> body is <code>gui</code>.
+It is the workhorse of GUI construction.
+
+<p>Outside of a <code>form</code> body, <code>gui</code> is undefined.
+Otherwise, it takes an optional alias name, a list of classes, and additional
+arguments as needed by the constructors of these classes. We saw this example
+before
+
+<pre><code>
+         (gui 'a '(+TextField) 10)                 # Text Field
+</code></pre>
+
+Here, '<code>a</code>' is an alias name for a component of type
+<code>(+TextField)</code>. The numeric argument <code>10</code> is passed to the
+text field, specifying its width. See the chapter on <a href="#guiClasses">GUI
+Classes</a> for more examples.
+
+<p>During a GET request, <code>gui</code> is basically a front-end to
+<code>new</code>. It builds a component, stores it in the internal structures of
+the current form, and initializes it by sending the <code>init&gt;</code>
+message to the component. Finally, it sends it the <code>show&gt;</code>
+message, to produce HTML code and transmit it to the browser.
+
+<p>During a POST request, <code>gui</code> does not build any new components.
+Instead, the existing components are re-used. So <code>gui</code> does not have
+much more to do than sending the <code>show&gt;</code> message to a component.
+
+
+<h4><a name="ctlFlow">Control Flow</a></h4>
+
+<p>HTTP has only two methods to change a browser window: GET and POST. We employ
+these two methods in a certain defined, specialized way:
+
+<p><ul>
+<li>GET means, a <b>new page</b> is being constructed. It is used when a page is
+visited for the first time, usually by entering an URL into the browser's
+address field, or by clicking on a link (which is often a <a
+href="#menus">submenu item or tab</a>).
+
+<li>POST is always directed to the <b>same page</b>. It is triggered by a button
+press, updates the corresponding form's data structures, and executes that
+button's action code.
+
+</ul>
+
+<p>A button's action code can do almost anything: Read and modify the contents
+of input fields, communicate with the database, display alerts and dialogs, or
+even fake the POST request to a GET, with the effect of showing a completely
+different document (See <a href="#switching">Switching URLs</a>).
+
+<p>GET builds up all GUI components on the server. These components are objects
+which encapsulate state and behavior of the HTML page in the browser. Whenever a
+button is pressed, the page is reloaded via a POST request. Then - before any
+output is sent to the browser - the <code>action</code> function takes control.
+It performs error checks on all components, processes possible user input on the
+HTML page, and stores the values in correct format (text, number, date, object
+etc.) in each component.
+
+<p>The state of a form is preserved over time. When the user returns to a
+previous page with the browser's BACK button, that state is reactivated, and may
+be POSTed again.
+
+<p>The following silly example displays two text fields. If you enter some text
+into the "Source" field, you can copy it in upper or lower case to the
+"Destination" field by pressing one of the buttons
+
+<pre><code>
+########################################################################
+(app)
+
+(action
+   (html 0 "Case Conversion" "@lib.css" NIL
+      (form NIL
+         (&lt;grid&gt; 2
+            "Source" (gui 'src '(+TextField) 30)
+            "Destination" (gui 'dst '(+Lock +TextField) 30) )
+         (gui '(+JS +Button) "Upper Case"
+            '(set&gt; (: home dst)
+               (uppc (val&gt; (: home src))) ) )
+         (gui '(+JS +Button) "Lower Case"
+            '(set&gt; (: home dst)
+               (lowc (val&gt; (: home src))) ) ) ) ) )
+########################################################################
+</code></pre>
+
+<p>The <code><a href="form/refL.html#+Lock">+Lock</a></code> prefix class in the
+"Destination" field makes that field read-only. The only way to get some text
+into that field is by using one of the buttons.
+
+
+<h4><a name="switching">Switching URLs</a></h4>
+
+<p>Because an action code runs before <code>html</code> has a chance to output
+an HTTP header, it can abort the current page and present something different to
+the user. This might, of course, be another HTML page, but would not be very
+interesting as a normal link would suffice. Instead, it can cause the download
+of dynamically generated data.
+
+<p>The next example shows a text area and two buttons. Any text entered into the
+text area is exported either as a text file via the first button, or a PDF
+document via the second button
+
+<pre><code>
+########################################################################
+(load "@lib/ps.l")
+
+(app)
+
+(action
+   (html 0 "Export" "@lib.css" NIL
+      (form NIL
+         (gui '(+TextField) 30 8)
+         (gui '(+Button) "Text"
+            '(let Txt (tmp "export.txt")
+               (out Txt (prinl (val&gt; (: home gui 1))))
+               (url Txt) ) )
+         (gui '(+Button) "PDF"
+            '(psOut NIL "foo"
+               (a4)
+               (indent 40 40)
+               (down 60)
+               (hline 3)
+               (font (14 . "Times-Roman")
+                  (ps (val&gt; (: home gui 1))) )
+               (hline 3)
+               (page) ) ) ) ) )
+########################################################################
+</code></pre>
+
+<p>(a text area is built when you supply two numeric arguments (columns and
+rows) to a <code><a href="form/refT.html#+TextField">+TextField</a></code> class)
+
+<p>The action code of the first <a href="form/refB.html#+Button">button</a>
+creates a temporary file (i.e. a file named "export.txt" in the current
+process's temporary space), prints the value of the text area (this time we did
+not bother to give it a name, we simply refer to it as the form's first gui list
+element) into that file, and then calls the <code><a
+href="form/refU.html#url">url</a></code> function with the file name.
+
+<p>The second button uses the PostScript library "@lib/ps.l" to create a
+temporary file "foo.pdf". Here, the temporary file creation and the call to the
+<code>url</code> function is hidden in the internal mechanisms of
+<code>psOut</code>. The effect is that the browser receives a PDF document and
+displays it.
+
+
+<h4><a name="dialogs">Alerts and Dialogs</a></h4>
+
+<p><a href="form/refA.html#alert">Alerts</a> and <a
+href="form/refD.html#dialog">dialogs</a> are not really what they used to be ;-)
+
+<p>They do not "pop up". In this framework, they are just a kind of
+simple-to-use, pre-fabricated form. They can be invoked by a button's action
+code, and appear always on the current page, immediately preceding the form
+which created them.
+
+<p>Let's look at an example which uses two alerts and a dialog. In the
+beginning, it displays a simple form, with a locked text field, and two buttons
+
+<pre><code>
+########################################################################
+(app)
+
+(action
+   (html 0 "Alerts and Dialogs" "@lib.css" NIL
+      (form NIL
+         (gui '(+Init +Lock +TextField) "Initial Text" 20 "My Text")
+         (gui '(+Button) "Alert"
+            '(alert NIL "This is an alert " (okButton)) )
+         (gui '(+Button) "Dialog"
+            '(dialog NIL
+               (&lt;br&gt; "This is a dialog.")
+               (&lt;br&gt;
+                  "You can change the text here "
+                  (gui '(+Init +TextField) (val&gt; (: top 1 gui 1)) 20) )
+               (&lt;br&gt; "and then re-submit it to the form.")
+               (gui '(+Button) "Re-Submit"
+                  '(alert NIL "Are you sure? "
+                     (yesButton
+                        '(set&gt; (: home top 2 gui 1)
+                           (val&gt; (: home top 1 gui 1)) ) )
+                     (noButton) ) )
+               (cancelButton) ) ) ) ) )
+########################################################################
+</code></pre>
+
+<p>The <code><a href="form/refI.html#+Init">+Init</a></code> prefix class
+initializes the "My Text" field with the string "Initial Text". As the field is
+locked, you cannot modify this value directly.
+
+<p>The first button brings up an alert saying "This is an alert.". You can
+dispose it by pressing "OK".
+
+<p>The second button brings up a dialog with an editable text field, containing
+a copy of the value from the form's locked text field. You can modify this
+value, and send it back to the form, if you press "Re-Submit" and answer "Yes"
+to the "Are you sure?" alert.
+
+
+<h4><a name="calc">A Calculator Example</a></h4>
+
+<p>Now let's forget our "project.l" test file for a moment, and move on to a
+more substantial and practical, stand-alone, example. Using what we have learned
+so far, we want to build a simple bignum calculator. ("bignum" because PicoLisp
+can do <i>only</i> bignums)
+
+<p>It uses a single form, a single numeric input field, and lots of buttons. It
+can be found in the PicoLisp distribution (e.g. under "/usr/share/picolisp/") in
+"misc/calc.l", together with a directly executable wrapper script "misc/calc".
+
+<p>To use it, change to the PicoLisp installation directory, and start it as
+
+<pre><code>
+$ misc/calc
+</code></pre>
+
+<p>or call it with an absolute path, e.g.
+
+<pre><code>
+$ /usr/share/picolisp/misc/calc
+</code></pre>
+
+<p>If you like to get a PicoLisp prompt for inspection, start it instead as
+
+<pre><code>
+$ pil misc/calc.l -main -go +
+</code></pre>
+
+<p>Then - as before - point your browser to '<code><a
+href="http://localhost:8080">http://localhost:8080</a></code>'.
+
+<p>The code for the calculator logic and the GUI is rather straightforward. The
+entry point is the single function <code>calculator</code>. It is called
+directly (as described in <a href="#urlSyntax">URL Syntax</a>) as the server's
+default URL, and implicitly in all POST requests. No further file access is
+needed once the calculator is running.
+
+<p>Note that for a production application, we inserted an allow-statement (as
+recommended by the <a href="#security">Security</a> chapter)
+
+<pre><code>
+(allowed NIL "!calculator" "@lib.css")
+</code></pre>
+
+<p>at the beginning of "misc/calc.l". This will restrict external access to that
+single function.
+
+<p>The calculator uses three global variables, <code>*Init</code>,
+<code>*Accu</code> and <code>*Stack</code>. <code>*Init</code> is a boolean flag
+set by the operator buttons to indicate that the next digit should initialize
+the accumulator to zero. <code>*Accu</code> is the accumulator. It is always
+displayed in the numeric input field, accepts user input, and it holds the
+results of calculations. <code>*Stack</code> is a push-down stack, holding
+postponed calculations (operators, priorities and intermediate results) with
+lower-priority operators, while calculations with higher-priority operators are
+performed.
+
+<p>The function <code>digit</code> is called by the digit buttons, and adds
+another digit to the accumulator.
+
+<p>The function <code>calc</code> does an actual calculation step. It pops the
+stack, checks for division by zero, and displays an error alert if necessary.
+
+<p><code>operand</code> processes an operand button, accepting a function and a
+priority as arguments. It compares the priority with that in the top-of-stack
+element, and delays the calculation if it is less.
+
+<p><code>finish</code> is used to calculate the final result.
+
+<p>The <code>calculator</code> function has one numeric input field, with a
+width of 60 characters
+
+<pre><code>
+         (gui '(+Var +NumField) '*Accu 60)
+</code></pre>
+
+<p>The <code><a href="form/refV.html#+Var">+Var</a></code> prefix class
+associates this field with the global variable <code>*Accu</code>. All changes
+to the field will show up in that variable, and modification of that variable's
+value will appear in the field.
+
+<p>The <a name="sqrtButton">square root operator button</a> has an
+<code><a href="form/refA.html#+Able">+Able</a></code> prefix class
+
+<pre><code>
+         (gui '(+Able +JS +Button) '(ge0 *Accu) (char 8730)
+            '(setq *Accu (sqrt *Accu)) )
+</code></pre>
+
+
+<p>with an argument expression which checks that the current value in the
+accumulator is positive, and disables the button if otherwise.
+
+<p>The rest of the form is just an array (grid) of buttons, encapsulating all
+functionality of the calculator. The user can enter numbers into the input
+field, either by using the digit buttons, or by directly typing them in, and
+perform calculations with the operator buttons. Supported operations are
+addition, subtraction, multiplication, division, sign inversion, square root and
+power (all in bignum integer arithmetic). The '<code>C</code>' button just
+clears the accumulator, while the '<code>A</code>' button also clears all
+pending calculations.
+
+<p>All that in 53 lines of code!
+
+
+<p><hr>
+<h3><a name="charts">Charts</a></h3>
+
+<p><a href="form/refC.html#+Chart">Charts</a> are virtual components,
+maintaining the internal representation of two-dimensional data.
+
+<p>Typically, these data are nested lists, database selections, or some kind of
+dynamically generated tabular information. Charts make it possible to view them
+in rows and columns (usually in HTML <a href="#tables">tables</a>), scroll up
+and down, and associate them with their corresponding visible GUI components.
+
+<p>In fact, the logic to handle charts makes up a substantial part of the whole
+framework, with large impact on all internal mechanisms. Each GUI component must
+know whether it is part of a chart or not, to be able to handle its contents
+properly during updates and user interactions.
+
+<p>Let's assume we want to collect textual and numerical data. We might create a
+table
+
+<pre><code>
+########################################################################
+(app)
+
+(action
+   (html 0 "Table" "@lib.css" NIL
+      (form NIL
+         (&lt;table&gt; NIL NIL '((NIL "Text") (NIL "Number"))
+            (do 4
+               (&lt;row&gt; NIL
+                  (gui '(+TextField) 20)
+                  (gui '(+NumField) 10) ) ) )
+         (&lt;submit&gt; "Save") ) ) )
+########################################################################
+</code></pre>
+
+<p>with two columns "Text" and "Number", and four rows, each containing a
+<code><a href="form/refT.html#+TextField">+TextField</a></code> and a <code><a
+href="form/refN.html#+NumField">+NumField</a></code>.
+
+<p>You can enter text into the first column, and numbers into the second.
+Pressing the "Save" button stores these values in the components on the server
+(or produces an error message if a string in the second column is not a legal
+number).
+
+<p>There are two problems with this solution:
+
+<p><ol>
+<li>Though you can get at the user input for the individual fields, e.g.
+
+<pre><code>
+: (val> (get *Top 'gui 2))  # Value in the first row, second column
+-> 123
+</code></pre>
+
+there is no direct way to get the whole data structure as a single list.
+Instead, you have to traverse all GUI components and collect the data.
+
+<li>The user cannot input more than four rows of data, because there is no easy
+way to scroll down and make space for more.
+
+</ol>
+
+<p>A chart can handle these things:
+
+<pre><code>
+########################################################################
+(app)
+
+(action
+   (html 0 "Chart" "@lib.css" NIL
+      (form NIL
+         (gui '(+Chart) 2)                         # Inserted a +Chart
+         (&lt;table&gt; NIL NIL '((NIL "Text") (NIL "Number"))
+            (do 4
+               (&lt;row&gt; NIL
+                  (gui 1 '(+TextField) 20)         # Inserted '1'
+                  (gui 2 '(+NumField) 10) ) ) )    # Inserted '2'
+         (&lt;submit&gt; "Save") ) ) )
+########################################################################
+</code></pre>
+
+<p>Note that we inserted a <code><a
+href="form/refC.html#+Chart">+Chart</a></code> component before the GUI
+components which should be managed by the chart. The argument '2' tells the
+chart that it has to expect two columns.
+
+<p>Each component got an index number (here '1' and '2') as the first argument
+to <code>gui</code>, indicating the column into which this component should go
+within the chart.
+
+<p>Now - if you entered "a", "b" and "c" into the first, and 1, 2, and 3 into
+the second column - we can retrieve the chart's complete contents by sending it
+the <code>val&gt;</code> message
+
+<pre><code>
+: (val> (get *Top 'chart 1))  # Retrieve the value of the first chart
+-> (("a" 1) ("b" 2) ("c" 3))
+</code></pre>
+
+<p>BTW, a more convenient function is <code><a
+href="form/refC.html#chart">chart</a></code>
+
+<pre><code>
+: (val> (chart))  # Retrieve the value of the current chart
+-> (("a" 1) ("b" 2) ("c" 3))
+</code></pre>
+
+<p><code><a href="form/refC.html#chart">chart</a></code> can be used instead of
+the above construct when we want to access the "current" chart, i.e. the chart
+most recently processed in the current form.
+
+
+<h4><a name="scrolling">Scrolling</a></h4>
+
+<p>To enable scrolling, let's also insert two buttons. We use the pre-defined
+classes <code><a href="form/refU.html#+UpButton">+UpButton</a></code> and
+<code><a href="form/refD.html#+DnButton">+DnButton</a></code>
+
+<pre><code>
+########################################################################
+(app)
+
+(action
+   (html 0 "Scrollable Chart" "@lib.css" NIL
+      (form NIL
+         (gui '(+Chart) 2)
+         (&lt;table&gt; NIL NIL '((NIL "Text") (NIL "Number"))
+            (do 4
+               (&lt;row&gt; NIL
+                  (gui 1 '(+TextField) 20)
+                  (gui 2 '(+NumField) 10) ) ) )
+         (gui '(+UpButton) 1)                   # Inserted two buttons
+         (gui '(+DnButton) 1)
+         (----)
+         (&lt;submit&gt; "Save") ) ) )
+########################################################################
+</code></pre>
+
+<p>to scroll down and up a single (argument '1') line at a time.
+
+<p>Now it is possible to enter a few rows of data, scroll down, and continue. It
+is not necessary (except in the beginning, when the scroll buttons are still
+disabled) to press the "Save" button, because <b>any</b> button in the form will
+send changes to the server's internal structures before any action is performed.
+
+
+<h4><a name="putGet">Put and Get Functions</a></h4>
+
+<p>As we said, a chart is a virtual component to edit two-dimensional data.
+Therefore, a chart's native data format is a list of lists: Each sublist
+represents a single row of data, and each element of a row corresponds to a
+single GUI component.
+
+<p>In the example above, we saw a row like
+
+<pre><code>
+   ("a" 1)
+</code></pre>
+
+<p>being mapped to
+
+<pre><code>
+   (gui 1 '(+TextField) 20)
+   (gui 2 '(+NumField) 10)
+</code></pre>
+
+<p>Quite often, however, such a one-to-one relationship is not desired. The
+internal data structures may have to be presented in a different form to the
+user, and user input may need conversion to an internal representation.
+
+<p>For that, a chart accepts - in addition to the "number of columns" argument -
+two optional function arguments. The first function is invoked to 'put' the
+internal representation into the GUI components, and the second to 'get' data
+from the GUI into the internal representation.
+
+<p>A typical example is a chart displaying customers in a database. While the
+internal representation is a (one-dimensional) list of customer objects, 'put'
+expands each object to a list with, say, the customer's first and second name,
+telephone number, address and so on. When the user enters a customer's name,
+'get' locates the matching object in the database and stores it in the internal
+representation. In the following, 'put' will in turn expand it to the GUI.
+
+<p>For now, let's stick with a simpler example: A chart that holds just a list
+of numbers, but expands in the GUI to show also a textual form of each number
+(in German).
+
+<pre><code>
+########################################################################
+(app)
+
+(load "@lib/zahlwort.l")
+
+(action
+   (html 0 "Numerals" "@lib.css" NIL
+      (form NIL
+         (gui '(+Init +Chart) (1 5 7) 2
+            '((N) (list N (zahlwort N)))
+            car )
+         (&lt;table&gt; NIL NIL '((NIL "Numeral") (NIL "German"))
+            (do 4
+               (&lt;row&gt; NIL
+                  (gui 1 '(+NumField) 9)
+                  (gui 2 '(+Lock +TextField) 90) ) ) )
+         (gui '(+UpButton) 1)
+         (gui '(+DnButton) 1)
+         (----)
+         (&lt;submit&gt; "Save") ) ) )
+########################################################################
+</code></pre>
+
+<p>"@lib/zahlwort.l" defines the utility function <code>zahlwort</code>, which
+is required later by the 'put' function. <code>zahlwort</code> accepts a number
+and returns its wording in German.
+
+<p>Now look at the code
+
+<pre><code>
+         (gui '(+Init +Chart) (1 5 7) 2
+            '((N) (list N (zahlwort N)))
+            car )
+</code></pre>
+
+<p>We prefix the <code><a href="form/refC.html#+Chart">+Chart</a></code> class
+with <code><a href="form/refI.html#+Init">+Init</a></code>, and pass it a list
+of numbers <code>(1 5 7)</code> for the initial value of the chart. Then,
+following the '2' (the chart has two columns), we pass a 'put' function
+
+<pre><code>
+            '((N) (list N (zahlwort N)))
+</code></pre>
+
+<p>which takes a number and returns a list of that number and its wording, and a
+'get' function
+
+<pre><code>
+            car )
+</code></pre>
+
+<p>which in turn accepts such a list and returns a number, which happens to be
+the list's first element.
+
+<p>You can see from this example that 'get' is the inverse function of 'put'.
+'get' can be omitted, however, if the chart is read-only (contains no (or only
+locked) input fields).
+
+<p>The field in the second column
+
+<pre><code>
+                  (gui 2 '(+Lock +TextField) 90) ) ) )
+</code></pre>
+
+<p>is <a href="form/refL.html#+Lock">locked</a>, because it displays the text
+generated by 'put', and is not supposed to accept any user input.
+
+<p>When you start up this form in your browser, you'll see three pre-filled
+lines with "1/eins", "5/fünf" and "7/sieben", according to the <code><a
+href="form/refI.html#+Init">+Init</a></code> argument <code>(1 5 7)</code>.
+Typing a number somewhere into the first column, and pressing ENTER or one of
+the buttons, will show a suitable text in the second column.
+
+
+<p><hr>
+<h2><a name="guiClasses">GUI Classes</a></h2>
+
+<p>In previous chapters we saw examples of GUI classes like <code><a
+href="form/refT.html#+TextField">+TextField</a></code>, <code><a
+href="form/refN.html#+NumField">+NumField</a></code> or <code><a
+href="form/refB.html#+Button">+Button</a></code>, often in combination with
+prefix classes like <code><a href="form/refL.html#+Lock">+Lock</a></code>,
+<code><a href="form/refI.html#+Init">+Init</a></code> or <code><a
+href="form/refA.html#+Able">+Able</a></code>. Now we take a broader look at the
+whole hierarchy, and try more examples.
+
+<p>The abstract class <code>+gui</code> is the base of all GUI classes. A live
+view of the class hierarchy can be obtained with the <code><a
+href="refD.html#dep">dep</a></code> ("dependencies") function:
+
+<pre><code>
+: (dep '+gui)
++gui
+   +Img
+   +field
+      +Radio
+      +TextField
+         +UpField
+         +PwField
+         +BlobField
+         +FileField
+         +TimeField
+         +DateField
+         +MailField
+         +AtomField
+         +HttpField
+         +LinesField
+         +ClassField
+         +TelField
+         +numField
+            +NumField
+            +FixField
+         +SymField
+         +SexField
+         +ListTextField
+      +Checkbox
+   +Button
+      +BubbleButton
+      +DelRowButton
+      +DnButton
+      +GoButton
+      +UpButton
+      +ChoButton
+         +Choice
+      +ClrButton
+      +PickButton
+         +DstButton
+      +todoButton
+         +RedoButton
+         +UndoButton
+      +ShowButton
+   +JsField
+-> +gui
+</code></pre>
+
+<p>We see, for example, that <code><a
+href="form/refD.html#+DnButton">+DnButton</a></code> is a subclass of <code><a
+href="form/refB.html#+Button">+Button</a></code>, which in turn is a subclass of
+<code>+gui</code>. Inspecting <code><a
+href="form/refD.html#+DnButton">+DnButton</a></code> directly
+
+<pre><code>
+: (dep '+DnButton)
+   +Tiny
+   +Rid
+   +JS
+   +Able
+      +gui
+   +Button
++DnButton
+-> +DnButton
+</code></pre>
+
+<p>shows that <code><a href="form/refD.html#+DnButton">+DnButton</a></code>
+inherits from <code><a href="form/refT.html#+Tiny">+Tiny</a></code>, <code><a
+href="form/refR.html#+Rid">+Rid</a></code>, <code><a
+href="form/refA.html#+Able">+Able</a></code> and <code><a
+href="form/refB.html#+Button">+Button</a></code>. The actual definition of
+<code><a href="form/refD.html#+DnButton">+DnButton</a></code> can be found in
+"@lib/form.l"
+
+<pre><code>
+(class +DnButton +Tiny +Rid +JS +Able +Button)
+...
+</code></pre>
+
+<p>In general, "@lib/form.l" is the ultimate reference to the framework, and
+should be freely consulted. See also the <a href="form/form.html">form library
+reference</a>.
+
+
+<p><hr>
+<h3><a name="inputFields">Input Fields</a></h3>
+
+<p>Input fields implement the visual display of application data, and allow -
+when enabled - input and modification of these data.
+
+<p>On the HTML level, they can take the form of
+
+<ul>
+<li>Normal text input fields
+<li>Textareas
+<li>Checkboxes
+<li>Drop-down selections
+<li>Password fields
+<li>HTML links
+<li>Plain HTML text
+</ul>
+
+<p>Except for checkboxes, which are implemented by the <a
+href="#checkboxes">Checkbox</a> class, all these HTML representations are
+generated by <code><a href="form/refT.html#+TextField">+TextField</a></code> and
+its content-specific subclasses like <code><a
+href="form/refN.html#+NumField">+NumField</a></code>, <code><a
+href="form/refD.html#+DateField">+DateField</a></code> etc. Their actual
+appearance (as one of the above forms) depends on their arguments:
+
+<p>We saw already "normal" text fields. They are created with a single numeric
+argument. This example creates an editable field with a width of 10 characters:
+
+<pre><code>
+   (gui '(+TextField) 10)
+</code></pre>
+
+<p>If you supply a second numeric for the line count ('4' in this case), you'll
+get a text area:
+
+<pre><code>
+   (gui '(+TextField) 10 4)
+</code></pre>
+
+<p>Supplying a list of values instead of a count yields a drop-down selection
+(combo box):
+
+<pre><code>
+   (gui '(+TextField) '("Value 1" "Value 2" "Value 3"))
+</code></pre>
+
+<p>In addition to these arguments, you can pass a string. Then the field is
+created with a label:
+
+<pre><code>
+   (gui '(+TextField) 10 "Plain")
+   (gui '(+TextField) 10 4 "Text Area")
+   (gui '(+TextField) '("Value 1" "Value 2" "Value 3") "Selection")
+</code></pre>
+
+<p>Finally, without any arguments, the field will appear as a plain HTML text:
+
+<pre><code>
+   (gui '(+TextField))
+</code></pre>
+
+<p>This makes mainly sense in combination with prefix classes like <code><a
+href="form/refV.html#+Var">+Var</a></code> and <code><a
+href="form/refO.html#+Obj">+Obj</a></code>, to manage the contents of these
+fields, and achieve special behavior as HTML links or scrollable chart values.
+
+
+<h4><a name="numberFields">Numeric Input Fields</a></h4>
+
+<p>A <code><a href="form/refN.html#+NumField">+NumField</a></code> returns a
+number from its <code>val&gt;</code> method, and accepts a number for its
+<code>set&gt;</code> method. It issues an error message when user input cannot
+be converted to a number.
+
+<p>Large numbers are shown with a thousands-separator, as determined by the
+current locale.
+
+<pre><code>
+########################################################################
+(app)
+
+(action
+   (html 0 "+NumField" "@lib.css" NIL
+      (form NIL
+         (gui '(+NumField) 10)
+         (gui '(+JS +Button) "Print value"
+            '(msg (val&gt; (: home gui 1))) )
+         (gui '(+JS +Button) "Set to 123"
+            '(set&gt; (: home gui 1) 123) ) ) ) )
+########################################################################
+</code></pre>
+
+<p>A <code><a href="form/refF.html#+FixField">+FixField</a></code> needs an
+additional scale factor argument, and accepts/returns scaled fixpoint numbers.
+
+<p>The decimal separator is determined by the current locale.
+
+<pre><code>
+########################################################################
+(app)
+
+(action
+   (html 0 "+FixField" "@lib.css" NIL
+      (form NIL
+         (gui '(+FixField) 3 10)
+         (gui '(+JS +Button) "Print value"
+            '(msg (format (val&gt; (: home gui 1)) 3)) )
+         (gui '(+JS +Button) "Set to 123.456"
+            '(set&gt; (: home gui 1) 123456) ) ) ) )
+########################################################################
+</code></pre>
+
+
+<h4><a name="timeDateFields">Time &amp; Date</a></h4>
+
+<p>A <code><a href="form/refD.html#+DateField">+DateField</a></code> accepts and
+returns a <code><a href="refD.html#date">date</a></code> value.
+
+<pre><code>
+########################################################################
+(app)
+
+(action
+   (html 0 "+DateField" "@lib.css" NIL
+      (form NIL
+         (gui '(+DateField) 10)
+         (gui '(+JS +Button) "Print value"
+            '(msg (datStr (val&gt; (: home gui 1)))) )
+         (gui '(+JS +Button) "Set to \"today\""
+            '(set&gt; (: home gui 1) (date)) ) ) ) )
+########################################################################
+</code></pre>
+
+<p>The format displayed to - and entered by - the user depends on the current
+locale (see <code><a href="refD.html#datStr">datStr</a></code> and <code><a
+href="refE.html#expDat">expDat</a></code>). You can change it, for example to
+
+<pre><code>
+: (locale "DE" "de")
+-> NIL
+</code></pre>
+
+<p>If no locale is set, the format is YYYY-MM-DD. Some pre-defined locales use
+patterns like DD.MM.YYYY (DE), YYYY/MM/DD (JP), DD/MM/YYYY (UK), or MM/DD/YYYY
+(US).
+
+<p>An error is issued when user input does not match the current locale's date
+format.
+
+<p>Independent from the locale setting, a <code><a
+href="form/refD.html#+DateField">+DateField</a></code> tries to expand
+abbreviated input from the user. A small number is taken as that day of the
+current month, larger numbers expand to day and month, or to day, month and
+year:
+
+<ul>
+<li>"7" gives the 7th of the current month
+<li>"031" or "0301" give the 3rd of January of the current year
+<li>"311" or "3101" give the 31st of January of the current year
+<li>"0311" gives the 3rd of November of the current year
+<li>"01023" or "010203" give the first of February in the year 2003
+<li>and so on
+</ul>
+
+<p>Similar is the <code>+TimeField</code>. It accepts and returns a <code><a
+href="refT.html#time">time</a></code> value.
+
+<pre><code>
+########################################################################
+(app)
+
+(action
+   (html 0 "+TimeField" "@lib.css" NIL
+      (form NIL
+         (gui '(+TimeField) 8)
+         (gui '(+JS +Button) "Print value"
+            '(msg (tim$ (val&gt; (: home gui 1)))) )
+         (gui '(+JS +Button) "Set to \"now\""
+            '(set&gt; (: home gui 1) (time)) ) ) ) )
+########################################################################
+</code></pre>
+
+<p>When the field width is '8', like in this example, time is displayed in the
+format <code>HH:MM:SS</code>. Another possible value would be '5', causing
+<code>+TimeField</code> to display its value as <code>HH:MM</code>.
+
+<p>An error is issued when user input cannot be converted to a time value.
+
+<p>The user may omit the colons. If he inputs just a small number, it should be
+between '0' and '23', and will be taken as a full hour. '125' expands to
+"12:05", '124517' to "12:45:17", and so on.
+
+
+<h4><a name="telFields">Telephone Numbers</a></h4>
+
+<p>Telephone numbers are represented internally by the country code (without a
+leading plus sign or zero) followed by the local phone number (ideally separated
+by spaces) and the phone extension (ideally separated by a hyphen). The exact
+format of the phone number string is not enforced by the GUI, but further
+processing (e.g. database searches) normally uses <code><a
+href="refF.html#fold">fold</a></code> for better reproducibility.
+
+<p>To display a phone number, <code><a
+href="form/refT.html#+TelField">+TelField</a></code> replaces the country code
+with a single zero if it is the country code of the current locale, or prepends
+it with a plus sign if it is a foreign country (see <code><a
+href="refT.html#telStr">telStr</a></code>).
+
+<p>For user input, a plus sign or a double zero is simply dropped, while a
+single leading zero is replaced with the current locale's country code (see
+<code><a href="refE.html#expTel">expTel</a></code>).
+
+<pre><code>
+########################################################################
+(app)
+(locale "DE" "de")
+
+(action
+   (html 0 "+TelField" "@lib.css" NIL
+      (form NIL
+         (gui '(+TelField) 20)
+         (gui '(+JS +Button) "Print value"
+            '(msg (val&gt; (: home gui 1))) )
+         (gui '(+JS +Button) "Set to \"49 1234 5678-0\""
+            '(set&gt; (: home gui 1) "49 1234 5678-0") ) ) ) )
+########################################################################
+</code></pre>
+
+
+<h4><a name="checkboxes">Checkboxes</a></h4>
+
+<p>A <code><a href="form/refC.html#+Checkbox">+Checkbox</a></code> is
+straightforward. User interaction is restricted to clicking it on and off. It
+accepts boolean (<code>NIL</code> or non-<code>NIL</code>) values, and returns
+<code>T</code> or <code>NIL</code>.
+
+<pre><code>
+########################################################################
+(app)
+
+(action
+   (html 0 "+Checkbox" "@lib.css" NIL
+      (form NIL
+         (gui '(+Checkbox))
+         (gui '(+JS +Button) "Print value"
+            '(msg (val&gt; (: home gui 1))) )
+         (gui '(+JS +Button) "On"
+            '(set&gt; (: home gui 1) T) )
+         (gui '(+JS +Button) "Off"
+            '(set&gt; (: home gui 1) NIL) ) ) ) )
+########################################################################
+</code></pre>
+
+
+<p><hr>
+<h3><a name="fieldPrefix">Field Prefix Classes</a></h3>
+
+<p>A big part of this framework's power is owed to the combinatorial flexibility
+of prefix classes for GUI- and DB-objects. They allow to surgically override
+individual methods in the inheritance tree, and can be combined in various ways
+to achieve any desired behavior.
+
+<p>Technically, there is nothing special about prefix classes. They are just
+normal classes. They are called "prefix" because they are intended to be written
+<i>before</i> other classes in a class's or object's list of superclasses.
+
+<p>Usually they take their own arguments for their <code>T</code> method from
+the list of arguments to the <code>gui</code> function.
+
+
+<h4><a name="initPrefix">Initialization</a></h4>
+
+<p><code><a href="form/refI.html#+Init">+Init</a></code> overrides the
+<code>init&gt;</code> method for that component. The <code>init&gt;</code>
+message is sent to a <code>+gui</code> component when the page is loaded for the
+first time (during a GET request). <code><a
+href="form/refI.html#+Init">+Init</a></code> takes an expression for the initial
+value of that field.
+
+<pre><code>
+   (gui '(+Init +TextField) "This is the initial text" 30)
+</code></pre>
+
+<p>Other classes which automatically give a value to a field are <code><a
+href="form/refV.html#+Var">+Var</a></code> (linking the field to a variable) and
+<code><a href="form/refE.html#+E/R">+E/R</a></code> (linking the field to a
+database entity/relation).
+
+<p><code><a href="form/refC.html#+Cue">+Cue</a></code> can be used, for example
+in "mandatory" fields, to give a hint to the user about what he is supposed to
+enter. It will display the argument value, in angular brackets, if and only if
+the field's value is <code>NIL</code>, and the <code>val&gt;</code> method will
+return <code>NIL</code> despite the fact that this value is displayed.
+
+<p>Cause an empty field to display "&lt;Please enter some text here&gt;":
+
+<pre><code>
+   (gui '(+Cue +TextField) "Please enter some text here" 30)
+</code></pre>
+
+
+<h4><a name="ablePrefix">Disabling and Enabling</a></h4>
+
+<p>An important feature of an interactive GUI is the context-sensitive disabling
+and enabling of individual components, or of a whole form.
+
+<p>The <code><a href="form/refA.html#+Able">+Able</a></code> prefix class takes
+an argument expression, and disables the component if this expression returns
+<code>NIL</code>. We saw an example for its usage already in the <a
+href="#sqrtButton">square root button</a> of the calculator example. Or, for
+illustration purposes, imagine a button which is supposed to be enabled only
+after Christmas
+
+<pre><code>
+   (gui '(+Able +Button)
+      '(>= (cdr (date (date))) (12 24))
+      "Close this year"
+      '(endOfYearProcessing) )
+</code></pre>
+
+<p>or a password field that is disabled as long as somebody is logged in
+
+<pre><code>
+   (gui '(+Able +PwField) '(not *Login) 10 "Password")
+</code></pre>
+
+<p>A special case is the <code><a href="form/refL.html#+Lock">+Lock</a></code>
+prefix, which permanently and unconditionally disables a component. It takes no
+arguments
+
+<pre><code>
+   (gui '(+Lock +NumField) 10 "Count")
+</code></pre>
+
+<p>('10' and "Count" are for the <code><a
+href="form/refN.html#+NumField">+NumField</a></code>), and creates a read-only
+field.
+
+<p>The whole form can be disabled by calling <code><a
+href="form/refD.html#disable">disable</a></code> with a non-<code>NIL</code>
+argument. This affects all components in this form. Staying with the above
+example, we can make the form read-only until Christmas
+
+<pre><code>
+   (form NIL
+      (disable (> (12 24) (cdr (date (date)))))  # Disable whole form
+      (gui ..)
+      .. )
+</code></pre>
+
+<p>Even in a completely disabled form, however, it is often necessary to
+re-enable certain components, as they are needed for navigation, scrolling, or
+other activities which don't affect the contents of the form. This is done by
+prefixing these fields with <code><a href="form/refR.html#+Rid">+Rid</a></code>
+(i.e. getting "rid" of the lock).
+
+<pre><code>
+   (form NIL
+      (disable (> (12 24) (cdr (date (date)))))
+      (gui ..)
+      ..
+      (gui '(+Rid +Button) ..)  # Button is enabled despite the disabled form
+      .. )
+</code></pre>
+
+
+<h4><a name="formatPrefix">Formatting</a></h4>
+
+<p>GUI prefix classes allow a fine-grained control of how values are stored in -
+and retrieved from - components. As in predefined classes like <code><a
+href="form/refN.html#+NumField">+NumField</a></code> or <code><a
+href="form/refD.html#+DateField">+DateField</a></code>, they override the
+<code>set&gt;</code> and/or <code>val&gt;</code> methods.
+
+<p><code><a href="form/refS.html#+Set">+Set</a></code> takes an argument
+function which is called whenever that field is set to some value. To convert
+all user input to upper case
+
+<pre><code>
+   (gui '(+Set +TextField) uppc 30)
+</code></pre>
+
+<p><code><a href="form/refV.html#+Val">+Val</a></code> is the complement to
+<code><a href="form/refS.html#+Set">+Set</a></code>. It takes a function which
+is called whenever the field's value is retrieved. To return the square of a
+field's value
+
+<pre><code>
+   (gui '(+Val +NumField) '((N) (* N N)) 10)
+</code></pre>
+
+<p><code><a href="form/refF.html#+Fmt">+Fmt</a></code> is just a combination of
+<code><a href="form/refS.html#+Set">+Set</a></code> and <code><a
+href="form/refV.html#+Val">+Val</a></code>, and takes two functional arguments.
+This example will display upper case characters, while returning lower case
+characters internally
+
+<pre><code>
+   (gui '(+Fmt +TextField) uppc lowc 30)
+</code></pre>
+
+<p><code><a href="form/refM.html#+Map">+Map</a></code> does (like <code><a
+href="form/refF.html#+Fmt">+Fmt</a></code>) a two-way translation. It uses a
+list of cons pairs for a linear lookup, where the CARs represent the displayed
+values which are internally mapped to the values in the CDRs. If a value is not
+found in this list during <code>set&gt;</code> or <code>val&gt;</code>, it is
+passed through unchanged.
+
+<p>Normally, <code><a href="form/refM.html#+Map">+Map</a></code> is used in
+combination with the combo box incarnation of text fields (see <a
+href="#inputFields">Input Fields</a>). This example displays "One", "Two" and
+"Three" to the user, but returns a number 1, 2 or 3 internally
+
+<pre><code>
+########################################################################
+(app)
+
+(action
+   (html 0 "+Map" "@lib.css" NIL
+      (form NIL
+         (gui '(+Map +TextField)
+            '(("One" . 1) ("Two" . 2) ("Three" . 3))
+            '("One" "Two" "Three") )
+         (gui '(+Button) "Print"
+            '(msg (val&gt; (field -1))) ) ) ) )
+########################################################################
+</code></pre>
+
+
+<h4><a name="sideEffects">Side Effects</a></h4>
+
+<p>Whenever a button is pressed in the GUI, any changes caused by <code><a
+href="form/refA.html#action">action</a></code> in the current environment (e.g.
+the database or application state) need to be reflected in the corresponding GUI
+fields. For that, the <code>upd&gt;</code> message is sent to all components.
+Each component then takes appropriate measures (e.g. refresh from database
+objects, load values from variables, or calculate a new value) to update its
+value.
+
+<p>While the <code>upd&gt;</code> method is mainly used internally, it can be
+overridden in existing classes via the <code><a
+href="form/refU.html#+Upd">+Upd</a></code> prefix class. Let's print updated
+values to standard error
+
+<pre><code>
+########################################################################
+(app)
+(default *Number 0)
+
+(action
+   (html 0 "+Upd" "@lib.css" NIL
+      (form NIL
+         (gui '(+Upd +Var +NumField)
+            '(prog (extra) (msg *Number))
+            '*Number 8 )
+         (gui '(+JS +Button) "Increment"
+            '(inc '*Number) ) ) ) )
+########################################################################
+</code></pre>
+
+
+<h4><a name="validPrefix">Validation</a></h4>
+
+<p>To allow automatic validation of user input, the <code>chk&gt;</code> message
+is sent to all components at appropriate times. The corresponding method should
+return <code>NIL</code> if the value is all right, or a string describing the
+error otherwise.
+
+<p>Many of the built-in classes have a <code>chk&gt;</code> method. The <code><a
+href="form/refN.html#+NumField">+NumField</a></code> class checks for legal
+numeric input, or the <code><a
+href="form/refD.html#+DateField">+DateField</a></code> for a valid calendar
+date.
+
+<p>An on-the-fly check can be implemented with the <code><a
+href="form/refC.html#+Chk">+Chk</a></code> prefix class. The following code only
+accepts numbers not bigger than 9: The <code>or</code> expression first
+delegates the check to the main <code><a
+href="form/refN.html#+NumField">+NumField</a></code> class, and - if it does not
+give an error - returns an error string when the current value is greater than
+9.
+
+<pre><code>
+########################################################################
+(app)
+
+(action
+   (html 0 "+Chk" "@lib.css" NIL
+      (form NIL
+         (gui '(+Chk +NumField)
+            '(or
+               (extra)
+               (and (&gt; (val&gt; This) 9) "Number too big") )
+            12 )
+         (gui '(+JS +Button) "Print"
+            '(msg (val&gt; (field -1))) ) ) ) )
+########################################################################
+</code></pre>
+
+<p>A more direct kind of validation is built-in via the <code><a
+href="form/refL.html#+Limit">+Limit</a></code> class. It controls the
+<code>maxlength</code> attribute of the generated HTML input field component.
+Thus, it is impossible to type more characters than allowed into the field.
+
+<pre><code>
+########################################################################
+(app)
+
+(action
+   (html 0 "+Limit" "@lib.css" NIL
+      (form NIL
+         (gui '(+Limit +TextField) 4 8)
+         (gui '(+JS +Button) "Print"
+            '(msg (val&gt; (field -1))) ) ) ) )
+########################################################################
+</code></pre>
+
+
+<h4><a name="linkage">Data Linkage</a></h4>
+
+<p>Although <code>set&gt;</code> and <code>val&gt;</code> are the official
+methods to get a value in and out of a GUI component, they are not very often
+used explicitly. Instead, components are directly linked to internal Lisp data
+structures, which are usually either variables or database objects.
+
+<p>The <code><a href="form/refV.html#+Var">+Var</a></code> prefix class takes a
+variable (described as the <code>var</code> data type - either a symbol or a
+cons pair - in the <a href="ref.html#fun">Function Reference</a>). In the
+following example, we initialize a global variable with the value "abc", and let
+a <code><a href="form/refT.html#+TextField">+TextField</a></code> operate on it.
+The "Print" button can be used to display its current value.
+
+<pre><code>
+########################################################################
+(app)
+
+(setq *TextVariable "abc")
+
+(action
+   (html 0 "+Var" "@lib.css" NIL
+      (form NIL
+         (gui '(+Var +TextField) '*TextVariable 8)
+         (gui '(+JS +Button) "Print"
+            '(msg *TextVariable) ) ) ) )
+########################################################################
+</code></pre>
+
+<p><code><a href="form/refE.html#+E/R">+E/R</a></code> takes an entity/relation
+specification. This is a cons pair, with a relation in its CAR (e.g.
+<code>nm</code>, for an object's name), and an expression in its CDR (typically
+<code>(: home obj)</code>, the object stored in the <code>obj</code> property of
+the current form).
+
+<p>For an isolated, simple example, we create a temporary database, and access
+the <code>nr</code> and <code>nm</code> properties of an object stored in a
+global variable <code>*Obj</code>.
+
+<pre><code>
+########################################################################
+(when (app)                # On start of session
+   (class +Tst +Entity)    # Define data model
+   (rel nr (+Number))      # with a number
+   (rel nm (+String))      # and a string
+   (pool (tmp "db"))       # Create temporary DB
+   (setq *Obj              # and a single object
+      (new! '(+Tst) 'nr 1 'nm "New Object") ) )
+
+(action
+   (html 0 "+E/R" "@lib.css" NIL
+      (form NIL
+         (gui '(+E/R +NumField) '(nr . *Obj) 8)    # Linkage to 'nr'
+         (gui '(+E/R +TextField) '(nm . *Obj) 20)  # Linkage to 'nm'
+         (gui '(+JS +Button) "Show"                # Show the object
+            '(out 2 (show *Obj)) ) ) ) )           # on standard error
+########################################################################
+</code></pre>
+
+
+<p><hr>
+<h3><a name="buttons">Buttons</a></h3>
+
+<p>Buttons are, as explained in <a href="#ctlFlow">Control Flow</a>, the only
+way (via POST requests) for an application to communicate with the server.
+
+<p>Basically, a <code><a href="form/refB.html#+Button">+Button</a></code> takes
+
+<ul>
+<li>a label, which may be either a string or the name of an image file
+<li>an optional alternative label, shown when the button is disabled
+<li>and an executable expression.
+</ul>
+
+<p>Here is a minimal button, with just a label and an expression:
+
+<pre><code>
+   (gui '(+Button) "Label" '(doSomething))
+</code></pre>
+
+<p>And this is a button displaying different labels, depending on the state:
+
+<pre><code>
+   (gui '(+Button) "Enabled" "Disabled" '(doSomething))
+</code></pre>
+
+<p>To show an image instead of plain text, the label(s) must be preceeded by the
+<code>T</code> symbol:
+
+<pre><code>
+   (gui '(+Button) T "img/enabled.png" "img/disabled.png" '(doSomething))
+</code></pre>
+
+<p>The expression will be executed during <code>action</code> handling (see <a
+href="#actionForms">Action Forms</a>), when this button was pressed.
+
+<p>Like other components, buttons can be extended and combined with prefix
+classes, and a variety of predefined classes and class combinations are
+available.
+
+
+<h4><a name="dialogButtons">Dialog Buttons</a></h4>
+
+<p>Buttons are essential for the handling of <a href="#dialogs">alerts and
+dialogs</a>. Besides buttons for normal functions, like <a
+href="#scrolling">scrolling</a> in charts or other <a href="#sideEffects">side
+effects</a>, special buttons exist which can <i>close</i> an alert or dialog in
+addition to doing their principal job.
+
+<p>Such buttons are usually subclasses of <code><a
+href="form/refC.html#+Close">+Close</a></code>, and most of them can be called
+easily with ready-made functions like <code><a
+href="form/refC.html#closeButton">closeButton</a></code>, <code><a
+href="form/refC.html#cancelButton">cancelButton</a></code>, <code><a
+href="form/refY.html#yesButton">yesButton</a></code> or <code><a
+href="form/refN.html#noButton">noButton</a></code>. We saw a few examples in <a
+href="#dialogs">Alerts and Dialogs</a>.
+
+
+<h4><a name="jsButtons">Active JavaScript</a></h4>
+
+<p>When a button inherits from the <code><a
+href="form/refJ.html#+JS">+JS</a></code> class (and JavaScript is enabled in the
+browser), that button will possibly show a much faster response in its action.
+
+<p>The reason is that the activation of a <code><a
+href="form/refJ.html#+JS">+JS</a></code> button will - instead of doing a normal
+POST - first try to send only the contents of all GUI components via an
+XMLHttpRequest to the server, and receive the updated values in response. This
+avoids the flicker caused by reloading and rendering of the whole page, is much
+faster, and also does not jump to the beginning of the page if it is larger than
+the browser window. The effect is especially noticeable while scrolling in
+charts.
+
+<p>Only if this fails, for example because an error message was issued, or a
+dialog popped up, it will fall back, and the form will be POSTed in the normal
+way.
+
+<p>Thus it makes no sense to use the <code><a
+href="form/refJ.html#+JS">+JS</a></code> prefix for buttons that cause a change
+of the HTML code, open a dialog, or jump to another page. In such cases, overall
+performance will even be worse, because the XMLHttpRequest is tried first (but
+in vain).
+
+<p>When JavaScript is disabled int the browser, the XMLHttpRequest will not be
+tried at all. The form will be fully usable, though, with identical
+functionality and behavior, just a bit slower and not so smooth.
+
+
+<p><hr>
+<h2><a name="minApp">A Minimal Complete Application</a></h2>
+
+<p>The PicoLisp release includes in the "app/" directory a minimal, yet complete
+reference application. This application is typical, in the sense that it
+implements many of the techniques described in this document, and it can be
+easily modified and extended. In fact, we use it as templates for our own
+production application development.
+
+<p>It is a kind of simplified ERP system, containing customers/suppliers,
+products (items), orders, and other data. The order input form performs live
+updates of customer and product selections, price, inventory and totals
+calculations, and generates on-the-fly PDF documents. Fine-grained access
+permissions are controlled via users, roles and permissions. It comes localized
+in seven languages (English, Spanish, German, Norwegian, Swedish, Russian and
+Japanese), with some initial data and two sample reports.
+
+<p>Since this reference application employs so many of the typical techniques
+used in writing PicoLisp applications, taking the time to study it is time very
+well invested. Another good way to get acquainted with the language and
+framework is to start experimenting by writing small applications of your own.
+Copying and making changes to the reference application is a very good way to
+get started with this, and I highly recommend doing so.
+
+<p><hr>
+<h3><a name="getStarted">Getting Started</a></h3>
+
+<p>For a global installation (see <a href="ref.html#inst">Installation</a>),
+please create a symbolic link to the place where the program files are
+installed. This is necessary because the application needs read/write access to
+the current working directory (for the database and other runtime data).
+
+<pre><code>
+$ ln -s /usr/share/picolisp/app
+</code></pre>
+
+<p>As ever, you may start up the application in debugging mode
+
+<pre><code>
+$ pil app/main.l -main -go +
+</code></pre>
+
+<p>or in (non-debug) production mode
+
+<pre><code>
+$ pil app/main.l -main -go -wait
+</code></pre>
+
+<p>and go to '<code><a
+href="http://localhost:8080">http://localhost:8080</a></code>' with your
+browser. You can login as user "admin", with password "admin". The demo data
+contain several other users, but those are more restricted in their role
+permissions.
+
+<p>Another possibility is to try the online version of this application at <a
+href="http://app.7fach.de">app.7fach.de</a>.
+
+
+<h4><a name="localization">Localization</a></h4>
+
+<p>Before or after you logged in, you can select another language, and click on
+the "Change" button. This will effect all GUI components (though not text from
+the database), and also the numeric, date and telephone number formats.
+
+
+<h4><a name="navigation">Navigation</a></h4>
+
+<p>The navigation menu on the left side shows two items "Home" and "logout", and
+three submenus "Data", "Report" and "System".
+
+<p>Both "Home" and "logout" bring you back to the initial login form. Use
+"logout" if you want to switch to another user (say, for another set of
+permissions), and - more important - before you close your browser, to release
+possible locks and process resources on the server.
+
+<p>The "Data" submenu gives access to application specific data entry and
+maintenance: Orders, product items, customers and suppliers. The "Report"
+submenu contains two simple inventory and sales reports. And the "System"
+submenu leads to role and user administration.
+
+<p>You can open and close each submenu individually. Keeping more than one
+submenu open at a time lets you switch rapidly between different parts of the
+application.
+
+<p>The currently active menu item is indicated by a highlighted list style (no
+matter whether you arrived at this page directly via the menu or by clicking on
+a link somewhere else).
+
+
+<h4><a name="choosing">Choosing Objects</a></h4>
+
+<p>Each item in the "Data" or "System" submenu opens a search dialog for that
+class of entities. You can specify a search pattern, press the top right
+"Search" button (or just ENTER), and scroll through the list of results.
+
+<p>While the "Role" and "User" entities present simple dialogs (searching just
+by name), other entities can be searched by a variety of criteria. In those
+cases, a "Reset" button clears the contents of the whole dialog. A new object
+can be created with bottom right "New" button.
+
+<p>In any case, the first column will contain either a "@"-link (to jump to that
+object) or a "@"-button (to insert a reference to that object into the current
+form).
+
+<p>By default, the search will list all database objects with an attribute value
+greater than or equal to the search criterion. The comparison is done
+arithmetically for numbers, and alphabetically (case sensitive!) for text. This
+means, if you type "Free" in the "City" field of the "Customer/Supplier" dialog,
+the value of "Freetown" will be matched. On the other hand, an entry of "free"
+or "town" will yield no hits.
+
+<p>Some search fields, however, show a different behavior depending on the
+application:
+
+<ul>
+<li>The names of persons, companies or products allow a tolerant search,
+matching either a slightly misspelled name ("Mühler" instead of "Miller") or a
+substring ("Oaks" will match "Seven Oaks Ltd.").
+
+<li>The search field may specify an upper instead of a lower limit, resulting in
+a search for database objects with an attribute value less than or equal to the
+search criterion. This is useful, for example in the "Order" dialog, to list
+orders according to their number or date, by starting with the newest then and
+going backwards.
+
+</ul>
+
+<p>Using the bottom left scroll buttons, you can scroll through the result list
+without limit. Clicking on a link will bring up the corresponding object. Be
+careful here to select the right column: Some dialogs (those for "Item" and
+"Order") also provide links for related entities (e.g. "Supplier").
+
+
+<h4><a name="editing">Editing</a></h4>
+
+<p>A database object is usually displayed in its own individual form, which is
+determined by its entity class.
+
+<p>The basic layout should be consistent for all classes: Below the heading
+(which is usually the same as the invoking menu item) is the object's identifier
+(name, number, etc.), and then a row with an "Edit" button on the left, and
+"Delete" button, a "Select" button and two navigation links on the right side.
+
+<p>The form is brought up initially in read-only mode. This is necessary to
+prevent more than one user from modifying an object at the same time (and
+contrary to the previous PicoLisp Java frameworks, where this was not a problem
+because all changes were immediately reflected in the GUIs of other users).
+
+<p>So if you want to modify an object, you have to gain exclusive access by
+clicking on the "Edit" button. The form will be enabled, and the "Edit" button
+changes to "Done". Should any other user already have reserved this object, you
+will see a message telling his name and process ID.
+
+<p>An exception to this are objects that were just created with "New". They will
+automatically be reserved for you, and the "Edit" button will show up as "Done".
+
+<p>The "Delete" button pops up an alert, asking for confirmation. If the object
+is indeed deleted, this button changes to "Restore" and allows to undelete the
+object. Note that objects are never completely deleted from the database as long
+as there are any references from other objects. When a "deleted" object is
+shown, its identifier appears in square brackets.
+
+<p>The "Select" button (re-)displays the search dialog for this class of
+entities. The search criteria are preserved between invocations of each dialog,
+so that you can conveniently browse objects in this context.
+
+<p>The navigation links, pointing left and right, serve a similar purpose. They
+let you step sequentially through all objects of this class, in the order of the
+identifier's index.
+
+<p>Other buttons, depending on the entity, are usually arranged at the bottom of
+the form. The bottom rightmost one should always be another "Edit" / "Done"
+button.
+
+<p>As we said in the chapter on <a href="#scrolling">Scrolling</a>, any button
+in the form will save changes to the underlying data model. As a special case,
+however, the "Done" button releases the object and reverts to "Edit". Besides
+this, the edit mode will also cease as soon as another object is displayed, be
+it by clicking on an object link (the pencil icon), the top right navigation
+links, or a link in a search dialog.
+
+
+<h4><a name="btnLinks">Buttons vs. Links</a></h4>
+
+<p>The only way to interact with a HTTP-based application server is to click
+either on a HTML link, or on a submit button (see also <a
+href="#ctlFlow">Control Flow</a>). It is essential to understand the different
+effects of such a click on data entered or modified in the current form.
+
+<ul>
+<li>A click on a link will leave or reload the page. Changes are discarded.
+<li>A click on a button will commit changes, and perform the associated action.
+</ul>
+
+<p>For that reason the layout design should clearly differentiate between links
+and buttons. Image buttons are not a good idea when in other places images are
+used for links. The standard button components should be preferred; they are
+usually rendered by the browser in a non-ambiguous three-dimensional look and
+feel.
+
+<p>Note that if JavaScript is enabled in the browser, changes will be
+automatically committed to the server.
+
+<p>The enabled or disabled state of a button is an integral part of the
+application logic. It must be indicated to the user with appropriate styles.
+
+
+<p><hr>
+<h3><a name="dataModel">The Data Model</a></h3>
+
+<p>The data model for this mini application consists of only six entity classes
+(see the E/R diagram at the beginning of "app/er.l"):
+
+<ul>
+<li>The three main entities are <code>+CuSu</code> (Customer/Supplier),
+<code>+Item</code> (Product Item) and <code>+Ord</code> (Order).
+
+<li>A <code>+Pos</code> object is a single position in an order.
+
+<li><code>+Role</code> and <code>+User</code> objects are needed for
+authentication and authorization.
+
+</ul>
+
+<p>The classes <code>+Role</code> and <code>+User</code> are defined in
+"@lib/adm.l". A <code>+Role</code> has a name, a list of permissions, and a list
+of users assigned to this role. A <code>+User</code> has a name, a password and
+a role.
+
+<p>In "app/er.l", the <code>+Role</code> class is extended to define an
+<code>url&gt;</code> method for it. Any object whose class has such a method is
+able to display itself in the GUI. In this case, the file "app/role.l" will be
+loaded - with the global variable <code>*ID</code> pointing to it - whenever an
+HTML link to this role object is activated.
+
+<p>The <code>+User</code> class is also extended. In addition to the login name,
+a full name, telephone number and email address is declared. And, of course, the
+ubiquitous <code>url&gt;</code> method.
+
+<p>The application logic is centered around orders. An order has a number, a
+date, a customer (an instance of <code>+CuSu</code>) and a list of positions
+(<code>+Pos</code> objects). The <code>sum&gt;</code> method calculates the
+total amount of this order.
+
+<p>Each position has an <code>+Item</code> object, a price and a quantity. The
+price in the position overrides the default price from the item.
+
+<p>Each item has a number, a description, a supplier (also an instance of
+<code>+CuSu</code>), an inventory count (the number of these items that were
+counted at the last inventory taking), and a price. The <code>cnt&gt;</code>
+method calculates the current stock of this item as the difference of the
+inventory and the sold item counts.
+
+<p>The call to <code>dbs</code> at the end of "app/er.l" configures the physical
+database storage. Each of the supplied lists has a number in its CAR which
+determines the block size as (64 &lt;&lt; N) of the corresponding database file.
+The CDR says that the instances of this class (if the element is a class symbol)
+or the tree nodes (if the element is a list of a class symbol and a property
+name) are to be placed into that file. This allows for some optimizations in the
+database layout.
+
+
+<p><hr>
+<h3><a name="usage">Usage</a></h3>
+
+<p>When you are connected to the application (see <a href="#getStarted">Getting
+Started</a>) you might try to do some "real" work with it. Via the "Data" menu
+(see <a href="#navigation">Navigation</a>) you can create or modify customers,
+suppliers, items and orders, and produce simple overviews via the "Report" menu.
+
+
+<h4><a name="cuSu">Customer/Supplier</a></h4>
+
+<p align=right>Source in "app/cusu.l"
+
+<p>The Customer/Supplier search dialog (<code>choCuSu</code> in "app/gui.l")
+supports a lot of search criteria. These become necessary when the database
+contains a large number of customers, and can filter by zip, by phone number
+prefixes, and so on.
+
+<p>In addition to the basic layout (see <a href="#editing">Editing</a>), the
+form is divided into four separate tabs. Splitting a form into several tabs
+helps to reduce traffic, with possibly better GUI response. In this case, four
+tabs are perhaps overkill, but ok for demonstration purposes, and they leave
+room for extensions.
+
+<p>Be aware that when data were modified in one of the tabs, the "Done" button
+has to be pressed before another tab is clicked, because tabs are implemented as
+HTML links (see <a href="#btnLinks">Buttons vs. Links</a>).
+
+<p>New customers or suppliers will automatically be assigned the next free
+number. You can enter another number, but an error will result if you try to use
+an existing number. The "Name" field is mandatory, you need to overwrite the
+"&lt;Name&gt;" clue.
+
+<p>Phone and fax numbers in the "Contact" tab must be entered in the correct
+format, depending on the locale (see <a href="#telFields">Telephone
+Numbers</a>).
+
+<p>The "Memo" tab contains a single text area. It is no problem to use it for
+large pieces of text, as it gets stored in a database blob internally.
+
+<p>The general layout of <code>cusu.l</code> is quite similar to the other
+source files making up the demo application. Since this is such a typical way of
+structuring PicoLisp applications, let's have a more detailed look. The
+beginning of <code>cusu.l</code> looks like this:
+
+<pre><code>
+########################################################################
+(must "Customer/Supplier" Customer)
+
+(menu ,"Customer/Supplier"
+   (idForm ,"Customer/Supplier" '(choCuSu) 'nr '+CuSu T '(may Delete)
+      '((: nr) " -- " (: nm))
+      ....
+########################################################################
+</code></pre>
+
+<p>The first line checks whether the user has the right permissions to access
+this page. After that a call to a function called <code>(menu)</code> follows.
+This function is defined in <code>app/gui.l</code> and creates the menu and
+basic page layout used in this application. Nested within the call to
+<code>(menu)</code> is our first, direct, encounter with a form function. In
+this case it is a call to <code><a
+href="form/refI.html#idForm">(idForm)</a></code>. Let us look a little closer at
+this call.
+
+<p>The first parameter, "Customer/Supplier", is used in the form heading.
+Parameter number two is interesting. <code>'(choCuSu)</code> creates a dialog
+that makes is possible to search for an existing object to display/ edit, or
+create a new one. <code>(choCuSu)</code> is defined in <code>app/gui.l</code>
+and uses another form function, called <code><a
+href="form/refD.html#diaform">(diaform)</a></code>. An abbreviated version is
+shown below.
+
+<pre><code>
+########################################################################
+(de choCuSu (Dst)
+   (diaform '(Dst)
+      (&lt;grid&gt; "--.-.-."
+         # Form components
+         ... )
+      (gui 'query '(+QueryChart) (cho)
+         # Pilog query
+         9
+         '((This) (list This (: nr) This (: nm2) (: em) (: plz) (: ort) (: tel) (: mob))) )
+      (&lt;table&gt; 'chart (choTtl ,"Customers/Suppliers" 'nr '+CuSu)
+         # Table headers
+         (do (cho)
+            (&lt;row&gt; (alternating)
+               (gui 1 '(+DstButton) Dst)
+               ...
+               (gui 9 '(+TelField)) ) ) )
+      (&lt;spread&gt;
+         (scroll (cho))
+         (newButton T Dst '(+CuSu) ...)
+         (cancelButton) ) ) )
+########################################################################
+</code></pre>
+
+<p><code>(choCuSu)</code> starts off by calling <code><a
+href="form/refD.html#diaform">(diaform)</a></code>. This function is used when
+we want a form to behave in a similar way to a dialog (See <a
+href="app.html#dialogs">Alerts and Dialogs</a> for a description of how dialogs
+work in this framework). The first part of our diaform is a
+<code>(&lt;grid&gt;)</code> containing some form components.
+
+<p>The grid is followed by another gui component, this time a <code><a
+href="form/refQ.html#+QueryChart">+QueryChart</a></code>. The chart is an
+interesting, and very useful, concept. The basic idea is to separate how data is
+presented in the gui from the internal representation. See <a
+href="app.html#charts">charts</a> for more information.
+
+<p>The <code><a href="form/refQ.html#+QueryChart">+QueryChart</a></code> uses a
+<a href="tut.html#pilog">Pilog</a> query to fetch the data we wish to show from
+the database. This part is followed by a number, in this case 9, which tells the
+Chart how many columns of data to expect. The final part is a function that
+takes care of <a href="app.html#putGet">putting data</a> into the gui from the
+dataset retrieved by the Pilog query. A table is used to present the result. The
+number of columns in this table must match the number mentioned above, the one
+that tells the chart how many columns to expect.
+
+<p>What is here is a common way of structuring applications in PicoLisp. Objects
+are displayed and edited using <code><a
+href="form/refI.html#idForm">(idForm)</a></code>, which in turn use <code><a
+href="form/refD.html#diaform">(diaform)</a></code> to select or create new
+objects to view or edit.
+
+<h4><a name="item">Item</a></h4>
+
+<p align=right>Source in "app/item.l"
+
+<p>Items also have a unique number, and a mandatory "Description" field.
+
+<p>To assign a supplier, click on the "+" button. The Customer/Supplier search
+dialog will appear, and you can pick the desired supplier with the "@" button in
+the first column. Alternatively, if you are sure to know the exact spelling of
+the supplier's name, you can also enter it directly into the text field.
+
+<p>In the search dialog you may also click on a link, for example to inspect a
+possible supplier, and then return to the search dialog with the browser's back
+button. The "Edit" mode will then be lost, however, as another object has been
+visited (this is described in the last part of <a href="#editing">Editing</a>).
+
+<p>You can enter an inventory count, the number of items currently in stock. The
+following field will automatically reflect the remaining pieces after some of
+these items were sold (i.e. referenced in order positions). It cannot be changed
+manually.
+
+<p>The price should be entered with the decimal separator according to the
+current locale. It will be formatted with two places after the decimal
+separator.
+
+<p>The "Memo" is for an arbitrary info text, like in <a
+href="#cuSu">Customer/Supplier</a> above, stored in a database blob.
+
+<p>Finally, a JPEG picture can be stored in a blob for this item. Choose a file
+with the browser's file select control, and click on the "Install" button. The
+picture will appear at the bottom of the page, and the "Install" button changes
+to "Uninstall", allowing the picture's removal.
+
+
+<h4><a name="order">Order</a></h4>
+
+<p align=right>Source in "app/ord.l"
+
+<p>Oders are identified by number and date.
+
+<p>The number must be unique. It is assigned when the order is created, and
+cannot be changed for compliance reasons.
+
+<p>The date is initialized to "today" for a newly created order, but may be
+changed manually. The date format depends on the locale. It is YYYY-MM-DD (ISO)
+by default, DD.MM.YYYY in the German and YYYY/MM/DD in the Japanese locale. As
+described in <a href="#timeDateFields">Time &amp; Date</a>, this field allows
+input shortcuts, e.g. just enter the day to get the full date in the current
+month.
+
+<p>To assign a customer to this order, click on the "+" button. The
+Customer/Supplier search dialog will appear, and you can pick the desired
+customer with the "@" button in the first column (or enter the name directly
+into the text field), just as described above for <a href="#item">Item</a>s.
+
+<p>Now enter order the positions: Choose an item with the "+" button. The
+"Price" field will be preset with the item's default price, you may change it
+manually. Then enter a quantity, and click a button (typically the "+" button to
+select the next item, or a scroll button go down in the chart). The form will be
+automatically recalculated to show the total prices for this position and the
+whole order.
+
+<p>Instead of the "+" or scroll buttons, as recommended above, you could of
+course also press the "Done" button to commit changes. This is all right, but
+has the disadvantage that the button must be pressed a second time (now "Edit")
+if you want to continue with the entry of more positions.
+
+<p>The "x" button at the right of each position deletes that position without
+further confirmation. It has to be used with care!
+
+<p>The "^" button is a "bubble" button. It exchanges a row with the row above it.
+Therefore, it can be used to rearrange all items in a chart, by "bubbling" them
+to their desired positions.
+
+<p>The "PDF-Print" button generates and displays a PDF document for this order.
+The browser should be configured to display downloaded PDF documents in an
+appropriate viewer. The source for the postscript generating method is in
+"app/lib.l". It produces one or several A4 sized pages, depending on the number
+of positions.
+
+
+<h4><a name="reports">Reports</a></h4>
+
+<p align=right>Sources in "app/inventory.l and "app/sales.l"
+
+<p>The two reports ("Inventory" and "Sales") come up with a few search fields
+and a "Show" button.
+
+<p>If no search criteria are entered, the "Show" button will produce a listing
+of the relevant part of the whole database. This may take a long time and cause
+a heavy load on the browser if the database is large.
+
+<p>So in the normal case, you will limit the domain by stating a range of item
+numbers, a description pattern, and/or a supplier for the inventory report, or a
+range of order dates and/or a customer for the sales report. If a value in a
+range specification is omitted, the range is considered open in that direction.
+
+<p>At the end of each report appears a "CSV" link. It downloads a file with the
+TAB-separated values generated by this report.
+
+</body>
+</html>
