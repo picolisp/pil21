@@ -1,4 +1,4 @@
-# 22apr21 Software Lab. Alexander Burger
+# 02may21 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *Evt *Lock *Spans
 
@@ -1300,12 +1300,11 @@
    (=: exe Exe)
    (=: del Txt)
    (super '(nth (: chart 1 data) (row)) ,"Delete row" "x"
-      '(if (or (: home del) (not (curr)))
-         (_delRow (: exe))
+      '(if (curr)
          (ask (if (: del) (eval @) ,"Delete row?")
             (with (: home btn)
-               (=: home del T)
-               (_delRow (: exe)) ) ) ) )
+               (_delRow (: exe)) ) )
+         (_delRow (: exe)) ) )
    (=: chg T) )
 
 (de _delRow (Exe)

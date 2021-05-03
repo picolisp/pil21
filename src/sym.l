@@ -1,4 +1,4 @@
-# 07apr21 Software Lab. Alexander Burger
+# 03may21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -995,6 +995,13 @@
          @
          (set X (cdr @))
          (car @) ) ) )
+
+# (shift 'var) -> any
+(de _shift (Exe)
+   (let X (needChkVar Exe (eval (cadr Exe)))
+      (when (and (sym? X) (sym? (val (tail X))))
+         (dbTouch Exe X) )
+      (set X (cdr (needLst Exe (val X)))) ) )
 
 # (cut 'cnt 'var) -> lst
 (de _cut (Exe)

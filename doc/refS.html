@@ -428,6 +428,21 @@ href="refD.html#def">def</a></code>.
 -> (123 123)
 </code></pre>
 
+<dt><a name="shift"><code>(shift 'var) -> any</code></a>
+<dd>Sets the list in <code>var</code> to its CDR. <code>(shift 'var)</code> is
+equivalent to <code>(set 'var (cdr (val 'var)))</code>. See also <code><a
+href="refP.html#push">push</a></code> and <code><a
+href="refP.html#pop">pop</a></code>.
+
+<pre><code>
+: (setq A (1 2 3))
+-> (1 2 3)
+: (shift 'A)
+-> (2 3)
+: A
+-> (2 3)
+</code></pre>
+
 <dt><a name="show"><code>(show 'any ['sym|cnt ..]) -> any</code></a>
 <dd>Shows the name, value and property list of a symbol found by applying the
 <code><a href="refG.html#get">get</a></code> algorithm to <code>any</code> and

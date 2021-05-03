@@ -1,4 +1,4 @@
-# 29apr21 Software Lab. Alexander Burger
+# 03may21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -213,6 +213,7 @@
    (NIL "push1q" _push1q)
    (NIL "pop" _pop)
    (NIL "++" _popq)
+   (NIL "shift" _shift)
    (NIL "cut" _cut)
    (NIL "del" _del)
    (NIL "queue" _queue)

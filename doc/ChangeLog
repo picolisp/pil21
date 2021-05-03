@@ -1,3 +1,19 @@
+03may21
+   (co) returns tag of current coroutine
+      src/flow.l
+      doc/refC.html
+   'shift' function
+      src/sym.l
+      src/glob.l
+      doc/ref.html
+      doc/refS.html
+      doc/refP.html
+      test/src/sym.l
+
+01may21
+   Confirm row deletion also if repeated
+      lib/form.l
+
 30apr21
    Add file
       doc/app.html
