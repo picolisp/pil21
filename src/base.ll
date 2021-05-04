@@ -80513,7 +80513,6 @@ $25:
 $14:
   %73 = phi i8* [%64, %$19], [%71, %$26] ; # Crt
   %74 = phi i8* [%65, %$19], [%69, %$26] ; # ->
-; # (let (Lnk (any 0) Bnd (any 0) Ca (i8* null) In (val $Stdin) Out (...
 ; # (any 0)
 ; # (any 0)
 ; # (i8* null)
