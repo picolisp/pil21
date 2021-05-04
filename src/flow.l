@@ -1,4 +1,4 @@
-# 03may21 Software Lab. Alexander Burger
+# 04may21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1087,7 +1087,7 @@
 (de NIL reentErr (Exe Tag)
    (err Exe Tag ($ "Reentrant coroutine") null) )
 
-# (co ['sym [. prg]]) -> any
+# (co ['any [. prg]]) -> any
 (de _co (Exe)
    (let X (cdr Exe)
       (if (atom X)
@@ -1180,7 +1180,7 @@
                      Tag ) )
                (T $Nil) ) ) ) ) )
 
-# (yield 'any ['sym]) -> any
+# (yield 'any ['any2]) -> any
 (de _yield (Exe)
    (let
       (X (cdr Exe)

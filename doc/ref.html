@@ -1285,10 +1285,6 @@ and exit points, and preserve their environment between invocations.
 functions, and (re)invoked as needed. In this regard coroutines are similar to
 "continuations" in other languages.
 
-<p>When the tag goes out of scope while it is not actively running, the
-coroutine will be garbage collected. In cases where this is desired, using a <a
-href="#transient">transient</a> symbol for the tag is recommended.
-
 <p>A coroutine is created by calling <code><a href="refC.html#co">co</a></code>.
 Its <code>prg</code> body will be executed, and unless <code><a
 href="refY.html#yield">yield</a></code> is called at some point, the coroutine

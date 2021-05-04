@@ -1,3 +1,12 @@
+04may21
+   Fix docs and comments about coroutine tags
+      src/main.l
+      src/flow.l
+      doc/ref.html
+      doc/refC.html
+      doc/refS.html
+      doc/refY.html
+
 03may21
    (co) returns tag of current coroutine
       src/flow.l
