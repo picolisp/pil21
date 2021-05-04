@@ -1839,9 +1839,40 @@ $3:
   ret i64 %1
 }
 
+define void @saveCoIO() align 8 {
+$1:
+; # (val $OutFrames)
+  %0 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 40) to i8**)
+; # ((ioFrame (val $OutFrames)) fun (val (i8** $Put)))
+  %1 = getelementptr i8, i8* %0, i32 16
+  %2 = bitcast i8* %1 to i8**
+  %3 = bitcast void(i8)** @$Put to i8**
+  %4 = load i8*, i8** %3
+  store i8* %4, i8** %2
+; # (let Io: (ioFrame (val $InFrames)) (Io: fun (val (i8** $Get))) ((...
+; # (val $InFrames)
+  %5 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 32) to i8**)
+; # (Io: fun (val (i8** $Get)))
+  %6 = getelementptr i8, i8* %5, i32 16
+  %7 = bitcast i8* %6 to i8**
+  %8 = bitcast i32()** @$Get to i8**
+  %9 = load i8*, i8** %8
+  store i8* %9, i8** %7
+; # (Io: file)
+  %10 = getelementptr i8, i8* %5, i32 8
+  %11 = bitcast i8* %10 to i8**
+  %12 = load i8*, i8** %11
+; # ((inFile (Io: file)) chr (val $Chr))
+  %13 = getelementptr i8, i8* %12, i32 12
+  %14 = bitcast i8* %13 to i32*
+  %15 = load i32, i32* @$Chr
+  store i32 %15, i32* %14
+  ret void
+}
+
 define void @saveCoEnv(i8*) align 8 {
 $1:
-; # (let Crt: (coroutine Crt) (Crt: at (val $At)) ((ioFrame (val $Out...
+; # (let Crt: (coroutine Crt) (Crt: at (val $At)) (memcpy (Crt: (env)...
 ; # (Crt: at (val $At))
   %1 = getelementptr i8, i8* %0, i32 48
   %2 = ptrtoint i8* %1 to i64
@@ -1849,38 +1880,12 @@ $1:
   %4 = load i64, i64* %3
   %5 = inttoptr i64 %2 to i64*
   store i64 %4, i64* %5
-; # (val $OutFrames)
-  %6 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 40) to i8**)
-; # ((ioFrame (val $OutFrames)) fun (val (i8** $Put)))
-  %7 = getelementptr i8, i8* %6, i32 16
-  %8 = bitcast i8* %7 to i8**
-  %9 = bitcast void(i8)** @$Put to i8**
-  %10 = load i8*, i8** %9
-  store i8* %10, i8** %8
-; # (let Io: (ioFrame (val $InFrames)) (Io: fun (val (i8** $Get))) ((...
-; # (val $InFrames)
-  %11 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 32) to i8**)
-; # (Io: fun (val (i8** $Get)))
-  %12 = getelementptr i8, i8* %11, i32 16
-  %13 = bitcast i8* %12 to i8**
-  %14 = bitcast i32()** @$Get to i8**
-  %15 = load i8*, i8** %14
-  store i8* %15, i8** %13
-; # (Io: file)
-  %16 = getelementptr i8, i8* %11, i32 8
-  %17 = bitcast i8* %16 to i8**
-  %18 = load i8*, i8** %17
-; # ((inFile (Io: file)) chr (val $Chr))
-  %19 = getelementptr i8, i8* %18, i32 12
-  %20 = bitcast i8* %19 to i32*
-  %21 = load i32, i32* @$Chr
-  store i32 %21, i32* %20
 ; # (Crt: (env))
-  %22 = getelementptr i8, i8* %0, i32 112
+  %6 = getelementptr i8, i8* %0, i32 112
 ; # (i8* $Link)
-  %23 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i8*
+  %7 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i8*
 ; # (memcpy (Crt: (env)) (env) (env T) T)
-  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 8 %22, i8* %23, i64 136, i1 0)
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 8 %6, i8* %7, i64 136, i1 0)
   ret void
 }
 
@@ -79925,6 +79930,8 @@ $17:
   %61 = load i8*, i8** @$Coroutines
 ; # (i8* null)
   %62 = inttoptr i64 0 to i8*
+; # (saveCoIO)
+  call void @saveCoIO()
 ; # (Src:)
 ; # (saveCoEnv (Src:))
   call void @saveCoEnv(i8* %60)
@@ -80525,6 +80532,8 @@ $14:
   %78 = inttoptr i64 0 to i8*
 ; # (i8* null)
   %79 = inttoptr i64 0 to i8*
+; # (saveCoIO)
+  call void @saveCoIO()
 ; # (unless (t? (Src: tag)) (let P (val $Link) (until (== P (Src: lnk...
 ; # (Src: tag)
   %80 = ptrtoint i8* %40 to i64

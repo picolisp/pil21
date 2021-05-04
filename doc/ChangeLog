@@ -1,4 +1,7 @@
 04may21
+   I/O save/restore bug in 'co' / 'yield'
+      src/main.l
+      src/flow.l
    Minor cosmetics (collapse two 'let's)
       src/flow.l
    Fix docs and comments about coroutine tags

@@ -1115,6 +1115,7 @@
                      (Src: (coroutine (val $Current))
                         Crt (val $Coroutines)
                         P (i8* null) )
+                     (saveCoIO)
                      (saveCoEnv (Src:))
                      (loop
                         (let Crt: (coroutine Crt)
@@ -1212,6 +1213,7 @@
             Out (val $Stdout)
             Err (i8* null)
             Ctl (i8* null) )
+         (saveCoIO)
          (unless (t? (Src: tag))
             (let P (val $Link)  # Reverse Stack(s)
                (until (== P (Src: lnk))

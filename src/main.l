@@ -44,16 +44,18 @@
 (de void popErrFiles ())
 (de void popCtlFiles ())
 
-(local) (saveCoEnv loadCoEnv stop unwind)
+(local) (saveCoIO saveCoEnv loadCoEnv stop unwind)
 
 # Switch coroutines
+(de void saveCoIO ()
+   ((ioFrame (val $OutFrames)) fun (val (i8** $Put)))
+   (let Io: (ioFrame (val $InFrames))
+      (Io: fun (val (i8** $Get)))
+      ((inFile (Io: file)) chr (val $Chr)) ) )
+
 (de void saveCoEnv ((i8* . Crt))
    (let Crt: (coroutine Crt)
       (Crt: at (val $At))  # Not running
-      ((ioFrame (val $OutFrames)) fun (val (i8** $Put)))
-      (let Io: (ioFrame (val $InFrames))
-         (Io: fun (val (i8** $Get)))
-         ((inFile (Io: file)) chr (val $Chr)) )
       (memcpy (Crt: (env)) (env) (env T) T) ) )
 
 (de loadCoEnv ((i8* . Crt))
