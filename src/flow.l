@@ -1076,6 +1076,7 @@
       (Ca: link (val $Catch))
       (set $Catch (Ca:))
       (Ca: fin (++ X))
+      (Ca: co (val $Current))
       (memcpy (Ca: (env)) (env) (env T) T)
       (prog1
          (save (run X))

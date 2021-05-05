@@ -77,13 +77,12 @@
                   (popInFiles)
                   (? (== (val $InFrames) (Ca: (env $InFrames i8*)))) )
                (tosInFile) )
-            (let Crt (val $Current)
-               (unless
-                  (or
-                     (== Crt (Ca: co))
-                     (== Crt (val $Coroutines)) )
-                  (stop Crt)
-                  (let Crt: (coroutine (val $Coroutines))
+            (let
+               (Src (val $Current)
+                  Dst (if (Ca: co) @ (val $Coroutines)) )
+               (unless (== Src Dst)
+                  (stop Src)
+                  (let Crt: (coroutine (set $Current Dst))
                      (set $StkLimit (+ (Crt: lim) 4096))
                      (set $At (Crt: at)) ) ) )
             (memcpy (env) (Ca: (env)) (env T) T)
