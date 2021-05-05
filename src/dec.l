@@ -1,4 +1,4 @@
-# 16apr21 Software Lab. Alexander Burger
+# 05may21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -49,6 +49,7 @@
    (link 8 i8*)         # Frame link
    (tag 8 any)          # Catch tag
    (fin 8 any)          # 'finally' expression
+   (co 8 i8*)           # Current coroutine
    (env (env T) i8)     # Saved environment
    (rst 0 i8) )         # Restart jmp_buf (JmpBufSize)
 

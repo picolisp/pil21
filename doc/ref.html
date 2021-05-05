@@ -1302,12 +1302,15 @@ and already running - coroutine.
 <li>some other (co)routine calls <code><a href="refC.html#co">co</a></code> with
 that tag but without a <code>prg</code> body
 
-<li>a <code><a href="refT.html#throw">throw</a></code> into another (co)routine
+<li>a <code><a href="refT.html#throw">throw</a></code> into the main coroutine
 environment is executed
 
 <li>an error occurred, and <a href="#errors">error handling</a> was entered
 
 </ul>
+
+<p>A <code><a href="refT.html#throw">throw</a></code> into other coroutines
+except the main coroutine is not allowed.
 
 <p>Reentrant coroutines are not supported: A coroutine cannot resume itself
 directly or indirectly.

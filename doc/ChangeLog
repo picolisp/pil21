@@ -1,3 +1,11 @@
+05may21
+   Fix catch/throw between coroutines
+      src/main.l
+      src/dec.l
+      src/flow.l
+      doc/structures
+      doc/ref.html
+
 04may21
    I/O save/restore bug in 'co' / 'yield'
       src/main.l

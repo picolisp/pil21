@@ -1,4 +1,4 @@
-# 16apr21 Software Lab. Alexander Burger
+# 05may21 Software Lab. Alexander Burger
 
    ### Primary data types ###
 
@@ -193,6 +193,7 @@
                         ^
                [rst]    |
                [env]    |
+               co       |
                fin      |
                tag      |
                LINK ----+  <-- Catch

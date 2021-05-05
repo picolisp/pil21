@@ -1,4 +1,4 @@
-# 04may21 Software Lab. Alexander Burger
+# 05may21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1043,6 +1043,7 @@
       (Ca: link (val $Catch))
       (set $Catch (Ca:))
       (Ca: fin ZERO)
+      (Ca: co (val $Current))
       (memcpy (Ca: (env)) (env) (env T) T)
       (prog1
          (if (setjmp (Ca: (rst)))
@@ -1082,10 +1083,32 @@
          (set $Catch (Ca: link)) ) ) )
 
 # Coroutines
-(local) reentErr
+(local) (reentErr saveCoIO saveCoEnv loadCoEnv)
 
 (de NIL reentErr (Exe Tag)
    (err Exe Tag ($ "Reentrant coroutine") null) )
+
+# Switch coroutines
+(de void saveCoIO ()
+   ((ioFrame (val $OutFrames)) fun (val (i8** $Put)))
+   (let Io: (ioFrame (val $InFrames))
+      (Io: fun (val (i8** $Get)))
+      ((inFile (Io: file)) chr (val $Chr)) ) )
+
+(de void saveCoEnv ((i8* . Crt))
+   (let Crt: (coroutine Crt)
+      (Crt: at (val $At))  # Not running
+      (memcpy (Crt: (env)) (env) (env T) T) ) )
+
+(de loadCoEnv ((i8* . Crt))
+   (let Crt: (coroutine (set $Current Crt))
+      (set $StkLimit (+ (Crt: lim) 4096))
+      (memcpy (env) (Crt: (env)) (env T) T)
+      (tosInFile)
+      (tosOutFile)
+      (set $At (Crt: at))
+      (Crt: at 0)  # Running
+      (val $Ret) ) )
 
 # (co ['any [. prg]]) -> any
 (de _co (Exe)
