@@ -77,9 +77,9 @@
                   (popInFiles)
                   (? (== (val $InFrames) (Ca: (env $InFrames i8*)))) )
                (tosInFile) )
-            (let
-               (Src (val $Current)
-                  Dst (if (Ca: co) @ (val $Coroutines)) )
+            (let (Src (val $Current)  Dst (Ca: co))
+               (unless Dst
+                  (setq Dst (val $Coroutines)) )
                (unless (== Src Dst)
                   (stop Src)
                   (let Crt: (coroutine (set $Current Dst))
