@@ -1,4 +1,4 @@
-# 31mar21 Software Lab. Alexander Burger
+# 06may21 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1265,6 +1265,8 @@
 (class +Remote)
 
 (dm zap> ())
+(dm has> ~(method 'has> '+Entity))
+(dm url> (Tab Fld))
 (dm put> (Var Val))
 (dm put!> (Var Val))
 (dm del> (Var Val))

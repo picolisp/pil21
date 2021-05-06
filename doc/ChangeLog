@@ -1,4 +1,6 @@
 06may21
+   Missing '+Remote' methods
+      lib/db.l
    Missing 'mail' handshake (Mike Pechkin)
       lib/misc.l
 
