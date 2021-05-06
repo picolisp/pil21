@@ -1,3 +1,7 @@
+06may21
+   Missing 'mail' handshake (Mike Pechkin)
+      lib/misc.l
+
 05may21
    Fix catch/throw between coroutines
       src/main.l

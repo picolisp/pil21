@@ -1,4 +1,4 @@
-# 08oct20 Software Lab. Alexander Burger
+# 06may21 Software Lab. Alexander Burger
 
 # *Allow
 
@@ -479,8 +479,10 @@
                            (prinl "^M") )
                         (NIL (setq Att (cdddr Att))) )
                      (prinl "--" B "--^M") )
-                  (prinl ".^M")
-                  (prinl "QUIT^M") )
+                  (prinl ".^M") )
+               (pre? "250 " (in S (line T)))
+               (out S (prinl "QUIT^M"))
+               (pre? "221 " (in S (line T)))
                T )
             (close S) ) ) ) )
 
