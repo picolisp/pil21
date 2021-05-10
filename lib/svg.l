@@ -1,4 +1,4 @@
-# 08oct20 Software Lab. Alexander Burger
+# 07may21 Software Lab. Alexander Burger
 
 (symbols 'svg 'pico)
 
@@ -227,7 +227,7 @@
                         (eval Exe 3) )
                      (inc 'PosX N)
                      (setq Max (max *Pos Max)) ) ) )
-           Fmt
+            Fmt
             Prg )
          (for
             (N (co 'table (run Prg) (yield))

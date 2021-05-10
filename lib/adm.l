@@ -1,13 +1,11 @@
-# 02mar21 Software Lab. Alexander Burger
+# 10may21 Software Lab. Alexander Burger
 
 # *Salt *Login *Users *Perms
 
 # crypt(3) algorithm, e.g. (setq *Salt (16 . "$6$@1$"))
 (de passwd (Str Salt)
    (if *Salt
-      `(if (== 64 64)
-         '(native "libcrypt.so" "crypt" 'S Str (or Salt (salt)))
-         '(ext:Crypt Str (or Salt (salt))) )
+      (native "libcrypt.so" "crypt" 'S Str (or Salt (salt)))
       Str ) )
 
 (de salt ()

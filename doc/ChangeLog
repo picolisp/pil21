@@ -1,3 +1,7 @@
+10may21
+   64-bit check not needed
+      lib/adm.l
+
 06may21
    Missing '+Remote' methods
       lib/db.l
