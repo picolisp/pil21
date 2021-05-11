@@ -1,4 +1,4 @@
-# 14nov20 Software Lab. Alexander Burger
+# 11may21 Software Lab. Alexander Burger
 
 (sysdefs "errno")
 (sysdefs "networking")
@@ -16,12 +16,13 @@
       (when (lt0 Sd)
          (ipErr "IP socket") )
       (%@ "closeOnExec" NIL (cons T (up)) Sd)
-      (when
-         (lt0
-            (%@ "setsockopt" 'I Sd IPPROTO_IPV6 IPV6_V6ONLY  #? OpenBSD
-               '(NIL (4 . I) (0 . 4))
-               4 ) )
-         (ipErr "IPV6_V6ONLY") )
+      ~(as (<> *OS "OpenBSD")
+         (when
+            (lt0
+               (%@ "setsockopt" 'I Sd IPPROTO_IPV6 IPV6_V6ONLY
+                  '(NIL (4 . I) (0 . 4))
+                  4 ) )
+            (ipErr "IPV6_V6ONLY") ) )
       (buf Addr sockaddr_in6
          (%@ "memset" NIL Addr 0 sockaddr_in6)
          (struct (+ Addr sin6_family) NIL (`AF_INET6 . 2))
@@ -32,7 +33,7 @@
                   (or
                      (=0 Port)
                      (ge0
-                        (%@ "setsockopt" 'I Sd SOL_SOCKET SO_REUSEADDR  #? OpenBSD
+                        (%@ "setsockopt" 'I Sd SOL_SOCKET SO_REUSEADDR
                            '(NIL (4 . I) (1 . 4))
                            4 ) )
                      (ipErr "SO_REUSEADDR") ) )
