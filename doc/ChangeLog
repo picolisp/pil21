@@ -1,3 +1,9 @@
+12may21
+   Add file
+      doc/microTemplates
+   Needs '*XhtmlField' in '<field>'
+      lib/xhtml.l
+
 11may21
    Don't set IPV6_V6ONLY for OpenBSD
       lib/net.l

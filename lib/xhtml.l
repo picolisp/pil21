@@ -1,4 +1,4 @@
-# 13apr21 Software Lab. Alexander Burger
+# 12may21 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -549,7 +549,6 @@
                         (ht:Prin (eval (car L) E))
                         (prinl (if (= U *Url) ActZ CmdZ)) )
                      (NIL
-                        #!
                         (<href> (eval (car L) E) (car U) (cdr U)) ) ) )
                ((bit? M *Menu)
                   (prin
@@ -749,7 +748,7 @@
    (tag "label" Attr 2 Prg) )
 
 (de <field> (N "Var" Max Flg)
-   (prin (caar *XhtmlField) "text" (cadar *XhtmlInput))
+   (prin (caar *XhtmlField) "text" (cadar *XhtmlField))
    (htmlVar "Var")
    (prin " value=\"")
    (ht:Prin (htmlVal "Var"))

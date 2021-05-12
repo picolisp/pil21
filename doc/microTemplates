@@ -1,0 +1,75 @@
+         Micro-Templates
+
+* Each template file in the @lib/xhtml/ directory applies to one type of
+  component in the @lib/xhtml.l functions.
+
+* The template files are line oriented. One micro-template per line.
+
+* A micro-template can be continued on the following line(s) by indenting these
+  lines with space(s).
+
+* Each line has a defined meaning. Except for indented lines, no lines can be
+  added or removed.
+
+* A micro-template consists of a defined number of parts, separated by "@". The
+  number of parts depends on the micro-template. As a consequence, any "@" in
+  the text must be encoded as "%40".
+
+* An empty line is denoted by "<>".
+
+* "~" is replaced at runtime with the session ID.
+
+* At program start, all templates from @lib/xhtml/ are loaded.
+
+* The application may override one or more files in a local directory.
+  Also more than once.
+
+* Available templates:
+
+   html
+      1. DOCTYPE
+      2. Language
+      3. Header start
+      4. Header data
+      5. Header end / body start
+      6. Body end
+
+   layout
+      Variable number of lines, one per code block
+
+   menu
+      1. Menu start
+      2. Submenu start
+      3. Plain text
+      4. Disabled link
+      5. Enabled link
+      6. Enabled active link
+      7. Closed submenu
+      8. Open submenu start
+      9. Open submenu end
+      10. Submenu end
+      11. Menu end
+
+   tab
+      1. Tab start
+      2. Disabled entry
+      3. Enabled entry
+      4. Tab end
+
+   input
+      1. (Non-text) Input element
+
+   field
+      1. Text input element
+
+   area
+      1. Text area start
+      2. Text area end
+
+   select
+      1. Drop-down list start
+      2. Drop-down list option
+      3. Drop-down list end
+
+   submit
+      1. Submit input element
