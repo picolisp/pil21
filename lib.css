@@ -1,4 +1,4 @@
-/* 22jan21abu
+/* 14may21abu
  * 17nov12jk
  * (c) Software Lab. Alexander Burger
  */
@@ -101,6 +101,10 @@ a {
 
 a:hover {
    background-color: white;
+}
+
+.grid td {
+   vertical-align: top;
 }
 
 /* Navigation */
