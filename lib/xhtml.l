@@ -1,4 +1,4 @@
-# 12may21 Software Lab. Alexander Burger
+# 13may21 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -446,8 +446,6 @@
    (let *Style (style (cons 'title (glue "^J" X)) *Style)
       (run Prg) ) )
 
-(private) (Lst P LayX LayY L Args DX DY Cls Style)
-
 # Layout
 (de <layout> Lst
    (let
@@ -504,18 +502,16 @@
 (de urlMT (Url Menu Tab Id Str)
    (pack Url "?"  "*Menu=+" Menu  "&*Tab=+" Tab  "&*ID=" (ht:Fmt Id) Str) )
 
-(private) (Lst M N E U L)
-
 (de <menu> Lst
    (let
       ((Beg
             BegL
             (A Z)  # Plain
             (DisA DisZ)  # Disabled
-            (CmdA Cmd CmdZ)        # Command
-            (ActA Act ActZ)        # Active command
-            (SubA SubB SubC SubZ)  # Closed submenu
-            (TopA TopB TopC TopZ)  # Open submenu
+            (CmdA Cmd CmdZ)  # Command
+            (ActA Act ActZ)  # Active command
+            (SubA SubB SubC SubD SubZ)  # Closed submenu
+            (TopA TopB TopC TopD TopZ)  # Open submenu
             TopEnd
             EndL
             End )
@@ -551,32 +547,40 @@
                      (NIL
                         (<href> (eval (car L) E) (car U) (cdr U)) ) ) )
                ((bit? M *Menu)
-                  (prin
-                     SubA
-                     (sesId (urlMT *Url (| M *Menu) *Tab *ID))
-                     SubB )
-                  (ht:Prin ,"Open submenu")
-                  (prin SubC)
-                  (ht:Prin (eval (cadr L) E))
-                  (setq M (>> -1 M))
-                  (recur (L)
-                     (for X (cddr L)
-                        (when (=T (car X))
-                           (recurse X)
-                           (setq M (>> -1 M)) ) ) )
-                  (prinl SubZ) )
+                  (shift 'L)
+                  (let (S (eval (++ L) E)  I)
+                     (when (num? S)
+                        (setq I S  S (eval (++ L) E)) )
+                     (prin
+                        SubA I SubB
+                        (sesId (urlMT *Url (| M *Menu) *Tab *ID))
+                        SubC )
+                     (ht:Prin ,"Open submenu")
+                     (prin SubD)
+                     (ht:Prin S)
+                     (setq M (>> -1 M))
+                     (recur (L)
+                        (for X L
+                           (when (=T (car X))
+                              (recurse X)
+                              (setq M (>> -1 M)) ) ) )
+                     (prinl SubZ) ) )
                (NIL
-                  (prin
-                     TopA
-                     (sesId (urlMT *Url (x| M *Menu) *Tab *ID))
-                     TopB )
-                  (ht:Prin ,"Close submenu")
-                  (prin TopC)
-                  (ht:Prin (eval (cadr L) E))
-                  (prinl TopZ)
-                  (setq M (>> -1 M))
-                  (recurse (cddr L) (inc E))
-                  (prinl TopEnd) ) ) )
+                  (shift 'L)
+                  (let (S (eval (++ L) E)  I)
+                     (when (num? S)
+                        (setq I S  S (eval (++ L) E)) )
+                     (prin
+                        TopA I TopB
+                        (sesId (urlMT *Url (x| M *Menu) *Tab *ID))
+                        TopC )
+                     (ht:Prin ,"Close submenu")
+                     (prin TopD)
+                     (ht:Prin S)
+                     (prinl TopZ)
+                     (setq M (>> -1 M))
+                     (recurse L (inc E))
+                     (prinl TopEnd) ) ) ) )
          (prin EndL) )
       (prinl End) ) )
 
@@ -584,8 +588,6 @@
 (de updLink ()
    (<tip> ,"Update"
       (<span> "step" (<href> "@" (urlMT *Url *Menu *Tab *ID))) ) )
-
-(private) (Lst N L)
 
 # Tabs
 (de <tab> Lst
