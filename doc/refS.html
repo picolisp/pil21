@@ -901,12 +901,12 @@ Calls</a>.
 ## } value;
 
 # Allocate structure
-: (setq P (native "@" "malloc" 'N 56))
--> 9204032
+: (setq P (%@ "malloc" 'N 56))
+-> 498324676928
 
 # Store two integers, three doubles, one long, and four characters
-: (struct P 'N -7 -4 (1.0 0.11 0.22 0.33) (7 . 8) 65 66 67 0)
--> 9204032
+: (struct P NIL -7 -4 (1.0 0.11 0.22 0.33) (7 . 8) 65 66 67 0)
+-> NIL
 
 # Extract the structure
 : (struct P '((I . 2) (1.0 . 3) N (C . 4)))
@@ -919,7 +919,7 @@ Calls</a>.
 -> ((7 4) (11 22 33) 7 ("A" "B" "C"))
 
 # De-allocate structure
-: (native "@" "free" NIL P)
+: (%@ "free" NIL P)
 -> NIL
 </code></pre>
 
