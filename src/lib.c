@@ -1,4 +1,4 @@
-// 17apr21 Software Lab. Alexander Burger
+// 20may21 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -252,18 +252,19 @@ int Tio;
 struct termios OrgTermio, *Termio;
 
 static void tcSet(struct termios *p) {
-   if (Tio)
-      while (tcsetattr(STDIN_FILENO, TCSADRAIN, p)  &&  errno == EINTR);
+   while (tcsetattr(STDIN_FILENO, TCSADRAIN, p)  &&  errno == EINTR);
 }
 
 void stopTerm(void) {
    sigset_t mask;
 
-   tcSet(&OrgTermio);
-   sigUnblock(SIGTSTP);
-   signal(SIGTSTP, SIG_DFL),  raise(SIGTSTP);
-   if (Termio)
-      tcSet(Termio);
+   if (Tio) {
+      tcSet(&OrgTermio);
+      sigUnblock(SIGTSTP);
+      signal(SIGTSTP, SIG_DFL),  raise(SIGTSTP);
+      if (Termio)
+         tcSet(Termio);
+   }
 }
 
 void setRaw(void) {
@@ -279,8 +280,10 @@ void setRaw(void) {
 }
 
 void setCooked(void) {
-   tcSet(&OrgTermio);
-   free(Termio),  Termio = NULL;
+   if (Termio) {
+      tcSet(&OrgTermio);
+      free(Termio),  Termio = NULL;
+   }
 }
 
 int reopenTty(char* tty) {

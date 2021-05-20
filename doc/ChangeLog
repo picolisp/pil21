@@ -1,3 +1,7 @@
+20may21
+   setCooked() only if necessary
+      src/lib.c
+
 19may21
    Add file
       lib/clang.l
