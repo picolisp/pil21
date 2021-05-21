@@ -1005,7 +1005,10 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                         ((head '(":" " ") (get (: buffer text) (: posY)))
                            (if *Complete
                               (do (length (car *Complete)) (_bs))
-                              (setq *Complete (history)) )
+                              (setq *Complete
+                                 (filter
+                                    '((S) (not (pre? "(vi " S)))
+                                    (history) ) ) )
                            (setq S (chop (car (rot *Complete)))) )
                         ((or Rpl (not (setq S (pack (getWord)))))
                            (setq S
