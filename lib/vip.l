@@ -1,4 +1,4 @@
-# 21apr21 Software Lab. Alexander Burger
+# 21may21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -331,7 +331,7 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
 
 
 (local) (delwin cursor addLine chgLine unmark redraw repaint scLeft scRight goto
-chgwin eqwin getch getch2 reload scratch tag done change jmp@@ cnt@@ goCol
+chgwin eqwin getch getch2 reload scratch syms tag done change jmp@@ cnt@@ goCol
 goLeft goRight goUp goDown goAbs goFind tword word lword end lend getWord
 _forward goForward _backward goBackward goPFore goPBack shift shiftY indent cutX
 cutN paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe
@@ -527,6 +527,11 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
          Lst )
       (goto 1 (: buffer posY)) )
    (repaint) )
+
+(de syms (Lst)
+   (prog1
+      (tmp "syms")
+      (syms> (fileBuffer @) Lst) ) )
 
 (de tag (S)
    (cond
@@ -995,14 +1000,19 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                   T )
                (T
                   (let S (list @)
-                     (nond
-                        ((= @ "\t") (off *Complete))
-                        ((unless Rpl (setq S (pack (getWord))))
+                     (cond
+                        ((<> @ "\t") (off *Complete))
+                        ((head '(":" " ") (get (: buffer text) (: posY)))
+                           (if *Complete
+                              (do (length (car *Complete)) (_bs))
+                              (setq *Complete (history)) )
+                           (setq S (chop (car (rot *Complete)))) )
+                        ((or Rpl (not (setq S (pack (getWord)))))
                            (setq S
                               (make
                                  (do (- 3 (% (dec (: posX)) 3))
                                     (link (name " ")) ) ) ) )
-                        (NIL
+                        (T
                            (default *Complete
                               (conc
                                  (list S)
@@ -1212,7 +1222,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
       (out R
          (err NIL
             (catch '(NIL)
-               (setq @ *@  *@ (run Prg 1) *Msg)
+               (setq @ *@  *@ (run Prg) *Msg)
                (println '-> *@) ) )
          (and *Msg (prinl @)) )
       (in R
@@ -1295,6 +1305,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                   ("n" (nextBuf))  # Next buffer
                   ("N" (nextBuf T))  # Previous buffer
                   (("ta" "tag") (tag (any Line)))
+                  ("v" (reload (syms (str (pack Line))) 1 1))
                   ("e" (reload (rplFile Line)))  # (Edit) Reload buffer
                   ("E"  # (Edit) Toggle subdir recursion and reload buffer
                      (=: buffer subd (not (: buffer subd)))
@@ -1353,8 +1364,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
             (fileBuffer (cdr X)) )
          ((or (num? (car X)) (=T (car X)))  # Line number
             (fileBuffer (cdr X) @) )
-         (T  # List of symbols
-            (syms> (fileBuffer (tmp "syms")) X) ) ) )
+         (T (syms X)) ) )  # List of symbols
    (unless *Buffers
       (fileBuffer (tmp "empty")) )
    (finally (screen1)

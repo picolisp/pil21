@@ -1,3 +1,8 @@
+21may21
+   TAB-complete from 'history' on ": "
+   ":v" command
+      lib/vip.l
+
 20may21
    setCooked() only if necessary
       src/lib.c
