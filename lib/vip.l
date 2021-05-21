@@ -1225,7 +1225,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
       (out R
          (err NIL
             (catch '(NIL)
-               (setq @ *@  *@ (run Prg) *Msg)
+               (setq *@ (run Prg 1)  *Msg)
                (println '-> *@) ) )
          (and *Msg (prinl @)) )
       (in R
@@ -1270,6 +1270,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                (setq Line (pack (clip Line)))
                (case C
                   (" "  # Eval
+                     (setq @ *@)
                      (evCmd (run (str (pack Line)))) )
                   ("$"  # Shell command
                      (scratch (tmp "cmd")
