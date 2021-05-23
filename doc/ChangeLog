@@ -1,3 +1,7 @@
+23may21
+   Maintain 'symbols' per buffer
+      lib/vip.l
+
 21may21
    TAB-complete from 'history' on ": "
    ":v" command

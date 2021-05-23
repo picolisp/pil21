@@ -1,4 +1,4 @@
-# 21may21 Software Lab. Alexander Burger
+# 23may21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -69,7 +69,8 @@ showCsr screen1 screen2)
 arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
 
 (class +Buffer)
-# text file key undo redo dirt posX posY lastX lastY subd flat fmt syms <c>
+# text file symbols key undo redo dirt
+# posX posY lastX lastY subd flat fmt syms <c>
 
 (dm T (File Y)
    (and (=: file File) (queue '*Buffers This))
@@ -232,6 +233,7 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
                         (in File (out '("ccrypt" "-d" "-ECCRYPT") (echo)))
                         (rdLines) )
                      (in File (rdLines)) ) ) ) ) ) )
+   (=: symbols (symbols))
    (=: undo (=: redo (=: dirt)))
    (=: posX
       (min1
@@ -1401,6 +1403,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                            (get (: buffer text)
                               (=: posY
                                  (min1 (: posY) (length (: buffer text))) ) ) ) ) )
+                  (and (: buffer symbols) (symbols @))
                   (when
                      (or
                         (> (: winX) (: posX))
