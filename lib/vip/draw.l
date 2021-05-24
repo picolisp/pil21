@@ -221,15 +221,10 @@
                      (setq D (cell (car Pos) Y (++ Any) Any))
                      (ifn (cdr Pos)
                         (con Pos (list (car Pos)))
-                        (let (A (caar Any)  P @)
-                           (loop
-                              (set Pos (max (car Pos) (++ P)))
-                              (T (atom A))
-                              (setq A (car A)) ) )
-                        (map
-                           '((L)
-                              (set L (max (car Pos) (car L))) )
-                           (cdr Pos) ) )
+                        (let (P @  M (car Pos))
+                           (for (A (car Any) (pair A) (car A))
+                              (setq M (max M (++ P))) )
+                           (map set Pos M) ) )
                      (setq D
                         (cell (car Pos) Y '| (cdr Any)) )
                      (recurse (++ Any) (+ Y 5) (cdr Pos))
