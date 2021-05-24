@@ -1,3 +1,7 @@
+24may21
+   Nesting bug in 'cells'
+      lib/vip/draw.l
+
 23may21
    Maintain 'symbols' per buffer
       lib/vip.l
