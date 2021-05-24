@@ -224,7 +224,9 @@
                         (let (P @  M (car Pos))
                            (for (A (car Any) (pair A) (car A))
                               (setq M (max M (++ P))) )
-                           (map set Pos M) ) )
+                           (map
+                              '((L) (set L (max M (car L))))
+                              Pos ) ) )
                      (setq D
                         (cell (car Pos) Y '| (cdr Any)) )
                      (recurse (++ Any) (+ Y 5) (cdr Pos))
