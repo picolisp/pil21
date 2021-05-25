@@ -1,3 +1,7 @@
+25may21
+   Unary '+' is obsolete in '*Run' setup
+      lib.l
+
 24may21
    Nesting bug in 'cells'
       lib/vip/draw.l

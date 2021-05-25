@@ -1,4 +1,4 @@
-# 02mar21 Software Lab. Alexander Burger
+# 25may21 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -9,7 +9,7 @@
             (conc
                (make
                   (when (lt0 (link Key))
-                     (link (+ (eval (++ Prg) 1))) ) )
+                     (link (eval (++ Prg) 1)) ) )
                (ifn (sym? (car Prg))
                   Prg
                   (cons
@@ -25,8 +25,8 @@
 
 (de timeout (N)
    (if2 N (assoc -1 *Run)
-      (set (cdr @) (+ N))
-      (push '*Run (list -1 (+ N) '(bye)))
+      (set (cdr @) N)
+      (push '*Run (list -1 N '(bye)))
       (del @ '*Run) ) )
 
 (de tasks Task
