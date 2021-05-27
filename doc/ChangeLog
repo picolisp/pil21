@@ -1,3 +1,9 @@
+27may21
+   Revisit TAB-completion
+      lib/vip.l
+   Use 'val' for '+Swap' relations in 'set>'
+      lib/db.l
+
 25may21
    Revisit TAB-completion from 'history'
       lib/vip.l

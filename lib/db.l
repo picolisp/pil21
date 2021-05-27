@@ -1,4 +1,4 @@
-# 06may21 Software Lab. Alexander Burger
+# 27may21 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1128,13 +1128,16 @@
             (let? Rel (meta This Var)
                (unless (== Rel (meta Val Var))
                   (let V (get This Var)
+                     (and (isa '+Swap Rel) (setq V (val V)))
                      (rel> Rel This V (put> Rel This V NIL)) ) ) ) )
          (xchg This 'Val)
          (for Var Lst
             (let? Rel (meta This Var)
                (unless (== Rel (meta Val Var))
-                  (rel> Rel This NIL
-                     (put> Rel This NIL (get This Var)) ) ) ) ) )
+                  (let V (get This Var)
+                     (rel> Rel This NIL
+                        (put> Rel This NIL
+                           (if (isa '+Swap Rel) (val V) V) ) ) ) ) ) ) )
       (incECnt This)
       (upd> This (val This) Val) )
    (val This) )
@@ -1148,13 +1151,16 @@
             (let? Rel (meta This Var)
                (unless (== Rel (meta Val Var))
                   (let V (get This Var)
+                     (and (isa '+Swap Rel) (setq V (val V)))
                      (rel> Rel This V (put> Rel This V NIL)) ) ) ) )
          (xchg This 'Val)
          (for Var Lst
             (let? Rel (meta This Var)
                (unless (== Rel (meta Val Var))
-                  (rel> Rel This NIL
-                     (put> Rel This NIL (get This Var)) ) ) ) ) )
+                  (let V (get This Var)
+                     (rel> Rel This NIL
+                        (put> Rel This NIL
+                           (if (isa '+Swap Rel) (val V) V) ) ) ) ) ) ) )
       (incECnt This)
       (upd> This (val This) Val)
       (commit 'upd) )
