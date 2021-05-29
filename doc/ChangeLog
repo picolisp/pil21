@@ -1,3 +1,7 @@
+29may21
+   Set cooked terminal mode in 'repl'
+      src/io.l
+
 27may21
    Revisit TAB-completion
       lib/vip.l

@@ -1,4 +1,4 @@
-# 20apr21 Software Lab. Alexander Burger
+# 29may21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1609,10 +1609,9 @@ selectErr)
 # (key ['cnt]) -> sym
 (de _key (Exe)
    (flushAll)
-   (let Term (val Termio)
+   (let Raw (val Termio)
       (prog2
-         (unless Term
-            (setRaw) )
+         (setRaw)
          (if
             (waitFd Exe 0
                (if (nil? (eval (cadr Exe)))
@@ -1636,7 +1635,7 @@ selectErr)
                                  (| (shl A 6) (& (stdinByte) (hex "3F"))) ) )
                            (| (shl B 6) (& (stdinByte) (hex "3F"))) ) ) ) ) )
             $Nil )
-         (unless Term
+         (unless Raw
             (setCooked) ) ) ) )
 
 # (peek) -> sym
@@ -2648,9 +2647,6 @@ selectErr)
    (if (and (sym? X) (== (firstByte X) (char "-")))
       (let E (save (parse (xName Exe X) YES (hex "5D0A") 0))  # '\n', ']', EOF
          (evList E) )
-      (when (and (nil? X) (not (val $Repl)))
-         (set $Repl YES)
-         (iSignal (val SIGINT Sig) (fun sig)) )
       (let
          (Int (save (val $Intern))
             Pr1 (save (val $PrivT))
@@ -2658,7 +2654,13 @@ selectErr)
             Tr1 (save (val $Transient))
             Tr2 (save (val 2 $Transient))
             V (link (push -ZERO NIL))
-            At (link (push -ZERO NIL)) )
+            At (link (push -ZERO NIL))
+            Raw (val Termio) )
+         (when (nil? X)
+            (setCooked)
+            (unless (val $Repl)
+               (set $Repl YES)
+               (iSignal (val SIGINT Sig) (fun sig)) ) )
          (rdOpen Exe X (b8 (ioFrame T)))
          (set $PrivT (set 2 $PrivT $Nil))
          (set $Transient (set 2 $Transient $Nil))
@@ -2717,6 +2719,8 @@ selectErr)
                   (newline) ) ) )
          (popInFiles)
          (tosInFile)
+         (when Raw
+            (setRaw) )
          (set 2 $Transient Tr2)
          (set $Transient Tr1)
          (set 2 $PrivT Pr2)
