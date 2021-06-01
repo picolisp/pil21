@@ -293,9 +293,8 @@
 ### OOP ###
 (de class Lst
    (set (setq *Class (++ Lst)) (type *Class))
-   (def *Class Lst)
    (putl *Class)
-   *Class )
+   (def *Class Lst) )
 
 (de object ("Sym" "Val" . @)
    (putl "Sym")
