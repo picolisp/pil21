@@ -1,4 +1,4 @@
-# 06oct20 Software Lab. Alexander Burger
+# 01jun21 Software Lab. Alexander Burger
 
 ### task ###
 (test (3 . 4)
@@ -188,8 +188,8 @@
 (test T (== *Class '"+B"))
 
 (test 1 (var a . 1))
-(test 2 (var b . 2))
-(test '((2 . b) (1 . a)) (getl '"+B"))
+(test 2 (var (b . "+B") . 2))
+(test '((2 . b) (1 . a)) (cdr (getl '"+B")))
 
 (with '"Obj"
    (test 1 (var: a))

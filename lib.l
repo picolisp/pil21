@@ -1,4 +1,4 @@
-# 25may21 Software Lab. Alexander Burger
+# 01jun21 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -292,12 +292,10 @@
 
 ### OOP ###
 (de class Lst
-   (let L (val (setq *Class (car Lst)))
-      (def *Class
-         (recur (L)
-            (if (atom (car L))
-               (cdr Lst)
-               (cons (car L) (recurse (cdr L))) ) ) ) ) )
+   (set (setq *Class (++ Lst)) (type *Class))
+   (def *Class Lst)
+   (putl *Class)
+   *Class )
 
 (de object ("Sym" "Val" . @)
    (putl "Sym")
@@ -312,8 +310,9 @@
 # Class variables
 (de var X
    (if (pair (car X))
-      (put (cdar X) (caar X) (cdr X))
-      (put *Class (car X) (cdr X)) ) )
+      (def (cdar X) (car (++ X)) X)
+      (def *Class (++ X) X) )
+   X )
 
 (de var: X
    (apply meta X This) )

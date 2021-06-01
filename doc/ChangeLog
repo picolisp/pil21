@@ -1,3 +1,9 @@
+01jun21
+   'class' clears old method and var definitions
+   'var' uses 'def' instead of 'put'
+      lib.l
+      test/lib.l
+
 29may21
    Set cooked terminal mode in 'repl'
       src/io.l

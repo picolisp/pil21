@@ -271,7 +271,7 @@ href="refT.html#trace">trace</a></code> and <code><a
 href="refD.html#*Dbg">*Dbg</a></code>.
 
 <pre><code>
-: (de foo (R S T R)     # 'T' is a improper parameter, 'R' is duplicated
+: (de foo (R S T R)     # 'T' is an improper parameter, 'R' is duplicated
    (let N 7             # 'N' is unused
       (bar X Y) ) )     # 'bar' is undefined, 'X' and 'Y' are not bound
 -> foo
