@@ -1,3 +1,9 @@
+02jun21
+   Add A3 page sizes
+      lib/svg.l
+   Intern some globals for reload
+      lib/form.l
+
 01jun21
    'class' clears old method and var definitions
    'var' uses 'def' instead of 'put'

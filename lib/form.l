@@ -1,8 +1,8 @@
-# 02may21 Software Lab. Alexander Burger
+# 02jun21 Software Lab. Alexander Burger
 
-# *PRG *Top *Gui *Btn *Get *Got *Form *Evt *Lock *Spans
+# *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
-(private) (*Chart *App *Ix *Cnt *Lst *Err *Foc *Post2 *Stat *Cho *TZO)
+(private) (*Chart *App *Ix *Err *Foc *Post2 *Stat *Cho *TZO)
 
 (allow "@img/" T)
 (push1 '*JS (allow "@lib/form.js"))  #! @lib
@@ -11,7 +11,7 @@
       *Gui *Get *Got *Form "!jsForm" *Evt *Drop
       *JsHint "!jsHint" jsUp jsDn *JsArgs "!tzOffs" ) )
 
-(one *Cnt)
+(default *FormIx 1)
 
 (de *Go.png . "@img/go.png")
 (de *No.png . "@img/no.png")
@@ -30,15 +30,15 @@
    (inc '*Form)
    (let App
       (if *PRG
-         (get *Lst (- *Cnt *Get) *Form)
+         (get *FormLst (- *FormIx *Get) *Form)
          (prog1
             (setq *Top (new NIL NIL 'able T 'evt 0))
             ~(as *Dbg
                (when (file)
                   (put *Top '*Dbg
                      (list (cons (cddr @) (pack (car @) (cadr @)))) ) ) )
-            (queue (nth *Lst (- *Cnt *Get)) *Top) ) )
-      (let Lst (get *Lst (- *Cnt *Get) 1)
+            (queue (nth *FormLst (- *FormIx *Get)) *Top) ) )
+      (let Lst (get *FormLst (- *FormIx *Get) 1)
          (for (F . L) Lst
             (let *Form (- F (length Lst))
                (cond
@@ -156,10 +156,10 @@
             (_doForm) ) ) ) )
 
 (de pushForm (L)
-   (push '*Lst L)
-   (and (nth *Lst 99) (con @))
-   (setq *Get *Cnt)
-   (inc '*Cnt) )
+   (push '*FormLst L)
+   (and (nth *FormLst 99) (con @))
+   (setq *Get *FormIx)
+   (inc '*FormIx) )
 
 (de _doForm ()
    (one *Form)
@@ -167,7 +167,7 @@
    (setq *Stat
       (cons
          (pair *Err)
-         (copy (get *Lst (- *Cnt *Get))) ) ) )
+         (copy (get *FormLst (- *FormIx *Get))) ) ) )
 
 (de jsForm (Url)
    (if (or *PRG (not *Post))
@@ -183,7 +183,7 @@
                   (if
                      (and
                         (= (car *Stat) *Err)
-                        (= (cdr *Stat) (get *Lst (- *Cnt *Get))) )
+                        (= (cdr *Stat) (get *FormLst (- *FormIx *Get))) )
                      (ht:Out *Chunked
                         (when (: auto)
                            (prin "i" *Form "-" (: auto 1 id) ":" (: auto -1))
@@ -211,7 +211,7 @@
 
 (de postForm ()
    (when (num? (format *Get))
-      (let? Lst (get *Lst (- *Cnt (setq *Get @)))
+      (let? Lst (get *FormLst (- *FormIx (setq *Get @)))
          (and
             (setq *Form (format *Form))
             (setq *Evt (format *Evt))
@@ -389,7 +389,7 @@
 
 # Dialogs
 (de dlg (Attr Env Prg)
-   (let L (get *Lst (- *Cnt *Get))
+   (let L (get *FormLst (- *FormIx *Get))
       (while (and (car L) (n== *PRG (caar @)))
          (pop L) )
       (push L
@@ -489,7 +489,7 @@
 (dm act> ()
    (when (able)
       (and
-         (get *Lst (- *Cnt *Get))
+         (get *FormLst (- *FormIx *Get))
          (pushForm
             (cons
                (filter
@@ -606,7 +606,7 @@
          (let? L
             (if (sym? I)
                ((; I hint) *JsHint)
-               (let? Lst (get *Lst (- *Cnt (format *Get)))
+               (let? Lst (get *FormLst (- *FormIx (format *Get)))
                   (pair
                      (hint>
                         (get

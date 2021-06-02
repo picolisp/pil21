@@ -1,11 +1,13 @@
-# 07may21 Software Lab. Alexander Burger
+# 02jun21 Software Lab. Alexander Burger
 
 (symbols 'svg 'pico)
 
 (local) (*A4-DX *A4-DY *StrokeWidth *FontSize *FontFamily *FontStyle *FontWeight)
 
-(de *A4-DX . 595)
+(de *A4-DX . 598)
 (de *A4-DY . 842)
+(de *A3-DX . 842)
+(de *A3-DY . 1188)
 
 (default
    *StrokeWidth 1
