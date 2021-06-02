@@ -1,4 +1,6 @@
 02jun21
+   Push tag stack in "gf" command
+      lib/vip.l
    Add A3 page sizes
       lib/svg.l
    Intern some globals for reload

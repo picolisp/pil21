@@ -1,4 +1,4 @@
-# 27may21 Software Lab. Alexander Burger
+# 02jun21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -333,7 +333,7 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
 
 
 (local) (delwin cursor addLine chgLine unmark redraw repaint scLeft scRight goto
-chgwin eqwin getch getch2 reload scratch syms tag done change jmp@@ cnt@@ goCol
+chgwin eqwin getch getch2 reload scratch syms pushTag tag done change jmp@@ cnt@@ goCol
 goLeft goRight goUp goDown goAbs goFind tword word lword end lend getWord
 _forward goForward _backward goBackward goPFore goPBack shift shiftY indent cutX
 cutN paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe
@@ -535,18 +535,17 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
       (tmp "syms")
       (syms> (fileBuffer @) Lst) ) )
 
+(de pushTag (File)
+   (push '*TagStack (: posX) (: posY) File (symbols)) )
+
 (de tag (S)
    (cond
       ((: buffer syms)
-         (push '*TagStack (: posX) (: posY) @ (symbols))
+         (pushTag @)
          (syms> (: buffer) (cons S @))
          (reload (: buffer file) 1 1) )
       ((get S '*Dbg 1)
-         (push '*TagStack
-            (: posX)
-            (: posY)
-            (: buffer file)
-            (symbols) )
+         (pushTag (: buffer file))
          (apply symbols (cddr @))
          (reload (cadr @) (car @) 1) )
       (T (beep)) ) )
@@ -1548,7 +1547,9 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                            ("^E" (evCmd (eval (s-expr))))  # Evaluate expression
                            ("g"  # ["Go" prefix]
                               (case (getch)
-                                 ("f" (reload (pack (getWord T))))  # [gf] Edit file under cursor
+                                 ("f"  # [gf] Edit file under cursor
+                                    (pushTag (: buffer file))
+                                    (reload (pack (getWord T))) )
                                  ("g" (move 'goAbs 1 1))  # [gg] Go to beginning of text
                                  ("s" (spell))
                                  (T (beep)) ) )
