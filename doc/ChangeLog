@@ -1,3 +1,10 @@
+04jun21
+   'ctty' NIL argument is obsolete
+      src/main.l
+      doc/refC.html
+   Minor renaming
+      src/flow.l
+
 02jun21
    Push tag stack in "gf" command
       lib/vip.l

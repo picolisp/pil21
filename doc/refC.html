@@ -808,17 +808,16 @@ $ cat count                               # Check "count"
 8
 </code></pre>
 
-<dt><a name="ctty"><code>(ctty 'sym|NIL|pid) -> flg</code></a>
-<dd>When called with a symbolic argument, <code>ctty</code> changes the current
-TTY device to <code>sym</code> (if called with <code>NIL</code>, the TTY is not
-changed, and only the TTY flag of standard out and standar error is set).
-Otherwise, the local console is prepared for serving the PicoLisp process with
-the process ID <code>pid</code>. See also <code><a
+<dt><a name="ctty"><code>(ctty 'pid) -> pid</code></a>
+<dt><code>(ctty 'any) -> any | NIL</code></a>
+<dd>Unless called with a short number, <code>ctty</code> changes the current TTY
+device to <code>sym</code>. Otherwise, the local console is prepared for serving
+the PicoLisp process with the process ID <code>pid</code>. See also <code><a
 href="refR.html#raw">raw</a></code>.
 
 <pre><code>
 : (ctty "/dev/tty")
--> T
+-> "/dev/tty"
 </code></pre>
 
 <dt><a name="curry"><code>(curry lst . fun) -> fun</code></a>
