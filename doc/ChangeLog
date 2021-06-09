@@ -1,3 +1,7 @@
+09jun21
+   Revert confirm row deletion (01may21)
+      lib/form.l
+
 04jun21
    'ctty' NIL argument is obsolete
       src/main.l
