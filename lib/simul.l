@@ -1,4 +1,4 @@
-# 27dec20 Software Lab. Alexander Burger
+# 11jun21 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -88,7 +88,7 @@
                      (cons Beta (car Lst) (cdr Alpha)) )
                   (when (> (car Alpha) (car *Val))
                      (setq Alpha *Val) )
-                  (NIL (setq Lst (cdr Lst)) Alpha) )
+                  (NIL (shift 'Lst) Alpha) )
                (setq Lst
                   (sort
                      (mapcar
@@ -109,7 +109,7 @@
                      (cons Beta (cdar Lst) (cdr Alpha)) )
                   (when (> (car Alpha) (car *Val))
                      (setq Alpha *Val) )
-                  (NIL (setq Lst (cdr Lst)) Alpha) ) ) ) ) ) )
+                  (NIL (shift 'Lst) Alpha) ) ) ) ) ) )
 
 
 ### Grids ###
