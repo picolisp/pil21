@@ -1,4 +1,4 @@
-# 27may21 Software Lab. Alexander Burger
+# 11jun21 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -42,7 +42,7 @@
 ### Relations ###
 (class +relation)
 
-(dm T (Var Lst)
+(dm T (Var)
    (=: cls *Class)
    (=: var Var) )
 
@@ -182,7 +182,7 @@
 
 (dm T (Var Lst)
    (=: scl (car Lst))
-   (super Var (cdr Lst)) )
+   (super Var) )
 
 (dm mis> (Val Obj)
    (and Val (not (num? Val)) ,"Numeric input expected") )
@@ -224,7 +224,7 @@
 (dm T (Var Lst)
    (unless (=: type (car Lst))
       (quit "No Link" Var) )
-   (super Var (cdr Lst)) )
+   (super Var) )
 
 (de canQuery (Val)
    (and
@@ -248,11 +248,13 @@
       ,"Type error" ) )
 
 
-# (+Joint) var typ
+# (+Joint) var typ [put get]
 (class +Joint +Link)
 
 (dm T (Var Lst)
    (=: slot (car Lst))
+   (=: put (caddr Lst))
+   (=: get (cadddr Lst))
    (super Var (cdr Lst)) )
 
 (dm mis> (Val Obj)
@@ -271,24 +273,38 @@
       ,"Type error" ) )
 
 (dm rel> (Obj Old New)
-   (and Old (del> Old (: slot) Obj))
+   (and Old
+      (del> Old (: slot)
+         (if (: get)
+            (@ Obj (get Old (: slot)))
+            Obj ) ) )
    (and New
       (not (get Obj T))
-      (put> New (: slot) Obj) ) )
+      (put> New (: slot)
+         (if (: put) (@ Obj) Obj) ) ) )
 
 (dm rel?> (Obj Val)
    (let X (get Val (: slot))
-      (or (== Obj X) (memq Obj X)) ) )
+      (cond
+         ((atom X) (== Obj X))
+         ((: get) (@ Obj X))
+         (T (memq Obj X)) ) ) )
 
 (dm lose> (Obj Val)
    (when Val
       (put Val (: slot)
-         (del> (meta Val (: slot)) Obj (get Val (: slot)) Obj) ) ) )
+         (del> (meta Val (: slot))
+            Obj
+            (get Val (: slot))
+            (if (: put) (@ Obj) Obj) ) ) ) )
 
 (dm keep> (Obj Val)
    (when Val
       (put Val (: slot)
-         (put> (meta Val (: slot)) Obj (get Val (: slot)) Obj) ) ) )
+         (put> (meta Val (: slot))
+            Obj
+            (get Val (: slot))
+            (if (: put) (@ Obj) Obj) ) ) ) )
 
 
 # +Link or +Joint prefix
