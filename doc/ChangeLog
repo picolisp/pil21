@@ -1,3 +1,8 @@
+13jun21
+   Add '\e' to escape markups
+      src/io.l
+      doc/ref.html
+
 11jun21
    Optional 'put' and 'get' function arguments for '+Joint'
       lib/db.l

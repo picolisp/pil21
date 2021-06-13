@@ -819,8 +819,9 @@ another backslash.
 -> ("W" "e" "^I" "r" "d" "\\" "S" "t" "r" "\"" "i" "n" "g")
 </code></pre>
 
-<p>The combination of a backslash followed by 'n', 'r' or 't' is replaced with
-newline ("^J"), return ("^M") or TAB ("^I"), respectively.
+<p>The combination of a backslash followed by 'b', 'e', 'n', 'r' or 't' is
+replaced with backspace ("^H"), escape ("^["), newline ("^J"), return ("^M") or
+TAB ("^I"), respectively.
 
 <p><pre><code>
 : "abc\tdef\r"

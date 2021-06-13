@@ -1495,7 +1495,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 98,
-  i64 178
+  i64 210
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -44720,7 +44720,7 @@ $1:
 ; # (loop (? (lt0 Chr) NO) (? (== Chr (char "\^")) (when (== (setq Ch...
   br label %$2
 $2:
-  %1 = phi i32 [%0, %$1], [%71, %$38] ; # Chr
+  %1 = phi i32 [%0, %$1], [%72, %$39] ; # Chr
 ; # (? (lt0 Chr) NO)
 ; # (lt0 Chr)
   %2 = icmp slt i32 %1, 0
@@ -44792,145 +44792,151 @@ $13:
   br i1 %25, label %$16, label %$15
 $16:
   %26 = phi i32 [%24, %$13] ; # Chr
-; # (case Chr ((char "b") (set $Chr (char "b"))) ((char "n") (set $Ch...
+; # (case Chr ((char "b") (set $Chr (char "^H"))) ((char "e") (set $C...
   switch i32 %26, label %$17 [
     i32 98, label %$19
-    i32 110, label %$20
-    i32 114, label %$21
-    i32 116, label %$22
+    i32 101, label %$20
+    i32 110, label %$21
+    i32 114, label %$22
+    i32 116, label %$23
   ]
 $19:
   %27 = phi i32 [%26, %$16] ; # Chr
-; # (set $Chr (char "b"))
-  store i32 98, i32* @$Chr
+; # (set $Chr (char "^H"))
+  store i32 8, i32* @$Chr
   br label %$18
 $20:
   %28 = phi i32 [%26, %$16] ; # Chr
-; # (set $Chr (char "^J"))
-  store i32 10, i32* @$Chr
+; # (set $Chr (char "^["))
+  store i32 27, i32* @$Chr
   br label %$18
 $21:
   %29 = phi i32 [%26, %$16] ; # Chr
-; # (set $Chr (char "^M"))
-  store i32 13, i32* @$Chr
+; # (set $Chr (char "^J"))
+  store i32 10, i32* @$Chr
   br label %$18
 $22:
   %30 = phi i32 [%26, %$16] ; # Chr
+; # (set $Chr (char "^M"))
+  store i32 13, i32* @$Chr
+  br label %$18
+$23:
+  %31 = phi i32 [%26, %$16] ; # Chr
 ; # (set $Chr (char "^I"))
   store i32 9, i32* @$Chr
   br label %$18
 $17:
-  %31 = phi i32 [%26, %$16] ; # Chr
+  %32 = phi i32 [%26, %$16] ; # Chr
 ; # (when (and (>= Chr (char "0")) (>= (char "9") Chr)) (dec 'Chr (ch...
 ; # (and (>= Chr (char "0")) (>= (char "9") Chr))
 ; # (>= Chr (char "0"))
-  %32 = icmp sge i32 %31, 48
-  br i1 %32, label %$24, label %$23
-$24:
-  %33 = phi i32 [%31, %$17] ; # Chr
-; # (>= (char "9") Chr)
-  %34 = icmp sge i32 57, %33
-  br label %$23
-$23:
-  %35 = phi i32 [%31, %$17], [%33, %$24] ; # Chr
-  %36 = phi i1 [0, %$17], [%34, %$24] ; # ->
-  br i1 %36, label %$25, label %$26
+  %33 = icmp sge i32 %32, 48
+  br i1 %33, label %$25, label %$24
 $25:
-  %37 = phi i32 [%35, %$23] ; # Chr
+  %34 = phi i32 [%32, %$17] ; # Chr
+; # (>= (char "9") Chr)
+  %35 = icmp sge i32 57, %34
+  br label %$24
+$24:
+  %36 = phi i32 [%32, %$17], [%34, %$25] ; # Chr
+  %37 = phi i1 [0, %$17], [%35, %$25] ; # ->
+  br i1 %37, label %$26, label %$27
+$26:
+  %38 = phi i32 [%36, %$24] ; # Chr
 ; # (dec 'Chr (char "0"))
-  %38 = sub i32 %37, 48
+  %39 = sub i32 %38, 48
 ; # (until (== (call $Get) (char "\\")) (unless (and (>= (val $Chr) (...
-  br label %$27
-$27:
-  %39 = phi i32 [%38, %$25], [%56, %$33] ; # Chr
-; # (call $Get)
-  %40 = load i32()*, i32()** @$Get
-  %41 = call i32 %40()
-; # (== (call $Get) (char "\\"))
-  %42 = icmp eq i32 %41, 92
-  br i1 %42, label %$29, label %$28
+  br label %$28
 $28:
-  %43 = phi i32 [%39, %$27] ; # Chr
+  %40 = phi i32 [%39, %$26], [%57, %$34] ; # Chr
+; # (call $Get)
+  %41 = load i32()*, i32()** @$Get
+  %42 = call i32 %41()
+; # (== (call $Get) (char "\\"))
+  %43 = icmp eq i32 %42, 92
+  br i1 %43, label %$30, label %$29
+$29:
+  %44 = phi i32 [%40, %$28] ; # Chr
 ; # (unless (and (>= (val $Chr) (char "0")) (>= (char "9") (val $Chr)...
 ; # (and (>= (val $Chr) (char "0")) (>= (char "9") (val $Chr)))
 ; # (val $Chr)
-  %44 = load i32, i32* @$Chr
+  %45 = load i32, i32* @$Chr
 ; # (>= (val $Chr) (char "0"))
-  %45 = icmp sge i32 %44, 48
-  br i1 %45, label %$31, label %$30
-$31:
-  %46 = phi i32 [%43, %$28] ; # Chr
-; # (val $Chr)
-  %47 = load i32, i32* @$Chr
-; # (>= (char "9") (val $Chr))
-  %48 = icmp sge i32 57, %47
-  br label %$30
-$30:
-  %49 = phi i32 [%43, %$28], [%46, %$31] ; # Chr
-  %50 = phi i1 [0, %$28], [%48, %$31] ; # ->
-  br i1 %50, label %$33, label %$32
+  %46 = icmp sge i32 %45, 48
+  br i1 %46, label %$32, label %$31
 $32:
-  %51 = phi i32 [%49, %$30] ; # Chr
+  %47 = phi i32 [%44, %$29] ; # Chr
+; # (val $Chr)
+  %48 = load i32, i32* @$Chr
+; # (>= (char "9") (val $Chr))
+  %49 = icmp sge i32 57, %48
+  br label %$31
+$31:
+  %50 = phi i32 [%44, %$29], [%47, %$32] ; # Chr
+  %51 = phi i1 [0, %$29], [%49, %$32] ; # ->
+  br i1 %51, label %$34, label %$33
+$33:
+  %52 = phi i32 [%50, %$31] ; # Chr
 ; # (badInput)
   call void @badInput()
   unreachable
-$33:
-  %52 = phi i32 [%49, %$30] ; # Chr
+$34:
+  %53 = phi i32 [%50, %$31] ; # Chr
 ; # (* Chr 10)
-  %53 = mul i32 %52, 10
+  %54 = mul i32 %53, 10
 ; # (val $Chr)
-  %54 = load i32, i32* @$Chr
+  %55 = load i32, i32* @$Chr
 ; # (- (val $Chr) (char "0"))
-  %55 = sub i32 %54, 48
+  %56 = sub i32 %55, 48
 ; # (+ (* Chr 10) (- (val $Chr) (char "0")))
-  %56 = add i32 %53, %55
+  %57 = add i32 %54, %56
+  br label %$28
+$30:
+  %58 = phi i32 [%40, %$28] ; # Chr
   br label %$27
-$29:
-  %57 = phi i32 [%39, %$27] ; # Chr
-  br label %$26
-$26:
-  %58 = phi i32 [%35, %$23], [%57, %$29] ; # Chr
+$27:
+  %59 = phi i32 [%36, %$24], [%58, %$30] ; # Chr
 ; # (set $Chr Chr)
-  store i32 %58, i32* @$Chr
+  store i32 %59, i32* @$Chr
   br label %$18
 $18:
-  %59 = phi i32 [%27, %$19], [%28, %$20], [%29, %$21], [%30, %$22], [%58, %$26] ; # Chr
-  %60 = phi i32 [98, %$19], [10, %$20], [13, %$21], [9, %$22], [%58, %$26] ; # ->
+  %60 = phi i32 [%27, %$19], [%28, %$20], [%29, %$21], [%30, %$22], [%31, %$23], [%59, %$27] ; # Chr
+  %61 = phi i32 [8, %$19], [27, %$20], [10, %$21], [13, %$22], [9, %$23], [%59, %$27] ; # ->
   br label %$4
 $15:
-  %61 = phi i32 [%24, %$13] ; # Chr
+  %62 = phi i32 [%24, %$13] ; # Chr
 ; # (loop (setq Chr (call $Get)) (? (and (<> Chr (char " ")) (<> Chr ...
-  br label %$34
-$34:
-  %62 = phi i32 [%61, %$15], [%70, %$37] ; # Chr
+  br label %$35
+$35:
+  %63 = phi i32 [%62, %$15], [%71, %$38] ; # Chr
 ; # (call $Get)
-  %63 = load i32()*, i32()** @$Get
-  %64 = call i32 %63()
+  %64 = load i32()*, i32()** @$Get
+  %65 = call i32 %64()
 ; # (? (and (<> Chr (char " ")) (<> Chr (char "^I"))))
 ; # (and (<> Chr (char " ")) (<> Chr (char "^I")))
 ; # (<> Chr (char " "))
-  %65 = icmp ne i32 %64, 32
-  br i1 %65, label %$36, label %$35
-$36:
-  %66 = phi i32 [%64, %$34] ; # Chr
-; # (<> Chr (char "^I"))
-  %67 = icmp ne i32 %66, 9
-  br label %$35
-$35:
-  %68 = phi i32 [%64, %$34], [%66, %$36] ; # Chr
-  %69 = phi i1 [0, %$34], [%67, %$36] ; # ->
-  br i1 %69, label %$38, label %$37
+  %66 = icmp ne i32 %65, 32
+  br i1 %66, label %$37, label %$36
 $37:
-  %70 = phi i32 [%68, %$35] ; # Chr
-  br label %$34
+  %67 = phi i32 [%65, %$35] ; # Chr
+; # (<> Chr (char "^I"))
+  %68 = icmp ne i32 %67, 9
+  br label %$36
+$36:
+  %69 = phi i32 [%65, %$35], [%67, %$37] ; # Chr
+  %70 = phi i1 [0, %$35], [%68, %$37] ; # ->
+  br i1 %70, label %$39, label %$38
 $38:
-  %71 = phi i32 [%68, %$35] ; # Chr
-  %72 = phi i64 [0, %$35] ; # ->
+  %71 = phi i32 [%69, %$36] ; # Chr
+  br label %$35
+$39:
+  %72 = phi i32 [%69, %$36] ; # Chr
+  %73 = phi i64 [0, %$36] ; # ->
   br label %$2
 $4:
-  %73 = phi i32 [%3, %$5], [%16, %$12], [%20, %$14], [%59, %$18] ; # Chr
-  %74 = phi i1 [0, %$5], [1, %$12], [1, %$14], [1, %$18] ; # ->
-  ret i1 %74
+  %74 = phi i32 [%3, %$5], [%16, %$12], [%20, %$14], [%60, %$18] ; # Chr
+  %75 = phi i1 [0, %$5], [1, %$12], [1, %$14], [1, %$18] ; # ->
+  ret i1 %75
 }
 
 define i64 @anonymous(i64) align 8 {
