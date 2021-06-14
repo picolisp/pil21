@@ -1,4 +1,4 @@
-# 04jun21 Software Lab. Alexander Burger
+# 14jun21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1520,13 +1520,13 @@
                (unless (== (gErrno) EINTR)
                   (err Exe 0 ($ "wait pid") null) )
                (sigChk Exe) )
-         (tcsetpgrp 0 (getpgrp))
-         (? (=0 (wifStopped Res))
-            (set $At2 (cnt (i64 (val Res))))
-            (if (val Res) $Nil $T) )
-         (repl 0 ($ "+ ") $Nil)
-         (tcsetpgrp 0 Pid)
-         (kill Pid (val SIGCONT Sig)) ) ) ) )
+            (tcsetpgrp 0 (getpgrp))
+            (? (=0 (wifStopped Res))
+               (set $At2 (cnt (i64 (val Res))))
+               (if (val Res) $Nil $T) )
+            (repl 0 ($ "+ ") $Nil)
+            (tcsetpgrp 0 Pid)
+            (kill Pid (val SIGCONT Sig)) ) ) ) )
 
 # (ipid) -> pid | NIL
 (de _ipid (Exe)

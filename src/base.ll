@@ -40099,16 +40099,20 @@ $7:
 $8:
   br label %$2
 $4:
+; # (getpgrp)
+  %8 = call i32 @getpgrp()
+; # (tcsetpgrp 0 (getpgrp))
+  %9 = call i32 @tcsetpgrp(i32 0, i32 %8)
 ; # (set $At2 (cnt (i64 (val Res))))
 ; # (val Res)
-  %8 = load i32, i32* %1
+  %10 = load i32, i32* %1
 ; # (i64 (val Res))
-  %9 = sext i32 %8 to i64
+  %11 = sext i32 %10 to i64
 ; # (cnt (i64 (val Res)))
-  %10 = shl i64 %9, 4
-  %11 = or i64 %10, 2
-  %12 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([862 x i64]* @SymTab to i8*), i32 456) to i64) to i64*
-  store i64 %11, i64* %12
+  %12 = shl i64 %11, 4
+  %13 = or i64 %12, 2
+  %14 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([862 x i64]* @SymTab to i8*), i32 456) to i64) to i64*
+  store i64 %13, i64* %14
   ret void
 }
 
@@ -43363,6 +43367,8 @@ $40:
 ; # (inc 'A)
   %152 = getelementptr i8*, i8** %151, i32 1
   store i8* null, i8** %152
+; # (flushAll)
+  call void @flushAll()
 ; # (cond ((lt0 (fork)) (forkErr Exe)) ((=0 @) (setpgid 0 0) (close (...
 ; # (fork)
   %153 = call i32 @fork()
@@ -43425,25 +43431,27 @@ $44:
 $41:
   %177 = phi i64 [%176, %$44] ; # X
   %178 = phi i64 [0, %$44] ; # ->
-; # (let (Pid @ Fd (val Pfd)) (setpgid Pid 0) (close (val 2 Pfd)) (cl...
+; # (let (Pid @ Fd (val Pfd)) (setpgid Pid 0) (tcsetpgrp 0 Pid) (clos...
 ; # (val Pfd)
   %179 = load i32, i32* %107
 ; # (setpgid Pid 0)
   %180 = call i32 @setpgid(i32 %153, i32 0)
+; # (tcsetpgrp 0 Pid)
+  %181 = call i32 @tcsetpgrp(i32 0, i32 %153)
 ; # (val 2 Pfd)
-  %181 = getelementptr i32, i32* %107, i32 1
-  %182 = load i32, i32* %181
+  %182 = getelementptr i32, i32* %107, i32 1
+  %183 = load i32, i32* %182
 ; # (close (val 2 Pfd))
-  %183 = call i32 @close(i32 %182)
+  %184 = call i32 @close(i32 %183)
 ; # (closeOnExec Exe Fd)
   call void @closeOnExec(i64 %0, i32 %179)
 ; # (initInFile Fd null)
-  %184 = call i8* @initInFile(i32 %179, i8* null)
+  %185 = call i8* @initInFile(i32 %179, i8* null)
 ; # (pushInFile Io (initInFile Fd null) Pid)
-  call void @pushInFile(i8* %2, i8* %184, i32 %153)
+  call void @pushInFile(i8* %2, i8* %185, i32 %153)
   br label %$2
 $2:
-  %185 = phi i64 [%4, %$4], [%58, %$7], [%101, %$28], [%177, %$41] ; # X
+  %186 = phi i64 [%4, %$4], [%58, %$7], [%101, %$28], [%177, %$41] ; # X
   ret void
 }
 
@@ -43773,6 +43781,8 @@ $40:
 ; # (inc 'A)
   %152 = getelementptr i8*, i8** %151, i32 1
   store i8* null, i8** %152
+; # (flushAll)
+  call void @flushAll()
 ; # (cond ((lt0 (fork)) (forkErr Exe)) ((=0 @) (setpgid 0 0) (close (...
 ; # (fork)
   %153 = call i32 @fork()
@@ -43827,25 +43837,27 @@ $44:
 $41:
   %173 = phi i64 [%172, %$44] ; # X
   %174 = phi i64 [0, %$44] ; # ->
-; # (let (Pid @ Fd (val 2 Pfd)) (setpgid Pid 0) (close (val Pfd)) (cl...
+; # (let (Pid @ Fd (val 2 Pfd)) (setpgid Pid 0) (tcsetpgrp 0 Pid) (cl...
 ; # (val 2 Pfd)
   %175 = getelementptr i32, i32* %107, i32 1
   %176 = load i32, i32* %175
 ; # (setpgid Pid 0)
   %177 = call i32 @setpgid(i32 %153, i32 0)
+; # (tcsetpgrp 0 Pid)
+  %178 = call i32 @tcsetpgrp(i32 0, i32 %153)
 ; # (val Pfd)
-  %178 = load i32, i32* %107
+  %179 = load i32, i32* %107
 ; # (close (val Pfd))
-  %179 = call i32 @close(i32 %178)
+  %180 = call i32 @close(i32 %179)
 ; # (closeOnExec Exe Fd)
   call void @closeOnExec(i64 %0, i32 %176)
 ; # (initOutFile Fd)
-  %180 = call i8* @initOutFile(i32 %176)
+  %181 = call i8* @initOutFile(i32 %176)
 ; # (pushOutFile Io (initOutFile Fd) Pid)
-  call void @pushOutFile(i8* %2, i8* %180, i32 %153)
+  call void @pushOutFile(i8* %2, i8* %181, i32 %153)
   br label %$2
 $2:
-  %181 = phi i64 [%4, %$4], [%59, %$7], [%102, %$28], [%173, %$41] ; # X
+  %182 = phi i64 [%4, %$4], [%59, %$7], [%102, %$28], [%173, %$41] ; # X
   ret void
 }
 
@@ -49510,136 +49522,138 @@ $14:
 $13:
 ; # (setpgid Pid 0)
   %32 = call i32 @setpgid(i32 %19, i32 0)
+; # (tcsetpgrp 0 Pid)
+  %33 = call i32 @tcsetpgrp(i32 0, i32 %19)
 ; # (Io:)
 ; # (initInFile Fd null)
-  %33 = call i8* @initInFile(i32 %24, i8* null)
+  %34 = call i8* @initInFile(i32 %24, i8* null)
 ; # (pushInFile (Io:) (initInFile Fd null) Pid)
-  call void @pushInFile(i8* %9, i8* %33, i32 %19)
+  call void @pushInFile(i8* %9, i8* %34, i32 %19)
 ; # (prog1 (run X) (popInFiles) (tosInFile))
 ; # (run X)
   br label %$15
 $15:
-  %34 = phi i64 [%7, %$13], [%56, %$24] ; # Prg
-  %35 = inttoptr i64 %34 to i64*
-  %36 = load i64, i64* %35
-  %37 = getelementptr i64, i64* %35, i32 1
-  %38 = load i64, i64* %37
-  %39 = and i64 %38, 15
-  %40 = icmp ne i64 %39, 0
-  br i1 %40, label %$18, label %$16
+  %35 = phi i64 [%7, %$13], [%57, %$24] ; # Prg
+  %36 = inttoptr i64 %35 to i64*
+  %37 = load i64, i64* %36
+  %38 = getelementptr i64, i64* %36, i32 1
+  %39 = load i64, i64* %38
+  %40 = and i64 %39, 15
+  %41 = icmp ne i64 %40, 0
+  br i1 %41, label %$18, label %$16
 $18:
-  %41 = phi i64 [%38, %$15] ; # Prg
-  %42 = and i64 %36, 6
-  %43 = icmp ne i64 %42, 0
-  br i1 %43, label %$21, label %$20
+  %42 = phi i64 [%39, %$15] ; # Prg
+  %43 = and i64 %37, 6
+  %44 = icmp ne i64 %43, 0
+  br i1 %44, label %$21, label %$20
 $21:
   br label %$19
 $20:
-  %44 = and i64 %36, 8
-  %45 = icmp ne i64 %44, 0
-  br i1 %45, label %$23, label %$22
+  %45 = and i64 %37, 8
+  %46 = icmp ne i64 %45, 0
+  br i1 %46, label %$23, label %$22
 $23:
-  %46 = inttoptr i64 %36 to i64*
-  %47 = load i64, i64* %46
+  %47 = inttoptr i64 %37 to i64*
+  %48 = load i64, i64* %47
   br label %$19
 $22:
-  %48 = call i64 @evList(i64 %36)
+  %49 = call i64 @evList(i64 %37)
   br label %$19
 $19:
-  %49 = phi i64 [%36, %$21], [%47, %$23], [%48, %$22] ; # ->
+  %50 = phi i64 [%37, %$21], [%48, %$23], [%49, %$22] ; # ->
   br label %$17
 $16:
-  %50 = phi i64 [%38, %$15] ; # Prg
-  %51 = and i64 %36, 15
-  %52 = icmp eq i64 %51, 0
-  br i1 %52, label %$25, label %$24
+  %51 = phi i64 [%39, %$15] ; # Prg
+  %52 = and i64 %37, 15
+  %53 = icmp eq i64 %52, 0
+  br i1 %53, label %$25, label %$24
 $25:
-  %53 = phi i64 [%50, %$16] ; # Prg
-  %54 = call i64 @evList(i64 %36)
-  %55 = icmp ne i64 %54, 0
+  %54 = phi i64 [%51, %$16] ; # Prg
+  %55 = call i64 @evList(i64 %37)
+  %56 = icmp ne i64 %55, 0
   br label %$24
 $24:
-  %56 = phi i64 [%50, %$16], [%53, %$25] ; # Prg
-  %57 = phi i1 [0, %$16], [%55, %$25] ; # ->
+  %57 = phi i64 [%51, %$16], [%54, %$25] ; # Prg
+  %58 = phi i1 [0, %$16], [%56, %$25] ; # ->
   br label %$15
 $17:
-  %58 = phi i64 [%41, %$19] ; # Prg
-  %59 = phi i64 [%49, %$19] ; # ->
+  %59 = phi i64 [%42, %$19] ; # Prg
+  %60 = phi i64 [%50, %$19] ; # ->
 ; # (popInFiles)
   call void @popInFiles()
 ; # (tosInFile)
   call void @tosInFile()
   br label %$12
 $12:
-  %60 = phi i64 [%31, %$14], [%59, %$17] ; # ->
+  %61 = phi i64 [%31, %$14], [%60, %$17] ; # ->
   br label %$11
 $10:
 ; # (val Pfd)
-  %61 = load i32, i32* %8
+  %62 = load i32, i32* %8
 ; # (close (val Pfd))
-  %62 = call i32 @close(i32 %61)
+  %63 = call i32 @close(i32 %62)
 ; # (let Fd (val 2 Pfd) (if (pair X) (setpgid 0 0) (dup2 Fd 0)) (dup2...
 ; # (val 2 Pfd)
-  %63 = getelementptr i32, i32* %8, i32 1
-  %64 = load i32, i32* %63
+  %64 = getelementptr i32, i32* %8, i32 1
+  %65 = load i32, i32* %64
 ; # (if (pair X) (setpgid 0 0) (dup2 Fd 0))
 ; # (pair X)
-  %65 = and i64 %7, 15
-  %66 = icmp eq i64 %65, 0
-  br i1 %66, label %$26, label %$27
+  %66 = and i64 %7, 15
+  %67 = icmp eq i64 %66, 0
+  br i1 %67, label %$26, label %$27
 $26:
 ; # (setpgid 0 0)
-  %67 = call i32 @setpgid(i32 0, i32 0)
+  %68 = call i32 @setpgid(i32 0, i32 0)
   br label %$28
 $27:
 ; # (dup2 Fd 0)
-  %68 = call i32 @dup2(i32 %64, i32 0)
+  %69 = call i32 @dup2(i32 %65, i32 0)
   br label %$28
 $28:
-  %69 = phi i32 [%67, %$26], [%68, %$27] ; # ->
+  %70 = phi i32 [%68, %$26], [%69, %$27] ; # ->
 ; # (dup2 Fd 1)
-  %70 = call i32 @dup2(i32 %64, i32 1)
+  %71 = call i32 @dup2(i32 %65, i32 1)
 ; # (close Fd)
-  %71 = call i32 @close(i32 %64)
+  %72 = call i32 @close(i32 %65)
 ; # (val SIGPIPE Sig)
-  %72 = getelementptr i32, i32* @Sig, i32 4
-  %73 = load i32, i32* %72
+  %73 = getelementptr i32, i32* @Sig, i32 4
+  %74 = load i32, i32* %73
 ; # (val SigDfl)
-  %74 = load i8*, i8** @SigDfl
+  %75 = load i8*, i8** @SigDfl
 ; # (signal (val SIGPIPE Sig) (val SigDfl))
-  %75 = call i8* @signal(i32 %73, i8* %74)
+  %76 = call i8* @signal(i32 %74, i8* %75)
 ; # (val $OutFile)
-  %76 = load i8*, i8** @$OutFile
+  %77 = load i8*, i8** @$OutFile
 ; # ((outFile (val $OutFile)) tty NO)
-  %77 = getelementptr i8, i8* %76, i32 4104
-  %78 = bitcast i8* %77 to i1*
-  store i1 0, i1* %78
+  %78 = getelementptr i8, i8* %77, i32 4104
+  %79 = bitcast i8* %78 to i1*
+  store i1 0, i1* %79
 ; # (Io:)
 ; # (val $OutFiles)
-  %79 = load i8**, i8*** @$OutFiles
+  %80 = load i8**, i8*** @$OutFiles
 ; # (val 2 (val $OutFiles))
-  %80 = getelementptr i8*, i8** %79, i32 1
-  %81 = load i8*, i8** %80
+  %81 = getelementptr i8*, i8** %80, i32 1
+  %82 = load i8*, i8** %81
 ; # (pushOutFile (Io:) (val 2 (val $OutFiles)) 0)
-  call void @pushOutFile(i8* %9, i8* %81, i32 0)
+  call void @pushOutFile(i8* %9, i8* %82, i32 0)
 ; # (set $LinePtr null)
   store i8* null, i8** @$LinePtr
 ; # (when (pair E) (evList E))
 ; # (pair E)
-  %82 = and i64 %5, 15
-  %83 = icmp eq i64 %82, 0
-  br i1 %83, label %$29, label %$30
+  %83 = and i64 %5, 15
+  %84 = icmp eq i64 %83, 0
+  br i1 %84, label %$29, label %$30
 $29:
 ; # (evList E)
-  %84 = call i64 @evList(i64 %5)
+  %85 = call i64 @evList(i64 %5)
   br label %$30
 $30:
 ; # (bye 0)
   call void @bye(i32 0)
   unreachable
 $11:
-  %85 = phi i64 [%60, %$12] ; # ->
-  ret i64 %85
+  %86 = phi i64 [%61, %$12] ; # ->
+  ret i64 %86
 }
 
 define i64 @_open(i64) align 8 {
