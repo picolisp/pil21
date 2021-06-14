@@ -1,4 +1,4 @@
-# 11jun21 Software Lab. Alexander Burger
+# 14jun21 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1289,6 +1289,15 @@
 (dm zap> ())
 (dm has> ~(method 'has> '+Entity))
 (dm url> (Tab Fld))
+(dm url1> ~(method 'url1> '+Entity))
+(dm url2> ~(method 'url2> '+Entity))
+(dm url3> ~(method 'url3> '+Entity))
+(dm url4> ~(method 'url4> '+Entity))
+(dm url5> ~(method 'url5> '+Entity))
+(dm url6> ~(method 'url6> '+Entity))
+(dm url7> ~(method 'url7> '+Entity))
+(dm url8> ~(method 'url8> '+Entity))
+(dm url9> ~(method 'url9> '+Entity))
 (dm put> (Var Val))
 (dm put!> (Var Val))
 (dm del> (Var Val))
