@@ -1,4 +1,4 @@
-# 13may21 Software Lab. Alexander Burger
+# 14jun21 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -446,6 +446,8 @@
    (let *Style (style (cons 'title (glue "^J" X)) *Style)
       (run Prg) ) )
 
+(private) (Lst P LayX LayY L Args DX DY Cls Style)
+
 # Layout
 (de <layout> Lst
    (let
@@ -501,6 +503,8 @@
 # Menus
 (de urlMT (Url Menu Tab Id Str)
    (pack Url "?"  "*Menu=+" Menu  "&*Tab=+" Tab  "&*ID=" (ht:Fmt Id) Str) )
+
+(private) (Lst M N E U L)
 
 (de <menu> Lst
    (let
@@ -588,6 +592,8 @@
 (de updLink ()
    (<tip> ,"Update"
       (<span> "step" (<href> "@" (urlMT *Url *Menu *Tab *ID))) ) )
+
+(private) (Lst N L)
 
 # Tabs
 (de <tab> Lst

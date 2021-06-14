@@ -1,4 +1,6 @@
 14jun21
+   Restore private declarations
+      lib/xhtml.l
    Missing '+Remote' methods
       lib/db.l
 
