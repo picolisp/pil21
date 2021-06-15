@@ -1,4 +1,4 @@
-# 14jun21 Software Lab. Alexander Burger
+# 15jun21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1025,7 +1025,6 @@ selectErr)
                         (set (inc 'A)
                            (bufString Nm (b8 (bufSize Nm))) ) ) )
                   (set (inc 'A) null) )
-               (flushAll)
                (cond
                   ((lt0 (fork)) (forkErr Exe))
                   ((=0 @)  # In child
@@ -1040,7 +1039,6 @@ selectErr)
                # In parent
                (let (Pid @  Fd (val Pfd))
                   (setpgid Pid 0)  # Set process group
-                  (tcsetpgrp 0 Pid)
                   (close (val 2 Pfd))  # Close write pipe
                   (closeOnExec Exe Fd)
                   (pushInFile Io (initInFile Fd null) Pid) ) ) ) ) ) )
@@ -1095,7 +1093,6 @@ selectErr)
                         (set (inc 'A)
                            (bufString Nm (b8 (bufSize Nm))) ) ) )
                   (set (inc 'A) null) )
-               (flushAll)
                (cond
                   ((lt0 (fork)) (forkErr Exe))
                   ((=0 @)  # In child
@@ -1109,7 +1106,6 @@ selectErr)
                # In parent
                (let (Pid @  Fd (val 2 Pfd))
                   (setpgid Pid 0)  # Set process group
-                  (tcsetpgrp 0 Pid)
                   (close (val Pfd))  # Close read pipe
                   (closeOnExec Exe Fd)
                   (pushOutFile Io (initOutFile Fd) Pid) ) ) ) ) ) )
@@ -2035,7 +2031,6 @@ selectErr)
                      (cnt (i64 Fd)) )
                   (T
                      (setpgid Pid 0)  # Set process group
-                     (tcsetpgrp 0 Pid)
                      (pushInFile (Io:) (initInFile Fd null) Pid)
                      (prog1
                         (run X)

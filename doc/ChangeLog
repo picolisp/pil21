@@ -1,6 +1,8 @@
-14jun21
-   Fix terminal handling in 'pipe', 'in' and 'out'
+15jun21
+   Fix terminal after 'pipe', 'in' and 'out'
       src/io.l
+
+14jun21
    Minor fix indentation
       src/flow.l
    Restore private declarations
