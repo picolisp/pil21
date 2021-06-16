@@ -1,4 +1,8 @@
 15jun21
+   Vip running in coroutine
+   Suspend with "qz", resume with (v)
+      lib/vip.l
+      doc/refV.html
    Fix terminal after 'pipe', 'in' and 'out'
       src/io.l
 

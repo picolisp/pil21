@@ -113,10 +113,11 @@ $ pil -version
 <dt><code>(vi 'sym 'cls) -> sym | NIL</code>
 <dt><code>(vi 'lst) -> lst | NIL</code>
 <dt><code>(v . lst) -> lst | NIL</code>
-<dd>(Debug mode only) Opens the "Vip" editor on the function or method
-definition of <code>sym</code> (source file or direct path name), or on a list
-of symbols <code>lst</code> (in-memory). See also <code><a
-href="refD.html#doc">doc</a></code>, <code><a
+<dt><code>(v) -> NIL</code>
+<dd>(Debug mode only) Opens the Vip editor on the function or method definition
+of <code>sym</code> (source file or direct path name), or on a list of symbols
+<code>lst</code> (in-memory). <code>(v)</code> resumes a Vip session suspended
+with "qz". See also <code><a href="refD.html#doc">doc</a></code>, <code><a
 href="refD.html#*Dbg">*Dbg</a></code>, <code><a
 href="refD.html#debug">debug</a></code> and <code><a
 href="refP.html#pp">pp</a></code>.
