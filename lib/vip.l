@@ -1,4 +1,4 @@
-# 15jun21 Software Lab. Alexander Burger
+# 16jun21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1676,6 +1676,6 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
       "X" ) )
 
 (de pico~v Lst
-   (and
-      (vi (and Lst (list @)))
-      Lst ) )
+   (cond
+      (Lst (vi (list @)))
+      ((asoq 'vip (stack)) (vi)) ) )
