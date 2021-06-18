@@ -1,4 +1,4 @@
-# 17jun21 Software Lab. Alexander Burger
+# 18jun21 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -1910,10 +1910,14 @@
       (apply url (url> @ 1)) ) )
 
 (de sortButton (@Var . @Fun)
+   (gui '(+Tiny +JS +Button) "v"
+      (fill
+         '(put!> (: home obj) '@Var
+            (by '@Fun sort (: home obj @Var)) ) ) )
    (gui '(+Tiny +JS +Button) "\^"
       (fill
          '(put!> (: home obj) '@Var
-            (by '@Fun sort (: home obj @Var)) ) ) ) )
+            (flip (by '@Fun sort (: home obj @Var))) ) ) ) )
 
 # (choDlg Dst Ttl Rel [Hook] [((+XyzField) ..) Exe Able])
 (de choDlg (Dst Ttl Rel . @)
