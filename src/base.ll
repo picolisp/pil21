@@ -1495,7 +1495,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 98,
-  i64 290
+  i64 306
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -53323,80 +53323,64 @@ $1:
 
 define i64 @_any(i64) align 8 {
 $1:
-; # (cond ((nil? (needSymb Exe (eval (cadr Exe)))) @) ((sym? (val (ta...
-; # (cadr Exe)
+; # (if (sym? (val (tail (save (evSym (cdr Exe)))))) $Nil (parse (nam...
+; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
-  %4 = inttoptr i64 %3 to i64*
-  %5 = load i64, i64* %4
-; # (eval (cadr Exe))
-  %6 = and i64 %5, 6
-  %7 = icmp ne i64 %6, 0
-  br i1 %7, label %$5, label %$4
-$5:
-  br label %$3
-$4:
-  %8 = and i64 %5, 8
-  %9 = icmp ne i64 %8, 0
-  br i1 %9, label %$7, label %$6
-$7:
-  %10 = inttoptr i64 %5 to i64*
-  %11 = load i64, i64* %10
-  br label %$3
-$6:
-  %12 = call i64 @evList(i64 %5)
-  br label %$3
-$3:
-  %13 = phi i64 [%5, %$5], [%11, %$7], [%12, %$6] ; # ->
-; # (needSymb Exe (eval (cadr Exe)))
-  %14 = xor i64 %13, 8
-  %15 = and i64 %14, 14
-  %16 = icmp eq i64 %15, 0
-  br i1 %16, label %$9, label %$8
-$8:
-  call void @symErr(i64 %0, i64 %13)
-  unreachable
-$9:
-; # (nil? (needSymb Exe (eval (cadr Exe))))
-  %17 = icmp eq i64 %13, ptrtoint (i8* getelementptr (i8, i8* bitcast ([862 x i64]* @SymTab to i8*), i32 8) to i64)
-  br i1 %17, label %$11, label %$10
-$11:
-  br label %$2
-$10:
-; # (tail @)
-  %18 = add i64 %13, -8
-; # (val (tail @))
-  %19 = inttoptr i64 %18 to i64*
-  %20 = load i64, i64* %19
-; # (sym? (val (tail @)))
-  %21 = and i64 %20, 8
-  %22 = icmp ne i64 %21, 0
-  br i1 %22, label %$13, label %$12
-$13:
-  br label %$2
-$12:
-; # (name @)
-  br label %$14
-$14:
-  %23 = phi i64 [%20, %$12], [%29, %$15] ; # Tail
-  %24 = and i64 %23, 6
-  %25 = icmp ne i64 %24, 0
-  br i1 %25, label %$16, label %$15
-$15:
-  %26 = phi i64 [%23, %$14] ; # Tail
-  %27 = inttoptr i64 %26 to i64*
-  %28 = getelementptr i64, i64* %27, i32 1
-  %29 = load i64, i64* %28
-  br label %$14
-$16:
-  %30 = phi i64 [%23, %$14] ; # Tail
-; # (parse (name @) YES (hex "20") 1)
-  %31 = call i64 @parse(i64 %30, i1 1, i64 32, i64 1)
-  br label %$2
+; # (evSym (cdr Exe))
+  %4 = call i64 @evSym(i64 %3)
+; # (save (evSym (cdr Exe)))
+  %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %6 = load i64, i64* %5
+  %7 = alloca i64, i64 2, align 16
+  %8 = ptrtoint i64* %7 to i64
+  %9 = inttoptr i64 %8 to i64*
+  store i64 %4, i64* %9
+  %10 = add i64 %8, 8
+  %11 = inttoptr i64 %10 to i64*
+  store i64 %6, i64* %11
+  %12 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %8, i64* %12
+; # (tail (save (evSym (cdr Exe))))
+  %13 = add i64 %4, -8
+; # (val (tail (save (evSym (cdr Exe)))))
+  %14 = inttoptr i64 %13 to i64*
+  %15 = load i64, i64* %14
+; # (sym? (val (tail (save (evSym (cdr Exe))))))
+  %16 = and i64 %15, 8
+  %17 = icmp ne i64 %16, 0
+  br i1 %17, label %$2, label %$3
 $2:
-  %32 = phi i64 [%13, %$11], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([862 x i64]* @SymTab to i8*), i32 8) to i64), %$13], [%31, %$16] ; # ->
-  ret i64 %32
+  br label %$4
+$3:
+; # (name @)
+  br label %$5
+$5:
+  %18 = phi i64 [%15, %$3], [%24, %$6] ; # Tail
+  %19 = and i64 %18, 6
+  %20 = icmp ne i64 %19, 0
+  br i1 %20, label %$7, label %$6
+$6:
+  %21 = phi i64 [%18, %$5] ; # Tail
+  %22 = inttoptr i64 %21 to i64*
+  %23 = getelementptr i64, i64* %22, i32 1
+  %24 = load i64, i64* %23
+  br label %$5
+$7:
+  %25 = phi i64 [%18, %$5] ; # Tail
+; # (parse (name @) YES (hex "20") 1)
+  %26 = call i64 @parse(i64 %25, i1 1, i64 32, i64 1)
+  br label %$4
+$4:
+  %27 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([862 x i64]* @SymTab to i8*), i32 8) to i64), %$2], [%26, %$7] ; # ->
+; # (drop *Safe)
+  %28 = inttoptr i64 %8 to i64*
+  %29 = getelementptr i64, i64* %28, i32 1
+  %30 = load i64, i64* %29
+  %31 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %30, i64* %31
+  ret i64 %27
 }
 
 define i64 @_sym(i64) align 8 {

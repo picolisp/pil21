@@ -1,4 +1,4 @@
-# 16jun21 Software Lab. Alexander Burger
+# 19jun21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1274,7 +1274,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                (case C
                   (" "  # Eval
                      (setq @ *@)
-                     (evCmd (run (str (pack Line)))) )
+                     (evCmd (run (str Line))) )
                   ("$"  # Shell command
                      (scratch (tmp "cmd")
                         (in (list *Shell "-c" (rplFile Line))
@@ -1312,7 +1312,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                   ("n" (nextBuf))  # Next buffer
                   ("N" (nextBuf T))  # Previous buffer
                   (("ta" "tag") (tag (any Line)))
-                  ("v" (reload (syms (str (pack Line))) 1 1))
+                  ("v" (reload (syms (str Line)) 1 1))
                   ("e" (reload (rplFile Line)))  # (Edit) Reload buffer
                   ("E"  # (Edit) Toggle subdir recursion and reload buffer
                      (=: buffer subd (not (: buffer subd)))
@@ -1584,7 +1584,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                                           (chgwin (inc (: lines))) ) ) ) )
                               ("=" (eqwin))  # Set all windows to equal size
                               (("K" "^]")  # Edit symbol
-                                 (tag (any (pack (getWord T)))) )
+                                 (tag (any (getWord T))) )
                               (("Q" "^T")  # Pop tag stack
                                  (ifn *TagStack
                                     (beep)

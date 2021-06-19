@@ -1,4 +1,4 @@
-# 15jun21 Software Lab. Alexander Burger
+# 19jun21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2608,10 +2608,9 @@ selectErr)
 
 # (any 'sym) -> any
 (de _any (Exe)
-   (cond
-      ((nil? (needSymb Exe (eval (cadr Exe)))) @)
-      ((sym? (val (tail @))) $Nil)
-      (T (parse (name @) YES (hex "20") 1)) ) )  # Blank, EOF
+   (if (sym? (val (tail (save (evSym (cdr Exe))))))
+      $Nil
+      (parse (name @) YES (hex "20") 1) ) )  # Blank, EOF
 
 # (sym 'any) -> sym
 (de _sym (Exe)
