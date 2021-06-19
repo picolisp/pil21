@@ -1,4 +1,4 @@
-# 14jun21 Software Lab. Alexander Burger
+# 19jun21 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -151,7 +151,9 @@
          (and *SesId (<javascript> "SesId='" @ "'"))
          (mapc javascript *JS)
          (prinl Head)
-         (prinl BodyA (and Attr (htStyle @)) BodyZ)
+         (prin BodyA)
+         (and Attr (htStyle @))
+         (prinl BodyZ)
          (htPrin Prg 2)
          (prinl End) ) ) )
 

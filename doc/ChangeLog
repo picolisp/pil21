@@ -1,4 +1,6 @@
 19jun21
+   Wrong 'Attr' output in 'html'
+      lib/xhtml.l
    'pack' not needed
       lib/vip.l
    General argument to 'any'
