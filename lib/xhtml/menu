@@ -1,11 +1,11 @@
 <>
 <ul>
-<li>@</li>
-<li class="cmd">@</li>
-<li class="cmd"><a href="@" title="--&gt;">@</a></li>
-<li class="act"><a href="@" title="--&gt;">@</a></li>
-<li class="sub@"><a href="@" title="@">@</a></li>
-<li class="top@"><a href="@" title="@">@</a>
+<li>¦(run PRG)¦</li>
+<li class="cmd">¦(run PRG)¦</li>
+<li class="cmd"><a href="¦(prin LINK)¦" title="--&gt;">¦(run PRG)¦</a></li>
+<li class="act"><a href="¦(prin LINK)¦" title="--&gt;">¦(run PRG)¦</a></li>
+<li class="sub¦LEVEL¦"><a href="¦(prin LINK)¦" title="¦TITLE¦">¦(run PRG)¦</a></li>
+<li class="top¦LEVEL¦"><a href="¦(prin LINK)¦" title="¦TITLE¦">¦(run PRG)¦</a>
 </li>
 </ul>
 <>

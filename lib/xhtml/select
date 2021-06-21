@@ -1,4 +1,4 @@
-<select @>
-<option@>@</option>
+<select¦(run PRG)¦>
+<option¦(and ATTR (htStyle @))¦ title="¦TITLE¦"¦(eval (car PRG))¦>¦(run (cdr PRG))¦</option>
 </select>
 

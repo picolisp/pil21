@@ -1,3 +1,9 @@
+20jun21
+   Micro-templates 2.0
+      lib/xhtml.l
+      lib/xhtml/
+      doc/microTemplates
+
 19jun21
    Wrong 'Attr' output in 'html'
       lib/xhtml.l
