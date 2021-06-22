@@ -1,3 +1,15 @@
+22jun21
+   Micro-templates for '<table>' and '<grid>'
+      lib/xhtml.l
+      lib/xhtml/table
+      lib/xhtml/grid
+   Add <tr> and </tr>
+      lib/xhtml/tab
+
+21jun21
+   Minor fix in reference for 'all'
+      doc/refA.html
+
 20jun21
    Micro-templates 2.0
       lib/xhtml.l

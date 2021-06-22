@@ -1,9 +1,11 @@
-# 20jun21 Software Lab. Alexander Burger
+# 22jun21 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
       (quote
          ("html" . *XhtmlHtml)
+         ("table" . *XhtmlTable)
+         ("grid" . *XhtmlGrid)
          ("layout" . *XhtmlLayout)
          ("menu" . *XhtmlMenu)
          ("tab" . *XhtmlTab)
@@ -375,67 +377,75 @@
 
 (private) (Attr Ttl Head Prg *RowF H L Y A N)
 
-(de <table> (Attr Ttl Head . Prg)
+(de <table> (ATTR Ttl Head . Prg)
    (on *RowF)
-   (<tag> "table"
-      (list
-         '("ontouchstart" . "return tblTouch(event)")
-         '("ontouchmove" . "return tblMove(this,event)")
-         Attr )
-      (and Ttl (<tag> "caption" NIL Ttl))
+   (let ((Beg C BegR Row EndR NIL NIL NIL End) *XhtmlTable)
+      (micro Beg)
+      (when Ttl
+         (micro C
+            (ht:Prin (eval Ttl 2)) ) )
       (when (find cdr Head)
-         (<tr> NIL
-            (for H Head
-               (<th> (car H) (htPrin (cdr H) 5)) ) ) )
-      (htPrin Prg 3) ) )
+         (micro BegR)
+         (for H Head
+            (let ATTR (car H)
+               (micro Row
+                  (htPrin (cdr H) 3) ) ) )
+         (micro EndR) )
+      (htPrin Prg 3)
+      (micro End) ) )
 
 (de alternating ()
    (onOff *RowF) )
 
 (de <row> (Attr . Prg)
-   (<tr> NIL
-      (let (L Prg  H Head)
-         (while L
-            (let (Y (++ L)  A (car (++ H))  N 1)
-              (while (== '- (car L))
-                  (inc 'N)
-                  (++ L)
-                  (++ H) )
-               (<td>
-                  (style Attr
-                     (style
-                        (and (> N 1) (cons "colspan" N))
-                        (if (== 'align A) '(align (align . right)) A) ) )
+   (let ((Beg C NIL NIL NIL BegR Row EndR End) *XhtmlTable  H Head)
+      (micro BegR)
+      (while Prg
+         (let (Y (++ Prg)  A (car (++ H))  N 1)
+            (while (== '- (car Prg))
+               (inc 'N)
+               (++ Prg)
+               (++ H) )
+            (let ATTR
+               (style Attr
+                  (style
+                     (and (> N 1) (cons "colspan" N))
+                     (if (== 'align A) '(align (align . right)) A) ) )
+               (micro Row
                   (if (atom Y)
-                     (ht:Prin (eval Y 3))
-                     (eval Y 3) ) ) ) ) ) ) )
+                     (ht:Prin (eval Y 2))
+                     (eval Y 2) ) ) ) ) )
+      (micro EndR) ) )
 
 (private) (Y Lst L C E N)
 
 (de <grid> (Y . Lst)
-   (<tag> "table" "grid"
+   (let ((Beg BegR Row EndR End) *XhtmlGrid)
+      (micro Beg)
       (while Lst
-         (<tr> NIL
-            (use Y
-               (let L (and (sym? Y) (chop Y))
-                  (do (or (num? Y) (length Y))
-                     (let
-                        (C
-                           (cond
-                              ((pair Y) (++ Y))
-                              ((= "." (++ L)) "align") )
-                           E (++ Lst) )
-                        (unless (== '- E)
-                           (when (== '- (car Lst))
-                              (let N 1
-                                 (for (P Lst (and P (== '- (++ P))))
-                                    (inc 'N) )
-                                 (push 'N "colspan")
-                                 (setq C (if C (list C N) N)) ) )
-                           (<td> C
-                              (if (atom E)
-                                 (ht:Prin (eval E 4))
-                                 (eval E 4) ) ) ) ) ) ) ) ) ) ) )
+         (micro BegR)
+         (use Y
+            (let L (and (sym? Y) (chop Y))
+               (do (or (num? Y) (length Y))
+                  (let
+                     (ATTR
+                        (cond
+                           ((pair Y) (++ Y))
+                           ((= "." (++ L)) "align") )
+                        E (++ Lst) )
+                     (unless (== '- E)
+                        (when (== '- (car Lst))
+                           (let N 1
+                              (for (P Lst (and P (== '- (++ P))))
+                                 (inc 'N) )
+                              (push 'N "colspan")
+                              (setq ATTR (if ATTR (list ATTR N) N)) ) )
+                        (micro Row
+                           (if (atom E)
+                              (ht:Prin (eval E 2))
+                              (eval E 2) ) ) ) ) ) ) )
+         (micro EndR) )
+      (micro End) ) )
 
 (de <trident> Lst
    (<table> '(width . "100%") NIL NIL

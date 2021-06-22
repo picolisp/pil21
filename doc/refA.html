@@ -226,10 +226,12 @@ href="refW.html#wrap">wrap</a></code>.
 
 <dt><a name="all"><code>(all ['T | '0 | 'sym]) -> lst</code></a>
 <dd>Returns a new list of all <a href="ref.html#internal">internal</a> symbols
-in the system (if called without arguments, or with <code>NIL</code>), all
-current <a href="ref.html#transient">transient</a> symbols (if the argument is
-<code>T</code>), all <a href="ref.html#external">external</a> symbols (if the
-argument is zero), or all symbols of the given namespace <code>sym</code>.
+in the current namespace search order (if called without arguments, or with
+<code>NIL</code>), all current <a href="ref.html#transient">transient</a>
+symbols (if the argument is <code>T</code>), all <a
+href="ref.html#external">external</a> symbols (if the argument is zero), or all
+symbols of the given namespace <code>sym</code>. See also <code><a
+href="refS.html#symbols">symbols</a></code>.
 
 <pre><code>
 : (all)  # All internal symbols
