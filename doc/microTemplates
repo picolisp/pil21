@@ -32,6 +32,24 @@
       4. BODY
       5. HTML end
 
+   table
+      1. Table start
+      2. Caption
+      3. Header row start
+      4. Header row entry
+      5. Header row end
+      6. Data row start
+      7. Data row entry
+      8. Data row end
+      9. Table end
+
+   grid
+      1. Grid start
+      2. Grid row start
+      3. Grid row entry
+      4. Grid row end
+      5. Grid end
+
    layout
       Variable number of lines, one per code block
 
