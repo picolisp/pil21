@@ -20,8 +20,8 @@
 
 * At program start, all templates from @lib/xhtml/ are loaded.
 
-* The application may override one or more files in a local directory.
-  Also more than once.
+* The application may override one or more files in a local directory,
+  and call 'xhtml' with that path. Also more than once.
 
 * Available templates:
 
