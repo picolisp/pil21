@@ -1,3 +1,8 @@
+29jun21
+   Keep application namespaces for background tasks in '*Ns'
+      lib/vip.l
+      bin/vip
+
 ####### 21.6 #######
 24jun21
    Minor addition
