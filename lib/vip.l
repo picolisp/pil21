@@ -491,13 +491,14 @@ pipeN nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
       (cursor) ) )
 
 (de getch ()
-   (if (= "^[" (setq *Chr (symbols *Ns (key))))
-      (when (symbols *Ns (key 80))
-         (loop
-            (setq *Chr (pack *Chr @))
-            (T (member *Chr '("^[[A" "^[[B" "^[[C" "^[[D")) *Chr)
-            (NIL (symbols *Ns (key 80)) *Chr) ) )
-      *Chr ) )
+   (symbols *Ns
+      (if (= "^[" (setq *Chr (key)))
+         (when (key 80)
+            (loop
+               (setq *Chr (pack *Chr @))
+               (T (member *Chr '("^[[A" "^[[B" "^[[C" "^[[D")) *Chr)
+               (NIL (key 80) *Chr) ) )
+         *Chr ) ) )
 
 (de getch2 (C)
    (if (= "^V" C)
