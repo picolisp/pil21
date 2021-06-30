@@ -864,11 +864,15 @@
    (or (extra Val X) (extra Val (val X))) )
 
 (dm put> (Obj Old New)
-   (prog1
-      (or
-         (ext? (get Obj (: var)))
-         (new (or (: dbf 1) 1)) )
-      (set @ (extra Obj (val Old) New)) ) )
+   (setq New (extra Obj (val Old) New))
+   (cond
+      ((ext? (get Obj (: var)))
+         (set @ New)
+         @ )
+      (New
+         (prog1
+            (new (or (: dbf 1) 1))
+            (set @ New) ) ) ) )
 
 (dm del> (Obj Old Val)
    (ifn (ext? (get Obj (: var)))
