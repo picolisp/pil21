@@ -1,5 +1,7 @@
 ####### 21.6 #######
 30jun21
+   '+Swp' prefix class
+      lib/form.l
    Lazy external symbol creation in '+Swap'
       lib/db.l
    has> check in 'rel>' for '+Joint'
