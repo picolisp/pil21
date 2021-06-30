@@ -1,9 +1,15 @@
+####### 21.6 #######
+30jun21
+   has> check in 'rel>' for '+Joint'
+      lib/db.l
+   Keep application namespaces for background tasks in '*Ns'
+      lib/vip.l
+
 29jun21
    Keep application namespaces for background tasks in '*Ns'
       lib/vip.l
       bin/vip
 
-####### 21.6 #######
 24jun21
    Minor addition
       doc/microTemplates

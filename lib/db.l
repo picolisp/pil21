@@ -1,4 +1,4 @@
-# 14jun21 Software Lab. Alexander Burger
+# 30jun21 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -280,6 +280,7 @@
             Obj ) ) )
    (and New
       (not (get Obj T))
+      (not (has> New (: slot) Obj))
       (put> New (: slot)
          (if (: put) (@ Obj) Obj) ) ) )
 
