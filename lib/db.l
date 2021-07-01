@@ -1,4 +1,4 @@
-# 30jun21 Software Lab. Alexander Burger
+# 01jul21 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1361,8 +1361,6 @@
    (or (meta Typ 'Dbf 1) 1) )
 
 ### Utilities ###
-(private) _db
-
 (de treeRel (Var Cls)
    (with (or (get Cls Var) (meta Cls Var))
       (or
@@ -1394,7 +1392,6 @@
          (NIL (next) Obj)
          (NIL (has> Obj @ (next))) ) ) )
 
-
 # (aux 'var 'cls ['hook] 'any ..) -> sym
 (de aux (Var Cls . @)
    (with (treeRel Var Cls)
@@ -1403,7 +1400,6 @@
             (init (tree (: var) (: cls) (and (: hook) (next)))
                Key
                (append Key T) ) ) ) ) )
-
 
 # (collect 'var 'cls ['hook] ['any|beg ['end [var ..]]]) -> lst
 (de collect (Var Cls . @)
@@ -1441,6 +1437,14 @@
                      X1 X2
                      (or (isa '+Idx This) (isa '+IdxFold This)) ) ) ) ) ) ) )
 
+# Iterate all objects of given class
+(de forall (Cls . Prg)
+   (for
+      (This
+         (seq (or (; Cls Dbf 1) 1))
+         This
+         (seq This) )
+      (and (isa Cls This) (run Prg 1)) ) )
 
 # Define object variables as relations
 (de rel Lst
