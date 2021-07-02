@@ -1,4 +1,4 @@
-# 01jul21 Software Lab. Alexander Burger
+# 02jul21 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1361,6 +1361,8 @@
    (or (meta Typ 'Dbf 1) 1) )
 
 ### Utilities ###
+(private) _db
+
 (de treeRel (Var Cls)
    (with (or (get Cls Var) (meta Cls Var))
       (or
