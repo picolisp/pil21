@@ -1,0 +1,25 @@
+# 02jul21 Software Lab. Alexander Burger
+# Copy to ~/.pil/rc
+
+(history
+   (make
+      (skip "#")
+      (while (line T) (link @))  # Global history
+      (while (read) (eval @))  # Initial commands
+      (when (info ".pilrc")  # Local history and commands
+         (in @@
+            (skip "#")
+            (while (line T) (link @))
+            (while (read) (eval @)) ) ) ) )
+
+# Initial history
+(stack)
+(dbCheck)
+(vi (car (url> *ID)))
+(show *ID)
+
+# Initial commands
+(scl 2)
+
+(de x ()
+   (load "x.l") )
