@@ -1,4 +1,4 @@
-# 30jun21 Software Lab. Alexander Burger
+# 03jul21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -66,7 +66,15 @@ showCsr screen1 screen2)
 
 ### VIP Editor ###
 (local) (*Buffers +Buffer mkLoc fName prName rplFile fileBuffer rdLines delim?
-arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
+arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status delwin
+cursor addLine chgLine unmark redraw repaint scLeft scRight goto chgwin eqwin
+getch getch2 reload scratch syms pushTag tag done change jmp@@ cnt@@ goCol
+goLeft goRight goUp goDown goAbs goFind tword word lword end lend getWord
+_forward goForward _backward goBackward goPFore goPBack shift shiftY indent cutX
+cutN paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe
+evRpt move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN
+nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
+
 
 (class +Buffer)
 # text file symbols key undo redo dirt
@@ -331,15 +339,6 @@ arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status)
 (dm view> ()
    (view> (: buffer) This) )
 
-
-(local) (delwin cursor addLine chgLine unmark redraw repaint scLeft scRight goto
-chgwin eqwin getch getch2 reload scratch syms pushTag tag done change jmp@@
-cnt@@ goCol goLeft goRight goUp goDown goAbs goFind tword word lword end lend
-getWord _forward goForward _backward goBackward goPFore goPBack shift shiftY
-indent cutX cutN paste join tglCase insChar incNum overwrite _bs insMode cmdMode
-cmdPipe evRpt move chgRight jmpMark wordFun moveSearch patMatch parMatch spell
-pipeN nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
-
 (de delwin ()
    (when (=: prev next (: next))
       (=: next prev (: prev)) ) )
@@ -541,13 +540,15 @@ pipeN nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
 (de pushTag (File)
    (push '*TagStack (: posX) (: posY) File (symbols)) )
 
-(de tag (S)
+(de tag (S C)
    (cond
       ((: buffer syms)
          (pushTag @)
          (syms> (: buffer) (cons S @))
          (reload (: buffer file) 1 1) )
-      ((get S '*Dbg 1)
+      ((if C
+            (get @ '*Dbg -1 S)
+            (get S '*Dbg 1) )
          (pushTag (: buffer file))
          (apply symbols (cddr @))
          (reload (cadr @) (car @) 1) )
@@ -1316,7 +1317,7 @@ pipeN nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                         (in (: mark) (move 'goAbs (read) (read))) ) )
                   ("n" (nextBuf))  # Next buffer
                   ("N" (nextBuf T))  # Previous buffer
-                  (("ta" "tag") (tag (any Line)))
+                  (("ta" "tag") (apply tag (str Line)))
                   ("v" (reload (syms (str Line)) 1 1))
                   ("e" (reload (rplFile Line)))  # (Edit) Reload buffer
                   ("E"  # (Edit) Toggle subdir recursion and reload buffer

@@ -1,3 +1,21 @@
+04jul21
+   E/R unit tests
+      lib/test.l
+      test/src/sym.l
+      test/src/db.l
+      test/lib/db.l
+   Clean up 'has>' methods
+      lib/db.l
+      lib/tinymce.l
+   Revisit '+Bag' and '+Swap'
+      lib/db.l
+
+03jul21
+   Support methods as ":ta msg> +Cls"
+      lib/vip.l
+   Make 'bagBag' non-destructive
+      lib/form.l
+
 02jul21
    'forall' function
       doc/ref.html
@@ -15,7 +33,7 @@
       lib/form.l
    Lazy external symbol creation in '+Swap'
       lib/db.l
-   has> check in 'rel>' for '+Joint'
+   'has>' check in 'rel>' for '+Joint'
       lib/db.l
    Keep application namespaces for background tasks in '*Ns'
       lib/vip.l

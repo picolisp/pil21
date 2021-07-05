@@ -1,4 +1,4 @@
-# 02jul21 Software Lab. Alexander Burger
+# 04jul21 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -52,7 +52,7 @@
 
 # Value present?
 (dm has> (Val X)  #> any | NIL
-   (and (= Val X) X) )
+   (= Val X) )
 
 # Set value
 (dm put> (Obj Old New)
@@ -108,12 +108,10 @@
          (find 'ele> (: bag) Val) ) ) )
 
 (dm has> (Val X)
-   (and Val
-      (or
-         (super Val X)
-         (and
-            (pair X)
-            (pick 'has> (: bag) (circ Val) X) ) ) ) )
+   (when Val
+      (if (atom Val)
+         (find 'has> (: bag) Val X)
+         (fully 'has> (: bag) Val X) ) ) )
 
 (dm put> (Obj Old New)
    (trim
@@ -774,9 +772,12 @@
 
 (dm has> (Val X)
    (and Val
-      (or
-         (extra Val X)
-         (find '((X) (extra Val X)) X) ) ) )
+      (if (atom Val)
+         (find '((X) (extra Val X)) X)
+         (loop
+            (NIL (extra (++ Val) (++ X)))
+            (NIL (or Val X) T)
+            (T (xor Val X)) ) ) ) )
 
 (dm put> (Obj Old New)
    (if (ele> This New)
@@ -861,21 +862,21 @@
 (class +Swap)
 
 (dm has> (Val X)
-   (or (extra Val X) (extra Val (val X))) )
+   (if (ext? Val)
+      (== Val X)
+      (extra Val (val X)) ) )
 
 (dm put> (Obj Old New)
    (setq New (extra Obj (val Old) New))
    (cond
-      ((ext? (get Obj (: var)))
-         (set @ New)
-         @ )
+      ((ext? Old) (set @ New) @)
       (New
          (prog1
             (new (or (: dbf 1) 1))
             (set @ New) ) ) ) )
 
 (dm del> (Obj Old Val)
-   (ifn (ext? (get Obj (: var)))
+   (ifn (ext? Old)
       (extra Obj Old Val)
       (set @ (extra Obj (val Old) Val))
       @ ) )
@@ -1009,24 +1010,26 @@
    Val )
 
 (dm del> (Var Val)
-   (when (and Val (has> (meta This Var) Val (get This Var)))
-      (let Old (get This Var)
-         (rel> (meta This Var) This Old
-            (put This Var (del> (meta This Var) This Old @)) )
-         (when (asoq Var (meta This 'Aux))
-            (relAux This Var Old (cdr @)) )
-         (upd> This Var Old) ) ) )
+   (let? V (and Val (get This Var))
+      (when (has> (meta This Var) Val V)
+         (let Old (get This Var)
+            (rel> (meta This Var) This Old
+               (put This Var (del> (meta This Var) This Old V)) )
+            (when (asoq Var (meta This 'Aux))
+               (relAux This Var Old (cdr @)) )
+            (upd> This Var Old) ) ) ) )
 
 (dm del!> (Var Val)
-   (when (and Val (has> (meta This Var) Val (get This Var)))
-      (dbSync)
-      (let Old (get This Var)
-         (rel> (meta This Var) This Old
-            (put This Var (del> (meta This Var) This Old @)) )
-         (when (asoq Var (meta This 'Aux))
-            (relAux This Var Old (cdr @)) )
-         (upd> This Var Old)
-         (commit 'upd) ) ) )
+   (let? V (and Val (get This Var))
+      (when (has> (meta This Var) Val V)
+         (dbSync)
+         (let Old (get This Var)
+            (rel> (meta This Var) This Old
+               (put This Var (del> (meta This Var) This Old V)) )
+            (when (asoq Var (meta This 'Aux))
+               (relAux This Var Old (cdr @)) )
+            (upd> This Var Old)
+            (commit 'upd) ) ) ) )
 
 (dm inc> (Var Val)
    (let P (prop This Var)

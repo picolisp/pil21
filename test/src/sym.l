@@ -1,4 +1,4 @@
-# 03may21 Software Lab. Alexander Burger
+# 04jul21 Software Lab. Alexander Burger
 
 ### name ###
 (test "abc" (name 'abc))
@@ -60,11 +60,6 @@
 (test car (val (intern (pack "c" "a" "r"))))
 
 
-### extern ###
-(test NIL (extern (box)))
-(test *DB (extern "1"))
-
-
 ### box? ###
 (let X (box)
    (test X (box? X)) )
@@ -78,18 +73,6 @@
 (test NIL (str? '{A123}))
 (test NIL (str? 'abc))
 (test "abc" (str? "abc"))
-
-
-### ext? ###
-(test *DB (ext? *DB))
-(test NIL (ext? 'abc))
-(test NIL (ext? "abc"))
-(test NIL (ext? 123))
-
-
-### touch ###
-(test *DB (touch *DB))
-(rollback)
 
 
 ### zap ###
@@ -371,18 +354,6 @@
 (test (1 2 3 4) "W")
 (test '((2 . b) (1 . a)) (getl '"W"))
 (wipe '"W")
-(test NIL "W")
-(test NIL (getl '"W"))
-
-(set *DB (1 2 3 4))
-(put *DB 'a 1)
-(put *DB 'b 2)
-(test (1 2 3 4) (val *DB))
-(test '((2 . b) (1 . a)) (getl *DB))
-(wipe *DB)
-(test (1 2 3 4) (val *DB))
-(test '((2 . b) (1 . a)) (getl *DB))
-(rollback)
 (test NIL "W")
 (test NIL (getl '"W"))
 

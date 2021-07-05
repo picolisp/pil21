@@ -1,4 +1,4 @@
-# 06oct20 Software Lab. Alexander Burger
+# 04jul21 Software Lab. Alexander Burger
 
 ### Unit Tests ###
 # Local usage:
@@ -14,8 +14,6 @@
    *CMD (cmd)
    *PWD (in '(pwd) (line T)) )
 
-(test T (pool (tmp "db")))
-
 (load
    "@test/src/main.l"
    "@test/src/apply.l"
@@ -30,6 +28,7 @@
    "@test/src/ht.l" )
 
 (load "@test/lib.l")
+(load "@test/lib/db.l")
 (load "@test/lib/misc.l")
 
 (load "@test/lib/lint.l")

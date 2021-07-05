@@ -1,4 +1,4 @@
-# 30jun21 Software Lab. Alexander Burger
+# 03jul21 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -2532,11 +2532,9 @@
                         (let L (get (: home obj) (: ctl erVar))
                            (conc
                               (cut (dec (: pos)) 'L)
-                              (cons
+                              (list
                                  (conc
-                                    (make
-                                       (do (: ctl gf 1)
-                                          (link (and L (pop L))) ) )
+                                    (head (: ctl gf 1) (car L))
                                     (list Lst) ) )
                               (cdr L) ) ) ) )
                   Lst )

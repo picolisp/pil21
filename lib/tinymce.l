@@ -1,4 +1,4 @@
-# 20jan21 Software Lab. Alexander Burger
+# 04jul21 Software Lab. Alexander Burger
 
 ### TinyMCE Interface ###
 (allow "@tinymce/" T)
@@ -103,11 +103,9 @@
 (class +HtIdx +Fold +Idx)
 
 (dm has> (Val X)
-   (and
-      (or
-         (= Val X)
-         (member Val (mapcar fold (unmarkup X))) )
-      X ) )
+   (or
+      (= Val X)
+      (member Val (mapcar fold (unmarkup X))) ) )
 
 (dm rel> (Obj Old New Hook)
    (setq Old (unmarkup Old)  New (unmarkup New))
