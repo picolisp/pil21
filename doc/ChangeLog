@@ -1,3 +1,7 @@
+05jul21
+   Fix 'clone>' for '+Swap' in '+Bag'
+      lib/db.l
+
 04jul21
    E/R unit tests
       lib/test.l

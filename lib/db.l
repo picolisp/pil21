@@ -1,4 +1,4 @@
-# 04jul21 Software Lab. Alexander Burger
+# 05jul21 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -940,7 +940,7 @@
                     (recurse C) )
                  (and (get *DB Cls) (dec @)) ) ) ) ) ) )
 
-(private) cloneKey
+(private) (cloneKey cloneAny)
 
 (dm T @
    (incECnt This)
@@ -1232,10 +1232,7 @@
                               (cloneKey Rel (cdr X) (car X)
                                  (and (get Rel 'hook) (get This @)) ) ) )
                         ((or (not (isa '+Joint Rel)) (isa '+List (meta Obj (cdr X))))
-                           (put> Obj (cdr X)
-                              (if (isa '+Swap Rel)
-                                 (val (car X))
-                                 (car X) ) ) ) ) ) ) ) ) )
+                           (put> Obj (cdr X) (cloneAny (car X) Rel)) ) ) ) ) ) ) )
       Obj ) )
 
 (de cloneKey (Rel Var Val Hook)
@@ -1244,6 +1241,17 @@
          (genKey Var (get Rel 'cls) Hook) )
       ((isa '+String Rel)
          (genStrKey (pack "# " Val) Var (get Rel 'cls) Hook) ) ) )
+
+(de cloneAny (Val Rel)
+   (cond
+      ((isa '+Swap Rel) (val Val))
+      ((isa '+Bag Rel)
+         (if (isa '+List Rel)
+            (mapcar
+               '((B) (mapcar cloneAny B (; Rel bag)))
+               Val )
+            (mapcar cloneAny Val (; Rel bag)) ) )
+      (T Val) ) )
 
 (dm clone!> ()
    (prog2
