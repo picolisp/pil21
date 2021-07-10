@@ -1,4 +1,4 @@
-# 04jul21 Software Lab. Alexander Burger
+# 10jul21 Software Lab. Alexander Burger
 
 ### +Joint ###
 (pool (tmp "db"))
@@ -90,6 +90,10 @@
       (test '("x") (; A l 0)) )
 
    (let S (; A b 1 2)
+      (put> A 'b (list (list 4 S)))
+      (test S (; A b 1 2))
+      (test "def" (; A b 1 2 0))
+      (test 4 (; A b 1 1))
       (put> A 'b '((7 "y")))
       (test S (; A b 1 2))
       (test 7 (; A b 1 1))

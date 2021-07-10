@@ -1,3 +1,8 @@
+10jul21
+   Revisit 'put>' for '+Swap'
+      lib/db.l
+      test/lib/db.l
+
 05jul21
    Fix 'clone>' for '+Swap' in '+Bag'
       lib/db.l

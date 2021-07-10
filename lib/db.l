@@ -1,4 +1,4 @@
-# 05jul21 Software Lab. Alexander Burger
+# 10jul21 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -867,7 +867,11 @@
       (extra Val (val X)) ) )
 
 (dm put> (Obj Old New)
-   (setq New (extra Obj (val Old) New))
+   (setq New
+      (extra
+         Obj
+         (val Old)
+         (if (ext? New) (val @) New) ) )
    (cond
       ((ext? Old) (set @ New) @)
       (New
