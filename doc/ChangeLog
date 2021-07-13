@@ -1,3 +1,8 @@
+13jul21
+   'buf' function
+      doc/ref.html
+      doc/refB.html
+
 10jul21
    Revisit 'put>' for '+Swap'
       lib/db.l
