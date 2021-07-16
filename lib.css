@@ -1,4 +1,4 @@
-/* 14may21abu
+/* 16jul21abu
  * 17nov12jk
  * (c) Software Lab. Alexander Burger
  */
@@ -41,6 +41,8 @@
 .em80 {width: 80em}
 .em90 {width: 90em}
 .em100 {width: 100em}
+.em120 {width: 120em}
+.em150 {width: 150em}
 
 .rel10 {width: 10%}
 .rel20 {width: 20%}
