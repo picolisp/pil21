@@ -1,4 +1,4 @@
-# 03apr21 Software Lab. Alexander Burger
+# 18jul21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1321,7 +1321,6 @@
                   (prog (set Penv Env) NO) ) ) ) ) ) )
 
 (de lup (N X)
-   (stkChk 0)
    (let Penv (val $Penv)
       (: 1
          (when (and (symb? X) (== (firstByte X) (char "@")))
@@ -1337,6 +1336,7 @@
                   (shift V) ) ) ) ) )
    (if (atom X)
       X
+      (stkChk 0)
       (let Z (save (lup N (car X)))
          (cons Z (lup N (cdr X))) ) ) )
 
