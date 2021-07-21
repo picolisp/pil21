@@ -1,4 +1,4 @@
-# 19jun21 Software Lab. Alexander Burger
+# 21jul21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2664,7 +2664,7 @@ selectErr)
                (iSignal (val SIGINT Sig) (fun sig)) ) )
          (rdOpen Exe X (b8 (ioFrame T)))
          (set $PrivT (set 2 $PrivT $Nil))
-         (set $Transient (set 2 $Transient $Nil))
+         (set $Rule (set $Transient (set 2 $Transient $Nil)))
          (setq X $Nil)
          (loop
             (let Y

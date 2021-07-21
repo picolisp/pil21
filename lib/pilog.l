@@ -1,7 +1,5 @@
 # 21jul21 Software Lab. Alexander Burger
 
-# *Rule
-
 (private) (CL Q R L Prg)
 
 (de be CL

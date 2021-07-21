@@ -1,4 +1,11 @@
 21jul21
+   Global '*Rule' cleared in 'repl'
+      src/glob.l
+      src/io.l
+      doc/ref.html
+      doc/refB.html
+      doc/refC.html
+      doc/refR.html
    Maintain source properties also in 'clause'
       lib/pilog.l
    Bind Pilog variables in Lisp expressions

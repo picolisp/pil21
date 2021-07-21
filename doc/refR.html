@@ -11,6 +11,19 @@
 
 <dl>
 
+<dt><a name="*Rule"><code>*Rule</code></a>
+<dd>A global variable holding the current <a href="ref.html#pilog">Pilog</a>
+rule symbol. It is cleared at the beginning of a new REPL. See also <code><a
+href="refB.html#be">be</a></code> and <code><a
+href="refC.html#clause">clause</a></code>.
+
+<pre><code>
+: (be likes (John Mary))
+-> likes
+: *Rule
+-> likes
+</code></pre>
+
 <dt><a name="*Run"><code>*Run</code></a>
 <dd>This global variable can hold a list of <code>prg</code> expressions which
 are used during <code><a href="refK.html#key">key</a></code>, <code><a

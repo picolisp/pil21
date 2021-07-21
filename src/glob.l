@@ -1,4 +1,4 @@
-# 03may21 Software Lab. Alexander Burger
+# 21jul21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -134,6 +134,7 @@
    ($Zap "*Zap" $Nil)
    ($Ext "*Ext" $Nil)
    ($Scl "*Scl" ZERO)
+   ($Rule "*Rule" $Nil)
    ($Class "*Class" $Nil)
    ($Run "*Run" $Nil)
    ($Hup "*Hup" $Nil)
