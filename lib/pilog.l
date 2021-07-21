@@ -1,4 +1,4 @@
-# 14nov20 Software Lab. Alexander Burger
+# 21jul21 Software Lab. Alexander Burger
 
 # *Rule
 
@@ -8,12 +8,12 @@
    (clause CL) )
 
 (de clause (CL)
-   (with (car CL)
+   (with (++ CL)
       (if (== *Rule This)
-         (queue (:: T) (cdr CL))
-         (=: T (cons (cdr CL)))
+         (queue (:: T) CL)
+         (=: T (list CL))
          (setq *Rule This) )
-      This ) )
+      (def This T (: T)) ) )
 
 (de repeat ()
    (conc (get *Rule T) (get *Rule T)) )
@@ -105,19 +105,18 @@
 
 (be true)
 
-(be not @P (1 (-> @P)) T (fail))
+(be not @P (1 @P) T (fail))
 (be not @P)
 
-(be call @P
-   (2 (cons (-> @P))) )
+(be call @P (2 (cons @P)))
 
-(be or @L (^ @C (box (-> @L))) (_or @C))
+(be or @L (^ @C (box @L)) (_or @C))
 
-(be _or (@C) (3 (pop (-> @C))))
-(be _or (@C) (^ @ (not (val (-> @C)))) T (fail))
+(be _or (@C) (3 (pop @C)))
+(be _or (@C) (^ @ (not (val @C))) T (fail))
 (repeat)
 
-(be nil (@X) (^ @ (not (-> @X))))
+(be nil (@X) (^ @ (not @X)))
 
 
 (be equal (@X @X))
@@ -142,41 +141,39 @@
 
 (be uniq (@B @X)
    (^ @
-      (let X (-> @X)
-         (not (idx (-> @B) (cons (hash X) X) T)) ) ) )
+      (not (idx @B (cons (hash @X) @X) T)) ) )
 
 
-(be asserta (@C) (^ @ (asserta (-> @C))))
-
-(be assertz (@C) (^ @ (assertz (-> @C))))
+(be asserta (@C) (^ @ (asserta @C)))
+(be assertz (@C) (^ @ (assertz @C)))
 
 (be retract (@C)
-   (2 (cons (-> @C)))
-   (^ @ (retract (list (car (-> @C)) (cdr (-> @C))))) )
+   (2 (cons @C))
+   (^ @ (retract (list (car @C) (cdr @C)))) )
 
 (be clause (@H @B)
-   (^ @A (get (-> @H) T))
+   (^ @A (get @H T))
    (member @B @A) )
 
-(be show (@X) (^ @ (show (-> @X))))
+(be show (@X) (^ @ (show @X)))
 
 (be for (@N @End) (for @N 1 @End 1))
 (be for (@N @Beg @End) (for @N @Beg @End 1))
 (be for (@N @Beg @End @Step) (equal @N @Beg))
 (be for (@N @Beg @End @Step)
-   (^ @I (box (-> @Beg)))
+   (^ @I (box @Beg))
    (_for @N @I @End @Step) )
 
 (be _for (@N @I @End @Step)
    (^ @
-      (if (>= (-> @End) (val (-> @I)))
-         (> (inc (-> @I) (-> @Step)) (-> @End))
-         (> (-> @End) (dec (-> @I) (-> @Step))) ) )
+      (if (>= @End (val @I))
+         (> (inc @I @Step) @End)
+         (> @End (dec @I @Step)) ) )
    T
    (fail) )
 
 (be _for (@N @I @End @Step)
-   (^ @N (val (-> @I))) )
+   (^ @N (val @I)) )
 
 (repeat)
 
@@ -235,7 +232,7 @@
 (be db (@Var @Cls @Obj)
    (^ @Q
       (box
-         (with (or (get (-> @Cls) (-> @Var)) (meta (-> @Cls) (-> @Var)))
+         (with (or (get @Cls @Var) (meta @Cls @Var))
             (initQuery (: var) (: cls) NIL '(NIL . T)) ) ) )
    (_db @Obj) )
 
@@ -243,18 +240,18 @@
 (be db (@Var @Cls @X @Obj)
    (^ @Q
       (box
-         (with (or (get (-> @Cls) (-> @Var)) (meta (-> @Cls) (-> @Var)))
+         (with (or (get @Cls @Var) (meta @Cls @Var))
             (if (: hook)
-               (initQuery (: var) (: cls) (-> @X) '(NIL . T))
-               (initQuery (: var) (: cls) NIL (-> @X)) ) ) ) )
+               (initQuery (: var) (: cls) @X '(NIL . T))
+               (initQuery (: var) (: cls) NIL @X) ) ) ) )
    (_db @Obj) )
 
 # (db var cls hook val obj)
 (be db (@Var @Cls @Hook @Val @Obj)
    (^ @Q
       (box
-         (with (or (get (-> @Cls) (-> @Var)) (meta (-> @Cls) (-> @Var)))
-            (initQuery (: var) (: cls) (-> @Hook) (-> @Val)) ) ) )
+         (with (or (get @Cls @Var) (meta @Cls @Var))
+            (initQuery (: var) (: cls) @Hook @Val) ) ) )
    (_db @Obj) )
 
 (be _db (@Obj)
@@ -274,23 +271,23 @@
 (private) (_lst _map)
 
 (be val (@V . @L)
-   (^ @V (apply get (-> @L)))
+   (^ @V (apply get @L))
    T )
 
 (be lst (@V . @L)
-   (^ @Lst (box (apply get (-> @L))))
+   (^ @Lst (box (apply get @L)))
    (_lst @V @Lst) )
 
-(be _lst (@Val @Lst) (^ @ (not (val (-> @Lst)))) T (fail))
-(be _lst (@Val @Lst) (^ @Val (pop (-> @Lst))))
+(be _lst (@Val @Lst) (^ @ (not (val @Lst))) T (fail))
+(be _lst (@Val @Lst) (^ @Val (pop @Lst)))
 (repeat)
 
 (be map (@V . @L)
-   (^ @Lst (box (apply get (-> @L))))
+   (^ @Lst (box (apply get @L)))
    (_map @V @Lst) )
 
-(be _map (@Val @Lst) (^ @ (not (val (-> @Lst)))) T (fail))
-(be _map (@Val @Lst) (^ @Val (prog1 (val (-> @Lst)) (pop (-> @Lst)))))
+(be _map (@Val @Lst) (^ @ (not (val @Lst))) T (fail))
+(be _map (@Val @Lst) (^ @Val (prog1 (val @Lst) (pop @Lst))))
 (repeat)
 
 
@@ -299,23 +296,19 @@
 (be isa (@Typ . @L)
    (^ @
       (or
-         (not (-> @Typ))
-         (isa (-> @Typ) (apply get (-> @L))) ) ) )
+         (not @Typ)
+         (isa @Typ (apply get @L)) ) ) )
 
 (be same (@V . @L)
    (^ @
-      (let V (-> @V)
-         (or
-            (not V)
-            (let L (-> @L)
-               (_same (car L) (cdr L)) ) ) ) ) )
+      (or (not @V) (_same (car @L) (cdr @L))) ) )
 
 (de _same (X L)
    (cond
       ((not L)
          (if (atom X)
-            (= V X)
-            (member V X) ) )
+            (= @V X)
+            (member @V X) ) )
       ((atom X)
          (_same (get X (car L)) (cdr L)) )
       ((atom (car L))
@@ -326,43 +319,36 @@
 
 (be bool (@F . @L)
    (^ @
-      (or
-         (not (-> @F))
-         (bool (apply get (-> @L))) ) ) )
+      (or (not @F) (bool (apply get @L))) ) )
 
 (be ub (@A @R . @L)
    (^ @
-      (let R (-> @R)
-         (or
-            (not R)
-            (let X (apply get (-> @L))
-               (fully
-                  '((K V1 V2)
-                     (>= V2 (get X K) V1) )
-                  (-> @A)
-                  (car R)
-                  (cdr R) ) ) ) ) ) )
+      (or
+         (not @R)
+         (let X (apply get @L)
+            (fully
+               '((K V1 V2)
+                  (>= V2 (get X K) V1) )
+               @A
+               (car @R)
+               (cdr @R) ) ) ) ) )
 
 (be range (@R . @L)
    (^ @
-      (let R (-> @R)
-         (or
-            (not R)
-            (let L (-> @L)
-               (_range (car L) (cdr L)) ) ) ) ) )
+      (or (not @R) (_range (car @L) (cdr @L))) ) )
 
 (de _range (X L)
    (cond
       ((not L)
          (if (atom X)
             (or
-               (<= (car R) X (cdr R))
-               (>= (car R) X (cdr R)) )
+               (<= (car @R) X (cdr @R))
+               (>= (car @R) X (cdr @R)) )
             (find
                '((Y)
                   (or
-                     (<= (car R) Y (cdr R))
-                     (>= (car R) Y (cdr R)) ) )
+                     (<= (car @R) Y (cdr @R))
+                     (>= (car @R) Y (cdr @R)) ) )
                X ) ) )
       ((atom X)
          (_range (get X (car L)) (cdr L)) )
@@ -374,18 +360,14 @@
 
 (be head (@S . @L)
    (^ @
-      (let S (-> @S)
-         (or
-            (not S)
-            (let L (-> @L)
-               (_head (car L) (cdr L)) ) ) ) ) )
+      (or (not @S) (_head (car @L) (cdr @L))) ) )
 
 (de _head (X L)
    (cond
       ((not L)
          (if (atom X)
-            (pre? S X)
-            (find '((Y) (pre? S Y)) X) ) )
+            (pre? @S X)
+            (find '((Y) (pre? @S Y)) X) ) )
       ((atom X)
          (_head (get X (car L)) (cdr L)) )
       ((atom (car L))
@@ -396,18 +378,14 @@
 
 (be hold (@S . @L)
    (^ @
-      (let S (-> @S)
-         (or
-            (not S)
-            (let L (-> @L)
-               (_hold (car L) (cdr L)) ) ) ) ) )
+      (or (not @S) (_hold (car @L) (cdr @L))) ) )
 
 (de _hold (X L)
    (cond
       ((not L)
          (if (atom X)
-            (sub? S X)
-            (find '((Y) (sub? S Y)) X) ) )
+            (sub? @S X)
+            (find '((Y) (sub? @S Y)) X) ) )
       ((atom X)
          (_hold (get X (car L)) (cdr L)) )
       ((atom (car L))
@@ -418,18 +396,16 @@
 
 (be fold (@S . @L)
    (^ @
-      (let S (fold (-> @S))
-         (or
-            (not S)
-            (let L (-> @L)
-               (_fold (car L) (cdr L)) ) ) ) ) )
+      (or
+         (not (setq @S (fold @S)))
+         (_fold (car @L) (cdr @L)) ) ) )
 
 (de _fold (X L)
    (cond
       ((not L)
          (if (atom X)
-            (pre? S (fold X))
-            (find '((Y) (pre? S (fold Y))) X) ) )
+            (pre? @S (fold X))
+            (find '((Y) (pre? @S (fold Y))) X) ) )
       ((atom X)
          (_fold (get X (car L)) (cdr L)) )
       ((atom (car L))
@@ -440,18 +416,16 @@
 
 (be part (@S . @L)
    (^ @
-      (let S (fold (-> @S))
-         (or
-            (not S)
-            (let L (-> @L)
-               (_part (car L) (cdr L)) ) ) ) ) )
+      (or
+         (not (setq @S (fold @S)))
+         (_part (car @L) (cdr @L)) ) ) )
 
 (de _part (X L)
    (cond
       ((not L)
          (if (atom X)
-            (sub? S (fold X))
-            (find '((Y) (sub? S (fold Y))) X) ) )
+            (sub? @S (fold X))
+            (find '((Y) (sub? @S (fold Y))) X) ) )
       ((atom X)
          (_part (get X (car L)) (cdr L)) )
       ((atom (car L))
@@ -462,21 +436,19 @@
 
 (be tolr (@S . @L)
    (^ @
-      (let S (fold (-> @S))
-         (or
-            (not S)
-            (let L (-> @L)
-               (_tolr (car L) (cdr L)) ) ) ) ) )
+      (or
+         (not (setq @S (fold @S)))
+         (_tolr (car @L) (cdr @L)) ) ) )
 
 (de _tolr (X L)
    (cond
       ((not L)
          (if (atom X)
-            (or (sub? S (fold X)) (pre? (ext:Snx S) (ext:Snx X)))
-            (let P (ext:Snx S)
+            (or (sub? @S (fold X)) (pre? (ext:Snx @S) (ext:Snx X)))
+            (let P (ext:Snx @S)
                (find
                   '((Y)
-                     (or (sub? S (fold Y)) (pre? P (ext:Snx Y))) )
+                     (or (sub? @S (fold Y)) (pre? P (ext:Snx Y))) )
                   X ) ) ) )
       ((atom X)
          (_tolr (get X (car L)) (cdr L)) )
@@ -571,15 +543,14 @@
       (T (step Q (= '(NIL) (caaar Q)))) ) )
 
 (be select ((@Obj . @X) . @Lst)
-   (^ @ (unify (-> @X)))
-   (^ @P (box (cdr (-> @Lst))))
+   (^ @ (unify @X))
+   (^ @P (box (cdr @Lst)))
    (^ @C
       (box  # ((obj ..) curr . lst)
-         (let L (car (-> @Lst))
-            (setq L
-               (or
-                  (mapcan _select L)
-                  (_select (car L) T) ) )
+         (let L
+            (or
+               (mapcan _select (car @Lst))
+               (_select (caar @Lst) T) )
             (cons NIL L L) ) ) )
    (_gen @Obj)
    (_sel) )
@@ -621,11 +592,11 @@
    (^ @Sockets
       (box
          (prog1
-            (cdr (-> @Lst))
+            (cdr @Lst)
             (for X @  # (out . in)
                ((car X)
-                  (cons 'rqry (car (-> @Lst)) (-> @CL)) ) ) ) ) )
-   (^ @ (unify (car (-> @Lst))))
+                  (cons 'rqry (car @Lst) @CL) ) ) ) ) )
+   (^ @ (unify (car @Lst)))
    (_remote @Lst) )
 
 (be _remote ((@Obj . @))
@@ -645,14 +616,13 @@
 
 (be revolve (@Lst . @CL)
    (^ @Gen
-      (let L (-> @Lst)
-         (prog1 (box)
-            (for X (cddr L)
-               (push @
-                  (goal
-                     (cons (cadr L) (lit X) (-> @CL)) ) ) )
-            (push @ (car L)) ) ) )
-   (^ @ (unify (car (-> @Lst))))
+      (prog1 (box)
+         (for X (cddr @Lst)
+            (push @
+               (goal
+                  (cons (cadr @Lst) (lit X) @CL) ) ) )
+         (push @ (car @Lst)) ) )
+   (^ @ (unify (car @Lst)))
    (_revolve @Lst) )
 
 (be _revolve ((@Val . @))

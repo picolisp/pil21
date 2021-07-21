@@ -1,4 +1,4 @@
-# 14jun21 Software Lab. Alexander Burger
+# 21jul21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -36,7 +36,8 @@
                         (put Sym $Dbg (cons Src $Nil))  # Put initial '*Dbg' properties
                         (set Dbg Src) ) )  # Set first '*Dbg' property
                   ((nil? Dbg)
-                     (put Sym $Dbg (cons $Nil (cons Src $Nil))) )
+                     (put Sym $Dbg
+                        (cons $Nil (cons (cons Key Src) $Nil)) ) )
                   (T
                      (let X Dbg
                         (loop

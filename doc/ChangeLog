@@ -1,3 +1,19 @@
+21jul21
+   Maintain source properties also in 'clause'
+      lib/pilog.l
+   Bind Pilog variables in Lisp expressions
+      src/subr.l
+      lib/pilog.l
+      test/src/subr.l
+      doc/ref.html
+      doc/refM.html
+      doc/refR.html
+      doc/refT.html
+   Intern private symbols also in properties
+      lib/vip.l
+   Bug in 'putSrc' for first property
+      src/flow.l
+
 18jul21
    Minor cosmetics
       src/subr.l

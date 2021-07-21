@@ -1,4 +1,4 @@
-# 14oct20 Software Lab. Alexander Burger
+# 20jul21 Software Lab. Alexander Burger
 
 ### c[ad]*r ###
 (let L '(1 2 3 4 5)
@@ -541,11 +541,61 @@
 ### -> ###
 (test '((@A . 3) (@B . 7))
    (prove (goal '(@A 3 (^ @B (+ 4 (-> @A)))))) )
+(test '((@A . 3) (@B . 7))
+   (prove (goal '(@A 3 (^ @B (+ 4 @A))))) )
+(test '((@A . 3) (@B . 4) (@N . 12))
+   (prove (goal '(@A 3 @B 4 (^ @N (* @A @B))))) )
 
 
 ### unify ###
 (test '((@A ((NIL . @C) 0 . @C) ((NIL . @B) 0 . @B) T))
    (prove (goal '((^ @A (unify '(@B @C)))))) )
+
+
+### not/1 call/1 or/2 nil/1 uniq/2 ###
+(test NIL
+   (prove (goal '(@A 3 @B 3 (not (equal @A @B))))) )
+(test '((@A . 3) (@B . 4))
+   (prove (goal '(@A 3 @B 4 (not (equal @A @B))))) )
+(test '((@A 1 2 3) (@X 4 5 6))
+   (prove (goal '(@A (1 2 3) (call append @A @X (1 2 3 4 5 6))))) )
+(test '((@X . 7))
+   (prove (goal '((or ((equal 3 @X) (equal @X 4)) ((equal 7 @X) (equal @X 7)))))) )
+(test '((@X)) (prove (goal '(@X NIL (nil @X)))))
+(test '(a b c d)
+   (solve '((^ @B (box)) (lst @X (a b c b c d)) (uniq @B @X)) @X) )
+
+
+### asserta/1 assertz/1 retract/1 ###
+(test T
+   (prove
+      (goal
+         (quote
+            (asserta (a (2)))
+            (assertz (a (3)))
+            (asserta (a (1))) ) ) ) )
+(test '(((1)) ((2)) ((3)))
+   (get 'a T) )
+(test T
+   (prove (goal '((retract (a 2))))) )
+(test '(((1)) ((3)))
+   (get 'a T) )
+
+
+### clause/2 ###
+(test T
+   (prove (goal '((clause append ((NIL @X @X)))))) )
+(test '((@C (NIL @X @X)))
+   (prove (goal '((clause append @C)))) )
+
+
+### for/2 for/3 for/4 ###
+(test '(((@I . 1)) ((@I . 2)) ((@I . 3)))
+   (solve '((for @I 3))) )
+(test '(((@I . 3)) ((@I . 4)) ((@I . 5)) ((@I . 6)) ((@I . 7)))
+   (solve '((for @I 3 7))) )
+(test '(((@I . 7)) ((@I . 5)) ((@I . 3)))
+   (solve '((for @I 7 3 2))) )
 
 
 ### group ###

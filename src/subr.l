@@ -1,4 +1,4 @@
-# 18jul21 Software Lab. Alexander Burger
+# 20jul21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1267,7 +1267,7 @@
          @
          Y ) ) )
 
-(local) ($Penv $Pnl unify lup lookup uniFill)
+(local) ($Penv $Pnl unify lup lookup uniFill uniRun)
 
 (var $Penv 0)
 (var $Pnl 0)
@@ -1358,6 +1358,50 @@
          (let Y (save (uniFill (car X)))
             (cons Y (uniFill (cdr X))) ) ) ) )
 
+(de uniRun (Prg)
+   (let (P (val $Bind)  Q P  Z Prg  Tos 0)
+      (loop
+         (until (atom (car Z))
+            (let U Z  # Go left
+               (setq Z @)  # Invert tree
+               (set U Tos)
+               (setq Tos U) ) )
+         (let Y (car Z)
+            (when (and (symb? Y) (== (firstByte Y) (char "@")))
+               (set $Bind (setq P (push (val Y) Y P)))
+               (set Y (lup (car (val (val $Pnl))) Y)) ) )
+         (loop
+            (? (pair (cdr Z))  # Right subtree
+               (let U Z  # Go right
+                  (setq Z @)  # Invert tree
+                  (set 2 U Tos)
+                  (setq Tos (| U 8)) ) )
+            (let Y @  # Dotted structure symbol?
+               (when (and (symb? Y) (== (firstByte Y) (char "@")))
+                  (set $Bind (setq P (push (val Y) Y P)))
+                  (set Y (lup (car (val (val $Pnl))) Y)) ) )
+            (loop
+               (unless Tos
+                  (loop
+                     (let X (++ Prg)
+                        (when (atom Prg)
+                           (setq X (eval X))
+                           (until (== Q P)
+                              (set (val 2 P) (val P))  # Restore values
+                              (setq P (val 3 P)) )
+                           (set $Bind P)
+                           (ret X) )
+                        (and (pair X) (evList X)) ) ) )
+               (? (=0 (& Tos 8))  # Second visit
+                  (let U Tos
+                     (setq Tos (car U))  # TOS on up link
+                     (set U Z)
+                     (setq Z U) ) )
+               (let U (& Tos -9)  # Set second visit
+                  (setq Tos (cdr U))
+                  (set 2 U Z)
+                  (setq Z U) ) ) ) ) ) )
+
 # (prove 'lst ['lst]) -> lst
 (de _prove (Exe)
    (let X (cdr Exe)
@@ -1436,7 +1480,7 @@
                         (set Q (cdar Q)) )
                      (set Tp1 (cdr X)) )
                   ((cnt? (car @))
-                     (set E (run (cdar X)))
+                     (set E (uniRun (cdar X)))
                      (let (I (int (caar X))  Y (val Nl))
                         (while (gt0 (dec 'I))
                            (shift Y) )
@@ -1448,7 +1492,7 @@
                      (if
                         (and
                            (not
-                              (nil? (set E (run (cddr (car X))))) )
+                              (nil? (set E (uniRun (cddr (car X))))) )
                            (unify
                               (car (val Nl))
                               (cadr (car X))

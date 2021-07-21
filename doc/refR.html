@@ -529,7 +529,7 @@ backtracking. See also <code><a href="refR.html#repeat">repeat</a></code> and
 : (be integer (@I)   # Generate unlimited supply of integers
    (^ @C (box 0))    # Init to zero
    (repeat)          # Repeat from here
-   (^ @I (inc (-> @C))) )
+   (^ @I (inc @C)) )
 -> integer
 
 : (? (integer @X))

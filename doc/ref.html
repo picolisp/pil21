@@ -1776,8 +1776,10 @@ is executed as a Lisp <code>prg</code> body and the result unified with the
 CADR.
 
 <li>Within such a Lisp expression in a Pilog clause, the current bindings of
-Pilog variables can be accessed with the <code><a
-href="ref_.html#->">-&gt</a></code> function.
+Pilog variables are directly accessible in the corresponding Lisp symbol
+bindings or can be accessed with the <code><a
+href="ref_.html#->">-&gt</a></code> function (the latter is only necessary to
+access non-top-level Pilog environments).
 
 </ul>
 
