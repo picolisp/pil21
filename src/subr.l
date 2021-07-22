@@ -1367,8 +1367,13 @@
                (set U Tos)
                (setq Tos U) ) )
          (let Y (car Z)
-            (when (and (symb? Y) (== (firstByte Y) (char "@")))
-               (set $Bind (setq P (push (val Y) Y P))) ) )
+            (when
+               (and
+                  (symb? Y)
+                  (<> -ZERO (val Y))
+                  (== (firstByte Y) (char "@")) )
+               (set $Bind (setq P (push (val Y) Y P)))
+               (set Y -ZERO) ) )
          (loop
             (? (pair (cdr Z))  # Right subtree
                (let U Z  # Go right
@@ -1376,8 +1381,13 @@
                   (set 2 U Tos)
                   (setq Tos (| U 8)) ) )
             (let Y @  # Dotted structure symbol?
-               (when (and (symb? Y) (== (firstByte Y) (char "@")))
-                  (set $Bind (setq P (push (val Y) Y P))) ) )
+               (when
+                  (and
+                     (symb? Y)
+                     (<> -ZERO (val Y))
+                     (== (firstByte Y) (char "@")) )
+                  (set $Bind (setq P (push (val Y) Y P)))
+                  (set Y -ZERO) ) )
             (loop
                (unless Tos
                   (let (X P  N (car (val (val $Pnl))))
