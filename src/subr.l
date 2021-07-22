@@ -1,4 +1,4 @@
-# 20jul21 Software Lab. Alexander Burger
+# 22jul21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1368,8 +1368,7 @@
                (setq Tos U) ) )
          (let Y (car Z)
             (when (and (symb? Y) (== (firstByte Y) (char "@")))
-               (set $Bind (setq P (push (val Y) Y P)))
-               (set Y (lup (car (val (val $Pnl))) Y)) ) )
+               (set $Bind (setq P (push (val Y) Y P))) ) )
          (loop
             (? (pair (cdr Z))  # Right subtree
                (let U Z  # Go right
@@ -1378,10 +1377,14 @@
                   (setq Tos (| U 8)) ) )
             (let Y @  # Dotted structure symbol?
                (when (and (symb? Y) (== (firstByte Y) (char "@")))
-                  (set $Bind (setq P (push (val Y) Y P)))
-                  (set Y (lup (car (val (val $Pnl))) Y)) ) )
+                  (set $Bind (setq P (push (val Y) Y P))) ) )
             (loop
                (unless Tos
+                  (let (X P  N (car (val (val $Pnl))))
+                     (until (== Q X)
+                        (let Y (val 2 X)
+                           (set Y (lookup N Y)) )
+                        (setq X (val 3 X)) ) )
                   (loop
                      (let X (++ Prg)
                         (when (atom Prg)
