@@ -1,6 +1,8 @@
-22jul21
+23jul21
    Revisit Pilog variables in Lisp expressions
       src/subr.l
+
+22jul21
    Revisit private symbols in properties
       lib/vip.l
 

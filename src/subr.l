@@ -1,4 +1,4 @@
-# 22jul21 Software Lab. Alexander Burger
+# 23jul21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1334,7 +1334,11 @@
                            X (cdr Z) )
                         (goto 1) ) )
                   (shift V) ) ) ) ) )
-   (if (atom X)
+   (if
+      (or
+         (atom X)
+         (cnt? (car X))
+         (== @ $Up) )
       X
       (stkChk 0)
       (let Z (save (lup N (car X)))
