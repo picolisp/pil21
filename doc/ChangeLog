@@ -1,4 +1,6 @@
 23jul21
+   Pilog variables not private
+      lib/pilog.l
    Revisit Pilog variables in Lisp expressions
       src/subr.l
 

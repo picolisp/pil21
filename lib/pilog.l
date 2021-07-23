@@ -1,4 +1,4 @@
-# 21jul21 Software Lab. Alexander Burger
+# 23jul21 Software Lab. Alexander Burger
 
 (private) (CL Q R L Prg)
 
@@ -43,7 +43,7 @@
          S ) ) )
 
 ### Pilog Interpreter ###
-(private) (Env Dbg @H @A @B @Obj @X @Lst @CL @P @C *R)
+(private) (Env Dbg *R)
 
 (de goal (CL . @)
    (let Env '(T)
