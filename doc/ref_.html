@@ -241,10 +241,12 @@ href="ref_.html#*/">*/</a></code>.
 -> 4
 </code></pre>
 
-<dt><a name="->"><code>(-&gt any [cnt]) -> any</code></a>
+<dt><a name="->"><code>(-&gt any [cnt|T]) -> any</code></a>
 <dd>Searches for the value of <code>any</code> (typically a <a
 href="ref.html#pilog">Pilog</a> variable, or an expression of variables) at top
-level (or level <code>cnt</code>) in the current environment. See also <code><a
+level (or level <code>cnt</code>) in the current environment. If the second
+argument is <code>T</code>, <code>any</code> should be Pilog variable and will
+be looked up in reverse. See also <code><a
 href="refP.html#prove">prove</a></code> and <code><a
 href="refU.html#unify">unify</a></code>.
 

@@ -1,4 +1,4 @@
-# 23jul21 Software Lab. Alexander Burger
+# 24jul21 Software Lab. Alexander Burger
 
 (private) (CL Q R L Prg)
 
@@ -551,6 +551,7 @@
                (_select (caar @Lst) T) )
             (cons NIL L L) ) ) )
    (_gen @Obj)
+   (^ @ (unify (-> @Obj T)))
    (_sel) )
 
 (be _gen (@Obj)

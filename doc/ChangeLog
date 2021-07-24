@@ -1,3 +1,11 @@
+24jul21
+   Signal handler in 'prove'
+      src/subr.l
+   '->' does reverse search with 'T' argument
+      src/subr.l
+      doc/ref_.html
+      lib/pilog.l
+
 23jul21
    Pilog variables not private
       lib/pilog.l
