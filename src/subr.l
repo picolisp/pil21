@@ -1552,28 +1552,14 @@
                ((pair (val Env)) $T)
                (T $Nil) ) ) ) ) )
 
-# (-> any [cnt|T]) -> any
+# (-> any [cnt]) -> any
 (de _arrow (Exe)
-   (let (X (cdr Exe)  Y (++ X))
-      (if (t? (setq X (car X)))
-         (let
-            (L (val (val $Penv))
-               N (car (val (val $Pnl))) )
-            (loop
-               (? (atom (car L)) $Nil)
-               (let Z (cdr @)
-                  (?
-                     (and
-                        (== N (car Z))
-                        (== Y (cdr Z)) )
-                     (cdar (car L)) ) )
-               (shift L) ) )
-         (let L (val (val $Pnl))
-            (when (cnt? X)
-               (let I (int @)
-                  (while (gt0 (dec 'I))
-                     (shift L) ) ) )
-            (lookup (car L) Y) ) ) ) )
+   (let (X (cdr Exe)  L (val (val $Pnl)))
+      (when (cnt? (cadr X))
+         (let I (int @)
+            (while (gt0 (dec 'I))
+               (shift L) ) ) )
+      (lookup (car L) (car X)) ) )
 
 # (unify 'any) -> lst
 (de _unify (Exe)
