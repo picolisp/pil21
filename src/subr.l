@@ -1,4 +1,4 @@
-# 24jul21 Software Lab. Alexander Burger
+# 25jul21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1327,7 +1327,10 @@
             (let V (val Penv)
                (while (pair (car V))
                   (let (Y @  Z (car Y))
-                     (when (and (== N (car Z)) (== X (cdr Z)))
+                     (when
+                        (and
+                           (== N (car Z))
+                           (== X (cdr Z)) )
                         (setq
                            Z (cdr Y)
                            N (car Z)
@@ -1562,11 +1565,28 @@
       (lookup (car L) (car X)) ) )
 
 # (unify 'any) -> lst
+# (unify 'cnt) -> cnt
 (de _unify (Exe)
-   (let (X (save (eval (cadr Exe)))  L (val (val $Pnl)))
-      (if (unify (cadr L) X (car L) X)
-         (val (val $Penv))
-         $Nil ) ) )
+   (let
+      (X (eval (cadr Exe))
+         Pnl (val (val $Pnl))
+         N (car Pnl) )
+      (ifn (cnt? X)
+         (save X
+            (if (unify (cadr Pnl) X N X)
+               (val (val $Penv))
+               $Nil ) )
+         (let (I (int @)  Penv (val (val $Penv)))
+            (while (gt0 (dec 'I))
+               (shift Pnl) )
+            (let M (car Pnl)
+               (while (pair (car Penv))
+                  (let Y (car @)
+                     (when (== (car Y) M)
+                        (let S (cdr Y)
+                           (unify M S N S) ) ) )
+                  (shift Penv) ) )
+            X ) ) ) )
 
 # (group 'lst) -> lst
 (de _group (Exe)
