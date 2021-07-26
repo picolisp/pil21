@@ -1,3 +1,7 @@
+26jul21
+   Bug in reading non-ASCII characters in internal symbols
+      src/io.l
+
 25jul21
    'cnt' argument to 'unify'
       src/subr.l

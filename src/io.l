@@ -1,4 +1,4 @@
-# 21jul21 Software Lab. Alexander Burger
+# 26jul21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1348,7 +1348,7 @@ selectErr)
          (set $Intern @)
          (setq Chr (call $Get)  C (call $Get)) )
       (link (ofs P 2))
-      (charSym Chr P)  # Pack first char
+      (byteSym (i8 Chr) P)  # Pack first byte
       (setq Chr C)
       (while (ge0 Chr)
          (if (== Chr (char "~"))  # Namespace
@@ -1359,7 +1359,7 @@ selectErr)
             (? (strchr $Delim Chr))
             (when (== Chr (char "\\"))
                (setq Chr (call $Get)) )
-            (charSym Chr P) )
+            (byteSym (i8 Chr) P) )
          (setq Chr (call $Get)) )
       (prog1
          (let (Nm (val 3 P)  L (val $Intern))
