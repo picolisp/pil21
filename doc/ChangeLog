@@ -1,3 +1,7 @@
+27jul21
+   Direct 'run' in auto-load with "# VIP (...)"
+      lib/vip.l
+
 26jul21
    Bug in reading non-ASCII characters in internal symbols
       src/io.l
