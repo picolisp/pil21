@@ -252,12 +252,12 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                (=: posY (min1 (: posY) (length (: text)))) ) ) ) )
    (when (head '`(chop "# VIP ") (: text 1))
       (let? L (clip (: text 1 -6))
-         (if (= "(" (car L))
+         (evCmd
             (symbols '(vip pico)
-               (run (str (pack L))) )
-            (setq L (split L " "))
-            (evCmd
-               (apply script (cdr L) (fName (pack (car L)))) ) ) ) ) )
+               (if (= "(" (car L))
+                  (run (str (pack L)))
+                  (setq L (split L " "))
+                  (apply script (cdr L) (fName (pack (car L)))) ) ) ) ) ) )
 
 (dm save> (Win)
    (when (: file)
