@@ -253,7 +253,8 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
    (when (head '`(chop "# VIP ") (: text 1))
       (let? L (clip (: text 1 -6))
          (if (= "(" (car L))
-            (run (str (pack L)))
+            (symbols '(vip pico)
+               (with Win (run (str (pack L)))) )
             (setq L (split L " "))
             (evCmd
                (apply script (cdr L) (fName (pack (car L)))) ) ) ) ) )
@@ -1394,15 +1395,15 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
          (setq *CmdWin
             (new '(+Window) (new '(+Buffer)) (dec *Lines) 1 1 1 1 1) )
          (with (car *Buffers)
-            (load> This)
-            (new '(+Window) This
-               0 (- *Lines 2)
-               1
-               (min1
-                  (- (: posY) (/ (- *Lines 2) 2))
-                  (- (length (: text)) *Lines -3) )
-               1 (: posY)
-               *CmdWin ) )
+            (load> This
+               (new '(+Window) This
+                  0 (- *Lines 2)
+                  1
+                  (min1
+                     (- (: posY) (/ (- *Lines 2) 2))
+                     (- (length (: text)) *Lines -3) )
+                  1 (: posY)
+                  *CmdWin ) ) )
          (with (setq *Window (; *CmdWin next)) (redraw))
          (catch 'done
             (loop
