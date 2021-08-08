@@ -1,24 +1,21 @@
-# 27jul21 Software Lab. Alexander Burger
+# 07aug21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
 (local) (*Ns *Shell *CmdWin *StatNm *Chr *Complete *Repeat *Change *Count *Cnt
 *Search *Clip *Lines *Columns *TagStack *Spell *F7 *F8 *F9 *F10 *F11 *F12 *@)
 
-(local) (TIOCGWINSZ winsize ws_row ws_col setTermSize)
-
+### ANSI Terminal ###
 (sysdefs "terminal")
 
-(de setTermSize ()
-   (use L
-      (%@ "ioctl" NIL 1 TIOCGWINSZ '(L (`winsize W W)))
-      (setq
-         *Lines (car L)
-         *Columns (cadr L) ) ) )
+(local) (getSize xterm ULINE U-OFF REVERS CYAN RED *AttrA *AttrU attr cup clreol
+hideCsr showCsr screen1 screen2)
 
-### ANSI Terminal ###
-(local) (xterm ULINE U-OFF REVERS CYAN RED *AttrA *AttrU attr cup clreol hideCsr
-showCsr screen1 screen2)
+(de getSize ()
+   (use L
+      (unless (=0 (%@ "ioctl" 'I 1 TIOCGWINSZ '(L (`winsize W W))))
+         (quit "Can't get terminal size") )
+      (setq *Lines (car L)  *Columns (cadr L)) ) )
 
 (de xterm ()
    (member (sys "TERM") '("xterm" "screen")) )
@@ -1366,7 +1363,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
 
 ### VIP Entry Point ###
 (de vi (Lst)  # (file (pat . file) (99 . file) (T . file) (sym [sym ..])
-   (setTermSize)
+   (getSize)
    (and Lst (co 'vip))
    (co 'vip
       (off *Buffers)
@@ -1388,7 +1385,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
          (fileBuffer (tmp "empty")) )
       (screen2)
       (let
-         (*Winch '((setTermSize) (eqwin) (flush))
+         (*Winch '((getSize) (eqwin) (flush))
             *TStp1 '((screen1))
             *TStp2 '((screen2) (repaint) (cursor) (flush)) )
          (reset)

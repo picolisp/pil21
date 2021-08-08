@@ -1,4 +1,4 @@
-# 04jun21 Software Lab. Alexander Burger
+# 06aug21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -296,7 +296,10 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (set $Jam YES)
             (execAt (val $Err))
             (set $Jam NO) )
-         (unless (and (isatty 0) (isatty 1))
+         (unless
+            (and
+               ((inFile (val $InFile)) tty)
+               ((outFile (val $OutFile)) tty) )
             (bye 1) )
          (repl 0 ($ "? ") $Nil) )
       (unwind null)
@@ -1018,21 +1021,56 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 # (ctty 'any) -> any | NIL
 (de _ctty (Exe)
    (let X (eval (cadr Exe))
-      (if (cnt? X)
-         (prog (set $TtyPid (i32 (int @))) X)
-         (let Nm (xName Exe (xSym X))
-            (if (reopenTty (bufString Nm (b8 (bufSize Nm))))
-               (let
-                  (In: (inFile (val (val $InFiles)))  # Stdin
-                     Out: (outFile (val 2 (val $OutFiles))) )  # Stdout
-                  (In: ix (In: cnt 0))
-                  (In: chr 0)
-                  (set Tio (=0 (tcgetattr 0 OrgTermio)))  # Save terminal I/O
-                  (Out: ix 0)
-                  (Out: tty YES)
-                  ((outFile (val 3 (val $OutFiles))) tty YES)  # Stderr
-                  X )
-               $Nil ) ) ) ) )
+      (cond
+         ((cnt? X)
+            (set $TtyPid (i32 (int @)))
+            X )
+         ((nil? X)
+            (let Pty (b32 2)  # Master + Slave
+               (when (lt0 (openpty Pty (ofs Pty 1) null null null))
+                  (err Exe 0 ($ "Can't open PTY: %s") (strErrno)) )
+               (cond
+                  ((lt0 (fork)) (forkErr Exe))
+                  ((=0 @)  # Master in child
+                     (close (val 2 Pty))
+                     (let (Fd (val Pty)  Poll (b64 2)  Buf (b8 BUFSIZ))
+                        (loop
+                           (pollIn 0 Poll)
+                           (pollIn Fd (ofs Poll 1))
+                           (if (lt0 (poll Poll 2 -1))
+                              (? (<> (gErrno) EINTR))
+                              (when (readyIn Poll)
+                                 (let N (read 0 Buf BUFSIZ)
+                                    (? (le0 N))
+                                    (write Fd Buf N) ) )
+                              (when (readyIn (ofs Poll 1))
+                                 (let N (read Fd Buf BUFSIZ)
+                                    (? (le0 N))
+                                    (write 1 Buf N) ) ) ) )
+                        (exit 0) ) ) )
+               # Slave in parent
+               (close (val Pty))
+               (login_tty (val 2 Pty)) )
+            ((inFile (val (val $InFiles))) tty YES)
+            ((outFile (val 2 (val $OutFiles))) tty YES)
+            ((outFile (val 3 (val $OutFiles))) tty YES)
+            (set Tio (=0 (tcgetattr 0 OrgTermio)))  # Init terminal I/O
+            $T )
+         (T
+            (let Nm (xName Exe (xSym X))
+               (if (reopenTty (bufString Nm (b8 (bufSize Nm))))
+                  (let
+                     (In: (inFile (val (val $InFiles)))  # Stdin
+                        Out: (outFile (val 2 (val $OutFiles))) )  # Stdout
+                     (In: chr 0)
+                     (In: ix (In: cnt 0))
+                     (In: tty YES)
+                     (set Tio (=0 (tcgetattr 0 OrgTermio)))  # Save terminal I/O
+                     (Out: ix 0)
+                     (Out: tty YES)
+                     ((outFile (val 3 (val $OutFiles))) tty YES)  # Stderr
+                     X )
+                  $Nil ) ) ) ) ) )
 
 # (cmd ['any]) -> sym
 (de _cmd (Exe)

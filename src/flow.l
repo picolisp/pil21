@@ -1,4 +1,4 @@
-# 21jul21 Software Lab. Alexander Burger
+# 02aug21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1359,7 +1359,11 @@
          (loadCoEnv (Src:)) ) ) )
 
 (de brkLoad (Exe)
-   (when (and (isatty 0) (isatty 1) (=0 (val $Break)))
+   (when
+      (and
+         ((inFile (val $InFile)) tty)
+         ((outFile (val $OutFile)) tty)
+         (=0 (val $Break)) )
       (let P (val $Bind)
          (setq P (push (val $At) $At P 0))  # [[@] @ LINK Expr]
          (setq P (push (val $Up) $Up P))

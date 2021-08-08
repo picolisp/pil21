@@ -1,4 +1,4 @@
-// 20may21 Software Lab. Alexander Burger
+// 08aug21 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -270,9 +270,9 @@ void stopTerm(void) {
 void setRaw(void) {
    if (Tio && !Termio) {
       *(Termio = malloc(sizeof(struct termios))) = OrgTermio;
+      tcgetattr(STDIN_FILENO, Termio);
       Termio->c_iflag = 0;
-      Termio->c_oflag = OPOST+ONLCR;
-      Termio->c_lflag = ISIG;
+      Termio->c_lflag = 0;
       Termio->c_cc[VMIN] = 1;
       Termio->c_cc[VTIME] = 0;
       tcSet(Termio);

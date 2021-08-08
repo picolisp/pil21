@@ -1,11 +1,11 @@
-# 24dec20 Software Lab. Alexander Burger
+# 04aug21 Software Lab. Alexander Burger
 
 .SILENT:
 
 CC = clang
 PIL = ../pil  # pil
 ASM = opt -O3  # llvm-as
-MAIN = -rdynamic -lc -lm -ldl -lreadline -lffi
+MAIN = -rdynamic -lc -lutil -lm -ldl -lreadline -lffi
 SHARED = -shared
 OS = $(shell uname)
 CPU = $(shell uname -m)

@@ -1,4 +1,4 @@
-// 14nov20 Software Lab. Alexander Burger
+// 06aug21 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdint.h>
@@ -58,6 +58,7 @@ int main(void) {
 
    ttl("terminal");
    num("TIOCGWINSZ", TIOCGWINSZ);
+   num("TIOCSWINSZ", TIOCSWINSZ);
    num("winsize", sizeof(struct winsize));
    num("ws_row", (char*)&term.ws_row - (char*)&term);
    num("ws_col", (char*)&term.ws_col - (char*)&term);

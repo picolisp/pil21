@@ -1,0 +1,32 @@
+#!/data/data/com.termux/files/home/pil21/pil
+# 08aug21abu
+# Pseudo Terminal (PilBox)
+
+(load "@lib/term.l")
+
+(unless (setq *Sock (connect "localhost" 8082))
+   (bye) )
+(out *Sock (in "~/.pty" (echo)))
+
+(push '*Bye '(prinl))
+
+(when (getTerm)
+   (out *Sock
+      (space)
+      (println (cons 'setTerm "screen" @)) )
+   (in *Sock (till "-") (till "\n")) )
+
+(raw T)
+(call "stty" "intr" NIL)
+
+(task *Sock
+   (in @
+      (ifn (rd 1)
+         (bye)
+         (wr @)
+         (flush) ) ) )
+
+(loop
+   (case (key)
+      ("^D" (bye))
+      (T (out *Sock (prin @))) ) )

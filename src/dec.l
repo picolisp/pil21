@@ -1,4 +1,4 @@
-# 05may21 Software Lab. Alexander Burger
+# 04aug21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -13,7 +13,8 @@
    (src 4 i32)          # Source start line
    (ix 4 i32)           # Buffer index
    (cnt 4 i32)          # Buffer byte count
-   (buf BUFSIZ i8) )    # Buffer
+   (buf BUFSIZ i8)      # Buffer
+   (tty 1 i1) )         # TTY flag
 
 (struct outFile
    (fd 4 i32)           # File descriptor
@@ -87,10 +88,10 @@
 
 # libc
 (local) (malloc realloc free fork getenv setenv getpid getpgrp setsid alarm
-setpgid execvp isatty tcgetattr read write pread pwrite fread fwrite
-putc_unlocked getc_unlocked fopen fflush feof fclose fileno fsync pipe memcmp
-strlen strcpy strdup strcmp strchr strrchr dlsym dlerror dup dup2 close signal
-tcsetpgrp waitpid setjmp longjmp kill exit)
+setpgid execvp isatty openpty login_tty tcgetattr tcsetpgrp read write pread
+pwrite fread fwrite putc_unlocked getc_unlocked fopen fflush feof fclose fileno
+fsync pipe memcmp strlen strcpy strdup strcmp strchr strrchr dlsym dlerror dup
+dup2 close signal poll waitpid setjmp longjmp kill exit)
 
 (de T i8* malloc (i64))
 (de T i8* realloc (i8* i64))
@@ -107,7 +108,10 @@ tcsetpgrp waitpid setjmp longjmp kill exit)
 (de T i32 setpgid (i32 i32))
 (de T i32 execvp (i8* i8**))
 (de T i32 isatty (i32))
+(de T i32 openpty (i32* i32* i8* i8* i8*))
+(de T i32 login_tty (i32))
 (de T i32 tcgetattr (i32 i8*))
+(de T i32 tcsetpgrp (i32 i32))
 (de T i64 read (i32 i8* i64))
 (de T i64 write (i32 i8* i64))
 (de T i64 pread (i32 i8* i64 i64))
@@ -136,8 +140,8 @@ tcsetpgrp waitpid setjmp longjmp kill exit)
 (de T i32 dup2 (i32 i32))
 (de T i32 close (i32))
 (de T i8* signal (i32 i8*))
-(de T i32 tcsetpgrp (i32 i32))
 (de T i32 waitpid (i32 i32* i32))
+(de T i32 poll (i64* i32 i64))
 (de T i32 setjmp (i8*))
 (de T NIL longjmp (i8* i32))
 (de T i32 kill (i32 i32))

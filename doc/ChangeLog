@@ -1,3 +1,30 @@
+08aug21
+   Preset terminal attributes in setRaw()
+      src/lib.c
+   Add files
+      lib/term.l
+      bin/pty
+
+07aug21
+   Clean up terminal handling
+      lib/vip.l
+
+06aug21
+   Add TIOCSWINSZ
+      src/sysdefs.c
+   Set standard I/O to a PTY with (ctty)
+      src/Makefile
+      src/main.l
+      src/dec.l
+      doc/refC.html
+
+03aug21
+   'tty' flag also in 'inFile'
+      src/main.l
+      src/dec.l
+      src/io.l
+      src/flow.l
+
 27jul21
    Direct 'run' in auto-load with "# VIP (...)"
       lib/vip.l

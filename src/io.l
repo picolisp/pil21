@@ -1,4 +1,4 @@
-# 26jul21 Software Lab. Alexander Burger
+# 02aug21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -73,7 +73,7 @@ selectErr)
                @
                (set P (alloc null (inFile T))) ) ) )
       (In: name Nm)
-      (In: fd Fd)
+      (In: tty (n0 (isatty (In: fd Fd))))
       (In: chr 0)
       (In: line (In: src 1))
       (In: ix (In: cnt 0))
@@ -264,7 +264,7 @@ selectErr)
             (let I (In: ix)
                (In: ix (+ I 1))
                (i32 (val (ofs (In: (buf)) I))) ) )
-         ((isatty 0) (bye 0))
+         ((In: tty) (bye 0))
          (T -1) ) ) )
 
 (de i32 getBinary ()
@@ -1176,7 +1176,7 @@ selectErr)
       (set $Chr
          (cond
             ((lt0 (In: fd)) -1)  # EOF
-            ((or (In: fd) (=0 (isatty 0)))  # Not stdin
+            ((or (In: fd) (not (In: tty)))  # Not stdin
                (if
                   (and
                      (== (In: ix) (In: cnt))
@@ -2688,7 +2688,7 @@ selectErr)
                   (prog2
                      (set $ContPrmt ($ "   "))
                      (read1
-                        (if (isatty 0)
+                        (if ((inFile (val $InFile)) tty)
                            (char "\n")
                            (i32 0) ) )
                      (set $LinePrmt (set $ContPrmt null))
