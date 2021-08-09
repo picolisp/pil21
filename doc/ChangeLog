@@ -1,4 +1,5 @@
 09aug21
+   'go', 'up', 'down', 'left' and 'right functions
    'block' function
       lib/vip/draw.l
    Preset terminal attributes in setRaw()

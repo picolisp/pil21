@@ -2,12 +2,12 @@
 
 (symbols 'vip~draw 'vip 'pico)
 
-(local) (*DX *DY *Draw *Boxes)
+(local) (*DX *DY *PX *PY *Draw *Boxes)
 
 (zero *DX *DY)
 
 # Drawing primitives
-(local) (point hline vline rect label)
+(local) (point hline vline go up down left right rect label)
 
 (de point (X Y C)
    (inc 'X *DX)
@@ -41,6 +41,21 @@
       (do (- Y Y2)
          (point X (dec 'Y) "|") ) )
    (and A (point X Y A)) )
+
+(de go (X Y C)
+   (point (setq *PX X) (setq *PY Y) C) )
+
+(de up (N C)
+   (vline "|" *PX (dec *PY) (dec '*PY N) C) )
+
+(de down (N C)
+   (vline "|" *PX (inc *PY) (inc '*PY N) C) )
+
+(de left (N C)
+   (hline "-" (dec *PX) *PY (dec '*PX N) C) )
+
+(de right (N C)
+   (hline "-" (inc *PX) *PY (inc '*PX N) C) )
 
 (de rect (X Y X2 Y2)
    (hline "+" X Y (dec X2))
