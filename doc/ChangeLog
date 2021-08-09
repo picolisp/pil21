@@ -1,4 +1,6 @@
 09aug21
+   'block' function
+      lib/vip/draw.l
    Preset terminal attributes in setRaw()
       src/lib.c
 

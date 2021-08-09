@@ -1,4 +1,4 @@
-# 24may21 Software Lab. Alexander Burger
+# 09aug21 Software Lab. Alexander Burger
 
 (symbols 'vip~draw 'vip 'pico)
 
@@ -53,7 +53,6 @@
       (point X Y C)
       (inc 'X) ) )
 
-
 # Box
 (local) (+Box mx> my> hv>)
 
@@ -82,8 +81,12 @@
 
 
 # Draw box
-(local) box
+(local) (block box)
 (private) (X Y DX DY Txt Prg)
+
+(de block (X Y . Prg)
+   (let (*DX (dec X)  *DY (dec Y))
+      (run Prg) ) )
 
 (de box (X Y DX DY Txt . Prg)
    (with
