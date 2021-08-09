@@ -1,6 +1,8 @@
-08aug21
+09aug21
    Preset terminal attributes in setRaw()
       src/lib.c
+
+08aug21
    Add files
       lib/term.l
       bin/pty
