@@ -1,4 +1,6 @@
 11aug21
+   Default shell "bash" -> "sh"
+      lib/vip.l
    Shell prefix "$ " -> "!" in 'repl'
       lib/form.l
 

@@ -1,4 +1,4 @@
-# 07aug21 Software Lab. Alexander Burger
+# 11aug21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -20,7 +20,7 @@ hideCsr showCsr screen1 screen2)
 (de xterm ()
    (member (sys "TERM") '("xterm" "screen")) )
 
-(de *Shell "bash")
+(de *Shell "sh")
 
 (de ULINE . 4)
 (de U-OFF . 24)
