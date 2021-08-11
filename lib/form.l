@@ -1,4 +1,4 @@
-# 03jul21 Software Lab. Alexander Burger
+# 11aug21 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -354,11 +354,11 @@
       (gui '(+JS +Able +Button) '(= (: home view file) (: home repl)) "Eval"
          '(let Str (val> (: home line))
             (out (pack "+" (: home repl))
-               (if (pre? "$ " Str)
+               (if (= `(char "!") (char Str))
                   (err NIL
                      (prinl Str)
                      (flush)
-                     (in (list "sh" "-c" (cddr (chop Str)))
+                     (in (list "sh" "-c" (cdr (chop Str)))
                         (echo) ) )
                   (err NIL
                      (prinl ": " Str)

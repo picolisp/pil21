@@ -1,3 +1,7 @@
+11aug21
+   Shell prefix "$ " -> "!" in 'repl'
+      lib/form.l
+
 09aug21
    'go', 'up', 'down', 'left' and 'right functions
    'block' function
