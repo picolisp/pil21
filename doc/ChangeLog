@@ -1,3 +1,7 @@
+12aug21
+   Some Pilog variables private again
+      lib/pilog.l
+
 11aug21
    Default shell "bash" -> "sh"
       lib/vip.l

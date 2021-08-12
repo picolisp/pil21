@@ -1,4 +1,4 @@
-# 25jul21 Software Lab. Alexander Burger
+# 12aug21 Software Lab. Alexander Burger
 
 (private) (CL Q R L Prg)
 
@@ -539,6 +539,8 @@
                                  X ) ) ) ) ) ) ) ) )
       ((pat? (car Q)) (get (prove (cdr Q)) @))
       (T (step Q (= '(NIL) (caaar Q)))) ) )
+
+(private) (@Obj @X @Lst @P @C)
 
 (be select ((@Obj . @X) . @Lst)
    (^ @ (unify @X))
