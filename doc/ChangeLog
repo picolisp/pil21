@@ -1,3 +1,7 @@
+13aug21
+   Check (sys "SHELL") for default shell
+      lib/vip.l
+
 12aug21
    Some Pilog variables private again
       lib/pilog.l
