@@ -1,10 +1,10 @@
 #!/data/data/com.termux/files/home/pil21/pil
-# 08aug21abu
+# 14aug21abu
 # Pseudo Terminal (PilBox)
 
 (load "@lib/term.l")
 
-(unless (setq *Sock (connect "localhost" 8082))
+(unless (setq *Sock (connect (or (opt) "localhost") 8082))
    (bye) )
 (out *Sock (in "~/.pty" (echo)))
 

@@ -1,4 +1,4 @@
-# 13aug21 Software Lab. Alexander Burger
+# 14aug21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1027,20 +1027,22 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                                     (link (name " ")) ) ) ) )
                         (T
                            (default *Complete
-                              (conc
-                                 (list S)
-                                 (filter '((P) (pre? S P)) (all))
-                                 (let P (rot (split (chop S) "/"))
-                                    (setq
-                                       S (pack (car P))
-                                       P (and (cdr P) (pack (glue "/" @) "/")) )
-                                    (extract
-                                       '((X)
-                                          (let? F (and (pre? S X) (pack P X))
-                                             (if (=T (car (info (fName F))))
-                                                (pack F "/")
-                                                F ) ) )
-                                       (dir (fName P) T) ) ) ) )
+                              (cons S
+                                 (flip
+                                    (sort
+                                       (conc
+                                          (filter '((P) (pre? S P)) (all))
+                                          (let P (rot (split (chop S) "/"))
+                                             (setq
+                                                S (pack (car P))
+                                                P (and (cdr P) (pack (glue "/" @) "/")) )
+                                             (extract
+                                                '((X)
+                                                   (let? F (and (pre? S X) (pack P X))
+                                                      (if (=T (car (info (fName F))))
+                                                         (pack F "/")
+                                                         F ) ) )
+                                                (dir (fName P) T) ) ) ) ) ) ) )
                            (do (length (car *Complete)) (_bs))
                            (setq S (chop (car (rot *Complete)))) ) )
                      (when (= "^V" (car S))

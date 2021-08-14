@@ -1,3 +1,9 @@
+14aug21
+   Sort TAB-completion
+      lib/vip.l
+   Host option
+      bin/pty
+
 13aug21
    Check (sys "SHELL") for default shell
       lib/vip.l
