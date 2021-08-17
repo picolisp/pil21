@@ -1,3 +1,7 @@
+16aug21
+   Add 'packJson'
+      lib/json.l
+
 14aug21
    Sort TAB-completion
       lib/vip.l
