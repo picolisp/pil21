@@ -1,4 +1,4 @@
-# 04aug21 Software Lab. Alexander Burger
+# 18aug21 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -7,6 +7,8 @@ PIL = ../pil  # pil
 ASM = opt -O3  # llvm-as
 MAIN = -rdynamic -lc -lutil -lm -ldl -lreadline -lffi
 SHARED = -shared
+STRIP = strip
+
 OS = $(shell uname)
 CPU = $(shell uname -m)
 
@@ -21,12 +23,14 @@ all: $(LIB)/sysdefs $(BIN)/picolisp $(LIB)/ext.so $(LIB)/ht.so $(BIN)/balance $(
 # System definitions
 $(LIB)/sysdefs: sysdefs.c
 	$(CC) -w -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' sysdefs.c  &&  ./a.out > $(LIB)/sysdefs  &&  rm ./a.out
+	$(STRIP) $(LIB)/sysdefs
 
 # Base system
 $(BIN)/picolisp: picolisp.bc
 	mkdir -p $(BIN) $(LIB)
 	llc picolisp.bc -relocation-model=pic -o picolisp.s
 	$(CC) picolisp.s -o $(BIN)/picolisp $(MAIN)
+	$(STRIP) $(BIN)/picolisp
 
 picolisp.bc: base.bc lib.bc
 	llvm-link -o picolisp.bc base.bc lib.bc
@@ -45,6 +49,7 @@ lib.bc: pico.h lib.c
 $(LIB)/ext.so: ext.bc
 	llc ext.bc -relocation-model=pic -o ext.s
 	$(CC) ext.s -o $(LIB)/ext.so $(SHARED)
+	$(STRIP) $(LIB)/ext.so
 
 ext.bc: ext.ll
 	$(ASM) -o ext.bc ext.ll
@@ -55,6 +60,7 @@ ext.ll: $(INC) ext.l
 $(LIB)/ht.so: ht.bc
 	llc ht.bc -relocation-model=pic -o ht.s
 	$(CC) ht.s -o $(LIB)/ht.so $(SHARED)
+	$(STRIP) $(LIB)/ht.so
 
 ht.bc: ht.ll
 	$(ASM) -o ht.bc ht.ll
@@ -65,13 +71,16 @@ ht.ll: $(INC) ht.l
 # Tools
 $(BIN)/balance: balance.c
 	$(CC) -O3 -w -o $(BIN)/balance balance.c
+	$(STRIP) $(BIN)/balance
 
 # Gate
 $(BIN)/ssl: ssl.c
 	$(CC) -O3 -w -o $(BIN)/ssl ssl.c -lssl -lcrypto
+	$(STRIP) $(BIN)/ssl
 
 $(BIN)/httpGate: httpGate.c
 	$(CC) -O3 -w -o $(BIN)/httpGate httpGate.c -lssl -lcrypto
+	$(STRIP) $(BIN)/httpGate
 
 # Clean up
 clean:

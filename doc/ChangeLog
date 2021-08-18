@@ -1,4 +1,6 @@
 18aug21
+   Strip binaries
+      src/Makefile
    'rasoq' function
       src/subr.l
       src/glob.l
