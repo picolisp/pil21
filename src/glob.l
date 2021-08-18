@@ -1,4 +1,4 @@
-# 21jul21 Software Lab. Alexander Burger
+# 18aug21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -491,6 +491,7 @@
    (NIL "assoc" _assoc)
    (NIL "rassoc" _rassoc)
    (NIL "asoq" _asoq)
+   (NIL "rasoq" _rasoq)
    (NIL "rank" _rank)
    (NIL "match" _match)
    (NIL "fill" _fill)

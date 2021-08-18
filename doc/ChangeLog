@@ -1,3 +1,12 @@
+18aug21
+   'rasoq' function
+      src/subr.l
+      src/glob.l
+      test/src/subr.l
+      doc/ref.html
+      doc/refA.html
+      doc/refR.html
+
 16aug21
    Add 'packJson'
       lib/json.l

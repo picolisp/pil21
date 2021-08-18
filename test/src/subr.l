@@ -1,4 +1,4 @@
-# 20jul21 Software Lab. Alexander Burger
+# 18aug21 Software Lab. Alexander Burger
 
 ### c[ad]*r ###
 (let L '(1 2 3 4 5)
@@ -486,6 +486,13 @@
    (asoq (9) '(((9) 1 2 3) (b . 7) ("ok" "Hello"))) )
 (test '(b . 7)
    (asoq 'b '(((9) 1 2 3) (b . 7) ("ok" "Hello"))) )
+
+
+### rasoq ###
+(test '(2 . b)
+   (rasoq 'b '((1 . a) (2 . b) (3 . c))) )
+(test NIL
+   (rasoq "b" '((1 . a) (2 . b) (3 . c))) )
 
 
 ### rank ###

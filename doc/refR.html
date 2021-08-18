@@ -212,7 +212,7 @@ href="ref.html#cmp">Comparing</a>.
 <dd>Reverse <code><a href="refA.html#assoc">assoc</a></code>. Returns the first
 element from <code>lst</code> with its CDR equal to <code>any</code>, or
 <code>NIL</code> if no match is found. See also <code><a
-href="refA.html#assoc">assoc</a></code> and <code><a
+href="refR.html#rasoq">rasoq</a></code> and <code><a
 href="refA.html#asoq">asoq</a></code>.
 
 <pre><code>
@@ -221,6 +221,21 @@ href="refA.html#asoq">asoq</a></code>.
 : (rassoc (1 2 3) '((999 1 2 3) ("b" . 7) ("ok" "Hello")))
 -> (999 1 2 3)
 : (rassoc 'u '((999 1 2 3) ("b" . 7) ("ok" "Hello")))
+-> NIL
+</code></pre>
+
+<dt><a name="rasoq"><code>(rasoq 'any 'lst) -> lst</code></a>
+<dd>Reverse <code><a href="refA.html#asoq">asoq</a></code>. Returns the first
+element from <code>lst</code> with <code>any</code> as its CDR, or
+<code>NIL</code> if no match is found. <code><a
+href="ref_.html#==">==</a></code> is used for comparison (pointer equality). See
+also <code><a href="refA.html#assoc">assoc</a></code> and <code><a
+href="refR.html#rassoc">rassoc</a></code>.
+
+<pre><code>
+: (rasoq 'b '((1 . a) (2 . b) (3 . c))) )
+-> (2 . b)
+: (rasoq "b" '((1 . a) (2 . b) (3 . c))) )
 -> NIL
 </code></pre>
 

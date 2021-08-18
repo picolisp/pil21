@@ -1,4 +1,4 @@
-# 25jul21 Software Lab. Alexander Burger
+# 18aug21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1163,6 +1163,18 @@
          (? (atom Z) $Nil)
          (let C (car Z)
             (? (and (pair C) (== Y (car C))) C) )
+         (shift Z) ) ) )
+
+# (rasoq 'any 'lst) -> lst
+(de _rasoq (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         Z (eval (car X)) )
+      (loop
+         (? (atom Z) $Nil)
+         (let C (car Z)
+            (? (and (pair C) (== Y (cdr C))) C) )
          (shift Z) ) ) )
 
 # (rank 'any 'lst ['flg]) -> lst
