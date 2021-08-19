@@ -1,10 +1,12 @@
-# 18aug21 Software Lab. Alexander Burger
+# 19aug21 Software Lab. Alexander Burger
 
 .SILENT:
 
 CC = clang
 PIL = ../pil  # pil
 ASM = opt -O3  # llvm-as
+LLC = llc
+LINK = llvm-link
 MAIN = -rdynamic -lc -lutil -lm -ldl -lreadline -lffi
 SHARED = -shared
 STRIP = strip
@@ -28,12 +30,12 @@ $(LIB)/sysdefs: sysdefs.c
 # Base system
 $(BIN)/picolisp: picolisp.bc
 	mkdir -p $(BIN) $(LIB)
-	llc picolisp.bc -relocation-model=pic -o picolisp.s
+	$(LLC) picolisp.bc -relocation-model=pic -o picolisp.s
 	$(CC) picolisp.s -o $(BIN)/picolisp $(MAIN)
 	$(STRIP) $(BIN)/picolisp
 
 picolisp.bc: base.bc lib.bc
-	llvm-link -o picolisp.bc base.bc lib.bc
+	$(LINK) -o picolisp.bc base.bc lib.bc
 
 base.bc: base.ll
 	$(ASM) -o base.bc base.ll
@@ -47,7 +49,7 @@ lib.bc: pico.h lib.c
 
 # Extension libraries
 $(LIB)/ext.so: ext.bc
-	llc ext.bc -relocation-model=pic -o ext.s
+	$(LLC) ext.bc -relocation-model=pic -o ext.s
 	$(CC) ext.s -o $(LIB)/ext.so $(SHARED)
 	$(STRIP) $(LIB)/ext.so
 
@@ -58,7 +60,7 @@ ext.ll: $(INC) ext.l
 	$(PIL) lib/llvm.l ext.l -bye > ext.ll
 
 $(LIB)/ht.so: ht.bc
-	llc ht.bc -relocation-model=pic -o ht.s
+	$(LLC) ht.bc -relocation-model=pic -o ht.s
 	$(CC) ht.s -o $(LIB)/ht.so $(SHARED)
 	$(STRIP) $(LIB)/ht.so
 
