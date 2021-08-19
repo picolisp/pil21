@@ -25,7 +25,6 @@ all: $(LIB)/sysdefs $(BIN)/picolisp $(LIB)/ext.so $(LIB)/ht.so $(BIN)/balance $(
 # System definitions
 $(LIB)/sysdefs: sysdefs.c
 	$(CC) -w -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' sysdefs.c  &&  ./a.out > $(LIB)/sysdefs  &&  rm ./a.out
-	$(STRIP) $(LIB)/sysdefs
 
 # Base system
 $(BIN)/picolisp: picolisp.bc
