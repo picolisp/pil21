@@ -1,4 +1,4 @@
-# 06aug21 Software Lab. Alexander Burger
+# 20aug21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -298,8 +298,8 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (set $Jam NO) )
          (unless
             (and
-               ((inFile (val $InFile)) tty)
-               ((outFile (val $OutFile)) tty) )
+               ((inFile (val (val $InFiles))) tty)
+               ((outFile (val 2 (val $OutFiles))) tty) )
             (bye 1) )
          (repl 0 ($ "? ") $Nil) )
       (unwind null)
