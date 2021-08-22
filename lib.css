@@ -1,4 +1,4 @@
-/* 16jul21abu
+/* 22aug21abu
  * 17nov12jk
  * (c) Software Lab. Alexander Burger
  */
@@ -263,6 +263,7 @@ a:hover {
    display: inline;
    padding: 1ex;
    margin: 1ex 0 1ex 5em;
+   color: black;
    background-color: yellow;
    border: 1px solid #888;
    border-radius: 6px;
