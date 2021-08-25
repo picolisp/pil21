@@ -1,4 +1,4 @@
-# 30mar21 Software Lab. Alexander Burger
+# 25aug21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1204,7 +1204,6 @@
                (loop
                   (let N (eval (car X))
                      (? (nil? N) N)
-                     (? (== N ZERO) N)
                      (when (sign? (needNum Exe N))
                         (setq Sign (not Sign)  N (pos N)) )
                      (safe N)
@@ -1217,6 +1216,7 @@
                                  (set R (addu (val R) Half))  # Round
                                  N ) ) )
                         (if Sign (neg N) N) )
+                     (? (== N ZERO) N)
                      (set R (mulu (val R) N)) ) ) ) ) ) ) )
 
 # (/ 'num ..) -> num
@@ -1234,7 +1234,6 @@
                         (if Sign (neg N) N) ) )
                   (let N (eval (car X))
                      (? (nil? N) N)
-                     (? (== N ZERO) N)
                      (when (== N ZERO)
                         (divErr Exe) )
                      (when (sign? (needNum Exe N))
@@ -1257,7 +1256,6 @@
                         (if Sign (neg N) N) ) )
                   (let N (eval (car X))
                      (? (nil? N) N)
-                     (? (== N ZERO) N)
                      (when (== N ZERO)
                         (divErr Exe) )
                      (set R

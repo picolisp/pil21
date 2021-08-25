@@ -1,4 +1,6 @@
 25aug21
+   Division by zero did not throw an error
+      src/big.l
    Private declarations
       lib/xhtml.l
 
