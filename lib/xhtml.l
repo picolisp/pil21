@@ -1,4 +1,4 @@
-# 22jun21 Software Lab. Alexander Burger
+# 25aug21 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -375,7 +375,7 @@
 (de <tbody> (Attr . Prg)
    (tag "tbody" Attr 2 Prg) )
 
-(private) (Attr Ttl Head Prg *RowF H L Y A N)
+(private) (Attr Ttl Head Prg *RowF Beg BegR Row EndR End C H L Y A N)
 
 (de <table> (ATTR Ttl Head . Prg)
    (on *RowF)
@@ -417,7 +417,7 @@
                      (eval Y 2) ) ) ) ) )
       (micro EndR) ) )
 
-(private) (Y Lst L C E N)
+(private) (Y Lst L E N)
 
 (de <grid> (Y . Lst)
    (let ((Beg BegR Row EndR End) *XhtmlGrid)
