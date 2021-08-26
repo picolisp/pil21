@@ -1,4 +1,4 @@
-# 18aug21 Software Lab. Alexander Burger
+# 26aug21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -492,19 +492,19 @@
    (let
       (X (cdr Exe)
          N (evCnt Exe X)
-         L (save (eval (car (shift X)))) )
-      (setq X (eval (car (shift X))))
+         L (save (eval (car (shift X))))
+         Y (save (eval (car (shift X)))) )
       (cond
-         ((atom L) (eval (car X)))
-         ((le0 (dec 'N)) (cons X (cdr L)))
+         ((atom L) (cons Y $Nil))
+         ((le0 (dec 'N)) (cons Y (cdr L)))
          (T
-            (let (Y (cons (car L) $Nil)  R (save Y))
+            (let (Z (cons (car L) $Nil)  R (save Z))
                (loop
                   (? (atom (shift L))
-                     (set 2 Y (cons X L)) )
+                     (set 2 Z (cons Y L)) )
                   (? (=0 (dec 'N))
-                     (set 2 Y (cons X (cdr L))) )
-                  (setq Y (set 2 Y (cons (car L) $Nil))) )
+                     (set 2 Z (cons Y (cdr L))) )
+                  (setq Z (set 2 Z (cons (car L) $Nil))) )
                R ) ) ) ) )
 
 # (strip 'any) -> any

@@ -1,3 +1,8 @@
+26aug21
+   Bug in 'place'
+      src/subr.l
+      test/src/subr.l
+
 25aug21
    Division by zero did not throw an error
       src/big.l

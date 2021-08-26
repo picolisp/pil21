@@ -1,4 +1,4 @@
-# 18aug21 Software Lab. Alexander Burger
+# 26aug21 Software Lab. Alexander Burger
 
 ### c[ad]*r ###
 (let L '(1 2 3 4 5)
@@ -171,6 +171,8 @@
 
 
 ### place ###
+(test (7) (place 1 NIL 7))
+(test (7 2 3) (place -1 (1 2 3) 7))
 (test '(a b 777 d e) (place 3 '(a b c d e) 777))
 (test (777 b c d e) (place 1 '(a b c d e) 777))
 (test '(a b c d e 777) (place 9 '(a b c d e) 777))
