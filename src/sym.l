@@ -1,4 +1,4 @@
-# 03may21 Software Lab. Alexander Burger
+# 27aug21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1095,6 +1095,38 @@
             (T
                (set 2 V (cdr @))  # Remove
                (car @) ) ) ) ) )  # and return
+
+# (rid 'var 'any) -> any
+(de _rid (Exe)
+   (let
+      (X (cdr Exe)
+         Y (save (needChkVar Exe (eval (++ X)))) )
+      (when (and (sym? Y) (sym? (val (tail Y))))
+         (dbTouch Exe Y) )  # External symbol
+      (setq X (eval (car X)))
+      (let V (val Y)
+         (cond
+            ((pair V)
+               (let (Z V  L (cdr Z))
+                  (loop
+                     (? (atom L)  # Non-circular
+                        (when (equal L X)
+                           (set 2 Z $Nil) )
+                        (if (equal (car V) X)
+                           (set Y (cdr V))
+                           V ) )
+                     (? (== L V)  # Circular
+                        (nond
+                           ((equal (car L) X) V)
+                           ((== L Z)
+                              (set 2 Z (cdr L))
+                              (set Y Z) )
+                           (NIL (set Y $Nil)) ) )
+                     (if (equal (car L) X)
+                        (set 2 Z (shift L))
+                        (setq L (cdr (shift Z))) ) ) ) )
+            ((equal V X) (set Y $Nil))
+            (T V) ) ) ) )
 
 # (enum 'var 'cnt ['cnt ..]) -> lst
 # (enum 'var) -> lst

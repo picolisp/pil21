@@ -1,4 +1,4 @@
-# 18aug21 Software Lab. Alexander Burger
+# 27aug21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -219,6 +219,7 @@
    (NIL "del" _del)
    (NIL "queue" _queue)
    (NIL "fifo" _fifo)
+   (NIL "rid" _rid)
    (NIL "enum" _enum)
    (NIL "enum?" _enumQ)
    (NIL "idx" _idx)

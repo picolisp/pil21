@@ -736,6 +736,27 @@ href="refR.html#remote/2">remote/2</a></code>.
 -> (1 5 a 2 6 b 3 7 c 4 8)
 </code></pre>
 
+<dt><a name="rid"><code>(rid 'var 'any) -> any</code></a>
+<dd>Destructively removes all occurrences of <code>any</code> from the (possibly
+circular) value of of <code>var</code>, and returns the new value. See also
+<code><a href="refF.html#fifo">fifo</a></code>, <code><a
+href="refQ.html#queue">queue</a></code>, <code><a
+href="refC.html#cut">cut</a></code> and <code><a
+href="refD.html#del">del</a></code>.
+
+<pre><code>
+$: (off E)
+-> NIL
+: (fifo 'E 1 2 3 2 4 2)
+-> 2
+: E
+-> (2 1 2 3 2 4 .)
+$: (rid 'E 2)
+-> (4 1 3 .)
+$: (rid 'E 4)
+-> (3 1 .)
+</code></pre>
+
 <dt><a name="rollback"><code>(rollback) -> flg</code></a>
 <dd>Cancels a transaction, by discarding all modifications of external symbols.
 See also <code><a href="refC.html#commit">commit</a></code>.

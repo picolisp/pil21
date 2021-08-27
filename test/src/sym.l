@@ -1,4 +1,4 @@
-# 04jul21 Software Lab. Alexander Burger
+# 27aug21 Software Lab. Alexander Burger
 
 ### name ###
 (test "abc" (name 'abc))
@@ -243,6 +243,17 @@
    (test 1 (fifo 'X))
    (test 2 (fifo 'X))
    (test 3 (fifo 'X)) )
+
+
+### rid ###
+(let E (1 . 2)
+   (test 2 (rid 'E 1)) )
+(let E (1 2 3 2 4 . 2)
+   (test (1 3 4) (rid 'E 2))
+   (test (3 4) (rid 'E 1))
+   (test (3) (rid 'E 4))
+   (test (3) (rid 'E 7))
+   (test NIL (rid 'E 3)) )
 
 
 ### idx lup ###

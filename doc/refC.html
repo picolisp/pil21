@@ -810,7 +810,7 @@ $ cat count                               # Check "count"
 </code></pre>
 
 <dt><a name="ctty"><code>(ctty 'pid) -> pid</code></a>
-<dt><code>(ctty 'any) -> any | NIL</code></a>
+<dt><code>(ctty 'any) -> any | NIL</code>
 <dd>Unless called with a short number, <code>ctty</code> changes the current TTY
 device to <code>sym</code> (or just sets standard I/O to a PTY if
 <code>sym</code> is <code>NIL</code>). Otherwise, the local console is prepared
@@ -874,8 +874,9 @@ single-argument functions).
 
 <dt><a name="cut"><code>(cut 'cnt 'var) -> lst</code></a>
 <dd>Pops the first <code>cnt</code> elements (CAR) from the stack in
-<code>var</code>. See also <code><a href="refP.html#pop">pop</a></code> and
-<code><a href="refD.html#del">del</a></code>.
+<code>var</code>. See also <code><a href="refP.html#pop">pop</a></code>,
+<code><a href="refR.html#rid">rid</a></code> and <code><a
+href="refD.html#del">del</a></code>.
 
 <pre><code>
 : (setq S '(1 2 3 4 5 6 7 8))

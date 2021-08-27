@@ -1,3 +1,15 @@
+27aug21
+   'rid' function
+      src/sym.l
+      src/glob.l
+      test/src/sym.l
+      doc/ref.html
+      doc/refC.html
+      doc/refD.html
+      doc/refF.html
+      doc/refQ.html
+      doc/refR.html
+
 26aug21
    Bug in 'place'
       src/subr.l
