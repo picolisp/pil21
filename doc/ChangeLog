@@ -1,3 +1,9 @@
+28aug21
+   Add note about 'navive'
+      doc/faq.html
+   'rid' function
+      test/src/sym.l
+
 27aug21
    'rid' function
       src/sym.l
