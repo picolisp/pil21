@@ -1,3 +1,11 @@
+01sep21
+   select() system calls are now poll()
+      doc/refK.html
+      doc/refL.html
+      doc/refR.html
+      doc/refS.html
+      doc/refW.html
+
 30aug21
    Typo
       doc/refR.html

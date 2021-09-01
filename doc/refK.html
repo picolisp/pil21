@@ -25,7 +25,7 @@ href="ref.html#dbase">Database</a>.
 <dt><a name="key"><code>(key ['cnt]) -> sym</code></a>
 <dd>Returns the next character from standard input as a single-character
 transient symbol. The console is set to raw mode. While waiting for a key press,
-a <code>select</code> system call is executed for all file descriptors and
+a <code>poll(2)</code> system call is executed for all file descriptors and
 timers in the <code>VAL</code> of the global variable <code><a
 href="refR.html#*Run">*Run</a></code>. If <code>cnt</code> is
 non-<code>NIL</code>, that amount of milliseconds is waited maximally, and

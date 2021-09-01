@@ -32,7 +32,7 @@ href="refW.html#wait">wait</a></code> and <code><a
 href="refL.html#listen">listen</a></code>. The first element of each expression
 must either be a positive number (thus denoting a file descriptor to wait for)
 or a negative number (denoting a timeout value in milliseconds (in that case
-another number must follow to hold the remaining time)). A <code>select</code>
+another number must follow to hold the remaining time)). A <code>poll(2)</code>
 system call is performed with these values, and the corresponding
 <code>prg</code> body is executed when input data are available or when a
 timeout occurred (with <code><a href="ref_.html#@">@</a></code> set to the file
