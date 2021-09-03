@@ -1,3 +1,7 @@
+03sep21
+   'mis>' method for '+Swap'
+      lib/db.l
+
 01sep21
    select() system calls are now poll()
       doc/refK.html

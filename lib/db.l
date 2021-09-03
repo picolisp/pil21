@@ -1,4 +1,4 @@
-# 10jul21 Software Lab. Alexander Burger
+# 03sep21 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -860,6 +860,9 @@
 
 
 (class +Swap)
+
+(dm mis> (Val Obj)
+   (extra (if (ext? Val) (val Val) Val) Obj) )
 
 (dm has> (Val X)
    (if (ext? Val)
