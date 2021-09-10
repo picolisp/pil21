@@ -1,4 +1,4 @@
-# 14aug21 Software Lab. Alexander Burger
+# 10sep21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1560,7 +1560,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                                  ("f"  # [gf] Edit file under cursor
                                     (pushTag (: buffer file))
                                     (reload (pack (getWord T))) )
-                                 ("g" (move 'goAbs 1 1))  # [gg] Go to beginning of text
+                                 ("g" (move 'goAbs 1 (or (format *Count) 1)))  # [gg] Go to beginning of text
                                  ("s" (spell))
                                  (T (beep)) ) )
                            ("+"  # Increase window size
