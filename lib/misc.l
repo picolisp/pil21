@@ -1,4 +1,4 @@
-# 06may21 Software Lab. Alexander Burger
+# 13sep21 Software Lab. Alexander Burger
 
 # *Allow
 
@@ -388,12 +388,12 @@
    (echo S) )
 
 # Multiline Base64
-(de prBase64 (N)
+(de prBase64 (N C)
    (while
       (do N
          (NIL (ext:Base64 (rd 1) (rd 1) (rd 1)))
          T )
-      (prinl) ) )
+      (prinl C) ) )
 
 # Send mail
 (de mail (Host Port From To Sub Att . Prg)
@@ -419,7 +419,7 @@
                               (prin (car Port))
                               (wr 0)
                               (prin (cadr Port)) )
-                           (prBase64 T) )
+                           (prBase64 T "^M") )
                         (prinl "^M") )
                      (pre? "235 " (in S (line T))) ) )
                (out S (prinl "MAIL FROM:<" (fin From) ">^M"))
@@ -436,7 +436,7 @@
                   (ifn (find > (chop Sub) '("~" .))
                      (prinl Sub "^M")
                      (prin "=?utf-8?B?")
-                     (pipe (prin Sub) (prBase64 T))
+                     (pipe (prin Sub) (prBase64 T "^M"))
                      (prinl "?=^M") )
                   (when (pair From)
                      (prinl "Reply-To: " (car From) "^M") )
@@ -453,7 +453,10 @@
                   (prinl "Content-Type: text/plain; charset=utf-8^M")
                   (prinl "Content-Transfer-Encoding: 8bit^M")
                   (prinl "^M")
-                  (prEval Prg 2)
+                  (pipe (prEval Prg 2)
+                     (for (C (rd 1)  C  (rd 1))
+                        (and (= 10 C) (wr 13))  # ^M before ^J
+                        (wr C) ) )
                   (prinl "^M")
                   (when Att
                      (loop
@@ -471,8 +474,8 @@
                         (in (car Att)
                            (ifn (cadr Att)
                               (echo)
-                              (prBase64 18)
-                              (prinl) ) )
+                              (prBase64 18 "^M")
+                              (prinl "^M") ) )
                         (prinl "^M")
                         (unless (cadr Att)
                            (prinl "--==" B "==--^M")

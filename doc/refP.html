@@ -550,11 +550,12 @@ href="refW.html#wr">wr</a></code>.
 -> NIL
 </code></pre>
 
-<dt><a name="prBase64"><code>(prBase64 'cnt) -> NIL</code></a>
+<dt><a name="prBase64"><code>(prBase64 'cnt ['str]) -> NIL</code></a>
 <dd>Multiline base64 printing. Echoes bytes from the current input channel to
 the current output channel in Base64 format. A newline is inserted after every
-<code>cnt</code> byte-triples (character-quadruples). See also <code><a
-href="refE.html#echo">echo</a></code> <code><a
+<code>cnt</code> byte-triples (character-quadruples). If <code>str</code> is
+given (typically a carriage return), it is output before the newline. See also
+<code><a href="refE.html#echo">echo</a></code> <code><a
 href="refM.html#mail">mail</a></code>.
 
 <pre><code>

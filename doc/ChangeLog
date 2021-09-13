@@ -1,4 +1,9 @@
 13sep21
+   Insert "^M" before "^J" in 'mail'
+      lib/misc.l
+   'prBase64' optional "^M" argument
+      lib/misc.l
+      doc/refP.html
    Explanations for reference syntax
       doc/ref.html
 
