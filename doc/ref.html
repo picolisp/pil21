@@ -1938,8 +1938,9 @@ abbreviations:
 <li><code>hook</code> - Database hook object
 </ul>
 
-<p>Arguments evaluated by the function (depending on the context) are quoted
-(prefixed with the single quote character "<code>'</code>").
+<p>Arguments evaluated by the function in the "normal" way are quoted (prefixed
+with the single quote character "<code>'</code>"). Other arguments are either
+not evaluated, or may be evaluated depending on the context.
 
 <p>For example, the function <code><a href="refS.html#setq">setq</a></code>
 evaluates every second argument (giving any kind of value), while it does
@@ -1949,6 +1950,11 @@ could be specified as:
 <pre><code>
    (setq var1 'any1 var2 'any2 ..) -> any
 </code></pre>
+
+<p>A dotted pair notation in the argument list like <code>(... 'any .
+prg)</code> indicates an unevaluated list of further arguments.
+
+<p>Argumnets in brackets '[' and ']' are optional.
 
 <p>
 <a href="refA.html">A</a>
