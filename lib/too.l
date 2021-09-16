@@ -1,4 +1,4 @@
-# 31mar21 Software Lab. Alexander Burger
+# 16sep21 Software Lab. Alexander Burger
 
 (private) (Prg C Q X Y CL Cls Name)
 
@@ -119,6 +119,26 @@
    (while (pair X)
       (dbMapV (++ X)) )
    (and (ext? X) (_dbMap X)) )
+
+(de refObj (Obj Flg)
+   (make
+      (recur (Obj)
+         (for (F . @) (or *Dbs (2))
+            (for (This (seq F) This (seq This))
+               (when (fish '((X) (== X Obj)) (getl This))
+                  (if (and Flg (: T))
+                     (recurse This)
+                     (link This) ) ) ) ) )
+      (for L *ExtDBs  # ("path/" <cnt> <ofs>)
+         (let ((P N E) L  Lck)
+            (for I N
+               (let (Fd (open (pack P (hax (dec I))))  (Cnt . Siz) (blk Fd 0))
+                  (and (=1 I) (setq Lck Fd))
+                  (for Blk (dec Cnt)
+                     (let B (ext E (blk Fd Blk Siz Lck))
+                        (when (fish '((X) (== X Obj)) B)
+                           (link (cons P (id I Blk))) ) ) )
+                  (close Fd) ) ) ) ) ) )
 
 ### DB Check ###
 (de dbCheck ()

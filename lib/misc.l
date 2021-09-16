@@ -1,4 +1,4 @@
-# 13sep21 Software Lab. Alexander Burger
+# 16sep21 Software Lab. Alexander Burger
 
 # *Allow
 
@@ -454,9 +454,7 @@
                   (prinl "Content-Transfer-Encoding: 8bit^M")
                   (prinl "^M")
                   (pipe (prEval Prg 2)
-                     (for (C (rd 1)  C  (rd 1))
-                        (and (= 10 C) (wr 13))  # ^M before ^J
-                        (wr C) ) )
+                     (_nlCrnl) )
                   (prinl "^M")
                   (when Att
                      (loop
@@ -473,7 +471,7 @@
                         (prinl "^M")
                         (in (car Att)
                            (ifn (cadr Att)
-                              (echo)
+                              (_nlCrnl)
                               (prBase64 18 "^M")
                               (prinl "^M") ) )
                         (prinl "^M")
@@ -492,6 +490,12 @@
 (de _rcpt (To)
    (out S (prinl "RCPT TO:<" To ">^M"))
    (pre? "250 " (in S (line T))) )
+
+(de _nlCrnl ()
+   (let P NIL
+      (for (C (rd 1)  C  (rd 1))
+         (and (= 10 C) (<> P 13) (wr 13))  # ^M before ^J
+         (wr (setq P C)) ) ) )
 
 ### Debug ###
 `*Dbg

@@ -1,5 +1,11 @@
+16sep21
+   Insert "^M" before "^J" in 'mail' body
+      lib/misc.l
+   'refObj' function
+      lib/too.l
+
 13sep21
-   Insert "^M" before "^J" in 'mail'
+   Insert "^M" before "^J" in 'mail' body
       lib/misc.l
    'prBase64' optional "^M" argument
       lib/misc.l
