@@ -1,4 +1,4 @@
-# 20aug21 Software Lab. Alexander Burger
+# 17sep21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1730,8 +1730,8 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                         (set 2 Y (cons (mkStr (val @)) $Nil)) ) )
                   R )
                $Nil ) )
-         (clear_history)
          (let (Y (needLst Exe (eval (car X)))  Z Y)
+            (clear_history)
             (while (pair Z)
                (let (Nm (xName Exe (xSym (++ Z)))  Stk (stack))
                   (add_history (bufString Nm (b8 (bufSize Nm))) )

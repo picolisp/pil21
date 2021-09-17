@@ -1,3 +1,7 @@
+17sep21
+   Clear 'history' after argument evaluation
+      src/main.l
+
 16sep21
    Insert "^M" before "^J" in 'mail' body
       lib/misc.l

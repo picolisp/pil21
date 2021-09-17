@@ -1504,7 +1504,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 146,
-  i64 258
+  i64 274
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -106632,9 +106632,7 @@ $9:
   %42 = phi i64 [%14, %$12], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 8) to i64), %$8] ; # ->
   br label %$4
 $3:
-; # (clear_history)
-  call void @clear_history()
-; # (let (Y (needLst Exe (eval (car X))) Z Y) (while (pair Z) (let (N...
+; # (let (Y (needLst Exe (eval (car X))) Z Y) (clear_history) (while ...
 ; # (car X)
   %43 = inttoptr i64 %3 to i64*
   %44 = load i64, i64* %43
@@ -106671,6 +106669,8 @@ $20:
   call void @lstErr(i64 %0, i64 %52)
   unreachable
 $21:
+; # (clear_history)
+  call void @clear_history()
 ; # (while (pair Z) (let (Nm (xName Exe (xSym (++ Z))) Stk (stack)) (...
   br label %$22
 $22:
