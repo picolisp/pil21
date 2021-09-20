@@ -1,4 +1,4 @@
-# 04aug21 Software Lab. Alexander Burger
+# 19sep21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -229,7 +229,7 @@ socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (de T i1 reopenTty (i8*))
 
 # System
-(local) (getUsec getMsec getDate getGmDate getTime getGmTime fileInfo)
+(local) (getUsec getMsec getDate getGmDate getTime getGmTime ulimStk fileInfo)
 
 (de T i64 getUsec (i1))
 (de T i64 getMsec ())
@@ -237,6 +237,7 @@ socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (de T i64 getGmDate ())
 (de T i64 getTime ())
 (de T i64 getGmTime ())
+(de T i8* ulimStk ())
 (de T i64 fileInfo (i1 i8* i64*))
 
 # Polling

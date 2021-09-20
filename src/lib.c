@@ -1,4 +1,4 @@
-// 09aug21 Software Lab. Alexander Burger
+// 19sep21 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -338,6 +338,14 @@ int64_t getTime(void) {
 
 int64_t getGmTime(void) {
    return Time? (Time->tm_hour * 3600 + Time->tm_min * 60 + Time->tm_sec) : -1;
+}
+
+char *ulimStk(void) {
+   struct rlimit stk;
+
+   if (getrlimit(RLIMIT_STACK, &stk) < 0 || stk.rlim_cur == RLIM_INFINITY)
+      return NULL;
+   return (char*)&stk - stk.rlim_cur + 16384;
 }
 
 int64_t fileInfo(int lnk, char *nm, int64_t *siz) {

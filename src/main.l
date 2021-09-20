@@ -1,4 +1,4 @@
-# 17sep21 Software Lab. Alexander Burger
+# 20sep21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -303,15 +303,17 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (bye 1) )
          (repl 0 ($ "? ") $Nil) )
       (unwind null)
+      (unless (val $StkLimit)
+         (set $StkLimit (val $StkBrk)) )
       (set
          $Link 0
          $Protect 0
          $Next $Nil
          $Make 0
          $Yoke 0
-         $Trace 0 )
-      (set $Put (fun (void i8) _putStdout))
-      (set $Get (fun (i32) _getStdin))
+         $Trace 0
+         $Put (fun (void i8) _putStdout)
+         $Get (fun (i32) _getStdin) )
       (longjmp QuitRst 1) ) )
 
 (de NIL stkErr (Exe)
@@ -1755,8 +1757,10 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (local) (main sigChld)
 
 (de i32 main ((i32 . Ac) (i8** . Av))
-   (set $AV0 (val Av))  # Save command
-   (set $AV (setq Av (ofs Av 1)))  # and argument vector
+   (set
+      $AV0 (val Av)  # Save command
+      $AV (setq Av (ofs Av 1))  # and argument vector
+      $StkLimit (set $StkBrk (ulimStk)) )
    # Check debug mode
    (let P (ofs Av (- Ac 2))
       (unless (strcmp (val P) ($ "+"))
@@ -1820,8 +1824,8 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (signal (val SIGPIPE Sig) (val SigIgn))
    (signal (val SIGTTIN Sig) (val SigIgn))
    (signal (val SIGTTOU Sig) (val SigIgn))
-   (set $USec (getUsec YES))
    (initReadline)
+   (set $USec (getUsec YES))
    (unless (setjmp QuitRst)
       (loadAll 0) )  # Load arguments
    (loop

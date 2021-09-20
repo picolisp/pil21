@@ -1,3 +1,14 @@
+20sep21
+   Initial '$StkBrk' and '$StkLimit'
+      src/glob.l
+      src/main.l
+
+19sep21
+   ulimStk() system call
+      src/dec.l
+      src/pico.h
+      src/lib.c
+
 17sep21
    Clear 'history' after argument evaluation
       src/main.l

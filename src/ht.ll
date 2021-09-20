@@ -22,9 +22,10 @@ declare void @llvm.stackrestore(i8*)
 @$ExtSkip = external global i64
 @$Current = external global i8*
 @$Coroutines = external global i8*
+@$StkBrk = external global i8*
+@$StkLimit = external global i8*
 @$StkSizeT = external global i64
 @$StkSize = external global i64
-@$StkLimit = external global i8*
 @$Stdin = external global i8*
 @$Stdout = external global i8*
 @$LinePtr = external global i8*
@@ -208,6 +209,7 @@ declare i64 @getDate()
 declare i64 @getGmDate()
 declare i64 @getTime()
 declare i64 @getGmTime()
+declare i8* @ulimStk()
 declare i64 @fileInfo(i1, i8*, i64*)
 declare void @pollIn(i32, i64*)
 declare void @pollOut(i32, i64*)
