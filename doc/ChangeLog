@@ -1,3 +1,7 @@
+23sep21
+   Clear '*Err'
+      bin/pty
+
 20sep21
    Initial '$StkBrk' and '$StkLimit'
       src/glob.l

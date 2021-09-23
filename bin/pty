@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/home/pil21/pil
-# 14aug21abu
+# 23sep21abu
 # Pseudo Terminal (PilBox)
 
 (load "@lib/term.l")
@@ -13,7 +13,9 @@
 (when (getTerm)
    (out *Sock
       (space)
-      (println (cons 'setTerm "screen" @)) )
+      (println
+         (cons 'setTerm "screen" @)
+         '(off *Err) ) )
    (in *Sock (till "-") (till "\n")) )
 
 (raw T)
