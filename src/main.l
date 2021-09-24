@@ -1,4 +1,4 @@
-# 20sep21 Software Lab. Alexander Burger
+# 24sep21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1053,6 +1053,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                # Slave in parent
                (close (val Pty))
                (login_tty (val 2 Pty)) )
+            (signal (val SIGINT Sig) (val SigIgn))
             ((inFile (val (val $InFiles))) tty YES)
             ((outFile (val 2 (val $OutFiles))) tty YES)
             ((outFile (val 3 (val $OutFiles))) tty YES)

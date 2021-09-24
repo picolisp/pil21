@@ -1,3 +1,9 @@
+24sep21
+   Ignore SIGINT in 'ctty' parent process
+      src/main.l
+   Forward "^D"
+      bin/pty
+
 23sep21
    Clear '*Err'
       bin/pty

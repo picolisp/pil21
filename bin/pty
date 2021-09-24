@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/home/pil21/pil
-# 23sep21abu
+# 24sep21abu
 # Pseudo Terminal (PilBox)
 
 (load "@lib/term.l")
@@ -29,6 +29,4 @@
          (flush) ) ) )
 
 (loop
-   (case (key)
-      ("^D" (bye))
-      (T (out *Sock (prin @))) ) )
+   (and (key) (out *Sock (prin @))) )
