@@ -1505,7 +1505,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 146,
-  i64 386
+  i64 402
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -20150,87 +20150,178 @@ $2:
   %27 = icmp eq i64 %15, ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 8) to i64)
   br i1 %27, label %$9, label %$8
 $9:
-  %28 = phi i64 [%24, %$2] ; # N
+  %28 = phi i64 [%15, %$2] ; # Y
+  %29 = phi i64 [%24, %$2] ; # N
 ; # (- 32 3)
 ; # (shr N (- 32 3))
-  %29 = lshr i64 %28, 29
+  %30 = lshr i64 %29, 29
 ; # (& (shr N (- 32 3)) -8)
-  %30 = and i64 %29, -8
+  %31 = and i64 %30, -8
 ; # (| (& (shr N (- 32 3)) -8) 2)
-  %31 = or i64 %30, 2
+  %32 = or i64 %31, 2
   br label %$7
 $8:
-  %32 = phi i64 [%24, %$2] ; # N
+  %33 = phi i64 [%15, %$2] ; # Y
+  %34 = phi i64 [%24, %$2] ; # N
 ; # (t? Y)
-  %33 = icmp eq i64 %15, ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 280) to i64)
-  br i1 %33, label %$11, label %$10
+  %35 = icmp eq i64 %33, ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 280) to i64)
+  br i1 %35, label %$11, label %$10
 $11:
-  %34 = phi i64 [%32, %$8] ; # N
+  %36 = phi i64 [%33, %$8] ; # Y
+  %37 = phi i64 [%34, %$8] ; # N
 ; # (add N N)
-  %35 = call {i64, i1} @llvm.uadd.with.overflow.i64(i64 %34, i64 %34)
-  %36 = extractvalue {i64, i1} %35, 1
-  %37 = extractvalue {i64, i1} %35, 0
+  %38 = call {i64, i1} @llvm.uadd.with.overflow.i64(i64 %37, i64 %37)
+  %39 = extractvalue {i64, i1} %38, 1
+  %40 = extractvalue {i64, i1} %38, 0
 ; # (if @@ Y $Nil)
-  br i1 %36, label %$12, label %$13
+  br i1 %39, label %$12, label %$13
 $12:
-  %38 = phi i64 [%34, %$11] ; # N
+  %41 = phi i64 [%36, %$11] ; # Y
+  %42 = phi i64 [%37, %$11] ; # N
   br label %$14
 $13:
-  %39 = phi i64 [%34, %$11] ; # N
+  %43 = phi i64 [%36, %$11] ; # Y
+  %44 = phi i64 [%37, %$11] ; # N
   br label %$14
 $14:
-  %40 = phi i64 [%38, %$12], [%39, %$13] ; # N
-  %41 = phi i64 [%15, %$12], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 8) to i64), %$13] ; # ->
+  %45 = phi i64 [%41, %$12], [%43, %$13] ; # Y
+  %46 = phi i64 [%42, %$12], [%44, %$13] ; # N
+  %47 = phi i64 [%41, %$12], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 8) to i64), %$13] ; # ->
   br label %$7
 $10:
-  %42 = phi i64 [%32, %$8] ; # N
-; # (let (A (xCnt Exe Y) B (inc (evCnt Exe X))) (setq N (+ (% (shr (v...
-; # (xCnt Exe Y)
-  %43 = call i64 @xCnt(i64 %0, i64 %15)
-; # (evCnt Exe X)
-  %44 = call i64 @evCnt(i64 %0, i64 %7)
-; # (inc (evCnt Exe X))
-  %45 = add i64 %44, 1
+  %48 = phi i64 [%33, %$8] ; # Y
+  %49 = phi i64 [%34, %$8] ; # N
+; # (when (sign? (needCnt Exe Y)) (argErr Exe Y))
+; # (needCnt Exe Y)
+  %50 = and i64 %48, 2
+  %51 = icmp ne i64 %50, 0
+  br i1 %51, label %$16, label %$15
+$15:
+  call void @cntErr(i64 %0, i64 %48)
+  unreachable
+$16:
+; # (sign? (needCnt Exe Y))
+  %52 = and i64 %48, 8
+  %53 = icmp ne i64 %52, 0
+  br i1 %53, label %$17, label %$18
+$17:
+  %54 = phi i64 [%48, %$16] ; # Y
+  %55 = phi i64 [%49, %$16] ; # N
+; # (argErr Exe Y)
+  call void @argErr(i64 %0, i64 %54)
+  unreachable
+$18:
+  %56 = phi i64 [%48, %$16] ; # Y
+  %57 = phi i64 [%49, %$16] ; # N
+; # (let A (int Y) (when (sign? (needCnt Exe (setq Y (eval (car X))))...
+; # (int Y)
+  %58 = lshr i64 %56, 4
+; # (when (sign? (needCnt Exe (setq Y (eval (car X))))) (argErr Exe Y...
+; # (car X)
+  %59 = inttoptr i64 %7 to i64*
+  %60 = load i64, i64* %59
+; # (eval (car X))
+  %61 = and i64 %60, 6
+  %62 = icmp ne i64 %61, 0
+  br i1 %62, label %$21, label %$20
+$21:
+  br label %$19
+$20:
+  %63 = and i64 %60, 8
+  %64 = icmp ne i64 %63, 0
+  br i1 %64, label %$23, label %$22
+$23:
+  %65 = inttoptr i64 %60 to i64*
+  %66 = load i64, i64* %65
+  br label %$19
+$22:
+  %67 = call i64 @evList(i64 %60)
+  br label %$19
+$19:
+  %68 = phi i64 [%60, %$21], [%66, %$23], [%67, %$22] ; # ->
+; # (needCnt Exe (setq Y (eval (car X))))
+  %69 = and i64 %68, 2
+  %70 = icmp ne i64 %69, 0
+  br i1 %70, label %$25, label %$24
+$24:
+  call void @cntErr(i64 %0, i64 %68)
+  unreachable
+$25:
+; # (sign? (needCnt Exe (setq Y (eval (car X)))))
+  %71 = and i64 %68, 8
+  %72 = icmp ne i64 %71, 0
+  br i1 %72, label %$26, label %$27
+$26:
+  %73 = phi i64 [%68, %$25] ; # Y
+  %74 = phi i64 [%57, %$25] ; # N
+; # (argErr Exe Y)
+  call void @argErr(i64 %0, i64 %73)
+  unreachable
+$27:
+  %75 = phi i64 [%68, %$25] ; # Y
+  %76 = phi i64 [%57, %$25] ; # N
+; # (let B (inc (int Y)) (when (>= A B) (argErr Exe Y)) (setq N (+ (%...
+; # (int Y)
+  %77 = lshr i64 %75, 4
+; # (inc (int Y))
+  %78 = add i64 %77, 1
+; # (when (>= A B) (argErr Exe Y))
+; # (>= A B)
+  %79 = icmp uge i64 %58, %78
+  br i1 %79, label %$28, label %$29
+$28:
+  %80 = phi i64 [%75, %$27] ; # Y
+  %81 = phi i64 [%76, %$27] ; # N
+; # (argErr Exe Y)
+  call void @argErr(i64 %0, i64 %80)
+  unreachable
+$29:
+  %82 = phi i64 [%75, %$27] ; # Y
+  %83 = phi i64 [%76, %$27] ; # N
 ; # (val $SeedH)
-  %46 = load i64, i64* @$SeedH
+  %84 = load i64, i64* @$SeedH
 ; # (val $SeedL)
-  %47 = load i64, i64* @$SeedL
+  %85 = load i64, i64* @$SeedL
 ; # (shr (val $SeedH) (val $SeedL) 32)
-  %48 = call i64 @llvm.fshr.i64(i64 %46, i64 %47, i64 32)
+  %86 = call i64 @llvm.fshr.i64(i64 %84, i64 %85, i64 32)
 ; # (- B A)
-  %49 = sub i64 %45, %43
+  %87 = sub i64 %78, %58
 ; # (% (shr (val $SeedH) (val $SeedL) 32) (- B A))
-  %50 = urem i64 %48, %49
+  %88 = urem i64 %86, %87
 ; # (+ (% (shr (val $SeedH) (val $SeedL) 32) (- B A)) A)
-  %51 = add i64 %50, %43
+  %89 = add i64 %88, %58
 ; # (if (lt0 N) (sign (cnt (- N))) (cnt N))
 ; # (lt0 N)
-  %52 = icmp slt i64 %51, 0
-  br i1 %52, label %$15, label %$16
-$15:
-  %53 = phi i64 [%51, %$10] ; # N
+  %90 = icmp slt i64 %89, 0
+  br i1 %90, label %$30, label %$31
+$30:
+  %91 = phi i64 [%82, %$29] ; # Y
+  %92 = phi i64 [%89, %$29] ; # N
 ; # (- N)
-  %54 = sub i64 0, %53
+  %93 = sub i64 0, %92
 ; # (cnt (- N))
-  %55 = shl i64 %54, 4
-  %56 = or i64 %55, 2
+  %94 = shl i64 %93, 4
+  %95 = or i64 %94, 2
 ; # (sign (cnt (- N)))
-  %57 = or i64 %56, 8
-  br label %$17
-$16:
-  %58 = phi i64 [%51, %$10] ; # N
+  %96 = or i64 %95, 8
+  br label %$32
+$31:
+  %97 = phi i64 [%82, %$29] ; # Y
+  %98 = phi i64 [%89, %$29] ; # N
 ; # (cnt N)
-  %59 = shl i64 %58, 4
-  %60 = or i64 %59, 2
-  br label %$17
-$17:
-  %61 = phi i64 [%53, %$15], [%58, %$16] ; # N
-  %62 = phi i64 [%57, %$15], [%60, %$16] ; # ->
+  %99 = shl i64 %98, 4
+  %100 = or i64 %99, 2
+  br label %$32
+$32:
+  %101 = phi i64 [%91, %$30], [%97, %$31] ; # Y
+  %102 = phi i64 [%92, %$30], [%98, %$31] ; # N
+  %103 = phi i64 [%96, %$30], [%100, %$31] ; # ->
   br label %$7
 $7:
-  %63 = phi i64 [%28, %$9], [%40, %$14], [%61, %$17] ; # N
-  %64 = phi i64 [%31, %$9], [%41, %$14], [%62, %$17] ; # ->
-  ret i64 %64
+  %104 = phi i64 [%28, %$9], [%45, %$14], [%101, %$32] ; # Y
+  %105 = phi i64 [%29, %$9], [%46, %$14], [%102, %$32] ; # N
+  %106 = phi i64 [%32, %$9], [%47, %$14], [%103, %$32] ; # ->
+  ret i64 %106
 }
 
 define i64 @bufSize(i64) align 8 {

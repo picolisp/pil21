@@ -1,4 +1,4 @@
-# 25aug21 Software Lab. Alexander Burger
+# 25sep21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1520,13 +1520,20 @@
             (add N N)
             (if @@ Y $Nil) )
          (T
-            (let (A (xCnt Exe Y)  B (inc (evCnt Exe X)))  # Seed % (cnt2 + 1 - cnt1) + cnt1
-               (setq N
-                  (+
-                     (%
-                        (shr (val $SeedH) (val $SeedL) 32)  # Get middle 64 bits
-                        (- B A) )
-                     A ) )
-               (if (lt0 N)
-                  (sign (cnt (- N)))
-                  (cnt N) ) ) ) ) ) )
+            (when (sign? (needCnt Exe Y))
+               (argErr Exe Y) )
+            (let A (int Y)
+               (when (sign? (needCnt Exe (setq Y (eval (car X)))))
+                  (argErr Exe Y) )
+               (let B (inc (int Y))  # Seed % (cnt2 + 1 - cnt1) + cnt1
+                  (when (>= A B)
+                     (argErr Exe Y) )
+                  (setq N
+                     (+
+                        (%
+                           (shr (val $SeedH) (val $SeedL) 32)  # Get middle 64 bits
+                           (- B A) )
+                        A ) )
+                  (if (lt0 N)
+                     (sign (cnt (- N)))
+                     (cnt N) ) ) ) ) ) ) )
