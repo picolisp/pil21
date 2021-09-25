@@ -125,11 +125,12 @@ zap> (Obj Val)       # Clean up relational structures
 </code></pre>
 
 <dt><a name="rand"><code>(rand ['cnt1 'cnt2] | ['T]) -> cnt | flg</code></a>
-<dd>Returns a pseudo random number in the range cnt1 .. cnt2 (or -2147483648 ..
-+2147483647 if no arguments are given). If the argument is <code>T</code>, a
-boolean value <code>flg</code> is returned. Note that if a range is given, the
-results are "more random" because the higher bits of the internal generator are
-used. See also <code><a href="refS.html#seed">seed</a></code>.
+<dd>Returns a pseudo random number in the range of the positive short numbers
+<code>cnt1</code> and <code>cnt2</code> (or -2147483648 .. +2147483647 if no
+arguments are given). If the argument is <code>T</code>, a boolean value
+<code>flg</code> is returned. Note that if a range is given, the results are
+"more random" because the higher bits of the internal generator are used. See
+also <code><a href="refS.html#seed">seed</a></code>.
 
 <pre><code>
 : (rand 3 9)
