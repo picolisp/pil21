@@ -1,4 +1,4 @@
-# 11aug21 Software Lab. Alexander Burger
+# 29sep21 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -2244,7 +2244,18 @@
       (T (extra Var)) ) )
 
 
-(class +Obj +hint +obj)
+(class +hintObj +hint +obj)
+# objVar objTyp objHook
+
+(dm hint> (Str)
+   (dbHint (extra Str)
+      (: objVar)
+      (last (: objTyp))
+      (eval (: objHook)) ) )
+
+
+
+(class +Obj +hintObj)
 # objVar objTyp objHook
 
 # ([T|msg] (var . typ) [hook] [T] ..)
@@ -2262,12 +2273,6 @@
                   (collect (: objVar) (last (: objTyp)) (eval (: objHook)) NIL T (: objVar))
                   (collect (: objVar) (last (: objTyp)) NIL T (: objVar)) ) )
             A ) ) ) )
-
-(dm hint> (Str)
-   (dbHint (extra Str)
-      (: objVar)
-      (last (: objTyp))
-      (eval (: objHook)) ) )
 
 (dm txt> (Obj)
    (if (ext? Obj)
@@ -2350,7 +2355,7 @@
                   N ) ) ) ) ) )
 
 
-(class +ObjVal +obj)
+(class +ObjVal +hintObj)
 # objVar objTyp hook objHook
 
 # ([T|msg] (var . typ) [hook] ..)
