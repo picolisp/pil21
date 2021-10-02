@@ -1,8 +1,9 @@
-# 11jun21 Software Lab. Alexander Burger
+# 02oct21 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
-(local) (permute subsets shuffle samples)
+(local) (subsets shuffle samples)
+(import pico~permute)
 
 (de permute (Lst)
    (ifn (cdr Lst)

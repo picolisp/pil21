@@ -1,3 +1,7 @@
+02oct21
+   Import 'permute' from 'pico' namespace
+      lib/simul.l
+
 29sep21
    '+hintObj' prefix class for '+Obj' and '+ObjVal'
       lib/form.l
