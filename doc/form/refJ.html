@@ -18,20 +18,5 @@
     tutorial</a>. See also <a href="refB.html#+Button">+Button</a>.
 </dl>
 
-<dl>
-    <dt><a name="+JsField"><code>+JsField</code></a>
-    <dd>This field can be used to hold Javascript-driven context. Setting Google
-    Maps images would be one example:
-
-    <pre><code>
-    (gui '(+JS +Button) "@img/mapicon.gif" "@img/no.png"
-       '(set> (: home map) (path> (: home obj) 40)) )
-    ...
-    (&lt;p&gt; '((id . map) (style . "width: 600px; height: 400px"))
-       (gui 'map '(+JsField) "showMap") )
-    </code></pre>
-
-    See also <a href="refG.html#+gui">+gui</a>. 
-</dl>
 </body>
 </html>

@@ -1,4 +1,8 @@
 02oct21
+   Remove '+JsField'
+      lib/form.l
+      doc/app.html
+      doc/form/refJ.html
    Import 'permute' from 'pico' namespace
       lib/simul.l
 

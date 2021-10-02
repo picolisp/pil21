@@ -1,4 +1,4 @@
-# 29sep21 Software Lab. Alexander Burger
+# 02oct21 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -1766,22 +1766,6 @@
       '((,"male" . T) (,"female" . 0))
       '(NIL ,"male" ,"female")
       Lbl ) )
-
-
-(class +JsField +gui)
-# js str
-
-(dm T (Nm)
-   (super)
-   (=: js Nm) )
-
-(dm show> (Var))
-
-(dm js> ()
-   (pack (ht:Fmt NIL (: str) (: js))) )
-
-(dm set> (Val Dn)
-   (=: str Val) )
 
 
 ### GUI charts ###
