@@ -1,4 +1,4 @@
-# 09aug21 Software Lab. Alexander Burger
+# 09oct21 Software Lab. Alexander Burger
 
 (symbols 'vip~draw 'vip 'pico)
 
@@ -140,7 +140,9 @@
             (cond
                ((> (; B y) (: y2))  # Above
                   (cond
-                     ((>= (inc X2) X (dec X2))
+                     ((or
+                           (>= 3 (- (; B y) (: y2)))
+                           (>= (inc X2) X (dec X2)) )
                         (push (:: v)
                            (list
                               (list "+" X (: y2) (dec (; B y)) "v") ) ) )
@@ -163,7 +165,9 @@
                               (list "+" X Y2 (inc (; B x2)) "<") ) ) ) ) )
                ((> (: y) (; B y2))  # Below
                   (cond
-                     ((>= (inc X2) X (dec X2))
+                     ((or
+                           (>= 3 (- (: y) (; B y2)))
+                           (>= (inc X2) X (dec X2)) )
                         (push (:: v)
                            (list
                               (list "+" X (: y) (inc (; B y2)) "\^") ) ) )

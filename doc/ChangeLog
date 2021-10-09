@@ -1,3 +1,7 @@
+09oct21
+   Fix 'arrow' for small distances
+      lib/vip/draw.l
+
 02oct21
    Remove '+JsField'
       lib/form.l
