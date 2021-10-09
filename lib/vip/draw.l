@@ -278,9 +278,18 @@
 ### Debug ###
 `*Dbg
 
-(de pico~cells (Lst)
+(de pico~cells @
    (off *Draw *Boxes)
-   (cells 1 1 Lst)
+   (let Y 1
+      (while (args)
+         (let V (next)
+            (cond
+               ((pair V)
+                  (cells 1 Y V)
+                  (setq Y (+ 3 (length *Draw))) )
+               (V
+                  (label 1 Y V)
+                  (inc 'Y) ) ) ) ) )
    (mapc 'hv> *Boxes)
    (out (tmp "cells") (mapc prinl *Draw))
    (pico~vi (tmp "cells")) )
