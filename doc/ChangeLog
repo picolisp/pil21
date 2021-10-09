@@ -1,4 +1,6 @@
 09oct21
+   Minor cosmetics
+      lib/vip.l
    Fix 'arrow' for small distances
       lib/vip/draw.l
 
