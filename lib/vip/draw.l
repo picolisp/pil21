@@ -262,18 +262,25 @@
                      (setq Last (pack X2 "/" Y2 "+")) )
                   (inc Pos (+ 6 D)) ) ) ) ) ) )
 
-
 # Override +Buffer methods in object
-(extend `This)
+(let? *Class (isa '+Buffer This)
+   (dm save> (Win)
+      (super Win)
+      (view> This Win) )
+   (dm view> (Win)
+      (off *Draw *Boxes)
+      (symbols '(vip~draw vip pico)
+         (evCmd (load (fName (: file)))) )
+      (mapc 'hv> *Boxes)
+      (with Win
+         (scratch (tmp "draw") *Draw) ) ) )
 
-(dm save> (Win)
-   (super Win)
-   (view> This Win) )
+### Debug ###
+`*Dbg
 
-(dm view> (Win)
+(de pico~cells (Lst)
    (off *Draw *Boxes)
-   (symbols '(vip~draw vip pico)
-      (evCmd (load (fName (: file)))) )
+   (cells 1 1 Lst)
    (mapc 'hv> *Boxes)
-   (with Win
-      (scratch (tmp "draw") *Draw) ) )
+   (out (tmp "cells") (mapc prinl *Draw))
+   (pico~vi (tmp "cells")) )

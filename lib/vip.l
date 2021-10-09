@@ -1667,6 +1667,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
 
 (and (info "~/.pil/viprc") (load @@))
 
+### Debug ###
 `*Dbg
 
 (de pico~vi ("X" C)
