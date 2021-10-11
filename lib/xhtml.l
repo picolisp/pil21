@@ -1,4 +1,4 @@
-# 25aug21 Software Lab. Alexander Burger
+# 11oct21 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -697,7 +697,7 @@
    (%@ "unlink" NIL (tmp "Nm" ".csv"))
    (let "*CSV" (pack "+" (tmp "Nm" ".csv"))
       (run "Prg") )
-   (<href> "CSV" (tmp "Nm" ".csv")) )
+   (<href> "Export CSV" (tmp "Nm" ".csv")) )
 
 (de <0> @
    (when "*CSV"
