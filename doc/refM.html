@@ -596,10 +596,11 @@ the type and methods of <code>cls</code> (second form). <code>fun</code>
 defaults to <code><a href="refP.html#print">print</a></code>. In the second
 form, the method definitions of <code>cls</code> are pretty-printed with
 <code><a href="refP.html#pp">pp</a></code>. After each step, <code>more</code>
-waits for console input, and terminates when a non-empty line is entered. In
-that case, <code>T</code> is returned, otherwise (when end of data is reached)
-<code>NIL</code>. See also <code><a href="refQ.html#query">query</a></code> and
-<code><a href="refS.html#show">show</a></code>.
+waits for console input, and terminates when a non-empty line or Ctrl-D is
+entered. In that case, <code>T</code> is returned, otherwise (when end of data
+is reached) <code>NIL</code>. See also <code><a
+href="refQ.html#query">query</a></code> and <code><a
+href="refS.html#show">show</a></code>.
 
 <pre><code>
 : (more (all))                         # Display all internal symbols

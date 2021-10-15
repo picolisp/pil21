@@ -1,3 +1,7 @@
+15oct21
+   Mention Ctrl-D to terminate
+      doc/refM.html
+
 11oct21
    "CSV" -> "Export CSV" in 'csv'
       lib/xhtml.l
