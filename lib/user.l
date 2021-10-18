@@ -1,4 +1,4 @@
-# 18jul19 Software Lab. Alexander Burger
+# 18oct21 Software Lab. Alexander Burger
 
 (must "User Administration" UserAdmin (== *Login *ID))
 
@@ -18,8 +18,6 @@
             '(may RoleAdmin)
             '(role : home obj)
             '(nm +Role)
-            T )
-         ,"Full Name" (gui '(+E/R +TextField) '(nam : home obj) 40)
-         ,"Phone" (gui '(+E/R +TelField) '(tel : home obj) 40)
-         ,"EMail" (gui '(+E/R +MailField) '(em : home obj) 40) )
+            T ) )
+      (--)
       (gui> (: obj) This) ) )

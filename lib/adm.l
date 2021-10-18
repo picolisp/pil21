@@ -1,4 +1,4 @@
-# 10may21 Software Lab. Alexander Burger
+# 18oct21 Software Lab. Alexander Burger
 
 # *Salt *Login *Users *Perms
 
@@ -85,7 +85,7 @@
 (rel role (+Joint) usr (+Role))        # User role
 (rel nam (+String))                    # Full Name
 (rel tel (+String))                    # Phone
-(rel em (+String))                     # EMail
+(rel em (+String))                     # E-Mail
 
 (allow "@lib/user.l")
 
@@ -93,6 +93,12 @@
    (and
       (or (may UserAdmin) (== *Login This))
       (list "@lib/user.l" '*ID This) ) )
+
+(dm gui> (This)
+   (<grid> 2
+      ,"Full Name" (gui '(+E/R +TextField) '(nam : home obj) 40)
+      ,"Phone" (gui '(+E/R +TelField) '(tel : home obj) 40)
+      ,"E-Mail" (gui '(+E/R +MailField) '(em : home obj) 40) ) )
 
 (dm login> ())
 

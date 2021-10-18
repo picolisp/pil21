@@ -1,5 +1,10 @@
+18oct21
+   Refactor 'gui>' for '+User'
+      lib/adm.l
+      lib/user.l
+
 15oct21
-   Mention Ctrl-D to terminate
+   Mention Ctrl-D to terminate 'more'
       doc/refM.html
 
 11oct21
