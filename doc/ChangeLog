@@ -1,5 +1,6 @@
 25oct21
    '*KeyMap', '*KeyMap-g' and '*KeyMap-q' globals (Erik Gustafson)
+   More transients
       lib/vip.l
 
 18oct21

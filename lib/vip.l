@@ -277,9 +277,9 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                   (put "*X" "*K" (read)) ) ) ) ) )
    (on *StatNm) )
 
-(dm syms> (Lst)
+(dm syms> ("Lst")
    (out (: file)
-      (for "S" (=: syms Lst)
+      (for "S" (=: syms "Lst")
          (printsp "S")
          (fish
             '(("X")
@@ -534,10 +534,10 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
       (goto 1 (: buffer posY)) )
    (repaint) )
 
-(de syms (Lst)
+(de syms ("Lst")
    (prog1
       (tmp "syms")
-      (syms> (fileBuffer @) Lst) ) )
+      (syms> (fileBuffer @) "Lst") ) )
 
 (de pushTag (File)
    (push '*TagStack (: posX) (: posY) File (symbols)) )
@@ -1365,25 +1365,25 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
       (T (beep)) ) )
 
 ### VIP Entry Point ###
-(de vi (Lst)  # (file (pat . file) (99 . file) (T . file) (sym [sym ..])
+(de vi ("Lst")  # (file (pat . file) (99 . file) (T . file) (sym [sym ..])
    (getSize)
-   (and Lst (co 'vip))
+   (and "Lst" (co 'vip))
    (co 'vip
       (off *Buffers)
       (when (=0 (%@ "isatty" 'I 0))
          (with (fileBuffer (tmp "stdin"))
             (out (: file) (in 0 (echo))) )
          (ctty "/dev/tty") )
-      (for X Lst
+      (for "X" "Lst"
          (cond
-            ((not X))
-            ((atom X) (fileBuffer X))  # Path name
-            ((pair (car X))  # Pattern
+            ((not "X"))
+            ((atom "X") (fileBuffer "X"))  # Path name
+            ((pair (car "X"))  # Pattern
                (wordFun @)
-               (fileBuffer (cdr X)) )
-            ((or (num? (car X)) (=T (car X)))  # Line number
-               (fileBuffer (cdr X) @) )
-            (T (syms X)) ) )  # List of symbols
+               (fileBuffer (cdr "X")) )
+            ((or (num? (car "X")) (=T (car "X")))  # Line number
+               (fileBuffer (cdr "X") @) )
+            (T (syms "X")) ) )  # List of symbols
       (unless *Buffers
          (fileBuffer (tmp "empty")) )
       (screen2)
@@ -1692,8 +1692,8 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                   (T "X") ) ) ) )
       "X" ) )
 
-(de pico~v Lst
+(de pico~v "Lst"
    (symbols (setq *Ns (symbols))
       (cond
-         (Lst (vi (list @)))
+         ("Lst" (vi (list @)))
          ((asoq 'vip (stack)) (vi)) ) ) )
