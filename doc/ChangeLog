@@ -1,3 +1,7 @@
+25oct21
+   '*KeyMap', '*KeyMap-g' and '*KeyMap-q' globals (Erik Gustafson)
+      lib/vip.l
+
 18oct21
    Refactor 'gui>' for '+User'
       lib/adm.l
