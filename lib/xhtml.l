@@ -1,4 +1,4 @@
-# 11oct21 Software Lab. Alexander Burger
+# 27oct21 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -613,6 +613,7 @@
 
 # Tabs
 (de <tab> Lst
+   (default *Tab 1)
    (let ((Beg Top Sub End) *XhtmlTab)
       (micro Beg)
       (for (N . L) Lst

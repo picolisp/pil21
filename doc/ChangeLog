@@ -1,3 +1,7 @@
+27oct21
+   Default '*Tab' to 1
+      lib/xhtml.l
+
 25oct21
    '*KeyMap', '*KeyMap-g' and '*KeyMap-q' globals (Erik Gustafson)
    More transients
