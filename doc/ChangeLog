@@ -1,4 +1,6 @@
 27oct21
+   'vf' (vi/find) function
+      lib/vip.l
    Default '*Tab' to 1
       lib/xhtml.l
 
