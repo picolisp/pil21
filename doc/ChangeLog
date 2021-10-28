@@ -1,3 +1,9 @@
+28oct21
+   Display namespace in 'status'
+      lib/vip.l
+   Minor optimization in '*Prompt'
+      lib/debug.l
+
 27oct21
    'vf' (vi/find) function
       lib/vip.l
