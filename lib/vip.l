@@ -393,7 +393,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
             F (prName (: buffer file))
             Z (pack
                (and (: mark) (cons @ " "))
-               (casq (car (symbols))
+               (casq (: buffer symbols 1)
                   (pico)
                   (T (cons @ " ")) )
                (: posX) "," (: posY) "/" N " "
