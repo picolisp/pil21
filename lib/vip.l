@@ -80,6 +80,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
 
 (dm T (File Y)
    (and (=: file File) (queue '*Buffers This))
+   (=: symbols (symbols))
    (=: posX 1)
    (=: posY (or Y 1))
    (=: lastX (=: lastY 1))
@@ -1418,7 +1419,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                            (get (: buffer text)
                               (=: posY
                                  (min1 (: posY) (length (: buffer text))) ) ) ) ) )
-                  (and (: buffer symbols) (symbols @))
+                  (symbols (: buffer symbols))
                   (when
                      (or
                         (> (: winX) (: posX))
