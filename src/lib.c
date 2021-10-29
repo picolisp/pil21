@@ -1,4 +1,4 @@
-// 19sep21 Software Lab. Alexander Burger
+// 29oct21 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -147,7 +147,6 @@ void rlSigBeg(void) {
 void rlSigEnd(void) {
    if (rl_readline_state & RL_STATE_SIGHANDLER) {
       rl_reset_after_signal();
-      rl_initialize();
       rl_restore_prompt();
    }
 }

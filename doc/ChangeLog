@@ -1,3 +1,7 @@
+29oct21
+   rl_initialize() not necessary
+      src/lib.c
+
 28oct21
    Display namespace in 'status'
       lib/vip.l
