@@ -1,3 +1,15 @@
+31oct21
+   Mention Ctrl-D to terminate 'bt', 'query' and '?'
+      doc/ref.html
+      doc/refB.html
+      doc/refM.html
+      doc/refQ.html
+      doc/ref_.html
+
+30oct21
+   Generalize cut in 'prove'
+      src/subr.l
+
 29oct21
    rl_initialize() not necessary
       src/lib.c

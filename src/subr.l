@@ -1,4 +1,4 @@
-# 26aug21 Software Lab. Alexander Burger
+# 30oct21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1505,7 +1505,7 @@
                         Tp1 (car (val Tp2))
                         Tp2 (cdr (val Tp2))
                         Nl (cdr (val Nl)) ) )
-                  ((t? (car X))
+                  ((atom (car X))  # Cut operator
                      (while
                         (and
                            (pair (car Q))

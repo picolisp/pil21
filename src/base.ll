@@ -1505,7 +1505,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 162,
-  i64 466
+  i64 498
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -98630,9 +98630,9 @@ $17:
 ; # (while (or (pair (val Tp1)) (pair (val Tp2))) (sigChk Exe) (cond ...
   br label %$18
 $18:
-  %142 = phi i64 [%50, %$17], [%648, %$25] ; # X
-  %143 = phi i64 [%105, %$17], [%649, %$25] ; # P
-  %144 = phi i64 [%63, %$17], [%650, %$25] ; # N
+  %142 = phi i64 [%50, %$17], [%649, %$25] ; # X
+  %143 = phi i64 [%105, %$17], [%650, %$25] ; # P
+  %144 = phi i64 [%63, %$17], [%651, %$25] ; # N
 ; # (or (pair (val Tp1)) (pair (val Tp2)))
 ; # (val Tp1)
   %145 = inttoptr i64 %95 to i64*
@@ -99058,536 +99058,537 @@ $48:
 ; # (car X)
   %398 = inttoptr i64 %395 to i64*
   %399 = load i64, i64* %398
-; # (t? (car X))
-  %400 = icmp eq i64 %399, ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 280) to i64)
-  br i1 %400, label %$51, label %$50
+; # (atom (car X))
+  %400 = and i64 %399, 15
+  %401 = icmp ne i64 %400, 0
+  br i1 %401, label %$51, label %$50
 $51:
-  %401 = phi i64 [%395, %$48] ; # X
-  %402 = phi i64 [%396, %$48] ; # P
-  %403 = phi i64 [%397, %$48] ; # N
+  %402 = phi i64 [%395, %$48] ; # X
+  %403 = phi i64 [%396, %$48] ; # P
+  %404 = phi i64 [%397, %$48] ; # N
 ; # (while (and (pair (car Q)) (>= (caar @) (car (val Nl)))) (set Q (...
   br label %$52
 $52:
-  %404 = phi i64 [%401, %$51], [%427, %$55] ; # X
-  %405 = phi i64 [%402, %$51], [%428, %$55] ; # P
-  %406 = phi i64 [%403, %$51], [%429, %$55] ; # N
+  %405 = phi i64 [%402, %$51], [%428, %$55] ; # X
+  %406 = phi i64 [%403, %$51], [%429, %$55] ; # P
+  %407 = phi i64 [%404, %$51], [%430, %$55] ; # N
 ; # (and (pair (car Q)) (>= (caar @) (car (val Nl))))
 ; # (car Q)
-  %407 = inttoptr i64 %13 to i64*
-  %408 = load i64, i64* %407
+  %408 = inttoptr i64 %13 to i64*
+  %409 = load i64, i64* %408
 ; # (pair (car Q))
-  %409 = and i64 %408, 15
-  %410 = icmp eq i64 %409, 0
-  br i1 %410, label %$54, label %$53
+  %410 = and i64 %409, 15
+  %411 = icmp eq i64 %410, 0
+  br i1 %411, label %$54, label %$53
 $54:
-  %411 = phi i64 [%404, %$52] ; # X
-  %412 = phi i64 [%405, %$52] ; # P
-  %413 = phi i64 [%406, %$52] ; # N
+  %412 = phi i64 [%405, %$52] ; # X
+  %413 = phi i64 [%406, %$52] ; # P
+  %414 = phi i64 [%407, %$52] ; # N
 ; # (caar @)
-  %414 = inttoptr i64 %408 to i64*
-  %415 = load i64, i64* %414
-  %416 = inttoptr i64 %415 to i64*
-  %417 = load i64, i64* %416
+  %415 = inttoptr i64 %409 to i64*
+  %416 = load i64, i64* %415
+  %417 = inttoptr i64 %416 to i64*
+  %418 = load i64, i64* %417
 ; # (val Nl)
-  %418 = inttoptr i64 %71 to i64*
-  %419 = load i64, i64* %418
+  %419 = inttoptr i64 %71 to i64*
+  %420 = load i64, i64* %419
 ; # (car (val Nl))
-  %420 = inttoptr i64 %419 to i64*
-  %421 = load i64, i64* %420
+  %421 = inttoptr i64 %420 to i64*
+  %422 = load i64, i64* %421
 ; # (>= (caar @) (car (val Nl)))
-  %422 = icmp uge i64 %417, %421
+  %423 = icmp uge i64 %418, %422
   br label %$53
 $53:
-  %423 = phi i64 [%404, %$52], [%411, %$54] ; # X
-  %424 = phi i64 [%405, %$52], [%412, %$54] ; # P
-  %425 = phi i64 [%406, %$52], [%413, %$54] ; # N
-  %426 = phi i1 [0, %$52], [%422, %$54] ; # ->
-  br i1 %426, label %$55, label %$56
+  %424 = phi i64 [%405, %$52], [%412, %$54] ; # X
+  %425 = phi i64 [%406, %$52], [%413, %$54] ; # P
+  %426 = phi i64 [%407, %$52], [%414, %$54] ; # N
+  %427 = phi i1 [0, %$52], [%423, %$54] ; # ->
+  br i1 %427, label %$55, label %$56
 $55:
-  %427 = phi i64 [%423, %$53] ; # X
-  %428 = phi i64 [%424, %$53] ; # P
-  %429 = phi i64 [%425, %$53] ; # N
+  %428 = phi i64 [%424, %$53] ; # X
+  %429 = phi i64 [%425, %$53] ; # P
+  %430 = phi i64 [%426, %$53] ; # N
 ; # (set Q (cdar Q))
 ; # (cdar Q)
-  %430 = inttoptr i64 %13 to i64*
-  %431 = load i64, i64* %430
-  %432 = inttoptr i64 %431 to i64*
-  %433 = getelementptr i64, i64* %432, i32 1
-  %434 = load i64, i64* %433
-  %435 = inttoptr i64 %13 to i64*
-  store i64 %434, i64* %435
+  %431 = inttoptr i64 %13 to i64*
+  %432 = load i64, i64* %431
+  %433 = inttoptr i64 %432 to i64*
+  %434 = getelementptr i64, i64* %433, i32 1
+  %435 = load i64, i64* %434
+  %436 = inttoptr i64 %13 to i64*
+  store i64 %435, i64* %436
   br label %$52
 $56:
-  %436 = phi i64 [%423, %$53] ; # X
-  %437 = phi i64 [%424, %$53] ; # P
-  %438 = phi i64 [%425, %$53] ; # N
+  %437 = phi i64 [%424, %$53] ; # X
+  %438 = phi i64 [%425, %$53] ; # P
+  %439 = phi i64 [%426, %$53] ; # N
 ; # (set Tp1 (cdr X))
 ; # (cdr X)
-  %439 = inttoptr i64 %436 to i64*
-  %440 = getelementptr i64, i64* %439, i32 1
-  %441 = load i64, i64* %440
-  %442 = inttoptr i64 %95 to i64*
-  store i64 %441, i64* %442
+  %440 = inttoptr i64 %437 to i64*
+  %441 = getelementptr i64, i64* %440, i32 1
+  %442 = load i64, i64* %441
+  %443 = inttoptr i64 %95 to i64*
+  store i64 %442, i64* %443
   br label %$25
 $50:
-  %443 = phi i64 [%395, %$48] ; # X
-  %444 = phi i64 [%396, %$48] ; # P
-  %445 = phi i64 [%397, %$48] ; # N
+  %444 = phi i64 [%395, %$48] ; # X
+  %445 = phi i64 [%396, %$48] ; # P
+  %446 = phi i64 [%397, %$48] ; # N
 ; # (car @)
-  %446 = inttoptr i64 %399 to i64*
-  %447 = load i64, i64* %446
+  %447 = inttoptr i64 %399 to i64*
+  %448 = load i64, i64* %447
 ; # (cnt? (car @))
-  %448 = and i64 %447, 2
-  %449 = icmp ne i64 %448, 0
-  br i1 %449, label %$58, label %$57
+  %449 = and i64 %448, 2
+  %450 = icmp ne i64 %449, 0
+  br i1 %450, label %$58, label %$57
 $58:
-  %450 = phi i64 [%443, %$50] ; # X
-  %451 = phi i64 [%444, %$50] ; # P
-  %452 = phi i64 [%445, %$50] ; # N
+  %451 = phi i64 [%444, %$50] ; # X
+  %452 = phi i64 [%445, %$50] ; # P
+  %453 = phi i64 [%446, %$50] ; # N
 ; # (set E (uniRun (cdar X)))
 ; # (cdar X)
-  %453 = inttoptr i64 %450 to i64*
-  %454 = load i64, i64* %453
-  %455 = inttoptr i64 %454 to i64*
-  %456 = getelementptr i64, i64* %455, i32 1
-  %457 = load i64, i64* %456
+  %454 = inttoptr i64 %451 to i64*
+  %455 = load i64, i64* %454
+  %456 = inttoptr i64 %455 to i64*
+  %457 = getelementptr i64, i64* %456, i32 1
+  %458 = load i64, i64* %457
 ; # (uniRun (cdar X))
-  %458 = call i64 @uniRun(i64 %457)
-  %459 = inttoptr i64 %123 to i64*
-  store i64 %458, i64* %459
+  %459 = call i64 @uniRun(i64 %458)
+  %460 = inttoptr i64 %123 to i64*
+  store i64 %459, i64* %460
 ; # (let (I (int (caar X)) Y (val Nl)) (while (gt0 (dec 'I)) (shift Y...
 ; # (caar X)
-  %460 = inttoptr i64 %450 to i64*
-  %461 = load i64, i64* %460
-  %462 = inttoptr i64 %461 to i64*
-  %463 = load i64, i64* %462
+  %461 = inttoptr i64 %451 to i64*
+  %462 = load i64, i64* %461
+  %463 = inttoptr i64 %462 to i64*
+  %464 = load i64, i64* %463
 ; # (int (caar X))
-  %464 = lshr i64 %463, 4
+  %465 = lshr i64 %464, 4
 ; # (val Nl)
-  %465 = inttoptr i64 %71 to i64*
-  %466 = load i64, i64* %465
+  %466 = inttoptr i64 %71 to i64*
+  %467 = load i64, i64* %466
 ; # (while (gt0 (dec 'I)) (shift Y))
   br label %$59
 $59:
-  %467 = phi i64 [%450, %$58], [%474, %$60] ; # X
-  %468 = phi i64 [%451, %$58], [%475, %$60] ; # P
-  %469 = phi i64 [%452, %$58], [%476, %$60] ; # N
-  %470 = phi i64 [%464, %$58], [%477, %$60] ; # I
-  %471 = phi i64 [%466, %$58], [%481, %$60] ; # Y
+  %468 = phi i64 [%451, %$58], [%475, %$60] ; # X
+  %469 = phi i64 [%452, %$58], [%476, %$60] ; # P
+  %470 = phi i64 [%453, %$58], [%477, %$60] ; # N
+  %471 = phi i64 [%465, %$58], [%478, %$60] ; # I
+  %472 = phi i64 [%467, %$58], [%482, %$60] ; # Y
 ; # (dec 'I)
-  %472 = sub i64 %470, 1
+  %473 = sub i64 %471, 1
 ; # (gt0 (dec 'I))
-  %473 = icmp sgt i64 %472, 0
-  br i1 %473, label %$60, label %$61
+  %474 = icmp sgt i64 %473, 0
+  br i1 %474, label %$60, label %$61
 $60:
-  %474 = phi i64 [%467, %$59] ; # X
-  %475 = phi i64 [%468, %$59] ; # P
-  %476 = phi i64 [%469, %$59] ; # N
-  %477 = phi i64 [%472, %$59] ; # I
-  %478 = phi i64 [%471, %$59] ; # Y
+  %475 = phi i64 [%468, %$59] ; # X
+  %476 = phi i64 [%469, %$59] ; # P
+  %477 = phi i64 [%470, %$59] ; # N
+  %478 = phi i64 [%473, %$59] ; # I
+  %479 = phi i64 [%472, %$59] ; # Y
 ; # (shift Y)
-  %479 = inttoptr i64 %478 to i64*
-  %480 = getelementptr i64, i64* %479, i32 1
-  %481 = load i64, i64* %480
+  %480 = inttoptr i64 %479 to i64*
+  %481 = getelementptr i64, i64* %480, i32 1
+  %482 = load i64, i64* %481
   br label %$59
 $61:
-  %482 = phi i64 [%467, %$59] ; # X
-  %483 = phi i64 [%468, %$59] ; # P
-  %484 = phi i64 [%469, %$59] ; # N
-  %485 = phi i64 [%472, %$59] ; # I
-  %486 = phi i64 [%471, %$59] ; # Y
+  %483 = phi i64 [%468, %$59] ; # X
+  %484 = phi i64 [%469, %$59] ; # P
+  %485 = phi i64 [%470, %$59] ; # N
+  %486 = phi i64 [%473, %$59] ; # I
+  %487 = phi i64 [%472, %$59] ; # Y
 ; # (set Nl (cons (car Y) (val Nl)) Tp2 (cons (cdr X) (val Tp2)) Tp1 ...
 ; # (car Y)
-  %487 = inttoptr i64 %486 to i64*
-  %488 = load i64, i64* %487
+  %488 = inttoptr i64 %487 to i64*
+  %489 = load i64, i64* %488
 ; # (val Nl)
-  %489 = inttoptr i64 %71 to i64*
-  %490 = load i64, i64* %489
+  %490 = inttoptr i64 %71 to i64*
+  %491 = load i64, i64* %490
 ; # (cons (car Y) (val Nl))
-  %491 = call i64 @cons(i64 %488, i64 %490)
-  %492 = inttoptr i64 %71 to i64*
-  store i64 %491, i64* %492
+  %492 = call i64 @cons(i64 %489, i64 %491)
+  %493 = inttoptr i64 %71 to i64*
+  store i64 %492, i64* %493
 ; # (cdr X)
-  %493 = inttoptr i64 %482 to i64*
-  %494 = getelementptr i64, i64* %493, i32 1
-  %495 = load i64, i64* %494
+  %494 = inttoptr i64 %483 to i64*
+  %495 = getelementptr i64, i64* %494, i32 1
+  %496 = load i64, i64* %495
 ; # (val Tp2)
-  %496 = inttoptr i64 %107 to i64*
-  %497 = load i64, i64* %496
+  %497 = inttoptr i64 %107 to i64*
+  %498 = load i64, i64* %497
 ; # (cons (cdr X) (val Tp2))
-  %498 = call i64 @cons(i64 %495, i64 %497)
-  %499 = inttoptr i64 %107 to i64*
-  store i64 %498, i64* %499
+  %499 = call i64 @cons(i64 %496, i64 %498)
+  %500 = inttoptr i64 %107 to i64*
+  store i64 %499, i64* %500
 ; # (val E)
-  %500 = inttoptr i64 %123 to i64*
-  %501 = load i64, i64* %500
-  %502 = inttoptr i64 %95 to i64*
-  store i64 %501, i64* %502
+  %501 = inttoptr i64 %123 to i64*
+  %502 = load i64, i64* %501
+  %503 = inttoptr i64 %95 to i64*
+  store i64 %502, i64* %503
   br label %$25
 $57:
-  %503 = phi i64 [%443, %$50] ; # X
-  %504 = phi i64 [%444, %$50] ; # P
-  %505 = phi i64 [%445, %$50] ; # N
+  %504 = phi i64 [%444, %$50] ; # X
+  %505 = phi i64 [%445, %$50] ; # P
+  %506 = phi i64 [%446, %$50] ; # N
 ; # (== @ $Up)
-  %506 = icmp eq i64 %447, ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 728) to i64)
-  br i1 %506, label %$63, label %$62
+  %507 = icmp eq i64 %448, ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 728) to i64)
+  br i1 %507, label %$63, label %$62
 $63:
-  %507 = phi i64 [%503, %$57] ; # X
-  %508 = phi i64 [%504, %$57] ; # P
-  %509 = phi i64 [%505, %$57] ; # N
+  %508 = phi i64 [%504, %$57] ; # X
+  %509 = phi i64 [%505, %$57] ; # P
+  %510 = phi i64 [%506, %$57] ; # N
 ; # (if (and (not (nil? (set E (uniRun (cddr (car X)))))) (unify (car...
 ; # (and (not (nil? (set E (uniRun (cddr (car X)))))) (unify (car (va...
 ; # (set E (uniRun (cddr (car X))))
 ; # (car X)
-  %510 = inttoptr i64 %507 to i64*
-  %511 = load i64, i64* %510
+  %511 = inttoptr i64 %508 to i64*
+  %512 = load i64, i64* %511
 ; # (cddr (car X))
-  %512 = inttoptr i64 %511 to i64*
-  %513 = getelementptr i64, i64* %512, i32 1
-  %514 = load i64, i64* %513
-  %515 = inttoptr i64 %514 to i64*
-  %516 = getelementptr i64, i64* %515, i32 1
-  %517 = load i64, i64* %516
+  %513 = inttoptr i64 %512 to i64*
+  %514 = getelementptr i64, i64* %513, i32 1
+  %515 = load i64, i64* %514
+  %516 = inttoptr i64 %515 to i64*
+  %517 = getelementptr i64, i64* %516, i32 1
+  %518 = load i64, i64* %517
 ; # (uniRun (cddr (car X)))
-  %518 = call i64 @uniRun(i64 %517)
-  %519 = inttoptr i64 %123 to i64*
-  store i64 %518, i64* %519
+  %519 = call i64 @uniRun(i64 %518)
+  %520 = inttoptr i64 %123 to i64*
+  store i64 %519, i64* %520
 ; # (nil? (set E (uniRun (cddr (car X)))))
-  %520 = icmp eq i64 %518, ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 8) to i64)
+  %521 = icmp eq i64 %519, ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 8) to i64)
 ; # (not (nil? (set E (uniRun (cddr (car X))))))
-  %521 = icmp eq i1 %520, 0
-  br i1 %521, label %$65, label %$64
+  %522 = icmp eq i1 %521, 0
+  br i1 %522, label %$65, label %$64
 $65:
-  %522 = phi i64 [%507, %$63] ; # X
-  %523 = phi i64 [%508, %$63] ; # P
-  %524 = phi i64 [%509, %$63] ; # N
+  %523 = phi i64 [%508, %$63] ; # X
+  %524 = phi i64 [%509, %$63] ; # P
+  %525 = phi i64 [%510, %$63] ; # N
 ; # (val Nl)
-  %525 = inttoptr i64 %71 to i64*
-  %526 = load i64, i64* %525
+  %526 = inttoptr i64 %71 to i64*
+  %527 = load i64, i64* %526
 ; # (car (val Nl))
-  %527 = inttoptr i64 %526 to i64*
-  %528 = load i64, i64* %527
+  %528 = inttoptr i64 %527 to i64*
+  %529 = load i64, i64* %528
 ; # (car X)
-  %529 = inttoptr i64 %522 to i64*
-  %530 = load i64, i64* %529
+  %530 = inttoptr i64 %523 to i64*
+  %531 = load i64, i64* %530
 ; # (cadr (car X))
-  %531 = inttoptr i64 %530 to i64*
-  %532 = getelementptr i64, i64* %531, i32 1
-  %533 = load i64, i64* %532
-  %534 = inttoptr i64 %533 to i64*
-  %535 = load i64, i64* %534
+  %532 = inttoptr i64 %531 to i64*
+  %533 = getelementptr i64, i64* %532, i32 1
+  %534 = load i64, i64* %533
+  %535 = inttoptr i64 %534 to i64*
+  %536 = load i64, i64* %535
 ; # (val Nl)
-  %536 = inttoptr i64 %71 to i64*
-  %537 = load i64, i64* %536
+  %537 = inttoptr i64 %71 to i64*
+  %538 = load i64, i64* %537
 ; # (car (val Nl))
-  %538 = inttoptr i64 %537 to i64*
-  %539 = load i64, i64* %538
+  %539 = inttoptr i64 %538 to i64*
+  %540 = load i64, i64* %539
 ; # (val E)
-  %540 = inttoptr i64 %123 to i64*
-  %541 = load i64, i64* %540
+  %541 = inttoptr i64 %123 to i64*
+  %542 = load i64, i64* %541
 ; # (unify (car (val Nl)) (cadr (car X)) (car (val Nl)) (val E))
-  %542 = call i1 @unify(i64 %528, i64 %535, i64 %539, i64 %541)
+  %543 = call i1 @unify(i64 %529, i64 %536, i64 %540, i64 %542)
   br label %$64
 $64:
-  %543 = phi i64 [%507, %$63], [%522, %$65] ; # X
-  %544 = phi i64 [%508, %$63], [%523, %$65] ; # P
-  %545 = phi i64 [%509, %$63], [%524, %$65] ; # N
-  %546 = phi i1 [0, %$63], [%542, %$65] ; # ->
-  br i1 %546, label %$66, label %$67
+  %544 = phi i64 [%508, %$63], [%523, %$65] ; # X
+  %545 = phi i64 [%509, %$63], [%524, %$65] ; # P
+  %546 = phi i64 [%510, %$63], [%525, %$65] ; # N
+  %547 = phi i1 [0, %$63], [%543, %$65] ; # ->
+  br i1 %547, label %$66, label %$67
 $66:
-  %547 = phi i64 [%543, %$64] ; # X
-  %548 = phi i64 [%544, %$64] ; # P
-  %549 = phi i64 [%545, %$64] ; # N
+  %548 = phi i64 [%544, %$64] ; # X
+  %549 = phi i64 [%545, %$64] ; # P
+  %550 = phi i64 [%546, %$64] ; # N
 ; # (set Tp1 (cdr X))
 ; # (cdr X)
-  %550 = inttoptr i64 %547 to i64*
-  %551 = getelementptr i64, i64* %550, i32 1
-  %552 = load i64, i64* %551
-  %553 = inttoptr i64 %95 to i64*
-  store i64 %552, i64* %553
+  %551 = inttoptr i64 %548 to i64*
+  %552 = getelementptr i64, i64* %551, i32 1
+  %553 = load i64, i64* %552
+  %554 = inttoptr i64 %95 to i64*
+  store i64 %553, i64* %554
   br label %$68
 $67:
-  %554 = phi i64 [%543, %$64] ; # X
-  %555 = phi i64 [%544, %$64] ; # P
-  %556 = phi i64 [%545, %$64] ; # N
+  %555 = phi i64 [%544, %$64] ; # X
+  %556 = phi i64 [%545, %$64] ; # P
+  %557 = phi i64 [%546, %$64] ; # N
 ; # (caar Q)
-  %557 = inttoptr i64 %13 to i64*
-  %558 = load i64, i64* %557
-  %559 = inttoptr i64 %558 to i64*
-  %560 = load i64, i64* %559
+  %558 = inttoptr i64 %13 to i64*
+  %559 = load i64, i64* %558
+  %560 = inttoptr i64 %559 to i64*
+  %561 = load i64, i64* %560
 ; # (set Q (cdar Q))
 ; # (cdar Q)
-  %561 = inttoptr i64 %13 to i64*
-  %562 = load i64, i64* %561
-  %563 = inttoptr i64 %562 to i64*
-  %564 = getelementptr i64, i64* %563, i32 1
-  %565 = load i64, i64* %564
-  %566 = inttoptr i64 %13 to i64*
-  store i64 %565, i64* %566
+  %562 = inttoptr i64 %13 to i64*
+  %563 = load i64, i64* %562
+  %564 = inttoptr i64 %563 to i64*
+  %565 = getelementptr i64, i64* %564, i32 1
+  %566 = load i64, i64* %565
+  %567 = inttoptr i64 %13 to i64*
+  store i64 %566, i64* %567
 ; # (++ P)
-  %567 = inttoptr i64 %560 to i64*
-  %568 = load i64, i64* %567
-  %569 = getelementptr i64, i64* %567, i32 1
-  %570 = load i64, i64* %569
+  %568 = inttoptr i64 %561 to i64*
+  %569 = load i64, i64* %568
+  %570 = getelementptr i64, i64* %568, i32 1
+  %571 = load i64, i64* %570
 ; # (set Nl (++ P) Alt (++ P) Tp1 (++ P) Tp2 (++ P) Env P)
 ; # (++ P)
-  %571 = inttoptr i64 %570 to i64*
-  %572 = load i64, i64* %571
-  %573 = getelementptr i64, i64* %571, i32 1
-  %574 = load i64, i64* %573
-  %575 = inttoptr i64 %71 to i64*
-  store i64 %572, i64* %575
+  %572 = inttoptr i64 %571 to i64*
+  %573 = load i64, i64* %572
+  %574 = getelementptr i64, i64* %572, i32 1
+  %575 = load i64, i64* %574
+  %576 = inttoptr i64 %71 to i64*
+  store i64 %573, i64* %576
 ; # (++ P)
-  %576 = inttoptr i64 %574 to i64*
-  %577 = load i64, i64* %576
-  %578 = getelementptr i64, i64* %576, i32 1
-  %579 = load i64, i64* %578
-  %580 = inttoptr i64 %83 to i64*
-  store i64 %577, i64* %580
+  %577 = inttoptr i64 %575 to i64*
+  %578 = load i64, i64* %577
+  %579 = getelementptr i64, i64* %577, i32 1
+  %580 = load i64, i64* %579
+  %581 = inttoptr i64 %83 to i64*
+  store i64 %578, i64* %581
 ; # (++ P)
-  %581 = inttoptr i64 %579 to i64*
-  %582 = load i64, i64* %581
-  %583 = getelementptr i64, i64* %581, i32 1
-  %584 = load i64, i64* %583
-  %585 = inttoptr i64 %95 to i64*
-  store i64 %582, i64* %585
+  %582 = inttoptr i64 %580 to i64*
+  %583 = load i64, i64* %582
+  %584 = getelementptr i64, i64* %582, i32 1
+  %585 = load i64, i64* %584
+  %586 = inttoptr i64 %95 to i64*
+  store i64 %583, i64* %586
 ; # (++ P)
-  %586 = inttoptr i64 %584 to i64*
-  %587 = load i64, i64* %586
-  %588 = getelementptr i64, i64* %586, i32 1
-  %589 = load i64, i64* %588
-  %590 = inttoptr i64 %107 to i64*
-  store i64 %587, i64* %590
-  %591 = inttoptr i64 %115 to i64*
-  store i64 %589, i64* %591
+  %587 = inttoptr i64 %585 to i64*
+  %588 = load i64, i64* %587
+  %589 = getelementptr i64, i64* %587, i32 1
+  %590 = load i64, i64* %589
+  %591 = inttoptr i64 %107 to i64*
+  store i64 %588, i64* %591
+  %592 = inttoptr i64 %115 to i64*
+  store i64 %590, i64* %592
   br label %$68
 $68:
-  %592 = phi i64 [%547, %$66], [%554, %$67] ; # X
-  %593 = phi i64 [%548, %$66], [%589, %$67] ; # P
-  %594 = phi i64 [%549, %$66], [%568, %$67] ; # N
-  %595 = phi i64 [%552, %$66], [%589, %$67] ; # ->
+  %593 = phi i64 [%548, %$66], [%555, %$67] ; # X
+  %594 = phi i64 [%549, %$66], [%590, %$67] ; # P
+  %595 = phi i64 [%550, %$66], [%569, %$67] ; # N
+  %596 = phi i64 [%553, %$66], [%590, %$67] ; # ->
   br label %$25
 $62:
-  %596 = phi i64 [%503, %$57] ; # X
-  %597 = phi i64 [%504, %$57] ; # P
-  %598 = phi i64 [%505, %$57] ; # N
+  %597 = phi i64 [%504, %$57] ; # X
+  %598 = phi i64 [%505, %$57] ; # P
+  %599 = phi i64 [%506, %$57] ; # N
 ; # (set Alt (get (caar X) $T))
 ; # (caar X)
-  %599 = inttoptr i64 %596 to i64*
-  %600 = load i64, i64* %599
-  %601 = inttoptr i64 %600 to i64*
-  %602 = load i64, i64* %601
+  %600 = inttoptr i64 %597 to i64*
+  %601 = load i64, i64* %600
+  %602 = inttoptr i64 %601 to i64*
+  %603 = load i64, i64* %602
 ; # (get (caar X) $T)
-  %603 = call i64 @get(i64 %602, i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 280) to i64))
-  %604 = inttoptr i64 %83 to i64*
-  store i64 %603, i64* %604
+  %604 = call i64 @get(i64 %603, i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 280) to i64))
+  %605 = inttoptr i64 %83 to i64*
+  store i64 %604, i64* %605
 ; # (atom (set Alt (get (caar X) $T)))
-  %605 = and i64 %603, 15
-  %606 = icmp ne i64 %605, 0
-  br i1 %606, label %$70, label %$69
+  %606 = and i64 %604, 15
+  %607 = icmp ne i64 %606, 0
+  br i1 %607, label %$70, label %$69
 $70:
-  %607 = phi i64 [%596, %$62] ; # X
-  %608 = phi i64 [%597, %$62] ; # P
-  %609 = phi i64 [%598, %$62] ; # N
+  %608 = phi i64 [%597, %$62] ; # X
+  %609 = phi i64 [%598, %$62] ; # P
+  %610 = phi i64 [%599, %$62] ; # N
 ; # (caar Q)
-  %610 = inttoptr i64 %13 to i64*
-  %611 = load i64, i64* %610
-  %612 = inttoptr i64 %611 to i64*
-  %613 = load i64, i64* %612
+  %611 = inttoptr i64 %13 to i64*
+  %612 = load i64, i64* %611
+  %613 = inttoptr i64 %612 to i64*
+  %614 = load i64, i64* %613
 ; # (set Q (cdar Q))
 ; # (cdar Q)
-  %614 = inttoptr i64 %13 to i64*
-  %615 = load i64, i64* %614
-  %616 = inttoptr i64 %615 to i64*
-  %617 = getelementptr i64, i64* %616, i32 1
-  %618 = load i64, i64* %617
-  %619 = inttoptr i64 %13 to i64*
-  store i64 %618, i64* %619
+  %615 = inttoptr i64 %13 to i64*
+  %616 = load i64, i64* %615
+  %617 = inttoptr i64 %616 to i64*
+  %618 = getelementptr i64, i64* %617, i32 1
+  %619 = load i64, i64* %618
+  %620 = inttoptr i64 %13 to i64*
+  store i64 %619, i64* %620
 ; # (++ P)
-  %620 = inttoptr i64 %613 to i64*
-  %621 = load i64, i64* %620
-  %622 = getelementptr i64, i64* %620, i32 1
-  %623 = load i64, i64* %622
+  %621 = inttoptr i64 %614 to i64*
+  %622 = load i64, i64* %621
+  %623 = getelementptr i64, i64* %621, i32 1
+  %624 = load i64, i64* %623
 ; # (set Nl (++ P) Alt (++ P) Tp1 (++ P) Tp2 (++ P) Env P)
 ; # (++ P)
-  %624 = inttoptr i64 %623 to i64*
-  %625 = load i64, i64* %624
-  %626 = getelementptr i64, i64* %624, i32 1
-  %627 = load i64, i64* %626
-  %628 = inttoptr i64 %71 to i64*
-  store i64 %625, i64* %628
+  %625 = inttoptr i64 %624 to i64*
+  %626 = load i64, i64* %625
+  %627 = getelementptr i64, i64* %625, i32 1
+  %628 = load i64, i64* %627
+  %629 = inttoptr i64 %71 to i64*
+  store i64 %626, i64* %629
 ; # (++ P)
-  %629 = inttoptr i64 %627 to i64*
-  %630 = load i64, i64* %629
-  %631 = getelementptr i64, i64* %629, i32 1
-  %632 = load i64, i64* %631
-  %633 = inttoptr i64 %83 to i64*
-  store i64 %630, i64* %633
+  %630 = inttoptr i64 %628 to i64*
+  %631 = load i64, i64* %630
+  %632 = getelementptr i64, i64* %630, i32 1
+  %633 = load i64, i64* %632
+  %634 = inttoptr i64 %83 to i64*
+  store i64 %631, i64* %634
 ; # (++ P)
-  %634 = inttoptr i64 %632 to i64*
-  %635 = load i64, i64* %634
-  %636 = getelementptr i64, i64* %634, i32 1
-  %637 = load i64, i64* %636
-  %638 = inttoptr i64 %95 to i64*
-  store i64 %635, i64* %638
+  %635 = inttoptr i64 %633 to i64*
+  %636 = load i64, i64* %635
+  %637 = getelementptr i64, i64* %635, i32 1
+  %638 = load i64, i64* %637
+  %639 = inttoptr i64 %95 to i64*
+  store i64 %636, i64* %639
 ; # (++ P)
-  %639 = inttoptr i64 %637 to i64*
-  %640 = load i64, i64* %639
-  %641 = getelementptr i64, i64* %639, i32 1
-  %642 = load i64, i64* %641
-  %643 = inttoptr i64 %107 to i64*
-  store i64 %640, i64* %643
-  %644 = inttoptr i64 %115 to i64*
-  store i64 %642, i64* %644
+  %640 = inttoptr i64 %638 to i64*
+  %641 = load i64, i64* %640
+  %642 = getelementptr i64, i64* %640, i32 1
+  %643 = load i64, i64* %642
+  %644 = inttoptr i64 %107 to i64*
+  store i64 %641, i64* %644
+  %645 = inttoptr i64 %115 to i64*
+  store i64 %643, i64* %645
   br label %$25
 $69:
-  %645 = phi i64 [%596, %$62] ; # X
-  %646 = phi i64 [%597, %$62] ; # P
-  %647 = phi i64 [%598, %$62] ; # N
+  %646 = phi i64 [%597, %$62] ; # X
+  %647 = phi i64 [%598, %$62] ; # P
+  %648 = phi i64 [%599, %$62] ; # N
   br label %$25
 $25:
-  %648 = phi i64 [%365, %$30], [%375, %$49], [%436, %$56], [%482, %$61], [%592, %$68], [%607, %$70], [%645, %$69] ; # X
-  %649 = phi i64 [%366, %$30], [%376, %$49], [%437, %$56], [%483, %$61], [%593, %$68], [%642, %$70], [%646, %$69] ; # P
-  %650 = phi i64 [%367, %$30], [%377, %$49], [%438, %$56], [%484, %$61], [%594, %$68], [%621, %$70], [%647, %$69] ; # N
+  %649 = phi i64 [%365, %$30], [%375, %$49], [%437, %$56], [%483, %$61], [%593, %$68], [%608, %$70], [%646, %$69] ; # X
+  %650 = phi i64 [%366, %$30], [%376, %$49], [%438, %$56], [%484, %$61], [%594, %$68], [%643, %$70], [%647, %$69] ; # P
+  %651 = phi i64 [%367, %$30], [%377, %$49], [%439, %$56], [%485, %$61], [%595, %$68], [%622, %$70], [%648, %$69] ; # N
   br label %$18
 $22:
-  %651 = phi i64 [%156, %$19] ; # X
-  %652 = phi i64 [%157, %$19] ; # P
-  %653 = phi i64 [%158, %$19] ; # N
+  %652 = phi i64 [%156, %$19] ; # X
+  %653 = phi i64 [%157, %$19] ; # P
+  %654 = phi i64 [%158, %$19] ; # N
 ; # (set E $Nil)
-  %654 = inttoptr i64 %123 to i64*
-  store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 8) to i64), i64* %654
+  %655 = inttoptr i64 %123 to i64*
+  store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 8) to i64), i64* %655
 ; # (let Y (val Env) (while (pair (cdr Y)) (let Z (caar Y) (when (== ...
 ; # (val Env)
-  %655 = inttoptr i64 %115 to i64*
-  %656 = load i64, i64* %655
+  %656 = inttoptr i64 %115 to i64*
+  %657 = load i64, i64* %656
 ; # (while (pair (cdr Y)) (let Z (caar Y) (when (== (car Z) ZERO) (se...
   br label %$71
 $71:
-  %657 = phi i64 [%651, %$22], [%691, %$75] ; # X
-  %658 = phi i64 [%652, %$22], [%692, %$75] ; # P
-  %659 = phi i64 [%653, %$22], [%693, %$75] ; # N
-  %660 = phi i64 [%656, %$22], [%698, %$75] ; # Y
+  %658 = phi i64 [%652, %$22], [%692, %$75] ; # X
+  %659 = phi i64 [%653, %$22], [%693, %$75] ; # P
+  %660 = phi i64 [%654, %$22], [%694, %$75] ; # N
+  %661 = phi i64 [%657, %$22], [%699, %$75] ; # Y
 ; # (cdr Y)
-  %661 = inttoptr i64 %660 to i64*
-  %662 = getelementptr i64, i64* %661, i32 1
-  %663 = load i64, i64* %662
+  %662 = inttoptr i64 %661 to i64*
+  %663 = getelementptr i64, i64* %662, i32 1
+  %664 = load i64, i64* %663
 ; # (pair (cdr Y))
-  %664 = and i64 %663, 15
-  %665 = icmp eq i64 %664, 0
-  br i1 %665, label %$72, label %$73
+  %665 = and i64 %664, 15
+  %666 = icmp eq i64 %665, 0
+  br i1 %666, label %$72, label %$73
 $72:
-  %666 = phi i64 [%657, %$71] ; # X
-  %667 = phi i64 [%658, %$71] ; # P
-  %668 = phi i64 [%659, %$71] ; # N
-  %669 = phi i64 [%660, %$71] ; # Y
+  %667 = phi i64 [%658, %$71] ; # X
+  %668 = phi i64 [%659, %$71] ; # P
+  %669 = phi i64 [%660, %$71] ; # N
+  %670 = phi i64 [%661, %$71] ; # Y
 ; # (let Z (caar Y) (when (== (car Z) ZERO) (set E (cons (cons (shift...
 ; # (caar Y)
-  %670 = inttoptr i64 %669 to i64*
-  %671 = load i64, i64* %670
-  %672 = inttoptr i64 %671 to i64*
-  %673 = load i64, i64* %672
+  %671 = inttoptr i64 %670 to i64*
+  %672 = load i64, i64* %671
+  %673 = inttoptr i64 %672 to i64*
+  %674 = load i64, i64* %673
 ; # (when (== (car Z) ZERO) (set E (cons (cons (shift Z) (lookup ZERO...
 ; # (car Z)
-  %674 = inttoptr i64 %673 to i64*
-  %675 = load i64, i64* %674
+  %675 = inttoptr i64 %674 to i64*
+  %676 = load i64, i64* %675
 ; # (== (car Z) ZERO)
-  %676 = icmp eq i64 %675, 2
-  br i1 %676, label %$74, label %$75
+  %677 = icmp eq i64 %676, 2
+  br i1 %677, label %$74, label %$75
 $74:
-  %677 = phi i64 [%666, %$72] ; # X
-  %678 = phi i64 [%667, %$72] ; # P
-  %679 = phi i64 [%668, %$72] ; # N
-  %680 = phi i64 [%669, %$72] ; # Y
-  %681 = phi i64 [%673, %$72] ; # Z
+  %678 = phi i64 [%667, %$72] ; # X
+  %679 = phi i64 [%668, %$72] ; # P
+  %680 = phi i64 [%669, %$72] ; # N
+  %681 = phi i64 [%670, %$72] ; # Y
+  %682 = phi i64 [%674, %$72] ; # Z
 ; # (set E (cons (cons (shift Z) (lookup ZERO Z)) (val E)))
 ; # (shift Z)
-  %682 = inttoptr i64 %681 to i64*
-  %683 = getelementptr i64, i64* %682, i32 1
-  %684 = load i64, i64* %683
+  %683 = inttoptr i64 %682 to i64*
+  %684 = getelementptr i64, i64* %683, i32 1
+  %685 = load i64, i64* %684
 ; # (lookup ZERO Z)
-  %685 = call i64 @lookup(i64 2, i64 %684)
+  %686 = call i64 @lookup(i64 2, i64 %685)
 ; # (cons (shift Z) (lookup ZERO Z))
-  %686 = call i64 @cons(i64 %684, i64 %685)
+  %687 = call i64 @cons(i64 %685, i64 %686)
 ; # (val E)
-  %687 = inttoptr i64 %123 to i64*
-  %688 = load i64, i64* %687
+  %688 = inttoptr i64 %123 to i64*
+  %689 = load i64, i64* %688
 ; # (cons (cons (shift Z) (lookup ZERO Z)) (val E))
-  %689 = call i64 @cons(i64 %686, i64 %688)
-  %690 = inttoptr i64 %123 to i64*
-  store i64 %689, i64* %690
+  %690 = call i64 @cons(i64 %687, i64 %689)
+  %691 = inttoptr i64 %123 to i64*
+  store i64 %690, i64* %691
   br label %$75
 $75:
-  %691 = phi i64 [%666, %$72], [%677, %$74] ; # X
-  %692 = phi i64 [%667, %$72], [%678, %$74] ; # P
-  %693 = phi i64 [%668, %$72], [%679, %$74] ; # N
-  %694 = phi i64 [%669, %$72], [%680, %$74] ; # Y
-  %695 = phi i64 [%673, %$72], [%684, %$74] ; # Z
+  %692 = phi i64 [%667, %$72], [%678, %$74] ; # X
+  %693 = phi i64 [%668, %$72], [%679, %$74] ; # P
+  %694 = phi i64 [%669, %$72], [%680, %$74] ; # N
+  %695 = phi i64 [%670, %$72], [%681, %$74] ; # Y
+  %696 = phi i64 [%674, %$72], [%685, %$74] ; # Z
 ; # (shift Y)
-  %696 = inttoptr i64 %694 to i64*
-  %697 = getelementptr i64, i64* %696, i32 1
-  %698 = load i64, i64* %697
+  %697 = inttoptr i64 %695 to i64*
+  %698 = getelementptr i64, i64* %697, i32 1
+  %699 = load i64, i64* %698
   br label %$71
 $73:
-  %699 = phi i64 [%657, %$71] ; # X
-  %700 = phi i64 [%658, %$71] ; # P
-  %701 = phi i64 [%659, %$71] ; # N
-  %702 = phi i64 [%660, %$71] ; # Y
+  %700 = phi i64 [%658, %$71] ; # X
+  %701 = phi i64 [%659, %$71] ; # P
+  %702 = phi i64 [%660, %$71] ; # N
+  %703 = phi i64 [%661, %$71] ; # Y
 ; # (set $Pnl Pnl $Penv Penv $At At)
   store i64 %141, i64* @$Pnl
   store i64 %140, i64* @$Penv
-  %703 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 440) to i64) to i64*
-  store i64 %131, i64* %703
+  %704 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 440) to i64) to i64*
+  store i64 %131, i64* %704
 ; # (cond ((pair (val E)) @) ((pair (val Env)) $T) (T $Nil))
 ; # (val E)
-  %704 = inttoptr i64 %123 to i64*
-  %705 = load i64, i64* %704
+  %705 = inttoptr i64 %123 to i64*
+  %706 = load i64, i64* %705
 ; # (pair (val E))
-  %706 = and i64 %705, 15
-  %707 = icmp eq i64 %706, 0
-  br i1 %707, label %$78, label %$77
+  %707 = and i64 %706, 15
+  %708 = icmp eq i64 %707, 0
+  br i1 %708, label %$78, label %$77
 $78:
-  %708 = phi i64 [%699, %$73] ; # X
-  %709 = phi i64 [%700, %$73] ; # P
-  %710 = phi i64 [%701, %$73] ; # N
+  %709 = phi i64 [%700, %$73] ; # X
+  %710 = phi i64 [%701, %$73] ; # P
+  %711 = phi i64 [%702, %$73] ; # N
   br label %$76
 $77:
-  %711 = phi i64 [%699, %$73] ; # X
-  %712 = phi i64 [%700, %$73] ; # P
-  %713 = phi i64 [%701, %$73] ; # N
+  %712 = phi i64 [%700, %$73] ; # X
+  %713 = phi i64 [%701, %$73] ; # P
+  %714 = phi i64 [%702, %$73] ; # N
 ; # (val Env)
-  %714 = inttoptr i64 %115 to i64*
-  %715 = load i64, i64* %714
+  %715 = inttoptr i64 %115 to i64*
+  %716 = load i64, i64* %715
 ; # (pair (val Env))
-  %716 = and i64 %715, 15
-  %717 = icmp eq i64 %716, 0
-  br i1 %717, label %$80, label %$79
+  %717 = and i64 %716, 15
+  %718 = icmp eq i64 %717, 0
+  br i1 %718, label %$80, label %$79
 $80:
-  %718 = phi i64 [%711, %$77] ; # X
-  %719 = phi i64 [%712, %$77] ; # P
-  %720 = phi i64 [%713, %$77] ; # N
+  %719 = phi i64 [%712, %$77] ; # X
+  %720 = phi i64 [%713, %$77] ; # P
+  %721 = phi i64 [%714, %$77] ; # N
   br label %$76
 $79:
-  %721 = phi i64 [%711, %$77] ; # X
-  %722 = phi i64 [%712, %$77] ; # P
-  %723 = phi i64 [%713, %$77] ; # N
+  %722 = phi i64 [%712, %$77] ; # X
+  %723 = phi i64 [%713, %$77] ; # P
+  %724 = phi i64 [%714, %$77] ; # N
   br label %$76
 $76:
-  %724 = phi i64 [%708, %$78], [%718, %$80], [%721, %$79] ; # X
-  %725 = phi i64 [%709, %$78], [%719, %$80], [%722, %$79] ; # P
-  %726 = phi i64 [%710, %$78], [%720, %$80], [%723, %$79] ; # N
-  %727 = phi i64 [%705, %$78], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 280) to i64), %$80], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 8) to i64), %$79] ; # ->
+  %725 = phi i64 [%709, %$78], [%719, %$80], [%722, %$79] ; # X
+  %726 = phi i64 [%710, %$78], [%720, %$80], [%723, %$79] ; # P
+  %727 = phi i64 [%711, %$78], [%721, %$80], [%724, %$79] ; # N
+  %728 = phi i64 [%706, %$78], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 280) to i64), %$80], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 8) to i64), %$79] ; # ->
 ; # (drop *Safe)
-  %728 = inttoptr i64 %21 to i64*
-  %729 = getelementptr i64, i64* %728, i32 1
-  %730 = load i64, i64* %729
-  %731 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %730, i64* %731
+  %729 = inttoptr i64 %21 to i64*
+  %730 = getelementptr i64, i64* %729, i32 1
+  %731 = load i64, i64* %730
+  %732 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %731, i64* %732
   br label %$9
 $9:
-  %732 = phi i64 [%16, %$7], [%724, %$76] ; # X
-  %733 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 8) to i64), %$7], [%727, %$76] ; # ->
-  ret i64 %733
+  %733 = phi i64 [%16, %$7], [%725, %$76] ; # X
+  %734 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([868 x i64]* @SymTab to i8*), i32 8) to i64), %$7], [%728, %$76] ; # ->
+  ret i64 %734
 }
 
 define i64 @_arrow(i64) align 8 {
