@@ -1,4 +1,4 @@
-# 28oct21 Software Lab. Alexander Burger
+# 09nov21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -497,11 +497,11 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
 (de getch ()
    (symbols *Ns
       (if (= "^[" (setq *Chr (key)))
-         (when (key 80)
+         (when (key 120)
             (loop
                (setq *Chr (pack *Chr @))
                (T (member *Chr '("^[[A" "^[[B" "^[[C" "^[[D")) *Chr)
-               (NIL (key 80) *Chr) ) )
+               (NIL (key 120) *Chr) ) )
          *Chr ) ) )
 
 (de getch2 (C)

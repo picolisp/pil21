@@ -1,3 +1,7 @@
+09nov21
+   Increase escape delay from 80 to 120
+      lib/vip.l
+
 31oct21
    Mention Ctrl-D to terminate 'bt', 'query' and '?'
       doc/ref.html
