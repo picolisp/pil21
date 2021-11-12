@@ -1,6 +1,10 @@
-10nov21
-   Don't follow symbolic links in 'vf'
-      lib/vip.l
+12nov21
+   '+ObjVar' prefix class
+      lib/form.l
+
+11nov21
+   Missing semicolon (Mia)
+      lib/form.js
 
 09nov21
    Increase escape delay from 80 to 120

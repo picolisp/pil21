@@ -1,4 +1,4 @@
-# 02oct21 Software Lab. Alexander Burger
+# 12nov21 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -2378,6 +2378,25 @@
             (commit 'upd) )
          (NIL (put!> @ (: objVar) Val)) ) )
    (: obj) )
+
+
+(class +ObjVar +obj)
+# objVar
+
+(dm T (Var . @)
+   (=: objVar Var)
+   (=: msg 'url>)
+   (pass extra) )
+
+(dm set> (Obj Dn)
+   (extra
+      (get (=: obj Obj) (: objVar))
+      Dn ) )
+
+(dm val> ()
+   (let? Obj (: obj)
+      (put!> Obj (: objVar) (extra))
+      Obj ) )
 
 
 (class +ObjView +obj)

@@ -1,4 +1,4 @@
-# 10nov21 Software Lab. Alexander Burger
+# 11nov21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1700,7 +1700,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
    (when
       (in
          (list
-            "grep" "-rl"
+            "grep" "-Rl"
             (if Ext (pack "--include=*" @) "--exclude=*-")
             (cons
                "\\(\^\\|[[:space:]\"'(),`{}~]\\|\\[\\|\\]\\)"
