@@ -1,4 +1,4 @@
-# 28aug21 Software Lab. Alexander Burger
+# 16nov21 Software Lab. Alexander Burger
 
 ### name ###
 (test "abc" (name 'abc))
@@ -58,6 +58,13 @@
 
 ### intern ###
 (test car (val (intern (pack "c" "a" "r"))))
+
+
+### ==== ###
+(setq *Sym "abc")
+(test T (== *Sym "abc"))
+(====)
+(test NIL (== *Sym "abc"))
 
 
 ### box? ###

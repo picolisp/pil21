@@ -1,4 +1,4 @@
-# 27aug21 Software Lab. Alexander Burger
+# 16nov21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -697,6 +697,10 @@
                         (cdar @) )
                      $Nil
                      NO ) ) ) ) ) ) )
+
+# (====) -> NIL
+(de _hide (Exe)
+   (set $Transient (set 2 $Transient $Nil)) )
 
 # (box? 'any) -> sym | NIL
 (de _boxQ (Exe)

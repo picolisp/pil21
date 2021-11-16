@@ -1,4 +1,4 @@
-# 02mar21 Software Lab. Alexander Burger
+# 16nov21 Software Lab. Alexander Burger
 
    Differences to Pil64
    ====================
@@ -33,7 +33,6 @@
 + '*Winch' global SIGWINCH handler
 + Path names expand "~" for the HOME directory
 
-- '====' is not supported
 - 'lines' is not supported
 - 'tick' is not supported
 - 'arg' without arguments is not supported

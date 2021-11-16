@@ -1,4 +1,4 @@
-# 02aug21 Software Lab. Alexander Burger
+# 16nov21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1456,13 +1456,20 @@ selectErr)
             (cons $Quote (read0 Top)) )
          ((== C (char ","))
             (call $Get)
-            (let X (read0 Top)
-               (if (t? (val $Uni))
-                  X
-                  (save X
-                     (if (pair (idxPut $Uni X))
-                        (car @)
-                        X ) ) ) ) )
+            (let
+               (Tr1 (save (val $Transient))
+                  Tr2 (save (val 2 $Transient)) )
+               (set $Transient (set 2 $Transient $Nil))
+               (prog1
+                  (let X (read0 Top)
+                     (if (t? (val $Uni))
+                        X
+                        (save X
+                           (if (pair (idxPut $Uni X))
+                              (car @)
+                              X ) ) ) )
+                  (set 2 $Transient Tr2)
+                  (set $Transient Tr1) ) ) )
          ((== C (char "`"))
             (call $Get)
             (let E (read0 Top)

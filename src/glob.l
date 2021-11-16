@@ -1,4 +1,4 @@
-# 20sep21 Software Lab. Alexander Burger
+# 16nov21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -190,6 +190,7 @@
    (NIL "all" _all)
    (NIL "symbols" _symbols)
    (NIL "intern" _intern)
+   (NIL "====" _hide)
    (NIL "box?" _boxQ)
    (NIL "str?" _strQ)
    (NIL "zap" _zap)

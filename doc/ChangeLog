@@ -1,3 +1,15 @@
+16nov21
+   Re-introduce the '====' function
+      src/glob.l
+      src/sym.l
+      test/src/sym.l
+      doc/ref_.html
+      doc/diff
+   and use it in 'locale'
+      lib/misc.l
+   Preserve transients in comma read macro
+      src/io.l
+
 15nov21
    Use 'fName' in 'vf'
       lib/vip.l

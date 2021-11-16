@@ -1,4 +1,4 @@
-# 16sep21 Software Lab. Alexander Burger
+# 16nov21 Software Lab. Alexander Burger
 
 # *Allow
 
@@ -21,6 +21,7 @@
    (ifn (setq *Lang Lang)
       (for S (idx '*Uni)
          (set S S) )
+      (====)
       (let L
          (sort
             (make
@@ -29,7 +30,8 @@
                   ("loc" (pack (next) Lang)) ) ) )
          (balance '*Uni L T)
          (for S L
-            (set (car (idx '*Uni S)) (val S)) ) ) ) )
+            (set (car (idx '*Uni S)) (val S)) ) )
+      (====) ) )
 
 (de "loc" (F)
    (when (info F)

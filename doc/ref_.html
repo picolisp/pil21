@@ -441,6 +441,23 @@ href="ref.html#cmp">Comparing</a>.
 -> NIL
 </code></pre>
 
+<dt><a name="===="><code>(====) -> NIL</code></a>
+<dd>Close the current transient scope by clearing the transient index. All
+transient symbols become hidden and inaccessible by the reader.
+See also <code><a href="refE.html#extern">extern</a></code> and <code><a
+href="refI.html#intern">intern</a></code>.
+
+<pre><code>
+: (setq S "abc")           # Read "abc"
+-> "abc"
+: (== S "abc")             # Read again, get the same symbol
+-> T
+: (====)                   # Close scope
+-> NIL
+: (== S "abc")             # Read again, get another symbol
+-> NIL
+</code></pre>
+
 <dt><a name="=T"><code>(=T 'any) -> flg</code></a>
 <dd>Returns <code>T</code> when <code>any</code> is the symbol <code>T</code>.
 <code>(=T X)</code> is equivalent to <code>(== T X)</code>. See also <a
