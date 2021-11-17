@@ -1,4 +1,4 @@
-# 03sep21 Software Lab. Alexander Burger
+# 17nov21 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1461,7 +1461,11 @@
 (de forall (Cls . Prg)
    (for
       (This
-         (seq (or (; Cls Dbf 1) 1))
+         (seq
+            (or
+               (; Cls Dbf 1)
+               (meta Cls 'Dbf 1)
+               1 ) )
          This
          (seq This) )
       (and (isa Cls This) (run Prg 1)) ) )

@@ -1,3 +1,7 @@
+17nov21
+   Inherit 'Dbf' in 'forall' from superclasses
+      lib/db.l
+
 16nov21
    Re-introduce the '====' function
       src/glob.l
