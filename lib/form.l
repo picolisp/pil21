@@ -1,4 +1,4 @@
-# 12nov21 Software Lab. Alexander Burger
+# 17nov21 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -1789,7 +1789,7 @@
       (mapc
          '((G D)
             (unless (memq NIL G)
-               (mapc 'set> G ((: put) D I) '(T .)) )
+               (mapc 'set> G ((: put) D I) T) )
             (inc 'I) )
          (: gui)
          (nth (: data) I) ) ) )
@@ -1811,7 +1811,7 @@
                (mapc 'set>
                   (car G)
                   ((: put) (car D) I)
-                  '(T .) )
+                  T )
                (inc 'I) )
             (: gui)
             (nth

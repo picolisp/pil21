@@ -1,4 +1,6 @@
 17nov21
+   Minor cosmetics
+      lib/form.l
    Inherit 'Dbf' in 'forall' from superclasses
       lib/db.l
 
