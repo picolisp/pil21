@@ -2542,9 +2542,8 @@
                               (cut (dec (: pos)) 'L)
                               (list
                                  (conc
-                                    (let P (++ L)
-                                       (make
-                                          (do (: ctl gf 1) (link (++ P))) ) )
+                                    (need (- (: ctl gf 1))
+                                       (head (: ctl gf 1) (++ L)) )
                                     (list Lst) ) )
                               L ) ) ) )
                   Lst )
