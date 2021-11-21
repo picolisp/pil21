@@ -1,3 +1,8 @@
+21nov21
+   Simplify style manipulations
+      lib/form.l
+      lib/form.js
+
 18nov21
    Bug in 'bagBag'
       lib/form.l
