@@ -1,3 +1,18 @@
+22nov21
+   Minor cosmetics
+      lib.css
+      lib/canvas.js
+      lib/plio.js
+      lib/gis.js
+      loc/ar
+      loc/ch
+      loc/cn
+      loc/de
+      loc/hr
+      loc/it
+      loc/ja
+      loc/tr
+
 21nov21
    Simplify style manipulations
       lib/form.l
