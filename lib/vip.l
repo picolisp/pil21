@@ -1030,8 +1030,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                                  (do (- 3 (% (dec (: posX)) 3))
                                     (link (name " ")) ) ) ) )
                         (T
-                           (default *Complete
-                              (cons S (flip (all* S))) )
+                           (default *Complete (cons S (flip (all* S))))
                            (do (length (car *Complete)) (_bs))
                            (setq S (chop (car (rot *Complete)))) ) )
                      (when (= "^V" (car S))
