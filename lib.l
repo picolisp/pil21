@@ -1,4 +1,4 @@
-# 01jun21 Software Lab. Alexander Burger
+# 26nov21 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -270,6 +270,31 @@
          (quit "Import conflict" Sym) ) )
    Lst )
 
+(de all* (S)
+   (sort
+      (conc
+         (let (L (split (chop S) "~")  N NIL  S)
+            (while (cdr L)
+               (setq
+                  N (intern (pack (car L)) N)
+                  S (pack S (++ L) "~") ) )
+            (let P (pack (car L))
+               (extract
+                  '((X) (and (pre? P X) (pack S X)))
+                  (all N) ) ) )
+         (let P (rot (split (chop S) "/"))
+            (setq
+               S (pack (car P))
+               P (and (cdr P) (pack (glue "/" @) "/")) )
+            (extract
+               '((X)
+                  (when (pre? S X)
+                     (let F (pack P X)
+                        (if (=T (car (info F)))
+                           (pack F "/")
+                           F ) ) ) )
+               (dir P T) ) ) ) ) )
+
 ### Date/Time ###
 (de *mon . (jan feb mar apr may jun jul aug sep oct nov dec .))
 
@@ -347,29 +372,7 @@
       (setq "*Cmpl"
          (if (=T S)
             (list "   ")
-            (conc
-               (if (sub? "~" S)
-                  (let
-                     (L (split (chop S) "~")
-                        N (pack (car L))
-                        P (pack (cadr L)) )
-                     (extract
-                        '((X)
-                           (and (pre? P X) (pack N "~" X)) )
-                        (all (intern N)) ) )
-                  (filter '((X) (pre? S X)) (all)) )
-               (let P (rot (split (chop S) "/"))
-                  (setq
-                     S (pack (car P))
-                     P (and (cdr P) (pack (glue "/" @) "/")) )
-                  (extract
-                     '((X)
-                        (when (pre? S X)
-                           (let F (pack P X)
-                              (if (=T (car (info F)))
-                                 (pack F "/")
-                                 F ) ) ) )
-                     (dir P T) ) ) ) ) ) )
+            (flip (all* S)) ) ) )
    (pop '"*Cmpl") )
 
 ### Pretty Printing ###

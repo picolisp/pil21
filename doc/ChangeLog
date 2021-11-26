@@ -1,3 +1,10 @@
+26nov21
+   'all*' function
+      lib.l
+      doc/refA.html
+   Refactor TAB-completion
+      lib/vip.l
+
 25nov21
    Search namespaces in TAB-completion
       lib/vip.l

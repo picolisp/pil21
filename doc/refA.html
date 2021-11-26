@@ -231,7 +231,8 @@ in the current namespace search order (if called without arguments, or with
 symbols (if the argument is <code>T</code>), all <a
 href="ref.html#external">external</a> symbols (if the argument is zero), or all
 symbols of the given namespace <code>sym</code>. See also <code><a
-href="refS.html#symbols">symbols</a></code>.
+href="refS.html#symbols">symbols</a></code> and <code><a
+href="refA.html#all*">all*</a></code>.
 
 <pre><code>
 : (all)  # All internal symbols
@@ -240,6 +241,20 @@ href="refS.html#symbols">symbols</a></code>.
 # Find all symbols starting with an underscore character
 : (filter '((X) (= "_" (car (chop X)))) (all))
 -> (_put _nacs _oct _lintq _lst _map _iter _dbg2 _getLine _led ...
+</code></pre>
+
+<dt><a name="all*"><code>(all* 'any) -> lst</code></a>
+<dd>Returns a sorted list of all (possibly namespaced) symbols and path names
+starting with the characters in <code>any<code>. Typically used in
+TAB-completion routines. See also <code><a href="refA.html#all">all</a></code>,
+<code><a href="refS.html#symbols">symbols</a></code> and <code><a
+href="refI.html#intern">intern</a></code>.
+
+<pre><code>
+: (all* "map")
+-> ("map" "map/3" "mapc" "mapcan" "mapcar" "mapcon" "maplist" "maps")
+: (all* "llvm~BLK")
+-> ("llvm~BLK" "llvm~BLKMASK" "llvm~BLKSIZE" "llvm~BLKTAG")
 </code></pre>
 
 <dt><a name="allow"><code>(allow 'sym ['flg]) -> sym</code></a>
