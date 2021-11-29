@@ -1,4 +1,4 @@
-# 28nov21 Software Lab. Alexander Burger
+# 29nov21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -546,18 +546,14 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
    (push '*TagStack (: posX) (: posY) File (symbols)) )
 
 (de tag (S C)
-   (cond
-      ((: buffer syms)
-         (pushTag @)
-         (syms> (: buffer) (cons S @))
-         (reload (: buffer file) 1 1) )
-      ((if C
-            (get @ '*Dbg -1 S)
-            (get S '*Dbg 1) )
-         (pushTag (: buffer file))
-         (apply symbols (cddr @))
-         (reload (cadr @) (car @) 1) )
-      (T (beep)) ) )
+   (ifn
+      (if C
+         (get @ '*Dbg -1 S)
+         (get S '*Dbg 1) )
+      (beep)
+      (pushTag (: buffer file))
+      (apply symbols (cddr @))
+      (reload (cadr @) (car @) 1) ) )
 
 (de done (Flg)
    (and Flg
@@ -1578,7 +1574,14 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                                        (with (: next)
                                           (chgwin (inc (: lines))) ) ) ) )
                               ("=" (eqwin))  # Set all windows to equal size
-                              (("K" "^]")  # Edit symbol
+                              ("K"  # Edit symbol
+                                 (let S (any (getWord T))
+                                    (ifn (: buffer syms)
+                                       (tag S)
+                                       (pushTag @)
+                                       (syms> (: buffer) (cons S @))
+                                       (reload (: buffer file) 1 1) ) ) )
+                              ("^]"  # Edit symbol definition
                                  (tag (any (getWord T))) )
                               (("Q" "^T")  # Pop tag stack
                                  (ifn *TagStack

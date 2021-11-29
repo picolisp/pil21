@@ -1,3 +1,7 @@
+29nov21
+   Continue direct editing only with "K" ("^]" always goes to source)
+      lib/vip.l
+
 28nov21
    Remove '*Complete' filter
       lib/vip.l
