@@ -1,4 +1,5 @@
 29nov21
+   Extend 'command' with *CmdMap
    Continue direct editing only with "K" ("^]" always goes to source)
       lib/vip.l
 
