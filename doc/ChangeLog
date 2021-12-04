@@ -1,3 +1,7 @@
+04dec21
+   Lock, sync and commit external symbols
+      lib/vip.l
+
 30nov21
    'R' may be modified in 'evCmd'
       lib/vip.l
