@@ -1350,7 +1350,9 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                                  (setq C (pack C (++ Line))) )
                               (if Line
                                  (push '*KeyMap
-                                    (list C (list 'setq '*Keys (lit (cdr Line)))) )
+                                    (list C
+                                       (list 'setq '*Keys
+                                          (lit (mapcar name (cdr Line))) ) ) )
                                  (del (assoc C *KeyMap) '*KeyMap) ) ) )
                         (T
                            (if (get *Buffers Cnt)
