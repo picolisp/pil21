@@ -1,3 +1,8 @@
+05dec21
+   Global '*Keys'
+   ":map" command
+      lib/vip.l
+
 04dec21
    Lock, sync and commit external symbols
       lib/vip.l

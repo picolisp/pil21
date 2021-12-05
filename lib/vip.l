@@ -1,9 +1,9 @@
-# 04dec21 Software Lab. Alexander Burger
+# 05dec21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
 (local) (*Ns *Shell *CmdWin *StatNm *Chr *Complete *Repeat *Change *Count *Cnt
-*Search *Clip *Lines *Columns *TagStack *Spell *CmdMap *KeyMap *KeyMap-g
+*Search *Clip *Lines *Columns *TagStack *Spell *CmdMap *Keys *KeyMap *KeyMap-g
 *KeyMap-q *F7 *F8 *F9 *F10 *F11 *F12 *@)
 
 ### ANSI Terminal ###
@@ -504,17 +504,17 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
 
 (de getch ()
    (symbols *Ns
-      (if (= "^[" (setq *Chr (key)))
-         (when (key 120)
+      (if (= "^[" (setq *Chr (or (++ *Keys) (key))))
+         (when (or (++ *Keys) (key 120))
             (loop
                (setq *Chr (pack *Chr @))
                (T (member *Chr '("^[[A" "^[[B" "^[[C" "^[[D")) *Chr)
-               (NIL (key 120) *Chr) ) )
+               (NIL (or (++ *Keys) (key 120)) *Chr) ) )
          *Chr ) ) )
 
 (de getch2 (C)
    (if (= "^V" C)
-      (symbols *Ns (key))
+      (or (++ *Keys) (symbols *Ns (key)))
       C ) )
 
 (de reload (File Y X)
@@ -1265,88 +1265,97 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                (when (>= "z" C "a")
                   (until (sp? (car Line))
                      (setq C (pack C (++ Line))) ) )
-               (setq Line (pack (clip Line)))
-               (if (assoc C *CmdMap)
-                  (run (cdr @))
-                  (case C
-                     (" "  # Eval
-                        (setq @ *@)
-                        (evCmd (run (str Line))) )
-                     ("$"  # Shell command
-                        (scratch (tmp "cmd")
-                           (in (list *Shell "-c" (rplFile Line))
-                              (rdLines) ) ) )
-                     ("!"  # External filter
-                        (when Line
-                           (if (=0 Cnt)
-                              (shell (rplFile Line))
-                              (pipeN Cnt Line) ) ) )
-                     ("cp"  # Copy to system clipboard
-                        (out '("copy")  # System dependent script
-                           (let V (val *Clip)
-                              (if (=T (car V))
-                                 (mapc prinl (cdr V))
-                                 (prin V) ) ) ) )
-                     ("ix.io"  # Paste to http://ix.io
-                        (pipe
-                           (out '("curl" "-sF" "f:1=<-" "ix.io")
-                              (mapc prinl (: buffer text)) )
-                           (prCmd (rdLines)) ) )
-                     ("bak" (shFile "mv @1 @1- && cp -p @1- @1"))  # Backup to <file>-
-                     ("kab"  # Restore from <file>-
-                        (shFile "mv @1- @1 && cp -p @1 @1-")
-                        (reload) )
-                     ("ls"  # List buffers
-                        (prCmd
-                           (make
-                              (for (I . This) *Buffers
-                                 (link
-                                    (chop (pack ":" I " " (prName (: file)))) ) ) ) ) )
-                     ("key" (=: buffer key Line) (reload))
-                     ("m"
-                        (when (info (=: mark (fName (rplFile Line))))
-                           (in (: mark) (move 'goAbs (read) (read))) ) )
-                     ("n" (nextBuf))  # Next buffer
-                     ("N" (nextBuf T))  # Previous buffer
-                     (("ta" "tag") (apply tag (str Line)))
-                     ("v" (reload (syms (str Line)) 1 1))
-                     ("e" (reload (rplFile Line)))  # (Edit) Reload buffer
-                     ("E"  # (Edit) Toggle subdir recursion and reload buffer
-                        (=: buffer subd (not (: buffer subd)))
-                        (reload (rplFile Line)) )
-                     ("r"  # Read file contents
-                        (let F (fName (rplFile Line))
-                           (when (info F)
-                              (in F (paste (cons T (rdLines)) 1)) ) ) )
-                     ("w"  # (Write) Save buffer
-                        (if Line
-                           (out (fName (rplFile @))
-                              (mapc prinl (: buffer text)) )
-                           (save> (: buffer) This) ) )
-                     ("l"  # (load) Save and load
-                        (when (: buffer file)
-                           (when (dirty> (: buffer) This)
-                              (save> (: buffer) This) )
-                           (evCmd (load (: buffer file))) ) )
-                     ("x" (done T))  # (Exit) Save buffer and close window
-                     ("q" (done))  # (Quit) Close window
-                     ("bx"  # Buffer exchange
-                        (let X (memq (: buffer) *Buffers)
-                           (if (cdr X)
-                              (xchg X @)
-                              (beep) ) ) )
-                     ("bd"  # Buffer delete
-                        (when (cdr *Buffers)
-                           (let Buf (: buffer)
-                              (for (This *CmdWin (setq This (: next)))
-                                 (when (== Buf (: buffer))
-                                    (nextBuf) ) )
-                              (del Buf '*Buffers)
-                              (=: last) ) ) )
-                     (T
-                        (if (get *Buffers Cnt)
-                           (nextBuf @)
-                           (beep) ) ) ) ) ) )
+               (let L (pack (clip Line))
+                  (if (assoc C *CmdMap)
+                     ((cdr @) L Line Cnt)
+                     (case C
+                        (" "  # Eval
+                           (setq @ *@)
+                           (evCmd (run (str L))) )
+                        ("$"  # Shell command
+                           (scratch (tmp "cmd")
+                              (in (list *Shell "-c" (rplFile L))
+                                 (rdLines) ) ) )
+                        ("!"  # External filter
+                           (when L
+                              (if (=0 Cnt)
+                                 (shell (rplFile L))
+                                 (pipeN Cnt L) ) ) )
+                        ("cp"  # Copy to system clipboard
+                           (out '("copy")  # System dependent script
+                              (let V (val *Clip)
+                                 (if (=T (car V))
+                                    (mapc prinl (cdr V))
+                                    (prin V) ) ) ) )
+                        ("ix.io"  # Paste to http://ix.io
+                           (pipe
+                              (out '("curl" "-sF" "f:1=<-" "ix.io")
+                                 (mapc prinl (: buffer text)) )
+                              (prCmd (rdLines)) ) )
+                        ("bak" (shFile "mv @1 @1- && cp -p @1- @1"))  # Backup to <file>-
+                        ("kab"  # Restore from <file>-
+                           (shFile "mv @1- @1 && cp -p @1 @1-")
+                           (reload) )
+                        ("ls"  # List buffers
+                           (prCmd
+                              (make
+                                 (for (I . This) *Buffers
+                                    (link
+                                       (chop (pack ":" I " " (prName (: file)))) ) ) ) ) )
+                        ("key" (=: buffer key L) (reload))
+                        ("m"
+                           (when (info (=: mark (fName (rplFile L))))
+                              (in (: mark) (move 'goAbs (read) (read))) ) )
+                        ("n" (nextBuf))  # Next buffer
+                        ("N" (nextBuf T))  # Previous buffer
+                        (("ta" "tag") (apply tag (str L)))
+                        ("v" (reload (syms (str L)) 1 1))
+                        ("e" (reload (rplFile L)))  # (Edit) Reload buffer
+                        ("E"  # (Edit) Toggle subdir recursion and reload buffer
+                           (=: buffer subd (not (: buffer subd)))
+                           (reload (rplFile L)) )
+                        ("r"  # Read file contents
+                           (let F (fName (rplFile L))
+                              (when (info F)
+                                 (in F (paste (cons T (rdLines)) 1)) ) ) )
+                        ("w"  # (Write) Save buffer
+                           (if L
+                              (out (fName (rplFile @))
+                                 (mapc prinl (: buffer text)) )
+                              (save> (: buffer) This) ) )
+                        ("l"  # (load) Save and load
+                           (when (: buffer file)
+                              (when (dirty> (: buffer) This)
+                                 (save> (: buffer) This) )
+                              (evCmd (load (: buffer file))) ) )
+                        ("x" (done T))  # (Exit) Save buffer and close window
+                        ("q" (done))  # (Quit) Close window
+                        ("bx"  # Buffer exchange
+                           (let X (memq (: buffer) *Buffers)
+                              (if (cdr X)
+                                 (xchg X @)
+                                 (beep) ) ) )
+                        ("bd"  # Buffer delete
+                           (when (cdr *Buffers)
+                              (let Buf (: buffer)
+                                 (for (This *CmdWin (setq This (: next)))
+                                    (when (== Buf (: buffer))
+                                       (nextBuf) ) )
+                                 (del Buf '*Buffers)
+                                 (=: last) ) ) )
+                        ("map"  # Add/remove key mappings
+                           (++ Line)
+                           (let C (++ Line)
+                              (until (sp? (car Line))
+                                 (setq C (pack C (++ Line))) )
+                              (if Line
+                                 (push '*KeyMap
+                                    (list C (list 'setq '*Keys (lit (cdr Line)))) )
+                                 (del (assoc C *KeyMap) '*KeyMap) ) ) )
+                        (T
+                           (if (get *Buffers Cnt)
+                              (nextBuf @)
+                              (beep) ) ) ) ) ) ) )
          (with *CmdWin
             (redraw) ) )
       (T (beep)) ) )
