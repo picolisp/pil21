@@ -1,3 +1,7 @@
+08dec21
+   Add 'adr' to "see also" of 'native'
+      doc/refN.html
+
 05dec21
    Global '*Keys'
    ":map" command
