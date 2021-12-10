@@ -1,3 +1,7 @@
+10dec21
+   'Str' not used in 'getWord'
+      lib/vip.l
+
 08dec21
    Add 'adr' to "see also" of 'native'
       doc/refN.html

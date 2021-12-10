@@ -1,4 +1,4 @@
-# 05dec21 Software Lab. Alexander Burger
+# 10dec21 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -711,7 +711,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
 (de lend (L)
    (and (not (sp? (car L))) (sp? (cadr L))) )
 
-(de getWord (Flg Str)
+(de getWord (Flg)
    (make
       (let Lst (get (: buffer text) (: posY))
          (when Flg
@@ -1500,9 +1500,9 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                                     (move 'goBackward (lit @) *Cnt)
                                     (beep) ) )
                               ("*"  # Search word under cursor
-                                 (and (getWord T "~") (moveSearch 'goForward (wordFun @))) )
+                                 (and (getWord T) (moveSearch 'goForward (wordFun @))) )
                               ("#"  # Search word under cursor backward
-                                 (and (getWord T "~") (moveSearch 'goBackward (wordFun @))) )
+                                 (and (getWord T) (moveSearch 'goBackward (wordFun @))) )
                               ("%"  # Matching parenthesis
                                  (case (posChar)
                                     ("(" (parMatch 'goForward 1 0 "(" ")" "[" "]"))
