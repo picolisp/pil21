@@ -1,4 +1,4 @@
-# 25sep21 Software Lab. Alexander Burger
+# 12dec21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1036,9 +1036,9 @@
                            ((and Ign (gt0 Scl) (=0 (% Scl 3)))
                               (byteSym Ign P) ) )
                         (dec 'Scl)
+                        (? (== 1 D))
                         (byteSym (+ (i8 (/ N D)) (char "0")) P)
-                        (setq N (% N D))
-                        (? (== 1 (setq D (/ D 10)))) )
+                        (setq N (% N D)  D (/ D 10)) )
                      (byteSym (+ (i8 N) (char "0")) P) ) )
                0 )
             ((== Scl -1)  # Direct print

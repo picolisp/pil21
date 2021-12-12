@@ -1,4 +1,6 @@
 12dec21
+   Bug in 'format' (llvm~fmtNum)
+      src/big.l
    Overflow float/double to bignum
       src/main.l
       src/dec.l
