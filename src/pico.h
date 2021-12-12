@@ -1,4 +1,4 @@
-// 19sep21 Software Lab. Alexander Burger
+// 12dec21 Software Lab. Alexander Burger
 
 #include <stdint.h>
 #include <string.h>
@@ -25,23 +25,25 @@ typedef void (*sighandler_t)(int);
 
 // Lisp data access
 #define cnt(x) ((x) & 2)
-#define big(x) ((x) & 4)
 #define num(x) ((x) & 6)
 #define sym(x) ((x) & 8)
+#define sign(x) ((x) & 8)
 #define atom(x) ((x) & 15)
 
-#define car(x) (*(int64_t*)(x))
-#define cdr(x) (*(int64_t*)((x) + 8))
-#define set(p,x) (*(int64_t*)(p) = (x))
-#define val(x) (*(int64_t*)(x))
+#define car(x) (*(uint64_t*)(x))
+#define cdr(x) (*(uint64_t*)((x) + 8))
+#define set(p,x) (*(uint64_t*)(p) = (x))
+#define val(x) (*(uint64_t*)(x))
 #define dig(x) ((x) - 4)
+#define big(x) ((x) + 4)
 #define tail(x) ((x) - 8)
 
-int64_t name(int64_t);
-int64_t number(int64_t);
-int64_t length(int64_t);
+uint64_t name(uint64_t);
+uint64_t number(uint64_t);
+uint64_t length(uint64_t);
+uint64_t box64(uint64_t);
 
-extern int64_t SymTab[];
+extern uint64_t SymTab[];
 #define Nil (0+1)
 // Sync src/glob.l 'T'
 #define T (17*2+1)
@@ -53,8 +55,11 @@ extern int64_t SymTab[];
 #define P (23*2+1)
 #define W (24*2+1)
 
-int32_t bufSize(int64_t);
-char *bufString(int64_t, char*);
-int64_t natBuf(int64_t, char*);
-int64_t natRetBuf(int64_t, char**);
-void err(int64_t, int64_t, char*, char*) __attribute__ ((noreturn));
+uint64_t boxNum(uint64_t);
+int32_t bufSize(uint64_t);
+char *bufString(uint64_t, char*);
+uint64_t natBuf(uint64_t, char*);
+uint64_t natRetBuf(uint64_t, char**);
+
+void argErr(uint64_t, uint64_t) __attribute__ ((noreturn));
+void err(uint64_t, uint64_t, char*, char*) __attribute__ ((noreturn));

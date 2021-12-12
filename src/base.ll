@@ -1508,7 +1508,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 194,
-  i64 162
+  i64 194
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -1596,6 +1596,8 @@ declare void @clear_history()
 @TgOS = external global i8
 @TgCPU = external global i8
 @PipeBufSize = external global i32
+@Fsign = external global i1
+@Fdigit = external global i64
 declare i8* @stderrMsg(i8*, i8*)
 declare i32 @gPrintf(i8*, i32, i8*, i8*)
 declare i8* @strErrno()
@@ -1664,7 +1666,9 @@ declare i8* @dlOpen(i8*)
 declare i8* @ffiPrep(i8*, i8*, i64)
 declare i64 @ffiCall(i8*, i64)
 declare i64 @boxFloat(i32, i64)
+declare i64 @boxFlt()
 declare i64 @boxDouble(i64, i64)
+declare i64 @boxDbl()
 declare void @bufFloat(i64, i64, i8*)
 declare void @bufDouble(i64, i64, i8*)
 declare i1 @isLowc(i32)
@@ -103348,6 +103352,190 @@ $1:
   unreachable
 }
 
+define i64 @natRetFloat(i32, i64) align 8 {
+$1:
+; # (let R (boxFloat Val Scl) (unless R (let X (setq R (save (boxNum ...
+; # (boxFloat Val Scl)
+  %2 = call i64 @boxFloat(i32 %0, i64 %1)
+; # (unless R (let X (setq R (save (boxNum (val Fdigit)))) (until (bo...
+  %3 = icmp ne i64 %2, 0
+  br i1 %3, label %$3, label %$2
+$2:
+  %4 = phi i64 [%2, %$1] ; # R
+; # (let X (setq R (save (boxNum (val Fdigit)))) (until (boxFlt) (set...
+; # (val Fdigit)
+  %5 = load i64, i64* @Fdigit
+; # (boxNum (val Fdigit))
+  %6 = call i64 @boxNum(i64 %5)
+; # (save (boxNum (val Fdigit)))
+  %7 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %8 = load i64, i64* %7
+  %9 = alloca i64, i64 2, align 16
+  %10 = ptrtoint i64* %9 to i64
+  %11 = inttoptr i64 %10 to i64*
+  store i64 %6, i64* %11
+  %12 = add i64 %10, 8
+  %13 = inttoptr i64 %12 to i64*
+  store i64 %8, i64* %13
+  %14 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %10, i64* %14
+; # (until (boxFlt) (setq X (set (big X) (boxNum (val Fdigit)))))
+  br label %$4
+$4:
+  %15 = phi i64 [%6, %$2], [%19, %$5] ; # R
+  %16 = phi i64 [%6, %$2], [%23, %$5] ; # X
+; # (boxFlt)
+  %17 = call i64 @boxFlt()
+  %18 = icmp ne i64 %17, 0
+  br i1 %18, label %$6, label %$5
+$5:
+  %19 = phi i64 [%15, %$4] ; # R
+  %20 = phi i64 [%16, %$4] ; # X
+; # (set (big X) (boxNum (val Fdigit)))
+; # (big X)
+  %21 = add i64 %20, 4
+; # (val Fdigit)
+  %22 = load i64, i64* @Fdigit
+; # (boxNum (val Fdigit))
+  %23 = call i64 @boxNum(i64 %22)
+  %24 = inttoptr i64 %21 to i64*
+  store i64 %23, i64* %24
+  br label %$4
+$6:
+  %25 = phi i64 [%15, %$4] ; # R
+  %26 = phi i64 [%16, %$4] ; # X
+; # (set (big X) @)
+; # (big X)
+  %27 = add i64 %26, 4
+  %28 = inttoptr i64 %27 to i64*
+  store i64 %17, i64* %28
+; # (drop *Safe)
+  %29 = inttoptr i64 %10 to i64*
+  %30 = getelementptr i64, i64* %29, i32 1
+  %31 = load i64, i64* %30
+  %32 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %31, i64* %32
+  br label %$3
+$3:
+  %33 = phi i64 [%2, %$1], [%25, %$6] ; # R
+; # (if (val Fsign) (neg R) R)
+; # (val Fsign)
+  %34 = load i1, i1* @Fsign
+  br i1 %34, label %$7, label %$8
+$7:
+  %35 = phi i64 [%33, %$3] ; # R
+; # (neg R)
+  %36 = icmp eq i64 %35, 2
+  br i1 %36, label %$10, label %$11
+$10:
+  br label %$12
+$11:
+  %37 = xor i64 %35, 8
+  br label %$12
+$12:
+  %38 = phi i64 [%35, %$10], [%37, %$11] ; # ->
+  br label %$9
+$8:
+  %39 = phi i64 [%33, %$3] ; # R
+  br label %$9
+$9:
+  %40 = phi i64 [%35, %$12], [%39, %$8] ; # R
+  %41 = phi i64 [%38, %$12], [%39, %$8] ; # ->
+  ret i64 %41
+}
+
+define i64 @natRetDouble(i64, i64) align 8 {
+$1:
+; # (let R (boxDouble Val Scl) (unless R (let X (setq R (save (boxNum...
+; # (boxDouble Val Scl)
+  %2 = call i64 @boxDouble(i64 %0, i64 %1)
+; # (unless R (let X (setq R (save (boxNum (val Fdigit)))) (until (bo...
+  %3 = icmp ne i64 %2, 0
+  br i1 %3, label %$3, label %$2
+$2:
+  %4 = phi i64 [%2, %$1] ; # R
+; # (let X (setq R (save (boxNum (val Fdigit)))) (until (boxDbl) (set...
+; # (val Fdigit)
+  %5 = load i64, i64* @Fdigit
+; # (boxNum (val Fdigit))
+  %6 = call i64 @boxNum(i64 %5)
+; # (save (boxNum (val Fdigit)))
+  %7 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %8 = load i64, i64* %7
+  %9 = alloca i64, i64 2, align 16
+  %10 = ptrtoint i64* %9 to i64
+  %11 = inttoptr i64 %10 to i64*
+  store i64 %6, i64* %11
+  %12 = add i64 %10, 8
+  %13 = inttoptr i64 %12 to i64*
+  store i64 %8, i64* %13
+  %14 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %10, i64* %14
+; # (until (boxDbl) (setq X (set (big X) (boxNum (val Fdigit)))))
+  br label %$4
+$4:
+  %15 = phi i64 [%6, %$2], [%19, %$5] ; # R
+  %16 = phi i64 [%6, %$2], [%23, %$5] ; # X
+; # (boxDbl)
+  %17 = call i64 @boxDbl()
+  %18 = icmp ne i64 %17, 0
+  br i1 %18, label %$6, label %$5
+$5:
+  %19 = phi i64 [%15, %$4] ; # R
+  %20 = phi i64 [%16, %$4] ; # X
+; # (set (big X) (boxNum (val Fdigit)))
+; # (big X)
+  %21 = add i64 %20, 4
+; # (val Fdigit)
+  %22 = load i64, i64* @Fdigit
+; # (boxNum (val Fdigit))
+  %23 = call i64 @boxNum(i64 %22)
+  %24 = inttoptr i64 %21 to i64*
+  store i64 %23, i64* %24
+  br label %$4
+$6:
+  %25 = phi i64 [%15, %$4] ; # R
+  %26 = phi i64 [%16, %$4] ; # X
+; # (set (big X) @)
+; # (big X)
+  %27 = add i64 %26, 4
+  %28 = inttoptr i64 %27 to i64*
+  store i64 %17, i64* %28
+; # (drop *Safe)
+  %29 = inttoptr i64 %10 to i64*
+  %30 = getelementptr i64, i64* %29, i32 1
+  %31 = load i64, i64* %30
+  %32 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %31, i64* %32
+  br label %$3
+$3:
+  %33 = phi i64 [%2, %$1], [%25, %$6] ; # R
+; # (if (val Fsign) (neg R) R)
+; # (val Fsign)
+  %34 = load i1, i1* @Fsign
+  br i1 %34, label %$7, label %$8
+$7:
+  %35 = phi i64 [%33, %$3] ; # R
+; # (neg R)
+  %36 = icmp eq i64 %35, 2
+  br i1 %36, label %$10, label %$11
+$10:
+  br label %$12
+$11:
+  %37 = xor i64 %35, 8
+  br label %$12
+$12:
+  %38 = phi i64 [%35, %$10], [%37, %$11] ; # ->
+  br label %$9
+$8:
+  %39 = phi i64 [%33, %$3] ; # R
+  br label %$9
+$9:
+  %40 = phi i64 [%35, %$12], [%39, %$8] ; # R
+  %41 = phi i64 [%38, %$12], [%39, %$8] ; # ->
+  ret i64 %41
+}
+
 define i64 @natRetBuf(i64, i8**) align 8 {
 $1:
 ; # (cond ((t? Spec) (let P (i64* (val Ptr)) (set Ptr (i8* (inc P))) ...
@@ -103600,7 +103788,7 @@ $29:
   br i1 %104, label %$32, label %$31
 $32:
   %105 = phi i64 [%102, %$29] ; # Spec
-; # (if (sign? Spec) (boxFloat (let P (i32* (val Ptr)) (set Ptr (i8* ...
+; # (if (sign? Spec) (natRetFloat (let P (i32* (val Ptr)) (set Ptr (i...
 ; # (sign? Spec)
   %106 = and i64 %105, 8
   %107 = icmp ne i64 %106, 0
@@ -103622,8 +103810,8 @@ $33:
   %113 = load i32, i32* %110
 ; # (int Spec)
   %114 = lshr i64 %108, 4
-; # (boxFloat (let P (i32* (val Ptr)) (set Ptr (i8* (inc P))) (val P)...
-  %115 = call i64 @boxFloat(i32 %113, i64 %114)
+; # (natRetFloat (let P (i32* (val Ptr)) (set Ptr (i8* (inc P))) (val...
+  %115 = call i64 @natRetFloat(i32 %113, i64 %114)
   br label %$35
 $34:
   %116 = phi i64 [%105, %$32] ; # Spec
@@ -103642,8 +103830,8 @@ $34:
   %121 = load i64, i64* %118
 ; # (int Spec)
   %122 = lshr i64 %116, 4
-; # (boxDouble (let P (i64* (val Ptr)) (set Ptr (i8* (inc P))) (val P...
-  %123 = call i64 @boxDouble(i64 %121, i64 %122)
+; # (natRetDouble (let P (i64* (val Ptr)) (set Ptr (i8* (inc P))) (va...
+  %123 = call i64 @natRetDouble(i64 %121, i64 %122)
   br label %$35
 $35:
   %124 = phi i64 [%108, %$33], [%116, %$34] ; # Spec
@@ -104143,7 +104331,7 @@ $43:
   br i1 %122, label %$46, label %$45
 $46:
   %123 = phi i64 [%120, %$43] ; # Spec
-; # (if (sign? Spec) (boxFloat (i32 Val) (int Spec)) (boxDouble Val (...
+; # (if (sign? Spec) (natRetFloat (i32 Val) (int Spec)) (natRetDouble...
 ; # (sign? Spec)
   %124 = and i64 %123, 8
   %125 = icmp ne i64 %124, 0
@@ -104154,15 +104342,15 @@ $47:
   %127 = trunc i64 %45 to i32
 ; # (int Spec)
   %128 = lshr i64 %126, 4
-; # (boxFloat (i32 Val) (int Spec))
-  %129 = call i64 @boxFloat(i32 %127, i64 %128)
+; # (natRetFloat (i32 Val) (int Spec))
+  %129 = call i64 @natRetFloat(i32 %127, i64 %128)
   br label %$49
 $48:
   %130 = phi i64 [%123, %$46] ; # Spec
 ; # (int Spec)
   %131 = lshr i64 %130, 4
-; # (boxDouble Val (int Spec))
-  %132 = call i64 @boxDouble(i64 %45, i64 %131)
+; # (natRetDouble Val (int Spec))
+  %132 = call i64 @natRetDouble(i64 %45, i64 %131)
   br label %$49
 $49:
   %133 = phi i64 [%126, %$47], [%130, %$48] ; # Spec

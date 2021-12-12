@@ -1,4 +1,4 @@
-# 19sep21 Software Lab. Alexander Burger
+# 11dec21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -161,6 +161,8 @@ dup2 close signal poll waitpid setjmp longjmp kill exit)
 (var TgOS i8 NIL)  # Target OS
 (var TgCPU i8 NIL)  # Target CPU
 (var PipeBufSize i32 NIL)  # PIPE_BUF
+(var Fsign i1 NIL)  # Float conversion
+(var Fdigit i64 NIL)
 
 (local) (stderrMsg gPrintf strErrno openRd openWr openRdWr openRdWrExcl
 openRdWrCreate openRdWrAppend openWrAppend fseekOfs fseek0 seek0 truncate0
@@ -265,13 +267,17 @@ socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (var QuitRst i8 NIL)
 
 # Native lib.c
-(local) (dlOpen ffiPrep ffiCall boxFloat boxDouble)
+(local) (dlOpen ffiPrep ffiCall)
 
 (de T i8* dlOpen (i8*))
 (de T i8* ffiPrep (i8* i8* i64))
 (de T i64 ffiCall (i8* i64))
+
+(local) (boxFloat boxFlt boxDouble boxDbl bufFloat bufDouble)
 (de T i64 boxFloat (i32 i64))
+(de T i64 boxFlt ())
 (de T i64 boxDouble (i64 i64))
+(de T i64 boxDbl ())
 (de T void bufFloat (i64 i64 i8*))
 (de T void bufDouble (i64 i64 i8*))
 
@@ -401,7 +407,7 @@ box64 eval run)
 
 (inline box64 (N)
    (use @
-      (if (& N (hex "F000000000000000"))  # Fit in short number
+      (if (& N (hex "F000000000000000"))
          (boxNum N)
          (cnt N) ) ) )
 

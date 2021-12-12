@@ -1,4 +1,4 @@
-// 29oct21 Software Lab. Alexander Burger
+// 12dec21 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -477,18 +477,18 @@ const int64_t JmpBufSize = sizeof(jmp_buf);
 jmp_buf QuitRst;
 
 // Lisp data access from C
-int64_t name(int64_t x) {
+uint64_t name(uint64_t x) {
    while (!num(x))
       x = cdr(x);
    return x;
 }
 
-int64_t number(int64_t x) {
-   int64_t n = cnt(x)? x >> 4 : val(dig(x));
-   return (x & 8) == 0? n : -n;
+uint64_t number(uint64_t x) {
+   uint64_t n = cnt(x)? x >> 4 : val(dig(x));
+   return sign(x)? -n : n;
 }
 
-int64_t length(int64_t x) {
+uint64_t length(uint64_t x) {
    int n = 0;
 
    while (!atom(x))
@@ -496,7 +496,106 @@ int64_t length(int64_t x) {
    return (int32_t)n;
 }
 
+uint64_t box64(uint64_t x) {
+   return x & 0xF000000000000000? boxNum(x) : x << 4 | 2;
+}
+
 // Native library interface
+#define FMAX ((float)UINT64_MAX)
+#define DMAX ((double)UINT64_MAX)
+
+int Fsign;
+uint64_t Fdigit;
+
+static union {
+   float f;
+   double d;
+} Fval;
+
+uint64_t boxFloat(uint32_t value, int64_t scl) {
+   float f = *(float*)&value * (float)scl;
+
+   if (isnan(f) || isinf(f) < 0)
+      return (uint64_t)(SymTab + Nil);
+   if (isinf(f) > 0)
+      return (uint64_t)(SymTab + T);
+   Fsign = 0;
+   if (f < 0.0)
+      Fsign = 1,  f = -f;
+   f += 0.5;
+   if (f < FMAX)
+      return box64((uint64_t)f);
+   Fdigit = (uint64_t)fmod(f, FMAX);
+   Fval.f = f / FMAX;
+   return 0;
+}
+
+uint64_t boxFlt(void) {
+   if (Fval.f < FMAX)
+      return box64((uint64_t)Fval.f);
+   Fdigit = (uint64_t)fmod(Fval.f, FMAX);
+   Fval.f /= FMAX;
+   return 0;
+}
+
+uint64_t boxDouble(uint64_t value, int64_t scl) {
+   double d = *(double*)&value * (double)scl;
+
+   if (isnan(d) || isinf(d) < 0)
+      return (uint64_t)(SymTab + Nil);
+   if (isinf(d) > 0)
+      return (uint64_t)(SymTab + T);
+   Fsign = 0;
+   if (d < 0.0)
+      Fsign = 1,  d = -d;
+   d += 0.5;
+   if (d < DMAX)
+      return box64((uint64_t)d);
+   Fdigit = (uint64_t)fmod(d, DMAX);
+   Fval.d = d / DMAX;
+   return 0;
+}
+
+uint64_t boxDbl(void) {
+   if (Fval.d < DMAX)
+      return box64((uint64_t)Fval.d);
+   Fdigit = (uint64_t)fmod(Fval.d, DMAX);
+   Fval.d /= DMAX;
+   return 0;
+}
+
+void bufFloat(uint64_t value, int64_t scl, char *p) {
+   float f, m;
+   uint64_t x;
+
+   if (cnt(value))
+      f = (float)(value >> 4);
+   else {
+      f = (float)val(dig(x = value)),  m = FMAX;
+      while (!cnt(x = val(big(x))))
+         f += m * (float)val(dig(x)),  m *= FMAX;
+      f += m * (float)(x >> 4);
+   }
+   f /= (float)scl;
+   *(float*)p = sign(value)? -f : f;
+}
+
+void bufDouble(uint64_t value, int64_t scl, char *p) {
+   double d, m;
+   uint64_t x;
+
+   if (cnt(value))
+      d = (double)(value >> 4);
+   else {
+      d = (double)val(dig(x = value)),  m = DMAX;
+      while (!cnt(x = val(big(x))))
+         d += m * (double)val(dig(x)),  m *= DMAX;
+      d += m * (double)(x >> 4);
+   }
+   d /= (double)scl;
+   *(double*)p = sign(value)? -d : d;
+}
+
 #define _GNU_SOURCE
 #define __USE_GNU
 #include <dlfcn.h>
@@ -513,28 +612,28 @@ void *dlOpen(char *lib) {
    return dlopen(lib, RTLD_LAZY | RTLD_GLOBAL);
 }
 
-ffi *ffiPrep(char *lib, char *fun, int64_t lst) {
-   int64_t x = car(lst);
-   int64_t y = cdr(lst);
+ffi *ffiPrep(char *lib, char *fun, uint64_t lst) {
+   uint64_t x = car(lst);
+   uint64_t y = cdr(lst);
    int i, nargs = length(y);
    ffi *p = malloc(sizeof(ffi) + nargs * sizeof(ffi_type*));
    ffi_type *rtype;
 
-   if (x == (int64_t)(SymTab + Nil))
+   if (x == (uint64_t)(SymTab + Nil))
       rtype = &ffi_type_void;
-   else if (x == (int64_t)(SymTab + T))
+   else if (x == (uint64_t)(SymTab + T))
       rtype = &ffi_type_sint64;
-   else if (x == (int64_t)(SymTab + N))
+   else if (x == (uint64_t)(SymTab + N))
       rtype = &ffi_type_sint64;
-   else if (x == (int64_t)(SymTab + P))
+   else if (x == (uint64_t)(SymTab + P))
       rtype = &ffi_type_uint64;
-   else if (x == (int64_t)(SymTab + I))
+   else if (x == (uint64_t)(SymTab + I))
       rtype = &ffi_type_sint32;
-   else if (x == (int64_t)(SymTab + C))
+   else if (x == (uint64_t)(SymTab + C))
       rtype = &ffi_type_uint32;
-   else if (x == (int64_t)(SymTab + W))
+   else if (x == (uint64_t)(SymTab + W))
       rtype = &ffi_type_sint16;
-   else if (x == (int64_t)(SymTab + B))
+   else if (x == (uint64_t)(SymTab + B))
       rtype = &ffi_type_uint8;
    else if (cnt(x))
       rtype = (x & 8)? &ffi_type_float : &ffi_type_double;
@@ -558,12 +657,12 @@ ffi *ffiPrep(char *lib, char *fun, int64_t lst) {
    return NULL;
 }
 
-int64_t ffiCall(ffi *p, int64_t lst) {
-   int64_t x, y, z;
+uint64_t ffiCall(ffi *p, uint64_t lst) {
+   uint64_t x, y, z;
    int i, nargs = length(lst);
-   int64_t value[nargs];
+   uint64_t value[nargs];
    void *ptr[nargs];
-   int64_t rc;
+   uint64_t rc;
 
    for (i = 0, z = lst;  i < nargs;  ++i, z = cdr(z)) {
       x  = car(z);
@@ -571,26 +670,26 @@ int64_t ffiCall(ffi *p, int64_t lst) {
       if (num(x))  // Number
          value[i] = number(x);
       else if (sym(x)) {  // String
-         if (x == (int64_t)(SymTab + Nil))
-            value[i] = (int64_t)"";
+         if (x == (uint64_t)(SymTab + Nil))
+            value[i] = (uint64_t)"";
          else {
-            int64_t nm = name(val(tail(x)));
-            bufString(nm, (char*)(value[i] = (int64_t)alloca(bufSize(nm))));
+            uint64_t nm = name(val(tail(x)));
+            bufString(nm, (char*)(value[i] = (uint64_t)alloca(bufSize(nm))));
          }
       }
-      else if (car(x) == (int64_t)(SymTab + T))  // Direct Lisp value
+      else if (car(x) == (uint64_t)(SymTab + T))  // Direct Lisp value
          value[i] = cdr(x);
       else if (cnt(y = cdr(x))) {  // Fixpoint
          if (y & 8)
-            *(float*)&value[i] = (float)number(car(x)) / (float)(y >> 4);
+            bufFloat(car(x), y >> 4, &value[i]);
          else
-            *(double*)&value[i] = (double)number(car(x)) / (double)(y >> 4);
+            bufDouble(car(x), y >> 4, &value[i]);
       }
-      else {  // Structure
+      else if (!atom(y)) {  // Structure
          int64_t d, n = car(car(y)) >> 4;
          char *q = alloca(n);
 
-         value[i] = (int64_t)q;
+         value[i] = (uint64_t)q;
          for (;;) {
             if (cnt(y = cdr(y))) {
                char b = y >> 4;  // Byte value
@@ -607,34 +706,16 @@ int64_t ffiCall(ffi *p, int64_t lst) {
             n -= d, q += d;
          }
       }
+      else
+         argErr(0, x);
    }
    ffi_call(&p->cif, p->fun, &rc, ptr);
    for (i = 0;  i < nargs;  ++i, lst = cdr(lst)) {
       x = car(lst);
-      if (!atom(x)  &&  !num(y = cdr(x))  &&  (z = car(x)) != (int64_t)(SymTab + Nil)  &&  z != (int64_t)(SymTab + T))
+      if (!atom(x)  &&  !num(y = cdr(x))  &&  (z = car(x)) != (uint64_t)(SymTab + Nil)  &&  z != (uint64_t)(SymTab + T))
          set(z, natRetBuf(cdr(car(y)), (char**)&value[i]));
    }
    return rc;
-}
-
-int64_t boxFloat(int32_t value, int64_t scl) {
-   int64_t n = lroundf(*(float*)&value * (float)scl);
-
-   return n >= 0? n << 4 | 2 : -n << 4 | 10;
-}
-
-int64_t boxDouble(int64_t value, int64_t scl) {
-   int64_t n = lround(*(double*)&value * (double)scl);
-
-   return n >= 0? n << 4 | 2 : -n << 4 | 10;
-}
-
-void bufFloat(int64_t value, int64_t scl, char* p) {
-   *(float*)p = (float)number(value) / (float)scl;
-}
-
-void bufDouble(int64_t value, int64_t scl, char* p) {
-   *(double*)p = (double)number(value) / (double)scl;
 }
 
 // Case mappings from the GNU Kaffe Project

@@ -159,6 +159,8 @@ declare void @clear_history()
 @TgOS = external global i8
 @TgCPU = external global i8
 @PipeBufSize = external global i32
+@Fsign = external global i1
+@Fdigit = external global i64
 declare i8* @stderrMsg(i8*, i8*)
 declare i32 @gPrintf(i8*, i32, i8*, i8*)
 declare i8* @strErrno()
@@ -227,7 +229,9 @@ declare i8* @dlOpen(i8*)
 declare i8* @ffiPrep(i8*, i8*, i64)
 declare i64 @ffiCall(i8*, i64)
 declare i64 @boxFloat(i32, i64)
+declare i64 @boxFlt()
 declare i64 @boxDouble(i64, i64)
+declare i64 @boxDbl()
 declare void @bufFloat(i64, i64, i8*)
 declare void @bufDouble(i64, i64, i8*)
 declare i1 @isLowc(i32)

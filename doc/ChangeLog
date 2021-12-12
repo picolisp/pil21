@@ -1,3 +1,10 @@
+12dec21
+   Overflow float/double to bignum
+      src/main.l
+      src/dec.l
+      src/pico.h
+      src/lib.c
+
 10dec21
    'native' and 'struct' not limited to C functions
       doc/refN.html

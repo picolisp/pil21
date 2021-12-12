@@ -1,4 +1,4 @@
-# 24sep21 Software Lab. Alexander Burger
+# 11dec21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1195,7 +1195,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (cnt (i64 (nErrno))) )
 
 # Native calls
-(local) (fetchChar natBuf natErr natRetBuf ffi)
+(local) (fetchChar natBuf natErr natRetFloat natRetDouble natRetBuf ffi)
 
 (de i32 fetchChar ((i8** . Ptr))
    (let (P (val Ptr)  C (i32 (val P)))
@@ -1272,6 +1272,24 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de NIL natErr (Spec)
    (err 0 Spec ($ "Bad result spec") null) )
 
+(de natRetFloat ((i32 . Val) (i64 . Scl))
+   (let R (boxFloat Val Scl)
+      (unless R
+         (let X (setq R (save (boxNum (val Fdigit))))
+            (until (boxFlt)
+               (setq X (set (big X) (boxNum (val Fdigit)))) )
+            (set (big X) @) ) )
+      (if (val Fsign) (neg R) R) ) )
+
+(de natRetDouble ((i64 . Val) (i64 . Scl))
+   (let R (boxDouble Val Scl)
+      (unless R
+         (let X (setq R (save (boxNum (val Fdigit))))
+            (until (boxDbl)
+               (setq X (set (big X) (boxNum (val Fdigit)))) )
+            (set (big X) @) ) )
+      (if (val Fsign) (neg R) R) ) )
+
 (de natRetBuf (Spec (i8** . Ptr))
    (cond
       ((t? Spec)  # 'T' Direct Lisp value
@@ -1314,12 +1332,12 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (mkStr (val P)) ) )
       ((cnt? Spec)  # [+-]1.0 Scaled fixpoint number
          (if (sign? Spec)
-            (boxFloat
+            (natRetFloat
                (let P (i32* (val Ptr))
                   (set Ptr (i8* (inc P)))
                   (val P) )
                (int Spec) )
-            (boxDouble
+            (natRetDouble
                (let P (i64* (val Ptr))
                   (set Ptr (i8* (inc P)))
                   (val P) )
@@ -1379,8 +1397,8 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (mkStr (i8* Val)) )
          ((cnt? Spec)  # [+-]1.0 Scaled fixpoint number
             (if (sign? Spec)
-               (boxFloat (i32 Val) (int Spec))
-               (boxDouble Val (int Spec)) ) )
+               (natRetFloat (i32 Val) (int Spec))
+               (natRetDouble Val (int Spec)) ) )
          ((and (pair Spec) Val)  # Arrary or structure
             (let
                (Ptr (i8** (push Val))
