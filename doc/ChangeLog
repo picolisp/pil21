@@ -1,3 +1,10 @@
+13dec21
+   Splice also atomic results in "~" read macros and 'fill'
+      src/io.l
+      src/subr.l
+      test/src/subr.l
+      doc/refF.html
+
 12dec21
    Bug in 'format' (llvm~fmtNum)
       src/big.l

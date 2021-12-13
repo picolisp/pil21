@@ -1,4 +1,4 @@
-# 16nov21 Software Lab. Alexander Burger
+# 13dec21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1399,11 +1399,16 @@ selectErr)
                (set 2 P (cons (rdAtom (char ".")) $Nil)) ) )
          ((== @ (char "~"))
             (call $Get)
-            (set 2 P
-               (eval
-                  (set 2 P (read0 NO)) ) )
-            (while (pair (cdr P))
-               (shift P) ) )
+            (let (X (save (read0 NO))  R (eval X))
+               (cond
+                  ((nil? R))
+                  ((atom R)
+                     (set 2 P (cons R $Nil))
+                     (shift P) )
+                  (T
+                     (set 2 P R)
+                     (while (pair (cdr P))
+                        (shift P) ) ) ) ) )
          (T
             (setq P
                (set 2 P (cons (read0 NO) $Nil)) ) ) ) ) )
@@ -1421,12 +1426,14 @@ selectErr)
             (rdl R R)
             R ) )
       (call $Get)
-      (let R (let X (save (read0 NO)) (eval X))
-         (? (pair R)
-            (let L (save R)
-               (while (pair (cdr L))
-                  (setq L @) )
-               (rdl R L) )
+      (let (X (save (read0 NO))  R (eval X))
+         (? (not (nil? R))
+            (if (atom (safe R))
+               (rdl (safe (setq R (cons R $Nil))) R)
+               (let L R
+                  (while (pair (cdr L))
+                     (setq L @) )
+                  (rdl R L) ) )
             R ) ) ) )
 
 (de read0 ((i1 . Top))

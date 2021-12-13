@@ -1,4 +1,4 @@
-# 30oct21 Software Lab. Alexander Burger
+# 13dec21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1254,11 +1254,13 @@
          (let Z (++ X)
             (if (== Z $Up)  # Expand expression
                (let V (eval (++ X))
-                  (if (atom V)
+                  (if (nil? V)
                      (if (fill X Y) @ X)
                      (save (setq Z V)
-                        (while (pair (cdr V))
-                           (setq V @) )
+                        (if (atom V)
+                           (safe (setq Z (setq V (cons V $Nil))))
+                           (while (pair (cdr V))
+                              (setq V @) ) )
                         (set 2 V
                            (if (fill X Y) @ X) )
                         Z ) ) )

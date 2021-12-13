@@ -120,9 +120,9 @@ href="refL.html#load">load</a></code>.
 is given - each pattern symbol in <code>any</code> (see <code><a
 href="refP.html#pat?">pat?</a></code>), with its current value. <code>@</code>
 itself is not considered a pattern symbol here. Unmodified subexpressions are
-shared. In any case, expressions following the symbol <code>^</code> should
-evaluate to lists which are then (destructively) spliced into the result. See
-also <code><a href="refM.html#match">match</a></code>.
+shared. In any case, expressions following the symbol <code>^</code> are
+evaluated and the results (destructively) spliced into the result. See also
+<code><a href="refM.html#match">match</a></code>.
 
 <pre><code>
 : (setq  @X 1234  @Y (1 2 3 4))
@@ -134,8 +134,10 @@ also <code><a href="refM.html#match">match</a></code>.
 : (let X 2 (fill (1 X 3) 'X))
 -> (1 2 3)
 
-: (fill (1 ^ (list 'a 'b 'c) 9))
+: (fill (1 ^(list 'a 'b 'c) 9))
 -> (1 a b c 9)
+: (fill (1 ^(+ 2 3) 7))
+-> (1 5 7)
 
 : (match '(This is @X) '(This is a pen))
 -> T
