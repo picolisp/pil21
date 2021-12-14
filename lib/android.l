@@ -1,4 +1,4 @@
-# 13apr21 Software Lab. Alexander Burger
+# 14dec21 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -223,7 +223,7 @@
 
 (de startActivityForResult (Fun Action . @)
    (let Intent (java "android.content.Intent" T Action)
-      (when (java Intent 'resolveActivity (java CONTEXT 'getPackageManager))
+      (catch '("ActivityNotFound")
          (while (args)
             (let S (next)
                (if (str? S)

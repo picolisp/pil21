@@ -1,3 +1,7 @@
+14dec21
+   Avoid 'resolveActivity' in 'startActivityForResult'
+      lib/android.l
+
 13dec21
    Splice also atomic results in "~" read macros and 'fill'
       src/io.l
