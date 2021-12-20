@@ -1,3 +1,6 @@
+20dec21
+   Don't put single "." into readline history
+
 14dec21
    Avoid 'resolveActivity' in 'startActivityForResult'
       lib/android.l

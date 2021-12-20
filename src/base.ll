@@ -1508,7 +1508,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 338,
   i64 194,
-  i64 226
+  i64 322
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -44764,8 +44764,8 @@ $23:
 ; # (val $ContPrmt)
   %71 = load i8*, i8** @$ContPrmt
   store i8* %71, i8** @$LinePrmt
-; # (unless (or (=0 (val P)) (== @ 32) (and (currentLine) (=0 (strcmp...
-; # (or (=0 (val P)) (== @ 32) (and (currentLine) (=0 (strcmp @ P))))...
+; # (unless (or (=0 (val P)) (== @ 32) (and (== @ (char ".")) (=0 (va...
+; # (or (=0 (val P)) (== @ 32) (and (== @ (char ".")) (=0 (val (inc P...
 ; # (val P)
   %72 = load i8, i8* %70
 ; # (=0 (val P))
@@ -44778,63 +44778,82 @@ $29:
   br i1 %75, label %$28, label %$30
 $30:
   %76 = phi i8* [%74, %$29] ; # P
-; # (and (currentLine) (=0 (strcmp @ P)))
-; # (currentLine)
-  %77 = call i8* @currentLine()
-  %78 = icmp ne i8* %77, null
-  br i1 %78, label %$32, label %$31
+; # (and (== @ (char ".")) (=0 (val (inc P))))
+; # (== @ (char "."))
+  %77 = icmp eq i8 %72, 46
+  br i1 %77, label %$32, label %$31
 $32:
-  %79 = phi i8* [%76, %$30] ; # P
-; # (strcmp @ P)
-  %80 = call i32 @strcmp(i8* %77, i8* %79)
-; # (=0 (strcmp @ P))
-  %81 = icmp eq i32 %80, 0
+  %78 = phi i8* [%76, %$30] ; # P
+; # (inc P)
+  %79 = getelementptr i8, i8* %78, i32 1
+; # (val (inc P))
+  %80 = load i8, i8* %79
+; # (=0 (val (inc P)))
+  %81 = icmp eq i8 %80, 0
   br label %$31
 $31:
-  %82 = phi i8* [%76, %$30], [%79, %$32] ; # P
+  %82 = phi i8* [%76, %$30], [%78, %$32] ; # P
   %83 = phi i1 [0, %$30], [%81, %$32] ; # ->
-  br label %$28
-$28:
-  %84 = phi i8* [%70, %$23], [%74, %$29], [%82, %$31] ; # P
-  %85 = phi i1 [1, %$23], [1, %$29], [%83, %$31] ; # ->
-  br i1 %85, label %$34, label %$33
+  br i1 %83, label %$28, label %$33
 $33:
-  %86 = phi i8* [%84, %$28] ; # P
-; # (add_history P)
-  call void @add_history(i8* %86)
+  %84 = phi i8* [%82, %$31] ; # P
+; # (and (currentLine) (=0 (strcmp @ P)))
+; # (currentLine)
+  %85 = call i8* @currentLine()
+  %86 = icmp ne i8* %85, null
+  br i1 %86, label %$35, label %$34
+$35:
+  %87 = phi i8* [%84, %$33] ; # P
+; # (strcmp @ P)
+  %88 = call i32 @strcmp(i8* %85, i8* %87)
+; # (=0 (strcmp @ P))
+  %89 = icmp eq i32 %88, 0
   br label %$34
 $34:
-  %87 = phi i8* [%84, %$28], [%86, %$33] ; # P
+  %90 = phi i8* [%84, %$33], [%87, %$35] ; # P
+  %91 = phi i1 [0, %$33], [%89, %$35] ; # ->
+  br label %$28
+$28:
+  %92 = phi i8* [%70, %$23], [%74, %$29], [%82, %$31], [%90, %$34] ; # P
+  %93 = phi i1 [1, %$23], [1, %$29], [1, %$31], [%91, %$34] ; # ->
+  br i1 %93, label %$37, label %$36
+$36:
+  %94 = phi i8* [%92, %$28] ; # P
+; # (add_history P)
+  call void @add_history(i8* %94)
+  br label %$37
+$37:
+  %95 = phi i8* [%92, %$28], [%94, %$36] ; # P
   br label %$19
 $19:
-  %88 = phi i8* [%47, %$7], [%87, %$34] ; # P
+  %96 = phi i8* [%47, %$7], [%95, %$37] ; # P
 ; # (nond ((val P) (set $LinePtr null) (char "^J")) (NIL (set $LinePt...
 ; # (val P)
-  %89 = load i8, i8* %88
-  %90 = icmp ne i8 %89, 0
-  br i1 %90, label %$36, label %$37
-$37:
-  %91 = phi i8* [%88, %$19] ; # P
+  %97 = load i8, i8* %96
+  %98 = icmp ne i8 %97, 0
+  br i1 %98, label %$39, label %$40
+$40:
+  %99 = phi i8* [%96, %$19] ; # P
 ; # (set $LinePtr null)
   store i8* null, i8** @$LinePtr
-  br label %$35
-$36:
-  %92 = phi i8* [%88, %$19] ; # P
+  br label %$38
+$39:
+  %100 = phi i8* [%96, %$19] ; # P
 ; # (set $LinePtr (inc P))
 ; # (inc P)
-  %93 = getelementptr i8, i8* %92, i32 1
-  store i8* %93, i8** @$LinePtr
+  %101 = getelementptr i8, i8* %100, i32 1
+  store i8* %101, i8** @$LinePtr
 ; # (i32 @)
-  %94 = zext i8 %89 to i32
-  br label %$35
-$35:
-  %95 = phi i8* [%91, %$37], [%92, %$36] ; # P
-  %96 = phi i32 [10, %$37], [%94, %$36] ; # ->
+  %102 = zext i8 %97 to i32
+  br label %$38
+$38:
+  %103 = phi i8* [%99, %$40], [%100, %$39] ; # P
+  %104 = phi i32 [10, %$40], [%102, %$39] ; # ->
   br label %$2
 $2:
-  %97 = phi i32 [-1, %$4], [%46, %$15], [%96, %$35] ; # ->
-  store i32 %97, i32* @$Chr
-  ret i32 %97
+  %105 = phi i32 [-1, %$4], [%46, %$15], [%104, %$38] ; # ->
+  store i32 %105, i32* @$Chr
+  ret i32 %105
 }
 
 define i32 @getChar(i32) align 8 {

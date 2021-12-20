@@ -1,4 +1,4 @@
-# 13dec21 Software Lab. Alexander Burger
+# 20dec21 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1205,6 +1205,9 @@ selectErr)
                         (or
                            (=0 (val P))
                            (== @ 32)
+                           (and
+                              (== @ (char "."))
+                              (=0 (val (inc P))) )
                            (and (currentLine) (=0 (strcmp @ P))) )
                         (add_history P) ) )
                   (nond
