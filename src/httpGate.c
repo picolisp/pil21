@@ -1,4 +1,4 @@
-// 09feb21 Software Lab. Alexander Burger
+// 22dec21 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -232,8 +232,10 @@ static int gatePort(unsigned short port) {
    if ((sd = socket(AF_INET6, SOCK_STREAM, 0)) < 0)
       exit(1);
    n = 0;
+#ifndef __OpenBSD__
    if (setsockopt(sd, IPPROTO_IPV6, IPV6_V6ONLY, &n, sizeof(n)) < 0)
       exit(1);
+#endif
    memset(&addr, 0, sizeof(addr));
    addr.sin6_family = AF_INET6;
    addr.sin6_addr = in6addr_any;

@@ -1,3 +1,7 @@
+22dec21
+   OpenBSD patch (Frithjof Schulze)
+      src/httpGate.c
+
 20dec21
    Don't put single "." into readline history
 
