@@ -1,4 +1,4 @@
-<table ontouchstart="return tblTouch(event)" ontouchmove="return tblMove(this,event)"¦(and ATTR (htStyle @))¦>
+<table¦(and ATTR (htStyle @))¦>
 <caption>¦(run PRG)¦</caption>
 <tr>
 <th¦(and ATTR (htStyle @))¦>¦(run PRG)¦</th>

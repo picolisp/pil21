@@ -1,4 +1,4 @@
-# 21nov21 Software Lab. Alexander Burger
+# 29dec21 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -333,6 +333,17 @@
 # Return chart property
 (de chart @
    (pass get *Chart) )
+
+# Table extension
+(daemon '<table>
+   (with *Chart
+      (setq ATTR
+         (make
+            (link
+               (cons "chart" (index This (: home chart)))
+               '("ontouchmove" . "return tblMove(this,event)")
+               '("ontouchstart" . "return tblTouch(event)")
+               (and ATTR (link @)) ) ) ) ) )
 
 # REPL form
 (private) Str
@@ -1233,11 +1244,12 @@
       (or Lbl ">")
       (list 'scroll> (lit *Chart) Exe) ) )
 
-(de jsDn ()
-   (and
-      (; *Chart data)
-      (> (length @) (; *Chart ofs))
-      (scroll> *Chart 1) ) )
+(de jsDn (I)
+   (with (get (: chart) I)
+      (and
+         (: data)
+         (> (length @) (: ofs))
+         (scroll> This 1) ) ) )
 
 (class +UpButton +Tiny +Rid +JS +Able +Button)
 
@@ -1247,9 +1259,10 @@
       (or Lbl "<")
       (list 'scroll> (lit *Chart) (list '- Exe)) ) )
 
-(de jsUp ()
-   (when (> (; *Chart ofs) 1)
-      (scroll> *Chart -1) ) )
+(de jsUp (I)
+   (with (get (: chart) I)
+      (when (> (: ofs) 1)
+         (scroll> This -1) ) ) )
 
 (class +GoButton +Tiny +Rid +JS +Able +Button)
 
@@ -2492,7 +2505,7 @@
 (de bagBag (Attr Var H1 Rows Gui Sep H2 Cols Put Get . Prg)
    (let Len (length Gui)
       (<grid> 3
-         (<table> Attr NIL H1
+         (prog
             (put
                (gui '(+E/R +Chart) (cons Var '(: home obj)) (+ 2 Len)
                   '((L I)
@@ -2509,22 +2522,23 @@
                         (filter prog2 L (: gf -1))
                         (nth D (inc (: gf 1))) ) ) )
                'gf (cons (cnt car Gui) (mapcar car Gui)) )
-            (macro
-               (for R (range 0 (dec Rows))
-                  (<row> NIL
-                     ^ (mapcar cdr Gui)
-                     (gui (inc Len) '(+Able +DelRowButton)
-                        '(nor
-                           (= (row) (: chart 1 radio))
-                           (>= (: chart 1 radio) (length (: chart 1 data))) )
-                        '(=: chart 1 radio NIL) )
-                     (gui (+ 2 Len) '(+BubbleButton) '(=: chart 1 radio NIL))
-                     (if (=0 R)
-                        (gui '(+Rid +Init +Var +Radio) "0" (:: radio) NIL "0")
-                        (gui '(+Rid +Radio) (* R (- -3 Len)) (format R)) ) ) ) )
-            (<row> NIL (scroll Rows T) - -) )
+            (<table> Attr NIL H1
+               (macro
+                  (for R (range 0 (dec Rows))
+                     (<row> NIL
+                        ^ (mapcar cdr Gui)
+                        (gui (inc Len) '(+Able +DelRowButton)
+                           '(nor
+                              (= (row) (: chart 1 radio))
+                              (>= (: chart 1 radio) (length (: chart 1 data))) )
+                           '(=: chart 1 radio NIL) )
+                        (gui (+ 2 Len) '(+BubbleButton) '(=: chart 1 radio NIL))
+                        (if (=0 R)
+                           (gui '(+Rid +Init +Var +Radio) "0" (:: radio) NIL "0")
+                           (gui '(+Rid +Radio) (* R (- -3 Len)) (format R)) ) ) ) )
+               (<row> NIL (scroll Rows T) - -) ) )
          (run Sep)
-         (<table> Attr NIL H2
+         (prog
             (gui '(+Init +Set +Chart)
                (get (: obj) Var 1
                   (length (meta (: obj) Var 'bag)) )
@@ -2550,7 +2564,7 @@
                Cols
                Put
                Get )
-            (run Prg) ) ) ) )
+            (<table> Attr NIL H2 (run Prg)) ) ) ) )
 
 (private) (Lst X)
 

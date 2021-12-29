@@ -1,3 +1,9 @@
+29dec21
+   Fix touch scrolling in chart tables
+      lib/form.l
+      lib/form.js
+      lib/xhtml/table
+
 ####### 21.12 #######
 22dec21
    OpenBSD patch (Frithjof Schulze)
