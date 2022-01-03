@@ -1,4 +1,4 @@
-# 17nov21 Software Lab. Alexander Burger
+# 03jan22 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -51,7 +51,7 @@
 (dm ele> (Val))
 
 # Value present?
-(dm has> (Val X)  #> any | NIL
+(dm has> (Val X)  #> flg
    (= Val X) )
 
 # Set value
@@ -1017,26 +1017,24 @@
    Val )
 
 (dm del> (Var Val)
-   (let? V (and Val (get This Var))
-      (when (has> (meta This Var) Val V)
-         (let Old (get This Var)
-            (rel> (meta This Var) This Old
-               (put This Var (del> (meta This Var) This Old V)) )
-            (when (asoq Var (meta This 'Aux))
-               (relAux This Var Old (cdr @)) )
-            (upd> This Var Old) ) ) ) )
+   (when (and Val (has> (meta This Var) Val (get This Var)))
+      (let Old (get This Var)
+         (rel> (meta This Var) This Old
+            (put This Var (del> (meta This Var) This Old Val)) )
+         (when (asoq Var (meta This 'Aux))
+            (relAux This Var Old (cdr @)) )
+         (upd> This Var Old) ) ) )
 
 (dm del!> (Var Val)
-   (let? V (and Val (get This Var))
-      (when (has> (meta This Var) Val V)
-         (dbSync)
-         (let Old (get This Var)
-            (rel> (meta This Var) This Old
-               (put This Var (del> (meta This Var) This Old V)) )
-            (when (asoq Var (meta This 'Aux))
-               (relAux This Var Old (cdr @)) )
-            (upd> This Var Old)
-            (commit 'upd) ) ) ) )
+   (when (and Val (has> (meta This Var) Val (get This Var)))
+      (dbSync)
+      (let Old (get This Var)
+         (rel> (meta This Var) This Old
+            (put This Var (del> (meta This Var) This Old Val)) )
+         (when (asoq Var (meta This 'Aux))
+            (relAux This Var Old (cdr @)) )
+         (upd> This Var Old)
+         (commit 'upd) ) ) )
 
 (dm inc> (Var Val)
    (let P (prop This Var)

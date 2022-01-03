@@ -1,4 +1,6 @@
 03jan22
+   Bug in 'del>' of '+Entity'
+      lib/db.l
    'assoc', 'rassoc', 'asoq' and 'rasoq' accept circular lists
       src/subr.l
       test/src/subr.l
