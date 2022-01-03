@@ -812,8 +812,8 @@ $ cat count                               # Check "count"
 <dt><a name="ctty"><code>(ctty 'pid) -> pid</code></a>
 <dt><code>(ctty 'any) -> any | NIL</code>
 <dd>Unless called with a short number, <code>ctty</code> changes the current TTY
-device to <code>sym</code> (or just sets standard I/O to a PTY if
-<code>sym</code> is <code>NIL</code>). Otherwise, the local console is prepared
+device to <code>any</code> (or just sets standard I/O to a PTY if
+<code>any</code> is <code>NIL</code>). Otherwise, the local console is prepared
 for serving the PicoLisp process with the process ID <code>pid</code>. See also
 <code><a href="refR.html#raw">raw</a></code>.
 

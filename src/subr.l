@@ -1,4 +1,4 @@
-# 13dec21 Software Lab. Alexander Burger
+# 03jan22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1134,48 +1134,52 @@
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
-         Z (eval (car X)) )
+         Z (eval (car X))
+         H Z )
       (loop
          (? (atom Z) $Nil)
          (let C (car Z)
             (? (and (pair C) (equal Y (car C))) C) )
-         (shift Z) ) ) )
+         (? (== H (shift Z)) $Nil) ) ) )
 
 # (rassoc 'any 'lst) -> lst
 (de _rassoc (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
-         Z (eval (car X)) )
+         Z (eval (car X))
+         H Z )
       (loop
          (? (atom Z) $Nil)
          (let C (car Z)
             (? (and (pair C) (equal Y (cdr C))) C) )
-         (shift Z) ) ) )
+         (? (== H (shift Z)) $Nil) ) ) )
 
 # (asoq 'any 'lst) -> lst
 (de _asoq (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
-         Z (eval (car X)) )
+         Z (eval (car X))
+         H Z )
       (loop
          (? (atom Z) $Nil)
          (let C (car Z)
             (? (and (pair C) (== Y (car C))) C) )
-         (shift Z) ) ) )
+         (? (== H (shift Z)) $Nil) ) ) )
 
 # (rasoq 'any 'lst) -> lst
 (de _rasoq (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
-         Z (eval (car X)) )
+         Z (eval (car X))
+         H Z )
       (loop
          (? (atom Z) $Nil)
          (let C (car Z)
             (? (and (pair C) (== Y (cdr C))) C) )
-         (shift Z) ) ) )
+         (? (== H (shift Z)) $Nil) ) ) )
 
 # (rank 'any 'lst ['flg]) -> lst
 (de _rank (Exe)

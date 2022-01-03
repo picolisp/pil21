@@ -1,4 +1,4 @@
-# 13dec21 Software Lab. Alexander Burger
+# 03jan22 Software Lab. Alexander Burger
 
 ### c[ad]*r ###
 (let L '(1 2 3 4 5)
@@ -383,14 +383,18 @@
 
 ### member ###
 (test (3 4 5 6) (member 3 (1 2 3 4 5 6)))
+(test (3 . @) (member 3 (1 2 3 4 5 6 .)))
 (test NIL (member 9 (1 2 3 4 5 6)))
+(test NIL (member 9 (1 2 3 4 5 6 .)))
 (test '((d e f) (g h i))
    (member '(d e f) '((a b c) (d e f) (g h i))) )
 
 
 ### memq ###
 (test '(c d e f) (memq 'c '(a b c d e f)))
+(test '(c . @) (memq 'c '(a b c d e f .)))
 (test NIL (memq (2) '((1) (2) (3))))
+(test NIL (memq (2) '((1) (2) (3) .)))
 (test 'c (memq 'c '(a b . c)))
 (test '(b c a . @Z) (memq 'b '(a b c .)))
 (test NIL (memq 'd '(a b c .)))
@@ -468,33 +472,49 @@
 ### assoc ###
 (test '("b" . 7)
    (assoc "b" '((999 1 2 3) ("b" . 7) ("ok" "Hello"))) )
+(test '("b" . 7)
+   (assoc "b" '((999 1 2 3) ("b" . 7) ("ok" "Hello") .)) )
 (test (999 1 2 3)
    (assoc 999 '((999 1 2 3) ("b" . 7) ("ok" "Hello"))) )
 (test NIL
    (assoc 'u '((999 1 2 3) ("b" . 7) ("ok" "Hello"))) )
+(test NIL
+   (assoc 'u '((999 1 2 3) ("b" . 7) ("ok" "Hello") .)) )
 
 
 ### rassoc ###
 (test '("b" . 7)
    (rassoc 7 '((999 1 2 3) ("b" . 7) ("ok" "Hello"))) )
+(test '("b" . 7)
+   (rassoc 7 '((999 1 2 3) ("b" . 7) ("ok" "Hello") .)) )
 (test (999 1 2 3)
    (rassoc (1 2 3) '((999 1 2 3) ("b" . 7) ("ok" "Hello"))) )
 (test NIL
    (rassoc 'u '((999 1 2 3) ("b" . 7) ("ok" "Hello"))) )
+(test NIL
+   (rassoc 'u '((999 1 2 3) ("b" . 7) ("ok" "Hello") .)) )
 
 
 ### asoq ###
 (test NIL
    (asoq (9) '(((9) 1 2 3) (b . 7) ("ok" "Hello"))) )
+(test NIL
+   (asoq (9) '(((9) 1 2 3) (b . 7) ("ok" "Hello") .)) )
 (test '(b . 7)
    (asoq 'b '(((9) 1 2 3) (b . 7) ("ok" "Hello"))) )
+(test '(b . 7)
+   (asoq 'b '(((9) 1 2 3) (b . 7) ("ok" "Hello") .)) )
 
 
 ### rasoq ###
 (test '(2 . b)
    (rasoq 'b '((1 . a) (2 . b) (3 . c))) )
+(test '(2 . b)
+   (rasoq 'b '((1 . a) (2 . b) (3 . c) .)) )
 (test NIL
    (rasoq "b" '((1 . a) (2 . b) (3 . c))) )
+(test NIL
+   (rasoq "b" '((1 . a) (2 . b) (3 . c) .)) )
 
 
 ### rank ###

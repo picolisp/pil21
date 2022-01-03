@@ -1,3 +1,12 @@
+03jan22
+   'assoc', 'rassoc', 'asoq' and 'rasoq' accept circular lists
+      src/subr.l
+      test/src/subr.l
+
+30dec21
+   Enable file transfers (via 'pbPut' and 'pbGet' in PilBox)
+      bin/pty
+
 29dec21
    Fix touch scrolling in chart tables
       lib/form.l

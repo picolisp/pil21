@@ -1,5 +1,5 @@
 #!/data/data/com.termux/files/home/pil21/pil
-# 24sep21abu
+# 31dec21abu
 # Pseudo Terminal (PilBox)
 
 (load "@lib/term.l")
@@ -7,6 +7,18 @@
 (unless (setq *Sock (connect (or (opt) "localhost") 8082))
    (bye) )
 (out *Sock (in "~/.pty" (echo)))
+
+(task (port 8083)
+   (let? S (accept @)
+      (catch '(NIL)
+         (in S
+            (when (= (rd) (in "~/.pty" (line T)))
+               (casq (rd)
+                  (+ (in (rd) (out S (echo))))
+                  (- (out (rd) (echo))) ) ) )
+         (off *Msg) )
+      (close S)
+      (and *Msg (prinl @)) ) )
 
 (push '*Bye '(prinl))
 
