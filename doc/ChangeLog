@@ -1,3 +1,4 @@
+####### 21.12 #######
 03jan22
    Bugs in (del> . +Entity) and (has> . +List)
       lib/db.l
@@ -16,7 +17,6 @@
       lib/form.js
       lib/xhtml/table
 
-####### 21.12 #######
 22dec21
    OpenBSD patch (Frithjof Schulze)
       src/httpGate.c
