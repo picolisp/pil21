@@ -772,7 +772,7 @@
 
 (dm has> (Val X)
    (and Val
-      (if (atom Val)
+      (or
          (find '((X) (extra Val X)) X)
          (loop
             (NIL (extra (++ Val) (++ X)))

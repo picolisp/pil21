@@ -1,4 +1,4 @@
-# 10jul21 Software Lab. Alexander Burger
+# 03jan22 Software Lab. Alexander Burger
 
 ### +Joint ###
 (pool (tmp "db"))
@@ -18,8 +18,8 @@
       B (new T '(+B) 'k "b")
       C (new T '(+B) 'k "c") )
 
-   (test T (has> A 'k "a"))
-   (test T (has> B 'k "b"))
+   (test T (bool (has> A 'k "a")))
+   (test T (bool (has> B 'k "b")))
    (test A (db 'k '+A "a"))
    (test B (db 'k '+B "b"))
    (test C (db 'k '+B "c"))
@@ -28,11 +28,11 @@
    (test (list (list B)) (; A b))
    (test A (; B a))
 
-   (test (list B) (has> A 'b B))
-   (test T (has> A 'b (list B)))
-   (test T (has> A 'b (list (list B))))
+   (test T (bool (has> A 'b B)))
+   (test T (bool (has> A 'b (list B))))
+   (test T (bool (has> A 'b (list (list B)))))
 
-   (test T (has> B 'a A))
+   (test T (bool (has> B 'a A)))
 
    (put> B 'a NIL)
    (test NIL (; A b))
@@ -71,16 +71,16 @@
       'b '((123 "def"))
       'c '((123 "def")) )
 
-   (test T (has> A 's "a"))
+   (test T (bool (has> A 's "a")))
    (test NIL (has> A 's "x"))
-   (test T (has> A 'l '("b" "c")))
+   (test T (bool (has> A 'l '("b" "c"))))
    (test NIL (has> A 'l '("b")))
    (test NIL (has> A 'l '("c")))
    (test NIL (has> A 'l '("x")))
-   (test T (has> A 'b '((123 "def"))))
+   (test T (bool (has> A 'b '((123 "def")))))
    (test NIL (has> A 'b '((123))))
    (test NIL (has> A 'b '(("def"))))
-   (test T (has> A 'c '((123 "def"))))
+   (test T (bool (has> A 'c '((123 "def")))))
    (test NIL (has> A 'c '((123))))
    (test NIL (has> A 'c '(("def"))))
 
