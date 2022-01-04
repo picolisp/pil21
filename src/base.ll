@@ -1508,7 +1508,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 354,
   i64 18,
-  i64 50
+  i64 66
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -21279,54 +21279,52 @@ $16:
   br label %$15
 $17:
   %40 = phi i64 [%33, %$15] ; # Tail
-; # (& (name (& @ -9)) -9)
-  %41 = and i64 %40, -9
-; # (packExtNm (& (name (& @ -9)) -9) P)
-  call void @packExtNm(i64 %41, i64* %1)
+; # (packExtNm (name (& @ -9)) P)
+  call void @packExtNm(i64 %40, i64* %1)
 ; # (byteSym (char "}") P)
   call void @byteSym(i8 125, i64* %1)
   br label %$9
 $13:
-  %42 = phi i64 [%25, %$11] ; # X
+  %41 = phi i64 [%25, %$11] ; # X
 ; # (let Q (push 0 (name @)) (while (symByte Q) (byteSym @ P)))
 ; # (name @)
   br label %$18
 $18:
-  %43 = phi i64 [%28, %$13], [%49, %$19] ; # Tail
-  %44 = and i64 %43, 6
-  %45 = icmp ne i64 %44, 0
-  br i1 %45, label %$20, label %$19
+  %42 = phi i64 [%28, %$13], [%48, %$19] ; # Tail
+  %43 = and i64 %42, 6
+  %44 = icmp ne i64 %43, 0
+  br i1 %44, label %$20, label %$19
 $19:
-  %46 = phi i64 [%43, %$18] ; # Tail
-  %47 = inttoptr i64 %46 to i64*
-  %48 = getelementptr i64, i64* %47, i32 1
-  %49 = load i64, i64* %48
+  %45 = phi i64 [%42, %$18] ; # Tail
+  %46 = inttoptr i64 %45 to i64*
+  %47 = getelementptr i64, i64* %46, i32 1
+  %48 = load i64, i64* %47
   br label %$18
 $20:
-  %50 = phi i64 [%43, %$18] ; # Tail
+  %49 = phi i64 [%42, %$18] ; # Tail
 ; # (push 0 (name @))
-  %51 = alloca i64, i64 2, align 16
-  store i64 0, i64* %51
-  %52 = getelementptr i64, i64* %51, i32 1
-  store i64 %50, i64* %52
+  %50 = alloca i64, i64 2, align 16
+  store i64 0, i64* %50
+  %51 = getelementptr i64, i64* %50, i32 1
+  store i64 %49, i64* %51
 ; # (while (symByte Q) (byteSym @ P))
   br label %$21
 $21:
-  %53 = phi i64 [%42, %$20], [%56, %$22] ; # X
+  %52 = phi i64 [%41, %$20], [%55, %$22] ; # X
 ; # (symByte Q)
-  %54 = call i8 @symByte(i64* %51)
-  %55 = icmp ne i8 %54, 0
-  br i1 %55, label %$22, label %$23
+  %53 = call i8 @symByte(i64* %50)
+  %54 = icmp ne i8 %53, 0
+  br i1 %54, label %$22, label %$23
 $22:
-  %56 = phi i64 [%53, %$21] ; # X
+  %55 = phi i64 [%52, %$21] ; # X
 ; # (byteSym @ P)
-  call void @byteSym(i8 %54, i64* %1)
+  call void @byteSym(i8 %53, i64* %1)
   br label %$21
 $23:
-  %57 = phi i64 [%53, %$21] ; # X
+  %56 = phi i64 [%52, %$21] ; # X
   br label %$9
 $9:
-  %58 = phi i64 [%18, %$3], [%23, %$12], [%31, %$17], [%57, %$23] ; # X
+  %57 = phi i64 [%18, %$3], [%23, %$12], [%31, %$17], [%56, %$23] ; # X
   ret void
 }
 
@@ -23405,7 +23403,7 @@ $8:
   %21 = icmp ne i64 %20, 0
   br i1 %21, label %$9, label %$10
 $9:
-; # (let P (push 4 NIL ZERO NIL) (link (ofs P 2) T) (packExtNm (& (na...
+; # (let P (push 4 NIL ZERO NIL) (link (ofs P 2) T) (packExtNm (name ...
 ; # (push 4 NIL ZERO NIL)
   %22 = alloca i64, i64 4, align 16
   store i64 4, i64* %22
@@ -23422,24 +23420,24 @@ $9:
   store i64 %27, i64* %29
   %30 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
   store i64 %25, i64* %30
-; # (name Tail)
+; # (& Tail -9)
+  %31 = and i64 %19, -9
+; # (name (& Tail -9))
   br label %$12
 $12:
-  %31 = phi i64 [%19, %$9], [%37, %$13] ; # Tail
-  %32 = and i64 %31, 6
-  %33 = icmp ne i64 %32, 0
-  br i1 %33, label %$14, label %$13
+  %32 = phi i64 [%31, %$9], [%38, %$13] ; # Tail
+  %33 = and i64 %32, 6
+  %34 = icmp ne i64 %33, 0
+  br i1 %34, label %$14, label %$13
 $13:
-  %34 = phi i64 [%31, %$12] ; # Tail
-  %35 = inttoptr i64 %34 to i64*
-  %36 = getelementptr i64, i64* %35, i32 1
-  %37 = load i64, i64* %36
+  %35 = phi i64 [%32, %$12] ; # Tail
+  %36 = inttoptr i64 %35 to i64*
+  %37 = getelementptr i64, i64* %36, i32 1
+  %38 = load i64, i64* %37
   br label %$12
 $14:
-  %38 = phi i64 [%31, %$12] ; # Tail
-; # (& (name Tail) -9)
-  %39 = and i64 %38, -9
-; # (packExtNm (& (name Tail) -9) P)
+  %39 = phi i64 [%32, %$12] ; # Tail
+; # (packExtNm (name (& Tail -9)) P)
   call void @packExtNm(i64 %39, i64* %22)
 ; # (val 3 P)
   %40 = getelementptr i64, i64* %22, i32 2

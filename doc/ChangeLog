@@ -1,3 +1,7 @@
+04jan22
+   Bug in 'name' for external symbols
+      src/sym.l
+
 ####### 21.12 #######
 03jan22
    Bugs in (del> . +Entity) and (has> . +List)
