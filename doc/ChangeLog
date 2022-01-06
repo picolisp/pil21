@@ -1,3 +1,7 @@
+06jan22
+   Don't reset 'Busy' in ping()
+      lib/form.js
+
 04jan22
    Bug in 'name' for external symbols
       src/sym.l
