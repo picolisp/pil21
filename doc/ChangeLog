@@ -1,3 +1,15 @@
+08jan22
+   Handle SIGWINCH
+      bin/pty
+   Reset readline in 'setTerm'
+      lib/term.l
+   Display namespace in 'repl'
+      lib/form.l
+
+07jan22
+   'refObj' searches also values
+      lib/too.l
+
 06jan22
    Don't reset 'Busy' in ping()
       lib/form.js

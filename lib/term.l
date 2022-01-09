@@ -1,4 +1,4 @@
-# 08aug21 Software Lab. Alexander Burger
+# 08jan22 Software Lab. Alexander Burger
 
 (sysdefs "terminal")
 
@@ -19,4 +19,5 @@
          (cons Rows 2)  # ws_row
          (cons Cols 2)  # ws_col
          (cons DX 2)  # ws_xpixel
-         (cons DY 2) ) ) )  # ws_ypixel
+         (cons DY 2) ) )  # ws_ypixel
+   (%@ "rl_reset_terminal" 'I 0) )

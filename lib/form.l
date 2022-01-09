@@ -1,4 +1,4 @@
-# 29dec21 Software Lab. Alexander Burger
+# 08jan22 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -357,6 +357,8 @@
          (: repl)
          DX DY )
       (--)
+      (gui '(+View +SymField) '(car (symbols)))
+      (<nbsp>)
       (gui 'line '(+Focus +Able +Hint1 +TextField)
          '(= (: home view file) (: home repl))
          '*ReplH
@@ -372,7 +374,7 @@
                      (in (list "sh" "-c" (cdr (chop Str)))
                         (echo) ) )
                   (err NIL
-                     (prinl ": " Str)
+                     (prinl (car (symbols)) ": " Str)
                      (flush)
                      (catch '(NIL)
                         (in "/dev/null"

@@ -1,4 +1,4 @@
-# 16sep21 Software Lab. Alexander Burger
+# 07jan22 Software Lab. Alexander Burger
 
 (private) (Prg C Q X Y CL Cls Name)
 
@@ -125,7 +125,10 @@
       (recur (Obj)
          (for (F . @) (or *Dbs (2))
             (for (This (seq F) This (seq This))
-               (when (fish '((X) (== X Obj)) (getl This))
+               (when
+                  (or
+                     (fish '((X) (== X Obj)) (val This))
+                     (fish '((X) (== X Obj)) (getl This)) )
                   (if (and Flg (: T))
                      (recurse This)
                      (link This) ) ) ) ) )
