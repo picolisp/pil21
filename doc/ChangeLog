@@ -1,3 +1,10 @@
+10jan22
+   Central Kurdish localization (Hunar Omar)
+      loc/CKB.l
+      loc/ckb
+   Variable '*Port'
+      bin/pty
+
 08jan22
    Handle SIGWINCH
       bin/pty
