@@ -1,4 +1,4 @@
-# 28oct21 Software Lab. Alexander Burger
+# 15jan22 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -237,6 +237,9 @@
    (let *Dbg NIL
       (dbg ^) ) )
 
+(de -debug ()
+   (debug (intern (opt))) )
+
 (de debug (X C)
    (ifn (traced? X C)
       (let *Dbg NIL
@@ -284,6 +287,9 @@
       (== '$ (caadr X)) ) )
 
 # Convert ((X Y) A B) --> ((X Y) ($ foo (X Y) A B))
+(de -trace ()
+   (trace (intern (opt))) )
+
 (de trace (X C)
    (let *Dbg NIL
       (when (pair X)

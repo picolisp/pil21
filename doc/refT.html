@@ -477,9 +477,9 @@ modified.
 -> (1 999 3 4 5)
 </code></pre>
 
-<dt><a name="trace"><code>(trace 'sym) -> sym</code></a>
-<dt><code>(trace 'sym 'cls) -> sym</code>
-<dt><code>(trace '(sym . cls)) -> sym</code>
+<dt><a name="trace"><code>(trace 'sym)</code></a>
+<dt><code>(trace 'sym 'cls)</code>
+<dt><code>(trace '(sym . cls))</code>
 <dd>(Debug mode only) Inserts a <code><a href="ref_.html#$">$</a></code> trace
 function call at the beginning of the function or method body of
 <code>sym</code>, so that trace information will be printed before and after
@@ -499,6 +499,19 @@ href="refL.html#lint">lint</a></code>.
  + : 3 4
  + = 7
 -> 7
+</code></pre>
+
+<dt><a name="-trace"><code>(-trace)</code></a>
+<dd>(Debug mode only) Command line frontend to <code><a
+href="refT.html#trace">trace</a></code>. See also <code><a
+href="refD.html#-debug">-debug</a></code>.
+
+<pre><code>
+$ ./pil --trace append +
+: (append (1 2 3) (4 5 6))
+ append : (1 2 3) (4 5 6)
+ append = (1 2 3 4 5 6)
+-> (1 2 3 4 5 6)
 </code></pre>
 
 <dt><a name="traceAll"><code>(traceAll ['lst]) -> sym</code></a>

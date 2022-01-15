@@ -440,9 +440,9 @@ href="refU.html#undef">undef</a></code>.
 -> 123
 </code></pre>
 
-<dt><a name="debug"><code>(debug 'sym) -> T</code></a>
-<dt><code>(debug 'sym 'cls) -> T</code>
-<dt><code>(debug '(sym . cls)) -> T</code>
+<dt><a name="debug"><code>(debug 'sym)</code></a>
+<dt><code>(debug 'sym 'cls)</code>
+<dt><code>(debug '(sym . cls))</code>
 <dd>(Debug mode only) Inserts a <code><a href="ref_.html#!">!</a></code>
 breakpoint function call at the beginning and all top-level expressions of the
 function or method body of <code>sym</code>, to allow a stepwise execution.
@@ -482,6 +482,15 @@ href="refL.html#lint">lint</a></code>.
 (de tst (N)
    (println (+ 3 N)) )
 -> tst
+</code></pre>
+
+<dt><a name="-debug"><code>(-debug)</code></a>
+<dd>(Debug mode only) Command line frontend to <code><a
+href="refD.html#debug">debug</a></code>. See also <code><a
+href="refT.html#-trace">-trace</a></code>.
+
+<pre><code>
+$ ./pil --debug tst +
 </code></pre>
 
 <dt><a name="dec"><code>(dec 'num) -> num</code></a>

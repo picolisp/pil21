@@ -1,3 +1,10 @@
+15jan22
+   '-debug' and '-trace' functions
+      lib/debug.l
+      doc/ref.html
+      doc/refD.html
+      doc/refT.html
+
 13jan22
    Change "EMail" to "E-Mail"
       doc/form/refM.html
@@ -49,6 +56,12 @@
       lib/form.l
       lib/form.js
       lib/xhtml/table
+
+27dec21
+   '-symbols' function
+      lib.l
+      doc/ref.html
+      doc/refS.html
 
 22dec21
    OpenBSD patch (Frithjof Schulze)
