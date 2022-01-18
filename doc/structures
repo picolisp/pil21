@@ -1,4 +1,4 @@
-# 05may21 Software Lab. Alexander Burger
+# 16jan22 Software Lab. Alexander Burger
 
    ### Primary data types ###
 
@@ -208,7 +208,7 @@
                lim
                prg
                org
-         +---- next
+         +---- nxt
          | +-> prv
          | |   tag   <----- Coroutines
          | |
@@ -220,7 +220,7 @@
          | |   lim
          | |   prg
          | |   org
-         | |   next
+         | |   nxt
          | +-- prv
          +---> tag
 

@@ -1,4 +1,4 @@
-# 02oct21 Software Lab. Alexander Burger
+# 18jan22 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -112,6 +112,51 @@
                      (setq Alpha *Val) )
                   (NIL (shift 'Lst) Alpha) ) ) ) ) ) )
 
+### Discrete-Event Simulation ###
+(local) (*Rt *Time *Ready *Next des pause event queue wake)
+
+(off *Rt)  # Realtime
+(zero *Time)  # Current simulation time
+
+(de des ()
+   (while (fifo '*Ready)
+      (yield (cdr @) (car @)) )
+   (when *Next
+      (let ((Time . Co) (pop '*Next))
+         (and *Rt (wait (- Time *Time)))
+         (setq *Time Time)
+         (yield NIL Co) ) ) )
+
+# Wait for time or event
+(de pause (E)
+   (with (co)
+      (cond
+         ((num? E)
+            (let X (cons (+ E *Time) This)
+               (if (rank (car X) *Next)
+                  (let P (memq @ *Next)
+                     (con P (cons X (cdr P))) )
+                  (push '*Next X) ) ) )
+         (E (fifo (prop (=: event E) 'queue) This))
+         (T (fifo '*Ready (cons This))) )
+      (run (yield)) ) )
+
+# Send event
+(de event (This . Prg)
+   (while (fifo (:: queue))
+      (put @ 'event NIL)
+      (fifo '*Ready (cons @ Prg)) ) )
+
+# Wake up
+(de wake (This . Prg)
+   (cond
+      ((asoq This *Ready) (con @ Prg))
+      ((rasoq This *Next)
+         (del @ '*Next)
+         (fifo '*Ready (cons This Prg)) )
+      ((: event))
+         (rid (prop @ 'queue) This)
+         (fifo '*Ready (cons This Prg)) ) )
 
 ### Grids ###
 (local) (grid west east south north)

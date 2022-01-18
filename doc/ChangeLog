@@ -1,3 +1,7 @@
+18jan22
+   Discrete-Event Simulation: 'des', 'pause', 'event' and 'wake' functions
+      lib/simul.l
+
 15jan22
    '-debug' and '-trace' functions
       lib/debug.l
