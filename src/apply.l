@@ -1,4 +1,4 @@
-# 23jan21 Software Lab. Alexander Burger
+# 18jan22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -15,6 +15,7 @@
                   (push NIL $Nil ZERO (eval (car X)) NIL) ) )  # [car cdr name val link]
             (set P (link (ofs P 3))) )
          (while (pair L)
+            (stkChk Exe)
             (setq P
                (set 2 P (push NIL $Nil ZERO (++ L) NIL)) )
             (set P (link (ofs P 3))) )

@@ -1,4 +1,6 @@
 18jan22
+   Stack check in 'apply'
+      src/apply.l
    Discrete-Event Simulation: 'des', 'pause', 'event' and 'wake' functions
       lib/simul.l
 

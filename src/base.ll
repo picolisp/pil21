@@ -62306,12 +62306,12 @@ $14:
   %87 = phi i64 [%54, %$12] ; # X
   %88 = phi i64 [%50, %$12] ; # L
   %89 = phi i64 [%51, %$12] ; # P
-; # (while (pair L) (setq P (set 2 P (push NIL $Nil ZERO (++ L) NIL))...
+; # (while (pair L) (stkChk Exe) (setq P (set 2 P (push NIL $Nil ZERO...
   br label %$20
 $20:
-  %90 = phi i64 [%87, %$14], [%95, %$21] ; # X
-  %91 = phi i64 [%88, %$14], [%101, %$21] ; # L
-  %92 = phi i64 [%89, %$14], [%103, %$21] ; # P
+  %90 = phi i64 [%87, %$14], [%95, %$24] ; # X
+  %91 = phi i64 [%88, %$14], [%104, %$24] ; # L
+  %92 = phi i64 [%89, %$14], [%106, %$24] ; # P
 ; # (pair L)
   %93 = and i64 %91, 15
   %94 = icmp eq i64 %93, 0
@@ -62320,54 +62320,63 @@ $21:
   %95 = phi i64 [%90, %$20] ; # X
   %96 = phi i64 [%91, %$20] ; # L
   %97 = phi i64 [%92, %$20] ; # P
+; # (stkChk Exe)
+  %98 = load i8*, i8** @$StkLimit
+  %99 = call i8* @llvm.stacksave()
+  %100 = icmp ugt i8* %98, %99
+  br i1 %100, label %$23, label %$24
+$23:
+  call void @stkErr(i64 %0)
+  unreachable
+$24:
 ; # (set 2 P (push NIL $Nil ZERO (++ L) NIL))
 ; # (++ L)
-  %98 = inttoptr i64 %96 to i64*
-  %99 = load i64, i64* %98
-  %100 = getelementptr i64, i64* %98, i32 1
-  %101 = load i64, i64* %100
+  %101 = inttoptr i64 %96 to i64*
+  %102 = load i64, i64* %101
+  %103 = getelementptr i64, i64* %101, i32 1
+  %104 = load i64, i64* %103
 ; # (push NIL $Nil ZERO (++ L) NIL)
-  %102 = alloca i64, i64 5, align 16
-  %103 = ptrtoint i64* %102 to i64
-  %104 = add i64 %103, 8
-  %105 = inttoptr i64 %104 to i64*
-  store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([870 x i64]* @SymTab to i8*), i32 8) to i64), i64* %105
-  %106 = add i64 %103, 16
-  %107 = inttoptr i64 %106 to i64*
-  store i64 2, i64* %107
-  %108 = add i64 %103, 24
-  %109 = inttoptr i64 %108 to i64*
-  store i64 %99, i64* %109
-  %110 = inttoptr i64 %97 to i64*
-  %111 = getelementptr i64, i64* %110, i32 1
-  store i64 %103, i64* %111
+  %105 = alloca i64, i64 5, align 16
+  %106 = ptrtoint i64* %105 to i64
+  %107 = add i64 %106, 8
+  %108 = inttoptr i64 %107 to i64*
+  store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([870 x i64]* @SymTab to i8*), i32 8) to i64), i64* %108
+  %109 = add i64 %106, 16
+  %110 = inttoptr i64 %109 to i64*
+  store i64 2, i64* %110
+  %111 = add i64 %106, 24
+  %112 = inttoptr i64 %111 to i64*
+  store i64 %102, i64* %112
+  %113 = inttoptr i64 %97 to i64*
+  %114 = getelementptr i64, i64* %113, i32 1
+  store i64 %106, i64* %114
 ; # (set P (link (ofs P 3)))
 ; # (ofs P 3)
-  %112 = add i64 %103, 24
+  %115 = add i64 %106, 24
 ; # (link (ofs P 3))
-  %113 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
-  %114 = load i64, i64* %113
-  %115 = inttoptr i64 %112 to i64*
-  %116 = getelementptr i64, i64* %115, i32 1
-  store i64 %114, i64* %116
-  %117 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %112, i64* %117
-  %118 = inttoptr i64 %103 to i64*
-  store i64 %112, i64* %118
+  %116 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %117 = load i64, i64* %116
+  %118 = inttoptr i64 %115 to i64*
+  %119 = getelementptr i64, i64* %118, i32 1
+  store i64 %117, i64* %119
+  %120 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %115, i64* %120
+  %121 = inttoptr i64 %106 to i64*
+  store i64 %115, i64* %121
   br label %$20
 $22:
-  %119 = phi i64 [%90, %$20] ; # X
-  %120 = phi i64 [%91, %$20] ; # L
-  %121 = phi i64 [%92, %$20] ; # P
+  %122 = phi i64 [%90, %$20] ; # X
+  %123 = phi i64 [%91, %$20] ; # L
+  %124 = phi i64 [%92, %$20] ; # P
 ; # (evList E)
-  %122 = call i64 @evList(i64 %17)
+  %125 = call i64 @evList(i64 %17)
 ; # (drop *Safe)
-  %123 = inttoptr i64 %24 to i64*
-  %124 = getelementptr i64, i64* %123, i32 1
-  %125 = load i64, i64* %124
-  %126 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %125, i64* %126
-  ret i64 %122
+  %126 = inttoptr i64 %24 to i64*
+  %127 = getelementptr i64, i64* %126, i32 1
+  %128 = load i64, i64* %127
+  %129 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %128, i64* %129
+  ret i64 %125
 }
 
 define i64 @_pass(i64) align 8 {
