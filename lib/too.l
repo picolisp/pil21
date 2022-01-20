@@ -174,21 +174,22 @@
 (de dangling ()
    (make
       (for (F . @) (or *Dbs (2))
-         (for (This (seq F) This (seq This))
+         (for (Obj (seq F) Obj (seq Obj))
             (and
-               (isa '+Entity This)
-               (not (: T))
-               (dangle This)
-               (link @) ) ) ) ) )
+               (isa '+Entity Obj)
+               (dangle Obj)
+               (link @) )
+            (wipe Obj) ) ) ) )
 
-(de dangle (Obj)
-   (and
-      (make
-         (for X (getl Obj)
-            (let V (or (atom X) (++ X))
-               (unless (rel?> Obj X V)
-                  (link X) ) ) ) )
-      (cons Obj @) ) )
+(de dangle (This)
+   (unless (: T)
+      (and
+         (make
+            (for X (getl This)
+               (let V (or (atom X) (++ X))
+                  (unless (rel?> This X V)
+                     (link X) ) ) ) )
+         (cons This @) ) ) )
 
 # Entity Counts
 (de badECnt ()
@@ -300,7 +301,8 @@
                      (<>
                         (meta Obj 'Dbf 1)
                         (car (id Obj T)) ) ) )
-               (link Obj) ) ) ) ) )
+               (link Obj) )
+            (wipe Obj) ) ) ) )
 
 ### Dump Objects ###
 (zero *DumpBlob)
