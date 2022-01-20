@@ -1,3 +1,8 @@
+20jan22
+   'seq' instead of 'dbMap' in 'dangling'
+   'displaced' function
+      lib/too.l
+
 18jan22
    Stack check in 'apply'
       src/apply.l
