@@ -1,66 +1,21 @@
-# 10dec21 Software Lab. Alexander Burger
+# 21jan22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
+
+(load "@lib/term.l")
+
+(local) getSize
+
+(de getSize ()
+   (if (getTerm)
+      (setq *Lines (car @)  *Columns (cadr @))
+      (quit "Can't get terminal size") ) )
 
 (local) (*Ns *Shell *CmdWin *StatNm *Chr *Complete *Repeat *Change *Count *Cnt
 *Search *Clip *Lines *Columns *TagStack *Spell *CmdMap *Keys *KeyMap *KeyMap-g
 *KeyMap-q *F7 *F8 *F9 *F10 *F11 *F12 *@)
 
-### ANSI Terminal ###
-(sysdefs "terminal")
-
-(local) (getSize xterm ULINE U-OFF REVERS CYAN RED *AttrA *AttrU attr cup clreol
-hideCsr showCsr screen1 screen2)
-
-(de getSize ()
-   (use L
-      (unless (=0 (%@ "ioctl" 'I 1 TIOCGWINSZ '(L (`winsize W W))))
-         (quit "Can't get terminal size") )
-      (setq *Lines (car L)  *Columns (cadr L)) ) )
-
-(de xterm ()
-   (member (sys "TERM") '("xterm" "screen")) )
-
 (def '*Shell (or (sys "SHELL") "sh"))
-
-(de ULINE . 4)
-(de U-OFF . 24)
-(de REVERS . 7)
-(de CYAN . 36)
-(de RED . 31)
-
-(off *AttrA *AttrU)
-
-(de attr (A U)
-   (if2 (<> A *AttrA) (<> U *AttrU)
-      (prin "^[["
-         (or (setq *AttrA A) 0)
-         ";"
-         (if (setq *AttrU U) ULINE U-OFF)
-         "m" )
-      (prin "^[[" (or (setq *AttrA A) 0) "m")
-      (prin "^[[" (if (setq *AttrU U) ULINE U-OFF) "m") ) )
-
-(de cup (Y X)
-   (prin "^[[" Y ";" X "H") )
-
-(de clreol ()
-   (prin "^[[0K") )
-
-(de hideCsr ()
-   (prin "^[[?25l") )
-
-(de showCsr ()
-   (prin "^[[?25h") )
-
-(de screen1 ()
-   (if (xterm)
-      (prin "^[[?1049l")
-      (cup *Lines 1) )
-   (flush) )
-
-(de screen2 ()
-   (and (xterm) (prin "^[[?1049h")) )
 
 ### VIP Editor ###
 (local) (*Buffers +Buffer mkLoc fName prName rplFile fileBuffer rdLines delim?
@@ -556,7 +511,9 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
 (de tag (S C)
    (ifn
       (if C
-         (get @ '*Dbg -1 S)
+         (or
+            (get C '*Dbg -1 S)
+            (meta C '*Dbg -1 S) )
          (get S '*Dbg 1) )
       (beep)
       (pushTag (: buffer file))
@@ -1690,7 +1647,9 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                (cond
                   ((pair "X") @)
                   ((if C
-                        (get @ '*Dbg -1 "X")
+                        (or
+                           (get C '*Dbg -1 "X")
+                           (meta C '*Dbg -1 "X") )
                         (get "X" '*Dbg 1) )
                      (apply symbols (cddr @))
                      (cons (car @) (cadr @)) )

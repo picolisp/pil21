@@ -1,6 +1,21 @@
-# 08jan22 Software Lab. Alexander Burger
+# 21jan22 Software Lab. Alexander Burger
 
 (sysdefs "terminal")
+
+(local) (ULINE U-OFF REVERS CYAN RED *AttrA *AttrU)
+
+(de ULINE . 4)
+(de U-OFF . 24)
+(de REVERS . 7)
+(de CYAN . 36)
+(de RED . 31)
+
+(off *AttrA *AttrU)
+
+(local) (xterm getTerm setTerm)
+
+(de xterm ()
+   (member (sys "TERM") '("xterm" "screen")) )
 
 (de getTerm ()
    (use Lst
@@ -21,3 +36,36 @@
          (cons DX 2)  # ws_xpixel
          (cons DY 2) ) )  # ws_ypixel
    (%@ "rl_reset_terminal" 'I 0) )
+
+(local) (attr cup clreol hideCsr showCsr screen1 screen2)
+
+(de attr (A U)
+   (if2 (<> A *AttrA) (<> U *AttrU)
+      (prin "^[["
+         (or (setq *AttrA A) 0)
+         ";"
+         (if (setq *AttrU U) ULINE U-OFF)
+         "m" )
+      (prin "^[[" (or (setq *AttrA A) 0) "m")
+      (prin "^[[" (if (setq *AttrU U) ULINE U-OFF) "m") ) )
+
+(de cup (Y X)
+   (prin "^[[" Y ";" X "H") )
+
+(de clreol ()
+   (prin "^[[0K") )
+
+(de hideCsr ()
+   (prin "^[[?25l") )
+
+(de showCsr ()
+   (prin "^[[?25h") )
+
+(de screen1 ()
+   (if (xterm)
+      (prin "^[[?1049l")
+      (cup *Lines 1) )
+   (flush) )
+
+(de screen2 ()
+   (and (xterm) (prin "^[[?1049h")) )
