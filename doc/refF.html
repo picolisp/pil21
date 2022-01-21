@@ -451,10 +451,12 @@ href="refR.html#range">range</a></code>.
 </code></pre>
 
 <dt><a name="forall"><code>(forall 'cls . prg) -> any</code></a>
+<dt><code>(forall '(cnt . cls) . prg) -> any</code>
 <dd>Runs <code>prg</code> on all database objects of the class <code>cls</code>,
-as given by the <code><a href="refD.html#dbs">dbs</a></code> definition. The
-global variable <code><a href="refT.html#This">This</a></code> is bound to each
-object. See also <code><a href="refS.html#seq">seq</a></code> and <code><a
+as given by the <code><a href="refD.html#dbs">dbs</a></code> definition. In the
+second form, the <code>cnt</code>'th database file is used instead. The global
+variable <code><a href="refT.html#This">This</a></code> is bound to each object.
+See also <code><a href="refS.html#seq">seq</a></code> and <code><a
 href="refC.html#collect">collect</a></code>.
 
 <pre><code>

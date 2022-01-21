@@ -1,4 +1,4 @@
-# 03jan22 Software Lab. Alexander Burger
+# 21jan22 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1456,17 +1456,18 @@
                      (or (isa '+Idx This) (isa '+IdxFold This)) ) ) ) ) ) ) )
 
 # Iterate all objects of given class
-(de forall (Cls . Prg)
+(de forall (X . Prg)
    (for
       (This
          (seq
             (or
-               (; Cls Dbf 1)
-               (meta Cls 'Dbf 1)
+               (and (pair X) (car @))
+               (; X Dbf 1)
+               (meta X 'Dbf 1)
                1 ) )
          This
          (seq This) )
-      (and (isa Cls This) (run Prg 1)) ) )
+      (and (isa (fin X) This) (run Prg 1)) ) )
 
 # Define object variables as relations
 (de rel Lst

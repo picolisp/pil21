@@ -1,4 +1,7 @@
 21jan22
+   Optional database file for 'forall'
+      lib/db.l
+      doc/refF.html
    Inherit tags from superclasses
       lib/vip.l
    Refactor screen handling
