@@ -1,4 +1,4 @@
-# 21jan22 Software Lab. Alexander Burger
+# 26jan22 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -756,7 +756,8 @@
       (for Var (: dep)
          (let? V (get Obj Var)
             (rel> (meta Obj Var) Obj V
-               (put> (meta Obj Var) Obj V NIL) ) ) ) )
+               (put Obj Var (put> (meta Obj Var) Obj V NIL)) )
+            (upd> Obj Var V) ) ) )
    (extra Obj Old New Hook) )
 
 

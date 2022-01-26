@@ -1,3 +1,7 @@
+26jan22
+   Bug in 'rel>' for '+Dep'
+      lib/db.l
+
 21jan22
    Optional database file for 'forall'
       lib/db.l
