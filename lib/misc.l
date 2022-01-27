@@ -52,7 +52,7 @@
                   (and Lst
                      (> Max
                         (+ (length (car Lst)) (sum length L)) ) )
-                  (conc L (list " ") (++ Lst)) )
+                  (setq L (conc L (list " ") (++ Lst))) )
                (link L) ) ) )
       (if (atom X)
          (mapcar pack R)
