@@ -1,4 +1,4 @@
-# 16nov21 Software Lab. Alexander Burger
+# 27jan22 Software Lab. Alexander Burger
 
 # *Allow
 
@@ -43,22 +43,20 @@
                   (set (link @) (name (read))) ) ) ) ) ) )
 
 ### String ###
-(de wrap (Max Lst)
-   (setq Lst (split Lst " " "\n"))
-   (pack
+(de wrap (Max X)
+   (let R
       (make
-         (while Lst
-            (if (> Max (length (car Lst)))
-               (chain
-                  (make
-                     (link (++ Lst))
-                     (loop
-                        (NIL Lst)
-                        (T (>= (+ (length (car Lst)) (sum length (made))) Max)
-                           (link "\n") )
-                        (link " " (++ Lst)) ) ) )
-               (link (++ Lst))
-               (and Lst (link "\n")) ) ) ) ) )
+         (for (Lst (split (chop X) " " "\n")  Lst)
+            (let L (++ Lst)
+               (while
+                  (and Lst
+                     (> Max
+                        (+ (length (car Lst)) (sum length L)) ) )
+                  (conc L (list " ") (++ Lst)) )
+               (link L) ) ) )
+      (if (atom X)
+         (mapcar pack R)
+         (glue "\n" R) ) ) )
 
 ### Number ###
 (de money (N Cur)

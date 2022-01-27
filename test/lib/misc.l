@@ -1,4 +1,4 @@
-# 08oct20 Software Lab. Alexander Burger
+# 27jan22 Software Lab. Alexander Burger
 
 ### locale ###
 (locale "DE" "de")
@@ -27,6 +27,8 @@
    (wrap 8 (chop "The quick brown fox jumps over the lazy dog")) )
 (test "The^Jquick^Jbrown^Jfox^Jjumps^Jover^Jthe^Jlazy^Jdog"
    (wrap 2 (chop "The quick brown fox jumps over the lazy dog")) )
+(test '("The" "quick" "brown" "fox" "jumps" "over the" "lazy dog")
+   (wrap 8 "The quick brown fox jumps over the lazy dog") )
 
 
 ### pad ###

@@ -203,10 +203,13 @@ href="refP.html#pr">pr</a></code>.
 </code></pre>
 
 <dt><a name="wrap"><code>(wrap 'cnt 'lst) -> sym</code></a>
-<dd>Returns a transient symbol with all characters in <code>lst</code> <code><a
-href="refP.html#pack">pack</a></code>ed in lines with a maximal length of
-<code>cnt</code>. See also <code><a href="refT.html#tab">tab</a></code>,
-<code><a href="refA.html#align">align</a></code> and <code><a
+<dt><code>(wrap 'cnt 'sym) -> lst</code>
+<dd>The first form returns a transient symbol with all characters in
+<code>lst</code> <code><a href="refP.html#pack">pack</a></code>ed in lines with
+a maximal length of <code>cnt</code>. The second form converts a symbol to a
+list of transient symbols each with a maximal length of <code>cnt</code>. See
+also <code><a href="refT.html#tab">tab</a></code>, <code><a
+href="refA.html#align">align</a></code> and <code><a
 href="refC.html#center">center</a></code>.
 
 <pre><code>
@@ -214,6 +217,8 @@ href="refC.html#center">center</a></code>.
 -> "The quick brown fox^Jjumps over the lazy^Jdog"
 : (wrap 8 (chop "The quick brown fox jumps over the lazy dog"))
 -> "The^Jquick^Jbrown^Jfox^Jjumps^Jover the^Jlazy dog"
+: (wrap 8 "The quick brown fox jumps over the lazy dog")
+-> ("The" "quick" "brown" "fox" "jumps" "over the" "lazy dog")
 </code></pre>
 
 </dl>

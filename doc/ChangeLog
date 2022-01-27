@@ -1,4 +1,8 @@
 27jan22
+   'wrap' also converts string to list of strings
+      lib/misc.l
+      doc/refW.html
+      test/lib/misc.l
    'badDep' function
       lib/too.l
 
