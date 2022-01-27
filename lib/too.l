@@ -1,4 +1,4 @@
-# 20jan22 Software Lab. Alexander Burger
+# 27jan22 Software Lab. Alexander Burger
 
 (private) (Prg C Q X Y CL Cls Name)
 
@@ -223,6 +223,17 @@
             (incECnt This) )
          (at (0 . 10000) (commit)) ) )
    (commit) )
+
+(de badDep (X Var)
+   (let Lst (get (fin X) Var 'dep)
+      (make
+         (forall X
+            (unless (get This Var)
+               (when
+                  (extract
+                     '((S) (and (get This S) S))
+                     Lst )
+                  (link (cons This @)) ) ) ) ) ) )
 
 ### Rebuild tree ###
 (de rebuild (X Var Cls Hook)

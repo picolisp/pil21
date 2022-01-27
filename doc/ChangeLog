@@ -1,3 +1,7 @@
+27jan22
+   'badDep' function
+      lib/too.l
+
 26jan22
    Bug in 'rel>' for '+Dep'
       lib/db.l
