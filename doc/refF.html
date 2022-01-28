@@ -115,14 +115,18 @@ href="refL.html#load">load</a></code>.
 </code></pre>
 
 <dt><a name="fill"><code>(fill 'any ['sym|lst]) -> any</code></a>
+<dt><code>(fill 'any ['cnt|sym] 'any2) -> any</code>
 <dd>Non-destructively fills a pattern <code>any</code>, by substituting
 <code>sym</code>, or all symbols in <code>lst</code>, or - if no second argument
 is given - each pattern symbol in <code>any</code> (see <code><a
 href="refP.html#pat?">pat?</a></code>), with its current value. <code>@</code>
-itself is not considered a pattern symbol here. Unmodified subexpressions are
-shared. In any case, expressions following the symbol <code>^</code> are
-evaluated and the results (destructively) spliced into the result. See also
-<code><a href="refM.html#match">match</a></code>.
+itself is not considered a pattern symbol here. In any case, expressions
+following the symbol <code>^</code> are evaluated and the results
+(destructively) spliced into the result. In the second form, all occurrences of
+the second argument are simply replaced by <code>any2</code>. In both cases,
+unmodified subexpressions are shared.
+
+See also <code><a href="refM.html#match">match</a></code>.
 
 <pre><code>
 : (setq  @X 1234  @Y (1 2 3 4))
@@ -138,6 +142,11 @@ evaluated and the results (destructively) spliced into the result. See also
 -> (1 a b c 9)
 : (fill (1 ^(+ 2 3) 7))
 -> (1 5 7)
+
+: (fill (1 (a (b . 2) c) 3) 'b 7)
+-> (1 (a (7 . 2) c) 3)
+: (fill (1 (a (b . 2) c) 3) 2 123)
+-> (1 (a (b . 123) c) 3)
 
 : (match '(This is @X) '(This is a pen))
 -> T

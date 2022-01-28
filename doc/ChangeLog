@@ -1,3 +1,9 @@
+28jan22
+   Optional third argument to 'fill'
+      src/subr.l
+      doc/refF.html
+      test/src/subr.l
+
 27jan22
    'wrap' also converts string to list of strings
       lib/misc.l

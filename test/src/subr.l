@@ -1,4 +1,4 @@
-# 03jan22 Software Lab. Alexander Burger
+# 28jan22 Software Lab. Alexander Burger
 
 ### c[ad]*r ###
 (let L '(1 2 3 4 5)
@@ -556,6 +556,10 @@
    (fill (1 ^(+ 2 3) 7)) )
 (let X 2 (test (1 2 3) (fill (1 X 3) 'X)))
 (let X 2 (test (1 2 3) (fill (1 X 3) '(X))))
+(test (1 (a (7 . 2) c) 3)
+   (fill (1 (a (b . 2) c) 3) 'b 7) )
+(test (1 (a (b . 123) c) 3)
+   (fill (1 (a (b . 2) c) 3) 2 123) )
 
 
 ### prove ###

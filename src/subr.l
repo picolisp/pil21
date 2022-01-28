@@ -1,4 +1,4 @@
-# 03jan22 Software Lab. Alexander Burger
+# 28jan22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1237,9 +1237,9 @@
          $T
          $Nil ) ) )
 
-(local) fill
+(local) (fill2 fill3)
 
-(de fill (X Y)
+(de fill2 (X Y)
    (cond
       ((num? X) 0)
       ((sym? X)
@@ -1259,29 +1259,44 @@
             (if (== Z $Up)  # Expand expression
                (let V (eval (++ X))
                   (if (nil? V)
-                     (if (fill X Y) @ X)
+                     (if (fill2 X Y) @ X)
                      (save (setq Z V)
                         (if (atom V)
                            (safe (setq Z (setq V (cons V $Nil))))
                            (while (pair (cdr V))
                               (setq V @) ) )
                         (set 2 V
-                           (if (fill X Y) @ X) )
+                           (if (fill2 X Y) @ X) )
                         Z ) ) )
-               (let V (fill Z Y)
-                  (cond
-                     (V
-                        (save V
-                           (cons V
-                              (if (fill X Y) @ X) ) ) )
-                     ((fill X Y)
-                        (cons Z @) )
-                     (T 0) ) ) ) ) ) ) )
+               (cond
+                  ((fill2 Z Y)
+                     (save @
+                        (cons @ (if (fill2 X Y) @ X)) ) )
+                  ((fill2 X Y) (cons Z @))
+                  (T 0) ) ) ) ) ) )
+
+(de fill3 (X Y Z)
+   (if (atom X)
+      (if (== X Y) Z 0)
+      (stkChk 0)
+      (let A (++ X)
+         (cond
+            ((fill3 A Y Z)
+               (save @
+                  (cons @ (if (fill3 X Y Z) @ X)) ) )
+            ((fill3 X Y Z) (cons A @))
+            (T 0) ) ) ) )
 
 # (fill 'any ['sym|lst]) -> any
 (de _fill (Exe)
-   (let (X (cdr Exe)  Y (save (eval (++ X))))
-      (if (fill Y (save (eval (car X))))
+   (let
+      (X (cdr Exe)
+         Y (save (eval (++ X)))
+         Z (save (eval (++ X))) )
+      (if
+         (if (pair X)
+            (fill3 Y Z (save (eval (car X))))
+            (fill2 Y Z) )
          @
          Y ) ) )
 
