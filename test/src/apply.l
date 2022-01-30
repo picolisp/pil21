@@ -99,6 +99,8 @@
 ### fish ###
 (test (1 2 3)
    (fish gt0 '(a -2 (1 b (-3 c 2)) 3 d -1)) )
+(test (-2 1 -3 -1)
+   (fish < '(a -2 (1 b (-3 c 2)) 3 d -1) NIL 2) )
 (test '(a b c d)
    (fish sym? '(a -2 (1 b (-3 c 2)) 3 d -1)) )
 (test (3 7)
