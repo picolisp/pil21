@@ -1,3 +1,10 @@
+30jan22
+   Additional arguments to 'fish'
+      src/apply.l
+      doc/refF.html
+      test/src/apply.l
+      lib/too.l
+
 28jan22
    Optional third argument to 'fill'
       src/subr.l

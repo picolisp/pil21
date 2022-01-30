@@ -239,12 +239,16 @@ href="refF.html#filter">filter</a></code>.
 -> 4
 </code></pre>
 
-<dt><a name="fish"><code>(fish 'fun 'any ['any2]) -> lst</code></a>
+<dt><a name="fish"><code>(fish 'fun 'any ['any2] ..) -> lst</code></a>
 <dd>Applies <code>fun</code> to each element - and recursively to all sublists -
 of <code>any</code>. Returns a list of all items where <code>fun</code> returned
 non-<code>NIL</code>. If <code>any2</code> is non-<code>NIL</code>, it may be
 returned by <code>fun</code> to cause the corresponding item or (sub-)list to be
-skipped. See also <code><a href="refF.html#filter">filter</a></code>.
+skipped. When additional <code>any</code> arguments are given, they are also
+passed to <code>fun</code>. See also <code><a
+href="refS.html#seek">seek</a></code>,
+
+See also <code><a href="refF.html#filter">filter</a></code>.
 
 <pre><code>
 : (fish atom '((a b) c (d e)))
@@ -261,6 +265,8 @@ skipped. See also <code><a href="refF.html#filter">filter</a></code>.
    '(a -2 (1 b (-3 c 2)) 3 d -1 7)
    "skip" )
 -> (3 7)
+: (fish == '(a 1 (b (3 b)) 3) NIL 'b)
+-> (b b)
 </code></pre>
 
 <dt><a name="flg?"><code>(flg? 'any) -> flg</code></a>

@@ -1,4 +1,4 @@
-# 27jan22 Software Lab. Alexander Burger
+# 30jan22 Software Lab. Alexander Burger
 
 (private) (Prg C Q X Y CL Cls Name)
 
@@ -127,8 +127,8 @@
             (for (This (seq F) This (seq This))
                (when
                   (or
-                     (fish '((X) (== X Obj)) (val This))
-                     (fish '((X) (== X Obj)) (getl This)) )
+                     (fish == (val This) NIL Obj)
+                     (fish == (getl This) NIL Obj) )
                   (if (and Flg (: T))
                      (recurse This)
                      (link This) ) ) ) ) )
@@ -139,7 +139,7 @@
                   (and (=1 I) (setq Lck Fd))
                   (for Blk (dec Cnt)
                      (let B (ext E (blk Fd Blk Siz Lck))
-                        (when (fish '((X) (== X Obj)) B)
+                        (when (fish == B NIL Obj)
                            (link (cons P (id I Blk))) ) ) )
                   (close Fd) ) ) ) ) ) )
 

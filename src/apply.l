@@ -1,4 +1,4 @@
-# 18jan22 Software Lab. Alexander Burger
+# 30jan22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -628,7 +628,7 @@
       ((<> @ S)
          (set R (cons V (val R))) ) ) )
 
-# (fish 'fun 'any ['any2]) -> lst
+# (fish 'fun 'any ['any2] ..) -> lst
 (de _fish (Exe)
    (let
       (X (cdr Exe)
@@ -638,12 +638,17 @@
       (set
          P (ofs P 3)
          E (link (ofs E 3)) )
-      (fish E
-         (save (eval (++ X)))
-         (ofs P 3)
-         R
-         (eval (car X)) )
-      (val R) ) )
+      (let
+         (V (save (eval (++ X)))
+            S (save (eval (car X)))
+            Q P )
+         (while (pair (shift X))
+            (setq Q
+               (set 2 Q
+                  (push NIL $Nil ZERO (eval (car X)) NIL) ) )  # [car cdr name val link]
+            (set Q (link (ofs Q 3))) )
+         (fish E V (ofs P 3) R S)
+         (val R) ) ) )
 
 # (by 'fun1 'fun2 'lst ..) -> lst
 (de _by (Exe)

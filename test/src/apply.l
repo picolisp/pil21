@@ -1,4 +1,4 @@
-# 06oct20 Software Lab. Alexander Burger
+# 30jan22 Software Lab. Alexander Burger
 
 ### apply ###
 (test 6 (apply + (1 2 3)))
@@ -101,6 +101,16 @@
    (fish gt0 '(a -2 (1 b (-3 c 2)) 3 d -1)) )
 (test '(a b c d)
    (fish sym? '(a -2 (1 b (-3 c 2)) 3 d -1)) )
+(test (3 7)
+   (fish
+      '((X)
+         (if (and (pair X) (=1 (car X)))
+            "skip"
+            (gt0 X) ) )
+      '(a -2 (1 b (-3 c 2)) 3 d -1 7)
+      "skip" ) )
+(test '(b b)
+   (fish == '(a 1 (b (3 b)) 3) NIL 'b) )
 
 
 ### by ###
