@@ -1,3 +1,7 @@
+01feb22
+   Add 'nth' to "see also" of 'get'
+      doc/refG.html
+
 30jan22
    Additional arguments to 'fish'
       src/apply.l
