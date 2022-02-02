@@ -1,3 +1,7 @@
+02feb22
+   Revisit 'rel>' for '+Dep'
+      lib/db.l
+
 01feb22
    Add 'nth' to "see also" of 'get'
       doc/refG.html

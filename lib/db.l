@@ -1,4 +1,4 @@
-# 26jan22 Software Lab. Alexander Burger
+# 02feb22 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -757,6 +757,8 @@
          (let? V (get Obj Var)
             (rel> (meta Obj Var) Obj V
                (put Obj Var (put> (meta Obj Var) Obj V NIL)) )
+            (when (asoq Var (meta Obj 'Aux))
+               (relAux Obj Var V (cdr @)) )
             (upd> Obj Var V) ) ) )
    (extra Obj Old New Hook) )
 
