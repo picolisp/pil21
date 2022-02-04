@@ -1,4 +1,4 @@
-# 14dec21 Software Lab. Alexander Burger
+# 04feb22 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -200,6 +200,7 @@
                (java Intent 'setFlags `(hex "24000000"))  # FLAG_ACTIVITY_SINGLE_TOP | FLAG_ACTIVITY_NEW_TASK
                (when File
                   (java Intent 'setAction "RPC")
+                  (java Intent 'putExtra "UUID" *Uuid)
                   (java Intent 'putExtra "LOAD" File) )
                (java B 'setContentIntent
                   (java "android.app.PendingIntent" 'getActivity
@@ -326,6 +327,7 @@
       (ifn When
          (java Alarm 'cancel
             (java "android.app.PendingIntent" 'getBroadcast CONTEXT N Intent 0) )
+         (java Intent 'putExtra "UUID" *Uuid)
          (java Intent 'putExtra "LOAD" File)
          (java Alarm 'setExactAndAllowWhileIdle
             (if (atom When) 2 0)  # ELAPSED_REALTIME_WAKEUP RTC_WAKEUP
