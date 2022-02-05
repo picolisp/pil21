@@ -67,8 +67,7 @@ href="refL.html#lint">lint</a></code>.
 <dt><a name="*Dbs"><code>*Dbs</code></a>
 <dd>A global variable holding a list of numbers (block size scale factors, as
 needed by <code><a href="refP.html#pool">pool</a></code>). It is typically set
-by <code><a href="refD.html#dbs">dbs</a></code>
-and <code><a href="refD.html#dbs+">dbs+</a></code>.
+by <code><a href="refD.html#dbs">dbs</a></code>.
 
 <pre><code>
 : *Dbs
@@ -381,7 +380,6 @@ in <code>*Dbs</code>). The CDR elements are either classes (so that objects of
 that class are later stored in the corresponding file), or lists with a class in
 the CARs and a list of relations in the CDRs (so that index trees for these
 relations go into that file). See also <code><a
-href="refD.html#dbs+">dbs+</a></code> and <code><a
 href="refP.html#pool">pool</a></code>.
 
 <pre><code>
@@ -405,17 +403,6 @@ href="refP.html#pool">pool</a></code>.
 -> (3 . 128)
 : (get '+Item 'nr 'dbf)
 -> (9 . 1024)
-</code></pre>
-
-<dt><a name="dbs+"><code>(dbs+ 'num . lst)</code></a>
-<dd>Extends the list of database sizes stored in <code><a
-href="refD.html#*Dbs">*Dbs</a></code>. <code>num</code> is the initial offset
-into the list. See also <code><a href="refD.html#dbs">dbs</a></code>.
-
-<pre><code>
-(dbs+ 9
-   (1 +NewCls)                                  # (9 . 128)
-   (3 (+NewCls nr nm)) )                        # (10 . 512)
 </code></pre>
 
 <dt><a name="de"><code>(de sym . any) -> sym</code></a>

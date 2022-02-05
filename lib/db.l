@@ -1,4 +1,4 @@
-# 02feb22 Software Lab. Alexander Burger
+# 05feb22 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1347,34 +1347,23 @@
    (wipe Lst) )
 
 ### DB Sizes ###
-(private) _dbs
-
 (de dbs Lst
-   (default *Dbs (_dbs 1)) )
-
-(de dbs+ (N . Lst)
-   (unless (cdr (nth *Dbs N))
-      (conc *Dbs (_dbs N)) ) )
-
-(de _dbs (N)
-   (mapcar
-      '((L)
-         (let Dbf (cons N (>> (- (car L)) 64))
-            (for Cls (cdr L)
-               (if (atom Cls)
-                  (put Cls 'Dbf Dbf)
-                  (for Var (cdr Cls)
-                     (let Rel (get Cls 1 Var)
-                        (unless Rel
-                           (quit "Bad relation" (cons Var (car Cls))) )
-                        (when (or (isa '+index Rel) (isa '+Swap Rel))
-                           (put @ 'dbf Dbf) )
-                        (for B (; Rel bag)
-                           (when (or (isa '+index B) (isa '+Swap B))
-                              (put @ 'dbf Dbf)) ) ) ) ) ) )
-         (inc 'N)
-         (car L) )
-      Lst ) )
+   (setq *Dbs
+      (make
+         (for (N . L) Lst
+            (let Dbf (cons N (>> (- (link (car L))) 64))
+               (for Cls (cdr L)
+                  (if (atom Cls)
+                     (put Cls 'Dbf Dbf)
+                     (for Var (cdr Cls)
+                        (let Rel (get Cls 1 Var)
+                           (unless Rel
+                              (quit "Bad relation" (cons Var (car Cls))) )
+                           (when (or (isa '+index Rel) (isa '+Swap Rel))
+                              (put @ 'dbf Dbf) )
+                           (for B (; Rel bag)
+                              (when (or (isa '+index B) (isa '+Swap B))
+                                 (put @ 'dbf Dbf)) ) ) ) ) ) ) ) ) ) )
 
 (de db: Typ
    (or (meta Typ 'Dbf 1) 1) )
