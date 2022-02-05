@@ -1,5 +1,5 @@
-04feb22
-   Pass '*Uuid' to RPC calls
+05feb22
+   Pass '*Uuid' and arguments to RPC calls
       lib/android.l
 
 02feb22

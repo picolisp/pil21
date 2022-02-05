@@ -1,4 +1,4 @@
-# 04feb22 Software Lab. Alexander Burger
+# 05feb22 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -179,7 +179,7 @@
 # Notification
 (local) (*Notify notify)
 
-(de notify (Id Ttl Msg File)
+(de notify (Id Ttl Msg File Url)
    (let N (java CONTEXT 'getSystemService "notification")  # NotificationManager
       (ifn Ttl
          (java N 'cancel Id)
@@ -201,7 +201,9 @@
                (when File
                   (java Intent 'setAction "RPC")
                   (java Intent 'putExtra "UUID" *Uuid)
-                  (java Intent 'putExtra "LOAD" File) )
+                  (java Intent 'putExtra "SRC" File)
+                  (java Intent 'putExtra "ARG" Id)
+                  (java Intent 'putExtra "URL" Url) )
                (java B 'setContentIntent
                   (java "android.app.PendingIntent" 'getActivity
                      CONTEXT 0 Intent `(hex "18000000") ) ) )  # FLAG_ACTIVITY_NEW_TASK | FLAG_UPDATE_CURRENT
@@ -320,7 +322,7 @@
 # Alarm
 (local) alarm
 
-(de alarm (N When File)
+(de alarm (N When File Url)
    (let
       (Intent (java "android.content.Intent" T CONTEXT (java "de.software_lab.pilbox.Receiver"))
          Alarm (java CONTEXT 'getSystemService "alarm") )  # AlarmManager
@@ -328,7 +330,9 @@
          (java Alarm 'cancel
             (java "android.app.PendingIntent" 'getBroadcast CONTEXT N Intent 0) )
          (java Intent 'putExtra "UUID" *Uuid)
-         (java Intent 'putExtra "LOAD" File)
+         (java Intent 'putExtra "SRC" File)
+         (java Intent 'putExtra "ARG" N)
+         (java Intent 'putExtra "URL" Url)
          (java Alarm 'setExactAndAllowWhileIdle
             (if (atom When) 2 0)  # ELAPSED_REALTIME_WAKEUP RTC_WAKEUP
             (cons 'L
