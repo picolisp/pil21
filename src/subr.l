@@ -1,4 +1,4 @@
-# 28jan22 Software Lab. Alexander Burger
+# 11feb22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1288,6 +1288,7 @@
             (T 0) ) ) ) )
 
 # (fill 'any ['sym|lst]) -> any
+# (fill 'any ['cnt|sym] 'any2) -> any
 (de _fill (Exe)
    (let
       (X (cdr Exe)
