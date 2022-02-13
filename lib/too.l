@@ -1,4 +1,4 @@
-# 30jan22 Software Lab. Alexander Burger
+# 13feb22 Software Lab. Alexander Burger
 
 (private) (Prg C Q X Y CL Cls Name)
 
@@ -314,6 +314,57 @@
                         (car (id Obj T)) ) ) )
                (link Obj) )
             (wipe Obj) ) ) ) )
+
+### Relocate Object ###
+(dm (move!> . +Entity) (Dbf)
+   (for L *ExtDBs  # ("path/" <cnt> <ofs>)
+      (let ((P N E) L  Lck)
+         (for I N
+            (let (Fd (open (pack P (hax (dec I))))  (Cnt . Siz) (blk Fd 0))
+               (finally (close Fd)
+                  (and (=1 I) (setq Lck Fd))
+                  (for Blk (dec Cnt)
+                     (let B (ext E (blk Fd Blk Siz Lck))
+                        (when (fish == B NIL This)
+                           (quit "Can't move" (cons P (id I Blk))) ) ) ) ) ) ) ) )
+   (dbSync)
+   (let New
+      (new
+         (or Dbf (meta This 'Dbf 1))
+         (val This) )
+      (for X (getl This)
+         (if (atom X)
+            (ifn (meta This X)
+               (put New X T)
+               (let Rel @
+                  (if (isa '+Blob Rel)
+                     (let F (blob This X)
+                        (put> New X F)
+                        (blob+ New X)
+                        (%@ "unlink" NIL F) )
+                     (lose> Rel This T)
+                     (put> New X T) ) ) )
+            (ifn (meta This (cdr X))
+               (put New (cdr X) (car X))
+               (lose> @ This (car X))
+               (put> New (cdr X) (car X)) ) ) )
+      (decECnt This)
+      (=: T T)
+      (for (F . @) *Dbs
+         (for (Obj (seq F) Obj (seq Obj))
+            (let L (getl Obj)
+               (when (fish == L This)
+                  (for X L
+                     (let? Rel (and (pair X) (meta Obj (cdr X)))
+                        (put> Obj (cdr X)
+                           (fill
+                              (if (isa '+Swap Rel)
+                                 (val (car X))
+                                 (car X) )
+                              This
+                              New ) ) ) ) ) ) ) )
+      (commit 'upd)
+      New ) )
 
 ### Dump Objects ###
 (zero *DumpBlob)
