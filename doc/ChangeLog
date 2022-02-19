@@ -1,3 +1,9 @@
+19feb22
+   Handle NILs in (has> . +List)
+      lib/db.l
+   Increase stack size
+      bin/vip
+
 13feb22
    'move!>' method for '+Entity'
       lib/too.l
@@ -15,7 +21,7 @@
       lib/android.l
 
 02feb22
-   Revisit 'rel>' for '+Dep'
+   Revisit (rel> . +Dep)
       lib/db.l
 
 01feb22
@@ -44,7 +50,7 @@
       lib/too.l
 
 26jan22
-   Bug in 'rel>' for '+Dep'
+   Bug in (rel> . +Dep)
       lib/db.l
 
 21jan22
@@ -296,7 +302,7 @@
       lib/vip.l
 
 18oct21
-   Refactor 'gui>' for '+User'
+   Refactor (gui> . +User)
       lib/adm.l
       lib/user.l
 
@@ -567,7 +573,7 @@
       doc/refB.html
 
 10jul21
-   Revisit 'put>' for '+Swap'
+   Revisit (put> . +Swap)
       lib/db.l
       test/lib/db.l
 
@@ -610,7 +616,7 @@
       lib/form.l
    Lazy external symbol creation in '+Swap'
       lib/db.l
-   'has>' check in 'rel>' for '+Joint'
+   'has>' check in (rel> . +Joint)
       lib/db.l
    Keep application namespaces for background tasks in '*Ns'
       lib/vip.l

@@ -1,4 +1,4 @@
-# 05feb22 Software Lab. Alexander Burger
+# 19feb22 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -774,11 +774,14 @@
    (and Val (or (atom Val) (find extra Val))) )
 
 (dm has> (Val X)
-   (and Val
+   (when Val
       (or
+         (= Val X)
          (find '((X) (extra Val X)) X)
          (loop
-            (NIL (extra (++ Val) (++ X)))
+            (NIL
+               (let (V (++ Val)  Y (++ X))
+                  (or (= V Y) (extra V Y)) ) )
             (NIL (or Val X) T)
             (T (xor Val X)) ) ) ) )
 
