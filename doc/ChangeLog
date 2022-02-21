@@ -1,3 +1,8 @@
+21feb22
+   'height' function
+   Handle '0' and 'T' directly in 'ps'
+      lib/svg.l
+
 19feb22
    Handle NILs in (has> . +List)
       lib/db.l

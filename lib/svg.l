@@ -1,4 +1,4 @@
-# 02jun21 Software Lab. Alexander Burger
+# 21feb22 Software Lab. Alexander Burger
 
 (symbols 'svg 'pico)
 
@@ -96,7 +96,7 @@
    (prinl "</a>") )
 
 # Text
-(local) (<faces> <text> font width italic bold indent rotate window ps)
+(local) (<faces> <text> font width italic bold indent rotate window ps height)
 (private) (A N X Y Prg)
 
 (de <faces> (Lst)
@@ -179,34 +179,58 @@
          (off A) )
       (prin
          "<text x=\"" (case A (NIL 0) (0 (/ *DX 2)) (T *DX))
-            "\" y=\"" (inc '*Pos *FontSize)
-            "\" text-anchor=\"" (case A (NIL "start") (0 "middle") (T "end"))
-            "\" font-size=\"" *FontSize
-            "\" font-family=\"" *FontFamily
-            "\" font-style=\"" *FontStyle
-            "\" font-weight=\"" *FontWeight "\"" ) )
+         "\" y=\"" (inc '*Pos *FontSize)
+         "\" text-anchor=\"" (case A (NIL "start") (0 "middle") (T "end"))
+         "\" font-size=\"" *FontSize
+         "\" font-family=\"" *FontFamily
+         "\" font-style=\"" *FontStyle
+         "\" font-weight=\"" *FontWeight "\"" ) )
    (and *Style (htStyle @))
    (prin ">")
-   (while (args)
-      (let X (next)
-         (if (atom X)
-            (ht:Prin X)
-            (casq (++ X)
-               (B  # Bold
-                  (prin (if X "<tspan font-weight=\"bold\">" "</tspan>")) )
-               (I  # Italic
-                  (prin (if X "<tspan font-style=\"italic\">" "</tspan>")) )
-               (S  # Superscript
-                  (prin (if X "<tspan baseline-shift=\"super\">" "</tspan>")) )
-               (U  # Underline
-                  (prin (if X "<tspan text-decoration=\"underline\">" "</tspan>")) )
-               (L  # Line through
-                  (prin (if X "<tspan text-decoration=\"line-through\">" "</tspan>")) )
-               (C  # Color
-                  (if X
-                     (prin "<tspan fill=\"" X "\">")
-                     (prin "</tspan>") ) ) ) ) ) )
-   (prinl "</text>") )
+   (let H NIL
+      (while (args)
+         (let X (next)
+            (cond
+               ((pair X)
+                  (casq (++ X)
+                     (B  # Bold
+                        (prin (if X "<tspan font-weight=\"bold\">" "</tspan>")) )
+                     (I  # Italic
+                        (prin (if X "<tspan font-style=\"italic\">" "</tspan>")) )
+                     (S  # Superscript
+                        (prin (if X "<tspan baseline-shift=\"super\">" "</tspan>")) )
+                     (U  # Underline
+                        (prin (if X "<tspan text-decoration=\"underline\">" "</tspan>")) )
+                     (L  # Line through
+                        (prin (if X "<tspan text-decoration=\"line-through\">" "</tspan>")) )
+                     (C  # Color
+                        (if X
+                           (prin "<tspan fill=\"" X "\">")
+                           (prin "</tspan>") ) ) ) )
+               ((=0 X)  # Newline
+                  (prin
+                     "<tspan x=\"" (case A (NIL 0) (0 (/ *DX 2)) (T *DX))
+                     "\" y=\"" (inc '*Pos *FontSize)
+                     "\">\8203\</tspan>" ) )  # ZERO WIDTH SPACE
+               ((=T X)  # Horizontal line
+                  (push 'H (- *Pos (/ *FontSize 2)))
+                  (prin
+                     "<tspan x=\"" (case A (NIL 0) (0 (/ *DX 2)) (T *DX))
+                     "\" y=\"" (inc '*Pos (*/ *FontSize 2 3))
+                     "\">\8203\</tspan>" ) )  # ZERO WIDTH SPACE
+               (T (ht:Prin X)) ) ) )
+      (prinl "</text>")
+      (for Y H
+         (polyline "black" 0 Y *DX Y) ) ) )
+
+(de height @
+   (let H *FontSize
+      (while (args)
+         (let X (next)
+            (cond
+               ((=0 X) (inc 'H *FontSize))  # Newline
+               ((=T X) (inc 'H (*/ *FontSize 2 3))) ) ) )  # Horizontal line
+      H ) )
 
 (local) (down table hline vline)
 (private) (Fmt Prg)
