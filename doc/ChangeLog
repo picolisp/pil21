@@ -1,3 +1,9 @@
+22feb22
+   Print error location in 'repl'
+      lib/form.l
+   Print error location in 'evCmd'
+      lib/vip.l
+
 21feb22
    'height' function
    Handle '0' and 'T' directly in 'ps'

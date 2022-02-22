@@ -1,4 +1,4 @@
-# 08jan22 Software Lab. Alexander Burger
+# 22feb22 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -384,7 +384,10 @@
                            (setq  "@3" "@2"  "@2" "@1"  "@1" (run (str Str) 99)) )
                         (off *Msg)
                         (println '-> "@1") ) )
-                  (and *Msg (prinl @)) ) )
+                  (when *Msg
+                     (prin "!? ")
+                     (println ^)
+                     (prinl *Msg) ) ) )
             (push1 '*ReplH Str)
             (clr> (: home line)) ) )
       (gui '(+JS +Button)

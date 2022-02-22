@@ -1,4 +1,4 @@
-# 21jan22 Software Lab. Alexander Burger
+# 22feb22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1182,7 +1182,10 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
          (catch '(NIL)
             (setq *@ (run Prg 1)  *Msg)
             (println '-> *@) ) )
-      (and *Msg (prinl @)) )
+      (when *Msg
+         (prin "!? ")
+         (println ^)
+         (prinl *Msg) ) )
    (in (tmp "repl")
       (prCmd (rdLines)) ) )
 
