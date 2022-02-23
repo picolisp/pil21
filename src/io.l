@@ -1,4 +1,4 @@
-# 20dec21 Software Lab. Alexander Burger
+# 23feb22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2657,7 +2657,49 @@ selectErr)
             (save Y
                (parse (name Y) NO 0 (save (evSym X))) ) ) ) ) )
 
-(local) (repl loadAll)
+(local) (stdRead stdEval repl loadAll)
+
+(de stdRead ((i8* . Prmt))
+   (prog2
+      (set
+         $LinePrmt
+         (if
+            (or
+               (nil? (runAt (val $Prompt)))
+               (not (symb? @)) )
+            Prmt
+            (let
+               (Nm (name (val (tail @)))
+                  N (bufSize Nm)
+                  P
+                  (set $ReplPrmt
+                     (alloc (val $ReplPrmt) (+ N (strlen Prmt))) ) )
+               (bufString Nm P)
+               (strcpy (ofs P (dec N)) Prmt)
+               P ) )
+         $ContPrmt ($ "   ") )
+      (read1
+         (if ((inFile (val $InFile)) tty)
+            (char "\n")
+            (i32 0) ) )
+      (set $LinePrmt (set $ContPrmt null))
+      (while (gt0 (val $Chr))
+         (? (== (val $Chr) (char "\n"))
+            (set $Chr 0) )
+         (if (== (val $Chr) (char "#"))
+            (comment)
+            (? (> (val $Chr) (char " ")))
+            (call $Get) ) ) ) )
+
+(de stdEval (Exe)
+   (flushAll)
+   (let (At (save (val $At))  X (eval Exe))
+      (set $At3 (val $At2)  $At2 At  $At X)
+      (outString ($ "-> "))
+      (flushAll)
+      (print X)
+      (newline)
+      X ) )
 
 (de repl (Exe (i8* . Prmt) X)
    (when (num? X)
@@ -2672,7 +2714,6 @@ selectErr)
             Tr1 (save (val $Transient))
             Tr2 (save (val 2 $Transient))
             V (link (push -ZERO NIL))
-            At (link (push -ZERO NIL))
             Raw (val Termio) )
          (when (nil? X)
             (setCooked)
@@ -2685,56 +2726,19 @@ selectErr)
          (setq X $Nil)
          (loop
             (let Y
-               (ifn (== (val $InFile) (val (val $InFiles)))  # Stdin
-                  (read1 0)
-                  (set $LinePrmt
-                     (if
-                        (or
-                           (nil? (runAt (val $Prompt)))
-                           (not (symb? @)) )
-                        Prmt
-                        (let
-                           (Nm (name (val (tail @)))
-                              N (bufSize Nm)
-                              P
-                              (set $ReplPrmt
-                                 (alloc (val $ReplPrmt) (+ N (strlen Prmt))) ) )
-                           (bufString Nm P)
-                           (strcpy (ofs P (dec N)) Prmt)
-                           P ) ) )
-                  (prog2
-                     (set $ContPrmt ($ "   "))
-                     (read1
-                        (if ((inFile (val $InFile)) tty)
-                           (char "\n")
-                           (i32 0) ) )
-                     (set $LinePrmt (set $ContPrmt null))
-                     (while (gt0 (val $Chr))
-                        (? (== (val $Chr) (char "\n"))
-                           (set $Chr 0) )
-                        (if (== (val $Chr) (char "#"))
-                           (comment)
-                           (? (> (val $Chr) (char " ")))
-                           (call $Get) ) ) ) )
+               (if (== (val $InFile) (val (val $InFiles)))  # Stdin
+                  (stdRead Prmt)
+                  (read1 0) )
                (? (nil? Y))
                (set V Y)
-               (if
-                  (or
-                     (<> (val $InFile) (val (val $InFiles)))  # Stdin
-                     (val $Chr)
-                     (=0 Prmt) )
-                  (setq X (eval Y))
-                  (flushAll)
-                  (let A (set At (val $At))
-                     (setq X (eval Y))
-                     (set
-                        $At3 (val $At2)
-                        $At2 A
-                        $At X ) )
-                  (outString ($ "-> "))
-                  (flushAll)
-                  (print X)
-                  (newline) ) ) )
+               (setq X
+                  (if
+                     (and
+                        (== (val $InFile) (val (val $InFiles)))  # Stdin
+                        (=0 (val $Chr))
+                        Prmt )
+                     (stdEval Y)
+                     (eval Y) ) ) ) )
          (popInFiles)
          (tosInFile)
          (when Raw

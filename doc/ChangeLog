@@ -1,3 +1,8 @@
+23feb22
+   Don't exit top-level REPL
+      src/main.l
+      src/io.l
+
 22feb22
    Print error location in 'repl'
       lib/form.l

@@ -1,4 +1,4 @@
-# 11dec21 Software Lab. Alexander Burger
+# 23feb22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1847,7 +1847,17 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (set $USec (getUsec YES))
    (unless (setjmp QuitRst)
       (loadAll 0) )  # Load arguments
+   (setCooked)
+   (unless (val $Repl)
+      (set $Repl YES)
+      (iSignal (val SIGINT Sig) (fun sig)) )
    (loop
-      (repl 0 ($ ": ") $Nil) ) )
+      (let X (save (stdRead ($ ": ")))
+         (cond
+            ((lt0 (val $Chr)) (bye 0))
+            ((=0 (val $Chr))
+               (unless (nil? X)
+                  (stdEval X) ) )
+            (T (eval X)) ) ) ) )
 
 (end "base.map")
