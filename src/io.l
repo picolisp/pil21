@@ -1,4 +1,4 @@
-# 23feb22 Software Lab. Alexander Burger
+# 24feb22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2724,21 +2724,15 @@ selectErr)
          (set $PrivT (set 2 $PrivT $Nil))
          (set $Rule (set $Transient (set 2 $Transient $Nil)))
          (setq X $Nil)
-         (loop
-            (let Y
-               (if (== (val $InFile) (val (val $InFiles)))  # Stdin
-                  (stdRead Prmt)
-                  (read1 0) )
-               (? (nil? Y))
-               (set V Y)
-               (setq X
-                  (if
-                     (and
-                        (== (val $InFile) (val (val $InFiles)))  # Stdin
-                        (=0 (val $Chr))
-                        Prmt )
-                     (stdEval Y)
-                     (eval Y) ) ) ) )
+         (if (== (val $InFile) (val (val $InFiles)))  # Stdin
+            (until (nil? (stdRead Prmt))
+               (let Y (set V @)
+                  (setq X
+                     (if (and (=0 (val $Chr)) Prmt)
+                        (stdEval Y)
+                        (eval Y) ) ) ) )
+            (until (nil? (read1 0))
+               (setq X (eval (set V @))) ) )
          (popInFiles)
          (tosInFile)
          (when Raw
