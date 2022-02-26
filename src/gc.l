@@ -1,4 +1,4 @@
-# 16apr21 Software Lab. Alexander Burger
+# 26feb22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -59,7 +59,6 @@
          (mark (val P))  # Mark
          (? (== P $LispEnd))
          (setq P (ofs P 1)) ) )  # Next global
-   (mark (val $Intern))  # Current namespaces
    (let P (val $Link)  # Stack(s)
       (while P
          (mark (val P))  # Mark item
@@ -75,7 +74,11 @@
             (when (Ca: tag)  # Mark 'tag'
                (mark (Ca: tag)) )
             (mark (Ca: fin))  # Mark 'fin'
-            (mark (Ca: (env $Intern any)))
+            (mark (Ca: intrn))
+            (mark (Ca: trns1))
+            (mark (Ca: trns2))
+            (mark (Ca: priv1))
+            (mark (Ca: priv2))
             (setq Ca (Ca: link)) ) ) )
    (let Crt (val $Coroutines)
       (while Crt
@@ -84,7 +87,11 @@
                (mark (Crt: tag))
                (mark (Crt: prg))
                (mark (Crt: at))
-               (mark (Crt: (env $Intern any)))
+               (mark (Crt: intrn))
+               (mark (Crt: trns1))
+               (mark (Crt: trns2))
+               (mark (Crt: priv1))
+               (mark (Crt: priv2))
                (let P (Crt: (env $Link any))  # Stack(s)
                   (while P
                      (mark (val P))  # Mark item
@@ -100,7 +107,11 @@
                         (when (Ca: tag)  # Mark 'tag'
                            (mark (Ca: tag)) )
                         (mark (Ca: fin))
-                        (mark (Ca: (env $Intern any)))
+                        (mark (Ca: intrn))
+                        (mark (Ca: trns1))
+                        (mark (Ca: trns2))
+                        (mark (Ca: priv1))
+                        (mark (Ca: priv2))
                         (setq Ca (Ca: link)) ) ) ) )
             (setq Crt (Crt: nxt)) ) ) )
    (let (Tos 0  P (val $Extern))  # Externals

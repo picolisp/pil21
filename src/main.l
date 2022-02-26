@@ -1,4 +1,4 @@
-# 23feb22 Software Lab. Alexander Burger
+# 26feb22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -85,7 +85,7 @@
                   (let Crt: (coroutine (set $Current Dst))
                      (set $StkLimit (+ (Crt: lim) 4096))
                      (set $At (Crt: at)) ) ) )
-            (memcpy (env) (Ca: (env)) (env T) T)
+            (getCaEnv (Ca:))
             (eval (Ca: fin))  # Evaluate 'finally' expression
             (set $Catch (Ca: link))
             (when (== Ca Catch)

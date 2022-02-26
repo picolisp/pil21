@@ -1,4 +1,4 @@
-# 11dec21 Software Lab. Alexander Burger
+# 26feb22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -52,6 +52,11 @@
    (fin 8 any)          # 'finally' expression
    (co 8 i8*)           # Current coroutine
    (env (env T) i8)     # Saved environment
+   (intrn 8 any)        # Internal symbols
+   (trns1 8 any)        # Transient symbols
+   (trns2 8 any)
+   (priv1 8 any)        # Private symbols
+   (priv2 8 any)
    (rst 0 i8) )         # Restart jmp_buf (JmpBufSize)
 
 # Coroutines
@@ -73,6 +78,11 @@
    (err 8 i8*)          # ErrFrames marker
    (ctl 8 i8*)          # CtlFrames marker
    (env (env T) i8)     # Saved environment
+   (intrn 8 any)        # Internal symbols
+   (trns1 8 any)        # Transient symbols
+   (trns2 8 any)
+   (priv1 8 any)        # Private symbols
+   (priv2 8 any)
    (rst 0 i8) )         # Restart jmp_buf (JmpBufSize)
 
 # Family IPC
@@ -491,3 +501,40 @@ box64 eval run)
    (unless (and (pair (val X)) (== $Tilde (car @)))
       (symNspErr Exe X) )
    X )
+
+# Copy environments
+(inline putCaEnv (Ca)
+   (let Ca: (caFrame Ca)
+      (memcpy (Ca: (env)) (env) (env T) T)
+      (Ca: intrn (val $Intern))
+      (Ca: trns1 (val $Transient))
+      (Ca: trns2 (val 2 $Transient))
+      (Ca: priv1 (val $PrivT))
+      (Ca: priv2 (val 2 $PrivT)) ) )
+
+(inline getCaEnv (Ca)
+   (let Ca: (caFrame Ca)
+      (memcpy (env) (Ca: (env)) (env T) T)
+      (set $Intern (Ca: intrn))
+      (set $Transient (Ca: trns1))
+      (set 2 $Transient (Ca: trns2))
+      (set $PrivT (Ca: priv1))
+      (set 2 $PrivT (Ca: priv2)) ) )
+
+(inline putCrtEnv (Crt)
+   (let Crt: (coroutine Crt)
+      (memcpy (Crt: (env)) (env) (env T) T)
+      (Crt: intrn (val $Intern))
+      (Crt: trns1 (val $Transient))
+      (Crt: trns2 (val 2 $Transient))
+      (Crt: priv1 (val $PrivT))
+      (Crt: priv2 (val 2 $PrivT)) ) )
+
+(inline getCrtEnv (Crt)
+   (let Crt: (coroutine Crt)
+      (memcpy (env) (Crt: (env)) (env T) T)
+      (set $Intern (Crt: intrn))
+      (set $Transient (Crt: trns1))
+      (set 2 $Transient (Crt: trns2))
+      (set $PrivT (Crt: priv1))
+      (set 2 $PrivT (Crt: priv2)) ) )

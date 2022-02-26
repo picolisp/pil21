@@ -1,4 +1,4 @@
-# 20aug21 Software Lab. Alexander Burger
+# 26feb22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1045,7 +1045,7 @@
       (set $Catch (Ca:))
       (Ca: fin ZERO)
       (Ca: co (val $Current))
-      (memcpy (Ca: (env)) (env) (env T) T)
+      (putCaEnv (Ca:))
       (prog1
          (if (setjmp (Ca: (rst)))
             (val $Ret)
@@ -1078,7 +1078,7 @@
       (set $Catch (Ca:))
       (Ca: fin (++ X))
       (Ca: co (val $Current))
-      (memcpy (Ca: (env)) (env) (env T) T)
+      (putCaEnv (Ca:))
       (prog1
          (save (run X))
          (eval (Ca: fin))
@@ -1100,12 +1100,12 @@
 (de void saveCoEnv ((i8* . Crt))
    (let Crt: (coroutine Crt)
       (Crt: at (val $At))  # Not running
-      (memcpy (Crt: (env)) (env) (env T) T) ) )
+      (putCrtEnv (Crt:)) ) )
 
 (de loadCoEnv ((i8* . Crt))
    (let Crt: (coroutine (set $Current Crt))
       (set $StkLimit (+ (Crt: lim) 4096))
-      (memcpy (env) (Crt: (env)) (env T) T)
+      (getCrtEnv (Crt:))
       (tosInFile)
       (tosOutFile)
       (set $At (Crt: at))
@@ -1184,7 +1184,7 @@
                         (Dst: out (val $OutFrames))
                         (Dst: err (val $ErrFrames))
                         (Dst: ctl (val $CtlFrames))
-                        (memcpy (Dst: (env)) (env) (env T) T)
+                        (putCrtEnv (Dst:))
                         (set  # Init local env
                            $Next $Nil
                            $Make 0

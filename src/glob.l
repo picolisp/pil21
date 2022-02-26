@@ -1,4 +1,4 @@
-# 16nov21 Software Lab. Alexander Burger
+# 26feb22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -547,6 +547,7 @@
 (local) (gcData cbFuns)
 
 (table gcData
+   ($Intern $Pico1)     # Current namespaces of internal symbols
    ($Transient $Nil)    # Short transient names
    (NIL $Nil)           # Long transient names
    ($Alarm $Nil)        # Alarm handler
@@ -639,7 +640,6 @@
    ($ErrFrames i8* null)         # Error frames
    ($CtlFrames i8* null)         # Control frames
    ($Parser i64* null)           # String parser
-   ($Intern $Pico1)              # Current namespaces of internal symbols
    ($Next $Nil)                  # Next vararg
    ($Typ 0)                      # Method type
    ($Key 0)                      # Method key

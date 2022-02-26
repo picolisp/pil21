@@ -1,4 +1,4 @@
-# 24feb22 Software Lab. Alexander Burger
+# 26feb22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2709,10 +2709,10 @@ selectErr)
          (evList E) )
       (let
          (Int (save (val $Intern))
-            Pr1 (save (val $PrivT))
-            Pr2 (save (val 2 $PrivT))
             Tr1 (save (val $Transient))
             Tr2 (save (val 2 $Transient))
+            Pr1 (save (val $PrivT))
+            Pr2 (save (val 2 $PrivT))
             V (link (push -ZERO NIL))
             Raw (val Termio) )
          (when (nil? X)
@@ -2737,10 +2737,10 @@ selectErr)
          (tosInFile)
          (when Raw
             (setRaw) )
-         (set 2 $Transient Tr2)
-         (set $Transient Tr1)
          (set 2 $PrivT Pr2)
          (set $PrivT Pr1)
+         (set 2 $Transient Tr2)
+         (set $Transient Tr1)
          (set $Intern Int)
          X ) ) )
 

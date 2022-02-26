@@ -1,3 +1,11 @@
+26feb22
+  Transient and private namespaces in catch and coroutine frames
+      src/glob.l
+      src/dec.l
+      src/main.l
+      src/gc.l
+      src/flow.l
+
 24feb22
    Refactor 'repl' loops
       src/io.l

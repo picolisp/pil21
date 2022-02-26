@@ -85,9 +85,9 @@ declare void @llvm.stackrestore(i8*)
 @$DbLog = external global i8*
 @$Signal = external global [16 x i32]
 @SymTab = external global [870 x i64]
-@gcData = external global [52 x i64]
+@gcData = external global [53 x i64]
 @cbFuns = external global [24 x i64]
-@env = external global [17 x i64]
+@env = external global [16 x i64]
 @$Cell = external global [2 x i64]
 @$Version = external global [3 x i64]
 @$TBuf = external global [2 x i8]
@@ -767,7 +767,7 @@ $19:
   %52 = call i8 @symByte(i64* %50)
 ; # (cond ((findSym X Nm (val $Intern)) (call $Put (char "$")) (htEnc...
 ; # (val $Intern)
-  %53 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 72) to i64) to i64*
+  %53 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 0) to i64) to i64*
   %54 = load i64, i64* %53
 ; # (findSym X Nm (val $Intern))
   %55 = call i1 @findSym(i64 %49, i64 %47, i64 %54)
@@ -1004,7 +1004,7 @@ $5:
 $2:
   %15 = phi i64 [%5, %$4], [%13, %$6], [%14, %$5] ; # ->
 ; # (save (eval (++ X)))
-  %16 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %16 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([16 x i64]* @env to i8*), i32 0) to i64) to i64*
   %17 = load i64, i64* %16
   %18 = alloca i64, i64 2, align 16
   %19 = ptrtoint i64* %18 to i64
@@ -1013,7 +1013,7 @@ $2:
   %21 = add i64 %19, 8
   %22 = inttoptr i64 %21 to i64*
   store i64 %17, i64* %22
-  %23 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %23 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([16 x i64]* @env to i8*), i32 0) to i64) to i64*
   store i64 %19, i64* %23
 ; # (car X)
   %24 = inttoptr i64 %7 to i64*
@@ -1303,7 +1303,7 @@ $14:
   %162 = inttoptr i64 %19 to i64*
   %163 = getelementptr i64, i64* %162, i32 1
   %164 = load i64, i64* %163
-  %165 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %165 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([16 x i64]* @env to i8*), i32 0) to i64) to i64*
   store i64 %164, i64* %165
   ret i64 %161
 }
@@ -1418,7 +1418,7 @@ $16:
 ; # (cons (mkChar C) $Nil)
   %51 = call i64 @cons(i64 %50, i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([870 x i64]* @SymTab to i8*), i32 8) to i64))
 ; # (save X)
-  %52 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %52 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([16 x i64]* @env to i8*), i32 0) to i64) to i64*
   %53 = load i64, i64* %52
   %54 = alloca i64, i64 2, align 16
   %55 = ptrtoint i64* %54 to i64
@@ -1427,7 +1427,7 @@ $16:
   %57 = add i64 %55, 8
   %58 = inttoptr i64 %57 to i64*
   store i64 %53, i64* %58
-  %59 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %59 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([16 x i64]* @env to i8*), i32 0) to i64) to i64*
   store i64 %55, i64* %59
 ; # (loop (? (=0 N) (set $Chr 0) R) (? (lt0 (setq C (call $Get))) $Ni...
   br label %$18
@@ -1546,7 +1546,7 @@ $20:
   %120 = inttoptr i64 %55 to i64*
   %121 = getelementptr i64, i64* %120, i32 1
   %122 = load i64, i64* %121
-  %123 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([17 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %123 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([16 x i64]* @env to i8*), i32 0) to i64) to i64*
   store i64 %122, i64* %123
   br label %$17
 $17:
