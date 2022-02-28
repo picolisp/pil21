@@ -1,4 +1,4 @@
-# 26feb22 Software Lab. Alexander Burger
+# 28feb22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -566,7 +566,6 @@ selectErr)
          (unless (== (gErrno) EINTR)
             (closeErr) )
          (sigChk 0) )
-      (tcsetpgrp 0 (getpgrp))
       (set $At2 (cnt (i64 (val Res)))) ) )
 
 (de i32 currFd (Exe)

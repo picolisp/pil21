@@ -1,5 +1,10 @@
+28feb22
+   Issues with tcsetpgrp() calls
+      src/io.l
+      src/flow.l
+
 26feb22
-  Transient and private namespaces in catch and coroutine frames
+   Transient and private namespaces in catch and coroutine frames
       src/glob.l
       src/dec.l
       src/main.l
