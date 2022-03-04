@@ -1,3 +1,7 @@
+04mar22
+   Plain searches without 'match' overhead
+      lib/vip.l
+
 28feb22
    Issues with tcsetpgrp() calls
       src/io.l

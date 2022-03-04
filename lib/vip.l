@@ -1,4 +1,4 @@
-# 22feb22 Software Lab. Alexander Burger
+# 04mar22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1053,46 +1053,62 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
       ((get (: buffer) (intern C))
          (move 'goAbs (default X (car @)) (cdr @)) ) ) )
 
-(de wordFun (W)
+(de wordFun (@W)
    (setq *Search
-      (ifn (= '"@" (car (setq W (append W '("@Z")))))
-         (curry (W) (L C)
-            (and
-               (delim? C "~")
-               (match W L)
-               (delim? (car "@Z") "~") ) )
-         (++ W)
-         (curry (W) (L C)
-            (and
-               (delim? C "~")
-               (and (= '"@" (car L)) (match W (cdr L)))
-               (delim? (car "@Z") "~") ) ) ) ) )
+      (nond
+         ((find pat? @W)
+            (let @N (inc (length @W))
+               (curry (@W @N) (L C)
+                  (and
+                     (delim? C "~")
+                     (head '@W L)
+                     (delim? (get L @N) "~") ) ) ) )
+         ((= '"@" (car (setq @W (append @W '("@Z")))))
+            (curry (@W) (L C)
+               (and
+                  (delim? C "~")
+                  (match '@W L)
+                  (delim? (car "@Z") "~") ) ) )
+         (NIL
+            (++ @W)
+            (curry (@W) (L C)
+               (and
+                  (delim? C "~")
+                  (and (= '"@" (car L)) (match '@W (cdr L)))
+                  (delim? (car "@Z") "~") ) ) ) ) ) )
 
 (de moveSearch (Fun1 Fun2)
    (move Fun1 (lit Fun2) *Cnt) )
 
-(de patMatch (Fun Pat)
+(de patMatch (Fun @Pat)
    (moveSearch Fun
       (setq *Search
-         (if (= "\\" (car Pat))
-            (let @Pat (cdr Pat)
-               (curry (@Pat) (L)
-                  (head '@Pat L) ) )
+         (ifn (= "\\" (car @Pat))
             (let @Lst 'L
-               (when (= "~" (car Pat))
+               (when (= "~" (car @Pat))
                   (setq
-                     Pat (mapcar lowc (cdr Pat))
+                     @Pat (mapcar lowc (cdr @Pat))
                      @Lst '(mapcar lowc L) ) )
-               (let @Pat
-                  (if (= "$" (last Pat))
-                     (head -1 Pat)
-                     (append Pat '(@)) )
+               (if
+                  (nor
+                     (= "\^" (car @Pat))
+                     (= "$" (last @Pat))
+                     (find pat? @Pat) )
+                  (curry (@Pat @Lst) (L)
+                     (head '@Pat @Lst) )
+                  (setq @Pat
+                     (if (= "$" (last @Pat))
+                        (head -1 @Pat)
+                        (append @Pat '(@)) ) )
                   (ifn (= "\^" (car @Pat))
                      (curry (@Pat @Lst) (L)
                         (match '@Pat @Lst) )
                      (++ @Pat)
                      (curry (@Pat @Lst) (L C)
-                        (unless C (match '@Pat @Lst)) ) ) ) ) ) ) ) )
+                        (unless C (match '@Pat @Lst)) ) ) ) )
+            (++ @Pat)
+            (curry (@Pat) (L)
+               (head '@Pat L) ) ) ) ) )
 
 (de parMatch (Fun1 @Par1 @Sup1 @ParO @ParC @SupO @SupC)
    (moveSearch Fun1
@@ -1114,7 +1130,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
    "hunspell" "-l" "-d" "en_US,de_DE" )
 
 (de spell ()
-   (when
+   (let? @W
       (pipe
          (out *Spell
             (let Pos (nth (: buffer text) (: posY))
@@ -1124,14 +1140,14 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                      (nth (++ Pos) (: posX)) ) )
                (mapc prinl Pos) ) )
          (line) )
-      (let @W (conc @ '("@Z"))
+      (let @N (inc (length @W))
          (moveSearch 'goForward
             (setq *Search
-               (curry (@W) (L C)
+               (curry (@W @N) (L C)
                   (and
                      (not (fold C))
-                     (match '@W L)
-                     (not (fold (car "@Z"))) ) ) ) ) ) ) )
+                     (head '@W L)
+                     (not (fold (get L @N))) ) ) ) ) ) ) )
 
 (de pipeN (Cnt Line)
    (evRpt
