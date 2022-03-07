@@ -1,4 +1,4 @@
-# 07mar22 Software Lab. Alexander Burger
+# 28feb22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1519,18 +1519,21 @@
       # In parent
       (let (Pid @  Res (b32 1))
          (setpgid Pid 0)  # Set process group
-         (tcsetpgrp 0 Pid)
+         (when (val Termio)
+            (tcsetpgrp 0 Pid) )
          (loop
             (while (lt0 (waitWuntraced Pid Res))
                (unless (== (gErrno) EINTR)
                   (err Exe 0 ($ "wait pid") null) )
                (sigChk Exe) )
-            (tcsetpgrp 0 (getpgrp))
+            (when (val Termio)
+               (tcsetpgrp 0 (getpgrp)) )
             (? (=0 (wifStopped Res))
                (set $At2 (cnt (i64 (val Res))))
                (if (val Res) $Nil $T) )
             (repl 0 ($ "+ ") $Nil)
-            (tcsetpgrp 0 Pid)
+            (when (val Termio)
+               (tcsetpgrp 0 Pid) )
             (kill Pid (val SIGCONT Sig)) ) ) ) )
 
 # (ipid) -> pid | NIL
