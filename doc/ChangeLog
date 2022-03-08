@@ -1,3 +1,9 @@
+08mar22
+   Revisit tcsetpgrp() calls
+      src/dec.l
+      src/flow.l
+      lib/debug.l
+
 04mar22
    Plain searches without 'match' overhead
       lib/vip.l

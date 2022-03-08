@@ -1,4 +1,4 @@
-# 15jan22 Software Lab. Alexander Burger
+# 07mar22 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -43,7 +43,6 @@
                                  (put (intern (glue "/" S)) 'doc P) ) ) ) ) ) ) ) ) ) ) )
 
 (de doc (Sym Browser)
-   (raw T)
    (call (or Browser (sys "BROWSER") "w3m")
       (pack
          "file:"
@@ -51,8 +50,7 @@
          (path
             (if (get Sym 'doc)
                (pack @ "#" Sym)
-               "@doc/ref.html" ) ) ) )
-   (raw NIL) )
+               "@doc/ref.html" ) ) ) ) )
 
 (de more (M Fun)
    (let *Dbg NIL
