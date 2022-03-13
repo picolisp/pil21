@@ -1,4 +1,4 @@
-# 08mar21 Software Lab. Alexander Burger
+# 13mar22 Software Lab. Alexander Burger
 
 # Check or write header
 (de xml? (Flg)
@@ -109,4 +109,4 @@
       (setq
          Lst (asoq Key (cddr Lst))
          Key (next) ) )
-   (cdr (asoq Key (cadr Lst))) )
+   (get Lst 2 Key) )

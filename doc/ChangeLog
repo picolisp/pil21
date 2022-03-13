@@ -1,3 +1,9 @@
+13mar22
+   Escape single quotes in <poi> text argument
+      lib/gis.l
+   Use 'get' instead of (cdr (asoq ..))
+      lib/xm.l
+
 08mar22
    Revisit tcsetpgrp() calls
       src/dec.l
