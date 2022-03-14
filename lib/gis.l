@@ -1,4 +1,4 @@
-# 13mar22 Software Lab. Alexander Burger
+# 14mar22 Software Lab. Alexander Burger
 
 (symbols 'gis 'pico)
 
@@ -139,7 +139,7 @@
    (with *Top
       (<javascript>
          "poi(" Lat ", " Lon ", '" (sesId Img) "', " X ", " Y ", '"
-         (replace (chop Txt) "'" "\\'")
+         (replace (chop Txt) "\\" "\\\\" "'" "\\'")
          "', " DY ", '" Col "', '" (and Url (sesId @)) "', "
          (if2 (and Drag (: able)) Upd 2 1 0 0) ")" )
       (and Drag (push (:: osmDrag) (cons Txt @)))

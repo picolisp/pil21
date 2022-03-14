@@ -1,3 +1,7 @@
+14mar22
+   Escape also backslashes in <poi>
+      lib/gis.l
+
 13mar22
    Escape single quotes in <poi> text argument
       lib/gis.l
