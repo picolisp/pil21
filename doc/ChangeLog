@@ -1,4 +1,8 @@
 14mar22
+   Bug in 'ps'
+      lib/svg.l
+   Local and private declarations
+      lib/xm.l
    Escape also backslashes in <poi>
       lib/gis.l
 

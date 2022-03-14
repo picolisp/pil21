@@ -1,4 +1,7 @@
-# 13mar22 Software Lab. Alexander Burger
+# 14mar22 Software Lab. Alexander Burger
+
+(local) (xml? xml body attr)
+(private) (_xml xmlEsc escXml)
 
 # Check or write header
 (de xml? (Flg)

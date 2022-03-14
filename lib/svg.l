@@ -1,4 +1,4 @@
-# 21feb22 Software Lab. Alexander Burger
+# 14mar22 Software Lab. Alexander Burger
 
 (symbols 'svg 'pico)
 
@@ -174,7 +174,7 @@
 
 (de ps @
    (let A (arg 1)
-      (if (member A (0 NIL T))
+      (if (memq A (0 NIL T))
          (next)
          (off A) )
       (prin
