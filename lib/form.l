@@ -1,4 +1,4 @@
-# 22feb22 Software Lab. Alexander Burger
+# 16mar22 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -37,6 +37,7 @@
                (when (file)
                   (put *Top '*Dbg
                      (list (cons (cddr @) (pack (car @) (cadr @)))) ) ) )
+            (put *Top 'home *Top)
             (queue (nth *FormLst (- *FormIx *Get)) *Top) ) )
       (let Lst (get *FormLst (- *FormIx *Get) 1)
          (for (F . L) Lst
@@ -2596,6 +2597,11 @@
 (private) (Able Txt Del Dlg Var X Hook Msg Exe Prg)
 
 (de panel (Able Txt Del Dlg Var X Hook Msg Exe . Prg)
+   (unless (eval Able)
+      (when *Lock
+         (rollback)
+         (off *Lock) )
+      (=: able) )
    (<spread>
       (editButton Able Exe)
       (run Prg 1)

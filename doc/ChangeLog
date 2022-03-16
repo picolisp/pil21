@@ -1,3 +1,8 @@
+16mar22
+   Pre-set 'home' property in 'form'
+   Conditionally unlock and disable in 'panel'
+      lib/form.l
+
 14mar22
    Bug in 'ps'
       lib/svg.l
