@@ -1,3 +1,7 @@
+05apr22
+   Check zero charCode in hint key events
+      lib/form.js
+
 ####### 22.3 #######
 16mar22
    Pre-set 'home' property in 'form'
