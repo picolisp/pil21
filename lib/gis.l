@@ -1,28 +1,26 @@
-# 14mar22 Software Lab. Alexander Burger
+# 06apr22 Software Lab. Alexander Burger
 
 (symbols 'gis 'pico)
 
 (push1 '*JS (allow "@lib/gis.js"))
 
-(local) nm
-
-(de nm (Lat Lon)
-   (pack
-      (round (- Lat 90.0))
-      ", "
-      (round (- Lon 180.0)) ) )
-
 (local) (lat lon fmt)
 
-(de lat (Lat)
-   (format (- Lat 90.0) `*Scl) )
+(de lat (Lat F)
+   (dec 'Lat 90.0)
+   (if F
+      (format (*/ Lat 1000 1.0) 3)
+      (format Lat `*Scl) ) )
 
-(de lon (Lon)
-   (format (- Lon 180.0) `*Scl) )
+(de lon (Lon F)
+   (dec 'Lon 180.0)
+   (if F
+      (format (*/ Lon 1000 1.0) 3)
+      (format Lon `*Scl) ) )
 
-(de fmt (Lat Str Lon)
+(de fmt (Lat Str Lon F)
    (when (or Lat Lon)
-      (pack (lat Lat) Str (lon Lon)) ) )
+      (pack (lat Lat F) Str (lon Lon F)) ) )
 
 # Short distance, assuming flat earth
 (local) distance

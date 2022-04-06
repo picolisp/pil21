@@ -1,3 +1,7 @@
+06apr22
+   Optional rounding in 'lat', 'lon' and 'fmt'
+      lib/gis.l
+
 05apr22
    Check zero charCode in hint key events
       lib/form.js
