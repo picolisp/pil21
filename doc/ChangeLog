@@ -1,3 +1,8 @@
+08apr22
+   Add "-o lib.bc"
+   Add "clean2" target
+      src/Makefile
+
 06apr22
    Optional rounding in 'lat', 'lon' and 'fmt'
       lib/gis.l
