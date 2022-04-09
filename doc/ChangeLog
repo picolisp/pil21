@@ -1,3 +1,9 @@
+09apr22
+   Collect also C-tags into @lib/map
+      src/lib/llvm.l
+      src/main.l
+      src/lib.c
+
 08apr22
    Add "-o lib.bc"
    Add "clean2" target

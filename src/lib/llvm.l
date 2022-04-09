@@ -1,4 +1,4 @@
-# 19apr21 Software Lab. Alexander Burger
+# 09apr22 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -70,7 +70,22 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
    (let *Shared Flg
       (pass load) ) )
 
-(de end (Map)
+(de *C-Defs
+   (~(chop "const ") @A " " @Sym "[" @Z)
+   (~(chop "const ") @A " " @Sym " " @Z)
+   (~(chop "struct ") @A " " @Sym ";" @Z)
+   (~(chop "void ") @Sym "(" @Z)
+   (~(chop "char *") @Sym "(" @Z)
+   (~(chop "int ") @Sym ";" @Z)
+   (~(chop "int ") @Sym "(" @Z)
+   (~(chop "int32_t ") @Sym "(" @Z)
+   (~(chop "int64_t ") @Sym "(" @Z)
+   (~(chop "uint64_t ") @Sym ";" @Z)
+   (~(chop "uint64_t ") @Sym "(" @Z)
+   (~(chop "jmp_buf ") @Sym ";" @Z)
+   (~(chop "ffi *") @Sym "(" @Z) )
+
+(de end (Map . pico~@)
    (prinl)
    (for L *Strings
       (prinl (caddr L) " = " (cdddr L)) )
@@ -79,6 +94,15 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
          (for Sym (idx '*Map)
             (let X (val Sym)
                (prinl "llvm~" Sym " (" (car X) " \"@src/" (cdr X) "\" llvm pico)") ) )
+         (while (args)
+            (let (F (next)  N 1)
+               (use (@A @Sym @Z)
+                  (in F
+                     (until (eof)
+                        (let L (circ (line))
+                           (when (find match *C-Defs L)
+                              (prinl "llvm~" @Sym " (" N " \"@src/" F "\" llvm pico)") ) )
+                        (inc 'N) ) ) ) ) )
          (for Sym (idx '*Map2)
             (let X (val (car (idx '*Map (val Sym))))
                (prinl "pico~" Sym " (" (car X) " \"@src/" (cdr X) "\" llvm pico)") ) ) ) ) )

@@ -1,4 +1,4 @@
-// 12dec21 Software Lab. Alexander Burger
+// 09apr22 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -248,7 +248,8 @@ int32_t gErrno(void) {
 
 // Terminal
 int Tio;
-struct termios OrgTermio, *Termio;
+struct termios OrgTermio;
+struct termios *Termio;
 
 static void tcSet(struct termios *p) {
    while (tcsetattr(STDIN_FILENO, TCSADRAIN, p)  &&  errno == EINTR);
