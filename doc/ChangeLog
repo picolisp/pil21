@@ -2,6 +2,7 @@
    Collect also C-tags into @lib/map
       src/lib/llvm.l
       src/main.l
+      src/pico.h
       src/lib.c
 
 08apr22
