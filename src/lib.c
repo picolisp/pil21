@@ -478,18 +478,18 @@ const int64_t JmpBufSize = sizeof(jmp_buf);
 jmp_buf QuitRst;
 
 // Lisp data access from C
-uint64_t name(uint64_t x) {
+any name(any x) {
    while (!num(x))
       x = cdr(x);
    return x;
 }
 
-uint64_t number(uint64_t x) {
-   uint64_t n = cnt(x)? x >> 4 : val(dig(x));
+any number(any x) {
+   any n = cnt(x)? x >> 4 : val(dig(x));
    return sign(x)? -n : n;
 }
 
-uint64_t length(uint64_t x) {
+any length(any x) {
    int n = 0;
 
    while (!atom(x))
@@ -497,7 +497,7 @@ uint64_t length(uint64_t x) {
    return (int32_t)n;
 }
 
-uint64_t box64(uint64_t x) {
+any box64(any x) {
    return x & 0xF000000000000000? boxNum(x) : x << 4 | 2;
 }
 

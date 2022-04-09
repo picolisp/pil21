@@ -73,6 +73,7 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
 (de *C-Defs
    (~(chop "const ") @A " " @Sym "[" @Z)
    (~(chop "const ") @A " " @Sym " " @Z)
+   (~(chop "struct ") @A " " "*" @Sym ";" @Z)
    (~(chop "struct ") @A " " @Sym ";" @Z)
    (~(chop "void ") @Sym "(" @Z)
    (~(chop "char *") @Sym "(" @Z)
@@ -300,9 +301,10 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
 
 (de global (Sym Typ Val)
    (prin
-      "@" (putMap Sym) " = "
+      "@" Sym " = "
       (unless (and Val (not *Shared)) "external ")
       "global " (type Typ) )
+   (and Val (putMap Sym))
    (cond
       (*Shared)
       ((pre? "_" Val) (prin " @" pico~@))
