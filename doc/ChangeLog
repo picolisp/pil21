@@ -1,3 +1,7 @@
+11apr22
+   'trail' check not needed
+      lib/app.l
+
 09apr22
    Collect also C-tags into @lib/map
       src/lib/llvm.l
