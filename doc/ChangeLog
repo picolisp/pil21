@@ -1,3 +1,9 @@
+17apr22
+   Don't maintain ErrFrames and CtlFrames in coroutines
+   Fix file descriptor leak when stopping coroutines
+      src/flow.l
+      src/dec.l
+
 11apr22
    'trail' check not needed
       lib/app.l

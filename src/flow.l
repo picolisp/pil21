@@ -1,4 +1,4 @@
-# 08mar22 Software Lab. Alexander Burger
+# 17apr22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1182,8 +1182,6 @@
                         (Dst: ca (val $Catch))
                         (Dst: in (val $InFrames))
                         (Dst: out (val $OutFrames))
-                        (Dst: err (val $ErrFrames))
-                        (Dst: ctl (val $CtlFrames))
                         (putCrtEnv (Dst:))
                         (set  # Init local env
                            $Next $Nil
@@ -1201,6 +1199,24 @@
                      (loop
                         (let Crt: (coroutine Crt)
                            (? (== Tag (Crt: tag))  # Found coroutine
+                              (let P (Crt: out)
+                                 (until (== P (val $Stdout))
+                                    (let (Io: (ioFrame P)  Out: (outFile (Io: file)))
+                                       (when (and (ge0 (Out: fd)) (Io: pid))
+                                          (close (Out: fd))
+                                          (closeOutFile (Out: fd))
+                                          (when (> (Io: pid) 1)
+                                             (waitFile @) )
+                                          (setq P (Io: link)) ) ) ) )
+                              (let P (Crt: in)
+                                 (until (== P (val $Stdin))
+                                    (let (Io: (ioFrame P)  In: (inFile (Io: file)))
+                                       (when (and (ge0 (In: fd)) (Io: pid))
+                                          (close (In: fd))
+                                          (closeInFile (In: fd))
+                                          (when (> (Io: pid) 1)
+                                             (waitFile @) )
+                                          (setq P (Io: link)) ) ) ) )
                               (stop (Crt:)) )  # Stop it
                            (? (=0 (setq Crt (Crt: nxt)))) ) )
                      Tag ) )
@@ -1235,9 +1251,7 @@
             Bnd (any 0)
             Ca (i8* null)
             In (val $Stdin)
-            Out (val $Stdout)
-            Err (i8* null)
-            Ctl (i8* null) )
+            Out (val $Stdout) )
          (saveCoIO)
          (unless (t? (Src: tag))
             (let P (val $Link)  # Reverse Stack(s)
@@ -1245,8 +1259,7 @@
                   (let Q P
                      (setq P (val 2 Q))
                      (set 2 Q Lnk)
-                     (setq Lnk Q) ) )
-               (set $Link Lnk) )
+                     (setq Lnk Q) ) ) )
             (let P (val $Bind)  # Reverse bindings
                (until (== P (Src: bnd))
                   (let Q P
@@ -1254,65 +1267,32 @@
                      (setq P (val 3 Q))
                      (set 3 Q Bnd)
                      (setq Bnd Q) ) )
-               (let Q (Src: bnd)
-                  (set 3 Q Bnd)
-                  (set $Bind Q) ) )
+               (set 3 (Src: bnd) Bnd) )
             (let P (val $Catch)  # Reverse CaFrames
                (until (== P (Src: ca))
                   (let Ca: (caFrame P)
                      (setq P (Ca: link))
                      (Ca: link Ca)
-                     (setq Ca (Ca:)) ) )
-               (set $Catch Ca) )
+                     (setq Ca (Ca:)) ) ) )
             (let P (val $InFrames)  # Reverse InFrames
                (until (== P (Src: in))
                   (let In: (ioFrame P)
                      (setq P (In: link))
                      (In: link In)
                      (setq In (In:)) ) )
-               (set $InFrames In) )
+               (Src: in In) )
             (let P (val $OutFrames)  # Reverse OutFrames
                (until (== P (Src: out))
                   (let Out: (ioFrame P)
                      (setq P (Out: link))
                      (Out: link Out)
                      (setq Out (Out:)) ) )
-               (set $OutFrames Out) )
-            (let P (val $ErrFrames)  # Reverse ErrFrames
-               (until (== P (Src: err))
-                  (let Err: (ioFrame P)
-                     (setq P (Err: link))
-                     (Err: link Err)
-                     (setq Err (Err:)) ) )
-               (set $ErrFrames Err) )
-            (let P (val $CtlFrames)  # Reverse CtlFrames
-               (until (== P (Src: ctl))
-                  (let Ctl: (ioFrame P)
-                     (setq P (Ctl: link))
-                     (Ctl: link Ctl)
-                     (setq Ctl (Ctl:)) ) )
-               (set $CtlFrames Ctl) ) )
+               (Src: out Out) ) )
          (saveCoEnv (Src:))
          (unless (setjmp (Src: (rst)))
             (set $Ret Val)
             (longjmp (Dst: (rst)) 1) )
          (unless (t? (Src: tag))
-            (let P (val $CtlFrames)  # Restore CtlFrames
-               (Src: ctl P)
-               (while Ctl
-                  (let Ctl: (ioFrame Ctl)
-                     (setq Ctl (Ctl: link))
-                     (Ctl: link P)
-                     (setq P (Ctl:)) ) )
-               (Src: (env $CtlFrames i8*) P) )
-            (let P (val $ErrFrames)  # Restore ErrFrames
-               (Src: err P)
-               (while Err
-                  (let Err: (ioFrame Err)
-                     (setq Err (Err: link))
-                     (Err: link P)
-                     (setq P (Err:)) ) )
-               (Src: (env $ErrFrames i8*) P) )
             (let P (val $OutFrames)  # Restore OutFrames
                (Src: out P)
                (until (== Out (val $Stdout))

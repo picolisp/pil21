@@ -1,8 +1,8 @@
-# 08mar22 Software Lab. Alexander Burger
+# 17apr22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
-(local) (inFile outFile dbFile ioFrame)
+(local) (inFile outFile ioFrame ctFrame dbFile)
 
 # I/O
 (struct inFile
@@ -75,8 +75,6 @@
    (ca 8 i8*)           # Catch marker
    (in 8 i8*)           # InFrames marker
    (out 8 i8*)          # OutFrames marker
-   (err 8 i8*)          # ErrFrames marker
-   (ctl 8 i8*)          # CtlFrames marker
    (env (env T) i8)     # Saved environment
    (intrn 8 any)        # Internal symbols
    (trns1 8 any)        # Transient symbols
