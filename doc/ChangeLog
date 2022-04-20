@@ -1,3 +1,9 @@
+20apr22
+   'noLint' declarations
+      lib/xhtml.l
+      lib/svg.l
+      lib/canvas.l
+
 17apr22
    Don't maintain ErrFrames and CtlFrames in coroutines
    Fix file descriptor leak when stopping coroutines

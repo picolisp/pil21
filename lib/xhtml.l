@@ -1,4 +1,4 @@
-# 27oct21 Software Lab. Alexander Burger
+# 20apr22 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -926,3 +926,11 @@
             (htJs) )
          (dfltCss "image")
          (and Flg (prin " disabled=\"disabled\"")) ) ) )
+
+### Debug ###
+`*Dbg
+
+(noLint '<row> 'Beg)
+(noLint '<row> 'C)
+(noLint '<row> 'End)
+(noLint 'micro 'PRG)

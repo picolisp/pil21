@@ -1,4 +1,4 @@
-# 14mar22 Software Lab. Alexander Burger
+# 20apr22 Software Lab. Alexander Burger
 
 (symbols 'svg 'pico)
 
@@ -351,3 +351,9 @@
       "-f" "pdf"
       "-o" Dst )
    Dst )
+
+### Debug ###
+`*Dbg
+
+(noLint 'svgPages 'page)
+(noLint 'pdf 'page)
