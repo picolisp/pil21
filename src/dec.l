@@ -1,4 +1,4 @@
-# 17apr22 Software Lab. Alexander Burger
+# 22apr22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -157,9 +157,8 @@ dlerror dup dup2 close signal poll waitpid setjmp longjmp kill exit)
 (de T NIL exit (i32))
 
 # libreadline
-(local) (readline add_history history_list clear_history)
+(local) (add_history history_list clear_history)
 
-(de T i8* readline (i8*))
 (de T void add_history (i8*))
 (de T i8*** history_list ())
 (de T void clear_history ())
@@ -198,9 +197,10 @@ socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (de T void fcntlSetOwn(i32 i32))
 (de T i8* getDir (i8*))
 
-(local) (initReadline rlHide rlShow rlSigBeg rlSigEnd currentLine)
+(local) (initReadline gReadline rlHide rlShow rlSigBeg rlSigEnd currentLine)
 
 (de T void initReadline ())
+(de T i8* gReadline (i8*))
 (de T void rlHide ())
 (de T void rlShow ())
 (de T void rlSigBeg ())

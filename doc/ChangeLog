@@ -1,4 +1,8 @@
 22apr22
+   Preserve 'errno' across readline(3) calls
+      src/dec.l
+      src/io.l
+      src/lib.c
    Word search without 'match' support
       lib/vip.l
 
@@ -11,8 +15,8 @@
 17apr22
    Don't maintain ErrFrames and CtlFrames in coroutines
    Fix file descriptor leak when stopping coroutines
-      src/flow.l
       src/dec.l
+      src/flow.l
 
 11apr22
    'trail' check not needed
@@ -264,8 +268,8 @@
    Bug in 'format' (llvm~fmtNum)
       src/big.l
    Overflow float/double to bignum
-      src/main.l
       src/dec.l
+      src/main.l
       src/pico.h
       src/lib.c
 
@@ -600,14 +604,14 @@
       src/sysdefs.c
    Set standard I/O to a PTY with (ctty)
       src/Makefile
-      src/main.l
       src/dec.l
+      src/main.l
       doc/refC.html
 
 03aug21
    'tty' flag also in 'inFile'
-      src/main.l
       src/dec.l
+      src/main.l
       src/io.l
       src/flow.l
 
@@ -894,8 +898,8 @@
 
 05may21
    Fix catch/throw between coroutines
-      src/main.l
       src/dec.l
+      src/main.l
       src/flow.l
       doc/structures
       doc/ref.html

@@ -1590,7 +1590,6 @@ declare i32 @setjmp(i8*)
 declare void @longjmp(i8*, i32)
 declare i32 @kill(i32, i32)
 declare void @exit(i32)
-declare i8* @readline(i8*)
 declare void @add_history(i8*)
 declare i8*** @history_list()
 declare void @clear_history()
@@ -1620,6 +1619,7 @@ declare i32 @nonBlocking(i32)
 declare void @fcntlSetOwn(i32, i32)
 declare i8* @getDir(i8*)
 declare void @initReadline()
+declare i8* @gReadline(i8*)
 declare void @rlHide()
 declare void @rlShow()
 declare void @rlSigBeg()
@@ -44817,12 +44817,12 @@ $21:
   %53 = phi i8* [%49, %$18], [%52, %$20] ; # P
 ; # (flushAll)
   call void @flushAll()
-; # (unless (setq P (set $LineBuf (readline (val $LinePrmt)))) (wrnl)...
-; # (set $LineBuf (readline (val $LinePrmt)))
+; # (unless (setq P (set $LineBuf (gReadline (val $LinePrmt)))) (wrnl...
+; # (set $LineBuf (gReadline (val $LinePrmt)))
 ; # (val $LinePrmt)
   %54 = load i8*, i8** @$LinePrmt
-; # (readline (val $LinePrmt))
-  %55 = call i8* @readline(i8* %54)
+; # (gReadline (val $LinePrmt))
+  %55 = call i8* @gReadline(i8* %54)
   store i8* %55, i8** @$LineBuf
   %56 = icmp ne i8* %55, null
   br i1 %56, label %$23, label %$22

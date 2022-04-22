@@ -1,4 +1,4 @@
-// 09apr22 Software Lab. Alexander Burger
+// 22apr22 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -122,6 +122,14 @@ void initReadline(void) {
    rl_completion_entry_function = tabEntry;
    rl_special_prefixes = "$%&*+-<=>?@";
    rl_basic_quote_characters = NULL;
+}
+
+char *gReadline(const char *prompt) {
+   int e = errno;
+   char *p = readline(prompt);
+
+   errno = e;
+   return p;
 }
 
 void rlHide(void) {

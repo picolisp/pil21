@@ -1,4 +1,4 @@
-# 28feb22 Software Lab. Alexander Burger
+# 22apr22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1194,7 +1194,7 @@ selectErr)
                         (free @)
                         (set $LineBuf null) )
                      (flushAll)
-                     (unless (setq P (set $LineBuf (readline (val $LinePrmt))))
+                     (unless (setq P (set $LineBuf (gReadline (val $LinePrmt))))
                         (wrnl)
                         (when (or (val $Bind) (== (val $LinePrmt) (val $ContPrmt)))
                            (err 0 0 $Empty null) )  # quit
