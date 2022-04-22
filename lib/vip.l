@@ -1,4 +1,4 @@
-# 04mar22 Software Lab. Alexander Burger
+# 22apr22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1055,27 +1055,12 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
 
 (de wordFun (@W)
    (setq *Search
-      (nond
-         ((find pat? @W)
-            (let @N (inc (length @W))
-               (curry (@W @N) (L C)
-                  (and
-                     (delim? C "~")
-                     (head '@W L)
-                     (delim? (get L @N) "~") ) ) ) )
-         ((= '"@" (car (setq @W (append @W '("@Z")))))
-            (curry (@W) (L C)
-               (and
-                  (delim? C "~")
-                  (match '@W L)
-                  (delim? (car "@Z") "~") ) ) )
-         (NIL
-            (++ @W)
-            (curry (@W) (L C)
-               (and
-                  (delim? C "~")
-                  (and (= '"@" (car L)) (match '@W (cdr L)))
-                  (delim? (car "@Z") "~") ) ) ) ) ) )
+      (let @N (inc (length @W))
+         (curry (@W @N) (L C)
+            (and
+               (delim? C "~")
+               (head '@W L)
+               (delim? (get L @N) "~") ) ) ) ) )
 
 (de moveSearch (Fun1 Fun2)
    (move Fun1 (lit Fun2) *Cnt) )
@@ -1684,7 +1669,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
             (if Ext (pack "--include=*" @) "--exclude=*-")
             (cons
                "\\(\^\\|[[:space:]\"'(),`{}~]\\|\\[\\|\\]\\)"
-               (replace Pat "@" ".*" "." "\\." "*" "\\*")
+               (replace Pat "." "\\." "*" "\\*")
                "\\([[:space:]\"'(),`{}~]\\|\\[\\|\\]\\|$\\)" )
             (or (fName Dir) ".") )
          (make (while (line T) (link @))) )

@@ -1,3 +1,7 @@
+22apr22
+   Word search without 'match' support
+      lib/vip.l
+
 20apr22
    'noLint' declarations
       lib/xhtml.l
