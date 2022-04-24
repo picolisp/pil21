@@ -1,6 +1,8 @@
-# 22apr22 Software Lab. Alexander Burger
+# 24apr22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
+
+(sysdefs "unistd")
 
 (load "@lib/term.l")
 
@@ -52,7 +54,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
 (de fName (File)
    (when (setq File (path File))
       (use R
-         (when (=0 (%@ "realpath" 'N File '(R (4096 C . 4096))))
+         (when (=0 (%@ "realpath" 'N File '(R (`PATH_MAX C . `PATH_MAX))))
             (setq R (chop File)) )
          (pack (mkLoc R)) ) ) )
 
@@ -162,8 +164,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                                  ((not S)
                                     (conc
                                        (chop " -> ")
-                                       (in (list "readlink" F)
-                                          (line) )
+                                       (in (list "readlink" F) (line))
                                        (chop "  ") ) )
                                  (T
                                     (conc

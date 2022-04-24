@@ -1,3 +1,8 @@
+24apr22
+   Define PATH_MAX
+      src/sysdefs.c
+      lib/vip.l
+
 22apr22
    Preserve 'errno' across readline(3) calls
       src/dec.l

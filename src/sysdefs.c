@@ -1,4 +1,4 @@
-// 06aug21 Software Lab. Alexander Burger
+// 24apr22 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdint.h>
@@ -55,6 +55,7 @@ int main(void) {
 
    ttl("unistd");
    num("PIPE_BUF", PIPE_BUF);
+   num("PATH_MAX", PATH_MAX);
 
    ttl("terminal");
    num("TIOCGWINSZ", TIOCGWINSZ);
