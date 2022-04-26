@@ -302,9 +302,9 @@ href="refN.html#native">native</a></code> and <code><a
 href="refS.html#struct">struct</a></code>.
 
 <pre><code>
-(load "lib/native.l")
+(load "@lib/clang.l")
 
-(gcc "ltest" NIL
+(clang "ltest" NIL
    (cbTest (Fun) cbTest 'N Fun) )
 
 long cbTest(int(*fun)(int,int,int,int,int)) {
