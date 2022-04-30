@@ -1,4 +1,4 @@
-# 26feb21 Software Lab. Alexander Burger
+# 30apr22 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -35,6 +35,7 @@
    (`(chop "ps") "application/postscript" 1)
    (`(chop "pdf") "application/pdf" 1)
    (`(chop "zip") "application/zip" 1)
+   (`(chop "epub") "application/epub+zip" 86400)
    (`(chop "jar") "application/java-archive" 86400) )
 
 (de mime (S . @)

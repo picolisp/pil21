@@ -1,3 +1,7 @@
+30apr22
+   Add "epub" mime type
+      lib/http.l
+
 26apr22
    Outdated example for 'lisp'
       doc/refL.html
