@@ -43,11 +43,7 @@
 
 # (fun 'fun ['any ..]) -> any
 (de _fun (Exe)
-   (let
-      (X (cdr Exe)
-         E (push NIL (cdr X) ZERO (eval (car X)) NIL) )
-      (set E (link (ofs E 3) T))
-      (evList E) ) )
+   (evList (cdr Exe)) )
 
 # (maps 'fun 'sym ['lst ..]) -> any
 (de _maps (Exe)

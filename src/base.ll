@@ -62703,71 +62703,13 @@ $17:
 
 define i64 @_fun(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) E (push NIL (cdr X) ZERO (eval (car X)) NIL)) (...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
-; # (cdr X)
-  %4 = inttoptr i64 %3 to i64*
-  %5 = getelementptr i64, i64* %4, i32 1
-  %6 = load i64, i64* %5
-; # (car X)
-  %7 = inttoptr i64 %3 to i64*
-  %8 = load i64, i64* %7
-; # (eval (car X))
-  %9 = and i64 %8, 6
-  %10 = icmp ne i64 %9, 0
-  br i1 %10, label %$4, label %$3
-$4:
-  br label %$2
-$3:
-  %11 = and i64 %8, 8
-  %12 = icmp ne i64 %11, 0
-  br i1 %12, label %$6, label %$5
-$6:
-  %13 = inttoptr i64 %8 to i64*
-  %14 = load i64, i64* %13
-  br label %$2
-$5:
-  %15 = call i64 @evList(i64 %8)
-  br label %$2
-$2:
-  %16 = phi i64 [%8, %$4], [%14, %$6], [%15, %$5] ; # ->
-; # (push NIL (cdr X) ZERO (eval (car X)) NIL)
-  %17 = alloca i64, i64 5, align 16
-  %18 = ptrtoint i64* %17 to i64
-  %19 = add i64 %18, 8
-  %20 = inttoptr i64 %19 to i64*
-  store i64 %6, i64* %20
-  %21 = add i64 %18, 16
-  %22 = inttoptr i64 %21 to i64*
-  store i64 2, i64* %22
-  %23 = add i64 %18, 24
-  %24 = inttoptr i64 %23 to i64*
-  store i64 %16, i64* %24
-; # (set E (link (ofs E 3) T))
-; # (ofs E 3)
-  %25 = add i64 %18, 24
-; # (link (ofs E 3) T)
-  %26 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([16 x i64]* @env to i8*), i32 0) to i64) to i64*
-  %27 = load i64, i64* %26
-  %28 = inttoptr i64 %25 to i64*
-  %29 = getelementptr i64, i64* %28, i32 1
-  store i64 %27, i64* %29
-  %30 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([16 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %25, i64* %30
-  %31 = inttoptr i64 %18 to i64*
-  store i64 %25, i64* %31
-; # (evList E)
-  %32 = call i64 @evList(i64 %18)
-; # (drop *Safe)
-  %33 = inttoptr i64 %25 to i64*
-  %34 = getelementptr i64, i64* %33, i32 1
-  %35 = load i64, i64* %34
-  %36 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([16 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %35, i64* %36
-  ret i64 %32
+; # (evList (cdr Exe))
+  %4 = call i64 @evList(i64 %3)
+  ret i64 %4
 }
 
 define i64 @_maps(i64) align 8 {
