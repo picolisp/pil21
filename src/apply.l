@@ -45,14 +45,8 @@
 (de _fun (Exe)
    (let
       (X (cdr Exe)
-         E (push NIL $Nil ZERO (eval (++ X)) NIL) )
+         E (push NIL (cdr X) ZERO (eval (car X)) NIL) )
       (set E (link (ofs E 3) T))
-      (let P E
-         (while (pair X)
-            (setq P
-               (set 2 P
-                  (push NIL $Nil ZERO (eval (++ X)) NIL) ) )
-            (set P (link (ofs P 3))) ) )
       (evList E) ) )
 
 # (maps 'fun 'sym ['lst ..]) -> any
