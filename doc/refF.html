@@ -618,6 +618,22 @@ X))) Lst))</code>. See also <code><a href="refF.html#find">find</a></code> and
 -> NIL
 </code></pre>
 
+<dt><a name="fun"><code>(fun 'fun ['any ..]) -> any</code></a>
+<dd>Applies <code>fun</code> to the <code>any</code> arguments. <code>(fun foo
+'args)</code> is equivalent to <code>(foo 'args)</code>, and <code>(fun (expr)
+'args)</code> is equivalent to <code>((expr) 'args)</code>. See also <code><a
+href="refA.html#apply">apply</a></code> and <code><a
+href="refP.html#pass">pass</a></code>.
+
+<pre><code>
+: (find fun '(sym? ((X) (> X 3)) num?) 'a)
+-> sym?
+: (find fun '(sym? ((X) (> X 3)) num?) 3)
+-> num?
+: (find fun '(sym? ((X) (> X 3)) num?) 4)
+-> ((X) (> X 3))
+</code></pre>
+
 <dt><a name="fun?"><code>(fun? 'any) -> any</code></a>
 <dd>Returns <code>NIL</code> when the argument <code>any</code> is neither a
 number suitable for a code-pointer, nor a list suitable for a lambda expression

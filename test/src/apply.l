@@ -1,4 +1,4 @@
-# 30jan22 Software Lab. Alexander Burger
+# 01may22 Software Lab. Alexander Burger
 
 ### apply ###
 (test 6 (apply + (1 2 3)))
@@ -9,6 +9,25 @@
 
 ### pass ###
 (test 24 ((quote (N . @) (* N (pass + 6))) 2 1 2 3))
+
+
+### fun ###
+(test '(NIL NIL NIL)
+   (mapcar fun
+      '(gt0 ((N) (bit? 1 N)) ((N) (> N 4)))
+      -2 ) )
+(test (2 NIL NIL)
+   (mapcar fun
+      '(gt0 ((N) (bit? 1 N)) ((N) (> N 4)))
+      2 ) )
+(test (3 1 NIL)
+   (mapcar fun
+      '(gt0 ((N) (bit? 1 N)) ((N) (> N 4)))
+      3 ) )
+(test (7 1 T)
+   (mapcar fun
+      '(gt0 ((N) (bit? 1 N)) ((N) (> N 4)))
+      7 ) )
 
 
 ### maps ###

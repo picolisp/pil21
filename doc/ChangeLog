@@ -1,3 +1,11 @@
+01may22
+   'fun' function
+      src/glob.l
+      src/apply.l
+      test/src/apply.l
+      doc/ref.html
+      doc/refF.html
+
 30apr22
    Add "epub" mime type
       lib/http.l

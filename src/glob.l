@@ -1,4 +1,4 @@
-# 26feb22 Software Lab. Alexander Burger
+# 01may22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -305,6 +305,7 @@
    # Mapping
    (NIL "apply" _apply)
    (NIL "pass" _pass)
+   (NIL "fun" _fun)
    (NIL "maps" _maps)
    (NIL "map" _map)
    (NIL "mapc" _mapc)
