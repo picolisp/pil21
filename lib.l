@@ -153,9 +153,7 @@
    (prin "^G") )
 
 (de msg (X . @)
-   (tty
-      (print X)
-      (pass prinl) )
+   (tty (print X) (pass prinl))
    X )
 
 (de script (File . @)
