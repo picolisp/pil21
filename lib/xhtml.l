@@ -1,4 +1,4 @@
-# 20apr22 Software Lab. Alexander Burger
+# 03may22 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -168,7 +168,10 @@
                      (prinl @)
                      (prinl "</style>") ) ) )
             (and *SesId (<javascript> "SesId='" @ "'"))
-            (mapc javascript *JS) )
+            (mapc javascript *JS)
+            (when (=0 Upd)
+               (javascript NIL
+                  "document.addEventListener('visibilitychange', function() {if (!document.hidden) window.location.replace(location.href)})" ) ) )
          (micro Body
             (htPrin Prg 3) )
          (micro End) ) ) )

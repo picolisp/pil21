@@ -1,3 +1,7 @@
+03may22
+   Re-introduce 'visibilitychange' event handling
+      lib/xhtml.l
+
 01may22
    'fun' function
       src/glob.l
