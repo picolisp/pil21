@@ -1,4 +1,6 @@
 03may22
+   Use 'tty' in 'msg'
+      lib.l
    Re-introduce 'visibilitychange' event handling
       lib/xhtml.l
 

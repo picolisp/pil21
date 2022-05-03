@@ -1,4 +1,4 @@
-# 26nov21 Software Lab. Alexander Burger
+# 03may22 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -153,7 +153,7 @@
    (prin "^G") )
 
 (de msg (X . @)
-   (out 2
+   (tty
       (print X)
       (pass prinl) )
    X )
