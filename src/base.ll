@@ -1511,7 +1511,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 354,
   i64 82,
-  i64 50
+  i64 82
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -4245,7 +4245,7 @@ $1:
   store void(i8)* @_putStdout, void(i8)** @$Put
 ; # (rlHide)
   call void @rlHide()
-; # (prog1 (run (cdr Exe)) (rlShow) (set (i8** $Put) Put $OutFile Out...
+; # (prog1 (run (cdr Exe)) (flush (val $OutFile)) (rlShow) (set (i8**...
 ; # (cdr Exe)
   %7 = inttoptr i64 %0 to i64*
   %8 = getelementptr i64, i64* %7, i32 1
@@ -4299,12 +4299,16 @@ $11:
 $4:
   %34 = phi i64 [%17, %$6] ; # Prg
   %35 = phi i64 [%25, %$6] ; # ->
+; # (val $OutFile)
+  %36 = load i8*, i8** @$OutFile
+; # (flush (val $OutFile))
+  %37 = call i1 @flush(i8* %36)
 ; # (rlShow)
   call void @rlShow()
 ; # (set (i8** $Put) Put $OutFile Out)
 ; # (i8** $Put)
-  %36 = bitcast void(i8)** @$Put to i8**
-  store i8* %3, i8** %36
+  %38 = bitcast void(i8)** @$Put to i8**
+  store i8* %3, i8** %38
   store i8* %1, i8** @$OutFile
   ret i64 %35
 }

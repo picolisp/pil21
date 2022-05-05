@@ -254,6 +254,7 @@ declare i64 @mkStr(i8*)
 declare i8 @firstByte(i64)
 declare void @pack(i64, i64*)
 declare i1 @subStr(i64, i64)
+declare i1 @flush(i8*)
 declare void @flushAll()
 declare void @newline()
 declare void @space()
@@ -276,7 +277,6 @@ declare void @prSym(i64)
 declare i64 @mkChar(i32)
 declare i64 @evCnt(i64, i64)
 declare i32 @getChar(i32)
-declare i1 @flush(i8*)
 
 define i64 @Prin(i64) align 8 {
 $1:

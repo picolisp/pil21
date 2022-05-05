@@ -1,4 +1,4 @@
-# 09apr22 Software Lab. Alexander Burger
+# 05may22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -464,6 +464,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (rlHide)
       (prog1
          (run (cdr Exe))
+         (flush (val $OutFile))
          (rlShow)
          (set (i8** $Put) Put  $OutFile Out) ) ) )
 

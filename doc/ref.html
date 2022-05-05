@@ -1330,9 +1330,9 @@ $ ulimit -s unlimited
 interrupted at any time by hitting <code>Ctrl-C</code>. It will then enter the
 breakpoint routine, as if <code><a href="ref_.html#!">!</a></code> were called.
 
-<p>Hitting ENTER at that point will continue evaluation, while <code>(<a
-href="refQ.html#quit">quit</a>)</code> will abort evaluation and return the
-interpreter to the top level. See also <code><a
+<p>Hitting ENTER at that point will continue evaluation, while
+<code>Ctrl-D</code> or <code>(<a href="refQ.html#quit">quit</a>)</code> will
+abort evaluation and return the interpreter to the top level. See also <code><a
 href="refD.html#debug">debug</a></code>, <code><a
 href="refE.html#e">e</a></code>, <code><a href="ref_.html#^">^</a></code> and
 <code><a href="refD.html#*Dbg">*Dbg</a></code>
@@ -1757,7 +1757,7 @@ href="ref_.html#?">?</a></code> function:
 </code></pre>
 
 <p>This will print all solutions, waiting for user input after each line. If
-Ctrl-D or a non-empty line is typed, it will terminate.
+<code>Ctrl-D</code> or a non-empty line is typed, it will terminate.
 
 <p>Pilog can be called from Lisp and vice versa:
 

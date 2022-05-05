@@ -1,4 +1,4 @@
-# 04apr21 Software Lab. Alexander Burger
+# 05may22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -22,7 +22,6 @@ mkChar evCnt getChar)
 (de T mkChar (i32))
 (de T i64 evCnt (any any))
 (de T i32 getChar (i32))
-(de T i1 flush (i8*))
 
 # (ht:Prin 'sym ..) -> sym
 (de Prin (Exe)

@@ -1,3 +1,9 @@
+05may22
+   Call 'flush' in 'tty'
+      src/dec.l
+      src/main.l
+      src/ht.l
+
 03may22
    Use 'tty' in 'msg'
       lib.l
