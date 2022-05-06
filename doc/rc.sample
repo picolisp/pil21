@@ -1,4 +1,4 @@
-# 02jul21 Software Lab. Alexander Burger
+# 06may22 Software Lab. Alexander Burger
 # Copy to ~/.pil/rc
 
 (history
@@ -15,6 +15,7 @@
 # Initial history
 (stack)
 (dbCheck)
+(show (; *FormLst 1 2))
 (vi (car (url> *ID)))
 (show *ID)
 

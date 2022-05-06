@@ -1,8 +1,8 @@
-# 30apr22 Software Lab. Alexander Burger
+# 06may22 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
-# *Post *Url *Timeout *SesAdr *SesId *ConId *Retire
+# *Post *Uri *Url *Timeout *SesAdr *SesId *ConId *Retire
 # *Referer *Cookies "*Cookies"
 
 (default
@@ -203,7 +203,7 @@
             (if (<> *ConId *SesId)
                (prog (task (close *HtSock)) (off *HtSock))
                (setq
-                  L (split U "?")
+                  L (split (setq *Uri U) "?")
                   U (car L)
                   L (mapcan
                      '((A)

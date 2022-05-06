@@ -1,3 +1,9 @@
+06may22
+   Global '*Uri'
+      lib/http.l
+   Clean up '*Err'
+      lib/app.l
+
 05may22
    Call 'flush' in 'tty'
       src/dec.l

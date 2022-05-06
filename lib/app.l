@@ -1,7 +1,8 @@
-# 11apr22 Software Lab. Alexander Burger
+# 06may22 Software Lab. Alexander Burger
 
 # Exit on error
 (de *Err
+   (prinl *Pid " ! " (stamp) " [" *Adr " " (host *Adr) "] " *Agent)
    (for ("L" (trail T)  "L")
       (cond
          ((pair (car "L"))
@@ -12,14 +13,12 @@
             (space 3)
             (println (++ "L") (++ "L")) ) ) )
    (println '====)
-   (prinl *Pid " ! " (stamp) " [" *Adr " " (host *Adr) "] " *Agent)
    (show This)
-   (for "X" '(*Agent *Host *Port *Url *SesId *ConId *Tab *Gui *Btn *Get *ID)
+   (println '*Uri (pack *Uri))
+   (println '*Host (pack *Host))
+   (for "X" '(*Port *SesId *ConId *Tab *Gui *Btn *Get *ID)
       (println "X" (val "X")) )
    (println '*PRG *PRG (val *PRG))
-   (for "X" (env)
-      (unless (== (car "X") (cdr "X"))
-         (println (car "X") (cdr "X")) ) )
    (rollback) )
 
 # User identification
