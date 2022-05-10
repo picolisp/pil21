@@ -1,4 +1,4 @@
-// 22dec21 Software Lab. Alexander Burger
+// 10may22 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -425,6 +425,12 @@ int main(int ac, char *av[]) {
                p = buf + 5;
             else if (pre(buf, "POST /"))
                p = buf + 6;
+            else if (pre(buf, "PUT /"))
+               p = buf + 5;
+            else if (pre(buf, "PATCH /"))
+               p = buf + 7;
+            else if (pre(buf, "DELETE /"))
+               p = buf + 8;
             else
                return 1;
 

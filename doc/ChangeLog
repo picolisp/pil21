@@ -1,3 +1,7 @@
+10may22
+   Support also PUT, PATCH and DELETE
+      src/httpGate.c
+
 06may22
    Global '*Uri'
       lib/http.l
