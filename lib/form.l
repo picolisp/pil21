@@ -1,4 +1,4 @@
-# 16mar22 Software Lab. Alexander Burger
+# 11may22 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -310,7 +310,7 @@
 
 (de post Prg
    (run Prg)
-   (url *Url) )
+   (url *Uri) )
 
 # Active <span> elements
 (de span Args
