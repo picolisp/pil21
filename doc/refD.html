@@ -384,7 +384,7 @@ href="refP.html#pool">pool</a></code>.
 
 <pre><code>
 (dbs
-   (3 +Role +User +Sal)                         # 512 Prevalent objects
+   (3 +Role +User +Sal (+User pw))              # 512 Prevalent objects
    (0 +Pos)                                     # A:64 Tiny objects
    (1 +Item +Ord)                               # B:128 Small objects
    (2 +CuSu)                                    # C:256 Normal objects
@@ -398,7 +398,7 @@ href="refP.html#pool">pool</a></code>.
    (4 (+Pos itm)) )                             # K:1024
 
 : *Dbs
--> (1 2 1 0 2 4 4 4 4 4 4 4)
+-> (3 0 1 2 2 4 4 4 4 4 4 4)
 : (get '+Item 'Dbf)
 -> (3 . 128)
 : (get '+Item 'nr 'dbf)

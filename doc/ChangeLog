@@ -1,3 +1,7 @@
+12may22
+   Fix 'dbs' example
+      doc/refD.html
+
 11may22
    Use '*Uri' instead of '*Url' in 'post'
       lib/form.l
