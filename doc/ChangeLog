@@ -1,3 +1,7 @@
+13may22
+   Use 'in' instead of 'pipe' for "ccrypt" call
+      lib/vip.l
+
 12may22
    Fix 'dbs' example
       doc/refD.html

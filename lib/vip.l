@@ -1,4 +1,4 @@
-# 24apr22 Software Lab. Alexander Burger
+# 13may22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -192,8 +192,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                                                 (car I) ) ) ) ) ) ) ) ) ) )
                   (gc (+ 4 (*/ (car I) 32768)))  # 2 cells / char
                   (if (sys "CCRYPT" (: key))
-                     (pipe
-                        (in File (out '("ccrypt" "-d" "-ECCRYPT") (echo)))
+                     (in (list "ccrypt" "-c" "-ECCRYPT" File)
                         (rdLines) )
                      (in File (rdLines)) ) ) ) ) ) )
    (=: symbols (symbols))
