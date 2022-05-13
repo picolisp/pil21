@@ -1,4 +1,4 @@
-# 22apr22 Software Lab. Alexander Burger
+# 13may22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -572,7 +572,7 @@ selectErr)
    (let (In (val $InFrames)  Out (val $OutFrames))
       (nond
          ((or In Out)
-            (err 0 0 ($ "No current fd") null) )
+            (err Exe 0 ($ "No current fd") null) )
          (Out ((inFile ((ioFrame In) file)) fd))
          (In ((outFile ((ioFrame Out) file)) fd))
          (NIL
@@ -1909,9 +1909,12 @@ selectErr)
          (run X)
          (popCtlFiles) ) ) )
 
-# (fd) -> cnt
+# (fd ['cnt]) -> cnt
 (de _fd (Exe)
-   (cnt (i64 (currFd Exe))) )
+   (let (X (eval (cadr Exe))  Fd (currFd Exe))
+      (unless (nil? X)
+         (dup2 Fd (i32 (xCnt Exe X))) )
+      (cnt (i64 Fd)) ) )
 
 (local) forkLisp
 

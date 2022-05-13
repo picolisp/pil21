@@ -54,10 +54,12 @@ that will always fail. See also <code><a href="refG.html#goal">goal</a></code>.
 -> NIL
 </code></pre>
 
-<dt><a name="fd"><code>(fd) -> cnt</code></a>
+<dt><a name="fd"><code>(fd ['cnt]) -> cnt</code></a>
 <dd>Return the current file descriptor, typically of the closest <code><a
 href="refI.html#in">in</a></code> or <code><a
-href="refO.html#out">out</a></code> channel. See also <code><a
+href="refO.html#out">out</a></code> channel. If a second file descriptor
+<code>cnt</code> is given, the current file descriptor is copied to it using a
+<code>dup2()</code> system call. See also <code><a
 href="refI.html#ipid">ipid</a></code> and <code><a
 href="refO.html#opid">opid</a></code>.
 

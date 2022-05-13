@@ -357,7 +357,7 @@ href="refF.html#fork">fork</a></code> and <code><a
 href="refC.html#call">call</a></code>.
 
 <pre><code>
-: (pipe (exec 'echo 123 "abc")
+: (pipe (exec 'echo 123 "abc")  # Equivalent to (in '(echo 123 "abc") ..)
    (list (read) (read)) )
 -> (123 abc)
 

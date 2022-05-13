@@ -1,4 +1,7 @@
 13may22
+   Optional "dup" file descriptor argument to 'fd'
+      src/io.l
+      doc/refF.html
    Use 'in' instead of 'pipe' for "ccrypt" call
       lib/vip.l
 

@@ -40688,7 +40688,7 @@ $1:
   %1 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([16 x i64]* @env to i8*), i32 32) to i8**)
 ; # (val $OutFrames)
   %2 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([16 x i64]* @env to i8*), i32 40) to i8**)
-; # (nond ((or In Out) (err 0 0 ($ "No current fd") null)) (Out ((inF...
+; # (nond ((or In Out) (err Exe 0 ($ "No current fd") null)) (Out ((i...
 ; # (or In Out)
   %3 = icmp ne i8* %1, null
   br i1 %3, label %$3, label %$4
@@ -40699,8 +40699,8 @@ $3:
   %5 = phi i1 [1, %$1], [%4, %$4] ; # ->
   br i1 %5, label %$5, label %$6
 $6:
-; # (err 0 0 ($ "No current fd") null)
-  call void @err(i64 0, i64 0, i8* bitcast ([14 x i8]* @$39 to i8*), i8* null)
+; # (err Exe 0 ($ "No current fd") null)
+  call void @err(i64 %0, i64 0, i8* bitcast ([14 x i8]* @$39 to i8*), i8* null)
   unreachable
 $5:
   %6 = icmp ne i8* %2, null
@@ -49535,14 +49535,53 @@ $9:
 
 define i64 @_fd(i64) align 8 {
 $1:
+; # (let (X (eval (cadr Exe)) Fd (currFd Exe)) (unless (nil? X) (dup2...
+; # (cadr Exe)
+  %1 = inttoptr i64 %0 to i64*
+  %2 = getelementptr i64, i64* %1, i32 1
+  %3 = load i64, i64* %2
+  %4 = inttoptr i64 %3 to i64*
+  %5 = load i64, i64* %4
+; # (eval (cadr Exe))
+  %6 = and i64 %5, 6
+  %7 = icmp ne i64 %6, 0
+  br i1 %7, label %$4, label %$3
+$4:
+  br label %$2
+$3:
+  %8 = and i64 %5, 8
+  %9 = icmp ne i64 %8, 0
+  br i1 %9, label %$6, label %$5
+$6:
+  %10 = inttoptr i64 %5 to i64*
+  %11 = load i64, i64* %10
+  br label %$2
+$5:
+  %12 = call i64 @evList(i64 %5)
+  br label %$2
+$2:
+  %13 = phi i64 [%5, %$4], [%11, %$6], [%12, %$5] ; # ->
 ; # (currFd Exe)
-  %1 = call i32 @currFd(i64 %0)
-; # (i64 (currFd Exe))
-  %2 = sext i32 %1 to i64
-; # (cnt (i64 (currFd Exe)))
-  %3 = shl i64 %2, 4
-  %4 = or i64 %3, 2
-  ret i64 %4
+  %14 = call i32 @currFd(i64 %0)
+; # (unless (nil? X) (dup2 Fd (i32 (xCnt Exe X))))
+; # (nil? X)
+  %15 = icmp eq i64 %13, ptrtoint (i8* getelementptr (i8, i8* bitcast ([872 x i64]* @SymTab to i8*), i32 8) to i64)
+  br i1 %15, label %$8, label %$7
+$7:
+; # (xCnt Exe X)
+  %16 = call i64 @xCnt(i64 %0, i64 %13)
+; # (i32 (xCnt Exe X))
+  %17 = trunc i64 %16 to i32
+; # (dup2 Fd (i32 (xCnt Exe X)))
+  %18 = call i32 @dup2(i32 %14, i32 %17)
+  br label %$8
+$8:
+; # (i64 Fd)
+  %19 = sext i32 %14 to i64
+; # (cnt (i64 Fd))
+  %20 = shl i64 %19, 4
+  %21 = or i64 %20, 2
+  ret i64 %21
 }
 
 define i32 @forkLisp(i64) align 8 {
