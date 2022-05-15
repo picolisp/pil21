@@ -1,4 +1,4 @@
-# 13may22 Software Lab. Alexander Burger
+# 15may22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -64,7 +64,11 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
       File ) )
 
 (de rplFile (File)
-   (pack (replace (chop File) "%" (: buffer file))) )
+   (pack
+      (replace (chop File) "%"
+         (if (== This *CmdWin)
+            (: next buffer file)
+            (: buffer file) ) ) ) )
 
 (de fileBuffer (File Y)
    (let F (fName File)

@@ -1,3 +1,7 @@
+15may22
+   Replace "%" also if in command window
+      lib/vip.l
+
 13may22
    Optional "dup" file descriptor argument to 'fd'
       src/io.l
