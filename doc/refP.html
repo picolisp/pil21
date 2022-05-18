@@ -330,9 +330,9 @@ href="refO.html#out">out</a></code>.
               (prinl (uppc @))            # and write to stdout
               (flush) ) ) ) )
 -> 3
-:  (out P (prinl "abc def"))              # Parent: Send line to child
+: (out P (prinl "abc def"))               # Parent: Send line to child
 -> "abc def"
-:  (in P (line))                          # Parent: Read reply
+: (in P (line))                           # Parent: Read reply
 -> ("A" "B" "C" " " "D" "E" "F")
 </code></pre>
 

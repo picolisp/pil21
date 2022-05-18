@@ -1,3 +1,9 @@
+18may22
+   Fix 'raw' example
+      doc/refR.html
+   Clear stdin 'tty' flag in 'pipe' child
+      src/io.l
+
 15may22
    Replace "%" also if in command window
       lib/vip.l

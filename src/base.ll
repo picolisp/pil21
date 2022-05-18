@@ -1511,7 +1511,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 354,
   i64 82,
-  i64 242
+  i64 290
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -50318,11 +50318,11 @@ $10:
   %61 = load i32, i32* %8
 ; # (close (val Pfd))
   %62 = call i32 @close(i32 %61)
-; # (let Fd (val 2 Pfd) (if (pair X) (setpgid 0 0) (dup2 Fd 0)) (dup2...
+; # (let Fd (val 2 Pfd) (if (pair X) (setpgid 0 0) (dup2 Fd 0) ((inFi...
 ; # (val 2 Pfd)
   %63 = getelementptr i32, i32* %8, i32 1
   %64 = load i32, i32* %63
-; # (if (pair X) (setpgid 0 0) (dup2 Fd 0))
+; # (if (pair X) (setpgid 0 0) (dup2 Fd 0) ((inFile (val (val $InFile...
 ; # (pair X)
   %65 = and i64 %7, 15
   %66 = icmp eq i64 %65, 0
@@ -50334,52 +50334,59 @@ $26:
 $27:
 ; # (dup2 Fd 0)
   %68 = call i32 @dup2(i32 %64, i32 0)
+; # (val $InFiles)
+  %69 = load i8**, i8*** @$InFiles
+; # (val (val $InFiles))
+  %70 = load i8*, i8** %69
+; # ((inFile (val (val $InFiles))) tty NO)
+  %71 = getelementptr i8, i8* %70, i32 4128
+  %72 = bitcast i8* %71 to i1*
+  store i1 0, i1* %72
   br label %$28
 $28:
-  %69 = phi i32 [%67, %$26], [%68, %$27] ; # ->
 ; # (dup2 Fd 1)
-  %70 = call i32 @dup2(i32 %64, i32 1)
+  %73 = call i32 @dup2(i32 %64, i32 1)
 ; # (close Fd)
-  %71 = call i32 @close(i32 %64)
+  %74 = call i32 @close(i32 %64)
 ; # (val SIGPIPE Sig)
-  %72 = getelementptr i32, i32* @Sig, i32 4
-  %73 = load i32, i32* %72
+  %75 = getelementptr i32, i32* @Sig, i32 4
+  %76 = load i32, i32* %75
 ; # (val SigDfl)
-  %74 = load i8*, i8** @SigDfl
+  %77 = load i8*, i8** @SigDfl
 ; # (signal (val SIGPIPE Sig) (val SigDfl))
-  %75 = call i8* @signal(i32 %73, i8* %74)
+  %78 = call i8* @signal(i32 %76, i8* %77)
 ; # (val $OutFile)
-  %76 = load i8*, i8** @$OutFile
+  %79 = load i8*, i8** @$OutFile
 ; # ((outFile (val $OutFile)) tty NO)
-  %77 = getelementptr i8, i8* %76, i32 4104
-  %78 = bitcast i8* %77 to i1*
-  store i1 0, i1* %78
+  %80 = getelementptr i8, i8* %79, i32 4104
+  %81 = bitcast i8* %80 to i1*
+  store i1 0, i1* %81
 ; # (Io:)
 ; # (val $OutFiles)
-  %79 = load i8**, i8*** @$OutFiles
+  %82 = load i8**, i8*** @$OutFiles
 ; # (val 2 (val $OutFiles))
-  %80 = getelementptr i8*, i8** %79, i32 1
-  %81 = load i8*, i8** %80
+  %83 = getelementptr i8*, i8** %82, i32 1
+  %84 = load i8*, i8** %83
 ; # (pushOutFile (Io:) (val 2 (val $OutFiles)) 0)
-  call void @pushOutFile(i8* %9, i8* %81, i32 0)
+  call void @pushOutFile(i8* %9, i8* %84, i32 0)
 ; # (set $LinePtr null)
   store i8* null, i8** @$LinePtr
 ; # (when (pair E) (evList E))
 ; # (pair E)
-  %82 = and i64 %5, 15
-  %83 = icmp eq i64 %82, 0
-  br i1 %83, label %$29, label %$30
+  %85 = and i64 %5, 15
+  %86 = icmp eq i64 %85, 0
+  br i1 %86, label %$29, label %$30
 $29:
 ; # (evList E)
-  %84 = call i64 @evList(i64 %5)
+  %87 = call i64 @evList(i64 %5)
   br label %$30
 $30:
 ; # (bye 0)
   call void @bye(i32 0)
   unreachable
 $11:
-  %85 = phi i64 [%60, %$12] ; # ->
-  ret i64 %85
+  %88 = phi i64 [%60, %$12] ; # ->
+  ret i64 %88
 }
 
 define i64 @_open(i64) align 8 {

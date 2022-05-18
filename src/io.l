@@ -1,4 +1,4 @@
-# 13may22 Software Lab. Alexander Burger
+# 18may22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2060,7 +2060,8 @@ selectErr)
          (let Fd (val 2 Pfd)  # Write end
             (if (pair X)  # 'prg'
                (setpgid 0 0)  # Set process group
-               (dup2 Fd 0) )  # Dup write pipe to STDIN_FILENO
+               (dup2 Fd 0)  # Dup write pipe to STDIN_FILENO
+               ((inFile (val (val $InFiles))) tty NO) )  # Clear 'tty' in stdin
             (dup2 Fd 1)  # Dup write pipe to STDOUT_FILENO
             (close Fd) )
          (signal (val SIGPIPE Sig) (val SigDfl))  # Default SIGPIPE
