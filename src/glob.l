@@ -1,4 +1,4 @@
-# 01may22 Software Lab. Alexander Burger
+# 24may22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -28,19 +28,22 @@
 (var $ContPrmt i8* null)               # REPL continue prompt
 (var $Ret 0)                           # Secondary return value
 (var $TtyPid i32 0)                    # Terminal process ID
-(var $InFiles i8** null)               # Input files
 (var $InFDs i32 0)                     # Number of input files
+(var $InFiles i8** null)               # Input files
 (var $OutFiles i8** null)              # Output files
 (var $InFile i8* null)                 # Input file
 (var $OutFile i8* null)                # Output file
 (var $Chr i32 0)                       # Single-char look ahead
+(var $IoCnt i32 0)                     # 'output' count
+(var $IoIx i64 0)                      # 'output' index
+(var $IoChar i64 0)                    # 'input' and 'output' char
 (var $Put (void i8) null)              # Character output function
 (var $Get (i32) null)                  # Character input function
 (var $PutBin (void i8) null)           # Binary output function
 (var $GetBin (i32) null)               # Binary input function
 (var $OutFDs i32 0)                    # Number of ourput files
-(var $Poll i64* null)                  # Poll entries
 (var $Nfds i32 0)                      # Number of poll entries
+(var $Poll i64* null)                  # Poll entries
 (var $SeedL i64 0)                     # Random seed low
 (var $SeedH i64 0)                     # Random seed high
 (var $USec i64 0)                      # Startup microseconds
@@ -263,6 +266,8 @@
    (NIL "out" _out)
    (NIL "err" _err)
    (NIL "ctl" _ctl)
+   (NIL "input" _input)
+   (NIL "output" _output)
    (NIL "fd" _fd)
    (NIL "pipe" _pipe)
    (NIL "open" _open)
@@ -640,6 +645,8 @@
    ($OutFrames i8* null)         # Output frames
    ($ErrFrames i8* null)         # Error frames
    ($CtlFrames i8* null)         # Control frames
+   ($Input i8* null)             # 'input' Get frames
+   ($Output i8* null)            # 'output' Put frames
    ($Parser i64* null)           # String parser
    ($Next $Nil)                  # Next vararg
    ($Typ 0)                      # Method type

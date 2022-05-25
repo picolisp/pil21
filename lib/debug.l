@@ -1,4 +1,4 @@
-# 07mar22 Software Lab. Alexander Burger
+# 25may22 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -320,13 +320,13 @@
                (method X C)
                (cdddr (cadr (method X C))) ) )
          (when (traced? X)
-            (let X (set X (cddr (cadr (getd X))))
+            (let Y (set X (cddadr (getd X)))
                (and
-                  (== '@ (++ X))
-                  (= 1 (length X))
-                  (= 2 (length (car X)))
-                  (== 'pass (caar X))
-                  (sym? (cdadr X))
+                  (== '@ (++ Y))
+                  (=1 (length Y))
+                  (= 2 (length (car Y)))
+                  (== 'pass (caar Y))
+                  (sym? (cdadr Y))
                   (subr X) ) ) ) )
       X ) )
 

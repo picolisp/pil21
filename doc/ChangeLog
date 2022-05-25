@@ -1,3 +1,19 @@
+25may22
+   Bug in 'untrace'
+      lib/debug.l
+   Multi-line data in 'serverSend'
+      lib/xhtml.l
+   'input' and 'output' functions
+      src/glob.l
+      src/dec.l
+      src/main.l
+      src/gc.l
+      src/io.l
+      test/src/io.l
+      doc/ref.html
+      doc/refI.html
+      doc/refO.html
+
 18may22
    Fix 'raw' example
       doc/refR.html
@@ -582,8 +598,8 @@
 
 27aug21
    'rid' function
-      src/sym.l
       src/glob.l
+      src/sym.l
       test/src/sym.l
       doc/ref.html
       doc/refC.html
@@ -620,8 +636,8 @@
    Strip binaries
       src/Makefile
    'rasoq' function
-      src/subr.l
       src/glob.l
+      src/subr.l
       test/src/subr.l
       doc/ref.html
       doc/refA.html
@@ -991,8 +1007,8 @@
       src/flow.l
       doc/refC.html
    'shift' function
-      src/sym.l
       src/glob.l
+      src/sym.l
       doc/ref.html
       doc/refS.html
       doc/refP.html
@@ -1045,8 +1061,8 @@
 
 16apr21
    Independent size of main stack segment
-      src/main.l
       src/glob.l
+      src/main.l
       src/flow.l
       doc/refS.html
    'stack' returns unused spaces
@@ -1094,8 +1110,8 @@
 
 07apr21
    'enum?' function
-      src/sym.l
       src/glob.l
+      src/sym.l
       doc/ref.html
       doc/refE.html
       doc/refL.html
@@ -1144,8 +1160,8 @@
    Unit tests for 'enum'
       test/src/sym.l
    '*Term' signal handling (Constantine Bitensky)
-      src/main.l
       src/glob.l
+      src/main.l
       doc/ref.html
       doc/refT.html
       doc/refA.html
@@ -1159,8 +1175,8 @@
 
 23mar21
    'enum' function
-      src/sym.l
       src/glob.l
+      src/sym.l
       doc/ref.html
       doc/refE.html
       doc/refH.html
@@ -1171,8 +1187,8 @@
 
 21mar21
    'rev' function
-      src/big.l
       src/glob.l
+      src/big.l
       doc/ref.html
       doc/refR.html
       doc/refH.html

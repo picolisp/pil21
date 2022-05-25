@@ -1,4 +1,4 @@
-# 06oct20 Software Lab. Alexander Burger
+# 25may22 Software Lab. Alexander Burger
 
 ### path ###
 (test 'task (cadr (in (path "@lib.l") (read))))
@@ -126,6 +126,15 @@
    (test 1 (err Err (msg 1)))
    (test 2 (err (pack "+" Err) (msg 2)))
    (test "1^J2^J" (in Err (till NIL T))) )
+
+
+### input output ###
+(test "A" (input "A" (char)))
+(test '(+ 2 (* 3 4))
+   (let S (chop "(+ 2 (* 3 4))") (input (++ S) (read))) )
+
+(test "(+ 2 (* 3 4))"
+   (pack (make (output (link @@) (print '(+ 2 (* 3 4)))))) )
 
 
 ### pipe ###

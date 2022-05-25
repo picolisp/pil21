@@ -292,6 +292,31 @@ href="refL.html#load">load</a></code>.
 -> "Hello"
 </code></pre>
 
+<dt><a name="output"><code>(output exe . prg) -> any</code></a>
+<dd>Establishes an output stream, by redirecting the current output channel
+during the execution of <code>prg</code>. The current output channel will be
+saved and restored appropriately. <code>exe</code> is executed (in the context
+of the original output channel) whenever a character needs to be output by print
+calls in <code>prg</code>. That character is passed in the global variable
+<code><a href="ref_.html#@@">@@</a></code>, and the following character in the
+stream in <code><a href="ref_.html#@@@">@@@</a></code> (single-character
+look-ahead). See also <code><a href="refI.html#input">input</a></code>, <code><a
+href="refO.html#out">out</a></code> and <code><a
+href="refP.html#pipe">pipe</a></code>.
+
+<pre><code>
+: (output (prin (uppc @@)) (prinl "abc"))
+ABC
+-> "abc"
+: (output (println @@ @@@) (prin "abc"))
+"a" "b"
+"b" "c"
+"c" NIL
+-> "abc"
+: (pack (make (output (link @@) (print '(+ 2 (* 3 4))))))
+-> "(+ 2 (* 3 4))"
+</code></pre>
+
 </dl>
 
 </body>

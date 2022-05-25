@@ -1,4 +1,4 @@
-# 05may22 Software Lab. Alexander Burger
+# 22may22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -240,8 +240,8 @@
       (set $Protect 0) ) )
 
 # Error handling
-(local) (pushOutFile err stkErr argErr cntErr numErr symErr extErr nameErr
-atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
+(local) (pushOutFile err stkErr argErr cntErr numErr symErr charErr extErr
+nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de void pushOutFile (i8* i8* i32))
 
@@ -331,6 +331,9 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de NIL symErr (Exe X)
    (err Exe X ($ "Symbol expected") null) )
+
+(de NIL charErr (Exe X)
+   (err Exe X ($ "Char expected") null) )
 
 (de NIL extErr (Exe X)
    (err Exe X ($ "External symbol expected") null) )

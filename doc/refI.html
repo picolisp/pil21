@@ -315,6 +315,23 @@ href="refS.html#scan">scan</a></code>.
 -> (((3 . 5) ((3 NIL . {B3}) (4 NIL . {B4}) (5 NIL . {B5}) (6 NIL . {B6}))))
 </code></pre>
 
+<dt><a name="input"><code>(input exe . prg) -> any</code></a>
+<dd>Establishes an input stream, by redirecting the current input channel during
+the execution of <code>prg</code>. The current input channel will be saved and
+restored appropriately. <code>exe</code> is executed (in the context of the
+original input channel) whenever a character is required by read calls in
+<code>prg</code>, and should return a single character upon each execution. See
+also <code><a href="refO.html#output">output</a></code>, <code><a
+href="refI.html#in">in</a></code> and <code><a
+href="refP.html#pipe">pipe</a></code>.
+
+<pre><code>
+: (input "A" (char))
+-> "A"
+: (let S (chop "(+ 2 (* 3 4))") (input (++ S) (read)))
+-> (+ 2 (* 3 4))
+</code></pre>
+
 <dt><a name="insert"><code>(insert 'cnt 'lst 'any) -> lst</code></a>
 <dd>Inserts <code>any</code> into <code>lst</code> at position <code>cnt</code>.
 This is a non-destructive operation. See also <code><a

@@ -1,4 +1,4 @@
-# 03may22 Software Lab. Alexander Burger
+# 23may22 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -218,7 +218,11 @@
       (out @
          (ht:Out (bool *Chunked)
             (prin "data: ")
-            (htPrin Prg 2)
+            (output
+               (cond
+                  ((<> "\n" @@) (prin @@))
+                  (@@@ (prin "\ndata: ")) )
+               (htPrin Prg 2) )
             (prinl "^J") ) ) ) )
 
 (de ping (Min)
