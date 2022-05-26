@@ -1,5 +1,5 @@
 #!bin/picolisp lib.l
-# 18may16abu
+# 26may22abu
 # misc/bigtest <seed>
 
 (load "@lib/misc.l")
@@ -37,19 +37,19 @@
 (de test1 (S N1)
    (let (N (read)  X (eval (list S N1)))
       (unless (= N X)
-         (prinl "^J" N ": (" S " " N1 ") -> " X)
+         (prinl "\n" N ": (" S " " N1 ") -> " X)
          (bye) ) ) )
 
 (de test2 (S N1 N2)
    (let (N (read)  X (eval (list S N1 N2)))
       (unless (= N X)
-         (prinl "^J" N ": (" S " " N1 " " N2 ") -> " X)
+         (prinl "\n" N ": (" S " " N1 " " N2 ") -> " X)
          (bye) ) ) )
 
 (de cmp2 (S N1 N2)
    (let (N (n0 (read))  X (eval (list S N1 N2)))
       (unless (== N X)
-         (prinl "^J" N ": (" S " " N1 " " N2 ") -> " X)
+         (prinl "\n" N ": (" S " " N1 " " N2 ") -> " X)
          (bye) ) ) )
 
 

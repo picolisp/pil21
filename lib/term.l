@@ -1,4 +1,4 @@
-# 21jan22 Software Lab. Alexander Burger
+# 26may22 Software Lab. Alexander Burger
 
 (sysdefs "terminal")
 
@@ -41,31 +41,31 @@
 
 (de attr (A U)
    (if2 (<> A *AttrA) (<> U *AttrU)
-      (prin "^[["
+      (prin "\e["
          (or (setq *AttrA A) 0)
          ";"
          (if (setq *AttrU U) ULINE U-OFF)
          "m" )
-      (prin "^[[" (or (setq *AttrA A) 0) "m")
-      (prin "^[[" (if (setq *AttrU U) ULINE U-OFF) "m") ) )
+      (prin "\e[" (or (setq *AttrA A) 0) "m")
+      (prin "\e[" (if (setq *AttrU U) ULINE U-OFF) "m") ) )
 
 (de cup (Y X)
-   (prin "^[[" Y ";" X "H") )
+   (prin "\e[" Y ";" X "H") )
 
 (de clreol ()
-   (prin "^[[0K") )
+   (prin "\e[0K") )
 
 (de hideCsr ()
-   (prin "^[[?25l") )
+   (prin "\e[?25l") )
 
 (de showCsr ()
-   (prin "^[[?25h") )
+   (prin "\e[?25h") )
 
 (de screen1 ()
    (if (xterm)
-      (prin "^[[?1049l")
+      (prin "\e[?1049l")
       (cup *Lines 1) )
    (flush) )
 
 (de screen2 ()
-   (and (xterm) (prin "^[[?1049h")) )
+   (and (xterm) (prin "\e[?1049h")) )

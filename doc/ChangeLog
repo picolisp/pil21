@@ -1,3 +1,27 @@
+26may22
+   Use 'output' instead of 'pipe'
+      lib/misc.l
+   Replace control characters with backslash sequences
+      lib/misc.l
+      lib/db.l
+      lib/vip.l
+      lib/term.l
+      lib/http.l
+      lib/xhtml.l
+      lib/form.l
+      lib/canvas.l
+      lib/xm.l
+      lib/tinymce.l
+      test/src/io.l
+      test/src/sym.l
+      test/lib/misc.l
+      doc/tut.html
+      doc/refA.html
+      doc/refP.html
+      doc/form/refS.html
+      doc/app.html
+      misc/bigtest
+
 25may22
    Bug in 'untrace'
       lib/debug.l

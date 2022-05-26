@@ -1,4 +1,4 @@
-# 06may22 Software Lab. Alexander Burger
+# 26may22 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -54,13 +54,13 @@
       (prog1
          (out Sock
             (if (atom How)
-               (prinl "GET /" How " HTTP/1.0^M")
-               (prinl "POST /" (car How) " HTTP/1.0^M")
-               (prinl "Content-Length: " (size (cdr How)) "^M") )
-            (prinl "User-Agent: PicoLisp^M")
-            (prinl "Host: " Host "^M")
-            (prinl "Accept-Charset: utf-8^M")
-            (prinl "^M")
+               (prinl "GET /" How " HTTP/1.0\r")
+               (prinl "POST /" (car How) " HTTP/1.0\r")
+               (prinl "Content-Length: " (size (cdr How)) "\r") )
+            (prinl "User-Agent: PicoLisp\r")
+            (prinl "Host: " Host "\r")
+            (prinl "Accept-Charset: utf-8\r")
+            (prinl "\r")
             (and (pair How) (prin (cdr @)))
             (flush)
             (in Sock (run Prg 1)) )
@@ -259,7 +259,7 @@
          *ConId (pack (if (member "/" *ConId) (cdr @) *ConId)) )
       (off *ConId) )
    (while
-      (case (lowc (till " ^M^J" T))
+      (case (lowc (till " \r\n" T))
          ("host:" (setq *Host (cdr (line))))
          ("referer:" (setq *Referer (cdr (line))))
          ("cookie:"
@@ -272,14 +272,14 @@
          ("user-agent:" (setq *Agent (cdr (line))))
          ("content-length:" (setq *ContLen (format (cdr (line)))))
          ("content-type:"
-            (if (= " multipart/form-data; boundary" (lowc (till "=^M^J" T)))
+            (if (= " multipart/form-data; boundary" (lowc (till "=\r\n" T)))
                (setq
                   *MPartLim (append '(- -) (cdr (line)))
                   *MPartEnd (append *MPartLim '(- -)) )
                (line) ) )
          ("x-pil:"
             (char)
-            (when (till "=^M^J")
+            (when (till "=\r\n")
                (_htSet @ (ht:Pack (cdr (line)) T))
                T ) )
          (T (if (eol) (char) (line T))) ) )
@@ -310,7 +310,7 @@
                               (when (eof)
                                  (throw 'http) )
                               (when (made)
-                                 (link "^J") )
+                                 (link "\n") )
                               (link (trim L)) ) ) ) ) )
                ((head '`(chop "; filename=") (setq L @))
                   (while (line)) )
@@ -319,9 +319,9 @@
                   (setq L (cdr (rot (nth L 13))))
                   (if (_htSet Var (pack (stem L "/" "\\")))
                      (let F (tmp @)
-                        (unless (out F (echo (pack "^M^J" *MPartLim)))
+                        (unless (out F (echo (pack "\r\n" *MPartLim)))
                            (%@ "unlink" NIL F) ) )
-                     (out "/dev/null" (echo (pack "^M^J" *MPartLim))) )
+                     (out "/dev/null" (echo (pack "\r\n" *MPartLim))) )
                   (setq L (if (= "-" (car (line))) *MPartEnd *MPartLim)) ) ) ) ) ) )
 
 (de _htSet (L Val)
@@ -364,20 +364,20 @@
 
 # Http Transfer Header
 (de http1 (Typ Upd File Att)
-   (prinl "HTTP/1." *Http1 " 200 OK^M")
-   (prinl "Server: PicoLisp^M")
+   (prinl "HTTP/1." *Http1 " 200 OK\r")
+   (prinl "Server: PicoLisp\r")
    (prin "Date: ")
    (httpDate (date T) (time T))
    (when Upd
-      (prinl "Cache-Control: max-age=" Upd "^M")
+      (prinl "Cache-Control: max-age=" Upd "\r")
       (when (=0 Upd)
-         (prinl "Cache-Control: private, no-store, no-cache^M") ) )
-   (prinl "Content-Type: " (or Typ "text/html; charset=utf-8") "^M")
+         (prinl "Cache-Control: private, no-store, no-cache\r") ) )
+   (prinl "Content-Type: " (or Typ "text/html; charset=utf-8") "\r")
    (when File
       (prinl
          "Content-Disposition: "
          (if Att "attachment" "inline")
-         "; filename=\"" File "\"^M" ) ) )
+         "; filename=\"" File "\"\r" ) ) )
 
 (de httpCookies ()
    (mapc
@@ -394,14 +394,14 @@
 
 (de respond (S)
    (http1 "application/octet-stream" 0)
-   (prinl "Content-Length: " (size S) "^M^J^M")
+   (prinl "Content-Length: " (size S) "\r\n\r")
    (prin S) )
 
 (de httpHead (Typ Upd File Att)
    (http1 Typ Upd File Att)
-   (and *Chunked (prinl "Transfer-Encoding: chunked^M"))
+   (and *Chunked (prinl "Transfer-Encoding: chunked\r"))
    (httpCookies)
-   (prinl "^M") )
+   (prinl "\r") )
 
 (de httpDate (Dat Tim)
    (let D (date Dat)
@@ -410,7 +410,7 @@
          (pad 2 (caddr D)) " "
          (get *Mon (cadr D)) " "
          (car D) " "
-         (tim$ Tim T) " GMT^M" ) ) )
+         (tim$ Tim T) " GMT\r" ) ) )
 
 # Http Echo
 (de httpEcho (File Typ Upd Att Name)
@@ -423,10 +423,10 @@
             Upd
             (or Name (stem (chop File) "/"))
             Att )
-         (prinl "Content-Length: " (car I) "^M")
+         (prinl "Content-Length: " (car I) "\r")
          (prin "Last-Modified: ")
          (httpDate (cadr I) (cddr I))
-         (prinl "^M")
+         (prinl "\r")
          (in File (echo)) ) ) )
 
 (de srcUrl (Url)
@@ -450,22 +450,22 @@
       (if (pair X)
          (setq X (car X))
          (setq B (pack "<H1>" B "</H1>")) )
-      (prinl "HTTP/1." *Http1 " " N " " X "^M")
-      (prinl "Server: PicoLisp^M")
+      (prinl "HTTP/1." *Http1 " " N " " X "\r")
+      (prinl "Server: PicoLisp\r")
       (while (args)
-         (prinl (next) "^M") )
-      (prinl "Content-Type: text/html^M")
+         (prinl (next) "\r") )
+      (prinl "Content-Type: text/html\r")
       (httpCookies)
-      (prinl "Content-Length: " (+ 59 (length N) (length X) (length B)) "^M")
-      (prinl "^M")
+      (prinl "Content-Length: " (+ 59 (length N) (length X) (length B)) "\r")
+      (prinl "\r")
       (prinl "<HTML>")
       (prinl "<HEAD><TITLE>" N " " X "</TITLE></HEAD>")
       (prinl "<BODY>" B "</BODY>")
       (prinl "</HTML>") ) )
 
 (de noContent ()
-   (prinl "HTTP/1.0 204 No Content^M")
-   (prinl "^M") )
+   (prinl "HTTP/1.0 204 No Content\r")
+   (prinl "\r") )
 
 (de redirect @
    (httpStat 303 "See Other" (pass pack "Location: ")) )

@@ -313,7 +313,7 @@ href="refO.html#out">out</a></code>.
 
 <pre><code>
 : (pipe                                # equivalent to 'any'
-   (prinl "(a b # Comment^Jc d)")         # Child
+   (prinl "(a b # Comment\nc d)")         # Child
    (read) )                               # Parent
 -> (a b c d)
 

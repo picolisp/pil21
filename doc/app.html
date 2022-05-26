@@ -310,9 +310,9 @@ $ pil @lib/http.l -'pw 12' -bye
 
 <pre><code>
 ########################################################################
-(prinl "HTTP/1.0 200 OK^M")
+(prinl "HTTP/1.0 200 OK\r")
 (prinl "Content-Type: text/html; charset=utf-8")
-(prinl "^M")
+(prinl "\r")
 (prinl "&lt;html&gt;")
 (prinl "Hello World!")
 (prinl "&lt;/html&gt;")

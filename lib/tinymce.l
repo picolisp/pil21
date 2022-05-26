@@ -1,4 +1,4 @@
-# 04jul21 Software Lab. Alexander Burger
+# 26may22 Software Lab. Alexander Burger
 
 ### TinyMCE Interface ###
 (allow "@tinymce/" T)
@@ -45,7 +45,7 @@
          (recur (Tag)
             (loop
                (let? S (++ Lst)
-                  (unless (= S '("^J"))
+                  (unless (= S '("\n"))
                      (link (ht:Pack S)) ) )
                (NIL Lst)
                (T (and (= "/" (caar Lst)) (= Tag (cdar Lst)))
@@ -97,7 +97,7 @@
                   @A
                   (and @A @Z (head '("b" "r") @X) (cons " "))
                   @Z ) ) ) )
-      (extract pack (split L " " "^J")) ) )
+      (extract pack (split L " " "\n")) ) )
 
 # HTML text index relation
 (class +HtIdx +Fold +Idx)

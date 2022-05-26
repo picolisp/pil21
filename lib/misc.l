@@ -1,4 +1,4 @@
-# 27jan22 Software Lab. Alexander Burger
+# 26may22 Software Lab. Alexander Burger
 
 # *Allow
 
@@ -374,6 +374,11 @@
             (= Size (car (info F)))
             (=0 (%@ "rename" 'I F Dst)) ) ) ) )
 
+# Echo here-documents
+(de here (S)
+   (line)
+   (echo S) )
+
 # Print or eval
 (de prEval ("Prg" "Ofs")
    (default "Ofs" 1)
@@ -382,10 +387,15 @@
          (prinl (eval "X" "Ofs"))
          (eval "X" "Ofs") ) ) )
 
-# Echo here-documents
-(de here (S)
-   (line)
-   (echo S) )
+# Replace single LF with CR/LF
+(de nlCrnl "Prg"
+   (output
+      (cond
+         ((= "\n" @@)
+            (prin "\r\n") )
+         ((nand (= "\n" @@@) (= "\r" @@))
+            (prin @@) ) )
+      (run "Prg") ) )
 
 # Multiline Base64
 (de prBase64 (N C)
@@ -405,7 +415,7 @@
          (prog1
             (and
                (pre? "220 " (in S (line T)))
-               (out S (prinl "HELO " (cdr (member "@" (chop (fin From)))) "^M"))
+               (out S (prinl "HELO " (cdr (member "@" (chop (fin From)))) "\r"))
                (pre? "250 " (in S (line T)))
                (or
                   (atom Port)
@@ -419,83 +429,76 @@
                               (prin (car Port))
                               (wr 0)
                               (prin (cadr Port)) )
-                           (prBase64 T "^M") )
-                        (prinl "^M") )
+                           (prBase64 T "\r") )
+                        (prinl "\r") )
                      (pre? "235 " (in S (line T))) ) )
-               (out S (prinl "MAIL FROM:<" (fin From) ">^M"))
+               (out S (prinl "MAIL FROM:<" (fin From) ">\r"))
                (pre? "250 " (in S (line T)))
                (if (atom To)
                   (_rcpt To)
                   (find bool (mapcar _rcpt To)) )
-               (out S (prinl "DATA^M"))
+               (out S (prinl "DATA\r"))
                (pre? "354 " (in S (line T)))
                (out S
-                  (prinl "From: " (fin From) "^M")
-                  (prinl "To: " (or (fin To) (glue "," To)) "^M")
+                  (prinl "From: " (fin From) "\r")
+                  (prinl "To: " (or (fin To) (glue "," To)) "\r")
                   (prin "Subject: ")
                   (ifn (find > (chop Sub) '("~" .))
-                     (prinl Sub "^M")
+                     (prinl Sub "\r")
                      (prin "=?utf-8?B?")
-                     (pipe (prin Sub) (prBase64 T "^M"))
-                     (prinl "?=^M") )
+                     (pipe (prin Sub) (prBase64 T "\r"))
+                     (prinl "?=\r") )
                   (when (pair From)
-                     (prinl "Reply-To: " (car From) "^M") )
-                  (prinl "User-Agent: PicoLisp^M")
-                  (prinl "MIME-Version: 1.0^M")
+                     (prinl "Reply-To: " (car From) "\r") )
+                  (prinl "User-Agent: PicoLisp\r")
+                  (prinl "MIME-Version: 1.0\r")
                   (when Att
-                     (prinl "Content-Type: multipart/mixed; boundary=\"" B "\"^M")
-                     (prinl "^M")
-                     (prinl "--" B "^M")
+                     (prinl "Content-Type: multipart/mixed; boundary=\"" B "\"\r")
+                     (prinl "\r")
+                     (prinl "--" B "\r")
                      (unless (cadr Att)
-                        (prinl "Content-Type: multipart/alternative; boundary=\"==" B "==\"^M")
-                        (prinl "^M")
-                        (prinl "--==" B "==^M") ) )
-                  (prinl "Content-Type: text/plain; charset=utf-8^M")
-                  (prinl "Content-Transfer-Encoding: 8bit^M")
-                  (prinl "^M")
-                  (pipe (prEval Prg 2)
-                     (_nlCrnl) )
-                  (prinl "^M")
+                        (prinl "Content-Type: multipart/alternative; boundary=\"==" B "==\"\r")
+                        (prinl "\r")
+                        (prinl "--==" B "==\r") ) )
+                  (prinl "Content-Type: text/plain; charset=utf-8\r")
+                  (prinl "Content-Transfer-Encoding: 8bit\r")
+                  (prinl "\r")
+                  (nlCrnl (prEval Prg 2))
+                  (prinl "\r")
                   (when Att
                      (loop
                         (if (cadr Att)
-                           (prinl "--" B "^M")
-                           (prinl "--==" B "==^M") )
+                           (prinl "--" B "\r")
+                           (prinl "--==" B "==\r") )
                         (prin "Content-Type: " (or (caddr Att) "application/octet-stream"))
                         (and (cadr Att) (prin "; name=\"" @ "\""))
-                        (prinl "^M")
+                        (prinl "\r")
                         (prinl
                            "Content-Transfer-Encoding: "
                            (if (cadr Att) "base64" "8bit")
-                           "^M" )
-                        (prinl "^M")
+                           "\r" )
+                        (prinl "\r")
                         (in (car Att)
                            (ifn (cadr Att)
-                              (_nlCrnl)
-                              (prBase64 18 "^M")
-                              (prinl "^M") ) )
-                        (prinl "^M")
+                              (nlCrnl (echo))
+                              (prBase64 18 "\r")
+                              (prinl "\r") ) )
+                        (prinl "\r")
                         (unless (cadr Att)
-                           (prinl "--==" B "==--^M")
-                           (prinl "^M") )
+                           (prinl "--==" B "==--\r")
+                           (prinl "\r") )
                         (NIL (setq Att (cdddr Att))) )
-                     (prinl "--" B "--^M") )
-                  (prinl ".^M") )
+                     (prinl "--" B "--\r") )
+                  (prinl ".\r") )
                (pre? "250 " (in S (line T)))
-               (out S (prinl "QUIT^M"))
+               (out S (prinl "QUIT\r"))
                (pre? "221 " (in S (line T)))
                T )
             (close S) ) ) ) )
 
 (de _rcpt (To)
-   (out S (prinl "RCPT TO:<" To ">^M"))
+   (out S (prinl "RCPT TO:<" To ">\r"))
    (pre? "250 " (in S (line T))) )
-
-(de _nlCrnl ()
-   (let P NIL
-      (for (C (rd 1)  C  (rd 1))
-         (and (= 10 C) (<> P 13) (wr 13))  # ^M before ^J
-         (wr (setq P C)) ) ) )
 
 ### Debug ###
 `*Dbg

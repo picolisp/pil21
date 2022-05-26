@@ -1,4 +1,4 @@
-# 16nov21 Software Lab. Alexander Burger
+# 26may22 Software Lab. Alexander Burger
 
 ### name ###
 (test "abc" (name 'abc))
@@ -8,7 +8,7 @@
 
 
 ### sp? ###
-(test T (sp? " ^I^J"))
+(test T (sp? " \t\n"))
 (test NIL (sp? " abc"))
 (test NIL (sp? 123))
 

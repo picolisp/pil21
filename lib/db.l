@@ -1,4 +1,4 @@
-# 19feb22 Software Lab. Alexander Burger
+# 26may22 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -564,21 +564,21 @@
 
 (dm rel> (Obj Old New Hook)
    (idxRel Obj
-      Old NIL (split (cdr (chop Old)) " " "^J")
-      New NIL (split (cdr (chop New)) " " "^J")
+      Old NIL (split (cdr (chop Old)) " " "\n")
+      New NIL (split (cdr (chop New)) " " "\n")
       Hook )
    (extra Obj Old New Hook) )
 
 (dm rel?> (Obj Val Hook)
    (and
       (idxRel? Obj
-         Val NIL (split (cdr (chop Val)) " " "^J")
+         Val NIL (split (cdr (chop Val)) " " "\n")
          Hook )
       (extra Obj Val Hook) ) )
 
 (dm lose> (Obj Val Hook)
    (idxRel Obj
-      Val NIL (split (cdr (chop Val)) " " "^J")
+      Val NIL (split (cdr (chop Val)) " " "\n")
       NIL NIL NIL
       Hook )
    (extra Obj Val Hook) )
@@ -586,7 +586,7 @@
 (dm keep> (Obj Val Hook)
    (idxRel Obj
       NIL NIL NIL
-      Val NIL (split (cdr (chop Val)) " " "^J")
+      Val NIL (split (cdr (chop Val)) " " "\n")
       Hook )
    (extra Obj Val Hook) )
 
@@ -665,10 +665,10 @@
    (idxRel Obj
       Old (fold Old)
       (extract '((L) (extract fold L))
-         (split (cdr (chop Old)) " " "^J") )
+         (split (cdr (chop Old)) " " "\n") )
       New (fold New)
       (extract '((L) (extract fold L))
-         (split (cdr (chop New)) " " "^J") )
+         (split (cdr (chop New)) " " "\n") )
       Hook )
    (extra Obj Old New Hook) )
 
@@ -679,7 +679,7 @@
             (idxRel? Obj
                Val V
                (extract '((L) (extract fold L))
-                  (split (cdr (chop Val)) " " "^J") )
+                  (split (cdr (chop Val)) " " "\n") )
                Hook ) ) )
       (extra Obj Val Hook) ) )
 
@@ -687,7 +687,7 @@
    (idxRel Obj
       Val (fold Val)
       (extract '((L) (extract fold L))
-         (split (cdr (chop Val)) " " "^J") )
+         (split (cdr (chop Val)) " " "\n") )
       NIL NIL NIL
       Hook )
    (extra Obj Val Hook) )
@@ -697,7 +697,7 @@
       NIL NIL NIL
       Val (fold Val)
       (extract '((L) (extract fold L))
-         (split (cdr (chop Val)) " " "^J") )
+         (split (cdr (chop Val)) " " "\n") )
       Hook )
    (extra Obj Val Hook) )
 

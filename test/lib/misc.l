@@ -1,4 +1,4 @@
-# 27jan22 Software Lab. Alexander Burger
+# 26may22 Software Lab. Alexander Burger
 
 ### locale ###
 (locale "DE" "de")
@@ -21,11 +21,11 @@
 
 
 ### wrap ###
-(test "The quick brown fox^Jjumps over the lazy^Jdog"
+(test "The quick brown fox\njumps over the lazy\ndog"
    (wrap 20 (chop "The quick brown fox jumps over the lazy dog")) )
-(test "The^Jquick^Jbrown^Jfox^Jjumps^Jover the^Jlazy dog"
+(test "The\nquick\nbrown\nfox\njumps\nover the\nlazy dog"
    (wrap 8 (chop "The quick brown fox jumps over the lazy dog")) )
-(test "The^Jquick^Jbrown^Jfox^Jjumps^Jover^Jthe^Jlazy^Jdog"
+(test "The\nquick\nbrown\nfox\njumps\nover\nthe\nlazy\ndog"
    (wrap 2 (chop "The quick brown fox jumps over the lazy dog")) )
 (test '("The" "quick" "brown" "fox" "jumps" "over the" "lazy dog")
    (wrap 8 "The quick brown fox jumps over the lazy dog") )

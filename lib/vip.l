@@ -1,4 +1,4 @@
-# 15may22 Software Lab. Alexander Burger
+# 26may22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -463,11 +463,11 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
 
 (de getch ()
    (symbols *Ns
-      (if (= "^[" (setq *Chr (or (++ *Keys) (key))))
+      (if (= "\e" (setq *Chr (or (++ *Keys) (key))))
          (when (or (++ *Keys) (key 120))
             (loop
                (setq *Chr (pack *Chr @))
-               (T (member *Chr '("^[[A" "^[[B" "^[[C" "^[[D")) *Chr)
+               (T (member *Chr '("\e[A" "\e[B" "\e[C" "\e[D")) *Chr)
                (NIL (or (++ *Keys) (key 120)) *Chr) ) )
          *Chr ) ) )
 
@@ -972,7 +972,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                         (goto 1 (inc (: posY)))
                         (cursor)
                         T ) ) )
-               (("^H" "^?")  # [BACKSPACE]
+               (("\b" "^?")  # [BACKSPACE]
                   (when (and Chg (n0 (car Chg)))
                      (_bs)
                      (chgLine (car P)) )
@@ -1425,14 +1425,14 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                                     (do (: sc) (scRight))
                                     (redraw) ) )
                               ("." (if *Repeat (eval @) (beep)))  # Repeat last change
-                              (("j" "^[[B") (move 'goDown *Cnt))  # [DOWN] Move down
-                              (("^F" "^[[6~") (move 'goDown (: lines)))  # [PGDOWN] Page down
-                              (("k" "^[[A") (move 'goUp *Cnt))  # [UP] Move up
-                              (("^B" "^[[5~") (move 'goUp (: lines)))  # [PGUP] Page up
+                              (("j" "\e[B") (move 'goDown *Cnt))  # [DOWN] Move down
+                              (("^F" "\e[6~") (move 'goDown (: lines)))  # [PGDOWN] Page down
+                              (("k" "\e[A") (move 'goUp *Cnt))  # [UP] Move up
+                              (("^B" "\e[5~") (move 'goUp (: lines)))  # [PGUP] Page up
                               ("h" (move 'goLeft *Cnt))  # Move left
                               ("l" (move 'goRight *Cnt))  # Move right
-                              ("^[[D" (scLeft) (redraw))  # [LEFT] Scroll left
-                              ("^[[C" (scRight) (redraw))  # [RIGHT] Scroll right
+                              ("\e[D" (scLeft) (redraw))  # [LEFT] Scroll left
+                              ("\e[C" (scRight) (redraw))  # [RIGHT] Scroll right
                               ("z" (do 3 (scRight)) (redraw))  # Scroll right 3 columns
                               ("Z" (do 3 (scLeft)) (redraw))  # Scroll left 3 columns
                               ("|" (move 'goCol *Cnt))  # Go to column
@@ -1577,30 +1577,30 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                                        (reload (++ *TagStack) (++ *TagStack) (++ *TagStack))
                                        (syms> (: buffer) (++ *TagStack))
                                        (reload (: buffer file) (++ *TagStack) (++ *TagStack)) ) ) )
-                              (("^[OP" "^[[[A")  # [F1] Highlight on/off
+                              (("\eOP" "\e[[A")  # [F1] Highlight on/off
                                  (=: buffer flat (not (: buffer flat)))
                                  (repaint) )
-                              (("^[OQ" "^[[[B")  # [F2] Show chages to <file>-
+                              (("\eOQ" "\e[[B")  # [F2] Show chages to <file>-
                                  (shFile
                                     (if (sys "CCRYPT" (: buffer key))
                                        "diff -Bb <(ccrypt -c -ECCRYPT @1-) <(ccrypt -c -ECCRYPT @1)"
                                        "diff -Bb @1- @1" ) ) )
-                              (("^[OR" "^[[[C")  # [F3] Custom dif
+                              (("\eOR" "\e[[C")  # [F3] Custom dif
                                  (shFile "dif @1 @2") )
-                              (("^[OS" "^[[[D")  # [F4] Format paragraph
+                              (("\eOS" "\e[[D")  # [F4] Format paragraph
                                  (and *Count (=: buffer fmt @))
                                  (goPFore 1 -1)
                                  (pipeN (cnt@@) (pack "fmt -" (: buffer fmt))) )
-                              (("^[[15~" "^[[[E")  # [F5] Previous buffer
+                              (("\e[15~" "\e[[E")  # [F5] Previous buffer
                                  (nextBuf T) )
-                              ("^[[17~"  # [F6] Next buffer
+                              ("\e[17~"  # [F6] Next buffer
                                  (nextBuf) )
-                              ("^[[18~" (run *F7))  # [F7] Custom key
-                              ("^[[19~" (run *F8))  # [F8] Custom key
-                              ("^[[20~" (run *F9))  # [F9] Custom key
-                              ("^[[21~" (run *F10))  # [F10] Custom key
-                              ("^[[23~" (run *F11))  # [F11] Custom key
-                              ("^[[24~" (run *F12))  # [F12] Custom key
+                              ("\e[18~" (run *F7))  # [F7] Custom key
+                              ("\e[19~" (run *F8))  # [F8] Custom key
+                              ("\e[20~" (run *F9))  # [F9] Custom key
+                              ("\e[21~" (run *F10))  # [F10] Custom key
+                              ("\e[23~" (run *F11))  # [F11] Custom key
+                              ("\e[24~" (run *F12))  # [F12] Custom key
                               ("\\"  # Select or toggle buffer
                                  (nextBuf
                                     (if *Count

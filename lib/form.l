@@ -1,4 +1,4 @@
-# 11may22 Software Lab. Alexander Burger
+# 26may22 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -984,7 +984,7 @@
    (<tip> (eval (: tip)) (extra Var)) )
 
 (dm js> ()
-   (pack (extra) "&?" (ht:Fmt (glue "^J" (eval (: tip))))) )
+   (pack (extra) "&?" (ht:Fmt (glue "\n" (eval (: tip))))) )
 
 
 (class +Tiny)
@@ -1484,17 +1484,17 @@
 (class +LinesField +TextField)
 
 (dm set> (Val Dn)
-   (super (glue "^J" Val) Dn) )
+   (super (glue "\n" Val) Dn) )
 
 (dm val> ()
-   (split (chop (super)) "^J") )
+   (split (chop (super)) "\n") )
 
 
 (class +ListTextField +TextField)
 # split
 
 (dm T (Lst . @)
-   (=: split (or Lst '(" " "^I" "^J")))
+   (=: split (or Lst '(" " "\t" "\n")))
    (pass super) )
 
 (dm set> (Val Dn)

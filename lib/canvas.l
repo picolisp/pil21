@@ -1,4 +1,4 @@
-# 20apr22 Software Lab. Alexander Burger
+# 26may22 Software Lab. Alexander Burger
 
 (allow "!jsDraw" )
 (push1 '*JS (allow "@lib/plio.js") (allow "@lib/canvas.js"))
@@ -11,7 +11,7 @@
 (de jsDraw (Id Dly F X Y X2 Y2)
    (http1 "application/octet-stream" 0)
    (let Lst (drawCanvas Id Dly F X Y X2 Y2)
-      (prinl "Content-Length: " (bytes Lst) "^M^J^M")
+      (prinl "Content-Length: " (bytes Lst) "\r\n\r")
       (pr Lst) ) )
 
 # Canvas Commands

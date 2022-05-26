@@ -940,7 +940,7 @@ fields. A typical way to import the contents of such a file is:
 <pre><code>
 (in '("bin/utf2" "importFile.txt")              # Pipe: Convert to UTF-8
    (until (eof)                                 # Process whole file
-      (let L (split (line) "^I")                # TAB-delimited data
+      (let L (split (line) "\t")                # TAB-delimited data
          ...                                    # process them
 </code></pre>
 
@@ -960,8 +960,8 @@ fields. A typical way to import the contents of such a file is:
       (while (char)
          (prin
             (case @
-               ("^M" NIL)                       # ignore CR
-               ("^J" "^M")                      # convert LF to CR
+               ("\r" NIL)                       # ignore CR
+               ("\n" "\r")                      # convert LF to CR
                (T @) ) ) ) ) )                  # otherwise no change
 
 (out "c"                                        # Merge the contents of "a"

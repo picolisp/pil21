@@ -1,4 +1,4 @@
-# 14mar22 Software Lab. Alexander Burger
+# 26may22 Software Lab. Alexander Burger
 
 (local) (xml? xml body attr)
 (private) (_xml xmlEsc escXml)
@@ -71,7 +71,7 @@
                   (if (= "<" X)
                      (and (_xml (till " /<>" T)) (link @))
                      (link
-                        (pack (xmlEsc (trim (cons X (till "^J<"))))) ) ) ) ) ) ) ) )
+                        (pack (xmlEsc (trim (cons X (till "\n<"))))) ) ) ) ) ) ) ) )
 
 (de xmlEsc (L)
    (use (@X @Z)

@@ -1,4 +1,4 @@
-# 23may22 Software Lab. Alexander Burger
+# 26may22 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -223,7 +223,7 @@
                   ((<> "\n" @@) (prin @@))
                   (@@@ (prin "\ndata: ")) )
                (htPrin Prg 2) )
-            (prinl "^J") ) ) ) )
+            (prinl "\n") ) ) ) )
 
 (de ping (Min)
    (timeout (setq *Timeout (* Min `(* 60 1000))))
@@ -473,10 +473,10 @@
 (private) (X Txt Prg)
 
 (de tip (X Txt)
-   (<span> (cons 'title (glue "^J" X)) Txt) )
+   (<span> (cons 'title (glue "\n" X)) Txt) )
 
 (de <tip> (X . Prg)
-   (let *Style (style (cons 'title (glue "^J" X)) *Style)
+   (let *Style (style (cons 'title (glue "\n" X)) *Style)
       (run Prg) ) )
 
 (private) (Lst P LayX LayY L Args DX DY Cls Style)
@@ -712,8 +712,8 @@
       (out @
          (prin (next))
          (while (args)
-            (prin "^I" (next)) )
-         (prinl "^M") ) ) )
+            (prin "\t" (next)) )
+         (prinl "\r") ) ) )
 
 (de <%> @
    (prog1
@@ -727,21 +727,21 @@
       (out @
          (prin (eval (cadar "Lst")))
          (for "S" (cdr "Lst")
-            (prin "^I" (eval (cadr "S"))) )
-         (prinl "^M") ) )
+            (prin "\t" (eval (cadr "S"))) )
+         (prinl "\r") ) )
    "Lst" )
 
 (de <+> (Str Obj Msg Tab)
-   (if (sub? "^J" Str)
-      (let L (split (chop Str) "^J")
+   (if (sub? "\n" Str)
+      (let L (split (chop Str) "\n")
          (<span> (cons 'title Str) (ht:Prin (car L)))
-         (and "*CSV" (out @ (prin (glue " " L) "^I"))) )
+         (and "*CSV" (out @ (prin (glue " " L) "\t"))) )
       (<$> Str Obj Msg Tab)
-      (and "*CSV" (out @ (prin Str "^I"))) ) )
+      (and "*CSV" (out @ (prin Str "\t"))) ) )
 
 (de <-> (Str Obj Msg Tab)
-   (if (sub? "^J" Str)
-      (let L (split (chop Str) "^J")
+   (if (sub? "\n" Str)
+      (let L (split (chop Str) "\n")
          (<span> (cons 'title Str) (ht:Prin (car L)))
          (<0> (glue " " L)) )
       (<$> Str Obj Msg Tab)

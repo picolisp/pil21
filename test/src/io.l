@@ -1,4 +1,4 @@
-# 25may22 Software Lab. Alexander Burger
+# 26may22 Software Lab. Alexander Burger
 
 ### path ###
 (test 'task (cadr (in (path "@lib.l") (read))))
@@ -48,10 +48,10 @@
 
 ### skip ###
 (test "a"
-   (pipe (prinl "# Comment^Ja")
+   (pipe (prinl "# Comment\na")
       (skip "#") ) )
 (test "#"
-   (pipe (prinl "# Comment^Ja")
+   (pipe (prinl "# Comment\na")
       (skip) ) )
 
 
@@ -70,17 +70,17 @@
 
 ### line ###
 (test '("a" "b" "c")
-   (pipe (prin "abc^J") (line)) )
+   (pipe (prin "abc\n") (line)) )
 (test "abc"
    (pipe (prin "abc") (line T)) )
 (test '("abc" "def")
-   (pipe (prin "abc^Jdef")
+   (pipe (prin "abc\ndef")
       (list (line T) (line T)) ) )
 (test '("abc" "def")
-   (pipe (prin "abc^Mdef")
+   (pipe (prin "abc\rdef")
       (list (line T) (line T)) ) )
 (test '("abc" "def")
-   (pipe (prin "abc^M^Jdef")
+   (pipe (prin "abc\r\ndef")
       (list (line T) (line T)) ) )
 (test '("a" "bc" "def")
    (pipe (prin "abcdef")
@@ -88,7 +88,7 @@
 
 
 ### any ###
-(test '(a b c d) (any "(a b # Comment^Jc d)"))
+(test '(a b c d) (any "(a b # Comment\nc d)"))
 (test "A String" (any "\"A String\""))
 
 
@@ -125,7 +125,7 @@
 (let Err (tmp "err")
    (test 1 (err Err (msg 1)))
    (test 2 (err (pack "+" Err) (msg 2)))
-   (test "1^J2^J" (in Err (till NIL T))) )
+   (test "1\n2\n" (in Err (till NIL T))) )
 
 
 ### input output ###
@@ -178,7 +178,7 @@
    (print 3)
    (printsp 4)
    (println 5) )
-(test (12 "^J" " " 34 5)
+(test (12 "\n" " " 34 5)
    (in (tmp "prin")
       (list (read) (char) (char) (read) (read)) ) )
 
