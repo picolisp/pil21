@@ -1,4 +1,6 @@
 26may22
+   Add 'binutils'
+      INSTALL
    Use 'output' instead of 'pipe'
       lib/misc.l
    Replace control characters with backslash sequences
