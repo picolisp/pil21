@@ -1,4 +1,4 @@
-// 22apr22 Software Lab. Alexander Burger
+// 29may22 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -725,6 +725,10 @@ uint64_t ffiCall(ffi *p, uint64_t lst) {
          set(z, natRetBuf(cdr(car(y)), (char**)&value[i]));
    }
    return rc;
+}
+
+void *arg(void *p) {
+   return p;
 }
 
 // Case mappings from the GNU Kaffe Project
