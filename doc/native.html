@@ -310,8 +310,8 @@ are: As numbers.
 </code></pre>
 
 <p>String arguments can be specified as symbols. <code>native</code> allocates
-memory for each string (with <code>strdup(3)</code>), passes the pointer to the
-C function, and releases the memory (with <code>free(3)</code>) when done.
+memory for each string on the stack, passes the pointer to the C function, and
+cleans up the stack when done.
 
 <pre><code>
 (native "lib.so" "fun" NIL "abc")      # void fun(char*);
@@ -651,33 +651,6 @@ prints a floating point number in scientific notation:
 : (prf (exp 12.3))
 2.196960e+05
 </code></pre>
-
-<p>As we know that the format string <code>"%e\n"</code> will be converted from
-a Lisp symbol to a C string with <code>strdup</code> - and then thrown away - on
-each call to <code>prf</code>, we might as well perform a little optimization
-and delegate this conversion to the program load time:
-
-<pre><code>
-: (de prf (Flt)
-   (%@ "printf" NIL `(%@ "strdup" 'P "%e\n") (cons Flt 1.0)) )
--> prf
-
-: (prf (exp 12.3))
-2.196960e+05
-</code></pre>
-
-<p>If we look at the <code>prf</code> function, we see that it now contains the
-pointer to the allocated string memory:
-
-<pre><code>
-: (pp 'prf)
-(de prf (Flt)
-   (%@ "printf" NIL 24662032 (cons Flt 1000000)) )
--> prf
-</code></pre>
-
-<p>This pointer will be used by <code>printf</code> directly, without any
-further conversion or memory management.
 
 
 <p><hr>
