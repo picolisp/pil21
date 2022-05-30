@@ -1,3 +1,8 @@
+30may22
+   'h' function
+      lib/debug.l
+      doc/refH.html
+
 29may22
    String arguments do no longer cause strdup(3) calls
       doc/native.html

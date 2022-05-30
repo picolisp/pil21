@@ -1,10 +1,22 @@
-# 25may22 Software Lab. Alexander Burger
+# 30may22 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
    (casq (car (symbols)) (pico) (T @)) )
 
 (private) (_who _match nest nst1 nst2 C D M S X Y Z Fun Prg Who dep1 dep2)
+
+# Edit history
+(de h ()
+   (let F (tmp "history")
+      (out F
+         (mapc prinl (history)) )
+      (and
+         (vi (cons T F))
+         (history
+            (in F
+               (make (while (line T) (link @))) ) )
+         T ) ) )
 
 # Browsing
 (de help (Sym Ex)

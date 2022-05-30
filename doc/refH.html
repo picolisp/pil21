@@ -66,6 +66,17 @@ href="refD.html#dep">dep</a></code>.
 -> (@ js> dec> inc> upd> ele> log> chk> val> del> rel> all> url> zap> clr> str> has>
 </code></pre>
 
+<dt><a name="h"><code>(h) -> flg</code></a>
+<dd>(Debug mode only) Edits the history in memory with Vip. Returns
+<code>T</code> if Vip was exited with "x" and <code>NIL</code> if exited with
+"q". See also <code><a href="refH.html#history">history</a></code> and <code><a
+href="refV.html#vi">vi</a></code>.
+
+<pre><code>
+: (h)    # Edit history
+-> T     # "x"
+</code></pre>
+
 <dt><a name="hash"><code>(hash 'any) -> cnt</code></a>
 <dd>Generates a 16-bit number (1-65536) from <code>any</code>, suitable as a
 hash value for various purposes, like randomly balanced <code><a
