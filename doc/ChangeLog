@@ -1,3 +1,7 @@
+31may22
+   Remove 'visibilitychange' event handling
+      lib/xhtml.l
+
 30may22
    'h' function
       lib/debug.l
