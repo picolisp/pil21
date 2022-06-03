@@ -1,3 +1,7 @@
+03jun22
+   Disable form action for stale locks
+      lib/form.l
+
 31may22
    Remove 'visibilitychange' event handling
       lib/xhtml.l

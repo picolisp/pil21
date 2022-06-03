@@ -1,4 +1,4 @@
-# 26may22 Software Lab. Alexander Burger
+# 03jun22 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -238,6 +238,7 @@
                (and (lt0 (car G)) (setq *Btn (cdr G)))
                (con (assoc (car G) (val *PRG)) (cdr G)) ) )
          (off *Gui)
+         (and (: lock) (n== @ *Lock) (=: able))
          (job (: env)
             (for This (: gui)
                (cond
@@ -253,11 +254,12 @@
                      ((or (: rid) (: home able))
                         (set> This (val> This)) ) ) ) )
             (if (pair *Err)
-               (and *Lock (with (caar *Err) (tryLock *Lock)))
+               (when *Lock
+                  (=: lock (with (caar *Err) (tryLock *Lock))) )
                (finally
                   (when *Lock
                      (if (lock @)
-                        (=: able (off *Lock))
+                        (=: able (=: lock (off *Lock)))
                         (sync)
                         (tell) ) )
                   (when "Fun"
@@ -2021,13 +2023,14 @@
             (eval (: save))
             (unless (pair *Err)
                (rollback)
-               (off *Lock) ) )
-         (tryLock (: home obj)) ) )
+               (=: home lock (off *Lock)) ) )
+         (=: home lock (tryLock (: home obj))) ) )
    (=: save Exe) )
 
 (de tryLock (Obj)
    (if (lock Obj)
-      (error (text ,"Currently edited by '@2' (@1)" @  (cdr (lup *Users @))))
+      (nil
+         (error (text ,"Currently edited by '@2' (@1)" @  (cdr (lup *Users @)))) )
       (sync)
       (tell)
       (setq *Lock Obj) ) )
@@ -2081,7 +2084,7 @@
                (ask (text ,"Delete @1?" @Txt)
                   (lose!> (: home top 1 obj))
                   (rollback)
-                  (off *Lock) ) )
+                  (=: home lock (off *Lock)) ) )
             ((keep?> (: home obj))
                (ask (text ,"Restore @1?" @Txt)
                   (keep!> (: home top 1 obj)) ) )
@@ -2591,8 +2594,8 @@
          ((: obj T))
          ((not (: obj)))
          ((=T (car Lst)) T)
-         ((== *Lock (: obj)) T)
-         (*Lock (rollback) (off *Lock)) ) ) )
+         ((== *Lock (: obj)) (=: lock (: obj)) T)
+         (*Lock (rollback) (=: lock (off *Lock))) ) ) )
 
 (private) (Able Txt Del Dlg Var X Hook Msg Exe Prg)
 
@@ -2600,7 +2603,7 @@
    (unless (eval Able)
       (when *Lock
          (rollback)
-         (off *Lock) )
+         (=: lock (off *Lock)) )
       (=: able) )
    (<spread>
       (editButton Able Exe)

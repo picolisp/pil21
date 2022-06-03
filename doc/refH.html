@@ -48,6 +48,17 @@ See also <a href="ref.html#dbase">Database</a>.
 (rel nm (+Hook2 +IdxFold +String) 3 shop)       # Global and shop-local index
 </code></pre>
 
+<dt><a name="h"><code>(h) -> flg</code></a>
+<dd>(Debug mode only) Edits the history in memory with Vip. Returns
+<code>T</code> if Vip was exited with "x" and <code>NIL</code> if exited with
+"q". See also <code><a href="refH.html#history">history</a></code> and <code><a
+href="refV.html#vi">vi</a></code>.
+
+<pre><code>
+: (h)    # Edit history
+-> T     # "x"
+</code></pre>
+
 <dt><a name="has"><code>(has 'any) -> lst</code></a>
 <dd>(Debug mode only) Returns a list of all internal symbols which have the
 value <code>any</code>. See also <code><a href="refW.html#who">who</a></code>,
@@ -64,17 +75,6 @@ href="refD.html#dep">dep</a></code>.
 -> 267259
 : (has 267259)
 -> (@ js> dec> inc> upd> ele> log> chk> val> del> rel> all> url> zap> clr> str> has>
-</code></pre>
-
-<dt><a name="h"><code>(h) -> flg</code></a>
-<dd>(Debug mode only) Edits the history in memory with Vip. Returns
-<code>T</code> if Vip was exited with "x" and <code>NIL</code> if exited with
-"q". See also <code><a href="refH.html#history">history</a></code> and <code><a
-href="refV.html#vi">vi</a></code>.
-
-<pre><code>
-: (h)    # Edit history
--> T     # "x"
 </code></pre>
 
 <dt><a name="hash"><code>(hash 'any) -> cnt</code></a>
