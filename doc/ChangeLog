@@ -1,3 +1,7 @@
+06jun22
+   Missing "void *" in '*C-Defs'
+      src/lib/llvm.l
+
 03jun22
    Disable form action for stale locks
       lib/form.l
@@ -425,7 +429,7 @@
       lib/vip.l
 
 29nov21
-   Extend 'command' with *CmdMap
+   Extend 'command' with '*CmdMap'
    Continue direct editing only with "K" ("^]" always goes to source)
       lib/vip.l
 

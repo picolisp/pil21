@@ -1,4 +1,4 @@
-# 09apr22 Software Lab. Alexander Burger
+# 06jun22 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -75,6 +75,7 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
    (~(chop "const ") @A " " @Sym " " @Z)
    (~(chop "struct ") @A " " "*" @Sym ";" @Z)
    (~(chop "struct ") @A " " @Sym ";" @Z)
+   (~(chop "void *") @Sym "(" @Z)
    (~(chop "void ") @Sym "(" @Z)
    (~(chop "char *") @Sym "(" @Z)
    (~(chop "int ") @Sym ";" @Z)
