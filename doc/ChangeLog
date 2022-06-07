@@ -1,3 +1,7 @@
+07jun22
+   Refined system clipboard copy
+      lib/vip.l
+
 06jun22
    Missing "void *" in '*C-Defs'
       src/lib/llvm.l

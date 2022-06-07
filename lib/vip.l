@@ -1,4 +1,4 @@
-# 26may22 Software Lab. Alexander Burger
+# 07jun22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1251,7 +1251,9 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                               (let V (val *Clip)
                                  (if (=T (car V))
                                     (mapc prinl (cdr V))
-                                    (prin V) ) ) ) )
+                                    (map
+                                       '(((S . L)) (prin S (and L "\n")))
+                                       V ) ) ) ) )
                         ("ix.io"  # Paste to http://ix.io
                            (pipe
                               (out '("curl" "-sF" "f:1=<-" "ix.io")
