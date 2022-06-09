@@ -1,3 +1,7 @@
+09jun22
+   Check empty name in '+SymField'
+      lib/form.l
+
 07jun22
    Refined system clipboard copy
       lib/vip.l

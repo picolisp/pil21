@@ -1,4 +1,4 @@
-# 03jun22 Software Lab. Alexander Burger
+# 09jun22 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -1540,7 +1540,7 @@
       (and (<> "-" S) (intern S)) ) )
 
 (dm set> (Val Dn)
-   (super (name Val) Dn) )
+   (super (and Val (name @)) Dn) )
 
 
 (class +numField +Align +TextField)
