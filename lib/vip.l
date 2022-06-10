@@ -1,4 +1,4 @@
-# 07jun22 Software Lab. Alexander Burger
+# 10jun22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -246,7 +246,11 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
 (dm syms> ("Lst")
    (out (: file)
       (for "S" (=: syms "Lst")
-         (if (and (ext? "S") (lock "S"))
+         (if
+            (and
+               (ext? "S")
+               (not (rank (car (id "S" T)) *Ext))
+               (lock "S") )
             (prinl "# " "S" " locked")
             (printsp "S")
             (fish

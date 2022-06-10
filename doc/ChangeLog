@@ -1,3 +1,7 @@
+10jun22
+   Don't lock remote symbols
+      lib/vip.l
+
 09jun22
    Check empty name in '+SymField'
       lib/form.l
