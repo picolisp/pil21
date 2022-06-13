@@ -1522,7 +1522,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 354,
   i64 98,
-  i64 162
+  i64 210
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -52954,11 +52954,11 @@ $21:
   br label %$11
 $20:
   %45 = phi i64 [%32, %$19] ; # X
-; # (let Nm @ (ifn (== X (isIntern Nm $PrivT)) (let (Lst (val $Intern...
-; # (ifn (== X (isIntern Nm $PrivT)) (let (Lst (val $Intern) F NO) (l...
+; # (let (Nm @ Prv (isIntern Nm $PrivT)) (ifn (== X Prv) (let (Lst (v...
 ; # (isIntern Nm $PrivT)
   %46 = call i64 @isIntern(i64 %40, i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 112) to i64))
-; # (== X (isIntern Nm $PrivT))
+; # (ifn (== X Prv) (let (Lst (val $Intern) F NO) (loop (? (atom Lst)...
+; # (== X Prv)
   %47 = icmp eq i64 %45, %46
   br i1 %47, label %$23, label %$22
 $22:
@@ -52970,9 +52970,9 @@ $22:
 ; # (loop (? (atom Lst) (call $Put (char "\"")) (let (P (push 0 Nm) B...
   br label %$25
 $25:
-  %51 = phi i64 [%48, %$22], [%159, %$43] ; # X
-  %52 = phi i64 [%50, %$22], [%164, %$43] ; # Lst
-  %53 = phi i1 [0, %$22], [%161, %$43] ; # F
+  %51 = phi i64 [%48, %$22], [%167, %$43] ; # X
+  %52 = phi i64 [%50, %$22], [%172, %$43] ; # Lst
+  %53 = phi i1 [0, %$22], [%169, %$43] ; # F
 ; # (? (atom Lst) (call $Put (char "\"")) (let (P (push 0 Nm) B (symB...
 ; # (atom Lst)
   %54 = and i64 %52, 15
@@ -53117,7 +53117,7 @@ $26:
 ; # (car Lst)
   %133 = inttoptr i64 %131 to i64*
   %134 = load i64, i64* %133
-; # (when (isIntern Nm (cdar Nsp)) (? (== @ X) (when F (printSym Nsp)...
+; # (when (isIntern Nm (cdar Nsp)) (? (== @ X) (when (or Prv F) (prin...
 ; # (cdar Nsp)
   %135 = inttoptr i64 %134 to i64*
   %136 = load i64, i64* %135
@@ -53132,7 +53132,7 @@ $42:
   %142 = phi i64 [%130, %$26] ; # X
   %143 = phi i64 [%131, %$26] ; # Lst
   %144 = phi i1 [%132, %$26] ; # F
-; # (? (== @ X) (when F (printSym Nsp) (call $Put (char "~"))) (print...
+; # (? (== @ X) (when (or Prv F) (printSym Nsp) (call $Put (char "~")...
 ; # (== @ X)
   %145 = icmp eq i64 %140, %142
   br i1 %145, label %$45, label %$44
@@ -53140,237 +53140,250 @@ $45:
   %146 = phi i64 [%142, %$42] ; # X
   %147 = phi i64 [%143, %$42] ; # Lst
   %148 = phi i1 [%144, %$42] ; # F
-; # (when F (printSym Nsp) (call $Put (char "~")))
-  br i1 %148, label %$46, label %$47
+; # (when (or Prv F) (printSym Nsp) (call $Put (char "~")))
+; # (or Prv F)
+  %149 = icmp ne i64 %46, 0
+  br i1 %149, label %$46, label %$47
+$47:
+  %150 = phi i64 [%146, %$45] ; # X
+  %151 = phi i64 [%147, %$45] ; # Lst
+  %152 = phi i1 [%148, %$45] ; # F
+  br label %$46
 $46:
-  %149 = phi i64 [%146, %$45] ; # X
-  %150 = phi i64 [%147, %$45] ; # Lst
-  %151 = phi i1 [%148, %$45] ; # F
+  %153 = phi i64 [%146, %$45], [%150, %$47] ; # X
+  %154 = phi i64 [%147, %$45], [%151, %$47] ; # Lst
+  %155 = phi i1 [%148, %$45], [%152, %$47] ; # F
+  %156 = phi i1 [1, %$45], [%152, %$47] ; # ->
+  br i1 %156, label %$48, label %$49
+$48:
+  %157 = phi i64 [%153, %$46] ; # X
+  %158 = phi i64 [%154, %$46] ; # Lst
+  %159 = phi i1 [%155, %$46] ; # F
 ; # (printSym Nsp)
   call void @printSym(i64 %134)
 ; # (call $Put (char "~"))
-  %152 = load void(i8)*, void(i8)** @$Put
-  call void %152(i8 126)
-  br label %$47
-$47:
-  %153 = phi i64 [%146, %$45], [%149, %$46] ; # X
-  %154 = phi i64 [%147, %$45], [%150, %$46] ; # Lst
-  %155 = phi i1 [%148, %$45], [%151, %$46] ; # F
+  %160 = load void(i8)*, void(i8)** @$Put
+  call void %160(i8 126)
+  br label %$49
+$49:
+  %161 = phi i64 [%153, %$46], [%157, %$48] ; # X
+  %162 = phi i64 [%154, %$46], [%158, %$48] ; # Lst
+  %163 = phi i1 [%155, %$46], [%159, %$48] ; # F
 ; # (printName Nm)
   call void @printName(i64 %40)
   br label %$27
 $44:
-  %156 = phi i64 [%142, %$42] ; # X
-  %157 = phi i64 [%143, %$42] ; # Lst
-  %158 = phi i1 [%144, %$42] ; # F
+  %164 = phi i64 [%142, %$42] ; # X
+  %165 = phi i64 [%143, %$42] ; # Lst
+  %166 = phi i1 [%144, %$42] ; # F
   br label %$43
 $43:
-  %159 = phi i64 [%130, %$26], [%156, %$44] ; # X
-  %160 = phi i64 [%131, %$26], [%157, %$44] ; # Lst
-  %161 = phi i1 [%132, %$26], [1, %$44] ; # F
+  %167 = phi i64 [%130, %$26], [%164, %$44] ; # X
+  %168 = phi i64 [%131, %$26], [%165, %$44] ; # Lst
+  %169 = phi i1 [%132, %$26], [1, %$44] ; # F
 ; # (shift Lst)
-  %162 = inttoptr i64 %160 to i64*
-  %163 = getelementptr i64, i64* %162, i32 1
-  %164 = load i64, i64* %163
+  %170 = inttoptr i64 %168 to i64*
+  %171 = getelementptr i64, i64* %170, i32 1
+  %172 = load i64, i64* %171
   br label %$25
 $27:
-  %165 = phi i64 [%124, %$41], [%153, %$47] ; # X
-  %166 = phi i64 [%125, %$41], [%154, %$47] ; # Lst
-  %167 = phi i1 [%126, %$41], [%155, %$47] ; # F
+  %173 = phi i64 [%124, %$41], [%161, %$49] ; # X
+  %174 = phi i64 [%125, %$41], [%162, %$49] ; # Lst
+  %175 = phi i1 [%126, %$41], [%163, %$49] ; # F
   br label %$24
 $23:
-  %168 = phi i64 [%45, %$20] ; # X
+  %176 = phi i64 [%45, %$20] ; # X
 ; # (outString ($ "priv~"))
   call void @outString(i8* bitcast ([6 x i8]* @$44 to i8*))
 ; # (printName Nm)
   call void @printName(i64 %40)
   br label %$24
 $24:
-  %169 = phi i64 [%165, %$27], [%168, %$23] ; # X
+  %177 = phi i64 [%173, %$27], [%176, %$23] ; # X
   br label %$11
 $11:
-  %170 = phi i64 [%20, %$16], [%42, %$21], [%169, %$24] ; # X
+  %178 = phi i64 [%20, %$16], [%42, %$21], [%177, %$24] ; # X
   br label %$4
 $9:
-  %171 = phi i64 [%11, %$7] ; # X
+  %179 = phi i64 [%11, %$7] ; # X
 ; # (and (== (car X) $Quote) (<> X (cdr X)))
 ; # (car X)
-  %172 = inttoptr i64 %171 to i64*
-  %173 = load i64, i64* %172
+  %180 = inttoptr i64 %179 to i64*
+  %181 = load i64, i64* %180
 ; # (== (car X) $Quote)
-  %174 = icmp eq i64 %173, ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 264) to i64)
-  br i1 %174, label %$49, label %$48
-$49:
-  %175 = phi i64 [%171, %$9] ; # X
-; # (cdr X)
-  %176 = inttoptr i64 %175 to i64*
-  %177 = getelementptr i64, i64* %176, i32 1
-  %178 = load i64, i64* %177
-; # (<> X (cdr X))
-  %179 = icmp ne i64 %175, %178
-  br label %$48
-$48:
-  %180 = phi i64 [%171, %$9], [%175, %$49] ; # X
-  %181 = phi i1 [0, %$9], [%179, %$49] ; # ->
-  br i1 %181, label %$51, label %$50
+  %182 = icmp eq i64 %181, ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 264) to i64)
+  br i1 %182, label %$51, label %$50
 $51:
-  %182 = phi i64 [%180, %$48] ; # X
-; # (call $Put (char "'"))
-  %183 = load void(i8)*, void(i8)** @$Put
-  call void %183(i8 39)
+  %183 = phi i64 [%179, %$9] ; # X
 ; # (cdr X)
-  %184 = inttoptr i64 %182 to i64*
+  %184 = inttoptr i64 %183 to i64*
   %185 = getelementptr i64, i64* %184, i32 1
   %186 = load i64, i64* %185
-; # (print (cdr X))
-  call void @print(i64 %186)
-  br label %$4
+; # (<> X (cdr X))
+  %187 = icmp ne i64 %183, %186
+  br label %$50
 $50:
-  %187 = phi i64 [%180, %$48] ; # X
-; # (stkChk 0)
-  %188 = load i8*, i8** @$StkLimit
-  %189 = call i8* @llvm.stacksave()
-  %190 = icmp ugt i8* %188, %189
-  br i1 %190, label %$52, label %$53
+  %188 = phi i64 [%179, %$9], [%183, %$51] ; # X
+  %189 = phi i1 [0, %$9], [%187, %$51] ; # ->
+  br i1 %189, label %$53, label %$52
+$53:
+  %190 = phi i64 [%188, %$50] ; # X
+; # (call $Put (char "'"))
+  %191 = load void(i8)*, void(i8)** @$Put
+  call void %191(i8 39)
+; # (cdr X)
+  %192 = inttoptr i64 %190 to i64*
+  %193 = getelementptr i64, i64* %192, i32 1
+  %194 = load i64, i64* %193
+; # (print (cdr X))
+  call void @print(i64 %194)
+  br label %$4
 $52:
+  %195 = phi i64 [%188, %$50] ; # X
+; # (stkChk 0)
+  %196 = load i8*, i8** @$StkLimit
+  %197 = call i8* @llvm.stacksave()
+  %198 = icmp ugt i8* %196, %197
+  br i1 %198, label %$54, label %$55
+$54:
   call void @stkErr(i64 0)
   unreachable
-$53:
+$55:
 ; # (call $Put (char "("))
-  %191 = load void(i8)*, void(i8)** @$Put
-  call void %191(i8 40)
+  %199 = load void(i8)*, void(i8)** @$Put
+  call void %199(i8 40)
 ; # (let P (circ X) (ifn P (loop (print (car X)) (? (nil? (shift X)))...
 ; # (circ X)
-  %192 = call i64 @circ(i64 %187)
+  %200 = call i64 @circ(i64 %195)
 ; # (ifn P (loop (print (car X)) (? (nil? (shift X))) (? (atom X) (ou...
-  %193 = icmp ne i64 %192, 0
-  br i1 %193, label %$55, label %$54
-$54:
-  %194 = phi i64 [%187, %$53] ; # X
+  %201 = icmp ne i64 %200, 0
+  br i1 %201, label %$57, label %$56
+$56:
+  %202 = phi i64 [%195, %$55] ; # X
 ; # (loop (print (car X)) (? (nil? (shift X))) (? (atom X) (outString...
-  br label %$57
-$57:
-  %195 = phi i64 [%194, %$54], [%206, %$60] ; # X
+  br label %$59
+$59:
+  %203 = phi i64 [%202, %$56], [%214, %$62] ; # X
 ; # (car X)
-  %196 = inttoptr i64 %195 to i64*
-  %197 = load i64, i64* %196
+  %204 = inttoptr i64 %203 to i64*
+  %205 = load i64, i64* %204
 ; # (print (car X))
-  call void @print(i64 %197)
+  call void @print(i64 %205)
 ; # (? (nil? (shift X)))
 ; # (shift X)
-  %198 = inttoptr i64 %195 to i64*
-  %199 = getelementptr i64, i64* %198, i32 1
-  %200 = load i64, i64* %199
+  %206 = inttoptr i64 %203 to i64*
+  %207 = getelementptr i64, i64* %206, i32 1
+  %208 = load i64, i64* %207
 ; # (nil? (shift X))
-  %201 = icmp eq i64 %200, ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64)
-  br i1 %201, label %$59, label %$58
-$58:
-  %202 = phi i64 [%200, %$57] ; # X
+  %209 = icmp eq i64 %208, ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64)
+  br i1 %209, label %$61, label %$60
+$60:
+  %210 = phi i64 [%208, %$59] ; # X
 ; # (? (atom X) (outString ($ " . ")) (print X))
 ; # (atom X)
-  %203 = and i64 %202, 15
-  %204 = icmp ne i64 %203, 0
-  br i1 %204, label %$61, label %$60
-$61:
-  %205 = phi i64 [%202, %$58] ; # X
+  %211 = and i64 %210, 15
+  %212 = icmp ne i64 %211, 0
+  br i1 %212, label %$63, label %$62
+$63:
+  %213 = phi i64 [%210, %$60] ; # X
 ; # (outString ($ " . "))
   call void @outString(i8* bitcast ([4 x i8]* @$45 to i8*))
 ; # (print X)
-  call void @print(i64 %205)
-  br label %$59
-$60:
-  %206 = phi i64 [%202, %$58] ; # X
+  call void @print(i64 %213)
+  br label %$61
+$62:
+  %214 = phi i64 [%210, %$60] ; # X
 ; # (space)
   call void @space()
-  br label %$57
-$59:
-  %207 = phi i64 [%200, %$57], [%205, %$61] ; # X
-  br label %$56
-$55:
-  %208 = phi i64 [%187, %$53] ; # X
+  br label %$59
+$61:
+  %215 = phi i64 [%208, %$59], [%213, %$63] ; # X
+  br label %$58
+$57:
+  %216 = phi i64 [%195, %$55] ; # X
 ; # (let Flg (== P X) (loop (print (car X)) (space) (? (== P (shift X...
 ; # (== P X)
-  %209 = icmp eq i64 %192, %208
+  %217 = icmp eq i64 %200, %216
 ; # (loop (print (car X)) (space) (? (== P (shift X))))
-  br label %$62
-$62:
-  %210 = phi i64 [%208, %$55], [%217, %$63] ; # X
+  br label %$64
+$64:
+  %218 = phi i64 [%216, %$57], [%225, %$65] ; # X
 ; # (car X)
-  %211 = inttoptr i64 %210 to i64*
-  %212 = load i64, i64* %211
+  %219 = inttoptr i64 %218 to i64*
+  %220 = load i64, i64* %219
 ; # (print (car X))
-  call void @print(i64 %212)
+  call void @print(i64 %220)
 ; # (space)
   call void @space()
 ; # (? (== P (shift X)))
 ; # (shift X)
-  %213 = inttoptr i64 %210 to i64*
-  %214 = getelementptr i64, i64* %213, i32 1
-  %215 = load i64, i64* %214
+  %221 = inttoptr i64 %218 to i64*
+  %222 = getelementptr i64, i64* %221, i32 1
+  %223 = load i64, i64* %222
 ; # (== P (shift X))
-  %216 = icmp eq i64 %192, %215
-  br i1 %216, label %$64, label %$63
-$63:
-  %217 = phi i64 [%215, %$62] ; # X
-  br label %$62
-$64:
-  %218 = phi i64 [%215, %$62] ; # X
-  %219 = phi i64 [0, %$62] ; # ->
-; # (call $Put (char "."))
-  %220 = load void(i8)*, void(i8)** @$Put
-  call void %220(i8 46)
-; # (unless Flg (space) (call $Put (char "(")) (loop (print (car X)) ...
-  br i1 %209, label %$66, label %$65
+  %224 = icmp eq i64 %200, %223
+  br i1 %224, label %$66, label %$65
 $65:
-  %221 = phi i64 [%218, %$64] ; # X
+  %225 = phi i64 [%223, %$64] ; # X
+  br label %$64
+$66:
+  %226 = phi i64 [%223, %$64] ; # X
+  %227 = phi i64 [0, %$64] ; # ->
+; # (call $Put (char "."))
+  %228 = load void(i8)*, void(i8)** @$Put
+  call void %228(i8 46)
+; # (unless Flg (space) (call $Put (char "(")) (loop (print (car X)) ...
+  br i1 %217, label %$68, label %$67
+$67:
+  %229 = phi i64 [%226, %$66] ; # X
 ; # (space)
   call void @space()
 ; # (call $Put (char "("))
-  %222 = load void(i8)*, void(i8)** @$Put
-  call void %222(i8 40)
+  %230 = load void(i8)*, void(i8)** @$Put
+  call void %230(i8 40)
 ; # (loop (print (car X)) (space) (? (== P (shift X))))
-  br label %$67
-$67:
-  %223 = phi i64 [%221, %$65], [%230, %$68] ; # X
+  br label %$69
+$69:
+  %231 = phi i64 [%229, %$67], [%238, %$70] ; # X
 ; # (car X)
-  %224 = inttoptr i64 %223 to i64*
-  %225 = load i64, i64* %224
+  %232 = inttoptr i64 %231 to i64*
+  %233 = load i64, i64* %232
 ; # (print (car X))
-  call void @print(i64 %225)
+  call void @print(i64 %233)
 ; # (space)
   call void @space()
 ; # (? (== P (shift X)))
 ; # (shift X)
-  %226 = inttoptr i64 %223 to i64*
-  %227 = getelementptr i64, i64* %226, i32 1
-  %228 = load i64, i64* %227
+  %234 = inttoptr i64 %231 to i64*
+  %235 = getelementptr i64, i64* %234, i32 1
+  %236 = load i64, i64* %235
 ; # (== P (shift X))
-  %229 = icmp eq i64 %192, %228
-  br i1 %229, label %$69, label %$68
-$68:
-  %230 = phi i64 [%228, %$67] ; # X
-  br label %$67
-$69:
-  %231 = phi i64 [%228, %$67] ; # X
-  %232 = phi i64 [0, %$67] ; # ->
+  %237 = icmp eq i64 %200, %236
+  br i1 %237, label %$71, label %$70
+$70:
+  %238 = phi i64 [%236, %$69] ; # X
+  br label %$69
+$71:
+  %239 = phi i64 [%236, %$69] ; # X
+  %240 = phi i64 [0, %$69] ; # ->
 ; # (call $Put (char "."))
-  %233 = load void(i8)*, void(i8)** @$Put
-  call void %233(i8 46)
+  %241 = load void(i8)*, void(i8)** @$Put
+  call void %241(i8 46)
 ; # (call $Put (char ")"))
-  %234 = load void(i8)*, void(i8)** @$Put
-  call void %234(i8 41)
-  br label %$66
-$66:
-  %235 = phi i64 [%218, %$64], [%231, %$69] ; # X
-  br label %$56
-$56:
-  %236 = phi i64 [%207, %$59], [%235, %$66] ; # X
+  %242 = load void(i8)*, void(i8)** @$Put
+  call void %242(i8 41)
+  br label %$68
+$68:
+  %243 = phi i64 [%226, %$66], [%239, %$71] ; # X
+  br label %$58
+$58:
+  %244 = phi i64 [%215, %$61], [%243, %$68] ; # X
 ; # (call $Put (char ")"))
-  %237 = load void(i8)*, void(i8)** @$Put
-  call void %237(i8 41)
+  %245 = load void(i8)*, void(i8)** @$Put
+  call void %245(i8 41)
   br label %$4
 $4:
-  %238 = phi i64 [%5, %$6], [%9, %$8], [%170, %$11], [%182, %$51], [%236, %$56] ; # X
+  %246 = phi i64 [%5, %$6], [%9, %$8], [%178, %$11], [%190, %$53], [%244, %$58] ; # X
   ret void
 }
 

@@ -1,4 +1,4 @@
-# 25may22 Software Lab. Alexander Burger
+# 13jun22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2438,8 +2438,8 @@ selectErr)
                (call $Put (char "$"))
                (outOct (int X)) )
             (T
-               (let Nm @
-                  (ifn (== X (isIntern Nm $PrivT))
+               (let (Nm @  Prv (isIntern Nm $PrivT))
+                  (ifn (== X Prv)
                      (let (Lst (val $Intern)  F NO)  # Search namespaces
                         (loop
                            (? (atom Lst) # Transient
@@ -2464,7 +2464,7 @@ selectErr)
                            (let Nsp (car Lst)
                               (when (isIntern Nm (cdar Nsp))
                                  (? (== @ X)  # Internal
-                                    (when F  # Found in other namespace
+                                    (when (or Prv F)  # Found in other namespace
                                        (printSym Nsp)
                                        (call $Put (char "~")) )
                                     (printName Nm) )

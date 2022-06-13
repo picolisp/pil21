@@ -1,3 +1,7 @@
+13jun22
+   Bug in printing symbols overshadowed in 'priv'
+      src/io.l
+
 10jun22
    Don't lock remote symbols
       lib/vip.l

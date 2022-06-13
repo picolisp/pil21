@@ -85,12 +85,12 @@ href="ref.html#dbase">Database</a>.
 </code></pre>
 
 <dt><a name="+Dep"><code>+Dep</code></a>
-<dd>Prefix class for maintaining dependencies between <code><a
-href="refR.html#+relation">+relation</a></code>s. Expects a list of (symbolic)
-attributes that depend on this relation. Whenever this relations is cleared
-(receives a value of <code>NIL</code>), the dependent relations will also be
-cleared, triggering all required side-effects. See also <a
-href="ref.html#dbase">Database</a>.
+<dd><a href="refJ.html#+Joint">+Joint</a> prefix class for maintaining
+dependencies between <code><a href="refR.html#+relation">+relation</a></code>s.
+Expects a list of (symbolic) attributes that depend on this relation. Whenever
+this relations is cleared (receives a value of <code>NIL</code>), the dependent
+relations will also be cleared, triggering all required side-effects. See also
+<a href="ref.html#dbase">Database</a>.
 
 <p>In the following example, the index entry for the item pointing to the
 position (and, therefore, to the order) is cleared in case the order is deleted,
