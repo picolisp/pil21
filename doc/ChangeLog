@@ -1,3 +1,7 @@
+15jun22
+   Disable '*Run' in 'sync' calls
+      lib/form.l
+
 13jun22
    Bug in printing symbols overshadowed in 'priv'
       src/io.l

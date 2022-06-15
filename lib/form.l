@@ -1,4 +1,4 @@
-# 09jun22 Software Lab. Alexander Burger
+# 15jun22 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -231,7 +231,7 @@
 (de postGui ()
    (if *Post2
       (off *Gui *Post2)
-      (let ("Fun" NIL *Btn NIL)
+      (let (*Btn NIL  "Fun")
          (for G *Gui
             (if (=0 (car G))
                (setq "Fun" (cdr G))
@@ -260,8 +260,9 @@
                   (when *Lock
                      (if (lock @)
                         (=: able (=: lock (off *Lock)))
-                        (sync)
-                        (tell) ) )
+                        (let *Run NIL
+                           (sync)
+                           (tell) ) ) )
                   (when "Fun"
                      (when (and *Allow (not (idx *Allow "Fun")))
                         (notAllowed "Fun")
@@ -2031,8 +2032,9 @@
    (if (lock Obj)
       (nil
          (error (text ,"Currently edited by '@2' (@1)" @  (cdr (lup *Users @)))) )
-      (sync)
-      (tell)
+      (let *Run NIL
+         (sync)
+         (tell) )
       (setq *Lock Obj) ) )
 
 (de onDone (Exe)
