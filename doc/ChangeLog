@@ -1,3 +1,7 @@
+17jun22
+   Bug in 'sort' with 'fun' argument
+      src/subr.l
+
 15jun22
    Disable '*Run' in 'sync' calls
       lib/form.l

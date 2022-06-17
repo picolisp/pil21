@@ -1,4 +1,4 @@
-# 11feb22 Software Lab. Alexander Burger
+# 17jun22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1713,13 +1713,13 @@
                   Out1 (link (push $Nil NIL))
                   In0 (link (push -ZERO NIL))
                   In1 (link (push -ZERO NIL))
-                  B (push NIL $Nil ZERO NIL)
-                  A (push NIL B ZERO NIL)
+                  B (push NIL $Nil ZERO NIL NIL)  # [car cdr name arg2 link]
+                  A (push NIL B ZERO NIL NIL)  # [car cdr name arg1 link]
                   E (push NIL A ZERO (eval (car X)) NIL)  # [car cdr name fun link]
                   P )
                (set
-                  B (ofs B 3)
-                  A (ofs A 3)
+                  B (link (ofs B 3))
+                  A (link (ofs A 3))
                   E (link (ofs E 3)) )
                (loop
                   (set In0 (val Out0)  In1 (val Out1))
