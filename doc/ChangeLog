@@ -1,5 +1,5 @@
 17jun22
-   Bug in 'sort' with 'fun' argument
+   Bugs in 'sort' with 'fun' argument
       src/subr.l
 
 15jun22
