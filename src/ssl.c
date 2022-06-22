@@ -1,4 +1,4 @@
-// 14apr21 Software Lab. Alexander Burger
+// 22jun22 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -193,7 +193,7 @@ int main(int ac, char *av[]) {
    if (ac <= 6) {
       if (sslConnect(ssl, av[1], av[2]) < 0) {
          ERR_print_errors_fp(stderr);
-         giveup("Can't connect");
+         exit(1);
       }
       if (getLen  &&  SSL_write(ssl, get, getLen) < 0) {
          ERR_print_errors_fp(stderr);

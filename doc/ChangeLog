@@ -1,3 +1,7 @@
+22jun22
+   Silent exit if connect fails
+      src/ssl.c
+
 17jun22
    Bugs in 'sort' with 'fun' argument
       src/subr.l
