@@ -1,4 +1,4 @@
-# 17apr22 Software Lab. Alexander Burger
+# 23jun22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1150,6 +1150,7 @@
                               (when (setjmp (Src: (rst)))
                                  (ret (loadCoEnv (Src:))) )
                               (set $Ret $Nil)
+                              (Crt: org (Src:))
                               (longjmp (Crt: (rst)) 1) )
                            (or P
                               (Crt: tag)  # Unused
@@ -1191,7 +1192,12 @@
                            $StkLimit (+ (Dst: lim) 4096) )
                         (set $Ret (run X))
                         (stop (Dst:))  # Stop coroutine
-                        (longjmp ((coroutine (Dst: org)) (rst)) 1) ) ) )
+                        (let Org: (coroutine (Dst: org))
+                           (longjmp
+                              (if (Org: tag)  # Still running?
+                                 (Org: (rst))
+                                 ((coroutine (val $Coroutines)) (rst)) )  # Main
+                              1 ) ) ) ) )
                ((t? Tag)
                   (err Exe 0 ($ "Can't stop main routine") null) )
                ((val $Coroutines)
