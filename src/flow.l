@@ -1,4 +1,4 @@
-# 23jun22 Software Lab. Alexander Burger
+# 24jun22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1151,6 +1151,11 @@
                                  (ret (loadCoEnv (Src:))) )
                               (set $Ret $Nil)
                               (Crt: org (Src:))
+                              (Crt: lnk (val $Link))
+                              (Crt: bnd (val $Bind))
+                              (Crt: ca (val $Catch))
+                              (Crt: in (val $InFrames))
+                              (Crt: out (val $OutFrames))
                               (longjmp (Crt: (rst)) 1) )
                            (or P
                               (Crt: tag)  # Unused
@@ -1265,7 +1270,8 @@
                   (let Q P
                      (setq P (val 2 Q))
                      (set 2 Q Lnk)
-                     (setq Lnk Q) ) ) )
+                     (setq Lnk Q) ) )
+               (set $Link Lnk) )
             (let P (val $Bind)  # Reverse bindings
                (until (== P (Src: bnd))
                   (let Q P
@@ -1273,27 +1279,28 @@
                      (setq P (val 3 Q))
                      (set 3 Q Bnd)
                      (setq Bnd Q) ) )
-               (set 3 (Src: bnd) Bnd) )
+               (set $Bind Bnd) )
             (let P (val $Catch)  # Reverse CaFrames
                (until (== P (Src: ca))
                   (let Ca: (caFrame P)
                      (setq P (Ca: link))
                      (Ca: link Ca)
-                     (setq Ca (Ca:)) ) ) )
+                     (setq Ca (Ca:)) ) )
+               (set $Catch Ca) )
             (let P (val $InFrames)  # Reverse InFrames
                (until (== P (Src: in))
                   (let In: (ioFrame P)
                      (setq P (In: link))
                      (In: link In)
                      (setq In (In:)) ) )
-               (Src: in In) )
+               (set $InFrames In) )
             (let P (val $OutFrames)  # Reverse OutFrames
                (until (== P (Src: out))
                   (let Out: (ioFrame P)
                      (setq P (Out: link))
                      (Out: link Out)
                      (setq Out (Out:)) ) )
-               (Src: out Out) ) )
+               (set $OutFrames Out) ) )
          (saveCoEnv (Src:))
          (unless (setjmp (Src: (rst)))
             (set $Ret Val)
@@ -1324,8 +1331,6 @@
                      (setq P (Ca:)) ) )
                (Src: (env $Catch i8*) P) )
             (let P (val $Bind)  # Restore bindings
-               (set 3 (Src: bnd) P)
-               (setq P (Src: bnd))
                (Src: bnd P)
                (while Bnd
                   (let Q Bnd

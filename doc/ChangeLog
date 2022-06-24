@@ -1,3 +1,7 @@
+24jun22
+   More fixes in local coroutine stacks
+      src/flow.l
+
 23jun22
    Set 'org' when resuming a coroutine in 'co'
       src/flow.l
