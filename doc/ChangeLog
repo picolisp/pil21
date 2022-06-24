@@ -1,4 +1,6 @@
 24jun22
+   Apply realpath() only to path of the file
+      lib/vip.l
    More fixes in local coroutine stacks
       src/flow.l
 

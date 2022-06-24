@@ -1,4 +1,4 @@
-# 10jun22 Software Lab. Alexander Burger
+# 24jun22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -53,10 +53,15 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
 
 (de fName (File)
    (when (setq File (path File))
-      (use R
-         (when (=0 (%@ "realpath" 'N File '(R (`PATH_MAX C . `PATH_MAX))))
-            (setq R (chop File)) )
-         (pack (mkLoc R)) ) ) )
+      (let (R (chop File)  L (rot (split R "/")))
+         (pack
+            (mkLoc
+               (if
+                  (and
+                     (cdr L)
+                     (n0 (%@ "realpath" 'N (glue "/" @) '(R (`PATH_MAX C . `PATH_MAX)))) )
+                  (conc R (list "/") (car L))
+                  R ) ) ) ) ) )
 
 (de prName (File)
    (if (pre? (sys "HOME") File)
@@ -215,7 +220,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                (if (= "(" (car L))
                   (run (str (pack L)))
                   (setq L (split L " "))
-                  (apply script (cdr L) (fName (pack (car L)))) ) ) ) ) ) )
+                  (apply script (cdr L) (path (car L))) ) ) ) ) ) )
 
 (dm save> (Win)
    (when (: file)
@@ -1275,7 +1280,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                                        (chop (pack ":" I " " (prName (: file)))) ) ) ) ) )
                         ("key" (=: buffer key L) (reload))
                         ("m"
-                           (when (info (=: mark (fName (rplFile L))))
+                           (when (info (=: mark (path (rplFile L))))
                               (in (: mark) (move 'goAbs (read) (read))) ) )
                         ("n" (nextBuf))  # Next buffer
                         ("N" (nextBuf T))  # Previous buffer
@@ -1286,12 +1291,12 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                            (=: buffer subd (not (: buffer subd)))
                            (reload (rplFile L)) )
                         ("r"  # Read file contents
-                           (let F (fName (rplFile L))
+                           (let F (path (rplFile L))
                               (when (info F)
                                  (in F (paste (cons T (rdLines)) 1)) ) ) )
                         ("w"  # (Write) Save buffer
                            (if L
-                              (out (fName (rplFile @))
+                              (out (path (rplFile @))
                                  (mapc prinl (: buffer text)) )
                               (save> (: buffer) This) ) )
                         ("l"  # (load) Save and load
@@ -1681,7 +1686,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
                "\\(\^\\|[[:space:]\"'(),`{}~]\\|\\[\\|\\]\\)"
                (replace Pat "." "\\." "*" "\\*")
                "\\([[:space:]\"'(),`{}~]\\|\\[\\|\\]\\|$\\)" )
-            (or (fName Dir) ".") )
+            (or (path Dir) ".") )
          (make (while (line T) (link @))) )
       (symbols (setq *Ns (symbols))
          (vi (cons (cons Pat (car @)) (cdr @))) ) ) )
