@@ -1,3 +1,9 @@
+25jun22
+   More fixes in local coroutine stacks
+      src/flow.l
+   realpath() directly if directory
+      lib/vip.l
+
 24jun22
    Apply realpath() only to path of the file
       lib/vip.l

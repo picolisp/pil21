@@ -1,4 +1,4 @@
-# 24jun22 Software Lab. Alexander Burger
+# 25jun22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1210,7 +1210,7 @@
                      (loop
                         (let Crt: (coroutine Crt)
                            (? (== Tag (Crt: tag))  # Found coroutine
-                              (let P (Crt: out)
+                              (let P (Crt: (env $OutFrames i8*))  # Close OutFrames
                                  (until (== P (val $Stdout))
                                     (let (Io: (ioFrame P)  Out: (outFile (Io: file)))
                                        (when (and (ge0 (Out: fd)) (Io: pid))
@@ -1219,7 +1219,7 @@
                                           (when (> (Io: pid) 1)
                                              (waitFile @) )
                                           (setq P (Io: link)) ) ) ) )
-                              (let P (Crt: in)
+                              (let P (Crt: (env $InFrames i8*))  # Close InFrames
                                  (until (== P (val $Stdin))
                                     (let (Io: (ioFrame P)  In: (inFile (Io: file)))
                                        (when (and (ge0 (In: fd)) (Io: pid))
