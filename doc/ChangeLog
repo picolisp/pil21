@@ -1,6 +1,8 @@
-25jun22
+26jun22
    More fixes in local coroutine stacks
       src/flow.l
+
+25jun22
    realpath() directly if directory
       lib/vip.l
 

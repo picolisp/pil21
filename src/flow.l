@@ -1,4 +1,4 @@
-# 25jun22 Software Lab. Alexander Burger
+# 26jun22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1152,7 +1152,6 @@
                               (set $Ret $Nil)
                               (Crt: org (Src:))
                               (Crt: lnk (val $Link))
-                              (Crt: bnd (val $Bind))
                               (Crt: ca (val $Catch))
                               (Crt: in (val $InFrames))
                               (Crt: out (val $OutFrames))
@@ -1279,7 +1278,7 @@
                      (setq P (val 3 Q))
                      (set 3 Q Bnd)
                      (setq Bnd Q) ) )
-               (set $Bind Bnd) )
+               (set 3 P Bnd  $Bind P) )
             (let P (val $Catch)  # Reverse CaFrames
                (until (== P (Src: ca))
                   (let Ca: (caFrame P)
@@ -1330,8 +1329,8 @@
                      (Ca: link P)
                      (setq P (Ca:)) ) )
                (Src: (env $Catch i8*) P) )
-            (let P (val $Bind)  # Restore bindings
-               (Src: bnd P)
+            (let P (Src: bnd)  # Restore bindings
+               (set 3 P (val $Bind))
                (while Bnd
                   (let Q Bnd
                      (xchg (val 2 Q) Q)
