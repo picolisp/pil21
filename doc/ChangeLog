@@ -1,4 +1,7 @@
 26jun22
+   Corrections (Christos Gitsis)
+      doc/ref.html
+      doc/refA.html
    More fixes in local coroutine stacks
       src/flow.l
 
