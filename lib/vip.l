@@ -1,4 +1,4 @@
-# 25jun22 Software Lab. Alexander Burger
+# 30jun22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -56,7 +56,7 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
       (use R
          (pack
             (mkLoc
-               (if (=T (car (info File)))
+               (if (info File)
                   (if (=0 (%@ "realpath" 'N File '(R (`PATH_MAX C . `PATH_MAX))))
                      F R )
                   (let L (rot (split F "/"))
