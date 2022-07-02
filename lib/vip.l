@@ -1,4 +1,4 @@
-# 30jun22 Software Lab. Alexander Burger
+# 02jul22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -21,14 +21,14 @@
 
 ### VIP Editor ###
 (local) (*Buffers +Buffer mkLoc fName prName rplFile fileBuffer rdLines delim?
-arkup min1 beep undo redo evCmd dirty> load> save> syms> view> status delwin
-cursor addLine chgLine unmark redraw repaint scLeft scRight goto chgwin eqwin
-getch getch2 reload scratch syms pushTag tag done change jmp@@ cnt@@ goCol
-goLeft goRight goUp goDown goAbs goFind tword word lword end lend getWord
-_forward goForward _backward goBackward goPFore goPBack shift shiftY indent cutX
-cutN paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe
-evRpt move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN
-nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
+arkup min1 undo redo evCmd dirty> load> save> syms> view> status delwin cursor
+addLine chgLine unmark redraw repaint scLeft scRight goto chgwin eqwin getch
+getch2 reload scratch syms pushTag tag done change jmp@@ cnt@@ goCol goLeft
+goRight goUp goDown goAbs goFind tword word lword end lend getWord _forward
+goForward _backward goBackward goPFore goPBack shift shiftY indent cutX cutN
+paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe evRpt
+move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN nextBuf
+shell shFile prCmd reset posChar getText s-expr command vi)
 
 
 (class +Buffer)
@@ -153,10 +153,6 @@ nextBuf shell shFile prCmd reset posChar getText s-expr command vi)
 
 (de min1 (A B)
    (max 1 (min A B)) )
-
-(de beep ()
-   (pico~beep)
-   NIL )
 
 (dm dirty> (Win)
    (<> (: undo) (: dirt)) )

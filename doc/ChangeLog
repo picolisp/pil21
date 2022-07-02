@@ -1,3 +1,15 @@
+02jul22
+   Uncomment 'shift' import
+      src/lib/llvm.l
+   Let 'beep' return NIL
+      lib.l
+      lib/vip.l
+      doc/refB.html
+
+30jun22
+    Show blank screen in 'restart'
+      lib/android.l
+
 ####### 22.6 #######
 30jun22
    Bug in realpath() handling

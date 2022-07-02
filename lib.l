@@ -1,4 +1,4 @@
-# 03may22 Software Lab. Alexander Burger
+# 02jul22 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -150,7 +150,8 @@
    (prinl) )
 
 (de beep ()
-   (prin "^G") )
+   (prin "^G")
+   NIL )
 
 (de msg (X . @)
    (tty (print X) (pass prinl))

@@ -1,4 +1,4 @@
-# 06jun22 Software Lab. Alexander Burger
+# 02jul22 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -14,7 +14,7 @@ struct $Nil $T $Link drop)
 ### Cross-compiler private ###
 (symbols 'cross 'llvm 'pico)
 
-(import any inc dec ++ #{shift}#)
+(import any inc dec ++ shift)
 
 (local) (*Map *Map2 putMap *Shared *Strings *Ssa *Lbl *Log *Curr *Exit *Bind
 *Phi *Call *Ret log asm ssa phi +phi br label +lbl +bind type func ptr pointee
