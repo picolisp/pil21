@@ -1,4 +1,4 @@
-# 14nov20 Software Lab. Alexander Burger
+# 03jul22 Software Lab. Alexander Burger
 
 # (select [var ..] cls [hook|T] [var val ..])
 (de select Lst
@@ -79,7 +79,9 @@
    (print Val) )
 
 (dm (print> . +Number) (Val)
-   (prin (format Val (: scl))) )
+   (if (num? Val)
+      (prin (format Val (: scl)))
+      (print Val) ) )
 
 (dm (print> . +Date) (Val)
-   (print (datStr Val)) )
+   (print (if (num? Val) (datStr Val) Val)) )

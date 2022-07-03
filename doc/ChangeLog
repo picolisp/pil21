@@ -1,3 +1,7 @@
+03jul22
+   Default values in 'print>' methods
+      lib/sq.l
+
 02jul22
    Uncomment 'shift' import
       src/lib/llvm.l
