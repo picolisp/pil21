@@ -1,3 +1,7 @@
+08jul22
+   'map+', 'map+g' and 'map+q' functions
+      lib/vip.l
+
 03jul22
    Default values in 'print>' methods
       lib/sq.l
