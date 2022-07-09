@@ -1,4 +1,4 @@
-# 06apr22 Software Lab. Alexander Burger
+# 09jul22 Software Lab. Alexander Burger
 
 (symbols 'gis 'pico)
 
@@ -27,8 +27,8 @@
 
 (de distance (Lat1 Lon1 Lat2 Lon2)  # [m]
    (let
-      (DX (*/ (- Lon2 Lon1) 6378000 pi 180.0)
-         DY (*/ (cos (*/ Lat1 pi 180.0)) (- Lat2 Lat1) 6378000 pi `(* 1.0 180.0)) )
+      (DX (*/ (- Lon2 Lon1) 6371000 pi 180.0)
+         DY (*/ (cos (*/ Lat1 pi 180.0)) (- Lat2 Lat1) 6371000 pi `(* 1.0 180.0)) )
       (sqrt (+ (* DX DX) (* DY DY))) ) )
 
 # Latitude Field
