@@ -1,3 +1,7 @@
+11jul22
+   Go to previous instead of next buffer in ":bd"
+      lib/vip.l
+
 09jul22
    Correct earth mean radius to 6371 km
       lib/gis.l

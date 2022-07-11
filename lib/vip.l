@@ -1,4 +1,4 @@
-# 08jul22 Software Lab. Alexander Burger
+# 11jul22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1330,7 +1330,7 @@ vi)
                               (let Buf (: buffer)
                                  (for (This *CmdWin (setq This (: next)))
                                     (when (== Buf (: buffer))
-                                       (nextBuf) ) )
+                                       (nextBuf T) ) )
                                  (del Buf '*Buffers)
                                  (=: last) ) ) )
                         ("map"  # Add/remove key mappings
