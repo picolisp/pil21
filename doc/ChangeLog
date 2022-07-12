@@ -1,3 +1,7 @@
+12jul22
+   '<drawCanvas>' function
+      lib/canvas.l
+
 11jul22
    Go to previous instead of next buffer in ":bd"
       lib/vip.l
@@ -266,11 +270,11 @@
       lib/svg.l
    Local and private declarations
       lib/xm.l
-   Escape also backslashes in <poi>
+   Escape also backslashes in '<poi>'
       lib/gis.l
 
 13mar22
-   Escape single quotes in <poi> text argument
+   Escape single quotes in '<poi>' text argument
       lib/gis.l
    Use 'get' instead of (cdr (asoq ..))
       lib/xm.l
@@ -1083,7 +1087,7 @@
       doc/refS.html
 
 14may21
-   <grid> vertical-aligns to top
+   '<grid>' vertical-aligns to top
       lib.css
    Optional submenu CSS class index
       lib/xhtml.l

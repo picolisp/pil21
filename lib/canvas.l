@@ -1,4 +1,4 @@
-# 26may22 Software Lab. Alexander Burger
+# 12jul22 Software Lab. Alexander Burger
 
 (allow "!jsDraw" )
 (push1 '*JS (allow "@lib/plio.js") (allow "@lib/canvas.js"))
@@ -80,6 +80,12 @@
       "\" ontouchleave=\"csLeave(this)\"" )
    (dfltCss "canvas")
    (prinl ">" Alt "</canvas>" ) )
+
+(de <drawCanvas> (Id DX DY Dly Post)
+   (<canvas> Id DX DY)
+   (if Post
+      (<javascript> "Post = function() {drawCanvas('" Id "', " Dly ")}; Post()")
+      (<javascript> "drawCanvas('" Id "', " Dly ")") ) )
 
 ### Debug ###
 `*Dbg
