@@ -1,4 +1,6 @@
 12jul22
+   Remove "Building httpGate"
+      doc/httpGate.html
    '<drawCanvas>' function
       lib/canvas.l
 

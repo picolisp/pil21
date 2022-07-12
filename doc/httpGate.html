@@ -73,16 +73,6 @@ The main httpGate process then forks two child processes, one for each
 direction. These child processes terminate automatically if the connection is
 idle for more than 7 minutes.
 
-<h2><a name="building">Building httpGate</a></h2>
-
-<p>httpGate is delivered in source code form with the picoLisp distribution. To
-build the program you need a c compiler and related header files. Development
-headers for OpenSSL are also needed. On Debian based systems, the prerequisites
-can be fulfilled by running <code>apt-get install build-essential</code> and
-<code>apt-get install libssl-dev</code>. <p>Next, go to the 'src' directory in
-the distribution and run <code>make gate</code>. When this is done, there should
-be an <code>httpGate</code> executable in the 'bin' directory.
-
 <h2><a name="running">Running httpGate</a></h2>
 
 <p>The simplest way to run httpGate is to start it with an explicit port
