@@ -1,4 +1,4 @@
-# 30jun22 Software Lab. Alexander Burger
+# 13jul22 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -82,7 +82,7 @@
       "android_id" ) )
 
 # Push-Load
-(local) (loadTxt loadUrl)
+(local) (loadTxt loadUrl overview)
 
 (de loadTxt @
    (java (; CONTEXT GUI) 'runOnUiThread
@@ -94,6 +94,10 @@
 (de loadUrl @
    (java (; CONTEXT GUI) 'runOnUiThread
       (java (; CONTEXT GUI PilView) 0 'loadUrl (pass pack)) ) )
+
+(de overview (Flg)
+   (java (; CONTEXT GUI Config) 'setUseWideViewPort Flg)
+   (java (; CONTEXT GUI Config) 'setLoadWithOverviewMode Flg) )
 
 # Clear WebView history and cache
 (local) (clearHistory clearCache)

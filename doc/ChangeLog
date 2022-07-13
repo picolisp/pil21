@@ -1,3 +1,9 @@
+13jul22
+   'overview' function
+      lib/android.l
+   Go to last instead of previous buffer in ":bd"
+      lib/vip.l
+
 12jul22
    Remove "Building httpGate"
       doc/httpGate.html
