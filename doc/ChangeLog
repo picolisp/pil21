@@ -1,3 +1,9 @@
+14jul22
+   Use 'skip' instead of 'line' in 'here'
+      lib/misc.l
+   Minor cosmetics
+      lib/btree.l
+
 13jul22
    'overview' function
       lib/android.l

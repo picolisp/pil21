@@ -1,4 +1,4 @@
-# 26may22 Software Lab. Alexander Burger
+# 14jul22 Software Lab. Alexander Burger
 
 # *Allow
 
@@ -376,7 +376,7 @@
 
 # Echo here-documents
 (de here (S)
-   (line)
+   (skip)
    (echo S) )
 
 # Print or eval
