@@ -126,15 +126,10 @@
             (loop
                (NIL
                   (cdr
-                     (rank (setq C (char (++ X)))
-                        (quote
-                           (48 - C 48)
-                           (58)
-                           (65 - C 55)
-                           (71)
-                           (97 - C 87)
-                           (103) ) ) ) )
-               (setq N (| (eval @) (>> -4 N)))
+                     (rank
+                        (setq C (char (++ X)))
+                        '((48 . 48) (58) (65 . 55) (71) (97 . 87) (103)) ) ) )
+               (setq N (| (- C @) (>> -4 N)))
                (NIL X (if S (- N) N)) ) ) ) ) )
 
 (de hex1 (N)
