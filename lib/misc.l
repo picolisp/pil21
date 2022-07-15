@@ -1,4 +1,4 @@
-# 14jul22 Software Lab. Alexander Burger
+# 15jul22 Software Lab. Alexander Burger
 
 # *Allow
 
@@ -124,11 +124,18 @@
                (chop X) ) )
          (let (S (and (= '- (car X)) (++ X))  N 0  C)
             (loop
-               (setq C (- (char (++ X)) `(char "0")))
-               (and (> C 9) (dec 'C 7))
-               (and (> C 22) (dec 'C 32))
-               (NIL (>= 15 C 0))
-               (setq N (| C (>> -4 N)))
+               (NIL
+                  (eval
+                     (cdr
+                        (rank (setq C (char (++ X)))
+                           (quote
+                              (48 - C 48)
+                              (58)
+                              (65 - C 55)
+                              (71)
+                              (97 - C 87)
+                              (103) ) ) ) ) )
+               (setq N (| @ (>> -4 N)))
                (NIL X (if S (- N) N)) ) ) ) ) )
 
 (de hex1 (N)

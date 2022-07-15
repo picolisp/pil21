@@ -1,3 +1,7 @@
+15jul22
+   Improve 'hex' argument verification
+      lib/misc.l
+
 14jul22
    Use 'skip' instead of 'line' in 'here'
       lib/misc.l
