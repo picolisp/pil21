@@ -125,17 +125,16 @@
          (let (S (and (= '- (car X)) (++ X))  N 0  C)
             (loop
                (NIL
-                  (eval
-                     (cdr
-                        (rank (setq C (char (++ X)))
-                           (quote
-                              (48 - C 48)
-                              (58)
-                              (65 - C 55)
-                              (71)
-                              (97 - C 87)
-                              (103) ) ) ) ) )
-               (setq N (| @ (>> -4 N)))
+                  (cdr
+                     (rank (setq C (char (++ X)))
+                        (quote
+                           (48 - C 48)
+                           (58)
+                           (65 - C 55)
+                           (71)
+                           (97 - C 87)
+                           (103) ) ) ) )
+               (setq N (| (eval @) (>> -4 N)))
                (NIL X (if S (- N) N)) ) ) ) ) )
 
 (de hex1 (N)
