@@ -1,4 +1,4 @@
-# 26may22 Software Lab. Alexander Burger
+# 16jul22 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1219,7 +1219,8 @@
                      (put> Obj X T)
                      (when (isa '+Blob Rel)
                         (in (blob This X)
-                           (out (blob Obj X) (echo)) ) ) ) )
+                           (out (blob Obj X) (echo)) )
+                        (blob+ Obj X) ) ) )
                (ifn (meta This (cdr X))
                   (put Obj (cdr X) (car X))
                   (let Rel @

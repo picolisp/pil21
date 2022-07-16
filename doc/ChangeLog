@@ -1,3 +1,7 @@
+16jul22
+   Call 'blob+' in (clone> . +Entity)
+      lib/db.l
+
 15jul22
    Improve 'hex' argument verification
       lib/misc.l
