@@ -1,3 +1,8 @@
+20jul22
+   Bug in 'compare' for circular lists
+      src/main.l
+      test/src/subr.l
+
 16jul22
    Call 'blob+' in (clone> . +Entity)
       lib/db.l

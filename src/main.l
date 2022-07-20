@@ -1,4 +1,4 @@
-# 22may22 Software Lab. Alexander Burger
+# 20jul22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -862,7 +862,9 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (compare X (cdr Y)) )
                (? (atom (shift Y))
                   (if (t? Y) -1 +1) )
-               (? (and (== X A) (== Y B)) 0)
+               (? (== X A)
+                  (if (== Y B) 0 -1) )
+               (? (== Y B) 1)
                (sigChk 0) ) ) ) ) )
 
 # Evaluation

@@ -1,4 +1,4 @@
-# 28jan22 Software Lab. Alexander Burger
+# 20jul22 Software Lab. Alexander Burger
 
 ### c[ad]*r ###
 (let L '(1 2 3 4 5)
@@ -264,6 +264,7 @@
 (test T (== "a" "a"))
 (test T (= (1 (2) 3) (1 (2) 3)))
 (test T (= (1 . (2 3 .)) (1 . (2 3 .))))
+(test T (= (1 .) (1 .)))
 
 
 ### <> ###
@@ -316,6 +317,7 @@
 (test T (> 4 3))
 (test T (> 'A 999))
 (test T (> T (1) 'x 7 NIL))
+(test T (> (1 1 .) (1 .)))
 
 
 ### >= ###
