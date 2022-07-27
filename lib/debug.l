@@ -1,10 +1,10 @@
-# 30may22 Software Lab. Alexander Burger
+# 27jul22 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
    (casq (car (symbols)) (pico) (T @)) )
 
-(private) (_who _match nest nst1 nst2 C D M S X Y Z Fun Prg Who dep1 dep2)
+(private) (_who _match nest nst1 nst2 C D E M S X Y Z Fun Prg Who dep1 dep2)
 
 # Edit history
 (de h ()
@@ -389,7 +389,12 @@
    (let (S NIL  *Dbg)
       (for (L (trail T) L)
          (if (pair (car L))
-            (push 'S (cons (++ L)))
+            (let E (++ L)
+               (push 'S
+                  (list
+                     (if (getd (box? (car E)))
+                        (cons @ (cdr E))
+                        E ) ) ) )
             (conc
                (car (default S (cons (cons))))
                (cons (cons (++ L) (++ L))) ) )
@@ -404,7 +409,9 @@
                (cons
                   (or
                      (and (sym? (car X)) (car X))
-                     (less (has (car X)))
+                     (find
+                        '((S) (== (car X) (val S)))
+                        (all) )
                      (car X) )
                   (less (cdr X)) ) ) )
          (prinl)

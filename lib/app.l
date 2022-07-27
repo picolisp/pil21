@@ -1,4 +1,4 @@
-# 06may22 Software Lab. Alexander Burger
+# 27jul22 Software Lab. Alexander Burger
 
 # Exit on error
 (de *Err
@@ -6,7 +6,11 @@
    (for ("L" (trail T)  "L")
       (cond
          ((pair (car "L"))
-            (println (++ "L")) )
+            (let "E" (++ "L")
+               (println
+                  (if (getd (box? (car "E")))
+                     (cons @ (cdr "E"))
+                     "E" ) ) ) )
          ((== '"L" (car "L"))
             (setq "L" (cddr "L")) )
          (T

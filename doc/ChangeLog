@@ -1,3 +1,8 @@
+27jul22
+   Display applied functions in backtraces
+      lib/debug.l
+      lib/app.l
+
 20jul22
    Bug in 'compare' for circular lists
       src/main.l
