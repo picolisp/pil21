@@ -74074,11 +74074,11 @@ $3:
   br label %$2
 $4:
   %13 = phi i64 [%4, %$2] ; # Lst
-; # (loop (? (atom Lst) -1) (? (== Lst (val $Typ)) (loop (? (atom (sh...
+; # (loop (? (atom Lst) 1) (? (== Lst (val $Typ)) (loop (? (atom (shi...
   br label %$5
 $5:
   %14 = phi i64 [%13, %$4], [%70, %$21] ; # Lst
-; # (? (atom Lst) -1)
+; # (? (atom Lst) 1)
 ; # (atom Lst)
   %15 = and i64 %14, 15
   %16 = icmp ne i64 %15, 0
@@ -74146,14 +74146,14 @@ $17:
   call void @stkErr(i64 0)
   unreachable
 $18:
-; # (? (gt0 (extra (car Lst) Key)) @)
+; # (? (> (extra (car Lst) Key) 1) @)
 ; # (car Lst)
   %43 = inttoptr i64 %39 to i64*
   %44 = load i64, i64* %43
 ; # (extra (car Lst) Key)
   %45 = call i64 @extra(i64 %44, i64 %1)
-; # (gt0 (extra (car Lst) Key))
-  %46 = icmp sgt i64 %45, 0
+; # (> (extra (car Lst) Key) 1)
+  %46 = icmp ugt i64 %45, 1
   br i1 %46, label %$20, label %$19
 $20:
   %47 = phi i64 [%39, %$18] ; # Lst
@@ -74213,25 +74213,25 @@ $21:
   br label %$5
 $7:
   %71 = phi i64 [%17, %$8], [%37, %$13], [%47, %$20], [%65, %$25] ; # Lst
-  %72 = phi i64 [-1, %$8], [%38, %$13], [%45, %$20], [%66, %$25] ; # ->
+  %72 = phi i64 [1, %$8], [%38, %$13], [%45, %$20], [%66, %$25] ; # ->
   ret i64 %72
 }
 
 define i64 @_extra(i64) align 8 {
 $1:
-; # (let Key (val $Key) (when (le0 (extra (val $This) Key)) (err Exe ...
+; # (let Key (val $Key) (unless (> (extra (val $This) Key) 1) (err Ex...
 ; # (val $Key)
   %1 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([18 x i64]* @env to i8*), i32 104) to i64) to i64*
   %2 = load i64, i64* %1
-; # (when (le0 (extra (val $This) Key)) (err Exe Key ($ "Bad extra") ...
+; # (unless (> (extra (val $This) Key) 1) (err Exe Key ($ "Bad extra"...
 ; # (val $This)
   %3 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 488) to i64) to i64*
   %4 = load i64, i64* %3
 ; # (extra (val $This) Key)
   %5 = call i64 @extra(i64 %4, i64 %2)
-; # (le0 (extra (val $This) Key))
-  %6 = icmp sle i64 %5, 0
-  br i1 %6, label %$2, label %$3
+; # (> (extra (val $This) Key) 1)
+  %6 = icmp ugt i64 %5, 1
+  br i1 %6, label %$3, label %$2
 $2:
 ; # (err Exe Key ($ "Bad extra") null)
   call void @err(i64 %0, i64 %2, i8* bitcast ([10 x i8]* @$72 to i8*), i8* null)

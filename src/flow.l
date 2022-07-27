@@ -1,4 +1,4 @@
-# 26jun22 Software Lab. Alexander Burger
+# 27jul22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -462,13 +462,13 @@
       (while (pair (car Lst))  # Skip methods
          (shift Lst) )
       (loop  # Classes
-         (? (atom Lst) -1)  # Not found on this level
+         (? (atom Lst) 1)  # Not found on this level
          (? (== Lst (val $Typ))  # Hit current class list
             (loop  # Locate method in extra classes
                (? (atom (shift Lst)) 0)  # Try further
                (? (method (car (set $Ret Lst)) Key) @) ) )  # Found in superclass
          (stkChk 0)
-         (? (gt0 (extra (car Lst) Key)) @)  # Found on this level
+         (? (> (extra (car Lst) Key) 1) @)  # Found on this level
          (? (=0 @)
             (loop
                (? (atom (shift Lst)) 0)
@@ -478,7 +478,7 @@
 # (extra ['any ..]) -> any
 (de _extra (Exe)
    (let Key (val $Key)
-      (when (le0 (extra (val $This) Key))
+      (unless (> (extra (val $This) Key) 1)
          (err Exe Key ($ "Bad extra") null) )
       (let (TypS (val $Typ)  KeyS (val $Key))
          (set $Typ (val $Ret)  $Key Key)  # Set class and key

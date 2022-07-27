@@ -1,4 +1,6 @@
 27jul22
+   Bug in 'extra' assuming positive pointers
+      src/flow.l
    Display applied functions in backtraces
       lib/debug.l
       lib/app.l
