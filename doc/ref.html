@@ -1149,7 +1149,9 @@ arguments to the executable function according to the following rules:
 bound simultaneously to the results. The body of the lambda expression is
 executed, then the VAL's of the symbols are restored to their original values.
 This is the most common case, a fixed number of arguments is passed to the
-function.
+function. <br>As a special case, a single-level list of symbols may be passed
+instead of a single parameter here, resulting in a restricted form of
+destructuring bind.
 
 <dt>Otherwise, when the CAR is the symbol <code>@</code>
 <dd>All arguments are evaluated and the results kept internally in a list. The

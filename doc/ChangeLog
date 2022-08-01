@@ -1,3 +1,7 @@
+01aug22
+   Add note on destructuring bind of function parameters
+      doc/ref.html
+
 27jul22
    Bug in 'extra' assuming positive pointers
       src/flow.l
