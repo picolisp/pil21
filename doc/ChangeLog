@@ -1,3 +1,7 @@
+18aug22
+   Make insensitive to endianess
+      test/src/main.l
+
 01aug22
    Add note on destructuring bind of function parameters
       doc/ref.html
