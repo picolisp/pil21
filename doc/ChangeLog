@@ -1,5 +1,5 @@
 18aug22
-   Make insensitive to endianess
+   Make insensitive to endianness
       test/src/main.l
 
 01aug22
