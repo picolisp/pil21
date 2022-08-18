@@ -1,4 +1,4 @@
-// 29may22 Software Lab. Alexander Burger
+// 18aug22 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -255,7 +255,7 @@ int32_t gErrno(void) {
 }
 
 // Terminal
-int Tio;
+char Tio;
 struct termios OrgTermio;
 struct termios *Termio;
 
@@ -513,7 +513,7 @@ any box64(any x) {
 #define FMAX ((float)UINT64_MAX)
 #define DMAX ((double)UINT64_MAX)
 
-int Fsign;
+char Fsign;
 uint64_t Fdigit;
 
 static union {

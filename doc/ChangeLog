@@ -1,4 +1,6 @@
 18aug22
+   Declare 'Tio' and 'Fsign' as "char" instead of "int"
+      src/lib.c
    Make insensitive to endianness
       test/src/main.l
 
