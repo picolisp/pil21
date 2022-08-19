@@ -163,7 +163,7 @@ declare void @clear_history()
 @Fsign = external global i1
 @Fdigit = external global i64
 declare i8* @stderrMsg(i8*, i8*)
-declare i32 @gPrintf(i8*, i32, i8*, i8*)
+declare void @gPrintf(i8*, i32, i8*, i8*)
 declare i8* @strErrno()
 declare i32 @openRd(i8*)
 declare i32 @openWr(i8*)
@@ -193,8 +193,8 @@ declare i8* @currentLine()
 @SigDfl = external global i8*
 @SigIgn = external global i8*
 declare i32 @gSignal(i32)
-declare void @sigUnblock(i32)
 declare void @iSignal(i32, i8*)
+declare void @sigUnblock(i32)
 declare void @sigChld(i32)
 declare i32 @waitWuntraced(i32, i32*)
 declare i32 @wifStopped(i32*)

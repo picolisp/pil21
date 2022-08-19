@@ -1,4 +1,6 @@
 19aug22
+   'gPrintf' returns void
+      src/dec.l
    Size check in gPrintf()
       src/lib.c
    'save' before 'loop'

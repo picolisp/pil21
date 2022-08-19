@@ -1,4 +1,4 @@
-# 25may22 Software Lab. Alexander Burger
+# 19aug22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -189,7 +189,7 @@ openRdWrCreate openRdWrAppend openWrAppend fseekOfs fseek0 seek0 truncate0
 socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 
 (de T i8* stderrMsg (i8* i8*))
-(de T i32 gPrintf (i8* i32 i8* i8*))
+(de T void gPrintf (i8* i32 i8* i8*))
 (de T i8* strErrno ())
 (de T i32 openRd (i8*))
 (de T i32 openWr (i8*))
@@ -229,8 +229,8 @@ socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (local) (gSignal sigUnblock iSignal sigChld waitWuntraced wifStopped)
 
 (de T i32 gSignal (i32))
-(de T void sigUnblock (i32))
 (de T void iSignal (i32 i8*))
+(de T void sigUnblock (i32))
 (de T void sigChld (i32))
 (de T i32 waitWuntraced (i32 i32*))
 (de T i32 wifStopped (i32*))
