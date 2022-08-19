@@ -1,3 +1,7 @@
+19aug22
+   '$TickU' and '$TickS' are obsolete
+      src/glob.l
+
 18aug22
    Declare 'Tio' and 'Fsign' as "char" instead of "int"
       src/lib.c

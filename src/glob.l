@@ -1,4 +1,4 @@
-# 24may22 Software Lab. Alexander Burger
+# 19aug22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -47,8 +47,6 @@
 (var $SeedL i64 0)                     # Random seed low
 (var $SeedH i64 0)                     # Random seed high
 (var $USec i64 0)                      # Startup microseconds
-(var $TickU i64 0)                     # Ticks in user time
-(var $TickS i64 0)                     # Ticks in system time
 (var $Child i8* null)                  # Child array
 (var $Children i32 0)                  # Number of children
 (var $Slot i32 0)                      # Child index

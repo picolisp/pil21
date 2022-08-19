@@ -54,8 +54,6 @@ declare void @llvm.stackrestore(i8*)
 @$SeedL = global i64 0
 @$SeedH = global i64 0
 @$USec = global i64 0
-@$TickU = global i64 0
-@$TickS = global i64 0
 @$Child = global i8* null
 @$Children = global i32 0
 @$Slot = global i32 0
@@ -1522,7 +1520,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 354,
   i64 130,
-  i64 290
+  i64 306
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,

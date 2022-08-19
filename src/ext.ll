@@ -54,8 +54,6 @@ declare void @llvm.stackrestore(i8*)
 @$SeedL = external global i64
 @$SeedH = external global i64
 @$USec = external global i64
-@$TickU = external global i64
-@$TickS = external global i64
 @$Child = external global i8*
 @$Children = external global i32
 @$Slot = external global i32
