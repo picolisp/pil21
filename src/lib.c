@@ -1,4 +1,4 @@
-// 18aug22 Software Lab. Alexander Burger
+// 19aug22 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -14,7 +14,8 @@ char *stderrMsg(char *fmt, char *s) {
 }
 
 void gPrintf(char *buf, int32_t siz, char *fmt, char *arg) {
-   snprintf(buf, siz, fmt, arg);
+   if (snprintf(buf, siz, fmt, arg) >= siz)
+      fprintf(stderr, "!! gPrintf() truncated !!\n");
 }
 
 char *strErrno(void) {

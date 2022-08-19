@@ -1,4 +1,8 @@
 19aug22
+   Size check in gPrintf()
+      src/lib.c
+   'save' before 'loop'
+      src/main.l
    '$TickU' and '$TickS' are obsolete
       src/glob.l
 
