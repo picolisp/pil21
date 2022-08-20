@@ -3248,14 +3248,14 @@ $8:
   store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64), i64* %71
   %72 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 24) to i64) to i64*
   store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64), i64* %72
-; # (b8 (ioFrame T))
-  %73 = alloca i8, i64 28
+; # (b8+ (ioFrame T))
+  %73 = alloca i8, i64 28, align 8
 ; # (val $OutFiles)
   %74 = load i8**, i8*** @$OutFiles
 ; # (val 3 (val $OutFiles))
   %75 = getelementptr i8*, i8** %74, i32 2
   %76 = load i8*, i8** %75
-; # (pushOutFile (b8 (ioFrame T)) (val 3 (val $OutFiles)) 0)
+; # (pushOutFile (b8+ (ioFrame T)) (val 3 (val $OutFiles)) 0)
   call void @pushOutFile(i8* %73, i8* %76, i32 0)
 ; # (let In: (inFile (val $InFile)) (when (and (In:) (In: name)) (cal...
 ; # (val $InFile)
@@ -49228,7 +49228,7 @@ $6:
 
 define i64 @_in(i64) align 8 {
 $1:
-; # (let X (cdr Exe) (rdOpen Exe (eval (++ X)) (b8 (ioFrame T))) (pro...
+; # (let X (cdr Exe) (rdOpen Exe (eval (++ X)) (b8+ (ioFrame T))) (pr...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
@@ -49257,9 +49257,9 @@ $5:
   br label %$2
 $2:
   %15 = phi i64 [%5, %$4], [%13, %$6], [%14, %$5] ; # ->
-; # (b8 (ioFrame T))
-  %16 = alloca i8, i64 28
-; # (rdOpen Exe (eval (++ X)) (b8 (ioFrame T)))
+; # (b8+ (ioFrame T))
+  %16 = alloca i8, i64 28, align 8
+; # (rdOpen Exe (eval (++ X)) (b8+ (ioFrame T)))
   call void @rdOpen(i64 %0, i64 %15, i8* %16)
 ; # (prog1 (run X) (popInFiles) (tosInFile))
 ; # (run X)
@@ -49320,7 +49320,7 @@ $9:
 
 define i64 @_out(i64) align 8 {
 $1:
-; # (let X (cdr Exe) (wrOpen Exe (eval (++ X)) (b8 (ioFrame T))) (pro...
+; # (let X (cdr Exe) (wrOpen Exe (eval (++ X)) (b8+ (ioFrame T))) (pr...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
@@ -49349,9 +49349,9 @@ $5:
   br label %$2
 $2:
   %15 = phi i64 [%5, %$4], [%13, %$6], [%14, %$5] ; # ->
-; # (b8 (ioFrame T))
-  %16 = alloca i8, i64 28
-; # (wrOpen Exe (eval (++ X)) (b8 (ioFrame T)))
+; # (b8+ (ioFrame T))
+  %16 = alloca i8, i64 28, align 8
+; # (wrOpen Exe (eval (++ X)) (b8+ (ioFrame T)))
   call void @wrOpen(i64 %0, i64 %15, i8* %16)
 ; # (prog1 (run X) (popOutFiles) (tosOutFile))
 ; # (run X)
@@ -49412,7 +49412,7 @@ $9:
 
 define i64 @_err(i64) align 8 {
 $1:
-; # (let X (cdr Exe) (erOpen Exe (eval (++ X)) (b8 (ctFrame T))) (pro...
+; # (let X (cdr Exe) (erOpen Exe (eval (++ X)) (b8+ (ctFrame T))) (pr...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
@@ -49441,9 +49441,9 @@ $5:
   br label %$2
 $2:
   %15 = phi i64 [%5, %$4], [%13, %$6], [%14, %$5] ; # ->
-; # (b8 (ctFrame T))
-  %16 = alloca i8, i64 12
-; # (erOpen Exe (eval (++ X)) (b8 (ctFrame T)))
+; # (b8+ (ctFrame T))
+  %16 = alloca i8, i64 12, align 8
+; # (erOpen Exe (eval (++ X)) (b8+ (ctFrame T)))
   call void @erOpen(i64 %0, i64 %15, i8* %16)
 ; # (prog1 (run X) (popErrFiles))
 ; # (run X)
@@ -49502,7 +49502,7 @@ $9:
 
 define i64 @_ctl(i64) align 8 {
 $1:
-; # (let X (cdr Exe) (ctOpen Exe (eval (++ X)) (b8 (ctFrame T))) (pro...
+; # (let X (cdr Exe) (ctOpen Exe (eval (++ X)) (b8+ (ctFrame T))) (pr...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
@@ -49531,9 +49531,9 @@ $5:
   br label %$2
 $2:
   %15 = phi i64 [%5, %$4], [%13, %$6], [%14, %$5] ; # ->
-; # (b8 (ctFrame T))
-  %16 = alloca i8, i64 12
-; # (ctOpen Exe (eval (++ X)) (b8 (ctFrame T)))
+; # (b8+ (ctFrame T))
+  %16 = alloca i8, i64 12, align 8
+; # (ctOpen Exe (eval (++ X)) (b8+ (ctFrame T)))
   call void @ctOpen(i64 %0, i64 %15, i8* %16)
 ; # (prog1 (run X) (popCtlFiles))
 ; # (run X)
@@ -49749,13 +49749,13 @@ $2:
 
 define i64 @_input(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) Get: (getFrame (b8 (getFrame T)))) (Get: link (...
+; # (let (X (cdr Exe) Get: (getFrame (b8+ (getFrame T)))) (Get: link ...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
-; # (b8 (getFrame T))
-  %4 = alloca i8, i64 28
+; # (b8+ (getFrame T))
+  %4 = alloca i8, i64 28, align 8
 ; # (Get: link (val $Input))
   %5 = bitcast i8* %4 to i8**
   %6 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([18 x i64]* @env to i8*), i32 64) to i8**)
@@ -50066,13 +50066,13 @@ $14:
 
 define i64 @_output(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) Put: (putFrame (b8 (putFrame T)))) (Put: link (...
+; # (let (X (cdr Exe) Put: (putFrame (b8+ (putFrame T)))) (Put: link ...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
-; # (b8 (putFrame T))
-  %4 = alloca i8, i64 32
+; # (b8+ (putFrame T))
+  %4 = alloca i8, i64 32, align 8
 ; # (Put: link (val $Output))
   %5 = bitcast i8* %4 to i8**
   %6 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([18 x i64]* @env to i8*), i32 72) to i8**)
@@ -50815,7 +50815,7 @@ $14:
 
 define i64 @_pipe(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) E (++ X) Pfd (b32 2) Io: (ioFrame (b8 (ioFrame ...
+; # (let (X (cdr Exe) E (++ X) Pfd (b32 2) Io: (ioFrame (b8+ (ioFrame...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
@@ -50827,8 +50827,8 @@ $1:
   %7 = load i64, i64* %6
 ; # (b32 2)
   %8 = alloca i32, i64 2
-; # (b8 (ioFrame T))
-  %9 = alloca i8, i64 28
+; # (b8+ (ioFrame T))
+  %9 = alloca i8, i64 28, align 8
 ; # (when (lt0 (if (pair X) (pipe Pfd) (socketPair Pfd))) (pipeErr Ex...
 ; # (if (pair X) (pipe Pfd) (socketPair Pfd))
 ; # (pair X)
@@ -55430,9 +55430,9 @@ $12:
   br label %$10
 $10:
   %100 = phi i64 [%30, %$7], [%99, %$12] ; # X
-; # (b8 (ioFrame T))
-  %101 = alloca i8, i64 28
-; # (rdOpen Exe X (b8 (ioFrame T)))
+; # (b8+ (ioFrame T))
+  %101 = alloca i8, i64 28, align 8
+; # (rdOpen Exe X (b8+ (ioFrame T)))
   call void @rdOpen(i64 %0, i64 %100, i8* %101)
 ; # (set $PrivT (set 2 $PrivT $Nil))
 ; # (set 2 $PrivT $Nil)
@@ -59128,13 +59128,13 @@ $9:
 
 define i64 @_blk(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) Db: (dbFile (b8 (dbFile T)))) (Db: fd (i32 (evC...
+; # (let (X (cdr Exe) Db: (dbFile (b8+ (dbFile T)))) (Db: fd (i32 (ev...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
-; # (b8 (dbFile T))
-  %4 = alloca i8, i64 48
+; # (b8+ (dbFile T))
+  %4 = alloca i8, i64 48, align 8
 ; # (Db: fd (i32 (evCnt Exe X)))
   %5 = bitcast i8* %4 to i32*
   %6 = call i64 @evCnt(i64 %0, i64 %3)
@@ -61926,8 +61926,8 @@ $121:
   %805 = alloca i8, i64 %804
 ; # (pathString Nm (b8 (pathSize Nm)))
   %806 = call i8* @pathString(i64 %803, i8* %805)
-; # (b8 (outFile T))
-  %807 = alloca i8, i64 4105
+; # (b8+ (outFile T))
+  %807 = alloca i8, i64 4105, align 8
 ; # (when (lt0 (openWrAppend S)) (openErr Exe (cdr Z)))
 ; # (openWrAppend S)
   %808 = call i32 @openWrAppend(i8* %806)
@@ -80764,14 +80764,14 @@ $14:
   store i64 %30, i64* %37
   %38 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([18 x i64]* @env to i8*), i32 8) to i64) to i64*
   store i64 %32, i64* %38
-; # (set Y (box64 (i64 (b8 (int Z)))))
+; # (set Y (box64 (i64 (b8+ (int Z)))))
 ; # (int Z)
   %39 = lshr i64 %24, 4
-; # (b8 (int Z))
-  %40 = alloca i8, i64 %39
-; # (i64 (b8 (int Z)))
+; # (b8+ (int Z))
+  %40 = alloca i8, i64 %39, align 8
+; # (i64 (b8+ (int Z)))
   %41 = ptrtoint i8* %40 to i64
-; # (box64 (i64 (b8 (int Z))))
+; # (box64 (i64 (b8+ (int Z))))
   %42 = and i64 %41, 17293822569102704640
   %43 = icmp ne i64 %42, 0
   br i1 %43, label %$15, label %$16
@@ -80853,7 +80853,7 @@ $20:
 
 define i64 @_catch(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) Ca: (caFrame (b8 (+ (val JmpBufSize) (caFrame T...
+; # (let (X (cdr Exe) Ca: (caFrame (b8+ (+ (val JmpBufSize) (caFrame ...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
@@ -80862,8 +80862,8 @@ $1:
   %4 = load i64, i64* @JmpBufSize
 ; # (+ (val JmpBufSize) (caFrame T))
   %5 = add i64 %4, 216
-; # (b8 (+ (val JmpBufSize) (caFrame T)))
-  %6 = alloca i8, i64 %5
+; # (b8+ (+ (val JmpBufSize) (caFrame T)))
+  %6 = alloca i8, i64 %5, align 8
 ; # (Ca: tag (eval (++ X)))
   %7 = getelementptr i8, i8* %6, i32 8
   %8 = ptrtoint i8* %7 to i64
@@ -81160,7 +81160,7 @@ $14:
 
 define i64 @_finally(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) Ca: (caFrame (b8 (+ (val JmpBufSize) (caFrame T...
+; # (let (X (cdr Exe) Ca: (caFrame (b8+ (+ (val JmpBufSize) (caFrame ...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
@@ -81169,8 +81169,8 @@ $1:
   %4 = load i64, i64* @JmpBufSize
 ; # (+ (val JmpBufSize) (caFrame T))
   %5 = add i64 %4, 216
-; # (b8 (+ (val JmpBufSize) (caFrame T)))
-  %6 = alloca i8, i64 %5
+; # (b8+ (+ (val JmpBufSize) (caFrame T)))
+  %6 = alloca i8, i64 %5, align 8
 ; # (Ca: tag 0)
   %7 = getelementptr i8, i8* %6, i32 8
   %8 = ptrtoint i8* %7 to i64
@@ -81796,7 +81796,7 @@ $31:
   %148 = phi i64 [%137, %$29] ; # X
   %149 = phi i8* [%138, %$29] ; # Crt
   %150 = phi i8* [%139, %$29] ; # P
-; # (if P (stack P) (stack ((coroutine Crt) lim)) (setq P (b8 (+ (val...
+; # (if P (stack P) (stack ((coroutine Crt) lim)) (setq P (b8+ (+ (va...
   %151 = icmp ne i8* %150, null
   br i1 %151, label %$32, label %$33
 $32:
@@ -81820,8 +81820,8 @@ $33:
   %161 = load i64, i64* @JmpBufSize
 ; # (+ (val JmpBufSize) (coroutine T))
   %162 = add i64 %161, 280
-; # (b8 (+ (val JmpBufSize) (coroutine T)))
-  %163 = alloca i8, i64 %162
+; # (b8+ (+ (val JmpBufSize) (coroutine T)))
+  %163 = alloca i8, i64 %162, align 8
 ; # ((coroutine Crt) nxt P)
   %164 = getelementptr i8, i8* %156, i32 16
   %165 = bitcast i8* %164 to i8**
@@ -83222,19 +83222,19 @@ $5:
 ; # (set $Run $Nil)
   %54 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 600) to i64) to i64*
   store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64), i64* %54
-; # (let Raw (val Termio) (setCooked) (pushOutFile (b8 (ioFrame T)) (...
+; # (let Raw (val Termio) (setCooked) (pushOutFile (b8+ (ioFrame T)) ...
 ; # (val Termio)
   %55 = load i8*, i8** @Termio
 ; # (setCooked)
   call void @setCooked()
-; # (b8 (ioFrame T))
-  %56 = alloca i8, i64 28
+; # (b8+ (ioFrame T))
+  %56 = alloca i8, i64 28, align 8
 ; # (val $OutFiles)
   %57 = load i8**, i8*** @$OutFiles
 ; # (val 2 (val $OutFiles))
   %58 = getelementptr i8*, i8** %57, i32 1
   %59 = load i8*, i8** %58
-; # (pushOutFile (b8 (ioFrame T)) (val 2 (val $OutFiles)) 0)
+; # (pushOutFile (b8+ (ioFrame T)) (val 2 (val $OutFiles)) 0)
   call void @pushOutFile(i8* %56, i8* %59, i32 0)
 ; # (print Exe)
   call void @print(i64 %19)
@@ -108787,27 +108787,27 @@ $20:
 ; # (cons $Db1 $Nil)
   %89 = call i64 @cons(i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 408) to i64), i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64))
   store i64 %89, i64* @$Extern
-; # (b8 (ioFrame T))
-  %90 = alloca i8, i64 28
+; # (b8+ (ioFrame T))
+  %90 = alloca i8, i64 28, align 8
 ; # (initOutFile 2)
   %91 = call i8* @initOutFile(i32 2)
-; # (pushOutFile (b8 (ioFrame T)) (initOutFile 2) 0)
+; # (pushOutFile (b8+ (ioFrame T)) (initOutFile 2) 0)
   call void @pushOutFile(i8* %90, i8* %91, i32 0)
-; # (set $Stdout (b8 (ioFrame T)))
-; # (b8 (ioFrame T))
-  %92 = alloca i8, i64 28
+; # (set $Stdout (b8+ (ioFrame T)))
+; # (b8+ (ioFrame T))
+  %92 = alloca i8, i64 28, align 8
   store i8* %92, i8** @$Stdout
 ; # (initOutFile 1)
   %93 = call i8* @initOutFile(i32 1)
-; # (pushOutFile (set $Stdout (b8 (ioFrame T))) (initOutFile 1) 0)
+; # (pushOutFile (set $Stdout (b8+ (ioFrame T))) (initOutFile 1) 0)
   call void @pushOutFile(i8* %92, i8* %93, i32 0)
-; # (set $Stdin (b8 (ioFrame T)))
-; # (b8 (ioFrame T))
-  %94 = alloca i8, i64 28
+; # (set $Stdin (b8+ (ioFrame T)))
+; # (b8+ (ioFrame T))
+  %94 = alloca i8, i64 28, align 8
   store i8* %94, i8** @$Stdin
 ; # (initInFile 0 null)
   %95 = call i8* @initInFile(i32 0, i8* null)
-; # (pushInFile (set $Stdin (b8 (ioFrame T))) (initInFile 0 null) 0)
+; # (pushInFile (set $Stdin (b8+ (ioFrame T))) (initInFile 0 null) 0)...
   call void @pushInFile(i8* %94, i8* %95, i32 0)
 ; # (set Tio (=0 (tcgetattr 0 OrgTermio)))
 ; # (tcgetattr 0 OrgTermio)

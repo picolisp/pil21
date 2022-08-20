@@ -1,4 +1,4 @@
-# 27jul22 Software Lab. Alexander Burger
+# 20aug22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1030,7 +1030,7 @@
          Y (needChkVar Exe (++ X))
          Z (needCnt Exe (eval (++ X)))
          P (set $Bind (push (val Y) Y (val $Bind))) )  # [[sym] sym LINK]
-      (set Y (box64 (i64 (b8 (int Z)))))
+      (set Y (box64 (i64 (b8+ (int Z)))))
       (prog1
          (run X)
          (set Y (val P)  $Bind (val 3 P)) ) ) )
@@ -1039,7 +1039,7 @@
 (de _catch (Exe)
    (let
       (X (cdr Exe)
-         Ca: (caFrame (b8 (+ (val JmpBufSize) (caFrame T)))) )
+         Ca: (caFrame (b8+ (+ (val JmpBufSize) (caFrame T)))) )
       (Ca: tag (eval (++ X)))
       (Ca: link (val $Catch))
       (set $Catch (Ca:))
@@ -1072,7 +1072,7 @@
 (de _finally (Exe)
    (let
       (X (cdr Exe)
-         Ca: (caFrame (b8 (+ (val JmpBufSize) (caFrame T)))) )
+         Ca: (caFrame (b8+ (+ (val JmpBufSize) (caFrame T)))) )
       (Ca: tag 0)
       (Ca: link (val $Catch))
       (set $Catch (Ca:))
@@ -1167,7 +1167,7 @@
                      (if P
                         (stack P)  # Use free slot
                         (stack ((coroutine Crt) lim)) # Found no free slot
-                        (setq P (b8 (+ (val JmpBufSize) (coroutine T))))
+                        (setq P (b8+ (+ (val JmpBufSize) (coroutine T))))
                         ((coroutine Crt) nxt P)
                         ((coroutine P) prv Crt)
                         ((coroutine P) nxt null) )
@@ -1362,7 +1362,7 @@
          (set $Run $Nil) )
       (let Raw (val Termio)
          (setCooked)
-         (pushOutFile (b8 (ioFrame T)) (val 2 (val $OutFiles)) 0)  # Stdout
+         (pushOutFile (b8+ (ioFrame T)) (val 2 (val $OutFiles)) 0)  # Stdout
          (print Exe)
          (newline)
          (repl 0 ($ "! ") $Nil)

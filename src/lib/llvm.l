@@ -1,4 +1,4 @@
-# 02jul22 Software Lab. Alexander Burger
+# 20aug22 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -635,40 +635,39 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
                      (cons (car X) @N (cddr X))
                      (inc '@N (eval (cadr X))) ) )
                (cdr Lst) ) )
-         (curry (@N @L) (P)
-            (if (=T P)
+         (curry (@N @L) (@P)
+            (if (=T @P)
                @N
-               (let @P (or P (llvm~b8 @N))
-                  (curry (@P) Args
-                     (log)
-                     (let *Log NIL
-                        (nond
-                           (Args '@P)
-                           ((or
-                                 (asoq (car Args) '@L)
-                                 (and
-                                    (pair (car Args))
-                                    (asoq (car pico~@) '@L) ) )
-                              (quit "Bad struct item" (car Args)) )
-                           (NIL
-                              (let P (llvm~ofs '@P (cadr pico~@))
-                                 (let Q ((ptr (caddr pico~@)) P)
-                                    (if (atom (car Args))
-                                       (if (cadr Args)
-                                          (llvm~set Q (eval pico~@ 1 '(*Log)))
-                                          (llvm~val Q) )
-                                       (ifn (cdar Args)
+               (curry (@P) Args
+                  (log)
+                  (let *Log NIL
+                     (nond
+                        (Args '@P)
+                        ((or
+                              (asoq (car Args) '@L)
+                              (and
+                                 (pair (car Args))
+                                 (asoq (car pico~@) '@L) ) )
+                           (quit "Bad struct item" (car Args)) )
+                        (NIL
+                           (let P (llvm~ofs '@P (cadr pico~@))
+                              (let Q ((ptr (caddr pico~@)) P)
+                                 (if (atom (car Args))
+                                    (if (cadr Args)
+                                       (llvm~set Q (eval pico~@ 1 '(*Log)))
+                                       (llvm~val Q) )
+                                    (ifn (cdar Args)
+                                       P
+                                       (let A (cadar Args)
+                                          (setq P
+                                             (llvm~ofs P
+                                                (if (sym? A) (; A offset) (eval A 1 '(*Log))) ) ) )
+                                       (ifn (cddar Args)
                                           P
-                                          (let A (cadar Args)
-                                             (setq P
-                                                (llvm~ofs P
-                                                   (if (sym? A) (; A offset) (eval A 1 '(*Log))) ) ) )
-                                          (ifn (cddar Args)
-                                             P
-                                             (let Q ((ptr (caddar Args)) P)
-                                                (if (cadr Args)
-                                                   (llvm~set Q (eval pico~@ 1 '(*Log)))
-                                                   (llvm~val Q) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) )
+                                          (let Q ((ptr (caddar Args)) P)
+                                             (if (cadr Args)
+                                                (llvm~set Q (eval pico~@ 1 '(*Log)))
+                                                (llvm~val Q) ) ) ) ) ) ) ) ) ) ) ) ) ) ) ) )
 
 
 ### Cross compiler overridden ###
@@ -1186,13 +1185,15 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
          (def (pack "%" *Ssa) 'i8*) ) )
    (llvm~stack) )
 
-(asm (@Typ @Ptr)
+(asm (@Typ @Ptr @Flg)
    ((N)
       (ssa (inc '*Ssa) "alloca " '@Typ ", "
          (if (num? N) 'i64 (val N))
-         " " N )
+         " " N
+         (and @Flg ", align 8") )
       (def (pack "%" *Ssa) '@Ptr) )
    (llvm~b8 i8 i8*)
+   (llvm~b8+ i8 i8* T)
    (llvm~b8* i8* i8**)
    (llvm~b32 i32 i32*)
    (llvm~b64 i64 i64*) )

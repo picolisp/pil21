@@ -1,4 +1,10 @@
 20aug22
+   'b8+' aligns stack buffers to 8 bytes
+      src/lib/llvm.l
+      src/main.l
+      src/io.l
+      src/db.l
+      src/flow.l
    Pad 'dbFile' and 'child' to multiples of 8
       src/dec.l
    Add file

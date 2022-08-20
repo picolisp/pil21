@@ -1,4 +1,4 @@
-# 13jun22 Software Lab. Alexander Burger
+# 20aug22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1876,7 +1876,7 @@ selectErr)
 # (in 'any . prg) -> any
 (de _in (Exe)
    (let X (cdr Exe)
-      (rdOpen Exe (eval (++ X)) (b8 (ioFrame T)))
+      (rdOpen Exe (eval (++ X)) (b8+ (ioFrame T)))
       (prog1
          (run X)
          (popInFiles)
@@ -1885,7 +1885,7 @@ selectErr)
 # (out 'any . prg) -> any
 (de _out (Exe)
    (let X (cdr Exe)
-      (wrOpen Exe (eval (++ X)) (b8 (ioFrame T)))
+      (wrOpen Exe (eval (++ X)) (b8+ (ioFrame T)))
       (prog1
          (run X)
          (popOutFiles)
@@ -1894,7 +1894,7 @@ selectErr)
 # (err 'sym . prg) -> any
 (de _err (Exe)
    (let X (cdr Exe)
-      (erOpen Exe (eval (++ X)) (b8 (ctFrame T)))
+      (erOpen Exe (eval (++ X)) (b8+ (ctFrame T)))
       (prog1
          (run X)
          (popErrFiles) ) ) )
@@ -1902,7 +1902,7 @@ selectErr)
 # (ctl 'sym . prg) -> any
 (de _ctl (Exe)
    (let X (cdr Exe)
-      (ctOpen Exe (eval (++ X)) (b8 (ctFrame T)))
+      (ctOpen Exe (eval (++ X)) (b8+ (ctFrame T)))
       (prog1
          (run X)
          (popCtlFiles) ) ) )
@@ -1942,7 +1942,7 @@ selectErr)
 
 # (input exe . prg) -> any
 (de _input (Exe)
-   (let (X (cdr Exe)  Get: (getFrame (b8 (getFrame T))))
+   (let (X (cdr Exe)  Get: (getFrame (b8+ (getFrame T))))
       (Get: link (val $Input))
       (Get: exe (++ X))
       (Get: fun (val (i8** $Get)))
@@ -2007,7 +2007,7 @@ selectErr)
 
 # (output exe . prg) -> any
 (de _output (Exe)
-   (let (X (cdr Exe)  Put: (putFrame (b8 (putFrame T))))
+   (let (X (cdr Exe)  Put: (putFrame (b8+ (putFrame T))))
       (Put: link (val $Output))
       (Put: exe (++ X))
       (Put: fun (val (i8** $Put)))
@@ -2147,7 +2147,7 @@ selectErr)
       (X (cdr Exe)
          E (++ X)
          Pfd (b32 2)
-         Io: (ioFrame (b8 (ioFrame T))) )
+         Io: (ioFrame (b8+ (ioFrame T))) )
       (when (lt0 (if (pair X) (pipe Pfd) (socketPair Pfd)))
          (pipeErr Exe) )
       (when (< (val 2 Pfd) 2)  # pfd[1]
@@ -2839,7 +2839,7 @@ selectErr)
             (unless (val $Repl)
                (set $Repl YES)
                (iSignal (val SIGINT Sig) (fun sig)) ) )
-         (rdOpen Exe X (b8 (ioFrame T)))
+         (rdOpen Exe X (b8+ (ioFrame T)))
          (set $PrivT (set 2 $PrivT $Nil))
          (set $Rule (set $Transient (set 2 $Transient $Nil)))
          (setq X $Nil)

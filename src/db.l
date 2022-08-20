@@ -1,4 +1,4 @@
-# 16apr21 Software Lab. Alexander Burger
+# 20aug22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -673,7 +673,7 @@
 # (blk 'fd 'cnt 'siz ['fd2]) -> lst
 # (blk 'fd 0) -> (cnt . siz)
 (de _blk (Exe)
-   (let (X (cdr Exe)  Db: (dbFile (b8 (dbFile T))))
+   (let (X (cdr Exe)  Db: (dbFile (b8+ (dbFile T))))
       (Db: fd (i32 (evCnt Exe X)))  # File descriptor
       (if (=0 (evCnt Exe (shift X)))  # Block number
          (let Buf (b8 BLK)
@@ -1087,7 +1087,7 @@
                Out (val $OutFile)
                Nm (xName Exe (cdr Z))
                S (pathString Nm (b8 (pathSize Nm)))
-               Out: (outFile (b8 (outFile T))) )
+               Out: (outFile (b8+ (outFile T))) )
             (when (lt0 (openWrAppend S))
                (openErr Exe (cdr Z)) )
             (Out: fd @)
