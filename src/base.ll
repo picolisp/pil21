@@ -2963,7 +2963,7 @@ $40:
 ; # (val $Children)
   %139 = load i32, i32* @$Children
 ; # (* (val $Children) (child T))
-  %140 = mul i32 %139, 28
+  %140 = mul i32 %139, 32
 ; # (ofs Cld (* (val $Children) (child T)))
   %141 = getelementptr i8, i8* %138, i32 %140
 ; # (until (== Cld <Cld) (let Cld: (child Cld) (when (and (Cld: pid) ...
@@ -3016,7 +3016,7 @@ $49:
   %168 = phi i8* [%161, %$46], [%165, %$48] ; # Cld
   %169 = phi i1 [%162, %$46], [1, %$48] ; # Flg
 ; # (ofs Cld (child T))
-  %170 = getelementptr i8, i8* %168, i32 28
+  %170 = getelementptr i8, i8* %168, i32 32
   br label %$43
 $45:
   %171 = phi i32* [%142, %$43] ; # P
@@ -4463,7 +4463,7 @@ $1:
 ; # (val $Children)
   %2 = load i32, i32* @$Children
 ; # (* (val $Children) (child T))
-  %3 = mul i32 %2, 28
+  %3 = mul i32 %2, 32
 ; # (ofs Cld (* (val $Children) (child T)))
   %4 = getelementptr i8, i8* %1, i32 %3
 ; # (until (== Cld <Cld) (when ((child Cld) pid) (setq X (cons (cnt (...
@@ -4499,7 +4499,7 @@ $6:
   %20 = phi i64 [%8, %$3], [%19, %$5] ; # X
   %21 = phi i8* [%9, %$3], [%15, %$5] ; # Cld
 ; # (ofs Cld (child T))
-  %22 = getelementptr i8, i8* %21, i32 28
+  %22 = getelementptr i8, i8* %21, i32 32
   br label %$2
 $4:
   %23 = phi i64 [%5, %$2] ; # X
@@ -40581,7 +40581,7 @@ $3:
 ; # (val $Children)
   %25 = load i32, i32* @$Children
 ; # (* (val $Children) (child T))
-  %26 = mul i32 %25, 28
+  %26 = mul i32 %25, 32
 ; # (ofs Cld (* (val $Children) (child T)))
   %27 = getelementptr i8, i8* %24, i32 %26
 ; # (inc 'Q 8)
@@ -40651,7 +40651,7 @@ $14:
   %63 = phi i8* [%56, %$9], [%60, %$13] ; # Q
   %64 = phi i8* [%57, %$9], [%61, %$13] ; # Cld
 ; # (ofs Cld (child T))
-  %65 = getelementptr i8, i8* %64, i32 28
+  %65 = getelementptr i8, i8* %64, i32 32
   br label %$6
 $8:
   %66 = phi i8* [%29, %$6] ; # P
@@ -41714,7 +41714,7 @@ $30:
 ; # (val $Children)
   %185 = load i32, i32* @$Children
 ; # (* (val $Children) (child T))
-  %186 = mul i32 %185, 28
+  %186 = mul i32 %185, 32
 ; # (ofs Cld (* (val $Children) (child T)))
   %187 = getelementptr i8, i8* %184, i32 %186
 ; # (until (== Cld <Cld) (let Cld: (child Cld) (when (Cld: pid) (poll...
@@ -41800,7 +41800,7 @@ $36:
   %239 = phi i64 [%197, %$33], [%234, %$38] ; # Dly
   %240 = phi i8* [%198, %$33], [%235, %$38] ; # Cld
 ; # (ofs Cld (child T))
-  %241 = getelementptr i8, i8* %240, i32 28
+  %241 = getelementptr i8, i8* %240, i32 32
   br label %$32
 $34:
   %242 = phi i64 [%188, %$32] ; # Ms
@@ -41897,7 +41897,7 @@ $46:
 ; # (val $Children)
   %290 = load i32, i32* @$Children
 ; # (* (val $Children) (child T))
-  %291 = mul i32 %290, 28
+  %291 = mul i32 %290, 32
 ; # (ofs Cld (* (val $Children) (child T)))
   %292 = getelementptr i8, i8* %289, i32 %291
 ; # (until (== Cld <Cld) (let Cld: (child Cld) (when (Cld: pid) (when...
@@ -42059,7 +42059,7 @@ $68:
 ; # (val $Children)
   %383 = load i32, i32* @$Children
 ; # (* (val $Children) (child T))
-  %384 = mul i32 %383, 28
+  %384 = mul i32 %383, 32
 ; # (ofs Cld2 (* (val $Children) (child T)))
   %385 = getelementptr i8, i8* %382, i32 %384
 ; # (until (== Cld2 <Cld2) (let Cld2: (child Cld2) (when (and (<> Cld...
@@ -42157,7 +42157,7 @@ $78:
   %445 = phi i8* [%432, %$72], [%438, %$77] ; # Cld
   %446 = phi i8* [%433, %$72], [%439, %$77] ; # Cld2
 ; # (ofs Cld2 (child T))
-  %447 = getelementptr i8, i8* %446, i32 28
+  %447 = getelementptr i8, i8* %446, i32 32
   br label %$69
 $71:
   %448 = phi i64 [%386, %$69] ; # Ms
@@ -42365,7 +42365,7 @@ $-1:
   %578 = phi i64 [%327, %$57], [%455, %$67], [%574, %$52] ; # Tim
   %579 = phi i8* [%328, %$57], [%456, %$67], [%575, %$52] ; # Cld
 ; # (ofs Cld (child T))
-  %580 = getelementptr i8, i8* %579, i32 28
+  %580 = getelementptr i8, i8* %579, i32 32
   br label %$48
 $50:
   %581 = phi i64 [%293, %$48] ; # Ms
@@ -42419,7 +42419,7 @@ $91:
 ; # (val Pn)
   %608 = load i32, i32* %25
 ; # (* (val Pn) (child T))
-  %609 = mul i32 %608, 28
+  %609 = mul i32 %608, 32
 ; # (ofs (val $Child) (* (val Pn) (child T)))
   %610 = getelementptr i8, i8* %607, i32 %609
 ; # (when ((child Cld) pid) (set $Talking @) (wrChild Cld $TBuf 2))
@@ -50348,7 +50348,7 @@ $13:
 ; # (inc 'I)
   %37 = add i32 %34, 1
 ; # (ofs Cld (child T))
-  %38 = getelementptr i8, i8* %36, i32 28
+  %38 = getelementptr i8, i8* %36, i32 32
   br label %$10
 $12:
   %39 = phi i32 [%23, %$10], [%27, %$11] ; # I
@@ -50503,7 +50503,7 @@ $27:
   %108 = phi i32 [%88, %$24], [%95, %$26] ; # N
   %109 = phi i8* [%89, %$24], [%96, %$26] ; # Cld
 ; # (ofs Cld (child T))
-  %110 = getelementptr i8, i8* %109, i32 28
+  %110 = getelementptr i8, i8* %109, i32 32
   br label %$23
 $25:
   %111 = phi i32 [%82, %$23] ; # I
@@ -50719,7 +50719,7 @@ $42:
 ; # (val $Child)
   %213 = load i8*, i8** @$Child
 ; # (* N (child T))
-  %214 = mul i32 %212, 28
+  %214 = mul i32 %212, 32
 ; # (i64 (* N (child T)))
   %215 = sext i32 %214 to i64
 ; # (alloc (val $Child) (i64 (* N (child T))))
@@ -50727,7 +50727,7 @@ $42:
   store i8* %216, i8** @$Child
 ; # (let Cld (ofs P (* I (child T))) (loop ((child Cld) pid 0) (? (==...
 ; # (* I (child T))
-  %217 = mul i32 %210, 28
+  %217 = mul i32 %210, 32
 ; # (ofs P (* I (child T)))
   %218 = getelementptr i8, i8* %216, i32 %217
 ; # (loop ((child Cld) pid 0) (? (== I (dec 'N))) (setq Cld (ofs Cld ...
@@ -50751,7 +50751,7 @@ $45:
   %227 = phi i32 [%224, %$44] ; # N
   %228 = phi i8* [%221, %$44] ; # Cld
 ; # (ofs Cld (child T))
-  %229 = getelementptr i8, i8* %228, i32 28
+  %229 = getelementptr i8, i8* %228, i32 32
   br label %$44
 $46:
   %230 = phi i32 [%219, %$44] ; # I
@@ -50775,7 +50775,7 @@ $43:
 ; # (val $Child)
   %241 = load i8*, i8** @$Child
 ; # (* I (child T))
-  %242 = mul i32 %234, 28
+  %242 = mul i32 %234, 32
 ; # (ofs (val $Child) (* I (child T)))
   %243 = getelementptr i8, i8* %241, i32 %242
 ; # (Cld: buf null)
@@ -55906,7 +55906,7 @@ $2:
 ; # (val $DbFiles)
   %10 = load i8*, i8** @$DbFiles
 ; # (* N (dbFile T))
-  %11 = mul i32 %7, 42
+  %11 = mul i32 %7, 48
 ; # (ofs (val $DbFiles) (* N (dbFile T)))
   %12 = getelementptr i8, i8* %10, i32 %11
   store i8* %12, i8** @$DbFile
@@ -55995,7 +55995,7 @@ $7:
   %12 = phi i32 [%9, %$6] ; # C
 ; # (let Db: (dbFile (setq Db (ofs Db (dbFile T)))) (when (Db: lck) (...
 ; # (ofs Db (dbFile T))
-  %13 = getelementptr i8, i8* %11, i32 42
+  %13 = getelementptr i8, i8* %11, i32 48
 ; # (when (Db: lck) (unLock (Db: fd) 0 0) (Db: lck NO))
 ; # (Db: lck)
   %14 = getelementptr i8, i8* %13, i32 40
@@ -56565,7 +56565,7 @@ $3:
 ; # (val $DbFiles)
   %7 = load i8*, i8** @$DbFiles
 ; # (* N (dbFile T))
-  %8 = mul i32 %6, 42
+  %8 = mul i32 %6, 48
 ; # (ofs (val $DbFiles) (* N (dbFile T)))
   %9 = getelementptr i8, i8* %7, i32 %8
   store i8* %9, i8** @$DbFile
@@ -56698,7 +56698,7 @@ $13:
 ; # (val $DbFiles)
   %31 = load i8*, i8** @$DbFiles
 ; # (* F (dbFile T))
-  %32 = mul i32 %13, 42
+  %32 = mul i32 %13, 48
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
   %33 = getelementptr i8, i8* %31, i32 %32
   store i8* %33, i8** @$DbFile
@@ -57667,7 +57667,7 @@ $7:
   %23 = phi i8* [%19, %$6] ; # Db
   %24 = phi i32 [%21, %$6] ; # C
 ; # (ofs Db (dbFile T))
-  %25 = getelementptr i8, i8* %23, i32 42
+  %25 = getelementptr i8, i8* %23, i32 48
   br label %$2
 $8:
   %26 = phi i8* [%19, %$6] ; # Db
@@ -57709,7 +57709,7 @@ $3:
   %12 = phi i8* [%6, %$2] ; # Db
   %13 = phi i32 [%10, %$2] ; # C
 ; # (ofs Db (dbFile T))
-  %14 = getelementptr i8, i8* %12, i32 42
+  %14 = getelementptr i8, i8* %12, i32 48
   br label %$2
 $4:
   %15 = phi i8* [%6, %$2] ; # Db
@@ -57982,7 +57982,7 @@ $5:
   %67 = phi i8* [%56, %$4] ; # Db
   %68 = phi i32 [%64, %$4] ; # C
 ; # (ofs Db (dbFile T))
-  %69 = getelementptr i8, i8* %67, i32 42
+  %69 = getelementptr i8, i8* %67, i32 48
   br label %$4
 $6:
   %70 = phi i64 [%55, %$4] ; # Dbs
@@ -58050,7 +58050,7 @@ $11:
   br i1 %95, label %$13, label %$14
 $13:
   %96 = phi i64 [%86, %$11] ; # Dbs
-  %97 = phi i64 [42, %$11] ; # Siz
+  %97 = phi i64 [48, %$11] ; # Siz
 ; # (let L Dbs (while (pair (shift L)) (inc 'Siz (dbFile T))))
 ; # (while (pair (shift L)) (inc 'Siz (dbFile T)))
   br label %$15
@@ -58071,7 +58071,7 @@ $16:
   %107 = phi i64 [%99, %$15] ; # Siz
   %108 = phi i64 [%103, %$15] ; # L
 ; # (inc 'Siz (dbFile T))
-  %109 = add i64 %107, 42
+  %109 = add i64 %107, 48
   br label %$15
 $17:
   %110 = phi i64 [%98, %$15] ; # Dbs
@@ -58080,7 +58080,7 @@ $17:
   br label %$14
 $14:
   %113 = phi i64 [%86, %$11], [%110, %$17] ; # Dbs
-  %114 = phi i64 [42, %$11], [%111, %$17] ; # Siz
+  %114 = phi i64 [48, %$11], [%111, %$17] ; # Siz
 ; # (let (Db (set $DbFiles (alloc (val $DbFiles) Siz)) P (b8 (+ BLK B...
 ; # (set $DbFiles (alloc (val $DbFiles) Siz))
 ; # (val $DbFiles)
@@ -58395,7 +58395,7 @@ $36:
   %287 = phi i32 [%281, %$35] ; # Fnr
   %288 = phi i32 [%270, %$35] ; # Max
 ; # (ofs Db (dbFile T))
-  %289 = getelementptr i8, i8* %286, i32 42
+  %289 = getelementptr i8, i8* %286, i32 48
   br label %$18
 $37:
   %290 = phi i64 [%266, %$35] ; # Dbs
@@ -58560,7 +58560,7 @@ $3:
   %18 = phi i8* [%11, %$2] ; # Db
   %19 = phi i32 [%16, %$2] ; # I
 ; # (ofs Db (dbFile T))
-  %20 = getelementptr i8, i8* %18, i32 42
+  %20 = getelementptr i8, i8* %18, i32 48
   br label %$2
 $4:
   %21 = phi i8* [%11, %$2] ; # Db
@@ -58626,7 +58626,7 @@ $8:
   %46 = phi i8* [%42, %$7] ; # Db
   %47 = phi i32 [%44, %$7] ; # I
 ; # (ofs Db (dbFile T))
-  %48 = getelementptr i8, i8* %46, i32 42
+  %48 = getelementptr i8, i8* %46, i32 48
   br label %$5
 $9:
   %49 = phi i8* [%42, %$7] ; # Db
@@ -59134,7 +59134,7 @@ $1:
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
 ; # (b8 (dbFile T))
-  %4 = alloca i8, i64 42
+  %4 = alloca i8, i64 48
 ; # (Db: fd (i32 (evCnt Exe X)))
   %5 = bitcast i8* %4 to i32*
   %6 = call i64 @evCnt(i64 %0, i64 %3)
@@ -59506,7 +59506,7 @@ $17:
 ; # (val $DbFiles)
   %57 = load i8*, i8** @$DbFiles
 ; # (* F (dbFile T))
-  %58 = mul i32 %55, 42
+  %58 = mul i32 %55, 48
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
   %59 = getelementptr i8, i8* %57, i32 %58
   store i8* %59, i8** @$DbFile
@@ -59815,7 +59815,7 @@ $20:
 ; # (val $DbFiles)
   %44 = load i8*, i8** @$DbFiles
 ; # (* F (dbFile T))
-  %45 = mul i32 %40, 42
+  %45 = mul i32 %40, 48
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
   %46 = getelementptr i8, i8* %44, i32 %45
 ; # (Db:)
@@ -60099,7 +60099,7 @@ $3:
 ; # (val $DbFiles)
   %148 = load i8*, i8** @$DbFiles
 ; # (* F (dbFile T))
-  %149 = mul i32 %147, 42
+  %149 = mul i32 %147, 48
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
   %150 = getelementptr i8, i8* %148, i32 %149
   store i8* %150, i8** @$DbFile
@@ -60610,7 +60610,7 @@ $12:
   %50 = phi i8* [%40, %$11] ; # Db
   %51 = phi i32 [%46, %$11] ; # C
 ; # (ofs Db (dbFile T))
-  %52 = getelementptr i8, i8* %50, i32 42
+  %52 = getelementptr i8, i8* %50, i32 48
   br label %$11
 $13:
   %53 = phi i64 [%38, %$11] ; # Args
@@ -60726,7 +60726,7 @@ $24:
 ; # (val $DbFiles)
   %116 = load i8*, i8** @$DbFiles
 ; # (* F (dbFile T))
-  %117 = mul i32 %109, 42
+  %117 = mul i32 %109, 48
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
   %118 = getelementptr i8, i8* %116, i32 %117
   store i8* %118, i8** @$DbFile
@@ -61018,7 +61018,7 @@ $48:
   %284 = phi i8* [%278, %$43] ; # P
   %285 = phi i32 [%280, %$43] ; # C
 ; # (ofs P (dbFile T))
-  %286 = getelementptr i8, i8* %284, i32 42
+  %286 = getelementptr i8, i8* %284, i32 48
   br label %$41
 $49:
   %287 = phi i64 [%276, %$43] ; # Args
@@ -61314,7 +61314,7 @@ $78:
 ; # (val $DbFiles)
   %449 = load i8*, i8** @$DbFiles
 ; # (* F (dbFile T))
-  %450 = mul i32 %427, 42
+  %450 = mul i32 %427, 48
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
   %451 = getelementptr i8, i8* %449, i32 %450
   store i8* %451, i8** @$DbFile
@@ -61429,7 +61429,7 @@ $84:
 ; # (val $DbFiles)
   %515 = load i8*, i8** @$DbFiles
 ; # (* F (dbFile T))
-  %516 = mul i32 %427, 42
+  %516 = mul i32 %427, 48
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
   %517 = getelementptr i8, i8* %515, i32 %516
   store i8* %517, i8** @$DbFile
@@ -62065,7 +62065,7 @@ $131:
   %866 = phi i8* [%858, %$130] ; # P
   %867 = phi i32 [%862, %$130] ; # C
 ; # (ofs P (dbFile T))
-  %868 = getelementptr i8, i8* %866, i32 42
+  %868 = getelementptr i8, i8* %866, i32 48
   br label %$130
 $132:
   %869 = phi i64 [%856, %$130] ; # Args
@@ -62152,7 +62152,7 @@ $11:
   %31 = bitcast i8* %30 to i8**
   store i8* null, i8** %31
 ; # (ofs Db (dbFile T))
-  %32 = getelementptr i8, i8* %23, i32 42
+  %32 = getelementptr i8, i8* %23, i32 48
   br label %$10
 $12:
   %33 = phi i8* [%19, %$10] ; # Db
@@ -62247,7 +62247,7 @@ $23:
 ; # (val $DbFiles)
   %71 = load i8*, i8** @$DbFiles
 ; # (* F (dbFile T))
-  %72 = mul i32 %55, 42
+  %72 = mul i32 %55, 48
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
   %73 = getelementptr i8, i8* %71, i32 %72
 ; # (Db: mark)
@@ -62397,7 +62397,7 @@ $3:
 ; # (val $DbFiles)
   %10 = load i8*, i8** @$DbFiles
 ; # (* F (dbFile T))
-  %11 = mul i32 %6, 42
+  %11 = mul i32 %6, 48
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
   %12 = getelementptr i8, i8* %10, i32 %11
   store i8* %12, i8** @$DbFile
@@ -62547,7 +62547,7 @@ $11:
 ; # (val $DbFiles)
   %35 = load i8*, i8** @$DbFiles
 ; # (* F (dbFile T))
-  %36 = mul i32 %24, 42
+  %36 = mul i32 %24, 48
 ; # (ofs (val $DbFiles) (* F (dbFile T)))
   %37 = getelementptr i8, i8* %35, i32 %36
   store i8* %37, i8** @$DbFile

@@ -1,4 +1,6 @@
 20aug22
+   Pad 'dbFile' and 'child' to multiples of 8
+      src/dec.l
    Add file
       doc/viprc.sample
    Improve use cases

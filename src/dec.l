@@ -1,4 +1,4 @@
-# 19aug22 Software Lab. Alexander Burger
+# 20aug22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -53,7 +53,8 @@
    (mrks 8 i64)         # Mark vector size
    (flu 8 i64)          # Free list use count
    (lck 1 i1)           # Lock flag
-   (drt 1 i1) )         # Dirty flag
+   (drt 1 i1)           # Dirty flag
+   (pad 6 i8) )         # Padding
 
 # Catch/throw
 (local) caFrame
@@ -104,7 +105,8 @@
    (cnt 4 i32)          # Buffer byte count
    (pid 4 i32)          # Process ID
    (hear 4 i32)         # Hear pipe
-   (tell 4 i32) )       # Tell pipe
+   (tell 4 i32)         # Tell pipe
+   (pad 4 i8) )         # Padding
 
 # libc
 (local) (malloc realloc free fork getenv setenv getpid getpgrp setsid alarm
