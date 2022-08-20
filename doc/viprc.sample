@@ -1,0 +1,44 @@
+# 20aug22 Software Lab. Alexander Burger
+# Copy to ~/.pil/viprc
+
+(map+q "d" ":bd\r")
+
+(de *F7  # Find current definition
+   (let L (nth (: buffer text) (: posY))
+      (prCmd
+         (list
+            (loop
+               (NIL (setq L (prior L (: buffer text))))
+               (T (head '`(chop "(class ") (car L))
+                  (car L) )
+               (T (head '`(chop "(extend ") (car L))
+                  (car L) ) ) ) ) ) )
+
+(de *F8  # Expression size
+   (evCmd (size (s-expr))) )
+
+# Timestamp
+(local) vipDat
+(de vipDat (N)
+   (when (<> N (: posY))
+      (let (@L (get (: text) N)  @A)
+         (and
+            (match '(@A " " @L) @L)
+            (member @A '(("#") ("/" "/") ("/" "*")))
+            (>= 31 (format (cut 2 '@L)) 1)
+            (member (pack (cut 3 '@L)) *mon)
+            (format (cut 2 '@L))
+            (mapc set
+               (set (nth (: text) N)
+                  (conc
+                     @A
+                     (list (char 32))
+                     (chop (datSym (date)))
+                     @L ) )
+               1 ) ) ) ) )
+
+(daemon '(save> . +Buffer)
+   (or (vipDat 1) (vipDat 2) (vipDat 3)) )
+
+# Local
+(and (info ".viprc") (load ".viprc"))

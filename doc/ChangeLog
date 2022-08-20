@@ -1,3 +1,9 @@
+20aug22
+   Add file
+      doc/viprc.sample
+   Improve use cases
+      doc/rc.sample
+
 19aug22
    'gPrintf' returns void
       src/dec.l
