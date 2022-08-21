@@ -1,7 +1,7 @@
-# 03jan22 Software Lab. Alexander Burger
+# 21aug22 Software Lab. Alexander Burger
 
 ### +Joint ###
-(pool (tmp "db"))
+(test T (pool (tmp "db")))
 
 (class +A +Entity)
 (rel k (+Key +String))

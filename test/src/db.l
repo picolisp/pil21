@@ -1,6 +1,6 @@
-# 04jul21 Software Lab. Alexander Burger
+# 21aug22 Software Lab. Alexander Burger
 
-(test T (pool (tmp "db")))
+(test T (pool (tmp "db") (2 3)))
 
 ### extern ###
 (test NIL (extern (box)))
@@ -45,7 +45,7 @@
 
 
 ### commit rollback ###
-(let (X (new T)  Y (new T))
+(let (X (new 1)  Y (new 2))
    (set X 1  Y 2)
    (commit)
    (test 1 (val X))
@@ -71,4 +71,3 @@
 (test NIL (dbck))
 
 (rollback)
-(call "rm" (tmp "db"))

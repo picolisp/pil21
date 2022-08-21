@@ -1,3 +1,8 @@
+21aug22
+   Extend 'pool' tests
+      test/src/db.l
+      test/lib/db.l
+
 20aug22
    'b8+' aligns stack buffers to 8 bytes
       src/lib/llvm.l
