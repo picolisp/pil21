@@ -1,4 +1,4 @@
-# 20aug22 Software Lab. Alexander Burger
+# 22aug22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -361,8 +361,9 @@ socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (de void dbZap (any))
 
 # flow.l
-(local) brkLoad
+(local) (putSrc brkLoad)
 
+(de void putSrc (any any))
 (de brkLoad (any))
 
 ### Primitives ###

@@ -1520,7 +1520,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 354,
   i64 130,
-  i64 338
+  i64 354
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -24824,29 +24824,34 @@ $64:
 $53:
   %186 = phi i64 [%154, %$51] ; # X
   %187 = phi i64 [%155, %$51] ; # Y
+; # (car R)
+  %188 = inttoptr i64 %145 to i64*
+  %189 = load i64, i64* %188
+; # (putSrc (car R) 0)
+  call void @putSrc(i64 %189, i64 0)
 ; # (prog1 (val $Intern) (set $Intern R))
 ; # (val $Intern)
-  %188 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 0) to i64) to i64*
-  %189 = load i64, i64* %188
-; # (set $Intern R)
   %190 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 0) to i64) to i64*
-  store i64 %145, i64* %190
+  %191 = load i64, i64* %190
+; # (set $Intern R)
+  %192 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 0) to i64) to i64*
+  store i64 %145, i64* %192
 ; # (drop *Safe)
-  %191 = inttoptr i64 %149 to i64*
-  %192 = getelementptr i64, i64* %191, i32 1
-  %193 = load i64, i64* %192
-  %194 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([18 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %193, i64* %194
+  %193 = inttoptr i64 %149 to i64*
+  %194 = getelementptr i64, i64* %193, i32 1
+  %195 = load i64, i64* %194
+  %196 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([18 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %195, i64* %196
   br label %$12
 $12:
-  %195 = phi i64 [%106, %$24], [%186, %$53] ; # X
-  %196 = phi i64 [%107, %$24], [%187, %$53] ; # Y
-  %197 = phi i64 [%109, %$24], [%189, %$53] ; # ->
+  %197 = phi i64 [%106, %$24], [%186, %$53] ; # X
+  %198 = phi i64 [%107, %$24], [%187, %$53] ; # Y
+  %199 = phi i64 [%109, %$24], [%191, %$53] ; # ->
   br label %$4
 $4:
-  %198 = phi i64 [%6, %$2], [%195, %$12] ; # X
-  %199 = phi i64 [%8, %$2], [%197, %$12] ; # ->
-  ret i64 %199
+  %200 = phi i64 [%6, %$2], [%197, %$12] ; # X
+  %201 = phi i64 [%8, %$2], [%199, %$12] ; # ->
+  ret i64 %201
 }
 
 define i64 @_intern(i64) align 8 {

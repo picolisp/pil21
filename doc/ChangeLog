@@ -1,3 +1,11 @@
+22aug22
+   Store debug source info in 'symbols'
+      src/dec.l
+      src/sym.l
+      lib/debug.l
+      doc/refD.html
+      doc/refS.html
+
 21aug22
    Extend 'pool' tests
       test/src/db.l
