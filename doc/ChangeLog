@@ -1,3 +1,7 @@
+26aug22
+   'cmd' function
+      lib/vip.l
+
 22aug22
    Store debug source info in 'symbols'
       src/dec.l

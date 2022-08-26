@@ -1,4 +1,4 @@
-# 13jul22 Software Lab. Alexander Burger
+# 26aug22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -28,8 +28,8 @@ goRight goUp goDown goAbs goFind tword word lword end lend getWord _forward
 goForward _backward goBackward goPFore goPBack shift shiftY indent cutX cutN
 paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe evRpt
 move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN nextBuf
-shell shFile prCmd _map map+ map+g map+q reset posChar getText s-expr command
-vi)
+shell shFile prCmd cmd _map map+ map+g map+q reset posChar getText s-expr
+command vi)
 
 
 (class +Buffer)
@@ -1203,6 +1203,11 @@ vi)
          (prinl *Msg) ) )
    (in (tmp "repl")
       (prCmd (rdLines)) ) )
+
+(de cmd (Cmd . Fun)
+   (if (assoc Cmd *CmdMap)
+      (con @ Fun)
+      (push '*CmdMap (cons Cmd Fun)) ) )
 
 (de _map (@Map @C @S)
    (macro
