@@ -1,4 +1,4 @@
-# 31may22 Software Lab. Alexander Burger
+# 30aug22 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -228,6 +228,18 @@
 
 (de <ping> (Min)
    (<javascript> "onload=ping(" Min ")") )
+
+(de <progress> (Val Max)
+   (ifn Val
+      (<div> '(id . "progress")
+         (<tag> "progress" '((value . 0) (max . 99)))
+         (serverSentEvent "progress" '*Progress) )
+      (wait 40)
+      (serverSend *Progress
+         (<tag> "progress"
+            (list
+               (cons 'value Val)
+               (cons 'max Max) ) ) ) ) )
 
 (de <div> (Attr . Prg)
    (tag "div" Attr 2 Prg)

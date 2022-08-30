@@ -1,4 +1,6 @@
 30aug22
+   '<progress>' function
+      lib/xhtml.l
    Abort 'http' after 7 seconds
       lib/http.l
 
