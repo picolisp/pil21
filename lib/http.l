@@ -1,4 +1,4 @@
-# 26may22 Software Lab. Alexander Burger
+# 30aug22 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -176,30 +176,32 @@
       (off *Post *Port% *ContL *ContLen *Cookies "*Cookies" "*HtSet")
       (catch 'http
          (in *HtSock
-            (case (till " " T)
-               ("GET" (_htHead))
-               ("POST"
-                  (on *Post)
-                  (off *MPartLim *MPartEnd)
-                  (_htHead)
-                  (cond
-                     (*MPartLim (_htMultipart))
-                     ((=0 *ContLen))
-                     ((cond (*ContL (line)) (*ContLen (ht:Read @)))
-                        (for L (split @ '&)
-                           (when (setq L (split L "="))
-                              (let? S (_htSet (car L) (ht:Pack (cadr L) T))
-                                 (and
-                                    (cddr L)
-                                    (format (car @))
-                                    (unless (out (tmp S) (echo @))
-                                       (%@ "unlink" NIL (tmp S)) ) ) ) ) ) )
-                     (T (throw 'http)) ) )
-               (T
-                  (and @ (out *HtSock (httpStat 501 "Not Implemented")))
-                  (task (close *HtSock))
-                  (off *HtSock)
-                  (throw 'http) ) )
+            (alarm 7 (throw 'http))
+            (finally (alarm 0)
+               (case (till " " T)
+                  ("GET" (_htHead))
+                  ("POST"
+                     (on *Post)
+                     (off *MPartLim *MPartEnd)
+                     (_htHead)
+                     (cond
+                        (*MPartLim (_htMultipart))
+                        ((=0 *ContLen))
+                        ((cond (*ContL (line)) (*ContLen (ht:Read @)))
+                           (for L (split @ '&)
+                              (when (setq L (split L "="))
+                                 (let? S (_htSet (car L) (ht:Pack (cadr L) T))
+                                    (and
+                                       (cddr L)
+                                       (format (car @))
+                                       (unless (out (tmp S) (echo @))
+                                          (%@ "unlink" NIL (tmp S)) ) ) ) ) ) )
+                        (T (throw 'http)) ) )
+                  (T
+                     (and @ (out *HtSock (httpStat 501 "Not Implemented")))
+                     (task (close *HtSock))
+                     (off *HtSock)
+                     (throw 'http) ) ) )
             (if (<> *ConId *SesId)
                (prog (task (close *HtSock)) (off *HtSock))
                (setq

@@ -1,4 +1,4 @@
-// 22jun22 Software Lab. Alexander Burger
+// 29aug22 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -322,24 +322,27 @@ int main(int ac, char *av[]) {
          while (p = readdir(dp)) {
             if (p->d_name[0] == '=') {
                snprintf(nm, sizeof(nm), "%s%s", dir, p->d_name);
-               if ((n = readlink(nm, buf, sizeof(buf))) > 0  &&  stat(nm, &st) >= 0) {
-                  lenLen = sprintf(len, "%ld\n", st.st_size);
-                  buf[n++] = '\n';
-                  alarm(lim);
-                  if ((sd = sslConnect(ssl, av[1], av[2])) >= 0) {
-                     if (SSL_write(ssl, get, getLen) == getLen  &&
-                           sslFile(ssl,av[4])  &&                    // key
-                           SSL_write(ssl, buf, n) == n  &&           // path
-                           SSL_write(ssl, len, lenLen) == lenLen  && // length
-                           sslFile(ssl, nm)  &&                      // file
-                           SSL_write(ssl, "T", 1) == 1  &&           // ack
-                           SSL_read(ssl, buf, 1) == 1  &&  buf[0] == 'T' )
-                        unlink(nm);
-                     sslClose(ssl,sd);
+               if ((n = readlink(nm, buf, sizeof(buf))) > 0)
+                  if (stat(nm, &st) < 0)
+                     unlink(nm);
+                  else {
+                     lenLen = sprintf(len, "%ld\n", st.st_size);
+                     buf[n++] = '\n';
+                     alarm(lim);
+                     if ((sd = sslConnect(ssl, av[1], av[2])) >= 0) {
+                        if (SSL_write(ssl, get, getLen) == getLen  &&
+                              sslFile(ssl,av[4])  &&                    // key
+                              SSL_write(ssl, buf, n) == n  &&           // path
+                              SSL_write(ssl, len, lenLen) == lenLen  && // length
+                              sslFile(ssl, nm)  &&                      // file
+                              SSL_write(ssl, "T", 1) == 1  &&           // ack
+                              SSL_read(ssl, buf, 1) == 1  &&  buf[0] == 'T' )
+                           unlink(nm);
+                        sslClose(ssl,sd);
+                     }
+                     if (dbg)
+                        ERR_print_errors_fp(stderr);
                   }
-                  if (dbg)
-                     ERR_print_errors_fp(stderr);
-               }
             }
          }
          closedir(dp);

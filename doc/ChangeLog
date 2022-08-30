@@ -1,3 +1,11 @@
+30aug22
+   Abort 'http' after 7 seconds
+      lib/http.l
+
+29aug22
+   Remove stale symbolic links
+      src/ssl.c
+
 26aug22
    'cmd' function
       lib/vip.l
