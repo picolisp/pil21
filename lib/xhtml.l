@@ -236,10 +236,11 @@
          (serverSentEvent "progress" '*Progress) )
       (wait 1)
       (serverSend *Progress
-         (<tag> "progress"
-            (list
-               (cons 'value Val)
-               (cons 'max Max) ) ) ) ) )
+         (unless (=T Val)
+            (<tag> "progress"
+               (list
+                  (cons 'value Val)
+                  (cons 'max Max) ) ) ) ) ) )
 
 (de <div> (Attr . Prg)
    (tag "div" Attr 2 Prg)
