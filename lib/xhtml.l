@@ -234,7 +234,7 @@
       (<div> '(id . "progress")
          (<tag> "progress" '((value . 0) (max . 99)))
          (serverSentEvent "progress" '*Progress) )
-      (wait 40)
+      (wait 1)
       (serverSend *Progress
          (<tag> "progress"
             (list
