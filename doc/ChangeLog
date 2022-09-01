@@ -2,6 +2,7 @@
    Make 'all*' selective with 'T' or '0'
       lib.l
       doc/refA.html
+      lib/vip.l
 
 31aug22
    Change 'http' abort time to 20 minutes

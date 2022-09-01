@@ -1,4 +1,4 @@
-# 26aug22 Software Lab. Alexander Burger
+# 01sep22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -988,10 +988,10 @@ command vi)
                      (chgLine (car P)) )
                   T )
                (T
-                  (let S (list @)
+                  (let (S (list @)  L (get (: buffer text) (: posY)))
                      (cond
                         ((<> @ "\t") (off *Complete))
-                        ((= '(":" " ") (get (: buffer text) (: posY)))
+                        ((and (== This *CmdWin) (= '(":" " ") L))
                            (setq S
                               (chop (car (rot (setq *Complete (history))))) ) )
                         ((or Rpl (nor *Complete (setq S (pack (getWord)))))
@@ -1000,7 +1000,15 @@ command vi)
                                  (do (- 3 (% (dec (: posX)) 3))
                                     (link (name " ")) ) ) ) )
                         (T
-                           (default *Complete (cons S (flip (all* S))))
+                           (default *Complete
+                              (cons S
+                                 (flip
+                                    (all* S
+                                       (when (== This *CmdWin)
+                                          (pick
+                                             '((P F) (and (head P L) F))
+                                             '`(mapcar chop '(":ta " ":tag " ":v " ":e " ":E " ":r " ":w "))
+                                             '(T T T 0 0 0 0) ) ) ) ) ) )
                            (do (length (car *Complete)) (_bs))
                            (setq S (chop (car (rot *Complete)))) ) )
                      (when (= "^V" (car S))
