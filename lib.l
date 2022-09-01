@@ -1,4 +1,4 @@
-# 02jul22 Software Lab. Alexander Burger
+# 01sep22 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -269,30 +269,32 @@
          (quit "Import conflict" Sym) ) )
    Lst )
 
-(de all* (S)
+(de all* (S Flg)
    (sort
       (conc
-         (let (L (split (chop S) "~")  N NIL  S)
-            (while (cdr L)
+         (unless (=0 Flg)
+            (let (L (split (chop S) "~")  N NIL  S)
+               (while (cdr L)
+                  (setq
+                     N (intern (pack (car L)) N)
+                     S (pack S (++ L) "~") ) )
+               (let P (pack (car L))
+                  (extract
+                     '((X) (and (pre? P X) (pack S X)))
+                     (all N) ) ) ) )
+         (unless (=T Flg)
+            (let P (rot (split (chop S) "/"))
                (setq
-                  N (intern (pack (car L)) N)
-                  S (pack S (++ L) "~") ) )
-            (let P (pack (car L))
+                  S (pack (car P))
+                  P (and (cdr P) (pack (glue "/" @) "/")) )
                (extract
-                  '((X) (and (pre? P X) (pack S X)))
-                  (all N) ) ) )
-         (let P (rot (split (chop S) "/"))
-            (setq
-               S (pack (car P))
-               P (and (cdr P) (pack (glue "/" @) "/")) )
-            (extract
-               '((X)
-                  (when (pre? S X)
-                     (let F (pack P X)
-                        (if (=T (car (info F)))
-                           (pack F "/")
-                           F ) ) ) )
-               (dir P T) ) ) ) ) )
+                  '((X)
+                     (when (pre? S X)
+                        (let F (pack P X)
+                           (if (=T (car (info F)))
+                              (pack F "/")
+                              F ) ) ) )
+                  (dir P T) ) ) ) ) ) )
 
 ### Date/Time ###
 (de *mon . (jan feb mar apr may jun jul aug sep oct nov dec .))

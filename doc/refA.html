@@ -243,11 +243,13 @@ href="refA.html#all*">all*</a></code>.
 -> (_put _nacs _oct _lintq _lst _map _iter _dbg2 _getLine _led ...
 </code></pre>
 
-<dt><a name="all*"><code>(all* 'any) -> lst</code></a>
+<dt><a name="all*"><code>(all* 'any ['flg]) -> lst</code></a>
 <dd>Returns a sorted list of all (possibly namespaced) symbols and path names
-starting with the characters in <code>any</code>. Typically used in
-TAB-completion routines. See also <code><a href="refA.html#all">all</a></code>,
-<code><a href="refS.html#symbols">symbols</a></code> and <code><a
+starting with the characters in <code>any</code>. If <code>flg</code> is
+<code>T</code>, only symbols, and if it is <code>0</code>, only path names are
+returned. Typically used in TAB-completion routines. See also <code><a
+href="refA.html#all">all</a></code>, <code><a
+href="refS.html#symbols">symbols</a></code> and <code><a
 href="refI.html#intern">intern</a></code>.
 
 <pre><code>
