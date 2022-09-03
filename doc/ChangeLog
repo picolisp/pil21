@@ -1,3 +1,8 @@
+03sep22
+   Pass flag 'T' for mouse/touch events
+      lib/canvas.l
+      lib/canvas.js
+
 01sep22
    Make 'all*' selective with 'T' or '0'
       lib.l

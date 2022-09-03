@@ -1,9 +1,9 @@
-# 12jul22 Software Lab. Alexander Burger
+# 02sep22 Software Lab. Alexander Burger
 
 (allow "!jsDraw" )
 (push1 '*JS (allow "@lib/plio.js") (allow "@lib/canvas.js"))
 
-# Draw   (drawCanvas Id Dly)
+# Draw   (drawCanvas Id Dly [T])
 # Click  (drawCanvas Id Dly 1 X Y)
 # Double (drawCanvas Id Dly 2 X Y)
 # Start  (drawCanvas Id Dly 0 X Y X2 Y2)
