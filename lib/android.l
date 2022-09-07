@@ -1,4 +1,4 @@
-# 13jul22 Software Lab. Alexander Burger
+# 06sep22 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -210,7 +210,7 @@
                   (java Intent 'putExtra "URL" Url) )
                (java B 'setContentIntent
                   (java "android.app.PendingIntent" 'getActivity
-                     CONTEXT 0 Intent `(hex "18000000") ) ) )  # FLAG_ACTIVITY_NEW_TASK | FLAG_UPDATE_CURRENT
+                     CONTEXT 0 Intent `(hex "1C000000") ) ) )  # FLAG_ACTIVITY_NEW_TASK | FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE
             (prog1
                (java B 'build)  # Notification
                (java N 'notify Id @) ) ) ) ) )
@@ -353,7 +353,7 @@
                         (car Tim) (cadr Tim) (caddr Tim) )
                      (java C 'getTimeInMillis) ) ) )
             (java "android.app.PendingIntent" 'getBroadcast
-               CONTEXT N Intent `(hex "18000000") ) ) ) ) )  # FLAG_ACTIVITY_NEW_TASK | FLAG_UPDATE_CURRENT
+               CONTEXT N Intent `(hex "1C000000") ) ) ) ) )  # FLAG_ACTIVITY_NEW_TASK | FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE
 
 # Restart PilBox
 (local) restart

@@ -1,3 +1,7 @@
+06sep22
+   Pass FLAG_IMMUTABLE to PendingIntent
+      lib/android.l
+
 04sep22
    Avoid multiple auto timers
       lib/canvas.js
