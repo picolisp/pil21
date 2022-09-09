@@ -1,4 +1,4 @@
-// 29aug22 Software Lab. Alexander Burger
+// 09sep22 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -161,7 +161,7 @@ int main(int ac, char *av[]) {
       giveup("host port [url key file] | host port url key file dir sec [min] [dir ..]");
    if (*av[2] == '-')
       ++av[2],  Safe = YES;
-   if (ac <= 3  ||  *av[3] == '\0')
+   if (ac <= 3)
       getLen = 0;
    else {
       if (strlen(Get)+strlen(av[1])+strlen(av[2])+strlen(av[3]) >= sizeof(get))

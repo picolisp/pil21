@@ -1,3 +1,7 @@
+09sep22
+   Allow empty 'url' argument
+      src/ssl.c
+
 06sep22
    Pass FLAG_IMMUTABLE to PendingIntent
       lib/android.l
