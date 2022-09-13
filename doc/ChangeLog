@@ -1,4 +1,7 @@
 13sep22
+   Moved "ix.io" to @doc/viprc.sample, added "pb1n"
+      lib/vip.l
+      doc/viprc.sample
    Bug in 'server' for non-numeric arguments
       lib/net.l
 

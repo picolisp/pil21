@@ -1,7 +1,19 @@
-# 20aug22 Software Lab. Alexander Burger
+# 13sep22 Software Lab. Alexander Burger
 # Copy to ~/.pil/viprc
 
 (map+q "d" ":bd\r")
+
+(cmd "pb1n" (L Lst Cnt)  # Pastebin
+   (pipe
+      (out '("curl" "-F" "f=@-;" "pb1n.de")
+         (mapc prinl (: buffer text)) )
+      (prCmd (rdLines)) ) )
+
+(cmd "ix.io" (L Lst Cnt)
+   (pipe
+      (out '("curl" "-sF" "f:1=<-" "ix.io")
+         (mapc prinl (: buffer text)) )
+      (prCmd (rdLines)) ) )
 
 (de *F7  # Find current definition
    (let L (nth (: buffer text) (: posY))

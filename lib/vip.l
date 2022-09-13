@@ -1,4 +1,4 @@
-# 01sep22 Software Lab. Alexander Burger
+# 13sep22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1290,11 +1290,6 @@ command vi)
                                     (map
                                        '(((S . L)) (prin S (and L "\n")))
                                        V ) ) ) ) )
-                        ("ix.io"  # Paste to http://ix.io
-                           (pipe
-                              (out '("curl" "-sF" "f:1=<-" "ix.io")
-                                 (mapc prinl (: buffer text)) )
-                              (prCmd (rdLines)) ) )
                         ("bak" (shFile "mv @1 @1- && cp -p @1- @1"))  # Backup to <file>-
                         ("kab"  # Restore from <file>-
                            (shFile "mv @1- @1 && cp -p @1 @1-")
