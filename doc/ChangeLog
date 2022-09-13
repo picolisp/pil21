@@ -1,3 +1,7 @@
+13sep22
+   Bug in 'server' for non-numeric arguments
+      lib/net.l
+
 09sep22
    Allow empty 'url' argument
       src/ssl.c

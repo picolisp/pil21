@@ -1,4 +1,4 @@
-# 11may21 Software Lab. Alexander Burger
+# 13sep22 Software Lab. Alexander Burger
 
 (sysdefs "errno")
 (sysdefs "networking")
@@ -125,7 +125,7 @@
    (use Lst
       (and
          (=0
-            (%@ "getaddrinfo" 'I Node (sym Service)
+            (%@ "getaddrinfo" 'I Node (pack Service)
                (cons NIL (`addrinfo)  # hints:
                   (0 . 4)  # ai_flags
                   (`AF_UNSPEC . 4)  # ai_family
