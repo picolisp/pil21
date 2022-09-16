@@ -1,4 +1,4 @@
-# 01sep22 Software Lab. Alexander Burger
+# 16sep22 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -397,13 +397,13 @@
                   (prtty? (++ X) N) )
                ((>= 12 (size (car X)))
                   (prin " (")
-                  (let Z (++ X)
+                  (let (P (circ? X)  Z (++ X))
                      (prtty2 Z NIL Z) )
                   (prin ")") )
                (T
                   (nlPrt N)
                   (prin "(")
-                  (let Z (++ X)
+                  (let (P (circ? X)  Z (++ X))
                      (prtty2 Z (+ N 3) Z) )
                   (prin " )") ) )
             (prtty1 X N Z) ) )
@@ -431,7 +431,7 @@
          (ifn (memq (car X) '(set setq default))
             (print X)
             (prin "(")
-            (let Z X
+            (let (P (circ? X)  Z X)
                (printsp (++ X))
                (prtty2 X NIL Z) )
             (prin ")") ) )
@@ -454,14 +454,14 @@
 
 (de _pretty "Prg"
    (prin "(")
-   (let Z X
+   (let (P (circ? X)  Z X)
       (print (++ X))
       (run "Prg") )
    (prin " )") )
 
 (de prtty0 (X N)
    (prin "(")
-   (let Z X
+   (let (P (circ? X)  Z X)
       (pretty (++ X) (- -3 N))
       (prtty1 X N Z) )
    (prin " )") )
@@ -469,30 +469,54 @@
 (de prtty1 (X N Z)
    (loop
       (NIL X)
-      (T (== Z X) (prin " ."))
-      (T (atom X) (prin " . ") (print X))
+      (T (atom X)
+         (prin " . ")
+         (print X) )
+      (T (== Z X)
+         (prin " ." (unless P " )")) )
+      (when (== P X)
+         (nlPrt N)
+         (inc 'N 3)
+         (prin ". (")
+         (setq Z P  P) )
       (nlPrt1 (++ X) N) ) )
 
 (de prtty2 (X N Z)
    (loop
       (print (++ X))
       (NIL X)
-      (T (== Z X) (prin " ."))
-      (T (atom X) (prin " . ") (print X))
+      (T (atom X)
+         (prin " . ")
+         (print X) )
+      (T (== Z X)
+         (prin " ." (unless P " )")) )
+      (when (== P X)
+         (nlPrt N)
+         (inc 'N 3)
+         (prin ". (")
+         (setq Z P  P) )
       (if N
          (prtty? (++ X) N)
          (space)
          (print (++ X)) )
       (NIL X)
-      (T (== Z X) (prin " ."))
-      (T (atom X) (prin " . ") (print X))
+      (T (atom X)
+         (prin " . ")
+         (print X) )
+      (T (== Z X)
+         (prin " ." (unless P " )")) )
+      (when (== P X)
+         (nlPrt N)
+         (inc 'N 3)
+         (prin ". (")
+         (setq Z P  P) )
       (if N
          (nlPrt N)
          (space 2) ) ) )
 
 (de prtty3 (X N)
    (prin "(")
-   (let Z X
+   (let (P (circ? X)  Z X)
       (print (++ X))
       (when (or (atom (car X)) (>= 12 (size (car X))))
          (spPrt (++ X)) )
@@ -521,12 +545,14 @@
 (de pp ("X" C)
    (let *Dbg NIL
       (pretty
-         (if (or C (pair "X"))
-            (cons 'dm "X"
-               (if (pair "X")
-                  (method (car "X") (cdr "X"))
-                  (method "X" C) ) )
-            (cons 'de "X" (val "X")) ) )
+         (cond
+            ((or C (pair "X"))
+               (cons 'dm "X"
+                  (if (pair "X")
+                     (method (car "X") (cdr "X"))
+                     (method "X" C) ) ) )
+            ((getd "X") (cons 'de "X" @))
+            (T (cons 'def (lit "X") (val "X"))) ) )
       (prinl)
       "X" ) )
 
@@ -555,7 +581,7 @@
                   (space N)
                   (println (car X))
                   (recurse (+ 3 N) (cadr X)) ) ) )
-         (let Z X
+         (let (P (circ? X)  Z X)
             (loop
                (T (atom X) (println X))
                (if (atom (car X))
@@ -567,7 +593,10 @@
                (NIL X)
                (mapc prin Y)
                (T (== Z X) (println '*))
-               (println '|)
+               (ifn (== P X)
+                  (println '|)
+                  (prinl "|*")
+                  (setq Z P  P) )
                (mapc prin Y) ) ) ) ) )
 
 ### Check ###
@@ -593,5 +622,5 @@
 
 (load "@lib/lint.l" "@lib/debug.l" "@lib/vip.l")
 
-(noLint 'pretty 'Z)
-(noLint '_pretty 'Z)
+(mapc noLint '(pretty _pretty) 'Z)
+(mapc noLint '(pretty _pretty prtty0 prtty1 prtty2 prtty3) 'P)

@@ -1,4 +1,4 @@
-# 20aug22 Software Lab. Alexander Burger
+# 16sep22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -433,27 +433,21 @@ selectErr)
       ((nil? X) (call $PutBin NIX))
       ((pair X)
          (call $PutBin BEG)
-         (let P (circ X)
-            (ifn P
-               (loop  # Non-circular
-                  (binPrint (car X))
-                  (? (nil? (shift X))
-                     (call $PutBin END) )
-                  (? (atom X)
-                     (call $PutBin DOT)
-                     (binPrint X) ) )
-               (let Flg (== P X)  # Fully circular
-                  (loop  # Non-circular part
-                     (binPrint (car X))
-                     (? (== P (shift X))) )
+         (let (P (circ X)  Z X)
+            (loop
+               (binPrint (car X))
+               (? (nil? (shift X))
+                  (call $PutBin END) )
+               (? (atom X)
                   (call $PutBin DOT)
-                  (unless Flg
-                     (call $PutBin BEG)
-                     (loop  # Circular part
-                        (binPrint (car X))
-                        (? (== P (shift X))) )
-                     (call $PutBin DOT) )
-                  (call $PutBin END) ) ) ) )
+                  (binPrint X) )
+               (? (== Z X)
+                  (call $PutBin DOT)
+                  (call $PutBin END) )
+               (when (== P X)
+                  (call $PutBin DOT)
+                  (call $PutBin BEG)
+                  (setq Z P) ) ) ) )
       ((sym? (val (tail X)))  # External symbol
          (let Nm (name (& @ -9))
             (when (val $Extn)
@@ -2478,30 +2472,21 @@ selectErr)
       (T
          (stkChk 0)
          (call $Put (char "("))
-         (let P (circ X)
-            (ifn P
-               (loop  # Non-circular
-                  (print (car X))
-                  (? (nil? (shift X)))
-                  (? (atom X)
-                     (outString ($ " . "))
-                     (print X) )
-                  (space) )
-               (let Flg (== P X)  # Fully circular
-                  (loop  # Non-circular part
-                     (print (car X))
-                     (space)
-                     (? (== P (shift X))) )
+         (let (P (circ X)  Z X)
+            (loop
+               (print (car X))
+               (? (nil? (shift X)))
+               (? (atom X)
+                  (outString ($ " . "))
+                  (print X) )
+               (space)
+               (? (== Z X)
                   (call $Put (char "."))
-                  (unless Flg
-                     (space)
-                     (call $Put (char "("))
-                     (loop  # Circular part
-                        (print (car X))
-                        (space)
-                        (? (== P (shift X))) )
-                     (call $Put (char "."))
-                     (call $Put (char ")")) ) ) ) )
+                  (unless P
+                     (call $Put (char ")")) ) )
+               (when (== P X)
+                  (outString ($ ". ("))
+                  (setq Z P  P 0) ) ) )
          (call $Put (char ")")) ) ) )
 
 (de void prin (X)
