@@ -7,7 +7,7 @@ OPQ = # -opaque-pointers
 
 PIL = ../pil
 CC = clang $(OPQ)
-ASM = opt $(OPT) $(OPQ)
+ASM = opt $(OPQ) $(OPT)
 LLC = llc $(OPQ)
 LINK = llvm-link $(OPQ)
 MAIN = -rdynamic -lc -lutil -lm -ldl -lreadline -lffi
