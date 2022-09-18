@@ -1,4 +1,4 @@
-# 16jan22 Software Lab. Alexander Burger
+# 17sep22 Software Lab. Alexander Burger
 
    ### Primary data types ###
 
@@ -274,6 +274,7 @@
 
    - 8 bit per byte
    - 64 bit per word
+   - Pointer size is 64 bit
    - Stack grows downwards
    - sizeof(float) = 4 bytes
    - sizeof(double) = 8 bytes
