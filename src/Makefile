@@ -3,13 +3,13 @@
 .SILENT:
 
 OPT = -O3
-OPQ = # -opaque-pointers
+OPQ = # --opaque-pointers
 
+CC = clang
 PIL = ../pil
-CC = clang $(OPQ)
 ASM = opt $(OPQ) $(OPT)
 LLC = llc $(OPQ)
-LINK = llvm-link $(OPQ)
+LINK = llvm-link
 MAIN = -rdynamic -lc -lutil -lm -ldl -lreadline -lffi
 SHARED = -shared
 STRIP = strip
