@@ -1,15 +1,12 @@
-# 19sep22 Software Lab. Alexander Burger
+# 08apr22 Software Lab. Alexander Burger
 
 .SILENT:
 
-OPT = -O3
-OPQ = # --opaque-pointers
-
 CC = clang
-PIL = ../pil
-ASM = opt $(OPQ) $(OPT)
-LLC = llc $(OPQ)
-LINK = llvm-link $(OPQ)
+PIL = ../pil  # pil
+ASM = opt -O3  # llvm-as
+LLC = llc
+LINK = llvm-link
 MAIN = -rdynamic -lc -lutil -lm -ldl -lreadline -lffi
 SHARED = -shared
 STRIP = strip
