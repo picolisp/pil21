@@ -1,4 +1,4 @@
-# 18sep22 Software Lab. Alexander Burger
+# 19sep22 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -9,7 +9,7 @@ CC = clang
 PIL = ../pil
 ASM = opt $(OPQ) $(OPT)
 LLC = llc $(OPQ)
-LINK = llvm-link
+LINK = llvm-link $(OPQ)
 MAIN = -rdynamic -lc -lutil -lm -ldl -lreadline -lffi
 SHARED = -shared
 STRIP = strip
