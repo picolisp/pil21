@@ -1,4 +1,4 @@
-# 08apr22 Software Lab. Alexander Burger
+# 24sep22 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -10,6 +10,11 @@ LINK = llvm-link
 MAIN = -rdynamic -lc -lutil -lm -ldl -lreadline -lffi
 SHARED = -shared
 STRIP = strip
+
+LLVM = $(shell llvm-config --version | cut -d. -f1)
+ifeq ($(shell test $(LLVM) -ge 15; echo $$?), 0)
+	ASM += -opaque-pointers
+endif
 
 OS = $(shell uname)
 CPU = $(shell uname -m)

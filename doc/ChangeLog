@@ -1,3 +1,7 @@
+24sep22
+   Use opaque-pointers in LLVM >= 15 (Mike Pechkin)
+      src/Makefile
+
 16sep22
    Support partially circular lists in 'pretty' and 'view'
    Print 'def' in 'pp' instead of 'de' for non-functions
