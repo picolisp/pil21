@@ -1,3 +1,7 @@
+29sep22
+   Bitmask bug in <menu>
+      lib/xhtml.l
+
 24sep22
    Use opaque-pointers in LLVM >= 15 (Mike Pechkin)
       src/Makefile

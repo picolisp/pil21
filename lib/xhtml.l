@@ -1,4 +1,4 @@
-# 30aug22 Software Lab. Alexander Burger
+# 29sep22 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -598,12 +598,11 @@
                            LEVEL I )
                         (micro Sub
                            (ht:Prin S)
-                           (setq M (>> -1 M))
                            (recur (L)
+                              (setq M (>> -1 M))
                               (for X L
                                  (when (=T (car X))
-                                    (recurse X)
-                                    (setq M (>> -1 M)) ) ) ) ) ) ) )
+                                    (recurse (cddr X)) ) ) ) ) ) ) )
                (NIL
                   (++ L)
                   (let (S (eval (++ L))  I)
