@@ -13,12 +13,12 @@
 
 <dt><a name="+Joint"><code>+Joint</code></a>
 <dd>Class for bidirectional object relations, a subclass of <code><a
-href="refL.html#+Link">+Link</a></code>. Expects a (symbolic) attribute, and
-list of classes as <code><a href="refT.html#type">type</a></code> of the
-referred database object (of class <code><a
-href="refE.html#+Entity">+Entity</a></code>). A <code>+Joint</code> corresponds
-to two <code>+Link</code>s, where the attribute argument is the relation of the
-back-link in the referred object. See also <a
+href="refL.html#+Link">+Link</a></code>. Expects a (symbolic) attribute, a list
+of classes as <code><a href="refT.html#type">type</a></code> of the referred
+database object (of class <code><a href="refE.html#+Entity">+Entity</a></code>),
+and two optional functions called when 'put'ting and/or 'get'ting a value. A
+<code>+Joint</code> corresponds to two <code>+Link</code>s, where the attribute
+argument is the relation of the back-link in the referred object. See also <a
 href="ref.html#dbase">Database</a>.
 
 <pre><code>
