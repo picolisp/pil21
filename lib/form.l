@@ -1,4 +1,4 @@
-# 15jun22 Software Lab. Alexander Burger
+# 06oct22 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -2386,21 +2386,22 @@
       Dn ) )
 
 (dm val> ()
-   (let Val (extra)
-      (nond
-         (Val
-            (and (: obj) (put!> @ (: objVar) NIL))
-            (=: obj NIL) )
-         ((: obj)
-            (dbSync)
-            (=: obj (new (or (meta (: objTyp) 'Dbf 1) 1) (: objTyp)))
-            (and
-               (: hook)
-               (nT @)
-               (put> (: obj) (: hook) (eval (: objHook))) )
-            (put> (: obj) (: objVar) Val)
-            (commit 'upd) )
-         (NIL (put!> @ (: objVar) Val)) ) )
+   (when (able)
+      (let Val (extra)
+         (nond
+            (Val
+               (and (: obj) (put!> @ (: objVar) NIL))
+               (=: obj NIL) )
+            ((: obj)
+               (dbSync)
+               (=: obj (new (or (meta (: objTyp) 'Dbf 1) 1) (: objTyp)))
+               (and
+                  (: hook)
+                  (nT @)
+                  (put> (: obj) (: hook) (eval (: objHook))) )
+               (put> (: obj) (: objVar) Val)
+               (commit 'upd) )
+            (NIL (put!> @ (: objVar) Val)) ) ) )
    (: obj) )
 
 
@@ -2419,7 +2420,7 @@
 
 (dm val> ()
    (let? Obj (: obj)
-      (put!> Obj (: objVar) (extra))
+      (and (able) (put!> Obj (: objVar) (extra)))
       Obj ) )
 
 

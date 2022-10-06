@@ -1,3 +1,7 @@
+06oct22
+   'able' checks in 'val>' for '+ObjVal' and '+ObjVar'
+      lib/form.l
+
 04oct22
    Add 'put' and 'get' to reference of '+Joint'
       doc/refJ.html
