@@ -1,3 +1,7 @@
+15oct22
+   Call 'flush' in 'beep'
+      lib.l
+
 06oct22
    'able' checks in 'val>' for '+ObjVal' and '+ObjVar'
       lib/form.l

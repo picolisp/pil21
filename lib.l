@@ -1,4 +1,4 @@
-# 16sep22 Software Lab. Alexander Burger
+# 15oct22 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -151,6 +151,7 @@
 
 (de beep ()
    (prin "^G")
+   (flush)
    NIL )
 
 (de msg (X . @)
