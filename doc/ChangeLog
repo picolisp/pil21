@@ -1,4 +1,6 @@
 15oct22
+   Avoid setting 'last' to current buffer
+      lib/vip.l
    Call 'flush' in 'beep'
       lib.l
 

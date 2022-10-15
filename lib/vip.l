@@ -1,4 +1,4 @@
-# 13sep22 Software Lab. Alexander Burger
+# 15oct22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -489,11 +489,11 @@ command vi)
 (de reload (File Y X)
    (unless (== This *CmdWin)
       (when File
-         (unless
-            (==
+         (let B (fileBuffer File)
+            (unless (== B (: buffer))
+               (unmark)
                (=: last (: buffer))
-               (=: buffer (fileBuffer File)) )
-            (unmark) ) )
+               (=: buffer B) ) ) )
       (load> (: buffer) This)
       (off *StatNm)
       (goto
@@ -1166,16 +1166,18 @@ command vi)
 
 (de nextBuf (B)
    (let? M (member (: buffer) *Buffers)
-      (=: last (: buffer))
+      (when (flg? B)
+         (setq B
+            (car
+               (if B
+                  (or (prior M *Buffers) (tail 1 *Buffers))
+                  (or (cdr M) *Buffers) ) ) ) )
       (unmark)
-      (=: buffer
-         (nond
-            (B (car (or (cdr M) *Buffers)))
-            ((=T B) B)
-            (NIL
-               (car (or (prior M *Buffers) (tail 1 *Buffers))) ) ) )
-      (unless (: buffer text)
-         (load> (: buffer) This) )
+      (unless (== B (: buffer))
+         (=: last (: buffer))
+         (=: buffer B)
+         (unless (: buffer text)
+            (load> (: buffer) This) ) )
       (off *StatNm)
       (goto (: buffer posX) (: buffer posY)) ) )
 
