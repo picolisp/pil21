@@ -1,4 +1,4 @@
-# 16sep22 Software Lab. Alexander Burger
+# 17oct22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -852,6 +852,7 @@ selectErr)
                               (run (cdr X)) ) ) ) ) ) )  # Run body
             (and
                (gt0 Ms)
+               (<> Ms 292MY)
                (lt0 (dec 'Ms Dif))
                (setq Ms 0) )
             (setq Tim Now) )

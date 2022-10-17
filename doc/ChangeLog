@@ -1,4 +1,6 @@
 17oct22
+   Decrement 'Ms' in 'waitFd' only if not 292MY
+      src/io.l
    Include external declaration of ppoll()
       src/lib.c
    Fix reference of '*CPU'.
