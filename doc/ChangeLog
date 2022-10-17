@@ -1,3 +1,9 @@
+17oct22
+   Include external declaration of ppoll()
+      src/lib.c
+   Fix reference of '*CPU'.
+      doc/refC.html
+
 15oct22
    Avoid setting 'last' to current buffer
       lib/vip.l

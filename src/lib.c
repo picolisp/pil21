@@ -1,4 +1,4 @@
-// 19aug22 Software Lab. Alexander Burger
+// 17oct22 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -393,6 +393,7 @@ void pollIgn(struct pollfd *p) {
 int32_t gPoll(struct pollfd *fds, int32_t nfds, int64_t timeout) {
 #ifdef __linux__
    struct timespec ts, *tp;
+   extern int ppoll(struct pollfd *fds, nfds_t nfds, const struct timespec *tmo_p, const sigset_t *sigmask);
 
    if (timeout == 9223372036854775807) {  // 292MY
       int i = nfds;
