@@ -1,4 +1,4 @@
-# 17jun22 Software Lab. Alexander Burger
+# 20oct22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -374,8 +374,8 @@
             (eval (car X)) )
          (? (pair (eval (car X)))
             (let
-               (Y (save @)
-                  R (safe (cons (++ Y) Y))
+               (Y @
+                  R (save (cons (++ Y) Y))
                   Z R )
                (while (pair Y)
                   (setq Z (set 2 Z (cons (++ Y) Y))) )

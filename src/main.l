@@ -1,4 +1,4 @@
-# 20aug22 Software Lab. Alexander Burger
+# 20oct22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1857,7 +1857,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (unless (val $Repl)
       (set $Repl YES)
       (iSignal (val SIGINT Sig) (fun sig)) )
-   (save $Nil)
+   (save -ZERO)
    (loop
       (let X (safe (stdRead ($ ": ")))
          (cond

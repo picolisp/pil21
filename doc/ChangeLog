@@ -1,3 +1,8 @@
+20oct22
+   Minor cosmetics
+      src/main.l
+      src/subr.l
+
 17oct22
    Decrement 'Ms' in 'waitFd' only if not 292MY
       src/io.l
