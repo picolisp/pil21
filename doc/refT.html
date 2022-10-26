@@ -257,9 +257,10 @@ members (i.e. all children of the current process, and all other children of the
 parent process, see <code><a href="refF.html#fork">fork</a></code>) for
 automatic execution. When the <code>cnt</code> argument is given and non-zero,
 it should be the PID of such a process, and the list will be sent only to that
-process. When called without arguments, no message is actually sent, and the
-parent process may grant <code><a href="refS.html#sync">sync</a></code> to the
-next waiting process. <code>tell</code> is also used internally by <code><a
+process. If <code>cnt</code> is zero, the list will be sent to the parent
+process instead. When called without arguments, no message is actually sent, and
+the parent process may grant <code><a href="refS.html#sync">sync</a></code> to
+the next waiting process. <code>tell</code> is also used internally by <code><a
 href="refC.html#commit">commit</a></code> to notify about database changes. When
 called explicitly, the size of the message is limited to the POSIX constant
 PIPE_BUF. See also <code><a href="refK.html#kids">kids</a></code>, <code><a

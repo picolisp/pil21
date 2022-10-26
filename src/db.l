@@ -1,4 +1,4 @@
-# 20aug22 Software Lab. Alexander Burger
+# 26oct22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1005,7 +1005,7 @@
                                              (>=  # Space for EXTERN+<8>+END
                                                 (val $Ptr)
                                                 (ofs P (- (val PipeBufSize) 10)) )
-                                             (tellEnd 0)  # Send close 'tell' to all PIDs
+                                             (tellEnd -1)  # Send close 'tell' to all PIDs
                                              (set  # Partial 'tellBeg'
                                                 (inc 'P 8) BEG  # 8 bytes space (PID and count)
                                                 $Ptr (inc P) )  # Begin a list
@@ -1046,7 +1046,7 @@
                                                 (>=  # Space for EXTERN+<8>+END
                                                    (val $Ptr)
                                                    (ofs P (- (val PipeBufSize) 10)) )
-                                                (tellEnd 0)  # Send close 'tell' to all PIDs
+                                                (tellEnd -1)  # Send close 'tell' to all PIDs
                                                 (set  # Partial 'tellBeg'
                                                    (inc 'P 8) BEG  # 8 bytes space (PID and count)
                                                    $Ptr (inc P) )  # Begin a list
@@ -1073,7 +1073,7 @@
                      (setq P X) ) ) ) ) )
       (: 2
          (when Notify
-            (tellEnd 0)
+            (tellEnd -1)
             (set
                $TellBuf (val $BufX)
                $Ptr (val $PtrX)

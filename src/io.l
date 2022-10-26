@@ -1,4 +1,4 @@
-# 17oct22 Software Lab. Alexander Burger
+# 26oct22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -539,14 +539,14 @@ selectErr)
                   (when
                      (and
                         (Cld: pid)
-                        (or (=0 Pid) (== Pid (Cld: pid))) )
+                        (or (lt0 Pid) (== Pid (Cld: pid))) )
                      (wrChild Cld Q N) ) )
                (setq Cld (ofs Cld (child T))) ) ) ) ) )
 
 (de void unsync ()
    (when (val $Tell)
       (let Fd @
-         (unless (wrBytes Fd (i8* (push 0)) 8)
+         (unless (wrBytes Fd (i8* (push -1)) 8)
             (close Fd)
             (set $Tell 0) ) ) )
    (set $Sync NO) )
@@ -662,7 +662,7 @@ selectErr)
    (let Nm (xName Exe (evSym (cdr Exe)))
       (mkStr (pathString Nm (b8 (pathSize Nm)))) ) )
 
-(local) (pollfd hasData inReady waitFd)
+(local) (pollfd hasData inReady getBlk waitFd)
 
 (de i64* pollfd ((i32 . Fd))
    (let I (val $Nfds)
@@ -704,6 +704,10 @@ selectErr)
                      (and
                         (readyIn P)
                         (or Flg (ge0 (slowNb (In:)))) ) ) ) ) ) ) ) )
+(de i32 getBlk ()
+   (let P (val $BlkPtr)
+      (set $BlkPtr (inc P))
+      (i32 (val P)) ) )
 
 (de i64 waitFd (Exe (i32 . Fd) (i64 . Ms))
    (let
@@ -770,24 +774,31 @@ selectErr)
                                     (goto 1) )
                                  ((gt0 @)
                                     (cond
-                                       ((=0 (val (i64* Pn)))  # PID and size are zero
+                                       ((lt0 (val (i64* Pn)))  # PID and size are -1
                                           (when (== (Cld: pid) (val $Talking))
                                              (set $Talking 0) ) )
                                        ((> (val 2 Pn) (val PipeBufSize))
                                           (sizeErr Exe) )
                                        ((rdBytes (Cld: hear) Buf @)
-                                          (let
-                                             (Cld2 (val $Child)  # Iterate children
-                                                <Cld2 (ofs Cld2 (* (val $Children) (child T))) )
-                                             (until (== Cld2 <Cld2)
-                                                (let Cld2: (child Cld2)
-                                                   (when
-                                                      (and
-                                                         (<> Cld Cld2)
-                                                         (Cld2: pid)
-                                                         (or (=0 (val Pn)) (== @ (Cld2: pid))) )
-                                                      (wrChild Cld2 Buf (val 2 Pn)) ) )
-                                                (setq Cld2 (ofs Cld2 (child T))) ) ) )
+                                          (ifn (=0 (val Pn))
+                                             (let
+                                                (Cld2 (val $Child)  # Iterate children
+                                                   <Cld2 (ofs Cld2 (* (val $Children) (child T))) )
+                                                (until (== Cld2 <Cld2)
+                                                   (let Cld2: (child Cld2)
+                                                      (when
+                                                         (and
+                                                            (<> Cld Cld2)
+                                                            (Cld2: pid)
+                                                            (or (lt0 (val Pn)) (== @ (Cld2: pid))) )
+                                                         (wrChild Cld2 Buf (val 2 Pn)) ) )
+                                                   (setq Cld2 (ofs Cld2 (child T))) ) )
+                                             (set
+                                                $BlkPtr Buf
+                                                $GetBin (fun (i32) getBlk)
+                                                $Extn 0 )
+                                             (let E (binRead)
+                                                (save E (evList E)) ) ) )
                                        (T
                                           (clsChild Cld)
                                           (goto 1) ) ) ) ) )
@@ -845,11 +856,11 @@ selectErr)
                                  (set Y (sign (cnt @)))   # Store short negative number
                                  (let V (car X)  # Timeout value
                                     (set Y (pos V)  $At V)
-                                    (run (cdr Y)) ) ) ) )  # Run body
+                                    (exec (cdr Y)) ) ) ) )  # Run body
                         ((<> (i32 (int @)) Fd)
                            (when (inReady @ NO)
                               (set $At (car X))  # File descriptor
-                              (run (cdr X)) ) ) ) ) ) )  # Run body
+                              (exec (cdr X)) ) ) ) ) ) )  # Run body
             (and
                (gt0 Ms)
                (<> Ms 292MY)
@@ -931,7 +942,7 @@ selectErr)
          (unsync)
          $Nil )
       (T
-         (let (X @  Y (eval (car X))  Pid (i32 0))
+         (let (X @  Y (eval (car X))  Pid (i32 -1))
             (when (cnt? Y)
                (setq
                   Pid (i32 (int @))
