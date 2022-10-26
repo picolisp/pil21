@@ -4,7 +4,6 @@
       src/db.l
       doc/refT.html
    Remove lib/boss.l from distribution
-      lib/android.l
 
 21oct22
    Use 'delete' instead of 'replace'

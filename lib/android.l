@@ -1,16 +1,23 @@
-# 26oct22 Software Lab. Alexander Burger
+# 06sep22 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
    (setq *Uuid (in "UUID" (line T)))
-   (for F '("JAVA" "LISP" "RQST" "RPLY")
+   (for F '("JAVA" "LISP" "RQST" "RPLY" "BOSS")
       (%@ "unlink" 'I F)
-      (%@ "mkfifo" 'I F `(oct "600")) ) )
+      (%@ "mkfifo" 'I F `(oct "600")) )
+   (hear (open "BOSS")) )
 
 (symbols 'android 'pico)
 
 # SSL
 (sys "SSL_CERT_FILE" "tls/cert.pem")
+
+# (boss 'sym ['any ..])
+(local) boss
+
+(de boss @
+   (out "BOSS" (pr (rest))) )
 
 # Android Context
 (local) (CONTEXT GUI Config javaExt)
