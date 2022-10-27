@@ -8,8 +8,6 @@
 21oct22
    Use 'delete' instead of 'replace'
       lib/dbgc.l
-   Call 'path' in 'all*'
-      lib.l
 
 20oct22
    Minor cosmetics

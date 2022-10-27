@@ -1,4 +1,4 @@
-# 21oct22 Software Lab. Alexander Burger
+# 15oct22 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -284,7 +284,7 @@
                      '((X) (and (pre? P X) (pack S X)))
                      (all N) ) ) ) )
          (unless (=T Flg)
-            (let P (rot (split (chop (path S)) "/"))
+            (let P (rot (split (chop S) "/"))
                (setq
                   S (pack (car P))
                   P (and (cdr P) (pack (glue "/" @) "/")) )
@@ -374,7 +374,7 @@
       (setq "*Cmpl"
          (if (=T S)
             (list "   ")
-            (cons S (flip (all* S))) ) ) )
+            (flip (all* S)) ) ) )
    (pop '"*Cmpl") )
 
 ### Pretty Printing ###
