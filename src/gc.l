@@ -1,4 +1,4 @@
-# 24may22 Software Lab. Alexander Burger
+# 30oct22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -274,7 +274,6 @@
 # (gc ['cnt [cnt2]]) -> cnt | NIL
 (de _gc (Exe)
    (let (X (cdr Exe)  Y (eval (car X)))  # MiBs
-      (set $At $Nil  $At2 $Nil)
       (if (nil? Y)
          (gc)
          (set $GcCount (shl (xCnt Exe Y) 16))  # Multiply with CELLS

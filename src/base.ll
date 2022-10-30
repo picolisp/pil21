@@ -1520,7 +1520,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 354,
   i64 162,
-  i64 434
+  i64 482
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -7336,7 +7336,7 @@ $6:
 
 define i64 @_gc(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) Y (eval (car X))) (set $At $Nil $At2 $Nil) (if ...
+; # (let (X (cdr Exe) Y (eval (car X))) (if (nil? Y) (gc) (set $GcCou...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
@@ -7363,57 +7363,52 @@ $5:
   br label %$2
 $2:
   %13 = phi i64 [%5, %$4], [%11, %$6], [%12, %$5] ; # ->
-; # (set $At $Nil $At2 $Nil)
-  %14 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 440) to i64) to i64*
-  store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64), i64* %14
-  %15 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 456) to i64) to i64*
-  store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64), i64* %15
 ; # (if (nil? Y) (gc) (set $GcCount (shl (xCnt Exe Y) 16)) (gc) (set ...
 ; # (nil? Y)
-  %16 = icmp eq i64 %13, ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64)
-  br i1 %16, label %$7, label %$8
+  %14 = icmp eq i64 %13, ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64)
+  br i1 %14, label %$7, label %$8
 $7:
-  %17 = phi i64 [%3, %$2] ; # X
+  %15 = phi i64 [%3, %$2] ; # X
 ; # (gc)
   call void @gc()
   br label %$9
 $8:
-  %18 = phi i64 [%3, %$2] ; # X
+  %16 = phi i64 [%3, %$2] ; # X
 ; # (set $GcCount (shl (xCnt Exe Y) 16))
 ; # (xCnt Exe Y)
-  %19 = call i64 @xCnt(i64 %0, i64 %13)
+  %17 = call i64 @xCnt(i64 %0, i64 %13)
 ; # (shl (xCnt Exe Y) 16)
-  %20 = shl i64 %19, 16
-  store i64 %20, i64* @$GcCount
+  %18 = shl i64 %17, 16
+  store i64 %18, i64* @$GcCount
 ; # (gc)
   call void @gc()
 ; # (set $GcCount (if (atom (shift X)) CELLS (shl (evCnt Exe X) 16)))...
 ; # (if (atom (shift X)) CELLS (shl (evCnt Exe X) 16))
 ; # (shift X)
-  %21 = inttoptr i64 %18 to i64*
-  %22 = getelementptr i64, i64* %21, i32 1
-  %23 = load i64, i64* %22
+  %19 = inttoptr i64 %16 to i64*
+  %20 = getelementptr i64, i64* %19, i32 1
+  %21 = load i64, i64* %20
 ; # (atom (shift X))
-  %24 = and i64 %23, 15
-  %25 = icmp ne i64 %24, 0
-  br i1 %25, label %$10, label %$11
+  %22 = and i64 %21, 15
+  %23 = icmp ne i64 %22, 0
+  br i1 %23, label %$10, label %$11
 $10:
-  %26 = phi i64 [%23, %$8] ; # X
+  %24 = phi i64 [%21, %$8] ; # X
   br label %$12
 $11:
-  %27 = phi i64 [%23, %$8] ; # X
+  %25 = phi i64 [%21, %$8] ; # X
 ; # (evCnt Exe X)
-  %28 = call i64 @evCnt(i64 %0, i64 %27)
+  %26 = call i64 @evCnt(i64 %0, i64 %25)
 ; # (shl (evCnt Exe X) 16)
-  %29 = shl i64 %28, 16
+  %27 = shl i64 %26, 16
   br label %$12
 $12:
-  %30 = phi i64 [%26, %$10], [%27, %$11] ; # X
-  %31 = phi i64 [65536, %$10], [%29, %$11] ; # ->
-  store i64 %31, i64* @$GcCount
+  %28 = phi i64 [%24, %$10], [%25, %$11] ; # X
+  %29 = phi i64 [65536, %$10], [%27, %$11] ; # ->
+  store i64 %29, i64* @$GcCount
   br label %$9
 $9:
-  %32 = phi i64 [%17, %$7], [%30, %$12] ; # X
+  %30 = phi i64 [%15, %$7], [%28, %$12] ; # X
   ret i64 %13
 }
 
