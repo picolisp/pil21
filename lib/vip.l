@@ -1,4 +1,4 @@
-# 15oct22 Software Lab. Alexander Burger
+# 02nov22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1339,6 +1339,7 @@ command vi)
                            (when (cdr *Buffers)
                               (let Buf (: buffer)
                                  (for (This *CmdWin (setq This (: next)))
+                                    (and (== Buf (: last)) (=: last))
                                     (when (== Buf (: buffer))
                                        (nextBuf (: last)) ) )
                                  (del Buf '*Buffers)

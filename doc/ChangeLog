@@ -1,3 +1,7 @@
+02nov22
+   Clear references to deleted buffer in ":bd"
+      lib/vip.l
+
 30oct22
    Don't clear '@' and '@@' before (gc)
       src/gc.l
