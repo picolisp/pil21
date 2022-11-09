@@ -253,25 +253,23 @@ int main(int ac, char *av[]) {
             alarm(0);
             for (nm[0] = '\0', i = 9;  i < ac;  ++i) {
                if (dp = opendir(av[i])) {
-                  int max = -1;
+                  int max = 0;
                   char *q;
 
                   while (p = readdir(dp))
                      if ((n = (int)strtol(p->d_name, &q, 10)) > max  &&  !*q)
                         max = n;
-                  if (max >= 0) {
-                     if (nm[0]) {
-                        snprintf(buf, sizeof(buf), "%s%d", av[i], max + 1);
-                        link(nm, buf);
-                     }
+                  if (nm[0]) {
+                     snprintf(buf, sizeof(buf), "%s%d", av[i], max + 1);
+                     link(nm, buf);
+                  }
+                  else {
+                     snprintf(nm, sizeof(nm), "%s%d", av[i], max + 1);
+                     if ((fd = open(nm, O_CREAT|O_EXCL|O_WRONLY, 0666)) < 0)
+                        nm[0] = '\0';
                      else {
-                        snprintf(nm, sizeof(nm), "%s%d", av[i], max + 1);
-                        if ((fd = open(nm, O_CREAT|O_EXCL|O_WRONLY, 0666)) < 0)
-                           nm[0] = '\0';
-                        else {
-                           write(fd, data, size);
-                           close(fd);
-                        }
+                        write(fd, data, size);
+                        close(fd);
                      }
                   }
                   closedir(dp);
