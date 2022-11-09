@@ -1,4 +1,4 @@
-// 09sep22 Software Lab. Alexander Burger
+// 09nov22 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -261,11 +261,11 @@ int main(int ac, char *av[]) {
                         max = n;
                   if (max >= 0) {
                      if (nm[0]) {
-                        snprintf(buf, sizeof(buf), "%s/%d", av[i], max + 1);
+                        snprintf(buf, sizeof(buf), "%s%d", av[i], max + 1);
                         link(nm, buf);
                      }
                      else {
-                        snprintf(nm, sizeof(nm), "%s/%d", av[i], max + 1);
+                        snprintf(nm, sizeof(nm), "%s%d", av[i], max + 1);
                         if ((fd = open(nm, O_CREAT|O_EXCL|O_WRONLY, 0666)) < 0)
                            nm[0] = '\0';
                         else {
@@ -319,6 +319,8 @@ int main(int ac, char *av[]) {
          }
       }
       if (*av[4] && *dir && (dp = opendir(dir))) {
+         char *pwd = getcwd(NULL, 0);
+
          while (p = readdir(dp)) {
             if (p->d_name[0] == '=') {
                snprintf(nm, sizeof(nm), "%s%s", dir, p->d_name);
@@ -326,6 +328,23 @@ int main(int ac, char *av[]) {
                   if (stat(nm, &st) < 0)
                      unlink(nm);
                   else {
+                     buf[n] = '\0';
+                     for (i = 9;  i < ac;  ++i) {
+                        if (chdir(av[i]) == 0) {
+                           char *q = av[i];
+                           char nm2[4096];
+
+                           nm2[0] = '\0';
+                           do
+                              if (*q == '/')
+                                 strcat(nm2, "../");
+                           while (*++q);
+                           strcat(nm2, dir);
+                           strcat(nm2, buf);
+                           symlink(nm2, p->d_name);
+                           chdir(pwd);
+                        }
+                     }
                      lenLen = sprintf(len, "%ld\n", st.st_size);
                      buf[n++] = '\n';
                      alarm(lim);
@@ -345,6 +364,7 @@ int main(int ac, char *av[]) {
                   }
             }
          }
+         free(pwd);
          closedir(dp);
       }
       sleep(sec);

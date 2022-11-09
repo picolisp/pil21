@@ -1,3 +1,7 @@
+09nov22
+   Set blob symlinks in mirror destination directories
+      src/ssl.c
+
 02nov22
    Clear references to deleted buffer in ":bd"
       lib/vip.l
