@@ -1,4 +1,4 @@
-# 22aug22 Software Lab. Alexander Burger
+# 10nov22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -263,7 +263,7 @@ socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (de T i64 getTime ())
 (de T i64 getGmTime ())
 (de T i8* ulimStk ())
-(de T i64 fileInfo (i1 i8* i64*))
+(de T i64 fileInfo (i1 i1 i8* i64*))
 
 # Polling
 (local) (pollIn pollOut pollIgn gPoll readyIn readyOut)

@@ -281,13 +281,14 @@ href="refS.html#sub?">sub?</a></code>.
 
 <dt><a name="info"><code>(info 'any ['flg]) -> (cnt|flg dat . tim)</code></a>
 <dd>Returns information about a file with the name <code>any</code>: The current
-size <code>cnt</code> in bytes, and the modification date and time (UTC). For
-directories, <code>T</code> is returned instead of the size, and
-<code>NIL</code> for other non-regular files. The file argument itself is stored
-in the global variable <code><a href="ref_.html#@@">@@</a></code>). If
-<code>flg</code> is non-<code>NIL</code> and <code>any</code> is the name of a
-symbolic link, then the link itself is used, not the file that it refers to. See
-also <code><a href="refD.html#dir">dir</a></code>, <code><a
+size <code>cnt</code> in bytes, and the modification date and time (UTC, or
+local time if <code>flg</code> is zero). For directories, <code>T</code> is
+returned instead of the size, and <code>NIL</code> for other non-regular files.
+The file argument itself is stored in the global variable <code><a
+href="ref_.html#@@">@@</a></code>). If <code>flg</code> is non-<code>NIL</code>
+and <code>any</code> is the name of a symbolic link, then the link itself is
+used, not the file that it refers to. See also <code><a
+href="refD.html#dir">dir</a></code>, <code><a
 href="refD.html#date">date</a></code> and <code><a
 href="refT.html#time">time</a></code>.
 

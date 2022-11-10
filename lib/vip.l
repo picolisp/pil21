@@ -1,4 +1,4 @@
-# 02nov22 Software Lab. Alexander Burger
+# 10nov22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -191,7 +191,7 @@ command vi)
                            (recur (File)
                               (for F (dir File T)
                                  (unless (member F '("." ".."))
-                                    (let? I (info (setq F (append File (chop F))) T)
+                                    (let? I (info (setq F (append File (chop F))) 0)
                                        (if (and (=T (car I)) (: subd))
                                           (recurse (conc F (chop "/")))
                                           (link

@@ -1,4 +1,4 @@
-# 20oct22 Software Lab. Alexander Burger
+# 10nov22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1119,6 +1119,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (lt0
             (fileInfo
                (nil? (eval (car (shift X))))
+               (== ZERO @)
                (pathString Nm (b8 (pathSize Nm)))
                Size ) )
          $Nil

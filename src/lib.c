@@ -1,4 +1,4 @@
-// 17oct22 Software Lab. Alexander Burger
+// 10nov22 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -326,13 +326,15 @@ int64_t getMsec(void) {
 }
 
 int64_t getDate(void) {
-   gettimeofday(&Tv, NULL);
+   if (gettimeofday(&Tv, NULL))
+      return 0;
    Time = localtime(&Tv.tv_sec);
    return Time->tm_year+1900 | (Time->tm_mon+1) << 16 | Time->tm_mday << 24;
 }
 
 int64_t getGmDate(void) {
-   gettimeofday(&Tv, NULL);
+   if (gettimeofday(&Tv, NULL))
+      return 0;
    Time = gmtime(&Tv.tv_sec);
    return Time->tm_year+1900 | (Time->tm_mon+1) << 16 | Time->tm_mday << 24;
 }
@@ -340,7 +342,8 @@ int64_t getGmDate(void) {
 int64_t getTime(void) {
    struct tm *p;
 
-   gettimeofday(&Tv, NULL);
+   if (gettimeofday(&Tv, NULL))
+      return 0;
    p = localtime(&Tv.tv_sec);
    return p->tm_hour * 3600 + p->tm_min * 60 + p->tm_sec;
 }
@@ -357,14 +360,14 @@ char *ulimStk(void) {
    return (char*)&stk - stk.rlim_cur + 16384;
 }
 
-int64_t fileInfo(int lnk, char *nm, int64_t *siz) {
+int64_t fileInfo(int lnk, int loc, char *nm, int64_t *siz) {
    int64_t n;
    struct tm *p;
    struct stat st;
 
    if ((lnk? stat(nm, &st) : lstat(nm, &st)) < 0)
       return -1;
-   p = gmtime(&st.st_mtime);
+   p = loc? localtime(&st.st_mtime) : gmtime(&st.st_mtime);
    n = (p->tm_year+1900 | (p->tm_mon+1) << 16 | p->tm_mday << 24 |
          (int64_t)(p->tm_hour * 3600 + p->tm_min * 60 + p->tm_sec) << 32 ) << 2;
    if ((st.st_mode & S_IFMT) == S_IFDIR)

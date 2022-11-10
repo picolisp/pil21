@@ -1,3 +1,11 @@
+10nov22
+   'info' returns local time instead of UTC if the flag argument is zero
+      src/dec.l
+      src/main.l
+      src/lib.c
+      doc/refI.html
+      lib/vip.l
+
 09nov22
    Set blob symlinks in mirror destination directories
       src/ssl.c
