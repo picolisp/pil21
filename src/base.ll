@@ -1520,7 +1520,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 354,
   i64 178,
-  i64 162
+  i64 178
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -24819,18 +24819,18 @@ $64:
 $53:
   %186 = phi i64 [%154, %$51] ; # X
   %187 = phi i64 [%155, %$51] ; # Y
-; # (car R)
-  %188 = inttoptr i64 %145 to i64*
-  %189 = load i64, i64* %188
-; # (putSrc (car R) 0)
-  call void @putSrc(i64 %189, i64 0)
-; # (prog1 (val $Intern) (set $Intern R))
+; # (prog1 (val $Intern) (set $Intern R) (putSrc (car R) 0))
 ; # (val $Intern)
-  %190 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 0) to i64) to i64*
-  %191 = load i64, i64* %190
+  %188 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 0) to i64) to i64*
+  %189 = load i64, i64* %188
 ; # (set $Intern R)
-  %192 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 0) to i64) to i64*
-  store i64 %145, i64* %192
+  %190 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 0) to i64) to i64*
+  store i64 %145, i64* %190
+; # (car R)
+  %191 = inttoptr i64 %145 to i64*
+  %192 = load i64, i64* %191
+; # (putSrc (car R) 0)
+  call void @putSrc(i64 %192, i64 0)
 ; # (drop *Safe)
   %193 = inttoptr i64 %149 to i64*
   %194 = getelementptr i64, i64* %193, i32 1
@@ -24841,7 +24841,7 @@ $53:
 $12:
   %197 = phi i64 [%106, %$24], [%186, %$53] ; # X
   %198 = phi i64 [%107, %$24], [%187, %$53] ; # Y
-  %199 = phi i64 [%109, %$24], [%191, %$53] ; # ->
+  %199 = phi i64 [%109, %$24], [%189, %$53] ; # ->
   br label %$4
 $4:
   %200 = phi i64 [%6, %$2], [%197, %$12] ; # X

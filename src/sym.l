@@ -1,4 +1,4 @@
-# 22aug22 Software Lab. Alexander Burger
+# 11nov22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -671,10 +671,10 @@
                            (cons
                               (needNsp Exe (needSymb Exe (eval (++ X))))
                               $Nil ) ) ) )
-                  (putSrc (car R) 0)
                   (prog1
                      (val $Intern)
-                     (set $Intern R) ) ) ) ) ) ) )
+                     (set $Intern R)
+                     (putSrc (car R) 0) ) ) ) ) ) ) )
 
 # (intern 'sym ['nsp]) -> sym
 (de _intern (Exe)

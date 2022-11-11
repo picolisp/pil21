@@ -1,3 +1,7 @@
+11nov22
+   Store 'symbols' source info after the change
+      src/sym.l
+
 10nov22
    'info' returns local time instead of UTC if the flag argument is zero
       src/dec.l
