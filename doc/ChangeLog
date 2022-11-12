@@ -1,3 +1,10 @@
+12nov22
+   'tabs' command to replace tabs with spaces
+   'words' command to toggle between Lisp an C
+      doc/viprc.sample
+   Generalize delimiter checking
+      lib/vip.l
+
 11nov22
    Store 'symbols' source info after the change
       src/sym.l

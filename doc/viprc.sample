@@ -1,4 +1,4 @@
-# 13sep22 Software Lab. Alexander Burger
+# 12nov22 Software Lab. Alexander Burger
 # Copy to ~/.pil/viprc
 
 (map+q "d" ":bd\r")
@@ -14,6 +14,35 @@
       (out '("curl" "-sF" "f:1=<-" "ix.io")
          (mapc prinl (: buffer text)) )
       (prCmd (rdLines)) ) )
+
+(cmd "tabs" (L Lst Cnt)
+   (let N (or (format L) 3)
+      (=: buffer text
+         (mapcar
+            '((L)
+               (make
+                  (for (I . C) L
+                     (if (= "\t" C)
+                        (loop
+                           (link (name " "))
+                           (T (=0 (% I N)))
+                           (inc 'I) )
+                        (link C) ) ) ) )
+            (: buffer text) ) ) ) )
+
+(cmd "words" (L Lst Cnt)
+   (xchg 'delim
+      (quote
+         ((C)
+            (not
+               (member C
+                  '`(chop
+                        "0123456789\
+                        ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+                        _\
+                        abcdefghijklmnopqrstuvwxyz" ) ) ) ) ) )
+   (prCmd
+      (list (chop (xchg '(" C") '(" Lisp")))) ) )
 
 (de *F7  # Find current definition
    (let L (nth (: buffer text) (: posY))
@@ -31,6 +60,7 @@
 
 # Timestamp
 (local) vipDat
+
 (de vipDat (N)
    (when (<> N (: posY))
       (let (@L (get (: text) N)  @A)

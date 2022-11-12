@@ -1,4 +1,4 @@
-# 10nov22 Software Lab. Alexander Burger
+# 12nov22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -20,16 +20,16 @@
 (def '*Shell (or (sys "SHELL") "sh"))
 
 ### VIP Editor ###
-(local) (*Buffers +Buffer mkLoc fName prName rplFile fileBuffer rdLines delim?
-arkup min1 undo redo evCmd dirty> load> save> syms> view> status delwin cursor
-addLine chgLine unmark redraw repaint scLeft scRight goto chgwin eqwin getch
-getch2 reload scratch syms pushTag tag done change jmp@@ cnt@@ goCol goLeft
-goRight goUp goDown goAbs goFind tword word lword end lend getWord _forward
-goForward _backward goBackward goPFore goPBack shift shiftY indent cutX cutN
-paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe evRpt
-move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN nextBuf
-shell shFile prCmd cmd _map map+ map+g map+q reset posChar getText s-expr
-command vi)
+(local) (*Buffers +Buffer mkLoc fName prName rplFile fileBuffer rdLines delim
+delimNs arkup min1 undo redo evCmd dirty> load> save> syms> view> status delwin
+cursor addLine chgLine unmark redraw repaint scLeft scRight goto chgwin eqwin
+getch getch2 reload scratch syms pushTag tag done change jmp@@ cnt@@ goCol
+goLeft goRight goUp goDown goAbs goFind tword word lword end lend getWord
+_forward goForward _backward goBackward goPFore goPBack shift shiftY indent cutX
+cutN paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe
+evRpt move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN
+nextBuf shell shFile prCmd cmd _map map+ map+g map+q reset posChar getText
+s-expr command vi)
 
 
 (class +Buffer)
@@ -91,10 +91,12 @@ command vi)
 (de rdLines ()
    (make (until (eof) (link (line)))) )
 
-(de delim? (C Str)
-   (or
-      (member C '`(cons NIL (chop " \t\n\r\"'(),[]`")))
-      (sub? C Str) ) )
+(de delim (C)
+   (member C
+      '`(cons NIL (chop " \t\n\r\"'(),[]`")) ) )
+
+(de delimNs (C)
+   (or (delim C) (= "~" C)) )
 
 (de markup (Lst)
    (let (S 'text  N 1)
@@ -108,7 +110,7 @@ command vi)
                      (text
                         (and
                            (= "#" C)
-                           (delim? P)
+                           (delim P)
                            (if L 'comment 'text) )
                         (set C N)
                         (when (= "{" (car L))
@@ -661,23 +663,23 @@ command vi)
 
 (de tword (L)
    (and
-      (delim? (car L))
+      (delim (car L))
       (or
          (sub? (cadr L) "\"()[]")
-         (not (delim? (cadr L))) ) ) )
+         (not (delim (cadr L))) ) ) )
 
 (de word (L C)
    (and
-      (delim? C)
+      (delim C)
       (or
          (sub? (car L) "\"()[]")
-         (not (delim? (car L))) ) ) )
+         (not (delim (car L))) ) ) )
 
 (de lword (L C)
    (and (sp? C) (not (sp? (car L))) ) )
 
 (de end (L)
-   (and (not (delim? (car L))) (delim? (cadr L))) )
+   (and (not (delim (car L))) (delim (cadr L))) )
 
 (de lend (L)
    (and (not (sp? (car L))) (sp? (cadr L))) )
@@ -687,11 +689,11 @@ command vi)
       (let Lst (get (: buffer text) (: posY))
          (when Flg
             (for C (nth Lst (: posX))
-               (T (delim? C))
+               (T (delim C))
                (link C) ) )
          (for
             (L (nth Lst (dec (: posX)))
-               (not (delim? (car L)))
+               (not (delim (car L)))
                (prior L Lst) )
             (yoke (car L)) ) ) ) )
 
@@ -1080,9 +1082,9 @@ command vi)
       (let @N (inc (length @W))
          (curry (@W @N) (L C)
             (and
-               (delim? C "~")
+               (delimNs C)
                (head '@W L)
-               (delim? (get L @N) "~") ) ) ) ) )
+               (delimNs (get L @N)) ) ) ) ) )
 
 (de moveSearch (Fun1 Fun2)
    (move Fun1 (lit Fun2) *Cnt) )
