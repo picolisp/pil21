@@ -1,3 +1,9 @@
+14nov22
+   Wrong 'save' / 'safe' in 'rdList'
+      src/io.l
+   Private 'queue'
+      lib/simul.l
+
 12nov22
    'tabs' command to replace tabs with spaces
    'words' command to toggle between Lisp an C

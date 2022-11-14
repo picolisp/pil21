@@ -1,4 +1,4 @@
-# 26oct22 Software Lab. Alexander Burger
+# 14nov22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1422,17 +1422,18 @@ selectErr)
 (de rdList ()
    (stkChk 0)
    (call $Get)
+   (save -ZERO)
    (loop
       (? (== (skip) (char ")"))  # Empty list
          (call $Get)
          $Nil )
       (? (== @ (char "]")) $Nil)  # Empty list
       (? (<> @ (char "~"))  # Read macro
-         (let R (save (cons (read0 NO) $Nil))
+         (let R (safe (cons (read0 NO) $Nil))
             (rdl R R)
             R ) )
       (call $Get)
-      (let (X (save (read0 NO))  R (eval X))
+      (let (X (safe (read0 NO))  R (eval X))
          (? (not (nil? R))
             (if (atom (safe R))
                (rdl (safe (setq R (cons R $Nil))) R)
