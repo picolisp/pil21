@@ -1,4 +1,7 @@
 15nov22
+   'shadows' function
+      lib/debug.l
+      doc/refS.html
    Allow also new namespace for '-symbols'
       lib.l
 

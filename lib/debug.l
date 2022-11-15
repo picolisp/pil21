@@ -1,4 +1,4 @@
-# 22aug22 Software Lab. Alexander Burger
+# 15nov22 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -162,6 +162,29 @@
                (asoq X (val Y))
                (cons X Y) ) )
          (all) ) ) )
+
+(private) (Lst Sym S)
+
+# Namespace shadowing
+(de shadows ()
+   (let Lst (mapcan all (symbols))
+      (make
+         (while (cdr Lst)
+            (let Sym (++ Lst)
+               (unless (member Sym (made))
+                  (and
+                     (filter
+                        '((S)
+                           (and
+                              (= S Sym)
+                              (n== S Sym)
+                              (val S) ) )
+                        Lst )
+                     (prinl
+                        (mapcar
+                           '((S) (cons " " (nsp S) "~" S))
+                           (cons Sym @) ) )
+                     (link Sym) ) ) ) ) ) ) )
 
 # Class dependencies
 (de dep (C)

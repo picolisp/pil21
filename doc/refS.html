@@ -428,6 +428,25 @@ href="refD.html#def">def</a></code>.
 -> (123 123)
 </code></pre>
 
+<dt><a name="shadows"><code>(shadows) -> lst</code></a>
+<dd>Returns a list of all symbols shadowing other symbols in the current
+namespace search order. As a side effect, these and the overshadowed symbols are
+printed. See also <code><a href="refS.html#symbols">symbols</a></code>.
+
+<pre><code>
+: (symbols '(vip pico))
+-> (pico)
+
+vip: (shadows)
+ vip~vi pico~vi
+ vip~cmd pico~cmd
+ vip~shift pico~shift
+-> (vi cmd shift)
+
+vip: (symbols '(pico))
+-> (vip pico)
+</code></pre>
+
 <dt><a name="shift"><code>(shift 'var) -> any</code></a>
 <dd>Sets the list in <code>var</code> to its CDR. <code>(shift 'var)</code> is
 equivalent to <code>(set 'var (cdr (val 'var)))</code>. See also <code><a
@@ -1064,6 +1083,7 @@ and file name (if any) are stored in the <code>*Dbg</code> property of
 href="refS.html#-symbols">-symbols</a></code>, <code><a
 href="refP.html#private">private</a></code>, <code><a
 href="refL.html#local">local</a></code>, <code><a
+href="refS.html#shadows">shadows</a></code>, <code><a
 href="refE.html#export">export</a></code>, <code><a
 href="refI.html#import">import</a></code>, <code><a
 href="refI.html#intern">intern</a></code> and <code><a
