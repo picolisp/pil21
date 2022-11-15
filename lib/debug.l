@@ -172,7 +172,7 @@
          (while (cdr Lst)
             (let Sym (++ Lst)
                (unless (member Sym (made))
-                  (and
+                  (when
                      (filter
                         '((S)
                            (and
@@ -180,10 +180,8 @@
                               (n== S Sym)
                               (val S) ) )
                         Lst )
-                     (prinl
-                        (mapcar
-                           '((S) (cons " " (nsp S) "~" S))
-                           (cons Sym @) ) )
+                     (space 3)
+                     (apply println @ Sym)
                      (link Sym) ) ) ) ) ) ) )
 
 # Class dependencies
