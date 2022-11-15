@@ -430,14 +430,15 @@ href="refD.html#def">def</a></code>.
 
 <dt><a name="shadows"><code>(shadows) -> lst</code></a>
 <dd>Returns a list of all symbols shadowing other symbols in the current
-namespace search order. As a side effect, these and the overshadowed symbols are
-printed. See also <code><a href="refS.html#symbols">symbols</a></code>.
+namespace search order. When <code>flg</code> non-<code>NIL</code>, these and
+the overshadowed symbols are printed as a side effect. See also <code><a
+href="refS.html#symbols">symbols</a></code>.
 
 <pre><code>
 : (symbols '(vip pico))
 -> (pico)
 
-vip: (shadows)
+vip: (shadows T)
    vi pico~vi
    cmd pico~cmd
    shift pico~shift

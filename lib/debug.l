@@ -163,16 +163,16 @@
                (cons X Y) ) )
          (all) ) ) )
 
-(private) (Lst Sym S)
+(private) (Flg Lst Sym L S)
 
 # Namespace shadowing
-(de shadows ()
+(de shadows (Flg)
    (let Lst (mapcan all (symbols))
       (make
          (while (cdr Lst)
             (let Sym (++ Lst)
                (unless (member Sym (made))
-                  (when
+                  (let? L
                      (filter
                         '((S)
                            (and
@@ -180,8 +180,9 @@
                               (n== S Sym)
                               (val S) ) )
                         Lst )
-                     (space 3)
-                     (apply println @ Sym)
+                     (when Flg
+                        (space 3)
+                        (apply println L Sym) )
                      (link Sym) ) ) ) ) ) ) )
 
 # Class dependencies
