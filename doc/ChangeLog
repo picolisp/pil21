@@ -1,3 +1,7 @@
+15nov22
+   Allow also new namespace for '-symbols'
+      lib.l
+
 14nov22
    Wrong 'save' / 'safe' in 'rdList'
       src/io.l

@@ -1,4 +1,4 @@
-# 15oct22 Software Lab. Alexander Burger
+# 15nov22 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -251,7 +251,7 @@
             (loc S (cdr X)) ) ) ) )
 
 (de -symbols ()
-   (symbols (cons (intern (opt)) (symbols))) )
+   (apply symbols (symbols) (intern (opt))) )
 
 (de private ()
    (symbols '(priv) (read)) )
