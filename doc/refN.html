@@ -92,6 +92,40 @@ href="refI.html#intern">intern</a></code>.
 -> NIL
 </code></pre>
 
+<dt><a name="namespaces"><code>(namespaces ['flg]) -> lst</code></a>
+<dd>(Debug mode only) Returns a list of all namespaces nested in the current
+search order. When <code>flg</code> non-<code>NIL</code>, their nested tree is
+printed as a side effect. See also <code><a
+href="refS.html#symbols">symbols</a></code> and <code><a
+href="refS.html#shadows">shadows</a></code>.
+
+<pre><code>
+$ pil +
+: (namespaces)
+-> (pico vip llvm priv)
+: (namespaces T)
+   pico
+      vip
+      llvm
+      priv
+-> (pico vip llvm priv)
+
+$ pty  # After starting "steps", "browser" and "chess" in PilBox
+chess: (namespaces T)
+   chess
+   simul
+   android
+      steps
+      browser
+   pico
+      svg
+      vip
+      gis
+      llvm
+      priv
+-> (chess simul android steps browser pico svg vip gis llvm priv)
+</code></pre>
+
 <dt><a name="nand"><code>(nand 'any ..) -> flg</code></a>
 <dd>Logical NAND. The expressions <code>any</code> are evaluated from left to
 right. If <code>NIL</code> is encountered, <code>T</code> is returned

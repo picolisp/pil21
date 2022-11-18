@@ -1,4 +1,4 @@
-# 15nov22 Software Lab. Alexander Burger
+# 18nov22 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -163,7 +163,24 @@
                (cons X Y) ) )
          (all) ) ) )
 
-(private) (Flg Lst Sym L S)
+(private) (Flg Nsp Lst Sym N L S)
+
+# Namespaces nested in current search order
+(de namespaces (Flg)
+   (let N 3
+      (make
+         (for Nsp (symbols)
+            (recur (Nsp N)
+               (link Nsp)
+               (when Flg
+                  (space N)
+                  (println Nsp) )
+               (for S (all Nsp)
+                  (and
+                     (pair (val S))
+                     (== '\~ (car @))
+                     (not (memq S (made)))
+                     (recurse S (+ N 3)) ) ) ) ) ) ) )
 
 # Namespace shadowing
 (de shadows (Flg)

@@ -1,4 +1,8 @@
 18nov22
+   'namespaces' function
+      lib/debug.l
+      doc/refN.html
+      doc/refS.html
    Exchange also 'last', 'mark' and 'sc' in ":bx"
       lib/vip.l
 
