@@ -1,3 +1,7 @@
+18nov22
+   Exchange also 'last', 'mark' and 'sc' in ":bx"
+      lib/vip.l
+
 15nov22
    'shadows' function
       lib/debug.l

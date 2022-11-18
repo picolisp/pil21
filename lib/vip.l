@@ -1,4 +1,4 @@
-# 12nov22 Software Lab. Alexander Burger
+# 18nov22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1668,7 +1668,7 @@ s-expr command vi)
                                              (; *CmdWin next next)
                                              (n== This *CmdWin)
                                              (let W (if (== (: prev) *CmdWin) (: next) (: prev))
-                                                (for P '(buffer winX winY posX posY)
+                                                (for P '(buffer winX winY posX posY last mark sc)
                                                    (xchg (prop This P) (prop W P)) )
                                                 (goto (: posX) (: posY))
                                                 (with W
