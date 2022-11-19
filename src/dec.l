@@ -1,4 +1,4 @@
-# 10nov22 Software Lab. Alexander Burger
+# 19nov22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -536,18 +536,21 @@ box64 eval run)
       (set $PrivT (Ca: priv1))
       (set 2 $PrivT (Ca: priv2)) ) )
 
-(inline putCrtEnv (Crt)
+(inline putCrtEnv (Crt Cpy)
    (let Crt: (coroutine Crt)
-      (memcpy (Crt: (env)) (env) (env T) T)
+      (when Cpy
+         (memcpy (Crt: (env)) (env) (env T) T) )
       (Crt: intrn (val $Intern))
       (Crt: trns1 (val $Transient))
       (Crt: trns2 (val 2 $Transient))
       (Crt: priv1 (val $PrivT))
       (Crt: priv2 (val 2 $PrivT)) ) )
 
-(inline getCrtEnv (Crt)
+(inline getCrtEnv (Crt Cpy)
    (let Crt: (coroutine Crt)
-      (memcpy (env) (Crt: (env)) (env T) T)
+      (when Cpy
+         (memcpy (env) (Crt: (env)) (env T) T) )
+      (set $StkLimit (+ (Crt: lim) 4096))
       (set $Intern (Crt: intrn))
       (set $Transient (Crt: trns1))
       (set 2 $Transient (Crt: trns2))

@@ -1,4 +1,4 @@
-# 20aug22 Software Lab. Alexander Burger
+# 19nov22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1100,12 +1100,11 @@
 (de void saveCoEnv ((i8* . Crt))
    (let Crt: (coroutine Crt)
       (Crt: at (val $At))  # Not running
-      (putCrtEnv (Crt:)) ) )
+      (putCrtEnv (Crt:) YES) ) )
 
 (de loadCoEnv ((i8* . Crt))
    (let Crt: (coroutine (set $Current Crt))
-      (set $StkLimit (+ (Crt: lim) 4096))
-      (getCrtEnv (Crt:))
+      (getCrtEnv (Crt:) YES)
       (tosInFile)
       (tosOutFile)
       (set $At (Crt: at))
@@ -1187,7 +1186,7 @@
                         (Dst: ca (val $Catch))
                         (Dst: in (val $InFrames))
                         (Dst: out (val $OutFrames))
-                        (putCrtEnv (Dst:))
+                        (putCrtEnv (Dst:) YES)
                         (set  # Init local env
                            $Next $Nil
                            $Make 0

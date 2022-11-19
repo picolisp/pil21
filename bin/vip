@@ -1,12 +1,10 @@
 #!/usr/bin/picolisp /usr/lib/picolisp/lib.l
-# 19feb22abu
+# 19nov22abu
 
 (unless *Dbg
    (load "@lib/vip.l") )
 
 (stack 1024)
-
-(de vip~*Ns pico)
 
 (bye
    (if

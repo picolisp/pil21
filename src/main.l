@@ -1,4 +1,4 @@
-# 10nov22 Software Lab. Alexander Burger
+# 19nov22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -83,7 +83,7 @@
                (unless (== Src Dst)
                   (stop Src)
                   (let Crt: (coroutine (set $Current Dst))
-                     (set $StkLimit (+ (Crt: lim) 4096))
+                     (getCrtEnv (Crt:) NO)
                      (set $At (Crt: at)) ) ) )
             (getCaEnv (Ca:))
             (eval (Ca: fin))  # Evaluate 'finally' expression
@@ -108,7 +108,13 @@
          (loop
             (popInFiles)
             (? (== (val $InFrames) (val $Stdin))) )
-         (tosInFile) ) ) )
+         (tosInFile) )
+      (let (Src (val $Current)  Dst (val $Coroutines))
+         (unless (== Src Dst)
+            (stop Src)
+            (let Crt: (coroutine (set $Current Dst))
+               (getCrtEnv (Crt:) NO)
+               (set $At (Crt: at)) ) ) ) ) )
 
 # Exit
 (local) (finish giveup bye execErr)

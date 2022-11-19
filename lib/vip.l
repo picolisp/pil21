@@ -1,4 +1,4 @@
-# 18nov22 Software Lab. Alexander Burger
+# 19nov22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -516,10 +516,10 @@ s-expr command vi)
       (goto 1 (: buffer posY)) )
    (repaint) )
 
-(de syms ("Lst")
+(de syms (Lst)
    (prog1
       (tmp "syms")
-      (syms> (fileBuffer @) "Lst") ) )
+      (syms> (fileBuffer @) Lst) ) )
 
 (de pushTag (File)
    (push '*TagStack (: posX) (: posY) File (symbols)) )
@@ -543,8 +543,6 @@ s-expr command vi)
    (unmark)
    (nond
       ((; *CmdWin next next)
-         (screen1)
-         (rollback)
          (throw 'done Flg) )
       ((n== This *CmdWin))
       ((== This (; *CmdWin next))
@@ -1368,25 +1366,27 @@ s-expr command vi)
       (T (beep)) ) )
 
 ### VIP Entry Point ###
-(de vi ("Lst")  # (file (pat . file) (99 . file) (T . file) (sym [sym ..])
+(de vi (Lst Ns)  # (file (pat . file) (99 . file) (T . file) (sym [sym ..])
    (getSize)
-   (and "Lst" (co 'vip))
+   (and Lst (co 'vip))
    (co 'vip
+      (setq *Ns (symbols))
+      (and Ns (symbols @))
       (off *Buffers)
       (when (=0 (%@ "isatty" 'I 0))
          (with (fileBuffer (tmp "stdin"))
             (out (: file) (in 0 (echo))) )
          (ctty "/dev/tty") )
-      (for "X" "Lst"
+      (for X Lst
          (cond
-            ((not "X"))
-            ((atom "X") (fileBuffer "X"))  # Path name
-            ((pair (car "X"))  # Pattern
+            ((not X))
+            ((atom X) (fileBuffer X))  # Path name
+            ((pair (car X))  # Pattern
                (wordFun @)
-               (fileBuffer (cdr "X")) )
-            ((or (num? (car "X")) (=T (car "X")))  # Line number
-               (fileBuffer (cdr "X") @) )
-            (T (syms "X")) ) )  # List of symbols
+               (fileBuffer (cdr X)) )
+            ((or (num? (car X)) (=T (car X)))  # Line number
+               (fileBuffer (cdr X) @) )
+            (T (syms X)) ) )  # List of symbols
       (unless *Buffers
          (fileBuffer (tmp "empty")) )
       (screen2)
@@ -1409,300 +1409,301 @@ s-expr command vi)
                   1 (: posY)
                   *CmdWin ) ) )
          (with *Window (redraw))
-         (catch 'done
-            (loop
-               (setq *Cnt (max 1 (format *Count)))
-               (with *Window
-                  (=: posX
-                     (min1 (: posX)
-                        (length
-                           (get (: buffer text)
-                              (=: posY
-                                 (min1 (: posY) (length (: buffer text))) ) ) ) ) )
-                  (symbols (: buffer symbols))
-                  (when
-                     (or
-                        (> (: winX) (: posX))
-                        (> (: winY) (: posY)) )
-                     (=: winX (min1 (: posX) (: winX)))
-                     (=: winY (min1 (: posY) (: winY)))
-                     (redraw) )
-                  (cursor)
-                  (case (getch)
-                     ("0"
-                        (if *Count
-                           (queue '*Count "0")
-                           (move 'goAbs 1 (: posY))  # Go to beginning of line
-                           (off *Change) ) )
-                     (("1" "2" "3" "4" "5" "6" "7" "8" "9")  # ["Count" prefix]
-                        (queue '*Count *Chr) )
-                     ("\"" (setq *Clip (intern (pack '"\"" (getch)))))  # "Register" prefix
-                     (("!" "<" ">" "c" "d" "y")  # ["Change" prefix]
-                        (cond
-                           ((= *Chr *Change)
+         (finally (prog (rollback) (screen1))
+            (catch 'done
+               (loop
+                  (setq *Cnt (max 1 (format *Count)))
+                  (with *Window
+                     (=: posX
+                        (min1 (: posX)
+                           (length
+                              (get (: buffer text)
+                                 (=: posY
+                                    (min1 (: posY) (length (: buffer text))) ) ) ) ) )
+                     (symbols (: buffer symbols))
+                     (when
+                        (or
+                           (> (: winX) (: posX))
+                           (> (: winY) (: posY)) )
+                        (=: winX (min1 (: posX) (: winX)))
+                        (=: winY (min1 (: posY) (: winY)))
+                        (redraw) )
+                     (cursor)
+                     (case (getch)
+                        ("0"
+                           (if *Count
+                              (queue '*Count "0")
+                              (move 'goAbs 1 (: posY))  # Go to beginning of line
+                              (off *Change) ) )
+                        (("1" "2" "3" "4" "5" "6" "7" "8" "9")  # ["Count" prefix]
+                           (queue '*Count *Chr) )
+                        ("\"" (setq *Clip (intern (pack '"\"" (getch)))))  # "Register" prefix
+                        (("!" "<" ">" "c" "d" "y")  # ["Change" prefix]
+                           (cond
+                              ((= *Chr *Change)
+                                 (case *Chr
+                                    ("!" (cmdPipe *Cnt))  # [!!] External filter
+                                    (">" (evRpt (list 'shift *Cnt T)))  # [>>] Shift line(s) right
+                                    ("<" (evRpt (list 'shift *Cnt)))  # [<<] Shift line(s) left
+                                    ("c" (=: posX 1) (chgRight T))  # [cc] Change whole line
+                                    ("d" (evRpt (list 'cutN *Cnt)))  # [dd] Delete line(s)
+                                    ("y"  # [yy] Yank line(s)
+                                       (set *Clip
+                                          (cons T
+                                             (head *Cnt (nth (: buffer text) (: posY))) ) ) ) )
+                                 (reset) )
+                              (*Change (off *Change))
+                              (T (setq *Change *Chr)) ) )
+                        (T
+                           (if (assoc *Chr *KeyMap)
+                              (run (cdr @))
                               (case *Chr
-                                 ("!" (cmdPipe *Cnt))  # [!!] External filter
-                                 (">" (evRpt (list 'shift *Cnt T)))  # [>>] Shift line(s) right
-                                 ("<" (evRpt (list 'shift *Cnt)))  # [<<] Shift line(s) left
-                                 ("c" (=: posX 1) (chgRight T))  # [cc] Change whole line
-                                 ("d" (evRpt (list 'cutN *Cnt)))  # [dd] Delete line(s)
-                                 ("y"  # [yy] Yank line(s)
-                                    (set *Clip
-                                       (cons T
-                                          (head *Cnt (nth (: buffer text) (: posY))) ) ) ) )
-                              (reset) )
-                           (*Change (off *Change))
-                           (T (setq *Change *Chr)) ) )
-                     (T
-                        (if (assoc *Chr *KeyMap)
-                           (run (cdr @))
-                           (case *Chr
-                              (NIL)
-                              (("\n" "\r")
-                                 (if (== This *CmdWin)
-                                    (command (: next) (get (: buffer text) (: posY)))
-                                    (goto 1 (inc (: posY)) T)  # Go to next line
-                                    (do (: sc) (scRight))
-                                    (redraw) ) )
-                              ("." (if *Repeat (eval @) (beep)))  # Repeat last change
-                              (("j" "\e[B") (move 'goDown *Cnt))  # [DOWN] Move down
-                              (("^F" "\e[6~") (move 'goDown (: lines)))  # [PGDOWN] Page down
-                              (("k" "\e[A") (move 'goUp *Cnt))  # [UP] Move up
-                              (("^B" "\e[5~") (move 'goUp (: lines)))  # [PGUP] Page up
-                              ("h" (move 'goLeft *Cnt))  # Move left
-                              ("l" (move 'goRight *Cnt))  # Move right
-                              ("\e[D" (scLeft) (redraw))  # [LEFT] Scroll left
-                              ("\e[C" (scRight) (redraw))  # [RIGHT] Scroll right
-                              ("z" (do 3 (scRight)) (redraw))  # Scroll right 3 columns
-                              ("Z" (do 3 (scLeft)) (redraw))  # Scroll left 3 columns
-                              ("|" (move 'goCol *Cnt))  # Go to column
-                              ("$" (move 'goRight T))  # Go to end of line
-                              ("G" (move 'goAbs 1 (or (format *Count) T)))  # Go to end of text
-                              ("f" (and (getch2 (getch)) (move 'goFind @ 0 *Cnt)))  # Find character
-                              ("t" (and (getch2 (getch)) (move 'goFind @ -1 *Cnt)))  # Till character
-                              ("\t" (move 'goForward 'tword *Cnt))  # TAB word forward
-                              ("w" (move 'goForward 'word *Cnt))  # Word forward
-                              ("W" (move 'goForward 'lword *Cnt))  # Long word forward
-                              ("b" (move 'goBackward 'word *Cnt))  # Word backward
-                              ("B" (move 'goBackward 'lword *Cnt))  # Long word backward
-                              ("e" (move 'goForward 'end *Cnt))  # End of word
-                              ("E" (move 'goForward 'lend *Cnt))  # End of long word
-                              ("{" (move 'goPBack *Cnt))  # Paragraph(s) backward
-                              ("}" (move 'goPFore *Cnt 0))  # Paragraph(s) forward
-                              ("'" (jmpMark (getch) "'" 1))  # Jump to mark line
-                              ("`" (jmpMark (getch) "`")) # Jump to mark position
-                              ("~" (evRpt (list 'tglCase *Cnt)))  # Toggle case
-                              ((":" " ") (cmdMode (name ":")))  # Command
-                              ("/" (cmdMode (name "/")))  # Search forward
-                              ("?" (cmdMode (name "?")))  # Search backward
-                              ("&" (cmdMode (name "&")))  # Search word
-                              ("n"  # Search next
-                                 (if *Search
-                                    (move 'goForward (lit @) *Cnt)
-                                    (beep) ) )
-                              ("N"  # Search previous
-                                 (if *Search
-                                    (move 'goBackward (lit @) *Cnt)
-                                    (beep) ) )
-                              ("*"  # Search word under cursor
-                                 (and (getWord T) (moveSearch 'goForward (wordFun @))) )
-                              ("#"  # Search word under cursor backward
-                                 (and (getWord T) (moveSearch 'goBackward (wordFun @))) )
-                              ("%"  # Matching parenthesis
-                                 (case (posChar)
-                                    ("(" (parMatch 'goForward 1 0 "(" ")" "[" "]"))
-                                    ("[" (parMatch 'goForward 0 (0 . 0) "(" ")" "[" "]"))
-                                    (")" (parMatch 'goBackward 1 0 ")" "(" "]" "["))
-                                    ("]" (parMatch 'goBackward 0 (0 . 0) ")" "(" "]" "["))
-                                    (T (beep)) ) )
-                              ("i"  # Insert
-                                 (when (insMode)
-                                    (setq *Repeat (list 'paste (lit @))) ) )
-                              ("I"  # Insert at beginning of line
-                                 (goto 1 (: posY))
-                                 (when (insMode)
-                                    (setq *Repeat (list 'paste (lit @) 0)) ) )
-                              ("a"  # Append
-                                 (when (get (: buffer text) (: posY) 1)
-                                    (inc (:: posX)) )
-                                 (when (insMode 1)
-                                    (setq *Repeat (list 'paste (lit @) 1)) ) )
-                              ("A"  # Append to end of line
-                                 (goto
-                                    (inc (length (get (: buffer text) (: posY))))
-                                    (: posY)
-                                    T )
-                                 (when (insMode 1)
-                                    (setq *Repeat (list 'paste (lit @) T)) ) )
-                              ("o"  # Open new line below current line
-                                 (setq *Repeat (list 'paste (lit (insMode T)) T)) )
-                              ("O"  # Open new line above current line
-                                 (setq *Repeat (list 'paste (lit (insMode 0)) 0)) )
-                              ("x" (setq *Change "d") (move 'goRight *Cnt))  # Delete characters
-                              ("X" (setq *Change "d") (move 'goLeft *Cnt))  # Delete characters left
-                              ("D" (setq *Change "d") (move 'goRight T))  # Delete rest of line
-                              ("p" (evRpt (list 'paste (lit (val *Clip)) 1)))  # Paste after current position
-                              ("P" (evRpt (list 'paste (lit (val *Clip)))))  # Paste before current position
-                              ("J" (evRpt (list 'join *Cnt)))  # Join lines
-                              ("m"  # Set mark
-                                 (put (: buffer) (intern (getch))
-                                    (cons (: posX) (: posY)) ) )
-                              ("M" (=: sc (dec (: winX))))  # Mark horizontal scroll position
-                              ("r"  # Replace character(s)
-                                 (and (getch2 (getch)) (evRpt (list 'insChar @ *Cnt))) )
-                              ("R"  # Replace
-                                 (when (insMode NIL NIL T)
-                                    (setq *Repeat (list 'overwrite (lit @))) ) )
-                              ("s" (chgRight 1))  # Substitute character
-                              ("C" (chgRight T))  # Change rest of line
-                              ("S" (=: posX 1) (chgRight T))  # Change whole line
-                              ("," (evRpt '(indent)))  # Fix indentation
-                              ("^A" (evRpt (list 'incNum *Cnt)))
-                              ("^X" (evRpt (list 'incNum (- *Cnt))))
-                              ("u" (undo))  # Undo
-                              ("^R" (redo))  # Redo
-                              ("^E" (evCmd (eval (s-expr))))  # Evaluate expression
-                              ("g"  # ["Go" prefix]
-                                 (if (assoc (getch) *KeyMap-g)
-                                    (run (cdr @))
-                                    (case *Chr
-                                       ("f"  # [gf] Edit file under cursor
-                                          (pushTag (: buffer file))
-                                          (reload (pack (getWord T))) )
-                                       ("g" (move 'goAbs 1 (or (format *Count) 1)))  # [gg] Go to beginning of text
-                                       ("s" (spell))
-                                       (T (beep)) ) ) )
-                              ("+"  # Increase window size
-                                 (loop
-                                    (NIL (setq This (: prev))
-                                       (for (This (; *Window next) This (: next))
-                                          (T (> (: lines) 1)
-                                             (with *Window
-                                                (chgwin (inc (: lines)) (dec (: top)))
-                                                (for (This (: next) (=1 (: lines)) (: next))
-                                                   (chgwin 1 (dec (: top))) ) )
-                                             (chgwin (dec (: lines))) ) ) )
-                                    (T (> (: lines) 1)
-                                       (with *Window
-                                          (chgwin (inc (: lines)))
-                                          (for (This (: prev) (=1 (: lines)) (: prev))
-                                             (chgwin 1 (inc (: top))) ) )
-                                       (chgwin (dec (: lines)) (inc (: top))) ) ) )
-                              ("-"  # Decrease window size
-                                 (cond
-                                    ((=1 ( : lines)))
-                                    ((: prev)
-                                       (chgwin (dec (: lines)))
-                                       (with (: prev)
-                                          (chgwin (inc (: lines)) (dec (: top))) ) )
-                                    (T
-                                       (chgwin (dec (: lines)) (inc (: top)))
-                                       (with (: next)
-                                          (chgwin (inc (: lines))) ) ) ) )
-                              ("=" (eqwin))  # Set all windows to equal size
-                              ("K"  # Edit symbol
-                                 (let S (any (getWord T))
-                                    (ifn (: buffer syms)
-                                       (tag S)
-                                       (pushTag @)
-                                       (syms> (: buffer) (cons S @))
-                                       (reload (: buffer file) 1 1) ) ) )
-                              ("^]"  # Edit symbol definition
-                                 (tag (any (getWord T))) )
-                              (("Q" "^T")  # Pop tag stack
-                                 (ifn *TagStack
-                                    (beep)
-                                    (symbols (++ *TagStack))
-                                    (if (atom (car *TagStack))
-                                       (reload (++ *TagStack) (++ *TagStack) (++ *TagStack))
-                                       (syms> (: buffer) (++ *TagStack))
-                                       (reload (: buffer file) (++ *TagStack) (++ *TagStack)) ) ) )
-                              (("\eOP" "\e[[A")  # [F1] Highlight on/off
-                                 (=: buffer flat (not (: buffer flat)))
-                                 (repaint) )
-                              (("\eOQ" "\e[[B")  # [F2] Show chages to <file>-
-                                 (shFile
-                                    (if (sys "CCRYPT" (: buffer key))
-                                       "diff -Bb <(ccrypt -c -ECCRYPT @1-) <(ccrypt -c -ECCRYPT @1)"
-                                       "diff -Bb @1- @1" ) ) )
-                              (("\eOR" "\e[[C")  # [F3] Custom dif
-                                 (shFile "dif @1 @2") )
-                              (("\eOS" "\e[[D")  # [F4] Format paragraph
-                                 (and *Count (=: buffer fmt @))
-                                 (goPFore 1 -1)
-                                 (pipeN (cnt@@) (pack "fmt -" (: buffer fmt))) )
-                              (("\e[15~" "\e[[E")  # [F5] Previous buffer
-                                 (nextBuf T) )
-                              ("\e[17~"  # [F6] Next buffer
-                                 (nextBuf) )
-                              ("\e[18~" (run *F7))  # [F7] Custom key
-                              ("\e[19~" (run *F8))  # [F8] Custom key
-                              ("\e[20~" (run *F9))  # [F9] Custom key
-                              ("\e[21~" (run *F10))  # [F10] Custom key
-                              ("\e[23~" (run *F11))  # [F11] Custom key
-                              ("\e[24~" (run *F12))  # [F12] Custom key
-                              ("\\"  # Select or toggle buffer
-                                 (nextBuf
-                                    (if *Count
-                                       (get *Buffers (format @))
-                                       (or (: last) (car *Buffers)) ) ) )
-                              (("q" "^W")  # ["Window" prefix]
-                                 (if (assoc (getch) *KeyMap-q)
-                                    (run (cdr @))
-                                    (case *Chr
-                                       ("s"  # [qs] Split window
-                                          (unless (== This *CmdWin)
-                                             (let (Old (inc (: lines))  New (/ Old 2))
-                                                (with
-                                                   (new '(+Window) (: buffer)
-                                                      (+ (: top) New) (- Old New 1)
-                                                      (: winX) (: winY)
-                                                      (: posX) (: posY)
-                                                      (: prev)
-                                                      (: mark) )
-                                                   (goto (: posX) (: posY)) )
-                                                (=: mark)
-                                                (chgwin (dec New)) ) ) )
-                                       ("x"  # [qx] Exchange windows
-                                          (and
-                                             (; *CmdWin next next)
-                                             (n== This *CmdWin)
-                                             (let W (if (== (: prev) *CmdWin) (: next) (: prev))
-                                                (for P '(buffer winX winY posX posY last mark sc)
-                                                   (xchg (prop This P) (prop W P)) )
-                                                (goto (: posX) (: posY))
-                                                (with W
-                                                   (goto (: posX) (: posY)) ) ) ) )
-                                       ("k" (and (: next) (setq *Window @)))  # [qk] Above window
-                                       ("j" (and (: prev) (setq *Window @)))  # [qj] Below window
-                                       ("q" (done))  # [qq] (Quit) Close window
-                                       ("z" (run *TStp1) (yield) (run *TStp2))  # [qz] Suspend
-                                       (T (beep)) ) ) )
-                              ("v" (view> This))  # View hook
-                              (T (beep)) ) )
-                        (reset) ) ) ) ) ) ) ) )
+                                 (NIL)
+                                 (("\n" "\r")
+                                    (if (== This *CmdWin)
+                                       (command (: next) (get (: buffer text) (: posY)))
+                                       (goto 1 (inc (: posY)) T)  # Go to next line
+                                       (do (: sc) (scRight))
+                                       (redraw) ) )
+                                 ("." (if *Repeat (eval @) (beep)))  # Repeat last change
+                                 (("j" "\e[B") (move 'goDown *Cnt))  # [DOWN] Move down
+                                 (("^F" "\e[6~") (move 'goDown (: lines)))  # [PGDOWN] Page down
+                                 (("k" "\e[A") (move 'goUp *Cnt))  # [UP] Move up
+                                 (("^B" "\e[5~") (move 'goUp (: lines)))  # [PGUP] Page up
+                                 ("h" (move 'goLeft *Cnt))  # Move left
+                                 ("l" (move 'goRight *Cnt))  # Move right
+                                 ("\e[D" (scLeft) (redraw))  # [LEFT] Scroll left
+                                 ("\e[C" (scRight) (redraw))  # [RIGHT] Scroll right
+                                 ("z" (do 3 (scRight)) (redraw))  # Scroll right 3 columns
+                                 ("Z" (do 3 (scLeft)) (redraw))  # Scroll left 3 columns
+                                 ("|" (move 'goCol *Cnt))  # Go to column
+                                 ("$" (move 'goRight T))  # Go to end of line
+                                 ("G" (move 'goAbs 1 (or (format *Count) T)))  # Go to end of text
+                                 ("f" (and (getch2 (getch)) (move 'goFind @ 0 *Cnt)))  # Find character
+                                 ("t" (and (getch2 (getch)) (move 'goFind @ -1 *Cnt)))  # Till character
+                                 ("\t" (move 'goForward 'tword *Cnt))  # TAB word forward
+                                 ("w" (move 'goForward 'word *Cnt))  # Word forward
+                                 ("W" (move 'goForward 'lword *Cnt))  # Long word forward
+                                 ("b" (move 'goBackward 'word *Cnt))  # Word backward
+                                 ("B" (move 'goBackward 'lword *Cnt))  # Long word backward
+                                 ("e" (move 'goForward 'end *Cnt))  # End of word
+                                 ("E" (move 'goForward 'lend *Cnt))  # End of long word
+                                 ("{" (move 'goPBack *Cnt))  # Paragraph(s) backward
+                                 ("}" (move 'goPFore *Cnt 0))  # Paragraph(s) forward
+                                 ("'" (jmpMark (getch) "'" 1))  # Jump to mark line
+                                 ("`" (jmpMark (getch) "`")) # Jump to mark position
+                                 ("~" (evRpt (list 'tglCase *Cnt)))  # Toggle case
+                                 ((":" " ") (cmdMode (name ":")))  # Command
+                                 ("/" (cmdMode (name "/")))  # Search forward
+                                 ("?" (cmdMode (name "?")))  # Search backward
+                                 ("&" (cmdMode (name "&")))  # Search word
+                                 ("n"  # Search next
+                                    (if *Search
+                                       (move 'goForward (lit @) *Cnt)
+                                       (beep) ) )
+                                 ("N"  # Search previous
+                                    (if *Search
+                                       (move 'goBackward (lit @) *Cnt)
+                                       (beep) ) )
+                                 ("*"  # Search word under cursor
+                                    (and (getWord T) (moveSearch 'goForward (wordFun @))) )
+                                 ("#"  # Search word under cursor backward
+                                    (and (getWord T) (moveSearch 'goBackward (wordFun @))) )
+                                 ("%"  # Matching parenthesis
+                                    (case (posChar)
+                                       ("(" (parMatch 'goForward 1 0 "(" ")" "[" "]"))
+                                       ("[" (parMatch 'goForward 0 (0 . 0) "(" ")" "[" "]"))
+                                       (")" (parMatch 'goBackward 1 0 ")" "(" "]" "["))
+                                       ("]" (parMatch 'goBackward 0 (0 . 0) ")" "(" "]" "["))
+                                       (T (beep)) ) )
+                                 ("i"  # Insert
+                                    (when (insMode)
+                                       (setq *Repeat (list 'paste (lit @))) ) )
+                                 ("I"  # Insert at beginning of line
+                                    (goto 1 (: posY))
+                                    (when (insMode)
+                                       (setq *Repeat (list 'paste (lit @) 0)) ) )
+                                 ("a"  # Append
+                                    (when (get (: buffer text) (: posY) 1)
+                                       (inc (:: posX)) )
+                                    (when (insMode 1)
+                                       (setq *Repeat (list 'paste (lit @) 1)) ) )
+                                 ("A"  # Append to end of line
+                                    (goto
+                                       (inc (length (get (: buffer text) (: posY))))
+                                       (: posY)
+                                       T )
+                                    (when (insMode 1)
+                                       (setq *Repeat (list 'paste (lit @) T)) ) )
+                                 ("o"  # Open new line below current line
+                                    (setq *Repeat (list 'paste (lit (insMode T)) T)) )
+                                 ("O"  # Open new line above current line
+                                    (setq *Repeat (list 'paste (lit (insMode 0)) 0)) )
+                                 ("x" (setq *Change "d") (move 'goRight *Cnt))  # Delete characters
+                                 ("X" (setq *Change "d") (move 'goLeft *Cnt))  # Delete characters left
+                                 ("D" (setq *Change "d") (move 'goRight T))  # Delete rest of line
+                                 ("p" (evRpt (list 'paste (lit (val *Clip)) 1)))  # Paste after current position
+                                 ("P" (evRpt (list 'paste (lit (val *Clip)))))  # Paste before current position
+                                 ("J" (evRpt (list 'join *Cnt)))  # Join lines
+                                 ("m"  # Set mark
+                                    (put (: buffer) (intern (getch))
+                                       (cons (: posX) (: posY)) ) )
+                                 ("M" (=: sc (dec (: winX))))  # Mark horizontal scroll position
+                                 ("r"  # Replace character(s)
+                                    (and (getch2 (getch)) (evRpt (list 'insChar @ *Cnt))) )
+                                 ("R"  # Replace
+                                    (when (insMode NIL NIL T)
+                                       (setq *Repeat (list 'overwrite (lit @))) ) )
+                                 ("s" (chgRight 1))  # Substitute character
+                                 ("C" (chgRight T))  # Change rest of line
+                                 ("S" (=: posX 1) (chgRight T))  # Change whole line
+                                 ("," (evRpt '(indent)))  # Fix indentation
+                                 ("^A" (evRpt (list 'incNum *Cnt)))
+                                 ("^X" (evRpt (list 'incNum (- *Cnt))))
+                                 ("u" (undo))  # Undo
+                                 ("^R" (redo))  # Redo
+                                 ("^E" (evCmd (eval (s-expr))))  # Evaluate expression
+                                 ("g"  # ["Go" prefix]
+                                    (if (assoc (getch) *KeyMap-g)
+                                       (run (cdr @))
+                                       (case *Chr
+                                          ("f"  # [gf] Edit file under cursor
+                                             (pushTag (: buffer file))
+                                             (reload (pack (getWord T))) )
+                                          ("g" (move 'goAbs 1 (or (format *Count) 1)))  # [gg] Go to beginning of text
+                                          ("s" (spell))
+                                          (T (beep)) ) ) )
+                                 ("+"  # Increase window size
+                                    (loop
+                                       (NIL (setq This (: prev))
+                                          (for (This (; *Window next) This (: next))
+                                             (T (> (: lines) 1)
+                                                (with *Window
+                                                   (chgwin (inc (: lines)) (dec (: top)))
+                                                   (for (This (: next) (=1 (: lines)) (: next))
+                                                      (chgwin 1 (dec (: top))) ) )
+                                                (chgwin (dec (: lines))) ) ) )
+                                       (T (> (: lines) 1)
+                                          (with *Window
+                                             (chgwin (inc (: lines)))
+                                             (for (This (: prev) (=1 (: lines)) (: prev))
+                                                (chgwin 1 (inc (: top))) ) )
+                                          (chgwin (dec (: lines)) (inc (: top))) ) ) )
+                                 ("-"  # Decrease window size
+                                    (cond
+                                       ((=1 ( : lines)))
+                                       ((: prev)
+                                          (chgwin (dec (: lines)))
+                                          (with (: prev)
+                                             (chgwin (inc (: lines)) (dec (: top))) ) )
+                                       (T
+                                          (chgwin (dec (: lines)) (inc (: top)))
+                                          (with (: next)
+                                             (chgwin (inc (: lines))) ) ) ) )
+                                 ("=" (eqwin))  # Set all windows to equal size
+                                 ("K"  # Edit symbol
+                                    (let S (any (getWord T))
+                                       (ifn (: buffer syms)
+                                          (tag S)
+                                          (pushTag @)
+                                          (syms> (: buffer) (cons S @))
+                                          (reload (: buffer file) 1 1) ) ) )
+                                 ("^]"  # Edit symbol definition
+                                    (tag (any (getWord T))) )
+                                 (("Q" "^T")  # Pop tag stack
+                                    (ifn *TagStack
+                                       (beep)
+                                       (symbols (++ *TagStack))
+                                       (if (atom (car *TagStack))
+                                          (reload (++ *TagStack) (++ *TagStack) (++ *TagStack))
+                                          (syms> (: buffer) (++ *TagStack))
+                                          (reload (: buffer file) (++ *TagStack) (++ *TagStack)) ) ) )
+                                 (("\eOP" "\e[[A")  # [F1] Highlight on/off
+                                    (=: buffer flat (not (: buffer flat)))
+                                    (repaint) )
+                                 (("\eOQ" "\e[[B")  # [F2] Show chages to <file>-
+                                    (shFile
+                                       (if (sys "CCRYPT" (: buffer key))
+                                          "diff -Bb <(ccrypt -c -ECCRYPT @1-) <(ccrypt -c -ECCRYPT @1)"
+                                          "diff -Bb @1- @1" ) ) )
+                                 (("\eOR" "\e[[C")  # [F3] Custom dif
+                                    (shFile "dif @1 @2") )
+                                 (("\eOS" "\e[[D")  # [F4] Format paragraph
+                                    (and *Count (=: buffer fmt @))
+                                    (goPFore 1 -1)
+                                    (pipeN (cnt@@) (pack "fmt -" (: buffer fmt))) )
+                                 (("\e[15~" "\e[[E")  # [F5] Previous buffer
+                                    (nextBuf T) )
+                                 ("\e[17~"  # [F6] Next buffer
+                                    (nextBuf) )
+                                 ("\e[18~" (run *F7))  # [F7] Custom key
+                                 ("\e[19~" (run *F8))  # [F8] Custom key
+                                 ("\e[20~" (run *F9))  # [F9] Custom key
+                                 ("\e[21~" (run *F10))  # [F10] Custom key
+                                 ("\e[23~" (run *F11))  # [F11] Custom key
+                                 ("\e[24~" (run *F12))  # [F12] Custom key
+                                 ("\\"  # Select or toggle buffer
+                                    (nextBuf
+                                       (if *Count
+                                          (get *Buffers (format @))
+                                          (or (: last) (car *Buffers)) ) ) )
+                                 (("q" "^W")  # ["Window" prefix]
+                                    (if (assoc (getch) *KeyMap-q)
+                                       (run (cdr @))
+                                       (case *Chr
+                                          ("s"  # [qs] Split window
+                                             (unless (== This *CmdWin)
+                                                (let (Old (inc (: lines))  New (/ Old 2))
+                                                   (with
+                                                      (new '(+Window) (: buffer)
+                                                         (+ (: top) New) (- Old New 1)
+                                                         (: winX) (: winY)
+                                                         (: posX) (: posY)
+                                                         (: prev)
+                                                         (: mark) )
+                                                      (goto (: posX) (: posY)) )
+                                                   (=: mark)
+                                                   (chgwin (dec New)) ) ) )
+                                          ("x"  # [qx] Exchange windows
+                                             (and
+                                                (; *CmdWin next next)
+                                                (n== This *CmdWin)
+                                                (let W (if (== (: prev) *CmdWin) (: next) (: prev))
+                                                   (for P '(buffer winX winY posX posY last mark sc)
+                                                      (xchg (prop This P) (prop W P)) )
+                                                   (goto (: posX) (: posY))
+                                                   (with W
+                                                      (goto (: posX) (: posY)) ) ) ) )
+                                          ("k" (and (: next) (setq *Window @)))  # [qk] Above window
+                                          ("j" (and (: prev) (setq *Window @)))  # [qj] Below window
+                                          ("q" (done))  # [qq] (Quit) Close window
+                                          ("z" (run *TStp1) (yield) (run *TStp2))  # [qz] Suspend
+                                          (T (beep)) ) ) )
+                                 ("v" (view> This))  # View hook
+                                 (T (beep)) ) )
+                           (reset) ) ) ) ) ) ) ) ) )
 
 (and (info "~/.pil/viprc") (load @@))
 
 ### Debug ###
 `*Dbg
 
-(de pico~vi ("X" C)
+(de pico~vi (X C)
+   (setq C
+      (if C
+         (or
+            (get C '*Dbg -1 X)
+            (meta C '*Dbg -1 X) )
+         (get X '*Dbg 1) ) )
    (and
-      (symbols (setq *Ns (symbols))
-         (vi
-            (list
-               (cond
-                  ((pair "X") @)
-                  ((if C
-                        (or
-                           (get C '*Dbg -1 "X")
-                           (meta C '*Dbg -1 "X") )
-                        (get "X" '*Dbg 1) )
-                     (apply symbols (cddr @))
-                     (cons (car @) (cadr @)) )
-                  (T "X") ) ) ) )
-      "X" ) )
+      (vi
+         (list
+            (cond
+               ((pair X) @)
+               (C (cons (car @) (cadr @)))
+               (T X) ) )
+         (cddr C) )
+      X ) )
 
 (de pico~vf (Pat Dir Ext)
    (setq Pat (chop Pat))
@@ -1717,11 +1718,9 @@ s-expr command vi)
                "\\([[:space:]\"'(),`{}~]\\|\\[\\|\\]\\|$\\)" )
             (or (path Dir) ".") )
          (make (while (line T) (link @))) )
-      (symbols (setq *Ns (symbols))
-         (vi (cons (cons Pat (car @)) (cdr @))) ) ) )
+      (vi (cons (cons Pat (car @)) (cdr @))) ) )
 
-(de pico~v "Lst"
-   (symbols (setq *Ns (symbols))
-      (cond
-         ("Lst" (vi (list @)))
-         ((asoq 'vip (stack)) (vi)) ) ) )
+(de pico~v Lst
+   (cond
+      (Lst (vi (list @)))
+      ((asoq 'vip (stack)) (vi)) ) )
