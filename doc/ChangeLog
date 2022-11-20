@@ -1,3 +1,7 @@
+20nov22
+   Minor privates
+      lib/vip.l
+
 19nov22
    Fix 'unwind'ing coroutines
       src/dec.l

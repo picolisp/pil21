@@ -1,4 +1,4 @@
-# 19nov22 Software Lab. Alexander Burger
+# 20nov22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -515,11 +515,6 @@ s-expr command vi)
          Lst )
       (goto 1 (: buffer posY)) )
    (repaint) )
-
-(de syms (Lst)
-   (prog1
-      (tmp "syms")
-      (syms> (fileBuffer @) Lst) ) )
 
 (de pushTag (File)
    (push '*TagStack (: posX) (: posY) File (symbols)) )
@@ -1364,6 +1359,13 @@ s-expr command vi)
          (with *CmdWin
             (redraw) ) )
       (T (beep)) ) )
+
+(private) (Lst Ns X C)
+
+(de syms (Lst)
+   (prog1
+      (tmp "syms")
+      (syms> (fileBuffer @) Lst) ) )
 
 ### VIP Entry Point ###
 (de vi (Lst Ns)  # (file (pat . file) (99 . file) (T . file) (sym [sym ..])
