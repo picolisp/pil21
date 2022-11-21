@@ -1,3 +1,7 @@
+21nov22
+   TAB-completion also for colon-commands
+      lib/vip.l
+
 20nov22
    Minor privates
       lib/vip.l

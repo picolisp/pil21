@@ -1,4 +1,4 @@
-# 20nov22 Software Lab. Alexander Burger
+# 21nov22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -997,13 +997,25 @@ s-expr command vi)
                         (T
                            (default *Complete
                               (cons S
-                                 (flip
-                                    (all* S
-                                       (when (== This *CmdWin)
-                                          (pick
-                                             '((P F) (and (head P L) F))
-                                             '`(mapcar chop '(":ta " ":tag " ":v " ":e " ":E " ":r " ":w "))
-                                             '(T T T 0 0 0 0) ) ) ) ) ) )
+                                 (if
+                                    (or
+                                       (n== This *CmdWin)
+                                       (<> ":" (car L))
+                                       (find sp? L) )
+                                    (flip
+                                       (all* S
+                                          (when (== This *CmdWin)
+                                             (pick
+                                                '((P F) (and (head P L) F))
+                                                '`(mapcar chop '(":ta " ":tag " ":v " ":e " ":E " ":r " ":w "))
+                                                '(T T T 0 0 0 0) ) ) ) )
+                                    (extract
+                                       '((Cmd)
+                                          (when (head (cdr L) (setq Cmd (chop Cmd)))
+                                             (cons ":" Cmd) ) )
+                                       (conc
+                                          (mapcar car *CmdMap)
+                                          '("cp" "bak" "kab" "ls" "key" "tag" "bx" "bd" "map") ) ) ) ) )
                            (do (length (car *Complete)) (_bs))
                            (setq S (chop (car (rot *Complete)))) ) )
                      (when (= "^V" (car S))
