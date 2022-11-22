@@ -1,4 +1,6 @@
-21nov22
+22nov22
+   'boss' is obsolete
+      lib/android.l
    TAB-completion also for colon-commands
       lib/vip.l
 

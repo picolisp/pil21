@@ -1,4 +1,4 @@
-# 06sep22 Software Lab. Alexander Burger
+# 22nov22 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -12,12 +12,6 @@
 
 # SSL
 (sys "SSL_CERT_FILE" "tls/cert.pem")
-
-# (boss 'sym ['any ..])
-(local) boss
-
-(de boss @
-   (out "BOSS" (pr (rest))) )
 
 # Android Context
 (local) (CONTEXT GUI Config javaExt)
