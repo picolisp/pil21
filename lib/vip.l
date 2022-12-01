@@ -1,4 +1,4 @@
-# 22nov22 Software Lab. Alexander Burger
+# 01dec22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1012,7 +1012,9 @@ s-expr command vi)
                                     (extract
                                        '((Cmd)
                                           (when (head (cdr L) (setq Cmd (chop Cmd)))
-                                             (cons (name ":") Cmd) ) )
+                                             (if (pre? ":" S)
+                                                (cons (name ":") Cmd)
+                                                Cmd ) ) )
                                        (conc
                                           (mapcar car *CmdMap)
                                           '("cp" "bak" "kab" "ls" "key" "tag" "bx" "bd" "map") ) ) ) ) )

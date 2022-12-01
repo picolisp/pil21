@@ -1,3 +1,7 @@
+01dec22
+   Check for ":" delimiter in TAB-completion
+      lib/vip.l
+
 22nov22
    'boss' is obsolete
       lib/android.l
