@@ -1,7 +1,11 @@
-# 12nov22 Software Lab. Alexander Burger
+# 02dec22 Software Lab. Alexander Burger
 # Copy to ~/.pil/viprc
 
 (map+q "d" ":bd\r")
+
+## If you prefer LEFT and RIGHT to move the cursor:
+## (map+ "\e[D" "h")
+## (map+ "\e[C" "l")
 
 (cmd "pb1n" (L Lst Cnt)  # Pastebin
    (pipe

@@ -1,3 +1,7 @@
+02dec22
+   Commented example for LEFT and RIGHT
+      doc/viprc.sample
+
 01dec22
    Check for ":" delimiter in TAB-completion
       lib/vip.l
