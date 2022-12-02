@@ -1,4 +1,4 @@
-# 29sep22 Software Lab. Alexander Burger
+# 02dec22 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -240,7 +240,9 @@
             (<tag> "progress"
                (list
                   (cons 'value Val)
-                  (cons 'max Max) ) ) ) ) ) )
+                  (cons 'max Max) ) )
+            (<span> "center"
+               (prin  "<br/>" (*/ Val 100 Max) " %") ) ) ) ) ) 
 
 (de <div> (Attr . Prg)
    (tag "div" Attr 2 Prg)

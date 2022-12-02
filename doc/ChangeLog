@@ -1,4 +1,6 @@
 02dec22
+   Add percentage display to '<progress>'
+      lib/xhtml.l
    Commented example for LEFT and RIGHT
       doc/viprc.sample
 
