@@ -1,3 +1,9 @@
+11dec22
+   Clear 'last' for deleted buffer
+      lib/vip.l
+   Directly call 'symbols' in 'tag'
+      lib/vip.l
+
 02dec22
    Add percentage display to '<progress>'
       lib/xhtml.l

@@ -1,4 +1,4 @@
-# 01dec22 Software Lab. Alexander Burger
+# 11dec22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -528,7 +528,7 @@ s-expr command vi)
          (get S '*Dbg 1) )
       (beep)
       (pushTag (: buffer file))
-      (apply symbols (cddr @))
+      (symbols (cddr @))
       (reload (cadr @) (car @) 1) ) )
 
 (de done (Flg)
@@ -1352,7 +1352,8 @@ s-expr command vi)
                                        ((== Buf (: last))
                                           (=: last) )
                                        ((== Buf (: buffer))
-                                          (nextBuf (: last)) ) ) )
+                                          (nextBuf (: last))
+                                          (=: last) ) ) )
                                  (del Buf '*Buffers)
                                  (=: last) ) ) )
                         ("map"  # Add/remove key mappings
