@@ -1,4 +1,4 @@
-# 11dec22 Software Lab. Alexander Burger
+# 12dec22 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -24,7 +24,7 @@
 delimNs arkup min1 undo redo evCmd dirty> load> save> syms> view> status delwin
 cursor addLine chgLine unmark redraw repaint scLeft scRight goto chgwin eqwin
 getch getch2 reload scratch syms pushTag tag done change jmp@@ cnt@@ goCol
-goLeft goRight goUp goDown goAbs goFind tword word lword end lend getWord
+goLeft goRight goUp goDown goAbs goFind word lword tword end lend getWord
 _forward goForward _backward goBackward goPFore goPBack shift shiftY indent cutX
 cutN paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe
 evRpt move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN
@@ -654,13 +654,6 @@ s-expr command vi)
          (+ D (or I 0) (offset L Lst))
          (beep) ) ) )
 
-(de tword (L)
-   (and
-      (delim (car L))
-      (or
-         (sub? (cadr L) "\"()[]")
-         (not (delim (cadr L))) ) ) )
-
 (de word (L C)
    (and
       (delim C)
@@ -670,6 +663,11 @@ s-expr command vi)
 
 (de lword (L C)
    (and (sp? C) (not (sp? (car L))) ) )
+
+(de tword (L)
+   (and
+      (sp? (car L))
+      (not (sp? (cadr L))) ) )
 
 (de end (L)
    (and (not (delim (car L))) (delim (cadr L))) )

@@ -1,3 +1,7 @@
+12dec22
+   Fix 'tword' to go to the last space
+      lib/vip.l
+
 11dec22
    Clear 'last' for deleted buffer
       lib/vip.l
