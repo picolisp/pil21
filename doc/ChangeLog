@@ -1,3 +1,7 @@
+15dec22
+   Handle destructuring function parameters in 'funq'
+      src/main.l
+
 12dec22
    Fix 'tword' to go to the last space
       lib/vip.l

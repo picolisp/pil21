@@ -1,4 +1,4 @@
-# 19nov22 Software Lab. Alexander Burger
+# 15dec22 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -452,9 +452,15 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                                  X ) )
                            (?
                               (or
-                                 (not (symb? (++ Y)))
+                                 (num? (++ Y))
                                  (nil? @)
-                                 (t? @) )
+                                 (t? @)
+                                 (and
+                                    (pair @)
+                                    (let Z @
+                                       (loop
+                                          (? (or (not (symb? (++ Z))) (t? @)) YES)
+                                          (? (atom Z) (or (num? Z) (t? Z))) ) ) ) )
                               0 ) ) ) ) )
                (let Z (++ Y)
                   (if (pair Z)
