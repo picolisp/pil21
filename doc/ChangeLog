@@ -1,3 +1,7 @@
+18dec22
+   Add GREEN and BLUE
+      lib/term.l
+
 15dec22
    Handle destructuring function parameters in 'funq'
       src/main.l
