@@ -1,3 +1,7 @@
+20dec22
+   Global '*Key'
+      lib/simul.l
+
 18dec22
    Add GREEN and BLUE
       lib/term.l

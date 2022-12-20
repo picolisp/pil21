@@ -1,4 +1,4 @@
-# 14nov22 Software Lab. Alexander Burger
+# 20dec22 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -113,10 +113,10 @@
                   (NIL (shift 'Lst) Alpha) ) ) ) ) ) )
 
 ### Discrete-Event Simulation ###
-(local) (*Rt *Time *Ready *Next des pause event wake)
+(local) (*Rt *Key *Time *Ready *Next des pause event wake)
 (private) queue
 
-(off *Rt)  # Realtime
+(off *Rt *Key)  # Realtime
 (zero *Time)  # Current simulation time
 
 (de des ()
@@ -124,7 +124,7 @@
       (yield (cdr @) (car @)) )
    (when *Next
       (let ((Time . Co) (pop '*Next))
-         (and *Rt (wait (- Time *Time)))
+         (and *Rt (setq *Key (key (- Time *Time))))
          (setq *Time Time)
          (yield NIL Co) ) ) )
 
