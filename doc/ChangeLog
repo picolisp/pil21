@@ -1,6 +1,9 @@
 21dec22
    Use 'less' in 'show'
       lib.l
+      doc/refB.html
+      doc/refM.html
+      doc/tut.html
    'circ' for atomic mapping arguments no longer needed
       lib/http.l
 
