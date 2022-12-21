@@ -4,6 +4,8 @@
       doc/refB.html
       doc/refM.html
       doc/tut.html
+   Minor fix indentation
+      lib/debug.l
    'circ' for atomic mapping arguments no longer needed
       lib/http.l
 
