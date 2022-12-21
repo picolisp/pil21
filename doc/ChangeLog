@@ -1,3 +1,9 @@
+21dec22
+   Use 'less' in 'show'
+      lib.l
+   'circ' for atomic mapping arguments no longer needed
+      lib/http.l
+
 20dec22
    Global '*Key'
       lib/simul.l

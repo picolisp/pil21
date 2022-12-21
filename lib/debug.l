@@ -1,4 +1,4 @@
-# 18nov22 Software Lab. Alexander Burger
+# 21dec22 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -84,7 +84,10 @@
    (cond
       ((atom X) X)
       ((=0 N) '(..))
-      (T (cons (less (++ X) N) (less X (dec N)))) ) )
+      (T
+         (cons
+            (less (++ X) N)
+            (less X (dec N)) ) ) ) )
 
 (de what (S)
    (let *Dbg NIL

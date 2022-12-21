@@ -1,4 +1,4 @@
-# 15nov22 Software Lab. Alexander Burger
+# 21dec22 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -561,14 +561,14 @@
    (let *Dbg NIL
       (setq "X" (pass get "X"))
       (when (sym? "X")
-         (print "X" (val "X"))
+         (print "X" (less (val "X")))
          (prinl)
          (maps
             '((X)
                (space 3)
                (if (atom X)
                   (println X)
-                  (println (cdr X) (car X)) ) )
+                  (println (cdr X) (less (car X))) ) )
             "X" ) )
       "X" ) )
 

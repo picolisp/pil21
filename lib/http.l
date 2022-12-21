@@ -1,4 +1,4 @@
-# 31aug22 Software Lab. Alexander Burger
+# 21dec22 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -144,7 +144,7 @@
          (sub? ".." *Url)
          (nor
             (and *Tmp (pre? *Tmp *Url))
-            (find pre? (cdr *Allow) (circ *Url)) ) ) ) )
+            (find pre? (cdr *Allow) *Url) ) ) ) )
 
 (de notAllowed (X)
    (unless (= X "favicon.ico")
