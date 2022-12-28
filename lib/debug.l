@@ -1,4 +1,4 @@
-# 21dec22 Software Lab. Alexander Burger
+# 28dec22 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -78,16 +78,6 @@
          (T (line) T)
          (prinl)
          (Fun (++ M)) ) ) )
-
-(de less (X N)
-   (default N 4)
-   (cond
-      ((atom X) X)
-      ((=0 N) '(..))
-      (T
-         (cons
-            (less (++ X) N)
-            (less X (dec N)) ) ) ) )
 
 (de what (S)
    (let *Dbg NIL

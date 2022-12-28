@@ -1,3 +1,9 @@
+28dec22
+   Move 'less' to @lib.l
+      lib.l
+      lib/debug.l
+      doc/refL.html
+
 ####### 22.12 #######
 21dec22
    Use 'less' in 'show'
