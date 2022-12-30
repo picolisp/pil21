@@ -212,11 +212,12 @@ _lintq lintFun A C Lst S X Y *L *X *Var *Dup *Def *Bnd *Use)
 
 (de lintFun (Lst)
    (when (pair Lst)
-      (let? A (and (car Lst) (fish atom @))
-         (while (pair A)
-            (lintDup (car A) (cdr A))
-            (lintVar (++ A) T) )
-         (and A (lintVar A)) )
+      (when (car Lst)
+         (map
+            '(((A . L))
+               (lintDup A L)
+               (lintVar A T) )
+            (fish atom @) ) )
       (mapc lint1 (cdr Lst)) ) )
 
 (de lint (X C)
