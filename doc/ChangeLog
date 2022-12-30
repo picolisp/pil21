@@ -1,3 +1,7 @@
+30dec22
+   Handle destructuring function parameters
+      lib/lint.l
+
 28dec22
    Move 'less' to @lib.l
       lib.l
