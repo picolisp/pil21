@@ -1,3 +1,7 @@
+01jan23
+   Clear *Complete upon backspace
+      lib/vip.l
+
 30dec22
    Handle destructuring function parameters
       lib/lint.l

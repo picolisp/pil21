@@ -1,4 +1,4 @@
-# 12dec22 Software Lab. Alexander Burger
+# 01jan23 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -978,7 +978,8 @@ s-expr command vi)
                (("\b" "^?")  # [BACKSPACE]
                   (when (and Chg (n0 (car Chg)))
                      (_bs)
-                     (chgLine (car P)) )
+                     (chgLine (car P))
+                     (off *Complete) )
                   T )
                (T
                   (let (S (list @)  L (get (: buffer text) (: posY)))
