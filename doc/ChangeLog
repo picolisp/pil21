@@ -1,3 +1,7 @@
+02jan23
+   Separate buffer for each "$" (shell) command call
+      lib/vip.l
+
 01jan23
    Clear *Complete upon backspace
       lib/vip.l

@@ -1,4 +1,4 @@
-# 01jan23 Software Lab. Alexander Burger
+# 02jan23 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1284,7 +1284,7 @@ s-expr command vi)
                            (setq @ *@)
                            (evCmd (run (str L))) )
                         ("$"  # Shell command
-                           (scratch (tmp "cmd")
+                           (scratch (tmp "cmd" (inc (0)))
                               (in (list *Shell "-c" (rplFile L))
                                  (rdLines) ) ) )
                         ("!"  # External filter
