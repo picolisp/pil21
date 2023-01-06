@@ -1,4 +1,4 @@
-# 26may22 Software Lab. Alexander Burger
+# 06jan23 Software Lab. Alexander Burger
 
 
          PicoLisp Installation
@@ -54,11 +54,12 @@ and /usr/bin to a local installation directory:
    # ln -s /usr/lib/picolisp/bin/picolisp /usr/bin
    # ln -s /usr/lib/picolisp/bin/pil /usr/bin
 
-For additional access to the man pages and some examples:
+For additional access to the man pages, utilities and bash completion:
 
    # ln -s /<path>/pil21/man/man1/picolisp.1 /usr/share/man/man1
    # ln -s /<path>/pil21/man/man1/pil.1 /usr/share/man/man1
    # ln -s /<path>/pil21 /usr/share/picolisp
+   # ln -s /<path>/pil21/lib/bash_completion /usr/share/bash-completion/completions/pil
 
 
       Invocation

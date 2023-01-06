@@ -1,3 +1,7 @@
+06jan23
+   Add link to @lib/bash_completion
+      INSTALL
+
 02jan23
    Separate buffer for each "$" (shell) command call
       lib/vip.l
