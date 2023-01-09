@@ -1,4 +1,4 @@
-# 15dec22 Software Lab. Alexander Burger
+# 09jan23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -419,7 +419,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (? (atom (shift Y))  # No circularity found
                (loop
                   (set X (& (val X) -2))  # Unmark
-                  (? (atom (shift X))) )
+                  (? (== Y (shift X))) )
                0 )
             (? (& (val Y) 1)  # Detected circularity
                (until (== X Y)  # Skip non-circular part

@@ -1520,7 +1520,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 370,
   i64 18,
-  i64 98
+  i64 146
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -3904,8 +3904,8 @@ $3:
 ; # (loop (set Y (| (val Y) 1)) (? (atom (shift Y)) (loop (set X (& (...
   br label %$5
 $5:
-  %5 = phi i64 [%4, %$3], [%71, %$12] ; # X
-  %6 = phi i64 [%4, %$3], [%72, %$12] ; # Y
+  %5 = phi i64 [%4, %$3], [%70, %$12] ; # X
+  %6 = phi i64 [%4, %$3], [%71, %$12] ; # Y
 ; # (set Y (| (val Y) 1))
 ; # (val Y)
   %7 = inttoptr i64 %6 to i64*
@@ -3914,7 +3914,7 @@ $5:
   %9 = or i64 %8, 1
   %10 = inttoptr i64 %6 to i64*
   store i64 %9, i64* %10
-; # (? (atom (shift Y)) (loop (set X (& (val X) -2)) (? (atom (shift ...
+; # (? (atom (shift Y)) (loop (set X (& (val X) -2)) (? (== Y (shift ...
 ; # (shift Y)
   %11 = inttoptr i64 %6 to i64*
   %12 = getelementptr i64, i64* %11, i32 1
@@ -3926,11 +3926,11 @@ $5:
 $8:
   %16 = phi i64 [%5, %$5] ; # X
   %17 = phi i64 [%13, %$5] ; # Y
-; # (loop (set X (& (val X) -2)) (? (atom (shift X))))
+; # (loop (set X (& (val X) -2)) (? (== Y (shift X))))
   br label %$9
 $9:
-  %18 = phi i64 [%16, %$8], [%29, %$10] ; # X
-  %19 = phi i64 [%17, %$8], [%30, %$10] ; # Y
+  %18 = phi i64 [%16, %$8], [%28, %$10] ; # X
+  %19 = phi i64 [%17, %$8], [%29, %$10] ; # Y
 ; # (set X (& (val X) -2))
 ; # (val X)
   %20 = inttoptr i64 %18 to i64*
@@ -3939,108 +3939,107 @@ $9:
   %22 = and i64 %21, -2
   %23 = inttoptr i64 %18 to i64*
   store i64 %22, i64* %23
-; # (? (atom (shift X)))
+; # (? (== Y (shift X)))
 ; # (shift X)
   %24 = inttoptr i64 %18 to i64*
   %25 = getelementptr i64, i64* %24, i32 1
   %26 = load i64, i64* %25
-; # (atom (shift X))
-  %27 = and i64 %26, 15
-  %28 = icmp ne i64 %27, 0
-  br i1 %28, label %$11, label %$10
+; # (== Y (shift X))
+  %27 = icmp eq i64 %19, %26
+  br i1 %27, label %$11, label %$10
 $10:
-  %29 = phi i64 [%26, %$9] ; # X
-  %30 = phi i64 [%19, %$9] ; # Y
+  %28 = phi i64 [%26, %$9] ; # X
+  %29 = phi i64 [%19, %$9] ; # Y
   br label %$9
 $11:
-  %31 = phi i64 [%26, %$9] ; # X
-  %32 = phi i64 [%19, %$9] ; # Y
-  %33 = phi i64 [0, %$9] ; # ->
+  %30 = phi i64 [%26, %$9] ; # X
+  %31 = phi i64 [%19, %$9] ; # Y
+  %32 = phi i64 [0, %$9] ; # ->
   br label %$7
 $6:
-  %34 = phi i64 [%5, %$5] ; # X
-  %35 = phi i64 [%13, %$5] ; # Y
+  %33 = phi i64 [%5, %$5] ; # X
+  %34 = phi i64 [%13, %$5] ; # Y
 ; # (? (& (val Y) 1) (until (== X Y) (set X (& (val X) -2)) (shift X)...
 ; # (val Y)
-  %36 = inttoptr i64 %35 to i64*
-  %37 = load i64, i64* %36
+  %35 = inttoptr i64 %34 to i64*
+  %36 = load i64, i64* %35
 ; # (& (val Y) 1)
-  %38 = and i64 %37, 1
-  %39 = icmp ne i64 %38, 0
-  br i1 %39, label %$13, label %$12
+  %37 = and i64 %36, 1
+  %38 = icmp ne i64 %37, 0
+  br i1 %38, label %$13, label %$12
 $13:
-  %40 = phi i64 [%34, %$6] ; # X
-  %41 = phi i64 [%35, %$6] ; # Y
+  %39 = phi i64 [%33, %$6] ; # X
+  %40 = phi i64 [%34, %$6] ; # Y
 ; # (until (== X Y) (set X (& (val X) -2)) (shift X))
   br label %$14
 $14:
-  %42 = phi i64 [%40, %$13], [%53, %$15] ; # X
-  %43 = phi i64 [%41, %$13], [%46, %$15] ; # Y
+  %41 = phi i64 [%39, %$13], [%52, %$15] ; # X
+  %42 = phi i64 [%40, %$13], [%45, %$15] ; # Y
 ; # (== X Y)
-  %44 = icmp eq i64 %42, %43
-  br i1 %44, label %$16, label %$15
+  %43 = icmp eq i64 %41, %42
+  br i1 %43, label %$16, label %$15
 $15:
-  %45 = phi i64 [%42, %$14] ; # X
-  %46 = phi i64 [%43, %$14] ; # Y
+  %44 = phi i64 [%41, %$14] ; # X
+  %45 = phi i64 [%42, %$14] ; # Y
 ; # (set X (& (val X) -2))
 ; # (val X)
-  %47 = inttoptr i64 %45 to i64*
-  %48 = load i64, i64* %47
+  %46 = inttoptr i64 %44 to i64*
+  %47 = load i64, i64* %46
 ; # (& (val X) -2)
-  %49 = and i64 %48, -2
-  %50 = inttoptr i64 %45 to i64*
-  store i64 %49, i64* %50
+  %48 = and i64 %47, -2
+  %49 = inttoptr i64 %44 to i64*
+  store i64 %48, i64* %49
 ; # (shift X)
-  %51 = inttoptr i64 %45 to i64*
-  %52 = getelementptr i64, i64* %51, i32 1
-  %53 = load i64, i64* %52
+  %50 = inttoptr i64 %44 to i64*
+  %51 = getelementptr i64, i64* %50, i32 1
+  %52 = load i64, i64* %51
   br label %$14
 $16:
-  %54 = phi i64 [%42, %$14] ; # X
-  %55 = phi i64 [%43, %$14] ; # Y
+  %53 = phi i64 [%41, %$14] ; # X
+  %54 = phi i64 [%42, %$14] ; # Y
 ; # (loop (set X (& (val X) -2)) (? (== Y (shift X))))
   br label %$17
 $17:
-  %56 = phi i64 [%54, %$16], [%66, %$18] ; # X
-  %57 = phi i64 [%55, %$16], [%67, %$18] ; # Y
+  %55 = phi i64 [%53, %$16], [%65, %$18] ; # X
+  %56 = phi i64 [%54, %$16], [%66, %$18] ; # Y
 ; # (set X (& (val X) -2))
 ; # (val X)
-  %58 = inttoptr i64 %56 to i64*
-  %59 = load i64, i64* %58
+  %57 = inttoptr i64 %55 to i64*
+  %58 = load i64, i64* %57
 ; # (& (val X) -2)
-  %60 = and i64 %59, -2
-  %61 = inttoptr i64 %56 to i64*
-  store i64 %60, i64* %61
+  %59 = and i64 %58, -2
+  %60 = inttoptr i64 %55 to i64*
+  store i64 %59, i64* %60
 ; # (? (== Y (shift X)))
 ; # (shift X)
-  %62 = inttoptr i64 %56 to i64*
-  %63 = getelementptr i64, i64* %62, i32 1
-  %64 = load i64, i64* %63
+  %61 = inttoptr i64 %55 to i64*
+  %62 = getelementptr i64, i64* %61, i32 1
+  %63 = load i64, i64* %62
 ; # (== Y (shift X))
-  %65 = icmp eq i64 %57, %64
-  br i1 %65, label %$19, label %$18
+  %64 = icmp eq i64 %56, %63
+  br i1 %64, label %$19, label %$18
 $18:
-  %66 = phi i64 [%64, %$17] ; # X
-  %67 = phi i64 [%57, %$17] ; # Y
+  %65 = phi i64 [%63, %$17] ; # X
+  %66 = phi i64 [%56, %$17] ; # Y
   br label %$17
 $19:
-  %68 = phi i64 [%64, %$17] ; # X
-  %69 = phi i64 [%57, %$17] ; # Y
-  %70 = phi i64 [0, %$17] ; # ->
+  %67 = phi i64 [%63, %$17] ; # X
+  %68 = phi i64 [%56, %$17] ; # Y
+  %69 = phi i64 [0, %$17] ; # ->
   br label %$7
 $12:
-  %71 = phi i64 [%34, %$6] ; # X
-  %72 = phi i64 [%35, %$6] ; # Y
+  %70 = phi i64 [%33, %$6] ; # X
+  %71 = phi i64 [%34, %$6] ; # Y
   br label %$5
 $7:
-  %73 = phi i64 [%31, %$11], [%68, %$19] ; # X
-  %74 = phi i64 [%32, %$11], [%69, %$19] ; # Y
-  %75 = phi i64 [0, %$11], [%69, %$19] ; # ->
+  %72 = phi i64 [%30, %$11], [%67, %$19] ; # X
+  %73 = phi i64 [%31, %$11], [%68, %$19] ; # Y
+  %74 = phi i64 [0, %$11], [%68, %$19] ; # ->
   br label %$4
 $4:
-  %76 = phi i64 [%3, %$2], [%73, %$7] ; # X
-  %77 = phi i64 [0, %$2], [%75, %$7] ; # ->
-  ret i64 %77
+  %75 = phi i64 [%3, %$2], [%72, %$7] ; # X
+  %76 = phi i64 [0, %$2], [%74, %$7] ; # ->
+  ret i64 %76
 }
 
 define i64 @funq(i64) align 8 {
