@@ -1,4 +1,4 @@
-# 19nov22 Software Lab. Alexander Burger
+# 13jan23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1359,16 +1359,12 @@
          (set $Up Exe)
          (set $Break (set $Bind (push (val $Run) $Run P)))
          (set $Run $Nil) )
-      (let Raw (val Termio)
-         (setCooked)
-         (pushOutFile (b8+ (ioFrame T)) (val 2 (val $OutFiles)) 0)  # Stdout
-         (print Exe)
-         (newline)
-         (repl 0 ($ "! ") $Nil)
-         (popOutFiles)
-         (tosOutFile)
-         (when Raw
-            (setRaw) ) )
+      (pushOutFile (b8+ (ioFrame T)) (val 2 (val $OutFiles)) 0)  # Stdout
+      (print Exe)
+      (newline)
+      (repl 0 ($ "! ") $Nil)
+      (popOutFiles)
+      (tosOutFile)
       (setq Exe (val $Up))
       (let P (val $Bind)
          (set $Run (val P))

@@ -1,4 +1,4 @@
-# 09jan23 Software Lab. Alexander Burger
+# 13jan23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1866,7 +1866,6 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (set $USec (getUsec YES))
    (unless (setjmp QuitRst)
       (loadAll 0) )  # Load arguments
-   (setCooked)
    (unless (val $Repl)
       (set $Repl YES)
       (iSignal (val SIGINT Sig) (fun sig)) )

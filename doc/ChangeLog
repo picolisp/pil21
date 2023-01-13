@@ -1,3 +1,9 @@
+13jan23
+   'setCooked', 'setRaw' not needed in 'main' and 'brkLoad'
+      src/flow.l
+   Call rl_deprep_terminal() in 'setCooked'
+      src/lib.c
+
 09jan23
    Minor cosmetics
       src/main.l

@@ -1,4 +1,4 @@
-// 10nov22 Software Lab. Alexander Burger
+// 13jan23 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -268,11 +268,12 @@ void stopTerm(void) {
    sigset_t mask;
 
    if (Tio) {
-      tcSet(&OrgTermio);
       sigUnblock(SIGTSTP);
       signal(SIGTSTP, SIG_DFL),  raise(SIGTSTP);
       if (Termio)
          tcSet(Termio);
+      else
+         tcSet(&OrgTermio);
    }
 }
 
@@ -289,6 +290,7 @@ void setRaw(void) {
 }
 
 void setCooked(void) {
+   rl_deprep_terminal();
    if (Termio) {
       tcSet(&OrgTermio);
       free(Termio),  Termio = NULL;
