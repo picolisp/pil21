@@ -1,4 +1,4 @@
-# 22nov22 Software Lab. Alexander Burger
+# 14jan23 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -67,6 +67,8 @@
                      (and (get X Obj) (ext 0 (apply @ Lst))) ) ) ) )
          (rd) ) ) )
 
+(de null . null)
+
 # Android device ID
 (local) dev
 
@@ -83,7 +85,7 @@
       (java (; CONTEXT GUI PilView) 0 'loadData
          (pack "<html><body>" (pass pack) "</body></html>")
          "text/html; charset=utf-8"
-         'null ) ) )
+         null ) ) )
 
 (de loadUrl @
    (java (; CONTEXT GUI) 'runOnUiThread
@@ -192,7 +194,7 @@
                '(java "android.support.v4.app.NotificationCompat$Builder" T CONTEXT) )
             (java B 'setSmallIcon (java "de.software_lab.pilbox.R$drawable" "notify"))
             (java B 'setContentTitle Ttl)
-            (java B 'setContentText (or Msg 'null))
+            (java B 'setContentText (or Msg null))
             (java B 'setAutoCancel T)
             (let Intent (java "android.content.Intent" T CONTEXT (java "de.software_lab.pilbox.PilBoxActivity"))  # Activity class
                (java Intent 'setFlags `(hex "24000000"))  # FLAG_ACTIVITY_SINGLE_TOP | FLAG_ACTIVITY_NEW_TASK
