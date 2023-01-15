@@ -1,4 +1,4 @@
-# 30dec22 Software Lab. Alexander Burger
+# 15jan23 Software Lab. Alexander Burger
 
 # *NoLint
 
@@ -135,6 +135,8 @@ _lintq lintFun A C Lst S X Y *L *X *Var *Dup *Def *Bnd *Use)
                (lint1 (last (cddr X))) )
             ((dec inc pop push push1 queue fifo val idx accu)
                (_lintq '(T)) )
+            (onOff
+               (and (atom (cadr X)) (lint1 (cadr X))) )
             ((cut port)
                (_lintq '(NIL T)) )
             (set
