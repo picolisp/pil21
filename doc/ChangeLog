@@ -1,3 +1,8 @@
+21jan23
+   Set '*Key' conditionally
+   Bug in 'wake'
+      lib/simul.l
+
 15jan23
    Handle 'onOff'
       lib/lint.l

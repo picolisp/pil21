@@ -1,4 +1,4 @@
-# 20dec22 Software Lab. Alexander Burger
+# 21jan23 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -124,7 +124,7 @@
       (yield (cdr @) (car @)) )
    (when *Next
       (let ((Time . Co) (pop '*Next))
-         (and *Rt (setq *Key (key (- Time *Time))))
+         (and *Rt (key (- Time *Time)) (setq *Key @))
          (setq *Time Time)
          (yield NIL Co) ) ) )
 
@@ -155,9 +155,9 @@
       ((rasoq This *Next)
          (del @ '*Next)
          (fifo '*Ready (cons This Prg)) )
-      ((: event))
+      ((: event)
          (rid (prop @ 'queue) This)
-         (fifo '*Ready (cons This Prg)) ) )
+         (fifo '*Ready (cons This Prg)) ) ) )
 
 ### Grids ###
 (local) (grid west east south north)
