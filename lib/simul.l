@@ -122,9 +122,10 @@
 (de des ()
    (while (fifo '*Ready)
       (yield (cdr @) (car @)) )
+   (off *Key)
    (when *Next
       (let ((Time . Co) (pop '*Next))
-         (and *Rt (key (- Time *Time)) (setq *Key @))
+         (and *Rt (setq *Key (key (- Time *Time))))
          (setq *Time Time)
          (yield NIL Co) ) ) )
 

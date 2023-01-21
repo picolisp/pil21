@@ -1,5 +1,5 @@
 21jan23
-   Set '*Key' conditionally
+   Init '*Key' in 'des'
    Bug in 'wake'
       lib/simul.l
 
