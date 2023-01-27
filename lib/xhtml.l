@@ -1,4 +1,4 @@
-# 02dec22 Software Lab. Alexander Burger
+# 27jan23 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -335,6 +335,11 @@
    (tag "dd" Attr 2 Prg)
    (prinl) )
 
+(de <a> (Nm . Prg)
+   (prin "<a name=\"" Nm "\">")
+   (htPrin Prg 2)
+   (prinl  "</a>") )
+
 (de <href> (Str Url Tar)
    (prin "<a href=\""
       (sesId
@@ -371,7 +376,10 @@
 (de <this> (Var Val . Prg)
    (prin "<a href=\""
       (urlMT (sesId *Url) *Menu *Tab *ID
-         (pack "&" Var "=" (ht:Fmt Val) "\"") ) )
+         (pack "&"
+            (fin Var) "=" (ht:Fmt Val)
+            (and (pair Var) (car @))
+            "\"" ) ) )
    (and *Style (htStyle @))
    (prin ">")
    (htPrin Prg 2)

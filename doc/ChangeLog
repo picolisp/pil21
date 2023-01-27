@@ -1,3 +1,8 @@
+27jan23
+   Optional anchor for '<this>'
+   '<a>' anchor function
+      lib/xhtml.l
+
 21jan23
    Init '*Key' in 'des'
    Bug in 'wake'
