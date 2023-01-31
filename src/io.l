@@ -1,4 +1,4 @@
-# 14nov22 Software Lab. Alexander Burger
+# 31jan23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1629,18 +1629,27 @@ selectErr)
             (== (val $InFile) (val (val $InFiles)))  # Stdin
             (set $Chr 0) ) ) ) )
 
-# (key ['cnt]) -> sym
+# (key ['cnt ['var]]) -> sym
 (de _key (Exe)
    (flushAll)
-   (let Raw (val Termio)
+   (let
+      (X (cdr Exe)
+         Cnt
+         (if (nil? (eval (++ X)))
+            292MY
+            (xCnt Exe @) )
+         Var
+         (save
+            (if (nil? (eval (car X)))
+               -ZERO
+               (needChkVar Exe @) ) )
+         Raw (val Termio) )
       (prog2
          (setRaw)
-         (if
-            (waitFd Exe 0
-               (if (nil? (eval (cadr Exe)))
-                  292MY
-                  (xCnt Exe @) ) )
-            (let C (stdinByte)
+         (if (waitFd Exe 0 Cnt)
+            (let (Ms @  C (stdinByte))
+               (unless (== Var -ZERO)
+                  (set Var (cnt Ms)) )
                (mkChar
                   (cond
                      ((>= 127 C) C)  # Single byte

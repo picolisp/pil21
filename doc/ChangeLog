@@ -1,3 +1,8 @@
+31jan23
+   Optional 'var' argument to 'key'
+      src/io.l
+      doc/refK.html
+
 27jan23
    Optional anchor for '<this>'
    '<a>' anchor function

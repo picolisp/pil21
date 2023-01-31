@@ -22,14 +22,15 @@ href="ref.html#dbase">Database</a>.
 (rel nr (+Need +Key +Number))  # Mandatory, unique Customer/Supplier number
 </code></pre>
 
-<dt><a name="key"><code>(key ['cnt]) -> sym</code></a>
+<dt><a name="key"><code>(key ['cnt ['var]]) -> sym</code></a>
 <dd>Returns the next character from standard input as a single-character
 transient symbol. The console is set to raw mode. While waiting for a key press,
 a <code>poll(2)</code> system call is executed for all file descriptors and
 timers in the <code>VAL</code> of the global variable <code><a
 href="refR.html#*Run">*Run</a></code>. If <code>cnt</code> is
 non-<code>NIL</code>, that amount of milliseconds is waited maximally, and
-<code>NIL</code> is returned upon timeout. See also <code><a
+<code>NIL</code> is returned upon timeout. Otherwise, the remaining milliseconds
+are optionally stored in <code>var</code>. See also <code><a
 href="refR.html#raw">raw</a></code> and <code><a
 href="refW.html#wait">wait</a></code>.
 
