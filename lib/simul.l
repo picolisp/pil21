@@ -116,7 +116,7 @@
 (local) (*Rt *Keys *Time *Ready *Next des pause event wake)
 (private) queue
 
-(off *Rt *Keys)  # Realtime
+(one *Rt)  # Realtime
 (zero *Time)  # Current simulation time
 
 (de des Prg
@@ -124,13 +124,14 @@
       (yield (cdr @) (car @)) )
    (off *Keys)
    (when *Next
-      (let ((Time . Co) (pop '*Next)  Dly (- Time *Time))
+      (let ((Time . Co) (pop '*Next))
          (when *Rt
-            (loop
-               (NIL (key Dly 'Dly))
-               (fifo '*Keys @)
-               (NIL (gt0 Dly))
-               (run Prg) ) )
+            (let Dly (*/ (- Time *Time) *Rt)
+               (loop
+                  (NIL (key Dly 'Dly))
+                  (fifo '*Keys @)
+                  (NIL (gt0 Dly))
+                  (run Prg) ) ) )
          (setq *Time Time)
          (yield NIL Co) ) ) )
 

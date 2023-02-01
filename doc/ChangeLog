@@ -1,4 +1,5 @@
 01feb23
+   Numeric '*Rt' as speedup factor
    Optional 'prg' argument to 'des'
    Change '*Key' to fifo structure '*Keys'
       lib/simul.l
