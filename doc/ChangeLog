@@ -1,3 +1,8 @@
+01feb23
+   Optional 'prg' argument to 'des'
+   Change '*Key' to fifo structure '*Keys'
+      lib/simul.l
+
 31jan23
    Optional 'var' argument to 'key'
       src/io.l
