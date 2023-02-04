@@ -1,4 +1,6 @@
 04feb23
+   Allow numeric argument to 'repl'
+      src/io.l
    Add BROWN and PURPLE
       lib/term.l
 
