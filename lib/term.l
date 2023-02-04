@@ -1,4 +1,4 @@
-# 18dec22 Software Lab. Alexander Burger
+# 04feb23 Software Lab. Alexander Burger
 
 (sysdefs "terminal")
 
@@ -8,11 +8,13 @@
 (de U-OFF . 24)
 (de REVERS . 7)
 
-(local) (RED GREEN BLUE CYAN)
+(local) (RED GREEN BROWN BLUE PURPLE CYAN)
 
 (de RED . 31)
 (de GREEN . 32)
+(de BROWN . 33)
 (de BLUE . 34)
+(de PURPLE . 35)
 (de CYAN . 36)
 
 (local) (*AttrA *AttrU)

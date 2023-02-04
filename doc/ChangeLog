@@ -1,3 +1,7 @@
+04feb23
+   Add BROWN and PURPLE
+      lib/term.l
+
 01feb23
    Numeric '*Rt' as speedup factor
    Optional 'prg' argument to 'des'
