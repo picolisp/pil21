@@ -1,3 +1,7 @@
+05feb23
+   Keep 'prg' argument to 'des' private
+      lib/simul.l
+
 04feb23
    Allow numeric argument to 'repl'
       src/io.l

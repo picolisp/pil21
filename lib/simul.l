@@ -1,4 +1,4 @@
-# 01feb23 Software Lab. Alexander Burger
+# 05feb23 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -114,7 +114,7 @@
 
 ### Discrete-Event Simulation ###
 (local) (*Rt *Keys *Time *Ready *Next des pause event wake)
-(private) queue
+(private) (Prg queue)
 
 (one *Rt)  # Realtime
 (zero *Time)  # Current simulation time
