@@ -1,4 +1,4 @@
-# 14jul22 Software Lab. Alexander Burger
+# 14oct20 Software Lab. Alexander Burger
 
 # *Prune
 
@@ -283,10 +283,10 @@
 
 (de step (Q Flg)
    (use (L F X)
-      (catch T
+      (catch NIL
          (loop
             (until (cdar Q)
-               (or (cdr Q) (throw T))
+               (or (cdr Q) (throw))
                (set Q (cadr Q))
                (con Q (cddr Q)) )
             (setq
@@ -301,9 +301,9 @@
                (unless (and Flg (flg? (fin (car X))))
                   (when (cddr X)
                      (setq @@ (car X))
-                     (throw T @) )
+                     (throw NIL @) )
                   (setq @@ (caar X))
-                  (throw T (fin (car X))) ) ) ) ) ) )
+                  (throw NIL (fin (car X))) ) ) ) ) ) )
 
 (private) (_scan _nacs _iter _reti)
 (private) (Tree Fun Beg End Flg Node R X V)
