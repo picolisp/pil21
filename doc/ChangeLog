@@ -1,3 +1,7 @@
+08feb23
+   Check for atomic argument in 'made'
+      src/subr.l
+
 06feb23
    Undo cosmetics from 14jul22
       lib/btree.l

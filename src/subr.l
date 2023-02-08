@@ -1,4 +1,4 @@
-# 20oct22 Software Lab. Alexander Burger
+# 08feb23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -273,13 +273,14 @@
       (unless (val $Make)
          (makeErr Exe) )
       (when (pair X)
-         (set (val $Yoke) (eval (++ X)))
-         (let Y (eval (car X))
-            (when (atom Y)
-               (setq Y (val (val $Yoke)))
-               (while (pair (cdr Y))
-                  (setq Y @) ) )
-            (set $Make (ofs Y 1)) ) )
+         (if (atom (set (val $Yoke) (eval (++ X))))
+            (set $Make (val $Yoke))
+            (let Y (eval (car X))
+               (when (atom Y)
+                  (setq Y (val (val $Yoke)))
+                  (while (pair (cdr Y))
+                     (setq Y @) ) )
+               (set $Make (ofs Y 1)) ) ) )
       (val (val $Yoke)) ) )
 
 # (chain 'lst ..) -> lst
