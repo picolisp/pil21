@@ -1,3 +1,7 @@
+09feb23
+   Add "mp4" to '*Mimes'
+      lib/http.l
+
 ####### 23.2 #######
 08feb23
    Check for atomic argument in 'made'

@@ -1,4 +1,4 @@
-# 21dec22 Software Lab. Alexander Burger
+# 09feb23 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -21,6 +21,7 @@
    (`(chop "au") "audio/basic" 3600)
    (`(chop "wav") "audio/x-wav" 3600)
    (`(chop "mp3") "audio/x-mpeg" 3600)
+   (`(chop "mp4") "video/mp4" 3600)
    (`(chop "gif") "image/gif" 3600)
    (`(chop "tif") "image/tiff" 3600)
    (`(chop "tiff") "image/tiff" 3600)
