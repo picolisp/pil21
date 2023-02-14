@@ -11,11 +11,11 @@
 
 <dl>
 
-<dt><a name="yield"><code>(yield 'any ['any2]) -> any</code></a>
+<dt><a name="yield"><code>(yield 'any ['sym]) -> any</code></a>
 <dd>Transfers control from the current <a
 href="ref.html#coroutines">coroutine</a> back to the caller (when the
-<code>any2</code> tag is not given), or to some other coroutine (specified by
-<code>any2</code>) to continue execution at the point where that coroutine had
+<code>sym</code> tag is not given), or to some other coroutine (specified by
+<code>sym</code>) to continue execution at the point where that coroutine had
 called <code>yield</code> before. In the first case, the value <code>any</code>
 will be returned from the corresponding <code><a
 href="refC.html#co">co</a></code> call, in the second case it will be the return
