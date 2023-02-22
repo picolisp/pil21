@@ -1,3 +1,9 @@
+22feb23
+   Default hasbangs to /usr/bin/pil
+      bin/pty
+      bin/psh
+      bin/watchdog
+
 14feb23
    Tag argument to 'co' and 'yield' must be a symbol
       src/flow.l

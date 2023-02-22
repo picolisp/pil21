@@ -1,5 +1,5 @@
-#!bin/picolisp lib.l
-# 10oct20 Software Lab. Alexander Burger
+#!/usr/bin/pil
+# 22feb23 Software Lab. Alexander Burger
 # Use: bin/watchdog <host> <port> <from> <to1> <to2> ..
 
 (load "@lib/misc.l")

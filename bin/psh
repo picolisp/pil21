@@ -1,5 +1,5 @@
-#!bin/picolisp lib.l
-# 29sep20 Software Lab. Alexander Burger
+#!/usr/bin/pil
+# 22feb23 Software Lab. Alexander Burger
 
 (load "@lib/net.l" "@lib/misc.l" "@lib/http.l")
 
