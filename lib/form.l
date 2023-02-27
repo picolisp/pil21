@@ -1,4 +1,4 @@
-# 06oct22 Software Lab. Alexander Burger
+# 27feb23 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -1729,7 +1729,7 @@
    (if2 (or (: dx) (: lst)) (txt> This (val> This))
       (pack (extra) "&*" (ht:Fmt (sesId *Go.png)) "&" (ht:Fmt (sesId ((: url) @))))
       (pack (extra) "&*" (ht:Fmt (sesId *No.png)) "&")
-      (pack @ "&+" (ht:Fmt (sesId ((: url) @))))
+      (pack (ht:Fmt @) "&+" (ht:Fmt (sesId ((: url) @))))
       (extra) ) )
 
 (dm show> (Var)
