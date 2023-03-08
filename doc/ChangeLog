@@ -1,3 +1,9 @@
+05mar23
+   Typo
+      lib/vip.l
+   Restrict 'words' command to 'delimNs'
+      doc/viprc.sample
+
 27feb23
    Bug in 'js>' for '+Url'
       lib/form.l

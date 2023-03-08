@@ -1,4 +1,4 @@
-# 02jan23 Software Lab. Alexander Burger
+# 05mar23 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -21,7 +21,7 @@
 
 ### VIP Editor ###
 (local) (*Buffers +Buffer mkLoc fName prName rplFile fileBuffer rdLines delim
-delimNs arkup min1 undo redo evCmd dirty> load> save> syms> view> status delwin
+delimNs markup min1 undo redo evCmd dirty> load> save> syms> view> status delwin
 cursor addLine chgLine unmark redraw repaint scLeft scRight goto chgwin eqwin
 getch getch2 reload scratch syms pushTag tag done change jmp@@ cnt@@ goCol
 goLeft goRight goUp goDown goAbs goFind word lword tword end lend getWord

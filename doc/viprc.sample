@@ -1,4 +1,4 @@
-# 02dec22 Software Lab. Alexander Burger
+# 05mar23 Software Lab. Alexander Burger
 # Copy to ~/.pil/viprc
 
 (map+q "d" ":bd\r")
@@ -35,16 +35,15 @@
             (: buffer text) ) ) ) )
 
 (cmd "words" (L Lst Cnt)
-   (xchg 'delim
+   (xchg 'delimNs
       (quote
          ((C)
             (not
-               (member C
-                  '`(chop
-                        "0123456789\
-                        ABCDEFGHIJKLMNOPQRSTUVWXYZ\
-                        _\
-                        abcdefghijklmnopqrstuvwxyz" ) ) ) ) ) )
+               (sub? C
+                  "0123456789\
+                  ABCDEFGHIJKLMNOPQRSTUVWXYZ\
+                  _\
+                  abcdefghijklmnopqrstuvwxyz" ) ) ) ) )
    (prCmd
       (list (chop (xchg '(" C") '(" Lisp")))) ) )
 
