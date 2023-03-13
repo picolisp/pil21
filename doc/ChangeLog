@@ -1,4 +1,5 @@
 13mar23
+   Support more attributes in 'serverSentEvent'
    Force chunked transfer in 'serverSend'
       lib/xhtml.l
 

@@ -189,7 +189,9 @@
       Id
       "')).onmessage = function(ev) {if (ev.data.charAt(0) == '&') document.title = ev.data.substr(1); else document.getElementById('"
       Id
-      "').innerHTML = ev.data;}" )
+      "')."
+      (if (lst? (car Prg)) "innerHTML" (++ Prg))
+      " = ev.data;}" )
    (if (assoc Id *SsEvts)
       (con @ (cons Var (unless (val Var) Prg)))
       (push '*SsEvts (cons Id Var Prg)) ) )
