@@ -1,3 +1,7 @@
+13mar23
+   Force chunked transfer in 'serverSend'
+      lib/xhtml.l
+
 05mar23
    Typo
       lib/vip.l

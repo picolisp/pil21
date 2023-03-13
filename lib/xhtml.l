@@ -1,4 +1,4 @@
-# 27jan23 Software Lab. Alexander Burger
+# 13mar23 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -213,7 +213,7 @@
 (de serverSend (Sock . Prg)
    (when Sock
       (out @
-         (ht:Out (bool *Chunked)
+         (ht:Out T
             (prin "data: ")
             (output
                (cond
