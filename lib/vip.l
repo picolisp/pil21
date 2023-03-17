@@ -1,4 +1,4 @@
-# 05mar23 Software Lab. Alexander Burger
+# 17mar23 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -33,7 +33,7 @@ s-expr command vi)
 
 
 (class +Buffer)
-# text file symbols key undo redo dirt
+# text file cmd symbols key undo redo dirt
 # posX posY lastX lastY subd flat fmt syms <c>
 
 (dm T (File Y)
@@ -370,7 +370,7 @@ s-expr command vi)
                "/"
                (length *Buffers)
                (if (dirty> (: buffer) This) " * " " ") )
-            F (prName (: buffer file))
+            F (or (: buffer cmd) (prName (: buffer file)))
             Z (pack
                (and (: mark) (cons @ " "))
                (casq (: buffer symbols 1)
@@ -506,7 +506,9 @@ s-expr command vi)
 (de scratch (File Lst Y)
    (setq File (fName File))
    (if (find '((This) (= File (: file))) *Buffers)
-      (put @ 'text Lst)
+      (with @
+         (=: text Lst)
+         (=: undo (=: redo (=: dirt))) )
       (unmark)
       (=: last (: buffer))
       (put
@@ -1284,9 +1286,16 @@ s-expr command vi)
                            (setq @ *@)
                            (evCmd (run (str L))) )
                         ("$"  # Shell command
-                           (scratch (tmp "cmd" (inc (0)))
-                              (in (list *Shell "-c" (rplFile L))
-                                 (rdLines) ) ) )
+                           (cond
+                              (L
+                                 (scratch (tmp "cmd" (inc (0)))
+                                    (in (list *Shell "-c" (setq L (rplFile L)))
+                                       (rdLines) ) )
+                                 (=: buffer cmd L) )
+                              ((: buffer cmd)
+                                 (scratch (: buffer file)
+                                    (in (list *Shell "-c" @)
+                                       (rdLines) ) ) ) ) )
                         ("!"  # External filter
                            (when L
                               (if (=0 Cnt)

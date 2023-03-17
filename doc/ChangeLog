@@ -1,3 +1,7 @@
+17mar23
+   Repeat last shell command with ":$"
+      lib/vip.l
+
 13mar23
    Support more attributes in 'serverSentEvent'
    Force chunked transfer in 'serverSend'
