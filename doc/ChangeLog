@@ -1,4 +1,5 @@
 19mar23
+   Allow one "-" in uppercase global constants
    Handle 'default'
       lib/lint.l
    'noLint' for 'null'

@@ -18,7 +18,7 @@ _lintq lintFun A C Lst S X Y *L *X *Var *Dup *Def *Bnd *Use)
       (memq X *NoLint)
       (and
          (>= (length S) 4)
-         (fully upp? (chop S)) ) ) )
+         (fully upp? (delete "-" (chop S))) ) ) )
 
 (de local? (S)
    (or
