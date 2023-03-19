@@ -1,3 +1,9 @@
+19mar23
+   Handle 'default'
+      lib/lint.l
+   'noLint' for 'null'
+      lib/android.l
+
 17mar23
    Repeat last shell command with ":$"
       lib/vip.l

@@ -1,4 +1,4 @@
-# 15jan23 Software Lab. Alexander Burger
+# 19mar23 Software Lab. Alexander Burger
 
 # *NoLint
 
@@ -8,13 +8,14 @@ _lintq lintFun A C Lst S X Y *L *X *Var *Dup *Def *Bnd *Use)
 (de noLint (X V)
    (if V
       (push1 '*NoLint (cons X V))
-      (or (memq X *NoLint) (push '*NoLint X)) ) )
+      (push1q '*NoLint X) ) )
 
 (de global? (S)
    (or
       (memq S '(NIL ^ @ @@ @@@ This T))
       (member (char S) '(`(char '*) `(char '+)))
       (== '\~ (car (pair (val S))))
+      (memq X *NoLint)
       (and
          (>= (length S) 4)
          (fully upp? (chop S)) ) ) )
@@ -135,7 +136,7 @@ _lintq lintFun A C Lst S X Y *L *X *Var *Dup *Def *Bnd *Use)
                (lint1 (last (cddr X))) )
             ((dec inc pop push push1 queue fifo val idx accu)
                (_lintq '(T)) )
-            (onOff
+            ((onOff default)
                (and (atom (cadr X)) (lint1 (cadr X))) )
             ((cut port)
                (_lintq '(NIL T)) )

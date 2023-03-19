@@ -1,4 +1,4 @@
-# 14jan23 Software Lab. Alexander Burger
+# 19mar23 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -357,3 +357,8 @@
 (de restart ()
    (loadTxt)  # Blank screen
    (java (; CONTEXT GUI) 'restart) )
+
+### Debug ###
+`*Dbg
+
+(noLint 'null)
