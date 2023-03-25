@@ -1,4 +1,4 @@
-# 14feb23 Software Lab. Alexander Burger
+# 13jan23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1111,14 +1111,14 @@
       (Crt: at 0)  # Running
       (val $Ret) ) )
 
-# (co ['sym [. prg]]) -> any
+# (co ['any [. prg]]) -> any
 (de _co (Exe)
    (let X (cdr Exe)
       (if (atom X)
          (if (val $Current)
             ((coroutine @) tag)
             $Nil )
-         (let Tag (needSymb Exe (eval (++ X)))
+         (let Tag (eval (++ X))
             (cond
                ((pair X)  # 'prg'
                   (unless (val $Coroutines)  # First call
@@ -1231,12 +1231,12 @@
                      Tag ) )
                (T $Nil) ) ) ) ) )
 
-# (yield 'any ['sym]) -> any
+# (yield 'any ['any2]) -> any
 (de _yield (Exe)
    (let
       (X (cdr Exe)
          Val (save (eval (++ X)))
-         Tag (needSymb Exe (eval (car X)))
+         Tag (eval (++ X))
          Crt (val $Coroutines) )
       (unless Crt
          (err Exe 0 ($ "No coroutines") null) )
