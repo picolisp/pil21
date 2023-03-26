@@ -1,4 +1,4 @@
-# 27feb23 Software Lab. Alexander Burger
+# 26mar23 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
 
@@ -2715,5 +2715,3 @@
 (noLint 'gui)
 (noLint 'choDlg 'gui)
 (noLint 'jsForm 'action)
-
-(docs "@doc/form/")
