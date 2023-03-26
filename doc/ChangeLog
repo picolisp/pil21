@@ -2,8 +2,6 @@
    Fix various markup issues
       ref.html ref?.html faq.html tut.html native.html select.html httpGate.html
       lib/debug.l
-   Remove doc/form/
-      doc/toc.html
 
 25mar23
    Undo tag argument restriction from 14feb23
