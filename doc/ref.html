@@ -118,21 +118,25 @@ system should be
 <dt>Simple</dt>
 <dd>The internal data structure should be as simple as possible. Only one single
 data structure is used to build all higher level constructs.
+</dd>
 
 <dt>Unlimited</dt>
 <dd>There are no limits imposed upon the language due to limitations of the
 virtual machine architecture. That is, there is no upper bound in symbol name
 length, number digit counts, stack depth, or data structure and buffer sizes,
 except for the total memory size of the host machine.
+</dd>
 
 <dt>Dynamic</dt>
 <dd>Behavior should be as dynamic as possible ("run"-time vs. "compile"-time).
 All decisions are delayed until runtime where possible. This involves matters
 like memory management, dynamic symbol binding, and late method binding.
+</dd>
 
 <dt>Practical</dt>
 <dd>PicoLisp is not just a toy of theoretical value. It is in use since 1988 in
 actual application development, research and production.
+</dd>
 
 </dl>
 
@@ -1058,12 +1062,14 @@ arguments as its single parameter. It is up to that code to evaluate the
 arguments, or not. Some functions do not evaluate their arguments (e.g.
 <code>quote</code>) or evaluate only some of their arguments (e.g.
 <code>setq</code>).
+</dd>
 
 <dt>or</dt>
 <dd>a <i>lambda expression</i>. A lambda expression is a list, whose CAR is
 either a symbol or a list of symbols, and whose CDR is a list of expressions.
 Note: In contrast to other Lisp implementations, the symbol LAMBDA itself does
 not exist in PicoLisp but is implied from context.
+</dd>
 
 </dl>
 
@@ -1152,6 +1158,7 @@ This is the most common case, a fixed number of arguments is passed to the
 function. <br>As a special case, a single-level list of symbols may be passed
 instead of a single parameter here, resulting in a restricted form of
 destructuring bind.
+</dd>
 
 <dt>Otherwise, when the CAR is the symbol <code>@</code></dt>
 <dd>All arguments are evaluated and the results kept internally in a list. The
@@ -1161,6 +1168,7 @@ accessed sequentially with the <code><a href="refA.html#args">args</a></code>,
 href="refA.html#arg">arg</a></code> and <code><a
 href="refR.html#rest">rest</a></code> functions. This allows to define functions
 with a variable number of evaluated arguments.
+</dd>
 
 <dt>Otherwise, when the CAR is a single symbol</dt>
 <dd>The symbol is bound to the whole unevaluated argument list. The body of the
@@ -1168,6 +1176,7 @@ lambda expression is executed, then the symbol is restored to its original
 value. This allows to define functions with unevaluated arguments. Any kind of
 interpretation and evaluation of the argument list can be done inside the
 expression body.
+</dd>
 
 </dl>
 
@@ -1416,8 +1425,9 @@ order (i.e the latest result is in <code>@</code>).
 : (- @ @@)        # Subtract the last two results
 -> 26
 </code></pre>
+</dd>
 
-<p><dt>Flow functions
+<dt>Flow functions</dt>
 <dd>Flow- and logic-functions store the result of their controlling expression -
 respectively non-<code>NIL</code> results of their conditional expression - in
 <code>@</code>.
@@ -1465,6 +1475,7 @@ and the bodies of <code><a href="refR.html#*Run">*Run</a></code> tasks.
    <a href="refU.html#until">until</a>,
    <a href="refW.html#when">when</a> and
    <a href="refW.html#while">while</a>.
+</dd>
 
 </dl>
 
@@ -1484,11 +1495,13 @@ items are either
 <dd>They are the same memory object (pointer equality). For example, two
 internal symbols with the same name are identical. And short numbers (up to 60
 bits plus sign) are also equivalent to "pointer"-equal.
+</dd>
 
 <dt>Equal</dt>
 <dd>They are equal in every respect (structure equality), but need not to be
 identical. Examples are numbers with the same value, transient symbols with the
 same name or lists with equal elements.
+</dd>
 
 <dt>Or they have a well-defined ordinal relationship</dt>
 <dd>Numbers are comparable by their numeric value, strings by their name, and
@@ -1497,6 +1510,7 @@ compared). For differing types, the following rule applies: Numbers are less
 than symbols, and symbols are less than lists. As special cases,
 <code>NIL</code> is always less than anything else, and <code>T</code> is always
 greater than anything else.
+</dd>
 
 </dl>
 
@@ -1526,14 +1540,17 @@ common agreement upon three criteria for object orientation:
 <dd>Code and data are encapsulated into <u>objects</u>, giving them both a
 <u>behavior</u> and a <u>state</u>. Objects communicate by sending and receiving
 <u>messages</u>.
+</dd>
 
 <dt>Inheritance</dt>
 <dd>Objects are organized into <u>classes</u>. The behavior of an object is
 inherited from its class(es) and superclass(es).
+</dd>
 
 <dt>Polymorphism</dt>
 <dd>Objects of different classes may behave differently in response to the same
 message. For that, classes may define different methods for each message.
+</dd>
 
 </dl>
 
@@ -1661,56 +1678,56 @@ include
 <p><ul>
 <li>Scalar relations like
    <dl>
-   <dt><code><a href="refS.html#+Symbol">+Symbol</a></code>
-   <dd>Symbolic data
-   <dt><code><a href="refS.html#+String">+String</a></code>
-   <dd>Strings (just a general case of symbols)
-   <dt><code><a href="refN.html#+Number">+Number</a></code>
-   <dd>Integers and fixpoint numbers
-   <dt><code><a href="refD.html#+Date">+Date</a></code>
-   <dd>Calendar date values, represented by a number
-   <dt><code><a href="refT.html#+Time">+Time</a></code>
-   <dd>Time-of-the-day values, represented by a number
-   <dt><code><a href="refB.html#+Blob">+Blob</a></code>
-   <dd>"Binary large objects" stored in separate files
-   <dt><code><a href="refB.html#+Bool">+Bool</a></code>
-   <dd><code>T</code> or <code>NIL</code>
+   <dt><code><a href="refS.html#+Symbol">+Symbol</a></code></dt>
+   <dd>Symbolic data</dd>
+   <dt><code><a href="refS.html#+String">+String</a></code></dt>
+   <dd>Strings (just a general case of symbols)</dd>
+   <dt><code><a href="refN.html#+Number">+Number</a></code></dt>
+   <dd>Integers and fixpoint numbers</dd>
+   <dt><code><a href="refD.html#+Date">+Date</a></code></dt>
+   <dd>Calendar date values, represented by a number</dd>
+   <dt><code><a href="refT.html#+Time">+Time</a></code></dt>
+   <dd>Time-of-the-day values, represented by a number</dd>
+   <dt><code><a href="refB.html#+Blob">+Blob</a></code></dt>
+   <dd>"Binary large objects" stored in separate files</dd>
+   <dt><code><a href="refB.html#+Bool">+Bool</a></code></dt>
+   <dd><code>T</code> or <code>NIL</code></dd>
    </dl>
 <li>Object-to-object relations
    <dl>
-   <dt><code><a href="refL.html#+Link">+Link</a></code>
-   <dd>A reference to some other entity
-   <dt><code><a href="refH.html#+Hook">+Hook</a></code>
-   <dd>A reference to an entity holding object-local index trees
-   <dt><code><a href="refJ.html#+Joint">+Joint</a></code>
-   <dd>A bidirectional reference to some other entity
+   <dt><code><a href="refL.html#+Link">+Link</a></code></dt>
+   <dd>A reference to some other entity</dd>
+   <dt><code><a href="refH.html#+Hook">+Hook</a></code></dt>
+   <dd>A reference to an entity holding object-local index trees</dd>
+   <dt><code><a href="refJ.html#+Joint">+Joint</a></code></dt>
+   <dd>A bidirectional reference to some other entity</dd>
    </dl>
 <li>Container prefix classes like
    <dl>
-   <dt><code><a href="refL.html#+List">+List</a></code>
-   <dd>A list of any of the other primitive or object relation types
-   <dt><code><a href="refB.html#+Bag">+Bag</a></code>
-   <dd>A list containing a mixture of any of the other types
+   <dt><code><a href="refL.html#+List">+List</a></code></dt>
+   <dd>A list of any of the other primitive or object relation types</dd>
+   <dt><code><a href="refB.html#+Bag">+Bag</a></code></dt>
+   <dd>A list containing a mixture of any of the other types</dd>
    </dl>
 <li>Index prefix classes
    <dl>
-   <dt><code><a href="refR.html#+Ref">+Ref</a></code>
-   <dd>An index with other primitives or entities as key
-   <dt><code><a href="refK.html#+Key">+Key</a></code>
-   <dd>A unique index with other primitives or entities as key
-   <dt><code><a href="refI.html#+Idx">+Idx</a></code>
-   <dd>A full-text index, typically for strings
-   <dt><code><a href="refF.html#+Fold">+Fold</a></code>
-   <dd>A folded text index
-   <dt><code><a href="refI.html#+IdxFold">+IdxFold</a></code>
-   <dd>Folded substring index
-   <dt><code><a href="refS.html#+Sn">+Sn</a></code>
-   <dd>Tolerant index, using a modified Soundex-Algorithm
+   <dt><code><a href="refR.html#+Ref">+Ref</a></code></dt>
+   <dd>An index with other primitives or entities as key</dd>
+   <dt><code><a href="refK.html#+Key">+Key</a></code></dt>
+   <dd>A unique index with other primitives or entities as key</dd>
+   <dt><code><a href="refI.html#+Idx">+Idx</a></code></dt>
+   <dd>A full-text index, typically for strings</dd>
+   <dt><code><a href="refF.html#+Fold">+Fold</a></code></dt>
+   <dd>A folded text index</dd>
+   <dt><code><a href="refI.html#+IdxFold">+IdxFold</a></code></dt>
+   <dd>Folded substring index</dd>
+   <dt><code><a href="refS.html#+Sn">+Sn</a></code></dt>
+   <dd>Tolerant index, using a modified Soundex-Algorithm</dd>
    </dl>
 <li>And a catch-all class
    <dl>
-   <dt><code><a href="refA.html#+Any">+Any</a></code>
-   <dd>Not specified, may be any of the above relations
+   <dt><code><a href="refA.html#+Any">+Any</a></code></dt>
+   <dd>Not specified, may be any of the above relations</dd>
    </dl>
 </ul>
 
@@ -1873,25 +1890,30 @@ following differences:
 <dd>PicoLisp distinguishes between upper case and lower case characters in
 symbol names. Thus, <code>CAR</code> and <code>car</code> are different symbols,
 which was not the case in traditional Lisp systems.
+</dd>
 
 <dt><code>QUOTE</code></dt>
 <dd>In traditional Lisp, the <code>QUOTE</code> function returns its
 <i>first</i> unevaluated argument. In PicoLisp, on the other hand,
 <code>quote</code> returns <i>all</i> (unevaluated) argument(s).
+</dd>
 
 <dt><code>LAMBDA</code></dt>
 <dd>The <code>LAMBDA</code> function, in some way at the heart of traditional
 Lisp, is completely missing (and <code>quote</code> is used instead).
+</dd>
 
 <dt><code>PROG</code></dt>
 <dd>The <code>PROG</code> function of traditional Lisp, with its GOTO and ENTER
 functionality, is also missing. PicoLisp's <code>prog</code> function is just a
 simple sequencer (as <code>PROGN</code> in some Lisps).
+</dd>
 
 <dt>Function/Value</dt>
 <dd>In PicoLisp, a symbol cannot have a value <i>and</i> a function definition
 at the same time. Though this is a disadvantage at first sight, it allows a
 completely uniform handling of functional data.
+</dd>
 
 </dl>
 
@@ -2080,6 +2102,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refD.html#dirname">dirname</a>
    <a href="refB.html#basename">basename</a>
 </code>
+</dd>
 
 <dt>Property Access</dt>
 <dd><code>
@@ -2095,6 +2118,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refW.html#wipe">wipe</a>
    <a href="refM.html#meta">meta</a>
 </code>
+</dd>
 
 <dt>Predicates</dt>
 <dd><code>
@@ -2129,6 +2153,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refM.html#match">match</a>
    <a href="refF.html#full">full</a>
 </code>
+</dd>
 
 <dt>Arithmetics</dt>
 <dd><code>
@@ -2136,7 +2161,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="ref_.html#-">-</a>
    <a href="ref_.html#*">*</a>
    <a href="ref_.html#/">/</a>
-   <a href="ref_.html#PERCENT">%</a>
+   <a href="ref_.html#PC">%</a>
    <a href="ref_.html#*/">*/</a>
    <a href="ref_.html#**">**</a>
    <a href="refI.html#inc">inc</a>
@@ -2170,6 +2195,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refH.html#hex">hex</a>
    <a href="refH.html#hax">hax</a>
 </code>
+</dd>
 
 <dt>List Processing</dt>
 <dd><code>
@@ -2277,6 +2303,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refF.html#fill">fill</a>
    <a href="refA.html#apply">apply</a>
 </code>
+</dd>
 
 <dt>Control Flow</dt>
 <dd><code>
@@ -2366,6 +2393,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refA.html#abort">abort</a>
    <a href="refB.html#bye">bye</a>
 </code>
+</dd>
 
 <dt>Mapping</dt>
 <dd><code>
@@ -2392,6 +2420,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refF.html#fish">fish</a>
    <a href="refB.html#by">by</a>
 </code>
+</dd>
 
 <dt>Input/Output</dt>
 <dd><code>
@@ -2469,6 +2498,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refP.html#prEval">prEval</a>
    <a href="refM.html#mail">mail</a>
 </code>
+</dd>
 
 <dt>Object Orientation</dt>
 <dd><code>
@@ -2494,6 +2524,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refC.html#can">can</a>
    <a href="refD.html#dep">dep</a>
 </code>
+</dd>
 
 <dt>Database</dt>
 <dd><code>
@@ -2597,6 +2628,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refR.html#remote/2">remote/2</a>
    <a href="refR.html#revolve/2">revolve/2</a>
 </code>
+</dd>
 
 <dt>Pilog</dt>
 <dd><code>
@@ -2655,6 +2687,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refS.html#select/3">select/3</a>
    <a href="refR.html#remote/2">remote/2</a>
 </code>
+</dd>
 
 <dt>Debugging</dt>
 <dd><code>
@@ -2691,6 +2724,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refL.html#lintAll">lintAll</a>
    <a href="refS.html#select">select</a>
 </code>
+</dd>
 
 <dt>System Functions</dt>
 <dd><code>
@@ -2743,7 +2777,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refB.html#basename">basename</a>
    <a href="refE.html#errno">errno</a>
    <a href="refN.html#native">native</a>
-   <a href="ref_.html#PERCENT@">%@</a>
+   <a href="ref_.html#PC@">%@</a>
    <a href="refS.html#struct">struct</a>
    <a href="refL.html#lisp">lisp</a>
    <a href="refE.html#exec">exec</a>
@@ -2759,6 +2793,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refT.html#test">test</a>
    <a href="refB.html#bye">bye</a>
 </code>
+</dd>
 
 <dt>Globals</dt>
 <dd><code>
@@ -2798,6 +2833,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refF.html#*Fork">*Fork</a>
    <a href="refB.html#*Bye">*Bye</a>
 </code>
+</dd>
 
 </dl>
 
