@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -8,7 +8,7 @@
 <body>
 <a href="mailto:abu@software-lab.de">abu@software-lab.de</a>
 
-<p align=right>
+<p style="text-align: right">
 <i>Perfection is attained</i><br>
 <i>not when there is nothing left to add</i><br>
 <i>but when there is nothing left to take away.</i><br>
@@ -17,7 +17,7 @@
 
 <h1>The PicoLisp Reference</h1>
 
-<p align=right>(c) Software Lab. Alexander Burger
+<p style="text-align: right">(c) Software Lab. Alexander Burger
 
 <p>This document describes the concepts, data types, and kernel functions of the
 <a href="http://software-lab.de/down.html">PicoLisp</a> system.
@@ -90,7 +90,7 @@ href="faq.html">Frequently Asked Questions (FAQ)</a>.
 
 
 <p><hr>
-<h2><a name="intro">Introduction</a></h2>
+<h2><a id="intro">Introduction</a></h2>
 
 <p>PicoLisp is the result of a language design study, trying to answer the
 question "What is a minimal but useful architecture for a virtual machine?".
@@ -115,22 +115,22 @@ system should be
 
 <p><dl>
 
-<dt>Simple
+<dt>Simple</dt>
 <dd>The internal data structure should be as simple as possible. Only one single
 data structure is used to build all higher level constructs.
 
-<dt>Unlimited
+<dt>Unlimited</dt>
 <dd>There are no limits imposed upon the language due to limitations of the
 virtual machine architecture. That is, there is no upper bound in symbol name
 length, number digit counts, stack depth, or data structure and buffer sizes,
 except for the total memory size of the host machine.
 
-<dt>Dynamic
+<dt>Dynamic</dt>
 <dd>Behavior should be as dynamic as possible ("run"-time vs. "compile"-time).
 All decisions are delayed until runtime where possible. This involves matters
 like memory management, dynamic symbol binding, and late method binding.
 
-<dt>Practical
+<dt>Practical</dt>
 <dd>PicoLisp is not just a toy of theoretical value. It is in use since 1988 in
 actual application development, research and production.
 
@@ -138,7 +138,7 @@ actual application development, research and production.
 
 
 <p><hr>
-<h2><a name="vm">The PicoLisp Machine</a></h2>
+<h2><a id="vm">The PicoLisp Machine</a></h2>
 
 <p>An important point in the PicoLisp philosophy is the knowledge about the
 architecture and data structures of the internal machinery. The high-level
@@ -150,7 +150,7 @@ complete control over the machine.
 
 
 <p><hr>
-<h3><a name="cell">The Cell</a></h3>
+<h3><a id="cell">The Cell</a></h3>
 
 <p>The PicoLisp virtual machine is both simpler and more powerful than most
 current (hardware) processors. At the lowest level, it is constructed from a
@@ -201,7 +201,7 @@ are not directly accessible by the programmer.
 </ul>
 
 <p><hr>
-<h3><a name="data">Data Types</a></h3>
+<h3><a id="data">Data Types</a></h3>
 
 <p>On the virtual machine level, PicoLisp supports
 
@@ -232,7 +232,7 @@ the three base types and the symbol variations:
 
 
 <p><hr>
-<h4><a name="number">Numbers</a></h4>
+<h4><a id="number">Numbers</a></h4>
 
 <p>A number can represent a signed integral value of arbitrary size. Internally,
 numeric values of up to 60 bits are stored in "short" numbers,
@@ -281,7 +281,7 @@ non-zero (a short number) or bit(2) is non-zero (a big number).
 
 
 <p><hr>
-<h4><a name="symbol">Symbols</a></h4>
+<h4><a id="symbol">Symbols</a></h4>
 
 <p>A symbol is more complex than a number. Each symbol has a value, and
 optionally a name and an arbitrary number of properties. The CDR of a symbol
@@ -357,7 +357,7 @@ href="#transient">transient</a> and <a href="#external">external</a> symbols.
 
 
 <p><hr>
-<h5><a name="nilSym">NIL</a></h5>
+<h5><a id="nilSym">NIL</a></h5>
 
 <p><code>NIL</code> is a special symbol which exists exactly once in the whole
 system. It is used
@@ -403,7 +403,7 @@ its CAR and for its CDR
 
 
 <p><hr>
-<h5><a name="internal">Internal Symbols</a></h5>
+<h5><a id="internal">Internal Symbols</a></h5>
 
 <p>Internal symbols are all those "normal" symbols, as they are used for
 function definitions and variable names. They are "interned" into an index
@@ -417,7 +417,7 @@ namespace.
 
 
 <p><hr>
-<h5><a name="transient">Transient Symbols</a></h5>
+<h5><a id="transient">Transient Symbols</a></h5>
 
 <p>Transient symbols are only interned into an index structure for a certain
 time (e.g. while reading the current source file), and are released after that.
@@ -444,7 +444,7 @@ href="refN.html#new">new</a></code> functions.
 
 
 <p><hr>
-<h5><a name="external">External Symbols</a></h5>
+<h5><a id="external">External Symbols</a></h5>
 
 <p>External symbols reside in a database file (or other resources, see <code><a
 href="refE.html#*Ext">*Ext</a></code>), and are loaded into memory - and written
@@ -467,7 +467,7 @@ specified at creation time.
 
 
 <p><hr>
-<h4><a name="lst">Lists</a></h4>
+<h4><a id="lst">Lists</a></h4>
 
 <p>A list is a sequence of one or more cells (cons pairs), holding numbers,
 symbols, or cons pairs.
@@ -500,7 +500,7 @@ its I/O syntax with a dot '<code>.</code>' between the two values).
 
 
 <p><hr>
-<h3><a name="mem">Memory Management</a></h3>
+<h3><a id="mem">Memory Management</a></h3>
 
 <p>The PicoLisp interpreter has complete knowledge of all data in the system,
 due to the type information associated with every pointer. Therefore, an
@@ -515,7 +515,7 @@ type cannot cause heap fragmentation.
 
 
 <p><hr>
-<h2><a name="penv">Programming Environment</a></h2>
+<h2><a id="penv">Programming Environment</a></h2>
 
 <p>Lisp was chosen as the programming language, because of its clear and simple
 structure.
@@ -539,7 +539,7 @@ and environment are described.
 
 
 <p><hr>
-<h3><a name="inst">Installation</a></h3>
+<h3><a id="inst">Installation</a></h3>
 
 <p>PicoLisp supports two installation strategies: Local and Global.
 
@@ -562,7 +562,7 @@ installation, and invoke them explicitly as desired.
 
 
 <p><hr>
-<h3><a name="invoc">Invocation</a></h3>
+<h3><a id="invoc">Invocation</a></h3>
 
 <p>When PicoLisp is invoked from the command line, an arbitrary number of
 arguments may follow the command name.
@@ -646,7 +646,7 @@ any leading "<code>@</code>" character in file name arguments to I/O functions
 (see <code><a href="refP.html#path">path</a></code>).
 
 <p><hr>
-<h3><a name="io">Input/Output</a></h3>
+<h3><a id="io">Input/Output</a></h3>
 
 <p>In Lisp, each internal data structure has a well-defined external
 representation in human-readable format. All kinds of data can be written to a
@@ -680,7 +680,7 @@ symbols and lists) and for read-macros:
 
 
 <p><hr>
-<h4><a name="num-io">Numbers</a></h4>
+<h4><a id="num-io">Numbers</a></h4>
 
 <p>A number consists of an arbitrary number of digits ('<code>0</code>' through
 '<code>9</code>'), optionally preceded by a sign character ('<code>+</code>' or
@@ -731,7 +731,7 @@ href="refR.html#round">round</a></code> functions:
 
 
 <p><hr>
-<h4><a name="sym-io">Symbols</a></h4>
+<h4><a id="sym-io">Symbols</a></h4>
 
 <p>The reader is able to recognize the individual symbol types from their
 syntactic form. A symbol name should - of course - not look like a legal number
@@ -742,7 +742,7 @@ as <code>CAR</code>.
 
 
 <p><hr>
-<h5><a name="nilSym-io">NIL</a></h5>
+<h5><a id="nilSym-io">NIL</a></h5>
 
 <p>Besides the standard form, <code>NIL</code> is also recognized as
 <code>()</code>, <code>[]</code> or <code>""</code>.
@@ -760,7 +760,7 @@ as <code>CAR</code>.
 
 
 <p><hr>
-<h5><a name="internal-io">Internal Symbols</a></h5>
+<h5><a id="internal-io">Internal Symbols</a></h5>
 
 <p>Internal symbol names can consist of any printable (non-whitespace)
 character, except for the following meta characters:
@@ -781,7 +781,7 @@ returned as an internal symbol.
 
 
 <p><hr>
-<h5><a name="transient-io">Transient Symbols</a></h5>
+<h5><a id="transient-io">Transient Symbols</a></h5>
 
 <p>A transient symbol is anything surrounded by double quotes '<code>"</code>'.
 With that, it looks like - and can be used as - a string constant in other
@@ -865,7 +865,7 @@ address).
 
 
 <p><hr>
-<h5><a name="external-io">External Symbols</a></h5>
+<h5><a id="external-io">External Symbols</a></h5>
 
 <p>External symbol names are surrounded by braces ('<code>{</code>' and
 '<code>}</code>'). The characters of the symbol's name itself identify the
@@ -879,7 +879,7 @@ hexadecimal/alpha notation, where '<code>@</code>' is zero, '<code>A</code>' is
 <p>The database file is omitted for the first (default) file.
 
 <p><hr>
-<h4><a name="lst-io">Lists</a></h4>
+<h4><a id="lst-io">Lists</a></h4>
 
 <p>Lists are surrounded by parentheses ('<code>(</code>' and '<code>)</code>').
 
@@ -890,7 +890,7 @@ hexadecimal/alpha notation, where '<code>@</code>' is zero, '<code>A</code>' is
 <code>A</code>, <code>B</code> and <code>C</code> respectively in their CAR, and
 <code>NIL</code> in the last cell's CDR.
 
-<p><a name="dotted"><code>(A . B)</code></a> is a "dotted pair", a list
+<p><a id="dotted"><code>(A . B)</code></a> is a "dotted pair", a list
 consisting of a single cell, with the symbol <code>A</code> in its CAR, and
 <code>B</code> in its CDR.
 
@@ -914,7 +914,7 @@ because many functions won't terminate or will crash when given such a list.
 
 
 <p><hr>
-<h4><a name="macro-io">Read-Macros</a></h4>
+<h4><a id="macro-io">Read-Macros</a></h4>
 
 <p>Read-macros in PicoLisp are special forms that are recognized by the reader,
 and modify its behavior. Note that they take effect immediately while <code><a
@@ -1003,7 +1003,7 @@ href="refB.html#box">box</a></code> without arguments.
 
 
 <p><hr>
-<h3><a name="ev">Evaluation</a></h3>
+<h3><a id="ev">Evaluation</a></h3>
 
 <p>PicoLisp tries to evaluate any expression encountered in the read-eval-print
 loop. Basically, it does so by applying the following three rules:
@@ -1051,7 +1051,7 @@ to a list of arguments, to result in a function call? A legal function in
 PicoLisp is
 
 <p><dl>
-<dt>either
+<dt>either</dt>
 <dd>a <i>number</i>. When a number is used as a function, it is simply taken as
 a pointer to executable code that will be called with the list of (unevaluated)
 arguments as its single parameter. It is up to that code to evaluate the
@@ -1059,7 +1059,7 @@ arguments, or not. Some functions do not evaluate their arguments (e.g.
 <code>quote</code>) or evaluate only some of their arguments (e.g.
 <code>setq</code>).
 
-<dt>or
+<dt>or</dt>
 <dd>a <i>lambda expression</i>. A lambda expression is a list, whose CAR is
 either a symbol or a list of symbols, and whose CDR is a list of expressions.
 Note: In contrast to other Lisp implementations, the symbol LAMBDA itself does
@@ -1123,7 +1123,7 @@ a list, that list is evaluated to obtain an executable function.
 
 <p>Here, the <code>intern</code> function returns the symbol <code>car</code>
 whose VAL is used then. It is also legal, though quite dangerous, to use the <a
-name="codePointer">code-pointer</a> directly:
+id="codePointer">code-pointer</a> directly:
 
 <pre><code>
 : *
@@ -1137,14 +1137,14 @@ Segmentation fault
 </code></pre>
 
 <p>When an executable function is defined in Lisp itself, we call it a <a
-name="lambda"><i>lambda expression</i></a>. A lambda expression always has a
+id="lambda"><i>lambda expression</i></a>. A lambda expression always has a
 list of executable expressions as its CDR. The CAR, however, must be a either a
 list of symbols, or a single symbol, and it controls the evaluation of the
 arguments to the executable function according to the following rules:
 
 <p><dl>
 
-<dt>When the CAR is a list of symbols
+<dt>When the CAR is a list of symbols</dt>
 <dd>For each of these symbols an argument is evaluated, then the symbols are
 bound simultaneously to the results. The body of the lambda expression is
 executed, then the VAL's of the symbols are restored to their original values.
@@ -1153,7 +1153,7 @@ function. <br>As a special case, a single-level list of symbols may be passed
 instead of a single parameter here, resulting in a restricted form of
 destructuring bind.
 
-<dt>Otherwise, when the CAR is the symbol <code>@</code>
+<dt>Otherwise, when the CAR is the symbol <code>@</code></dt>
 <dd>All arguments are evaluated and the results kept internally in a list. The
 body of the lambda expression is executed, and the evaluated arguments can be
 accessed sequentially with the <code><a href="refA.html#args">args</a></code>,
@@ -1162,7 +1162,7 @@ href="refA.html#arg">arg</a></code> and <code><a
 href="refR.html#rest">rest</a></code> functions. This allows to define functions
 with a variable number of evaluated arguments.
 
-<dt>Otherwise, when the CAR is a single symbol
+<dt>Otherwise, when the CAR is a single symbol</dt>
 <dd>The symbol is bound to the whole unevaluated argument list. The body of the
 lambda expression is executed, then the symbol is restored to its original
 value. This allows to define functions with unevaluated arguments. Any kind of
@@ -1231,7 +1231,7 @@ function, these extra arguments will be ignored. Missing arguments default to
 
 
 <p><hr>
-<h3><a name="libs">Shared Libraries</a></h3>
+<h3><a id="libs">Shared Libraries</a></h3>
 
 <p>Analogous to built-in functions (which are written in PilSrc (based on LLVM))
 in the interpreter kernel), PicoLisp functions may also be defined in shared
@@ -1279,7 +1279,7 @@ symbol itself and not just the value:
 
 
 <p><hr>
-<h3><a name="coroutines">Coroutines</a></h3>
+<h3><a id="coroutines">Coroutines</a></h3>
 
 <p>Coroutines are independent execution contexts. They may have multiple entry
 and exit points, and preserve their environment between invocations.
@@ -1326,7 +1326,7 @@ $ ulimit -s unlimited
 
 
 <p><hr>
-<h3><a name="int">Interrupt</a></h3>
+<h3><a id="int">Interrupt</a></h3>
 
 <p>During the evaluation of an expression, the PicoLisp interpreter can be
 interrupted at any time by hitting <code>Ctrl-C</code>. It will then enter the
@@ -1336,7 +1336,7 @@ breakpoint routine, as if <code><a href="ref_.html#!">!</a></code> were called.
 <code>Ctrl-D</code> or <code>(<a href="refQ.html#quit">quit</a>)</code> will
 abort evaluation and return the interpreter to the top level. See also <code><a
 href="refD.html#debug">debug</a></code>, <code><a
-href="refE.html#e">e</a></code>, <code><a href="ref_.html#^">^</a></code> and
+href="refE.html#e">e</a></code>, <code><a href="ref_.html#HAT">^</a></code> and
 <code><a href="refD.html#*Dbg">*Dbg</a></code>
 
 <p>Other interrupts may be handled by <code><a
@@ -1350,7 +1350,7 @@ href="refT.html#*Term">*Term</a></code>.
 
 
 <p><hr>
-<h3><a name="errors">Error Handling</a></h3>
+<h3><a id="errors">Error Handling</a></h3>
 
 <p>When a runtime error occurs, execution is stopped and an error handler is
 entered.
@@ -1359,7 +1359,7 @@ entered.
 location (if possible) and the reason of the error, followed by an error
 message. That message is also stored in the global <code><a
 href="refM.html#*Msg">*Msg</a></code>, and the location of the error in <code><a
-href="ref_.html#^">^</a></code>. If the VAL of the global <code><a
+href="ref_.html#HAT">^</a></code>. If the VAL of the global <code><a
 href="refE.html#*Err">*Err</a></code> is non-<code>NIL</code> it is executed as
 a <code>prg</code> body. If the standard input is from a terminal, a
 read-eval-print loop (with a question mark "<code>?</code>" as prompt) is
@@ -1393,7 +1393,7 @@ href="refQ.html#quit">quit</a></code>.
 
 
 <p><hr>
-<h3><a name="atres">@ Result</a></h3>
+<h3><a id="atres">@ Result</a></h3>
 
 <p>In certain situations, the result of the last evaluation is stored in the VAL
 of the symbol <code>@</code>. This can be very convenient, because it often
@@ -1403,7 +1403,7 @@ makes the assignment to temporary variables unnecessary.
 
 <p><dl>
 
-<dt><code><a href="refL.html#load">load</a></code>
+<dt><code><a href="refL.html#load">load</a></code></dt>
 <dd>In read-eval loops, the last three results which were printed at the console
 are available in <code>@@@</code>, <code>@@</code> and <code>@</code>, in that
 order (i.e the latest result is in <code>@</code>).
@@ -1473,24 +1473,24 @@ automatically saved upon function entry and restored at exit.
 
 
 <p><hr>
-<h3><a name="cmp">Comparing</a></h3>
+<h3><a id="cmp">Comparing</a></h3>
 
 <p>In PicoLisp, it is legal to compare data items of arbitrary type. Any two
 items are either
 
 <p><dl>
 
-<dt>Identical
+<dt>Identical</dt>
 <dd>They are the same memory object (pointer equality). For example, two
 internal symbols with the same name are identical. And short numbers (up to 60
 bits plus sign) are also equivalent to "pointer"-equal.
 
-<dt>Equal
+<dt>Equal</dt>
 <dd>They are equal in every respect (structure equality), but need not to be
 identical. Examples are numbers with the same value, transient symbols with the
 same name or lists with equal elements.
 
-<dt>Or they have a well-defined ordinal relationship
+<dt>Or they have a well-defined ordinal relationship</dt>
 <dd>Numbers are comparable by their numeric value, strings by their name, and
 lists recursively by their elements (if the CAR's are equal, their CDR's are
 compared). For differing types, the following rule applies: Numbers are less
@@ -1510,28 +1510,28 @@ mixed data types:
 
 <p>See also <code><a href="refM.html#max">max</a></code>, <code><a
 href="refM.html#min">min</a></code>, <code><a
-href="refR.html#rank">rank</a></code>, <code><a href="ref_.html#<">&lt;</a></code>,
+href="refR.html#rank">rank</a></code>, <code><a href="ref_.html#LT">&lt;</a></code>,
 <code><a href="ref_.html#=">=</a></code>, <code><a
-href="ref_.html#>">&gt;</a></code> etc.
+href="ref_.html#GT">&gt;</a></code> etc.
 
 
 <p><hr>
-<h3><a name="oop">OO Concepts</a></h3>
+<h3><a id="oop">OO Concepts</a></h3>
 
 <p>PicoLisp comes with built-in object oriented extensions. There seems to be a
 common agreement upon three criteria for object orientation:
 
 <p><dl>
-<dt>Encapsulation
+<dt>Encapsulation</dt>
 <dd>Code and data are encapsulated into <u>objects</u>, giving them both a
 <u>behavior</u> and a <u>state</u>. Objects communicate by sending and receiving
 <u>messages</u>.
 
-<dt>Inheritance
+<dt>Inheritance</dt>
 <dd>Objects are organized into <u>classes</u>. The behavior of an object is
 inherited from its class(es) and superclass(es).
 
-<dt>Polymorphism
+<dt>Polymorphism</dt>
 <dd>Objects of different classes may behave differently in response to the same
 message. For that, classes may define different methods for each message.
 
@@ -1570,7 +1570,7 @@ and <code><a href="ref_.html#::">::</a></code>.
 
 
 <p><hr>
-<h3><a name="dbase">Database</a></h3>
+<h3><a id="dbase">Database</a></h3>
 
 <p>On the lowest level, a PicoLisp database is just a collection of <a
 href="#external">external symbols</a>. They reside in a database file, and are
@@ -1594,7 +1594,7 @@ property</i>, which is held only in memory and not written to disk on
 can be used by applications for any kind of temporary data.
 
 <p><hr>
-<h4><a name="trans">Transactions</a></h4>
+<h4><a id="trans">Transactions</a></h4>
 
 <p>In the typical case there will be multiple processes operating on the same
 database. These processes should be all children of the same parent process,
@@ -1635,7 +1635,7 @@ processes synchronize with these changes.
 </ol>
 
 <p><hr>
-<h4><a name="er">Entities / Relations</a></h4>
+<h4><a id="er">Entities / Relations</a></h4>
 
 <p>The symbols in a database can be used to store arbitrary information
 structures. In typical use, some symbols represent nodes of search trees, by
@@ -1716,7 +1716,7 @@ include
 
 
 <p><hr>
-<h3><a name="pilog">Pilog (PicoLisp Prolog)</a></h3>
+<h3><a id="pilog">Pilog (PicoLisp Prolog)</a></h3>
 
 <p>A declarative language is built on top of PicoLisp, that has the semantics of
 Prolog, but uses the syntax of Lisp.
@@ -1779,13 +1779,13 @@ CADR.
 <li>Within such a Lisp expression in a Pilog clause, the current bindings of
 Pilog variables are directly accessible in the corresponding Lisp symbol
 bindings or can be accessed with the <code><a
-href="ref_.html#->">-&gt</a></code> function (the latter is only necessary to
+href="ref_.html#-GT">-&gt;</a></code> function (the latter is only necessary to
 access non-top-level Pilog environments).
 
 </ul>
 
 <p><hr>
-<h3><a name="conv">Naming Conventions</a></h3>
+<h3><a id="conv">Naming Conventions</a></h3>
 
 <p>It was necessary to introduce - and adhere to - a set of conventions for
 PicoLisp symbol names. Because all (internal) symbols have a global scope, and
@@ -1861,7 +1861,7 @@ in such a case.
 
 
 <p><hr>
-<h3><a name="trad">Breaking Traditions</a></h3>
+<h3><a id="trad">Breaking Traditions</a></h3>
 
 <p>PicoLisp does not try very hard to be compatible with traditional Lisp
 systems. If you are used to some other Lisp dialects, you may notice the
@@ -1869,26 +1869,26 @@ following differences:
 
 <p><dl>
 
-<dt>Case Sensitivity
+<dt>Case Sensitivity</dt>
 <dd>PicoLisp distinguishes between upper case and lower case characters in
 symbol names. Thus, <code>CAR</code> and <code>car</code> are different symbols,
 which was not the case in traditional Lisp systems.
 
-<dt><code>QUOTE</code>
+<dt><code>QUOTE</code></dt>
 <dd>In traditional Lisp, the <code>QUOTE</code> function returns its
 <i>first</i> unevaluated argument. In PicoLisp, on the other hand,
 <code>quote</code> returns <i>all</i> (unevaluated) argument(s).
 
-<dt><code>LAMBDA</code>
+<dt><code>LAMBDA</code></dt>
 <dd>The <code>LAMBDA</code> function, in some way at the heart of traditional
 Lisp, is completely missing (and <code>quote</code> is used instead).
 
-<dt><code>PROG</code>
+<dt><code>PROG</code></dt>
 <dd>The <code>PROG</code> function of traditional Lisp, with its GOTO and ENTER
 functionality, is also missing. PicoLisp's <code>prog</code> function is just a
 simple sequencer (as <code>PROGN</code> in some Lisps).
 
-<dt>Function/Value
+<dt>Function/Value</dt>
 <dd>In PicoLisp, a symbol cannot have a value <i>and</i> a function definition
 at the same time. Though this is a disadvantage at first sight, it allows a
 completely uniform handling of functional data.
@@ -1897,7 +1897,7 @@ completely uniform handling of functional data.
 
 
 <p><hr>
-<h2><a name="fun">Function Reference</a></h2>
+<h2><a id="fun">Function Reference</a></h2>
 
 <p>This section provides a reference manual for the kernel functions, and some
 extensions. See the thematically grouped list of indexes below.
@@ -1988,7 +1988,7 @@ prg)</code> indicates an unevaluated list of further arguments.
 
 <p><span id="sortBtnHome"></span><dl>
 
-<dt>Symbol Functions
+<dt>Symbol Functions</dt>
 <dd><code>
    <a href="refN.html#new">new</a>
    <a href="refS.html#sym">sym</a>
@@ -2081,7 +2081,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refB.html#basename">basename</a>
 </code>
 
-<dt>Property Access
+<dt>Property Access</dt>
 <dd><code>
    <a href="refP.html#put">put</a>
    <a href="refG.html#get">get</a>
@@ -2096,7 +2096,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refM.html#meta">meta</a>
 </code>
 
-<dt>Predicates
+<dt>Predicates</dt>
 <dd><code>
    <a href="refA.html#atom">atom</a>
    <a href="refP.html#pair">pair</a>
@@ -2116,32 +2116,32 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="ref_.html#==">==</a>
    <a href="refN.html#n==">n==</a>
    <a href="ref_.html#=">=</a>
-   <a href="ref_.html#<>"><&gt</a>
+   <a href="ref_.html#LTGT">&lt;&gt;</a>
    <a href="ref_.html#=0">=0</a>
    <a href="ref_.html#=1">=1</a>
    <a href="ref_.html#=T">=T</a>
    <a href="refN.html#n0">n0</a>
    <a href="refN.html#nT">nT</a>
-   <a href="ref_.html#<">&lt;</a>
-   <a href="ref_.html#<=">&lt;=</a>
-   <a href="ref_.html#>">&gt;</a>
-   <a href="ref_.html#>=">&gt;=</a>
+   <a href="ref_.html#LT">&lt;</a>
+   <a href="ref_.html#LE">&lt;=</a>
+   <a href="ref_.html#GT">&gt;</a>
+   <a href="ref_.html#GE">&gt;=</a>
    <a href="refM.html#match">match</a>
    <a href="refF.html#full">full</a>
 </code>
 
-<dt>Arithmetics
+<dt>Arithmetics</dt>
 <dd><code>
    <a href="ref_.html#+">+</a>
    <a href="ref_.html#-">-</a>
    <a href="ref_.html#*">*</a>
    <a href="ref_.html#/">/</a>
-   <a href="ref_.html#%">%</a>
+   <a href="ref_.html#PERCENT">%</a>
    <a href="ref_.html#*/">*/</a>
    <a href="ref_.html#**">**</a>
    <a href="refI.html#inc">inc</a>
    <a href="refD.html#dec">dec</a>
-   <a href="ref_.html#>>">&gt;&gt;</a>
+   <a href="ref_.html#GTGT">&gt;&gt;</a>
    <a href="refR.html#rev">rev</a>
    <a href="refL.html#lt0">lt0</a>
    <a href="refL.html#le0">le0</a>
@@ -2150,8 +2150,8 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refA.html#abs">abs</a>
    <a href="refB.html#bit?">bit?</a>
    <a href="ref_.html#&">&</a>
-   <a href="ref_.html#|">|</a>
-   <a href="refX.html#x|">x|</a>
+   <a href="ref_.html#VT">|</a>
+   <a href="refX.html#xVT">x|</a>
    <a href="refS.html#sqrt">sqrt</a>
    <a href="refS.html#seed">seed</a>
    <a href="refH.html#hash">hash</a>
@@ -2171,7 +2171,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refH.html#hax">hax</a>
 </code>
 
-<dt>List Processing
+<dt>List Processing</dt>
 <dd><code>
    <a href="refC.html#car">car</a>
    <a href="refC.html#cdr">cdr</a>
@@ -2278,7 +2278,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refA.html#apply">apply</a>
 </code>
 
-<dt>Control Flow
+<dt>Control Flow</dt>
 <dd><code>
    <a href="refL.html#load">load</a>
    <a href="refA.html#args">args</a>
@@ -2367,7 +2367,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refB.html#bye">bye</a>
 </code>
 
-<dt>Mapping
+<dt>Mapping</dt>
 <dd><code>
    <a href="refA.html#apply">apply</a>
    <a href="refP.html#pass">pass</a>
@@ -2393,7 +2393,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refB.html#by">by</a>
 </code>
 
-<dt>Input/Output
+<dt>Input/Output</dt>
 <dd><code>
    <a href="refP.html#path">path</a>
    <a href="refI.html#in">in</a>
@@ -2470,7 +2470,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refM.html#mail">mail</a>
 </code>
 
-<dt>Object Orientation
+<dt>Object Orientation</dt>
 <dd><code>
    <a href="refC.html#*Class">*Class</a>
    <a href="refC.html#class">class</a>
@@ -2495,7 +2495,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refD.html#dep">dep</a>
 </code>
 
-<dt>Database
+<dt>Database</dt>
 <dd><code>
    <a href="refP.html#pool">pool</a>
    <a href="refP.html#pool2">pool2</a>
@@ -2598,10 +2598,10 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refR.html#revolve/2">revolve/2</a>
 </code>
 
-<dt>Pilog
+<dt>Pilog</dt>
 <dd><code>
    <a href="refP.html#prove">prove</a>
-   <a href="ref_.html#->">-&gt</a>
+   <a href="ref_.html#-GT">-&gt;</a>
    <a href="refU.html#unify">unify</a>
    <a href="refB.html#be">be</a>
    <a href="refC.html#clause">clause</a>
@@ -2656,7 +2656,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refR.html#remote/2">remote/2</a>
 </code>
 
-<dt>Debugging
+<dt>Debugging</dt>
 <dd><code>
    <a href="refP.html#pretty">pretty</a>
    <a href="refP.html#pp">pp</a>
@@ -2692,7 +2692,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refS.html#select">select</a>
 </code>
 
-<dt>System Functions
+<dt>System Functions</dt>
 <dd><code>
    <a href="refC.html#cmd">cmd</a>
    <a href="refA.html#argv">argv</a>
@@ -2743,6 +2743,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refB.html#basename">basename</a>
    <a href="refE.html#errno">errno</a>
    <a href="refN.html#native">native</a>
+   <a href="ref_.html#PERCENT@">%@</a>
    <a href="refS.html#struct">struct</a>
    <a href="refL.html#lisp">lisp</a>
    <a href="refE.html#exec">exec</a>
@@ -2759,7 +2760,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refB.html#bye">bye</a>
 </code>
 
-<dt>Globals
+<dt>Globals</dt>
 <dd><code>
    <a href="#nilSym">NIL</a>
    <a href="refP.html#pico">pico</a>
@@ -2788,7 +2789,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refT.html#*TStp1">*TStp1</a>
    <a href="refT.html#*TStp2">*TStp2</a>
    <a href="refT.html#*Term">*Term</a>
-   <a href="ref_.html#^">^</a>
+   <a href="ref_.html#HAT">^</a>
    <a href="refE.html#*Err">*Err</a>
    <a href="refM.html#*Msg">*Msg</a>
    <a href="refU.html#*Uni">*Uni</a>
@@ -2801,12 +2802,12 @@ prg)</code> indicates an unevaluated list of further arguments.
 </dl>
 
 <p><hr>
-<h2><a name="down">Download</a></h2>
+<h2><a id="down">Download</a></h2>
 
 <p>The <code>PicoLisp</code> system can be downloaded from the <a
 href="http://software-lab.de/down.html">PicoLisp Download</a> page.
 
-<script type="text/javascript">
+<script>
 var sortBtn;
 
 if (document.querySelectorAll) {

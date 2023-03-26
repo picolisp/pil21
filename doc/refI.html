@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -11,7 +11,7 @@
 
 <dl>
 
-<dt><a name="+Idx"><code>+Idx</code></a>
+<dt><a id="+Idx"><code>+Idx</code></a></dt>
 <dd>Prefix class for maintaining non-unique full-text indexes to <code><a
 href="refS.html#+String">+String</a></code> relations, a subclass of <code><a
 href="refR.html#+Ref">+Ref</a></code>. Accepts optional arguments for the
@@ -23,9 +23,9 @@ with the <code><a href="refS.html#+Sn">+Sn</a></code> soundex index, or the
 
 <pre><code>
 (rel nm (+Sn +Idx +String))  # Name
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="+IdxFold"><code>+IdxFold</code></a>
+<dt><a id="+IdxFold"><code>+IdxFold</code></a></dt>
 <dd>Prefix class for maintaining non-unique indexes to subsequent substrings of
 the <code><a href="refF.html#fold">fold</a></code>ed individual words of
 <code><a href="refS.html#+String">+String</a></code> relations. Accepts optional
@@ -35,9 +35,9 @@ href="refI.html#+Idx">+Idx</a></code> and <a href="ref.html#dbase">Database</a>.
 
 <pre><code>
 (rel nm (+IdxFold +String))            # Item Description
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="+index"><code>+index</code></a>
+<dt><a id="+index"><code>+index</code></a></dt>
 <dd>Abstract base class of all database B-Tree index relations (prefix classes
 for <code><a href="refR.html#+relation">+relation</a></code>s). The class
 hierarchy includes <code><a href="refK.html#+Key">+Key</a></code>, <code><a
@@ -48,11 +48,11 @@ href="ref.html#dbase">Database</a>.
 
 <pre><code>
 (isa '+index Rel)  # Check for an index relation
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="id"><code>(id 'num ['num]) -> sym</code></a>
-<dt><code>(id 'sym [NIL]) -> num</code>
-<dt><code>(id 'sym T) -> (num . num)</code>
+<dt><a id="id"><code>(id 'num ['num]) -> sym</code></a></dt>
+<dt><code>(id 'sym [NIL]) -> num</code></dt>
+<dt><code>(id 'sym T) -> (num . num)</code></dt>
 <dd>Converts one (the internal block number) or two (file and block) numbers to
 an external symbol, or an external symbol to a number or a pair of numbers.
 
@@ -65,11 +65,11 @@ an external symbol, or an external symbol to a number or a pair of numbers.
 -> 2
 : (id '{A2} T)
 -> (2 . 2)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="idx"><code>(idx 'var 'any 'flg) -> lst<br>
-(idx 'var 'any) -> lst<br>
-(idx 'var) -> lst</code></a>
+<dt><a id="idx"><code>(idx 'var 'any 'flg) -> lst</code></a></dt>
+<dt><code>(idx 'var 'any) -> lst</code></dt>
+<dt><code>(idx 'var) -> lst</code></dt>
 <dd>Maintains an index tree in <code>var</code>, and checks for the existence of
 <code>any</code>. If <code>any</code> is contained in <code>var</code>, the
 corresponding subtree is returned, otherwise <code>NIL</code>. In the first
@@ -118,9 +118,9 @@ href="refM.html#member">member</a></code>.
 -> (d (2 NIL A) (a b c) NIL T)               # View it again
 : (idx 'X)
 -> (2 A d (a b c) T)                         # '17' is deleted
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="if"><code>(if 'any1 any2 . prg) -> any</code></a>
+<dt><a id="if"><code>(if 'any1 any2 . prg) -> any</code></a></dt>
 <dd>Conditional execution: If the condition <code>any1</code> evaluates to
 non-<code>NIL</code>, <code>any2</code> is evaluated and returned. Otherwise,
 <code>prg</code> is executed and the result returned. See also <code><a
@@ -136,9 +136,9 @@ OK
 : (if (> 3 4) (println 'OK) (println 'Bad))
 Bad
 -> Bad
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="if2"><code>(if2 'any1 'any2 any3 any4 any5 . prg) -> any</code></a>
+<dt><a id="if2"><code>(if2 'any1 'any2 any3 any4 any5 . prg) -> any</code></a></dt>
 <dd>Four-way conditional execution for two conditions: If both conditions
 <code>any1</code> and <code>any2</code> evaluate to non-<code>NIL</code>,
 <code>any3</code> is evaluated and returned. Otherwise, <code>any4</code> or
@@ -157,9 +157,9 @@ the result returned. See also <code><a href="refI.html#if">if</a></code> and
 -> second
 : (if2 NIL NIL 'both 'first 'second 'none)
 -> none
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="ifn"><code>(ifn 'any1 any2 . prg) -> any</code></a>
+<dt><a id="ifn"><code>(ifn 'any1 any2 . prg) -> any</code></a></dt>
 <dd>Conditional execution ("If not"): If the condition <code>any1</code>
 evaluates to <code>NIL</code>, <code>any2</code> is evaluated and returned.
 Otherwise, <code>prg</code> is executed and the result returned. See also
@@ -173,9 +173,9 @@ href="refN.html#nond">nond</a></code>.
 : (ifn (= 3 4) (println 'OK) (println 'Bad))
 OK
 -> OK
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="import"><code>(import . lst) -> lst</code></a>
+<dt><a id="import"><code>(import . lst) -> lst</code></a></dt>
 <dd>Wrapper function for <code><a href="refI.html#intern">intern</a></code>.
 Typically used to import symbols from other namespaces, as created by <code><a
 href="refS.html#symbols">symbols</a></code>. <code>lst</code> should be a list
@@ -187,9 +187,9 @@ of symbols. See also <code><a href="refP.html#pico">pico</a></code>,
 <pre><code>
 : (import libA~foo libB~bar)
 -> (foo bar)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="in"><code>(in 'any . prg) -> any</code></a>
+<dt><a id="in"><code>(in 'any . prg) -> any</code></a></dt>
 <dd>Opens <code>any</code> as input channel during the execution of
 <code>prg</code>. The current input channel will be saved and restored
 appropriately. If the argument is <code>NIL</code>, standard input is used. If
@@ -218,10 +218,10 @@ href="refC.html#ctl">ctl</a></code>.
 : (in '(file "-b" "--mime" "bin/picolisp")  # Get the mime type
    (line T) )
 -> "application/x-executable; charset=binary"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="inc"><code>(inc 'num) -> num<br>
-(inc 'var ['num]) -> num</code></a>
+<dt><a id="inc"><code>(inc 'num) -> num</code></a></dt>
+<dt><code>(inc 'var ['num]) -> num</code></dt>
 <dd>The first form returns the value of <code>num</code> incremented by 1. The
 second form increments the <code>VAL</code> of <code>var</code> by 1, or by
 <code>num</code>. If the first argument is <code>NIL</code>, it is returned
@@ -250,9 +250,9 @@ href="ref_.html#+">+</a></code>.
 -> 3
 : L
 -> (1 3 3 4)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="inc!"><code>(inc! 'obj 'sym ['num]) -> num</code></a>
+<dt><a id="inc!"><code>(inc! 'obj 'sym ['num]) -> num</code></a></dt>
 <dd><a href="ref.html#trans">Transaction</a> wrapper function for <code><a
 href="refI.html#inc">inc</a></code>. <code>num</code> defaults to 1. Note that
 for incrementing a property value of an entity typically the <code><a
@@ -264,9 +264,9 @@ href="refP.html#put!">put!</a></code>.
 
 <pre><code>
 (inc! Obj 'cnt 0)  # Incrementing a property of a non-entity object
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="index"><code>(index 'any 'lst) -> cnt | NIL</code></a>
+<dt><a id="index"><code>(index 'any 'lst) -> cnt | NIL</code></a></dt>
 <dd>Returns the <code>cnt</code> position of <code>any</code> in
 <code>lst</code>, or <code>NIL</code> if it is not found. See also <code><a
 href="refO.html#offset">offset</a></code> and <code><a
@@ -277,9 +277,9 @@ href="refS.html#sub?">sub?</a></code>.
 -> 3
 : (index '(5 6) '((1 2) (3 4) (5 6) (7 8)))
 -> 3
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="info"><code>(info 'any ['flg]) -> (cnt|flg dat . tim)</code></a>
+<dt><a id="info"><code>(info 'any ['flg]) -> (cnt|flg dat . tim)</code></a></dt>
 <dd>Returns information about a file with the name <code>any</code>: The current
 size <code>cnt</code> in bytes, and the modification date and time (UTC, or
 local time if <code>flg</code> is zero). For directories, <code>T</code> is
@@ -300,9 +300,9 @@ $ pil +
 -> (208 730594 . 32315)
 : (stamp 730594 32315)
 -> "2000-06-17 08:58:35"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="init"><code>(init 'tree ['any1] ['any2]) -> lst</code></a>
+<dt><a id="init"><code>(init 'tree ['any1] ['any2]) -> lst</code></a></dt>
 <dd>Initializes a structure for stepping iteratively through a database tree.
 <code>any1</code> and <code>any2</code> may specify a range of keys. If
 <code>any2</code> is greater than <code>any1</code>, the traversal will be in
@@ -314,9 +314,9 @@ href="refS.html#scan">scan</a></code>.
 <pre><code>
 : (init (tree 'nr '+Item) 3 5)
 -> (((3 . 5) ((3 NIL . {B3}) (4 NIL . {B4}) (5 NIL . {B5}) (6 NIL . {B6}))))
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="input"><code>(input exe . prg) -> any</code></a>
+<dt><a id="input"><code>(input exe . prg) -> any</code></a></dt>
 <dd>Establishes an input stream, by redirecting the current input channel during
 the execution of <code>prg</code>. The current input channel will be saved and
 restored appropriately. <code>exe</code> is executed (in the context of the
@@ -331,9 +331,9 @@ href="refP.html#pipe">pipe</a></code>.
 -> "A"
 : (let S (chop "(+ 2 (* 3 4))") (input (++ S) (read)))
 -> (+ 2 (* 3 4))
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="insert"><code>(insert 'cnt 'lst 'any) -> lst</code></a>
+<dt><a id="insert"><code>(insert 'cnt 'lst 'any) -> lst</code></a></dt>
 <dd>Inserts <code>any</code> into <code>lst</code> at position <code>cnt</code>.
 This is a non-destructive operation. See also <code><a
 href="refR.html#remove">remove</a></code>, <code><a
@@ -349,9 +349,9 @@ href="refR.html#replace">replace</a></code>.
 -> (777 a b c d e)
 : (insert 9 '(a b c d e) 777)
 -> (a b c d e 777)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="intern"><code>(intern 'sym ['nsp]) -> sym</code></a>
+<dt><a id="intern"><code>(intern 'sym ['nsp]) -> sym</code></a></dt>
 <dd>Creates or finds an internal symbol. If a symbol with the name
 <code>sym</code> is already intern, it is returned. Otherwise, <code>sym</code>
 is interned in the current namespace and returned. If <code>nsp</code> is
@@ -370,9 +370,9 @@ href="refE.html#extern">extern</a></code>.
 -> car
 : ((intern (pack "c" "a" "r")) (1 2 3))
 -> 1
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="ipid"><code>(ipid) -> pid | NIL</code></a>
+<dt><a id="ipid"><code>(ipid) -> pid | NIL</code></a></dt>
 <dd>Returns the corresponding process ID when the current input channel is
 reading from a pipe, otherwise <code>NIL</code>. See also <code><a
 href="refO.html#opid">opid</a></code>, <code><a
@@ -384,9 +384,9 @@ href="refL.html#load">load</a></code>.
 : (in '(ls "-l") (println (line T)) (kill (ipid)))
 "total 7364"
 -> T
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="isa"><code>(isa 'cls|typ 'obj) -> obj | NIL</code></a>
+<dt><a id="isa"><code>(isa 'cls|typ 'obj) -> obj | NIL</code></a></dt>
 <dd>Returns <code>obj</code> when it is an object that inherits from
 <code>cls</code> or <code>type</code>. See also <a href="ref.html#oop">OO
 Concepts</a>, <code><a href="refC.html#class">class</a></code>, <code><a
@@ -399,9 +399,9 @@ href="refO.html#object">object</a></code>.
 -> {A17}
 : (isa '(+Male +Person) Obj)
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="isa/2"><code>isa/2</code></a>
+<dt><a id="isa/2"><code>isa/2</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the second
 argument is of the type or class given by the first argument, according to the
 <code><a href="refI.html#isa">isa</a></code> function. Typically used in
@@ -421,9 +421,9 @@ href="refT.html#tolr/3">tolr/3</a></code>.
  @Prs={A124} @Nm="Alice Maud Mary"
  @Prs={A21} @Nm="Anne"
  @Prs={A57} @Nm="Augusta Victoria".  # Stop
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="iter"><code>(iter 'tree ['fun] ['any1] ['any2] ['flg])</code></a>
+<dt><a id="iter"><code>(iter 'tree ['fun] ['any1] ['any2] ['flg])</code></a></dt>
 <dd>Iterates through a database tree by applying <code>fun</code> to all values.
 <code>fun</code> defaults to <code><a
 href="refP.html#println">println</a></code>. <code>any1</code> and
@@ -455,7 +455,7 @@ href="refS.html#step">step</a></code>.
 "Gadget Appliance"
 "Testartikel"
 -> NIL
-</code></pre>
+</code></pre></dd>
 
 </dl>
 

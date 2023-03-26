@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -11,7 +11,7 @@
 
 <dl>
 
-<dt><a name="qsym"><code>(qsym . sym) -> lst</code></a>
+<dt><a id="qsym"><code>(qsym . sym) -> lst</code></a></dt>
 <dd>Returns a cons pair of the value and property list of <code>sym</code>. See
 also <code><a href="refQ.html#quote">quote</a></code>, <code><a
 href="refV.html#val">val</a></code> and <code><a
@@ -28,9 +28,9 @@ href="refG.html#getl">getl</a></code>.
 -> T
 : (qsym . A)
 -> (1234 f (2 . b) (1 . a))
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="quote"><code>(quote . any) -> any</code></a>
+<dt><a id="quote"><code>(quote . any) -> any</code></a></dt>
 <dd>Returns <code>any</code> unevaluated. The reader recognizes the single quote
 char <code>'</code> as a macro for this function. See also <code><a
 href="refL.html#lit">lit</a></code>.
@@ -42,9 +42,9 @@ href="refL.html#lit">lit</a></code>.
 -> (foo a b c)
 : (quote (quote (quote a)))
 -> ('('(a)))
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="query"><code>(query 'lst ['lst]) -> flg</code></a>
+<dt><a id="query"><code>(query 'lst ['lst]) -> flg</code></a></dt>
 <dd>Handles an interactive <a href="ref.html#pilog">Pilog</a> query. The two
 <code>lst</code> arguments are passed to <code><a
 href="refP.html#prove">prove</a></code>. <code>query</code> displays each
@@ -58,9 +58,9 @@ href="refS.html#solve">solve</a></code>.
  @X=NIL @Y=(a b c)
  @X=(a) @Y=(b c).   # Stop
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="queue"><code>(queue 'var 'any) -> any</code></a>
+<dt><a id="queue"><code>(queue 'var 'any) -> any</code></a></dt>
 <dd>Implements a queue using a list in <code>var</code>. The <code>any</code>
 argument is (destructively) concatenated to the end of the value list. See also
 <code><a href="refP.html#push">push</a></code>, <code><a
@@ -81,9 +81,9 @@ href="refF.html#fifo">fifo</a></code>.
 -> 1
 : A
 -> (2 3)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="quit"><code>(quit ['any ['any]])</code></a>
+<dt><a id="quit"><code>(quit ['any ['any]])</code></a></dt>
 <dd>Stops current execution. If no arguments are given, all pending <code><a
 href="refF.html#finally">finally</a></code> expressions are executed and control
 is returned to the top level read-eval-print loop. Otherwise, an error handler
@@ -100,7 +100,7 @@ Handling</a></code>.
 -> 123
 ?                                            # Empty line: Exit
 :
-</code></pre>
+</code></pre></dd>
 
 </dl>
 

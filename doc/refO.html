@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -11,14 +11,14 @@
 
 <dl>
 
-<dt><a name="*ObjIdx"><code>*ObjIdx</code></a>
+<dt><a id="*ObjIdx"><code>*ObjIdx</code></a></dt>
 <dd>Holds an <code><a href="refI.html#idx">idx</a></code> tree of objects
 created by <code><a href="refO.html#obj">obj</a></code>.
 
 <pre><code>
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="*Once"><code>*Once</code></a>
+<dt><a id="*Once"><code>*Once</code></a></dt>
 <dd>Holds an <code><a href="refI.html#idx">idx</a></code> tree of already
 <code><a href="refL.html#load">load</a></code>ed source locations (as returned
 by <code><a href="refF.html#file">file</a></code>) See also <code><a
@@ -27,9 +27,9 @@ href="refO.html#once">once</a></code>.
 <pre><code>
 : *Once
 -> (("lib/" "misc.l" . 11) (("lib/" "http.l" . 9) (("lib/" "form.l" . 11))))
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="*OS"><code>*OS</code></a>
+<dt><a id="*OS"><code>*OS</code></a></dt>
 <dd>A global constant holding the name of the operating system. Possible values
 include <code>"Linux"</code>, <code>"Android"</code>, <code>"FreeBSD"</code>,
 <code>"OpenBSD"</code>, <code>"SunOS"</code>, <code>"Darwin"</code> or
@@ -39,10 +39,10 @@ and <code><a href="refV.html#version">version</a></code>.
 <pre><code>
 : *OS
 -> "Linux"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="obj"><code>(obj (typ sym [hook] val ..) [var1 val1 ..]) -> obj</code></a>
-<dt><code>(obj typ any [var1 val1 ..]) -> obj</code>
+<dt><a id="obj"><code>(obj (typ sym [hook] val ..) [var1 val1 ..]) -> obj</code></a></dt>
+<dt><code>(obj typ any [var1 val1 ..]) -> obj</code></dt>
 <dd>Finds or creates a database object, and initializes additional properties
 using the <code>varN</code> and <code>valN</code> arguments. In the first form,
 a <code><a href="refR.html#request">request</a></code> for <code>(typ sym [hook]
@@ -54,9 +54,9 @@ href="refO.html#*ObjIdx">*ObjIdx</a></code> with the <code>any</code> argument.
 <pre><code>
 : (obj ((+Item) nr 2) nm "Spare Part" sup `(db 'nr '+CuSu 2) inv 100 pr 1250)
 -> {B2}
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="object"><code>(object 'sym 'any ['sym2 'any2 ..]) -> obj</code></a>
+<dt><a id="object"><code>(object 'sym 'any ['sym2 'any2 ..]) -> obj</code></a></dt>
 <dd>Defines <code>sym</code> to be an object with the value (or type)
 <code>any</code>. The property list is initialized with all optionally supplied
 key-value pairs. See also <a href="ref.html#oop">OO Concepts</a>, <code><a
@@ -73,10 +73,10 @@ Obj (+A +B +C)
    b 2
    a 1
 -> Obj
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="oct"><code>(oct 'num ['num]) -> sym</code></a>
-<dt><code>(oct 'sym) -> num</code>
+<dt><a id="oct"><code>(oct 'num ['num]) -> sym</code></a></dt>
+<dt><code>(oct 'sym) -> num</code></dt>
 <dd>Converts a number <code>num</code> to an octal string, or an octal string
 <code>sym</code> to a number. In the first case, if the second argument is
 given, the result is separated by spaces into groups of such many digits. See
@@ -92,9 +92,9 @@ href="refF.html#format">format</a></code>.
 -> 73
 : (oct 1234567 3)
 -> "4 553 207"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="off"><code>(off var ..) -> NIL</code></a>
+<dt><a id="off"><code>(off var ..) -> NIL</code></a></dt>
 <dd>Stores <code>NIL</code> in all <code>var</code> arguments. See also <code><a
 href="refO.html#on">on</a></code>, <code><a
 href="refO.html#onOff">onOff</a></code>, <code><a
@@ -108,9 +108,9 @@ href="refO.html#one">one</a></code>.
 -> NIL
 : B
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="offset"><code>(offset 'lst1 'lst2) -> cnt | NIL</code></a>
+<dt><a id="offset"><code>(offset 'lst1 'lst2) -> cnt | NIL</code></a></dt>
 <dd>Returns the <code>cnt</code> position of the tail list <code>lst1</code> in
 <code>lst2</code>, or <code>NIL</code> if it is not found. See also <code><a
 href="refI.html#index">index</a></code>, <code><a
@@ -122,9 +122,9 @@ href="refT.html#tail">tail</a></code>.
 -> 3
 : (offset '(c d e) '(a b c d e f))
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="on"><code>(on var ..) -> T</code></a>
+<dt><a id="on"><code>(on var ..) -> T</code></a></dt>
 <dd>Stores <code>T</code> in all <code>var</code> arguments. See also <code><a
 href="refO.html#off">off</a></code>, <code><a
 href="refO.html#onOff">onOff</a></code>, <code><a
@@ -138,9 +138,9 @@ href="refO.html#one">one</a></code>.
 -> T
 : B
 -> T
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="once"><code>(once . prg) -> any</code></a>
+<dt><a id="once"><code>(once . prg) -> any</code></a></dt>
 <dd>Executes <code>prg</code> once, when the current file is <code><a
 href="refL.html#load">load</a></code>ed the first time. Subsequent loads at a
 later time will not execute <code>prg</code>, and <code>once</code> returns
@@ -152,9 +152,9 @@ later time will not execute <code>prg</code>, and <code>once</code> returns
    (load "file1.l" "file2.l") )  # Load other files
 
 `(once T)  # Ignore next time the rest of this file
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="one"><code>(one var ..) -> 1</code></a>
+<dt><a id="one"><code>(one var ..) -> 1</code></a></dt>
 <dd>Stores <code>1</code> in all <code>var</code> arguments. See also <code><a
 href="refZ.html#zero">zero</a></code>, <code><a
 href="refO.html#on">on</a></code>, <code><a href="refO.html#off">off</a></code>
@@ -167,9 +167,9 @@ and <code><a href="refO.html#onOff">onOff</a></code>.
 -> 1
 : B
 -> 1
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="onOff"><code>(onOff var ..) -> flg</code></a>
+<dt><a id="onOff"><code>(onOff var ..) -> flg</code></a></dt>
 <dd>Logically negates the values of all <code>var</code> arguments. Returns the
 new value of the last symbol. See also <code><a
 href="refO.html#on">on</a></code>, <code><a href="refO.html#off">off</a></code>,
@@ -189,9 +189,9 @@ href="refO.html#one">one</a></code>.
 -> NIL
 : B
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="open"><code>(open 'any ['flg]) -> cnt | NIL</code></a>
+<dt><a id="open"><code>(open 'any ['flg]) -> cnt | NIL</code></a></dt>
 <dd>Opens the file with the name <code>any</code> in read/write mode (or
 read-only if <code>flg</code> is non-<code>NIL</code>), and returns a file
 descriptor <code>cnt</code> (or <code>NIL</code> on error). A leading
@@ -207,9 +207,9 @@ href="refP.html#poll">poll</a></code>.
 <pre><code>
 : (open "x")
 -> 3
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="opid"><code>(opid) -> pid | NIL</code></a>
+<dt><a id="opid"><code>(opid) -> pid | NIL</code></a></dt>
 <dd>Returns the corresponding process ID when the current output channel is
 writing to a pipe, otherwise <code>NIL</code>. See also <code><a
 href="refI.html#ipid">ipid</a></code> and <code><a
@@ -220,9 +220,9 @@ href="refO.html#out">out</a></code>.
   PID TTY          TIME CMD
  7127 pts/3    00:00:00 cat
 -> T
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="opt"><code>(opt) -> sym</code></a>
+<dt><a id="opt"><code>(opt) -> sym</code></a></dt>
 <dd>Return the next command line argument ("option", as would be processed by
 <code><a href="refL.html#load">load</a></code>) as a string, and remove it from
 the remaining command line arguments. See also <a
@@ -232,9 +232,9 @@ href="refA.html#argv">argv</a></code>.
 <pre><code>
 $ pil  -"de f () (println 'opt (opt))"  -f abc  -bye
 opt "abc"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="or"><code>(or 'any ..) -> any</code></a>
+<dt><a id="or"><code>(or 'any ..) -> any</code></a></dt>
 <dd>Logical OR. The expressions <code>any</code> are evaluated from left to
 right. If a non-<code>NIL</code> value is encountered, it is returned
 immediately. Else the result of the last expression is returned. See also
@@ -248,9 +248,9 @@ href="refU.html#unless">unless</a></code>.
 : (or (= 3 4) (read))
 abc
 -> abc
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="or/2"><code>or/2</code></a>
+<dt><a id="or/2"><code>or/2</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that takes an arbitrary number
 of clauses, and succeeds if one of them can be proven. See also <code><a
 href="refN.html#not/1">not/1</a></code>.
@@ -263,7 +263,7 @@ href="refN.html#not/1">not/1</a></code>.
  @X=7
 -> NIL</code></pre>
 
-<dt><a name="out"><code>(out 'any . prg) -> any</code></a>
+<dt><a id="out"><code>(out 'any . prg) -> any</code></a></dt>
 <dd>Opens <code>any</code> as output channel during the execution of
 <code>prg</code>. The current output channel will be saved and restored
 appropriately. If the argument is <code>NIL</code>, standard output is used. If
@@ -290,9 +290,9 @@ href="refL.html#load">load</a></code>.
 -> def
 : (out '(lpr) (prinl "Hello"))  # Send line to line printer
 -> "Hello"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="output"><code>(output exe . prg) -> any</code></a>
+<dt><a id="output"><code>(output exe . prg) -> any</code></a></dt>
 <dd>Establishes an output stream, by redirecting the current output channel
 during the execution of <code>prg</code>. The current output channel will be
 saved and restored appropriately. <code>exe</code> is executed (in the context
@@ -315,7 +315,7 @@ ABC
 -> "abc"
 : (pack (make (output (link @@) (print '(+ 2 (* 3 4))))))
 -> "(+ 2 (* 3 4))"
-</code></pre>
+</code></pre></dd>
 
 </dl>
 

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -11,7 +11,7 @@
 
 <dl>
 
-<dt><a name="*Winch"><code>*Winch</code></a>
+<dt><a id="*Winch"><code>*Winch</code></a></dt>
 <dd>Global variable holding a (possibly empty) <code>prg</code> body, which will
 be executed when a SIGWINCH signal is sent to the current process. See also
 <code><a href="refA.html#alarm">alarm</a></code>, <code><a
@@ -24,10 +24,10 @@ href="refT.html#*Term">*Term</a></code>.
 <pre><code>
 : (de *Winch (msg 'SIGWINCH))
 -> *Winch
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="wait"><code>(wait 'cnt|NIL . prg) -> any</code></a>
-<dt><code>(wait 'cnt|NIL T 'fd) -> fd|NIL</code>
+<dt><a id="wait"><code>(wait 'cnt|NIL . prg) -> any</code></a></dt>
+<dt><code>(wait 'cnt|NIL T 'fd) -> fd|NIL</code></dt>
 <dd>Waits for a condition. While the result of the execution of <code>prg</code>
 is <code>NIL</code> (first form), or no input is available for the file
 descriptor in <code>fd</code> (second form), a <code>poll(2)</code> system call
@@ -55,9 +55,9 @@ href="refS.html#sync">sync</a></code>.
 6
 7
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="week"><code>(week 'dat) -> num</code></a>
+<dt><a id="week"><code>(week 'dat) -> num</code></a></dt>
 <dd>Returns the number of the week for a given <code><a
 href="refD.html#date">date</a></code> <code>dat</code>. See also <code><a
 href="refD.html#day">day</a></code>, <code><a
@@ -70,9 +70,9 @@ href="refS.html#strDat">strDat</a></code>.
 -> "2007-06-01"
 : (week (date))
 -> 22
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="when"><code>(when 'any . prg) -> any</code></a>
+<dt><a id="when"><code>(when 'any . prg) -> any</code></a></dt>
 <dd>Conditional execution: When the condition <code>any</code> evaluates to
 non-<code>NIL</code>, <code>prg</code> is executed and the result is returned.
 Otherwise <code>NIL</code> is returned. See also <code><a
@@ -85,9 +85,9 @@ and <code><a href="refC.html#cond">cond</a></code>.
 OK
 Good
 -> Good
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="while"><code>(while 'any . prg) -> any</code></a>
+<dt><a id="while"><code>(while 'any . prg) -> any</code></a></dt>
 <dd>Conditional loop: While the condition <code>any</code> evaluates to
 non-<code>NIL</code>, <code>prg</code> is repeatedly executed. If
 <code>prg</code> is never executed, <code>NIL</code> is returned. Otherwise the
@@ -106,9 +106,9 @@ got: abc
 got: 1234
 NIL
 -> 1234
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="what"><code>(what 'sym) -> lst</code></a>
+<dt><a id="what"><code>(what 'sym) -> lst</code></a></dt>
 <dd>(Debug mode only) Returns a list of all internal symbols that match the
 pattern string <code>sym</code>. See also <code><a
 href="refM.html#match">match</a></code>, <code><a
@@ -119,9 +119,9 @@ href="refC.html#can">can</a></code>.
 <pre><code>
 : (what "cd@dr")
 -> (cdaddr cdaadr cddr cddddr cdddr cddadr cdadr)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="who"><code>(who 'any) -> lst</code></a>
+<dt><a id="who"><code>(who 'any) -> lst</code></a></dt>
 <dd>(Debug mode only) Returns a list of all functions or method definitions that
 contain the atom or pattern <code>any</code>. See also <code><a
 href="refM.html#match">match</a></code>, <code><a
@@ -144,9 +144,9 @@ href="refC.html#can">can</a></code>.
       "Type error" ) )
 .                                      # Stop
 -> T
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="wipe"><code>(wipe 'sym|lst) -> sym|lst</code></a>
+<dt><a id="wipe"><code>(wipe 'sym|lst) -> sym|lst</code></a></dt>
 <dd>Clears the <code>VAL</code> and the property list of <code>sym</code>, or of
 all symbols in the list <code>lst</code>. When a symbol is an external symbol,
 its state is also set to "not loaded". Does nothing when <code>sym</code> is an
@@ -169,9 +169,9 @@ A (1 2 3 4)
 : (show 'A)
 A NIL
 -> A
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="with"><code>(with 'var . prg) -> any</code></a>
+<dt><a id="with"><code>(with 'var . prg) -> any</code></a></dt>
 <dd>Saves the current object <code>This</code> and sets it to the new value
 <code>var</code>. Then <code>prg</code> is executed, and <code>This</code> is
 restored to its previous value. The return value is the result of
@@ -187,9 +187,9 @@ the same manner as inside a method body. <code>prg</code> is not executed (and
 -> 2
 : (with 'X (list (: a) (: b)))
 -> (1 2)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="wr"><code>(wr 'cnt ..) -> cnt</code></a>
+<dt><a id="wr"><code>(wr 'cnt ..) -> cnt</code></a></dt>
 <dd>Writes all <code>cnt</code> arguments as raw bytes to the current output
 channel. See also <code><a href="refR.html#rd">rd</a></code> and <code><a
 href="refP.html#pr">pr</a></code>.
@@ -200,10 +200,10 @@ href="refP.html#pr">pr</a></code>.
 : (hd "x")
 00000000  01 FF 01                                         ...
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="wrap"><code>(wrap 'cnt 'lst) -> sym</code></a>
-<dt><code>(wrap 'cnt 'sym) -> lst</code>
+<dt><a id="wrap"><code>(wrap 'cnt 'lst) -> sym</code></a></dt>
+<dt><code>(wrap 'cnt 'sym) -> lst</code></dt>
 <dd>The first form returns a transient symbol with all characters in
 <code>lst</code> <code><a href="refP.html#pack">pack</a></code>ed in lines with
 a maximal length of <code>cnt</code>. The second form converts a symbol to a
@@ -219,7 +219,7 @@ href="refC.html#center">center</a></code>.
 -> "The^Jquick^Jbrown^Jfox^Jjumps^Jover the^Jlazy dog"
 : (wrap 8 "The quick brown fox jumps over the lazy dog")
 -> ("The" "quick" "brown" "fox" "jumps" "over the" "lazy dog")
-</code></pre>
+</code></pre></dd>
 
 </dl>
 

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -11,7 +11,7 @@
 
 <dl>
 
-<dt><a name="*Uni"><code>*Uni</code></a>
+<dt><a id="*Uni"><code>*Uni</code></a></dt>
 <dd>A global variable holding an <code><a href="refI.html#idx">idx</a></code>
 tree, with all unique data that were collected with the comma (<code>,</code>)
 read-macro. Typically used for localization. Setting <code>*Uni</code> to
@@ -28,9 +28,9 @@ href="refL.html#locale">locale</a></code>.
 -> (1 2 3)
 : *Uni
 -> ("abc" NIL (1 2 3))
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="+UB"><code>+UB</code></a>
+<dt><a id="+UB"><code>+UB</code></a></dt>
 <dd>Prefix class for <code><a href="refA.html#+Aux">+Aux</a></code> to maintain
 an UB-Tree index instead of the direct values. This allows efficient range
 access to multi-dimensional data. Only positive numeric keys are supported. See
@@ -71,9 +71,9 @@ href="ref.html#dbase">Database</a>.
 queries can handle UB-trees, they may do so sub-optimally for certain ranges.
 : (collect 'x '+Pos (200000 200000 200000) (899999 899999 899999))
 -> ({7} {14} {17} {15})
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="u"><code>(u) -> T</code></a>
+<dt><a id="u"><code>(u) -> T</code></a></dt>
 <dd>(Debug mode only) Removes <code><a href="ref_.html#!">!</a></code> all
 breakpoints in all subexpressions of the current breakpoint. Typically used when
 single-stepping a function or method with <code><a
@@ -84,9 +84,9 @@ href="refU.html#unbug">unbug</a></code>.
 <pre><code>
 ! (u)                         # Unbug subexpression(s) at breakpoint
 -> T
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="ubIter"><code>(ubIter 'tree 'dim 'fun 'lst1 'lst2)</code></a>
+<dt><a id="ubIter"><code>(ubIter 'tree 'dim 'fun 'lst1 'lst2)</code></a></dt>
 <dd>Efficiently iterates through a database <code><a
 href="refU.html#+UB">+UB</a></code> tree, by applying <code>fun</code> to all
 values. <code>dim</code> is the number of the key dimensions, <code>lst1</code>
@@ -113,10 +113,10 @@ for UB-tree queries. See also <code><a href="refI.html#iter">iter</a></code>.
    y 691799
    x 265381
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="udp"><code>(udp 'any1 'any2 'any3) -> any</code></a>
-<dt><code>(udp 'cnt) -> any</code>
+<dt><a id="udp"><code>(udp 'any1 'any2 'any3) -> any</code></a></dt>
+<dt><code>(udp 'cnt) -> any</code></dt>
 <dd>Simple unidirectional sending/receiving of UDP packets. In the first form,
 <code>any3</code> is sent to a UDP server listening at host <code>any1</code>,
 port <code>any2</code>. In the second form, one item is received from a UDP
@@ -137,9 +137,9 @@ href="refC.html#connect">connect</a></code>.
 
 # First session
 -> (a b c)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="ultimo"><code>(ultimo 'y 'm) -> cnt</code></a>
+<dt><a id="ultimo"><code>(ultimo 'y 'm) -> cnt</code></a></dt>
 <dd>Returns the <code><a href="refD.html#date">date</a></code> of the last day
 of the month <code>m</code> in the year <code>y</code>. See also <code><a
 href="refD.html#day">day</a></code> and <code><a
@@ -156,11 +156,11 @@ href="refW.html#week">week</a></code>.
 -> (2000 2 29)
 : (date (ultimo 1900 2))
 -> (1900 2 28)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="unbug"><code>(unbug 'sym) -> T</code></a>
-<dt><code>(unbug 'sym 'cls) -> T</code>
-<dt><code>(unbug '(sym . cls)) -> T</code>
+<dt><a id="unbug"><code>(unbug 'sym) -> T</code></a></dt>
+<dt><code>(unbug 'sym 'cls) -> T</code></dt>
+<dt><code>(unbug '(sym . cls)) -> T</code></dt>
 <dd>(Debug mode only) Removes all <code><a href="ref_.html#!">!</a></code>
 breakpoints in the function or method body of sym, as inserted with <code><a
 href="refD.html#debug">debug</a></code> or <code><a
@@ -178,11 +178,11 @@ href="refU.html#u">u</a></code>.
 : (pp 'tst)                      # Restore
 (de tst (N)
    (println (+ 3 N)) )
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="undef"><code>(undef 'sym) -> fun</code></a>
-<dt><code>(undef 'sym 'cls) -> fun</code>
-<dt><code>(undef '(sym . cls)) -> fun</code>
+<dt><a id="undef"><code>(undef 'sym) -> fun</code></a></dt>
+<dt><code>(undef 'sym 'cls) -> fun</code></dt>
+<dt><code>(undef '(sym . cls)) -> fun</code></dt>
 <dd>Undefines the function or method <code>sym</code>. Returns the previous
 definition. See also <code><a href="refD.html#de">de</a></code>, <code><a
 href="refD.html#dm">dm</a></code>, <code><a href="refD.html#def">def</a></code>
@@ -197,23 +197,23 @@ and <code><a href="refR.html#redef">redef</a></code>.
 -> (NIL "Hello world!")
 : hello
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="unify"><code>(unify 'any) -> lst</code></a>
-<dt><code>(unify 'cnt) -> cnt</code></a>
+<dt><a id="unify"><code>(unify 'any) -> lst</code></a></dt>
+<dt><code>(unify 'cnt) -> cnt</code></dt>
 <dd>The first form unifies <code>any</code> with the current <a
 href="ref.html#pilog">Pilog</a> environment at the current level and with a
 value of <code>NIL</code>, and returns the new environment or <code>NIL</code>
 if not successful. The second form unifies all variables at the given level with
 the current one. See also <code><a href="refP.html#prove">prove</a></code> and
-<code><a href="ref_.html#->">-&gt</a></code>.
+<code><a href="ref_.html#-GT">-&gt;</a></code>.
 
 <pre><code>
 : (? (^ @A (unify '(@B @C))))
  @A=(((NIL . @C) 0 . @C) ((NIL . @B) 0 . @B) T)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="uniq"><code>(uniq 'lst) -> lst</code></a>
+<dt><a id="uniq"><code>(uniq 'lst) -> lst</code></a></dt>
 <dd>Returns a unique list, by eliminating all duplicate elements from
 <code>lst</code>. See also <a href="ref.html#cmp">Comparing</a>, <code><a
 href="refS.html#sort">sort</a></code> and <code><a
@@ -222,9 +222,9 @@ href="refG.html#group">group</a></code>.
 <pre><code>
 : (uniq (2 4 6 1 2 3 4 5 6 1 3 5))
 -> (2 4 6 1 3 5)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="uniq/2"><code>uniq/2</code></a>
+<dt><a id="uniq/2"><code>uniq/2</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the second
 argument is not yet stored in the first argument's index structure. <code><a
 href="refI.html#idx">idx</a></code> is used internally storing for the values
@@ -241,9 +241,9 @@ href="refM.html#member/2">member/2</a></code>.
 -> NIL
 : (solve '((^ @B (box)) (lst @X (a b c b c d)) (uniq @B @X)) @X)
 -> (a b c d)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="unless"><code>(unless 'any . prg) -> any</code></a>
+<dt><a id="unless"><code>(unless 'any . prg) -> any</code></a></dt>
 <dd>Conditional execution: When the condition <code>any</code> evaluates to
 non-<code>NIL</code>, <code>NIL</code> is returned. Otherwise <code>prg</code>
 is executed and the result returned. See also <code><a
@@ -259,9 +259,9 @@ href="refN.html#nond">nond</a></code>.
 : (unless (= 3 4) (println 'Strange 'result))
 Strange result
 -> result
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="until"><code>(until 'any . prg) -> any</code></a>
+<dt><a id="until"><code>(until 'any . prg) -> any</code></a></dt>
 <dd>Conditional loop: While the condition <code>any</code> evaluates to
 <code>NIL</code>, <code>prg</code> is repeatedly executed. If <code>prg</code>
 is never executed, <code>NIL</code> is returned. Otherwise the result of
@@ -280,11 +280,11 @@ square 16
 square 81
 T
 -> 81
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="untrace"><code>(untrace 'sym) -> sym</code></a>
-<dt><code>(untrace 'sym 'cls) -> sym</code>
-<dt><code>(untrace '(sym . cls)) -> sym</code>
+<dt><a id="untrace"><code>(untrace 'sym) -> sym</code></a></dt>
+<dt><code>(untrace 'sym 'cls) -> sym</code></dt>
+<dt><code>(untrace '(sym . cls)) -> sym</code></dt>
 <dd>(Debug mode only) Removes the <code><a href="ref_.html#$">$</a></code> trace
 function call at the beginning of the function or method body of
 <code>sym</code>, so that no more trace information will be printed before and
@@ -302,9 +302,9 @@ href="refT.html#traceAll">traceAll</a></code>.
 -> +
 : +
 -> 67319120                            # Back to original form
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="up"><code>(up [cnt] sym ['val]) -> any</code></a>
+<dt><a id="up"><code>(up [cnt] sym ['val]) -> any</code></a></dt>
 <dd>Looks up (or modifies) the <code>cnt</code>'th previously saved value of
 <code>sym</code> in the corresponding enclosing environment. If <code>cnt</code>
 is not given, 1 is used. It is allowed to omit the <code>sym</code> argument,
@@ -329,9 +329,9 @@ href="refE.html#env">env</a></code>.
 : (foo 7)
 (foo 7)
 -> 8
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="upd"><code>(upd sym ..) -> lst</code></a>
+<dt><a id="upd"><code>(upd sym ..) -> lst</code></a></dt>
 <dd>Synchronizes the internal state of all passed (external) symbols by passing
 them to <code><a href="refW.html#wipe">wipe</a></code>. <code>upd</code> is the
 standard function passed to <code><a href="refC.html#commit">commit</a></code>
@@ -339,12 +339,13 @@ during database <code><a href="ref.html#trans">transactions</a></code>.
 
 <pre><code>
 (commit 'upd)  # Commit changes, informing all sister processes
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="upp?"><code>(upp? 'any) -> sym | NIL</code></a> <dd>Returns
-<code>any</code> when the argument is a string (symbol) that starts with an
-uppercase character. See also <code><a href="refU.html#uppc">uppc</a></code> and
-<code><a href="refL.html#low?">low?</a></code>
+<dt><a id="upp?"><code>(upp? 'any) -> sym | NIL</code></a></dt>
+<dd>Returns <code>any</code> when the argument is a string (symbol) that starts
+with an uppercase character. See also <code><a
+href="refU.html#uppc">uppc</a></code> and <code><a
+href="refL.html#low?">low?</a></code>
 
 <pre><code>
 : (upp? "A")
@@ -355,9 +356,9 @@ uppercase character. See also <code><a href="refU.html#uppc">uppc</a></code> and
 -> NIL
 : (upp? ".")
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="uppc"><code>(uppc 'any) -> any</code></a>
+<dt><a id="uppc"><code>(uppc 'any) -> any</code></a></dt>
 <dd>Upper case conversion: If <code>any</code> is not a symbol, it is returned
 as it is. Otherwise, a new transient symbol with all characters of
 <code>any</code>, converted to upper case, is returned. See also <code><a
@@ -372,10 +373,10 @@ href="refU.html#upp?">upp?</a></code>.
 -> "ABC"
 : (uppc 'car)
 -> "CAR"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="use"><code>(use sym . prg) -> any</code></a>
-<dt><code>(use (sym ..) . prg) -> any</code>
+<dt><a id="use"><code>(use sym . prg) -> any</code></a></dt>
+<dt><code>(use (sym ..) . prg) -> any</code></dt>
 <dd>Defines local variables. The value of the symbol <code>sym</code> - or the
 values of the symbols <code>sym</code> in the list of the second form - are
 saved, <code>prg</code> is executed, then the symbols are restored to their
@@ -394,9 +395,9 @@ href="refL.html#let">let</a></code>.
 -> 123
 : Y
 -> 456
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="useKey"><code>(useKey 'sym 'cls ['hook]) -> num</code></a>
+<dt><a id="useKey"><code>(useKey 'sym 'cls ['hook]) -> num</code></a></dt>
 <dd>Generates or reuses a key for a database tree, by randomly trying to locate
 a free number. See also <code><a href="refG.html#genKey">genKey</a></code>.
 
@@ -405,9 +406,9 @@ a free number. See also <code><a href="refG.html#genKey">genKey</a></code>.
 -> 8
 : (useKey 'nr '+Item)
 -> 12
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="usec"><code>(usec ['flg]) -> num</code></a>
+<dt><a id="usec"><code>(usec ['flg]) -> num</code></a></dt>
 <dd>Returns a number of microseconds. If <code>flg</code> is
 non-<code>NIL</code>, the microsecond fraction of the last call to <code><a
 href="refT.html#time">time</a></code> is returned, otherwise the number of
@@ -419,7 +420,7 @@ href="refD.html#date">date</a></code>.
 -> 1154702479219050
 : (list (date (date)) (time (time T)) (usec T))
 -> ((2013 1 4) (10 12 39) 483321)
-</code></pre>
+</code></pre></dd>
 
 </dl>
 

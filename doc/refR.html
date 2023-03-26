@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -11,7 +11,7 @@
 
 <dl>
 
-<dt><a name="*Rule"><code>*Rule</code></a>
+<dt><a id="*Rule"><code>*Rule</code></a></dt>
 <dd>A global variable holding the current <a href="ref.html#pilog">Pilog</a>
 rule symbol. It is cleared at the beginning of a new REPL. See also <code><a
 href="refB.html#be">be</a></code> and <code><a
@@ -22,9 +22,9 @@ href="refC.html#clause">clause</a></code>.
 -> likes
 : *Rule
 -> likes
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="*Run"><code>*Run</code></a>
+<dt><a id="*Run"><code>*Run</code></a></dt>
 <dd>This global variable can hold a list of <code>prg</code> expressions which
 are used during <code><a href="refK.html#key">key</a></code>, <code><a
 href="refS.html#sync">sync</a></code>, <code><a
@@ -47,9 +47,9 @@ href="refT.html#task">task</a></code>.
 2sec
                                           # (Ctrl-D) Exit
 $
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="+Ref"><code>+Ref</code></a>
+<dt><a id="+Ref"><code>+Ref</code></a></dt>
 <dd>Prefix class for maintaining non-unique indexes to <code><a
 href="refR.html#+relation">+relation</a></code>s, a subclass of <code><a
 href="refI.html#+index">+index</a></code>. Accepts an optional argument for a
@@ -58,9 +58,9 @@ href="ref.html#dbase">Database</a>.
 
 <pre><code>
 (rel tel (+Fold +Ref +String))  # Phone number with folded, non-unique index
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="+Ref2"><code>+Ref2</code></a>
+<dt><a id="+Ref2"><code>+Ref2</code></a></dt>
 <dd>Prefix class for maintaining a secondary ("backing") index to <code><a
 href="refR.html#+relation">+relation</a></code>s. Can only be used as a prefix
 class to <code><a href="refK.html#+Key">+Key</a></code> or <code><a
@@ -75,9 +75,9 @@ href="ref.html#dbase">Database</a>.
 ...
 (class +EuOrd +Ord)              # EU-specific order subclass
 (rel nr (+Ref2 +Key +Number))    # Order number with backing index
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="+relation"><code>+relation</code></a>
+<dt><a id="+relation"><code>+relation</code></a></dt>
 <dd>Abstract base class of all database relations. Relation objects are usually
 defined with <code><a href="refR.html#rel">rel</a></code>. The class hierarchy
 includes the classes <code><a href="refA.html#+Any">+Any</a></code>, <code><a
@@ -112,7 +112,7 @@ href="refS.html#+Swap">+Swap</a></code>. See also <a
 href="ref.html#dbase">Database</a> and <code><a
 href="refE.html#+Entity">+Entity</a></code>.
 
-<p><a name="relationMesssages">Messages</a> to relation objects include
+<p><a id="relationMesssages">Messages</a> to relation objects include
 
 <pre><code>
 mis> (Val Obj)       # Return error if mismatching type or value
@@ -122,9 +122,9 @@ rel> (Obj Old New)   # Maintain relational structures
 lose> (Obj Val)      # Delete relational structures
 keep> (Obj Val)      # Restore deleted relational structures
 zap> (Obj Val)       # Clean up relational structures
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="rand"><code>(rand ['cnt1 'cnt2] | ['T]) -> cnt | flg</code></a>
+<dt><a id="rand"><code>(rand ['cnt1 'cnt2] | ['T]) -> cnt | flg</code></a></dt>
 <dd>Returns a pseudo random number in the range of the positive short numbers
 <code>cnt1</code> and <code>cnt2</code> (or -2147483648 .. +2147483647 if no
 arguments are given). If the argument is <code>T</code>, a boolean value
@@ -137,9 +137,9 @@ also <code><a href="refS.html#seed">seed</a></code>.
 -> 3
 : (rand 3 9)
 -> 7
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="range"><code>(range 'num1 'num2 ['num3]) -> lst</code></a>
+<dt><a id="range"><code>(range 'num1 'num2 ['num3]) -> lst</code></a></dt>
 <dd>Produces a list of numbers in the range <code>num1</code> through
 <code>num2</code>. When <code>num3</code> is non-<code>NIL</code>, it is used
 to increment <code>num1</code> (if it is smaller than <code>num2</code>) or to
@@ -155,9 +155,9 @@ decrement <code>num1</code> (if it is greater than <code>num2</code>). See also
 -> (-3 -2 -1 0 1 2 3)
 : (range 3 -3 2)
 -> (3 1 -1 -3)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="range/3"><code>range/3</code></a>
+<dt><a id="range/3"><code>range/3</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the first
 argument is in the range of the result of applying the <code><a
 href="refG.html#get">get</a></code> algorithm to the following arguments.
@@ -183,9 +183,9 @@ href="refT.html#tolr/3">tolr/3</a></code>.
  @Nr=(1 . 5) @Nm="part" @Item={B1}
  @Nr=(1 . 5) @Nm="part" @Item={B2}
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="rank"><code>(rank 'any 'lst ['flg]) -> lst</code></a>
+<dt><a id="rank"><code>(rank 'any 'lst ['flg]) -> lst</code></a></dt>
 <dd>Searches a ranking list. <code>lst</code> should be sorted. Returns the
 element from <code>lst</code> with a maximal CAR less or equal to
 <code>any</code> (if <code>flg</code> is <code>NIL</code>), or with a minimal
@@ -207,9 +207,9 @@ href="ref.html#cmp">Comparing</a>.
 -> (1000 . c)
 : (rank 50 '((1000 . a) (100 . b) (1 . c)) T)
 -> (100 . b)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="rassoc"><code>(rassoc 'any 'lst) -> lst</code></a>
+<dt><a id="rassoc"><code>(rassoc 'any 'lst) -> lst</code></a></dt>
 <dd>Reverse <code><a href="refA.html#assoc">assoc</a></code>. Returns the first
 element from <code>lst</code> with its CDR equal to <code>any</code>, or
 <code>NIL</code> if no match is found. See also <code><a
@@ -223,9 +223,9 @@ href="refA.html#asoq">asoq</a></code>.
 -> (999 1 2 3)
 : (rassoc 'u '((999 1 2 3) ("b" . 7) ("ok" "Hello")))
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="rasoq"><code>(rasoq 'any 'lst) -> lst</code></a>
+<dt><a id="rasoq"><code>(rasoq 'any 'lst) -> lst</code></a></dt>
 <dd>Reverse <code><a href="refA.html#asoq">asoq</a></code>. Returns the first
 element from <code>lst</code> with <code>any</code> as its CDR, or
 <code>NIL</code> if no match is found. <code><a
@@ -238,9 +238,9 @@ href="refR.html#rassoc">rassoc</a></code>.
 -> (2 . b)
 : (rasoq "b" '((1 . a) (2 . b) (3 . c))) )
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="raw"><code>(raw ['flg]) -> flg</code></a>
+<dt><a id="raw"><code>(raw ['flg]) -> flg</code></a></dt>
 <dd>Console mode control function. When called without arguments, it returns the
 current console mode (<code>NIL</code> for "cooked mode"). Otherwise, the
 console is set to the new state. See also <code><a
@@ -253,9 +253,9 @@ $ pil +
 : (raw T)
 -> T
 ...  # Raw mode, no echo!
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="rc"><code>(rc 'sym 'any1 ['any2 ['any3 'any4..]]) -> any</code></a>
+<dt><a id="rc"><code>(rc 'sym 'any1 ['any2 ['any3 'any4..]]) -> any</code></a></dt>
 <dd>Fetches a value from a resource file <code>sym</code>, or stores one or more
 key-value pairs <code>(any1 . any2)</code> in that file, using the key
 <code>any1</code> (and optionally <code>any3</code> etc. for multiple stores).
@@ -281,10 +281,10 @@ exclusively locked with <code><a href="refC.html#ctl">ctl</a></code>.
 -> b
 : (rc "a.rc" @)               # Fetch value for 'b'
 -> (2 3 4)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="rd"><code>(rd ['sym]) -> any</code></a>
-<dt><code>(rd 'cnt) -> num | NIL</code>
+<dt><a id="rd"><code>(rd ['sym]) -> any</code></a></dt>
+<dt><code>(rd 'cnt) -> num | NIL</code></dt>
 <dd>Binary read: Reads one item from the current input channel in encoded binary
 format. When called with a <code>cnt</code> argument (second form), that number
 of raw bytes (in big endian format if <code>cnt</code> is positive, otherwise
@@ -309,9 +309,9 @@ href="refW.html#wr">wr</a></code>.
 
 : (in "/dev/urandom" (rd 20))
 -> 396737673456823753584720194864200246115286686486
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="read"><code>(read ['sym1 ['sym2]]) -> any</code></a>
+<dt><a id="read"><code>(read ['sym1 ['sym2]]) -> any</code></a></dt>
 <dd>Reads one item from the current input channel. <code>NIL</code> is returned
 upon end of file. When called without arguments, an arbitrary Lisp expression is
 read. Otherwise, a token (a number, an internal symbol, a transient symbol (for
@@ -338,10 +338,10 @@ jkl
 abc = def_ghi("xyz"+-123) # Comment
 NIL
 -> (abc "=" def_ghi "(" ("x" "y" "z") "+" "-" 123 ")")
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="recur"><code>(recur fun) -> any</code></a>
-<dt><a name="recurse"><code>(recurse ..) -> any</code></a>
+<dt><a id="recur"><code>(recur fun) -> any</code></a></dt>
+<dt><a id="recurse"><code>(recurse ..) -> any</code></a></dt>
 <dd>Implements anonymous recursion, by defining the function
 <code>recurse</code> on the fly. During the execution of <code>fun</code>, the
 symbol <code>recurse</code> is bound to the function definition
@@ -363,9 +363,9 @@ symbol <code>recurse</code> is bound to the function definition
 -> 17711
 : (fibonacci -7)
 -7 -- Bad fibonacci
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="redef"><code>(redef sym . fun) -> sym</code></a>
+<dt><a id="redef"><code>(redef sym . fun) -> sym</code></a></dt>
 <dd>Redefines <code>sym</code> in terms of itself. The current definition is
 saved in a new symbol, which is substituted for each occurrence of
 <code>sym</code> in <code>fun</code>, and which is also returned. See also
@@ -413,9 +413,9 @@ After 2
 : (+ "a" 'b '(c d e))
 -> "abcde"
 
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="rel"><code>(rel sym lst [any ..]) -> any</code></a>
+<dt><a id="rel"><code>(rel sym lst [any ..]) -> any</code></a></dt>
 <dd>Defines a relation for <code>sym</code> in the current class <code><a
 href="refC.html#*Class">*Class</a></code>, using <code>lst</code> as the list of
 classes for that relation, and possibly additional arguments <code>any</code>
@@ -438,18 +438,18 @@ href="refV.html#var">var</a></code>.
 
 (class +City +Entity)
 (rel nm  (+List +Ref +String))            # Zip / Names
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="release"><code>(release 'sym) -> NIL</code></a>
+<dt><a id="release"><code>(release 'sym) -> NIL</code></a></dt>
 <dd>Releases the mutex represented by the file 'sym'. This is the reverse
 operation of <code><a href="refA.html#acquire">acquire</a></code>.
 
 <pre><code>
 : (release "sema1")
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="remote/2"><code>remote/2</code></a>
+<dt><a id="remote/2"><code>remote/2</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate for remote database queries. It
 takes a list and an arbitrary number of clauses. The list should contain a Pilog
 variable for the result in the CAR, and a list of resources in the CDR. The
@@ -506,9 +506,9 @@ href="refD.html#db/3">db/3</a></code>.
    nr 2
  @Nr=(1 . 3) @Sup=2 @Rsrc=((((X) (ext 20 (out 3 (pr X)))) NIL (ext 20 (in 3 (rd))))) @Item={AF2}
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="remove"><code>(remove 'cnt 'lst) -> lst</code></a>
+<dt><a id="remove"><code>(remove 'cnt 'lst) -> lst</code></a></dt>
 <dd>Removes the element at position <code>cnt</code> from <code>lst</code>. This
 is a non-destructive operation. See also <code><a
 href="refI.html#insert">insert</a></code>, <code><a
@@ -524,9 +524,9 @@ href="refR.html#replace">replace</a></code>.
 -> (b c d e)
 : (remove 9 '(a b c d e))
 -> (a b c d e)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="repeat"><code>(repeat) -> lst</code></a>
+<dt><a id="repeat"><code>(repeat) -> lst</code></a></dt>
 <dd>Makes the current <a href="ref.html#pilog">Pilog</a> definition "tail
 recursive", by closing the previously defined rules in the definition's T
 property to a circular list. See also <code><a
@@ -547,9 +547,9 @@ href="refB.html#be">be</a></code>.
  @N=2
  @N=3.         # Stop
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="repeat/0"><code>repeat/0</code></a>
+<dt><a id="repeat/0"><code>repeat/0</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that always succeeds, also on
 backtracking. See also <code><a href="refR.html#repeat">repeat</a></code> and
 <code><a href="refT.html#true/0">true/0</a></code>.
@@ -567,9 +567,9 @@ backtracking. See also <code><a href="refR.html#repeat">repeat</a></code> and
  @X=3
  @X=4.               # Stop
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="replace"><code>(replace 'lst 'any1 'any2 ..) -> lst</code></a>
+<dt><a id="replace"><code>(replace 'lst 'any1 'any2 ..) -> lst</code></a></dt>
 <dd>Replaces in <code>lst</code> all occurrences of <code>any1</code> with
 <code>any2</code>. For optional additional argument pairs, this process is
 repeated. This is a non-destructive operation. See also <code><a
@@ -586,9 +586,9 @@ href="refP.html#place">place</a></code>.
 -> (a B B a)
 : (replace '(a b b a) 'a 'B 'b 'A)
 -> (B A A B)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="request"><code>(request 'typ 'sym ['hook] 'val ..) -> obj</code></a>
+<dt><a id="request"><code>(request 'typ 'sym ['hook] 'val ..) -> obj</code></a></dt>
 <dd>Returns a database object. If a matching object cannot be found (using
 <code><a href="refD.html#db">db</a></code>), a new object of the given type is
 created (using <code><a href="refN.html#new">new</a></code>). See also <code><a
@@ -597,9 +597,9 @@ href="refO.html#obj">obj</a></code>.
 <pre><code>
 : (request '(+Item) 'nr 2)
 -> {B2}
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="request!"><code>(request! 'typ 'sym ['hook] 'val ..) -> obj</code></a>
+<dt><a id="request!"><code>(request! 'typ 'sym ['hook] 'val ..) -> obj</code></a></dt>
 <dd><a href="ref.html#trans">Transaction</a> wrapper function for <code><a
 href="refR.html#request">request</a></code>.
 See also <code><a href="refN.html#new!">new!</a></code>, <code><a
@@ -608,10 +608,9 @@ href="refP.html#put!">put!</a></code> and <code><a
 href="refI.html#inc!">inc!</a></code>.
 
 <pre><code>
-</code></pre>
+</code></pre></dd>
 
-
-<dt><a name="rest"><code>(rest) -> lst</code></a>
+<dt><a id="rest"><code>(rest) -> lst</code></a></dt>
 <dd>Can only be used inside functions with a variable number of arguments (with
 <code>@</code>). Returns the list of all remaining arguments from the internal
 list. See also <code><a href="refA.html#args">args</a></code>, <code><a
@@ -625,9 +624,9 @@ href="refP.html#pass">pass</a></code>.
 : (foo 1 2 3)
 (1 2 3)
 -> (1 2 3)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="retract"><code>(retract) -> lst</code></a>
+<dt><a id="retract"><code>(retract) -> lst</code></a></dt>
 <dd>Removes a <a href="ref.html#pilog">Pilog</a> fact or rule. See also <code><a
 href="refB.html#be">be</a></code>, <code><a
 href="refC.html#clause">clause</a></code>, <code><a
@@ -649,9 +648,9 @@ href="refA.html#assertz">assertz</a></code>.
  @N=1
  @N=3
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="retract/1"><code>retract/1</code></a>
+<dt><a id="retract/1"><code>retract/1</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that removes a fact or rule.
 See also <code><a href="refR.html#retract">retract</a></code>, <code><a
 href="refA.html#asserta/1">asserta/1</a></code> and <code><a
@@ -671,11 +670,11 @@ href="refA.html#assertz/1">assertz/1</a></code>.
 1 (be a (1))
 2 (be a (3))
 -> a
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="rev"><code>(rev 'cnt1 'cnt2) -> cnt</code></a>
+<dt><a id="rev"><code>(rev 'cnt1 'cnt2) -> cnt</code></a></dt>
 <dd>Reverses the lowest <code>cnt1</code> bits of <code>cnt2</code>. See also
-<code><a href="ref_.html#&gt;&gt;">&gt;&gt;</a></code> and <code><a
+<code><a href="ref_.html#GTGT">&gt;&gt;</a></code> and <code><a
 href="refH.html#hash">hash</a></code>.
 
 <pre><code>
@@ -687,19 +686,18 @@ href="refH.html#hash">hash</a></code>.
 -> "80000000"
 : (rev 32 (hex "E0000000"))
 -> 7
-</code></pre>
+</code></pre></dd>
 
-
-<dt><a name="reverse"><code>(reverse 'lst) -> lst</code></a>
+<dt><a id="reverse"><code>(reverse 'lst) -> lst</code></a></dt>
 <dd>Returns a reversed copy of <code>lst</code>. See also <code><a
 href="refF.html#flip">flip</a></code>.
 
 <pre><code>
 : (reverse (1 2 3 4))
 -> (4 3 2 1)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="rewind"><code>(rewind) -> flg</code></a>
+<dt><a id="rewind"><code>(rewind) -> flg</code></a></dt>
 <dd>Sets the file position indicator for the current output stream to the
 beginning of the file, and truncates the file length to zero. Returns
 <code>T</code> when successful. See also <code><a
@@ -717,9 +715,9 @@ Hello world
 -> T
 : (info "a")
 -> (0 733216 . 53922)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="revolve/2"><code>revolve/2</code></a>
+<dt><a id="revolve/2"><code>revolve/2</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate for quasi-parallel evaluation
 of clauses. It takes a list and an arbitrary number of clauses. The list should
 contain a Pilog variable for the result in the CAR, another Pilog variable for
@@ -735,9 +733,9 @@ href="refR.html#remote/2">remote/2</a></code>.
          (lst @Res @Lst) ) )
    @Res )
 -> (1 5 a 2 6 b 3 7 c 4 8)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="rid"><code>(rid 'var 'any) -> any</code></a>
+<dt><a id="rid"><code>(rid 'var 'any) -> any</code></a></dt>
 <dd>Destructively removes all occurrences of <code>any</code> from the (possibly
 circular) value of <code>var</code>, and returns the new value. See also
 <code><a href="refF.html#fifo">fifo</a></code>, <code><a
@@ -756,9 +754,9 @@ $: (rid 'E 2)
 -> (4 1 3 .)
 $: (rid 'E 4)
 -> (3 1 .)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="rollback"><code>(rollback) -> flg</code></a>
+<dt><a id="rollback"><code>(rollback) -> flg</code></a></dt>
 <dd>Cancels a transaction, by discarding all modifications of external symbols.
 See also <code><a href="refC.html#commit">commit</a></code>.
 
@@ -768,9 +766,9 @@ See also <code><a href="refC.html#commit">commit</a></code>.
 # .. Modify external objects ..
 : (rollback)            # Rollback
 -> T
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="root"><code>(root 'tree) -> (num . sym)</code></a>
+<dt><a id="root"><code>(root 'tree) -> (num . sym)</code></a></dt>
 <dd>Returns the root of a database index tree, with the number of entries in
 <code>num</code>, and the base node in <code>sym</code>. See also <code><a
 href="refT.html#tree">tree</a></code>.
@@ -778,9 +776,9 @@ href="refT.html#tree">tree</a></code>.
 <pre><code>
 : (root (tree 'nr '+Item))
 -> (6 . {H1})
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="rot"><code>(rot 'lst ['cnt]) -> lst</code></a>
+<dt><a id="rot"><code>(rot 'lst ['cnt]) -> lst</code></a></dt>
 <dd>Rotate: The contents of the cells of <code>lst</code> are (destructively)
 shifted right, and the value from the last cell is stored in the first cell.
 Without the optional <code>cnt</code> argument, the whole list is rotated,
@@ -792,9 +790,9 @@ href="refF.html#flip">flip</a></code> .
 -> (4 1 2 3)
 : (rot (1 2 3 4 5 6) 3)       # Rotate only the first three elements
 -> (3 1 2 4 5 6)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="round"><code>(round 'num1 ['num2]) -> sym</code></a>
+<dt><a id="round"><code>(round 'num1 ['num2]) -> sym</code></a></dt>
 <dd>Formats a number <code>num1</code> with <code>num2</code> decimal places,
 according to the current scale <code><a href="refS.html#*Scl">*Scl</a></code>.
 <code>num2</code> defaults to 3. See also <a href="ref.html#num-io">Numbers</a>
@@ -809,9 +807,9 @@ and <code><a href="refF.html#format">format</a></code>.
 -> "12.35"
 : (format 123456 *Scl)  # Format with full precision
 -> "12.3456"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="rules"><code>(rules 'sym ..) -> sym</code></a>
+<dt><a id="rules"><code>(rules 'sym ..) -> sym</code></a></dt>
 <dd>Prints all rules defined for the <code>sym</code> arguments. See also <a
 href="ref.html#pilog">Pilog</a> and <code><a href="refB.html#be">be</a></code>.
 
@@ -822,9 +820,9 @@ href="ref.html#pilog">Pilog</a> and <code><a href="refB.html#be">be</a></code>.
 1 (be append (NIL @X @X))
 2 (be append ((@A . @X) @Y (@A . @Z)) (append @X @Y @Z))
 -> append
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="run"><code>(run 'any ['cnt]) -> any</code></a>
+<dt><a id="run"><code>(run 'any ['cnt]) -> any</code></a></dt>
 <dd>If <code>any</code> is an atom, <code>run</code> behaves like <code><a
 href="refE.html#eval">eval</a></code>. Otherwise <code>any</code> is a list,
 which is evaluated in sequence. The last result is returned. If an offset
@@ -850,7 +848,7 @@ OK
 (Prg (println (cons 'Prg Prg) (cons 'A A))) (A . 12)
 (Prg . 77) (A . 99)
 -> (A . 99)
-</code></pre>
+</code></pre></dd>
 
 </dl>
 

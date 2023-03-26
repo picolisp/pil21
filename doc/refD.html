@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -11,7 +11,7 @@
 
 <dl>
 
-<dt><a name="*DB"><code>*DB</code></a>
+<dt><a id="*DB"><code>*DB</code></a></dt>
 <dd>A global constant holding the external symbol <code>{1}</code>, the <a
 href="ref.html#dbase">database</a> root. All transient symbols in a database can
 be reached from that root. Except during debugging, any explicit literal access
@@ -35,9 +35,9 @@ external symbols not currently used in the program).
    tel (681376 . {Agyl})
    nm (1461322 . {2gu7})
 -> {3}
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="*Dbg"><code>*Dbg</code></a>
+<dt><a id="*Dbg"><code>*Dbg</code></a></dt>
 <dd>A boolean variable indicating "debug mode". It can be conveniently switched
 on with a trailing <code>+</code> command line argument (see <a
 href="ref.html#invoc">Invocation</a>). When non-<code>NIL</code>, the <code><a
@@ -62,9 +62,9 @@ href="refL.html#lint">lint</a></code>.
 -> 12
 : (let *Dbg NIL (foo 3 4))
 -> 12
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="*Dbs"><code>*Dbs</code></a>
+<dt><a id="*Dbs"><code>*Dbs</code></a></dt>
 <dd>A global variable holding a list of numbers (block size scale factors, as
 needed by <code><a href="refP.html#pool">pool</a></code>). It is typically set
 by <code><a href="refD.html#dbs">dbs</a></code>.
@@ -72,9 +72,9 @@ by <code><a href="refD.html#dbs">dbs</a></code>.
 <pre><code>
 : *Dbs
 -> (1 2 1 0 2 3 3 3)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="+Date"><code>+Date</code></a>
+<dt><a id="+Date"><code>+Date</code></a></dt>
 <dd>Class for calender dates (as calculated by <code><a
 href="refD.html#date">date</a></code>), a subclass of <code><a
 href="refN.html#+Number">+Number</a></code>. See also <a
@@ -82,9 +82,9 @@ href="ref.html#dbase">Database</a>.
 
 <pre><code>
 (rel dat (+Ref +Date))  # Indexed date
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="+Dep"><code>+Dep</code></a>
+<dt><a id="+Dep"><code>+Dep</code></a></dt>
 <dd><a href="refJ.html#+Joint">+Joint</a> prefix class for maintaining
 dependencies between <code><a href="refR.html#+relation">+relation</a></code>s.
 Expects a list of (symbolic) attributes that depend on this relation. Whenever
@@ -102,9 +102,9 @@ or this position is deleted from the order:
    (itm)                               # 'itm' specifies the dependency
    pos (+Ord) )                        # Arguments to '+Joint'
 (rel itm (+Ref +Link) NIL (+Item))  # Item depends on the order
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="d"><code>(d) -> T</code></a>
+<dt><a id="d"><code>(d) -> T</code></a></dt>
 <dd>(Debug mode only) Inserts <code><a href="ref_.html#!">!</a></code>
 breakpoints into all subexpressions of the current breakpoint. Typically used
 when single-stepping a function or method with <code><a
@@ -115,11 +115,11 @@ href="refU.html#unbug">unbug</a></code>.
 <pre><code>
 ! (d)                            # Debug subexpression(s) at breakpoint
 -> T
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="daemon"><code>(daemon 'sym . prg) -> fun</code></a>
-<dt><code>(daemon '(sym . cls) . prg) -> fun</code>
-<dt><code>(daemon '(sym sym2 [. cls]) . prg) -> fun</code>
+<dt><a id="daemon"><code>(daemon 'sym . prg) -> fun</code></a></dt>
+<dt><code>(daemon '(sym . cls) . prg) -> fun</code></dt>
+<dt><code>(daemon '(sym sym2 [. cls]) . prg) -> fun</code></dt>
 <dd>Inserts <code>prg</code> in the beginning of the function (first form), the
 method body of <code>sym</code> in <code>cls</code> (second form) or in the
 class obtained by <code><a href="refG.html#get">get</a></code>ting
@@ -149,9 +149,9 @@ Hello world!
 : (* 1 2 3)
 Multiplying
 -> 6
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="dat$"><code>(dat$ 'dat ['sym]) -> sym</code></a>
+<dt><a id="dat$"><code>(dat$ 'dat ['sym]) -> sym</code></a></dt>
 <dd>Formats a <code><a href="refD.html#date">date</a></code> <code>dat</code> in
 ISO format, with an optional delimiter character <code>sym</code>. See also
 <code><a href="ref_.html#$dat">$dat</a></code>, <code><a
@@ -164,9 +164,9 @@ href="refD.html#datSym">datSym</a></code>.
 -> "20070601"
 : (dat$ (date) "-")
 -> "2007-06-01"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="datStr"><code>(datStr 'dat ['flg]) -> sym</code></a>
+<dt><a id="datStr"><code>(datStr 'dat ['flg]) -> sym</code></a></dt>
 <dd>Formats a <code><a href="refD.html#date">date</a></code> according to the
 current <code><a href="refL.html#locale">locale</a></code>. If <code>flg</code>
 is non-<code>NIL</code>, the year will be formatted modulo 100. See also
@@ -186,9 +186,9 @@ href="refD.html#day">day</a></code>.
 -> "01.06.2007"
 : (datStr (date) T)
 -> "01.06.07"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="datSym"><code>(datSym 'dat) -> sym</code></a>
+<dt><a id="datSym"><code>(datSym 'dat) -> sym</code></a></dt>
 <dd>Formats a <code><a href="refD.html#date">date</a></code> <code>dat</code> in
 symbolic format (DDmmmYY). See also <code><a
 href="refD.html#dat$">dat$</a></code> and <code><a
@@ -197,12 +197,12 @@ href="refD.html#datStr">datStr</a></code>.
 <pre><code>
 : (datSym (date))
 -> "01jun07"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="date"><code>(date ['T]) -> dat</code></a>
-<dt><code>(date 'dat) -> (y m d)</code>
-<dt><code>(date 'y 'm 'd) -> dat | NIL</code>
-<dt><code>(date '(y m d)) -> dat | NIL</code>
+<dt><a id="date"><code>(date ['T]) -> dat</code></a></dt>
+<dt><code>(date 'dat) -> (y m d)</code></dt>
+<dt><code>(date 'y 'm 'd) -> dat | NIL</code></dt>
+<dt><code>(date '(y m d)) -> dat | NIL</code></dt>
 <dd>Calculates a (gregorian) calendar date. It is represented as a day number,
 starting first of March of the year 0 AD. When called without arguments, the
 current date is returned. When called with a <code>T</code> argument, the
@@ -234,9 +234,9 @@ href="refU.html#ultimo">ultimo</a></code>.
 -> (2000 6 12)
 : (- (date) (date 2000 1 1))     # Number of days since first of January
 -> 163
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="day"><code>(day 'dat ['lst]) -> sym</code></a>
+<dt><a id="day"><code>(day 'dat ['lst]) -> sym</code></a></dt>
 <dd>Returns the name of the day for a given <code><a
 href="refD.html#date">date</a></code> <code>dat</code>, in the language of the
 current <code><a href="refL.html#locale">locale</a></code>. If <code>lst</code>
@@ -254,9 +254,9 @@ href="refS.html#strDat">strDat</a></code>.
 -> "Freitag"
 : (day (date) '("Mo" "Tu" "We" "Th" "Fr" "Sa" "Su"))
 -> "Fr"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="db"><code>(db 'sym 'cls ['hook] 'any ['sym 'any ..]) -> sym | NIL</code></a>
+<dt><a id="db"><code>(db 'sym 'cls ['hook] 'any ['sym 'any ..]) -> sym | NIL</code></a></dt>
 <dd>Returns a database object of class <code>cls</code>, where the values for
 the <code>sym</code> arguments correspond to the <code>any</code> arguments. If
 a matching object cannot be found, <code>NIL</code> is returned.
@@ -274,11 +274,11 @@ href="refF.html#step">step</a></code>.
 -> {B1}
 : (db 'nm '+Item "Main Part")
 -> {B1}
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="db/3"><code>db/3</code></a>
-<dt><a name="db/4"><code>db/4</code></a>
-<dt><a name="db/5"><code>db/5</code></a>
+<dt><a id="db/3"><code>db/3</code></a></dt>
+<dt><a id="db/4"><code>db/4</code></a></dt>
+<dt><a id="db/5"><code>db/5</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> database predicate that returns objects
 matching the given key-value (and optional hook) relation. The relation should
 be of type <code><a href="refI.html#+index">+index</a></code>. For the key
@@ -323,9 +323,9 @@ href="refR.html#remote/2">remote/2</a></code>.
    nr 2
  @Item={B2}
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="db:"><code>(db: cls ..) -> num</code></a>
+<dt><a id="db:"><code>(db: cls ..) -> num</code></a></dt>
 <dd>Returns the database file number for objects of the type given by the
 <code>cls</code> argument(s). Needed, for example, for the creation of <code><a
 href="refN.html#new">new</a></code> objects. See also <code><a
@@ -334,9 +334,9 @@ href="refD.html#dbs">dbs</a></code>.
 <pre><code>
 : (db: +Item)
 -> 3
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="dbSync"><code>(dbSync 'obj) -> flg</code></a>
+<dt><a id="dbSync"><code>(dbSync 'obj) -> flg</code></a></dt>
 <dd>Starts a database transaction, by trying to obtain a <code><a
 href="refL.html#lock">lock</a></code> on the database root object <code><a
 href="refD.html#*DB">*DB</a></code> (or <code>obj</code> if given), and then
@@ -352,9 +352,9 @@ external symbols are done, <code>(<a href="refC.html#commit">commit</a>
    (put> Obj 'nr (rd))
    (put> Obj 'val (rd))
    (commit 'upd) )         # Close transaction
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="dbck"><code>(dbck ['cnt] 'flg) -> any</code></a>
+<dt><a id="dbck"><code>(dbck ['cnt] 'flg) -> any</code></a></dt>
 <dd>Performs a low-level integrity check of the current (or <code>cnt</code>'th)
 database file, and returns <code>NIL</code> (or the number of blocks and symbols
 if <code>flg</code> is non-<code>NIL</code>) if everything seems correct.
@@ -370,9 +370,9 @@ list.
 -> T
 : (dbck)
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="dbs"><code>(dbs . lst)</code></a>
+<dt><a id="dbs"><code>(dbs . lst)</code></a></dt>
 <dd>Initializes the global variable <code><a
 href="refD.html#*Dbs">*Dbs</a></code>. Each element in <code>lst</code> has a
 number in its CAR (the block size scale factor of a database file, to be stored
@@ -403,9 +403,9 @@ href="refP.html#pool">pool</a></code>.
 -> (3 . 128)
 : (get '+Item 'nr 'dbf)
 -> (9 . 1024)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="de"><code>(de sym . any) -> sym</code></a>
+<dt><a id="de"><code>(de sym . any) -> sym</code></a></dt>
 <dd>Assigns a definition to the <code>sym</code> argument, by setting its
 <code>VAL</code> to the <code>any</code> argument. If the symbol has already
 another value, a "redefined" message is issued. When the value of the global
@@ -425,19 +425,19 @@ href="refU.html#undef">undef</a></code>.
 : (de *Var . 123)  # Define a variable value
 : *Var
 -> 123
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="debug"><code>(debug 'sym)</code></a>
-<dt><code>(debug 'sym 'cls)</code>
-<dt><code>(debug '(sym . cls))</code>
+<dt><a id="debug"><code>(debug 'sym)</code></a></dt>
+<dt><code>(debug 'sym 'cls)</code></dt>
+<dt><code>(debug '(sym . cls))</code></dt>
 <dd>(Debug mode only) Inserts a <code><a href="ref_.html#!">!</a></code>
 breakpoint function call at the beginning and all top-level expressions of the
 function or method body of <code>sym</code>, to allow a stepwise execution.
 Typing <code>(<a href="refD.html#d">d</a>)</code> at a breakpoint will also
 debug the current subexpression, and <code>(<a href="refE.html#e">e</a>)</code>
 will evaluate the current subexpression. The current subexpression is stored in
-the global variable <code><a href="ref_.html#^">^</a></code>. See also <code><a
-href="refU.html#unbug">unbug</a></code>, <code><a
+the global variable <code><a href="ref_.html#HAT">^</a></code>. See also
+<code><a href="refU.html#unbug">unbug</a></code>, <code><a
 href="refD.html#*Dbg">*Dbg</a></code>, <code><a
 href="refT.html#trace">trace</a></code> and <code><a
 href="refL.html#lint">lint</a></code>.
@@ -469,19 +469,19 @@ href="refL.html#lint">lint</a></code>.
 (de tst (N)
    (println (+ 3 N)) )
 -> tst
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="-debug"><code>(-debug)</code></a>
+<dt><a id="-debug"><code>(-debug)</code></a></dt>
 <dd>(Debug mode only) Command line frontend to <code><a
 href="refD.html#debug">debug</a></code>. See also <code><a
 href="refT.html#-trace">-trace</a></code>.
 
 <pre><code>
 $ ./pil --debug tst +
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="dec"><code>(dec 'num) -> num</code></a>
-<dt><code>(dec 'var ['num]) -> num</code>
+<dt><a id="dec"><code>(dec 'num) -> num</code></a></dt>
+<dt><code>(dec 'var ['num]) -> num</code></dt>
 <dd>The first form returns the value of <code>num</code> decremented by 1. The
 second form decrements the <code>VAL</code> of <code>var</code> by 1, or by
 <code>num</code>. If the first argument is <code>NIL</code>, it is returned
@@ -501,10 +501,10 @@ href="ref_.html#-">-</a></code>.
 -> 6
 : (dec 'N 3)
 -> 3
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="def"><code>(def 'sym 'any) -> sym</code></a>
-<dt><code>(def 'sym1 'sym2 'any) -> sym1</code>
+<dt><a id="def"><code>(def 'sym 'any) -> sym</code></a></dt>
+<dt><code>(def 'sym1 'sym2 'any) -> sym1</code></dt>
 <dd>The first form assigns a definition to the first <code>sym</code> argument,
 by setting its <code>VAL</code>'s to <code>any</code>. The second form defines a
 property value <code>any</code> for the first argument's <code>sym2</code> key.
@@ -521,9 +521,9 @@ and file name (if any) are stored in the <code>*Dbg</code> property of
 : (def 'b 999)
 # b redefined
 -> b
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="default"><code>(default var 'any ..) -> any</code></a>
+<dt><a id="default"><code>(default var 'any ..) -> any</code></a></dt>
 <dd>Stores new values <code>any</code> in the <code>var</code> arguments only if
 their current values are <code>NIL</code>. Otherwise, their values are left
 unchanged. In any case, the last <code>var</code>'s value is returned.
@@ -541,9 +541,9 @@ arguments.
 -> (333 2)
 : (foo)                       # Called without arguments
 -> (1 2)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="del"><code>(del 'any 'var ['flg]) -> lst</code></a>
+<dt><a id="del"><code>(del 'any 'var ['flg]) -> lst</code></a></dt>
 <dd>Deletes <code>any</code> from the list in the value of <code>var</code>, and
 returns the remaining list. If <code>flg</code> is <code>NIL</code> and
 <code>any</code> is contained more than once in the value of <code>var</code>,
@@ -561,9 +561,9 @@ href="refP.html#pop">pop</a></code>.
 -> ((a b c))
 : (del 'b S)
 -> (a c)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="delete"><code>(delete 'any 'lst ['flg]) -> lst</code></a>
+<dt><a id="delete"><code>(delete 'any 'lst ['flg]) -> lst</code></a></dt>
 <dd>Deletes <code>any</code> from <code>lst</code>. If <code>flg</code> is
 <code>NIL</code> and <code>any</code> is contained more than once in
 <code>lst</code>, only the first occurrence is deleted. See also <code><a
@@ -577,9 +577,9 @@ href="refI.html#insert">insert</a></code>.
 -> (1 3)
 : (delete (3 4) '((1 2) (3 4) (5 6) (3 4)))
 -> ((1 2) (5 6) (3 4))
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="delete/3"><code>delete/3</code></a>
+<dt><a id="delete/3"><code>delete/3</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if deleting the
 first argument from the list in the second argument is equal to the third
 argument. See also <code><a href="refD.html#delete">delete</a></code> and
@@ -589,9 +589,9 @@ argument. See also <code><a href="refD.html#delete">delete</a></code> and
 : (? (delete b (a b c) @X))
  @X=(a c)
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="delq"><code>(delq 'any 'lst ['flg]) -> lst</code></a>
+<dt><a id="delq"><code>(delq 'any 'lst ['flg]) -> lst</code></a></dt>
 <dd>Deletes <code>any</code> from <code>lst</code>. If <code>flg</code> is
 <code>NIL</code> and <code>any</code> is contained more than once in
 <code>lst</code>, only the first occurrence is deleted. <code><a
@@ -607,9 +607,9 @@ href="refM.html#mmeq">mmeq</a></code> and <a href="ref.html#cmp">Comparing</a>.
 -> (a c)
 : (delq (2) (1 (2) 3))
 -> (1 (2) 3)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="dep"><code>(dep 'cls) -> cls</code></a>
+<dt><a id="dep"><code>(dep 'cls) -> cls</code></a></dt>
 <dd>(Debug mode only) Displays the "dependencies" of <code>cls</code>, i.e. the
 tree of superclasses and the tree of subclasses. See also <a
 href="ref.html#oop">OO Concepts</a>, <code><a
@@ -627,9 +627,9 @@ href="refC.html#can">can</a></code>.
    +Date                   # Subclasses are '+Date' and '+Time'
    +Time
 -> +Number
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="depth"><code>(depth 'lst) -> (cnt1 . cnt2)</code></a>
+<dt><a id="depth"><code>(depth 'lst) -> (cnt1 . cnt2)</code></a></dt>
 <dd>Returns the maximal (<code>cnt1</code>) and the average (<code>cnt2</code>)
 "depth" of a tree structure as maintained by <code><a
 href="refI.html#idx">idx</a></code>. The total number of nodes is stored in the
@@ -651,9 +651,9 @@ href="refS.html#size">size</a></code>.
 -> NIL
 : (depth X)
 -> (3 . 2)                                   # Depth is 3, average 2
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="detach"><code>(detach) -> pid | NIL</code></a>
+<dt><a id="detach"><code>(detach) -> pid | NIL</code></a></dt>
 <dd>Detach the current process from its PicoLisp parent, and return the parent's
 process ID. This causes the parent to "forget" this child process (freeing
 resources like buffers and pipes), effectively disabling family IPC via <code><a
@@ -666,9 +666,9 @@ href="refK.html#kids">kids</a></code>.
    (detach)
    (runAlone)
    (bye) )
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="diff"><code>(diff 'lst1 'lst2) -> lst</code></a>
+<dt><a id="diff"><code>(diff 'lst1 'lst2) -> lst</code></a></dt>
 <dd>Returns the difference of list arguments, all elements of <code>lst1</code>
 which are not in <code>lst2</code>. See also <code><a
 href="refS.html#sect">sect</a></code>.
@@ -678,9 +678,9 @@ href="refS.html#sect">sect</a></code>.
 -> (1 3 5)
 : (diff (1 2 3) (1 2 3))
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="different/2"><code>different/2</code></a>
+<dt><a id="different/2"><code>different/2</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the two
 arguments are different. See also <code><a
 href="refE.html#equal/2">equal/2</a></code>.
@@ -688,9 +688,9 @@ href="refE.html#equal/2">equal/2</a></code>.
 <pre><code>
 : (? (different 3 4))
 -> T
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="dir"><code>(dir ['any] ['flg]) -> lst</code></a>
+<dt><a id="dir"><code>(dir ['any] ['flg]) -> lst</code></a></dt>
 <dd>Returns a list of all filenames in the directory <code>any</code>. Names
 starting with a dot '<code>.</code>' are ignored, unless <code>flg</code> is
 non-<code>NIL</code>. See also <code><a href="refC.html#cd">cd</a></code> and
@@ -699,9 +699,9 @@ non-<code>NIL</code>. See also <code><a href="refC.html#cd">cd</a></code> and
 <pre><code>
 : (filter '((F) (tail '(. c) (chop F))) (dir "@src/"))
 -> ("main.c" "subr.c" "gc.c" "io.c" "big.c" "sym.c" "tab.c" "flow.c" ..
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="dirname"><code>(dirname 'any) -> sym</code></a>
+<dt><a id="dirname"><code>(dirname 'any) -> sym</code></a></dt>
 <dd>Returns the directory part of a path name <code>any</code>. See also
 <code><a href="refB.html#basename">basename</a></code> and <code><a
 href="refP.html#path">path</a></code>.
@@ -709,11 +709,11 @@ href="refP.html#path">path</a></code>.
 <pre><code>
 : (dirname "a/b/c/d")
 -> "a/b/c/"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="dm"><code>(dm sym . fun|cls2) -> sym</code></a>
-<dt><code>(dm (sym . cls) . fun|cls2) -> sym</code>
-<dt><code>(dm (sym sym2 [. cls]) . fun|cls2) -> sym</code>
+<dt><a id="dm"><code>(dm sym . fun|cls2) -> sym</code></a></dt>
+<dt><code>(dm (sym . cls) . fun|cls2) -> sym</code></dt>
+<dt><code>(dm (sym sym2 [. cls]) . fun|cls2) -> sym</code></dt>
 <dd>Defines a method for the message <code>sym</code> in the current class,
 implicitly given by the value of the global variable <code><a
 href="refC.html#*Class">*Class</a></code>, or - in the second form - for the
@@ -740,9 +740,9 @@ href="refT.html#try">try</a>.
    (mapc 'start> (: arrays)) )
 
 : (dm foo> . +OtherClass)  # Explicitly inherit 'foo>' from '+OtherClass'
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="do"><code>(do 'flg|num ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code></a>
+<dt><a id="do"><code>(do 'flg|num ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code></a></dt>
 <dd>Counted loop with multiple conditional exits: The body is executed at most
 <code>num</code> times (or never (if the first argument is <code>NIL</code>), or
 an infinite number of times (if the first argument is <code>T</code>)). If a
@@ -758,9 +758,9 @@ and <code><a href="refF.html#for">for</a></code>.
 OK OK OK OK -> OK
 : (do 4 (printsp 'OK) (T (= 3 3) (printsp 'done)))
 OK done -> done
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="doc"><code>(doc ['sym1] ['sym2])</code></a>
+<dt><a id="doc"><code>(doc ['sym1] ['sym2])</code></a></dt>
 <dd>(Debug mode only) Opens a browser, and tries to display the reference
 documentation for <code>sym1</code>. <code>sym2</code> may be the name of a
 browser. If not given, the value of the environment variable
@@ -779,9 +779,9 @@ href="refV.html#vi">vi</a></code>.
 -> NIL
 :  (doc 'vi "firefox")  # Use alternative browser
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="docs"><code>(docs 'any)</code></a>
+<dt><a id="docs"><code>(docs 'any)</code></a></dt>
 <dd>(Debug mode only) Parses all files with names of the form "ref@.html" in the
 directory <code>any</code>, to set the <code>doc</code> property for later calls
 to <code><a href="refD.html#doc">doc</a></code>.
@@ -789,9 +789,9 @@ to <code><a href="refD.html#doc">doc</a></code>.
 <pre><code>
 : (docs "@doc/")
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="download"><code>(download 'host 'src 'dst) -> any</code></a>
+<dt><a id="download"><code>(download 'host 'src 'dst) -> any</code></a></dt>
 <dd>Tries to download the file <code>src</code> from <code>host</code> with
 "@bin/ssl", and stores it in <code>dst</code>. Returns non-<code>NIL</code> if
 successful. See also <code><a href="refS.html#ssl">ssl</a></code>.
@@ -801,7 +801,7 @@ successful. See also <code><a href="refS.html#ssl">ssl</a></code>.
 -> 0
 : (info "button.png")
 -> (2426 736804 . 35589)
-</code></pre>
+</code></pre></dd>
 
 </dl>
 

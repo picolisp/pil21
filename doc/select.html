@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -10,7 +10,7 @@
 
 <h1>The 'select' Predicate</h1>
 
-<p align=right>(c) Software Lab. Alexander Burger
+<p style="text-align: right">(c) Software Lab. Alexander Burger
 
 <p>The <a href="ref.html#pilog">Pilog</a> <a
 href="refS.html#select/3">select/3</a> predicate is rather complex, and quite
@@ -38,7 +38,7 @@ and shows some typical use cases.
 
 
 <p><hr>
-<h2><a name="syntax">Syntax</a></h2>
+<h2><a id="syntax">Syntax</a></h2>
 
 <p><code>select</code> takes at least three arguments:
 
@@ -53,7 +53,7 @@ on a concrete example.
 
 
 <p><hr>
-<h2><a name="example1">First Example</a></h2>
+<h2><a id="example1">First Example</a></h2>
 
 <p>The examples in this document will use the demo application in "app/*.l" (see
 also "<a href="app.html#minApp">A Minimal Complete Application</a>"). To get an
@@ -120,7 +120,7 @@ hundred.
 
 
 <p><hr>
-<h2><a name="univar">Unification Variables</a></h2>
+<h2><a id="univar">Unification Variables</a></h2>
 
 <p>As stated above, the first argument to <code>select</code> should be a list
 of variables. These variables communicate values (via <code><a
@@ -134,7 +134,7 @@ and return further values.
 
 
 <p><hr>
-<h2><a name="gencl">Generator Clauses</a></h2>
+<h2><a id="gencl">Generator Clauses</a></h2>
 
 <p>The second argument to <code>select</code> is a list of "generator clauses".
 Each of these clauses specifies some kind of database B-Tree <code><a
@@ -157,7 +157,7 @@ probability. "Successful" means that the returned values successfully pass
 
 
 <p><hr>
-<h3><a name="db">B-Tree Stepping</a></h3>
+<h3><a id="db">B-Tree Stepping</a></h3>
 
 <p>In its basic form, a generator clause is equivalent to the <code><a
 href="refD.html#db/3">db/3</a></code> predicate, stepping through a single
@@ -192,7 +192,7 @@ B-Tree. The clause
 
 
 <p><hr>
-<h3><a name="interaction">Interaction of Generator Clauses</a></h3>
+<h3><a id="interaction">Interaction of Generator Clauses</a></h3>
 
 <p><code>select</code> is mostly useful if more than one generator clause is
 involved. The tree search parameters of all clauses are meant to form a logical
@@ -215,7 +215,7 @@ will be preferred. This process usually converges quickly and efficiently.
 
 
 <p><hr>
-<h3><a name="combined">Combined Indexes</a></h3>
+<h3><a id="combined">Combined Indexes</a></h3>
 
 <p>A generator clause can also combine several (similar) indexes into a single
 one. Then the clause is written actually as a list of clauses.
@@ -241,7 +241,7 @@ index tree.
 
 
 <p><hr>
-<h3><a name="associations">Indirect Object Associations</a></h3>
+<h3><a id="associations">Indirect Object Associations</a></h3>
 
 <p>But generator clauses are not limited to the direct B-Tree interaction of
 <code><a href="refD.html#db/3">db/3</a></code>. They can also traverse trees of
@@ -303,7 +303,7 @@ is followed to arrive at the order object(s).
 
 
 <p><hr>
-<h3><a name="nested">Nested Pilog Queries</a></h3>
+<h3><a id="nested">Nested Pilog Queries</a></h3>
 
 <p>In the most general case, a generator clause can be an arbitrary Pilog query.
 Often this is a query to a database on a remote machine, using the <code><a
@@ -348,7 +348,7 @@ iteration predicate is used to generate appropriate values.
 
 
 <p><hr>
-<h2><a name="filcl">Filter Clauses</a></h2>
+<h2><a id="filcl">Filter Clauses</a></h2>
 
 <p>The generator clauses produce - independent from each other - lots of
 objects, which match the patterns of individual generator clauses, but not
@@ -375,7 +375,7 @@ href="refT.html#tolr/3">tolr/3</a></code>) especially suited for that task.
 
 
 <p><hr>
-<h3><a name="little">A Little Report</a></h3>
+<h3><a id="little">A Little Report</a></h3>
 
 <p>Assume we want to know how many pieces of item #2 were sold in the year 2007.
 Then we must find all <code>+Pos</code> (position) objects referring to that
@@ -438,7 +438,7 @@ full search expression will be:
 
 
 <p><hr>
-<h3><a name="filpr">Filter Predicates</a></h3>
+<h3><a id="filpr">Filter Predicates</a></h3>
 
 <p>As mentioned under <a href="#filcl">Filter Clauses</a>, some predicates
 exists mainly for <code>select</code> filtering.

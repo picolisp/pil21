@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -11,7 +11,7 @@
 
 <dl>
 
-<dt><a name="+Link"><code>+Link</code></a>
+<dt><a id="+Link"><code>+Link</code></a></dt>
 <dd>Class for object relations, a subclass of <code><a
 href="refR.html#+relation">+relation</a></code>. Expects a list of classes as
 <code><a href="refT.html#type">type</a></code> of the referred database object
@@ -20,9 +20,9 @@ href="ref.html#dbase">Database</a>.
 
 <pre><code>
 (rel sup (+Ref +Link) NIL (+CuSu))  # Supplier (class Customer/Supplier)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="+List"><code>+List</code></a>
+<dt><a id="+List"><code>+List</code></a></dt>
 <dd>Prefix class for a list of identical relations. Objects of that class
 maintain a list of Lisp data of uniform type. See also <a
 href="ref.html#dbase">Database</a>.
@@ -31,9 +31,9 @@ href="ref.html#dbase">Database</a>.
 (rel pos (+List +Joint) ord (+Pos))  # Positions
 (rel nm (+List +Ref +String))        # List of indexed strings
 (rel val (+Ref +List +Number))       # Indexed list of numeric values
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="last"><code>(last 'lst) -> any</code></a>
+<dt><a id="last"><code>(last 'lst) -> any</code></a></dt>
 <dd>Returns the last element of <code>lst</code>. See also <code><a
 href="refF.html#fin">fin</a></code> and <code><a
 href="refT.html#tail">tail</a></code>.
@@ -43,9 +43,9 @@ href="refT.html#tail">tail</a></code>.
 -> 4
 : (last '((a b) c (d e f)))
 -> (d e f)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="later"><code>(later 'var . prg) -> var</code></a>
+<dt><a id="later"><code>(later 'var . prg) -> var</code></a></dt>
 <dd>Executes <code>prg</code> in a <code><a
 href="refP.html#pipe">pipe</a></code>'ed child process. The return value of
 <code>prg</code> will later be available in <code>var</code>. Note that
@@ -58,9 +58,9 @@ should not write any data to standard output as a side effect.
    (mapcan '((N) (later (cons) (* N N))) (1 2 3 4))
    (wait NIL (full @)) )
 -> (1 4 9 16)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="le0"><code>(le0 'any) -> num | NIL</code></a>
+<dt><a id="le0"><code>(le0 'any) -> num | NIL</code></a></dt>
 <dd>Returns <code>num</code> when the argument is a number less or equal zero,
 otherwise <code>NIL</code>. See also <code><a
 href="refL.html#lt0">lt0</a></code>, <code><a
@@ -75,9 +75,9 @@ and <code><a href="refN.html#n0">n0</a></code>.
 -> 0
 : (le0 3)
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="leaf"><code>(leaf 'tree) -> any</code></a>
+<dt><a id="leaf"><code>(leaf 'tree) -> any</code></a></dt>
 <dd>Returns the first leaf (i.e. the value of the smallest key) in a database
 tree. See also <code><a href="refT.html#tree">tree</a></code>, <code><a
 href="refM.html#minKey">minKey</a></code>, <code><a
@@ -89,9 +89,9 @@ href="refS.html#step">step</a></code>.
 -> {B1}
 : (db 'nr '+Item (minKey (tree 'nr '+Item)))
 -> {B1}
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="length"><code>(length 'any) -> cnt | T</code></a>
+<dt><a id="length"><code>(length 'any) -> cnt | T</code></a></dt>
 <dd>Returns the "length" of <code>any</code>. For numbers this is the number of
 decimal digits in the value (plus 1 for negative values), for symbols it is the
 number of characters in the name, and for lists it is the number of cells (or
@@ -110,9 +110,9 @@ href="refB.html#bytes">bytes</a></code>.
 -> 3
 : (length (1 2 3 .))
 -> T
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="less"><code>(less 'any ['cnt]) -> any</code></a>
+<dt><a id="less"><code>(less 'any ['cnt]) -> any</code></a></dt>
 <dd>Returns a reduced form of <code>any</code>, where for each list and its
 sublists only the first <code>cnt</code> elements (default 4), possibly followed
 by <code>..</code>, are retained.
@@ -124,10 +124,10 @@ by <code>..</code>, are retained.
 -> ((a b c) ((d e f ..) (j k ..)))
 : (less '((a b c) ((d e f g h i) (j k l m n))) 2)
 -> ((a b ..) ((d ..) ..))
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="let"><code>(let sym 'any . prg) -> any</code></a>
-<dt><code>(let (sym|lst 'any ..) . prg) -> any</code>
+<dt><a id="let"><code>(let sym 'any . prg) -> any</code></a></dt>
+<dt><code>(let (sym|lst 'any ..) . prg) -> any</code></dt>
 <dd>Defines local variables. The value of the symbol <code>sym</code> - or the
 values of the symbols <code>sym</code> in the list of the second form - are
 saved and the symbols are bound to the evaluated <code>any</code> arguments. The
@@ -170,9 +170,9 @@ Hello world
 : (let (((A . NIL) NIL NIL D) '((1 2 3) (4 5 6) 7 8 9))
    (trail T) )
 -> (A 1 D 8)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="let?"><code>(let? sym 'any . prg) -> any</code></a>
+<dt><a id="let?"><code>(let? sym 'any . prg) -> any</code></a></dt>
 <dd>Conditional local variable binding and execution: If <code>any</code>
 evaluates to <code>NIL</code>, <code>NIL</code> is returned. Otherwise, the
 value of the symbol <code>sym</code> is saved and <code>sym</code> is bound to
@@ -194,9 +194,9 @@ A 1
 -> 1
 : (let? A (pop 'Lst) (println 'A A))
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="lieu"><code>(lieu 'any) -> sym | NIL</code></a>
+<dt><a id="lieu"><code>(lieu 'any) -> sym | NIL</code></a></dt>
 <dd>Returns the argument <code>any</code> when it is an external symbol and
 currently manifest in heap space, otherwise <code>NIL</code>. See also <code><a
 href="refE.html#ext?">ext?</a></code>.
@@ -204,9 +204,9 @@ href="refE.html#ext?">ext?</a></code>.
 <pre><code>
 : (lieu *DB)
 -> {1}
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="line"><code>(line 'flg ['cnt ..]) -> lst|sym</code></a>
+<dt><a id="line"><code>(line 'flg ['cnt ..]) -> lst|sym</code></a></dt>
 <dd>Reads a line of characters from the current input channel. End of line is
 recognized as linefeed (hex "0A"), carriage return (hex "0D"), or the
 combination of both. (Note that a single carriage return may not work on network
@@ -235,9 +235,9 @@ abcdefghijkl
 : (line T 1 2 3)
 abcdefghijkl
 -> ("a" "bc" "def" "g" "h" "i" "j" "k" "l")
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="link"><code>(link 'any ..) -> any</code></a>
+<dt><a id="link"><code>(link 'any ..) -> any</code></a></dt>
 <dd>Links one or several new elements <code>any</code> to the end of the list in
 the current <code><a href="refM.html#make">make</a></code> environment. This
 operation is efficient also for long lists, because a pointer to the last
@@ -253,11 +253,11 @@ href="refM.html#made">made</a></code>.
 1
 3
 -> (1 2 3)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="lint"><code>(lint 'sym) -> lst</code></a>
-<dt><code>(lint 'sym 'cls) -> lst</code>
-<dt><code>(lint '(sym . cls)) -> lst</code>
+<dt><a id="lint"><code>(lint 'sym) -> lst</code></a></dt>
+<dt><code>(lint 'sym 'cls) -> lst</code></dt>
+<dt><code>(lint '(sym . cls)) -> lst</code></dt>
 <dd>(Debug mode only) Checks the function definition or file contents (in the
 first form), or the method body of sym (second and third form), for possible
 pitfalls. Returns an association list of diagnoses, where <code>var</code>
@@ -277,9 +277,9 @@ href="refD.html#*Dbg">*Dbg</a></code>.
 -> foo
 : (lint 'foo)
 -> ((var T) (dup R) (def bar) (bnd Y X) (use N))
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="lintAll"><code>(lintAll ['sym ..]) -> lst</code></a>
+<dt><a id="lintAll"><code>(lintAll ['sym ..]) -> lst</code></a></dt>
 <dd>(Debug mode only) Applies <code><a href="refL.html#lint">lint</a></code> to
 <code><a href="refA.html#all">all</a></code> internal symbols - and optionally
 to all files <code>sym</code> - and returns a list of diagnoses. See also
@@ -288,9 +288,9 @@ to all files <code>sym</code> - and returns a list of diagnoses. See also
 <pre><code>
 : (more (lintAll "file1.l" "file2.l"))
 ...
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="lisp"><code>(lisp 'sym ['fun]) -> num</code></a>
+<dt><a id="lisp"><code>(lisp 'sym ['fun]) -> num</code></a></dt>
 <dd>Installs under the tag <code>sym</code> a callback function
 <code>fun</code>, and returns a pointer <code>num</code> suitable to be passed
 to a C function via 'native'. If <code>fun</code> is <code>NIL</code>, the
@@ -319,9 +319,9 @@ long cbTest(int(*fun)(int,int,int,int,int)) {
          (* A B C D E) ) ) )
 (1 2 3 4 5)
 -> 120
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="list"><code>(list 'any ['any ..]) -> lst</code></a>
+<dt><a id="list"><code>(list 'any ['any ..]) -> lst</code></a></dt>
 <dd>Returns a list of all <code>any</code> arguments. See also <code><a
 href="refC.html#cons">cons</a></code>.
 
@@ -330,9 +330,9 @@ href="refC.html#cons">cons</a></code>.
 -> (1 2 3 4)
 : (list 'a (2 3) "OK")
 -> (a (2 3) "OK")
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="lst/3"><code>lst/3</code></a>
+<dt><a id="lst/3"><code>lst/3</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that returns subsequent list
 elements, after applying the <code><a href="refG.html#get">get</a></code>
 algorithm to that object and the following arguments. Often used in database
@@ -344,9 +344,9 @@ queries. See also <code><a href="refM.html#map/3">map/3</a></code>.
  @Ord={B7} @Pos={A2}
  @Ord={B7} @Pos={A3}
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="lst?"><code>(lst? 'any) -> flg</code></a>
+<dt><a id="lst?"><code>(lst? 'any) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when the argument <code>any</code> is a (possibly
 empty) list (<code>NIL</code> or a cons pair). See also <code><a
 href="refP.html#pair">pair</a></code>.
@@ -358,9 +358,9 @@ href="refP.html#pair">pair</a></code>.
 -> T
 : (lst? (1 2 3))
 -> T
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="listen"><code>(listen 'cnt1 ['cnt2]) -> cnt | NIL</code></a>
+<dt><a id="listen"><code>(listen 'cnt1 ['cnt2]) -> cnt | NIL</code></a></dt>
 <dd>Listens at a socket descriptor <code>cnt1</code> (as received by <code><a
 href="refP.html#port">port</a></code>) for an incoming connection, and returns
 the new socket descriptor <code>cnt</code>. While waiting for a connection, a
@@ -380,9 +380,9 @@ href="refA.html#*Adr">*Adr</a></code>.
 -> 4
 : *Adr
 -> "127.0.0.1"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="lit"><code>(lit 'any) -> any</code></a>
+<dt><a id="lit"><code>(lit 'any) -> any</code></a></dt>
 <dd>Returns the literal (i.e. quoted) value of <code>any</code>, by
 <code>cons</code>ing it with the <code><a
 href="refQ.html#quote">quote</a></code> function if necessary. See also <code><a
@@ -397,9 +397,9 @@ href="refS.html#strip">strip</a></code>.
 -> (1)
 : (lit '(a))
 -> '(a)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="load"><code>(load 'any ..) -> any</code></a>
+<dt><a id="load"><code>(load 'any ..) -> any</code></a></dt>
 <dd>Loads all <code>any</code> arguments. Normally, the name of each argument is
 taken as a file to be executed in a read-eval loop. The argument semantics are
 identical to that of <code><a href="refI.html#in">in</a></code>, with the
@@ -426,9 +426,9 @@ and <code><a href="refS.html#str">str</a></code>.
 <pre><code>
 : (load "lib.l" "-* 1 2 3")
 -> 6
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="loc"><code>(loc 'sym 'lst) -> sym</code></a>
+<dt><a id="loc"><code>(loc 'sym 'lst) -> sym</code></a></dt>
 <dd>Locates in <code>lst</code> a <code><a
 href="ref.html#transient">transient</a></code> symbol with the same name as
 <code>sym</code>. Allows to get hold of otherwise inaccessible symbols.
@@ -438,9 +438,9 @@ href="ref.html#transient">transient</a></code> symbol with the same name as
 -> "X"
 : (== @ "X")
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="local"><code>(local) sym|lst</code></a>
+<dt><a id="local"><code>(local) sym|lst</code></a></dt>
 <dd>Intern symbols locally in the current namespace. <code>(local)</code>
 expects a single symbol or a list of symbols immediately following in the
 current input stream. See also <code><a href="refP.html#pico">pico</a></code>,
@@ -459,9 +459,9 @@ myLib: (de foo (A)  # 'foo' is local to 'myLib'
    ...
 myLib: (de bar (B)  # 'bar' is local to 'myLib'
    ...
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="locale"><code>(locale 'sym1 'sym2 ['sym ..])</code></a>
+<dt><a id="locale"><code>(locale 'sym1 'sym2 ['sym ..])</code></a></dt>
 <dd>Sets the current locale to that given by the country file <code>sym1</code>
 and the language file <code>sym2</code> (both located in the "loc/" directory),
 and optional application-specific directories <code>sym</code>. The locale
@@ -480,9 +480,9 @@ href="refM.html#money">money</a></code>.
 -> NIL
 : ,"Yes"
 -> "Ja"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="lock"><code>(lock ['sym]) -> cnt | NIL</code></a>
+<dt><a id="lock"><code>(lock ['sym]) -> cnt | NIL</code></a></dt>
 <dd>Write-locks an external symbol <code>sym</code> (file record locking), or
 the whole database root file if <code>sym</code> is <code>NIL</code>. Returns
 <code>NIL</code> if successful, or the ID of the process currently holding the
@@ -498,9 +498,9 @@ href="refS.html#*Solo">*Solo</a></code>.
 -> NIL
 : (lock)             # Lock whole database
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="loop"><code>(loop ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code></a>
+<dt><a id="loop"><code>(loop ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code></a></dt>
 <dd>Endless loop with multiple conditional exits: The body is executed an
 unlimited number of times. If a clause has <code>NIL</code> or <code>T</code> as
 its CAR, the clause's second element is evaluated as a condition and - if the
@@ -518,12 +518,13 @@ href="refF.html#for">for</a></code>.
 2
 1
 -> done
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="low?"><code>(low? 'any) -> sym | NIL</code></a> <dd>Returns
-<code>any</code> when the argument is a string (symbol) that starts with a
-lowercase character. See also <code><a href="refL.html#lowc">lowc</a></code> and
-<code><a href="refU.html#upp?">upp?</a></code>
+<dt><a id="low?"><code>(low? 'any) -> sym | NIL</code></a></dt>
+<dd>Returns <code>any</code> when the argument is a string (symbol) that starts
+with a lowercase character. See also <code><a
+href="refL.html#lowc">lowc</a></code> and <code><a
+href="refU.html#upp?">upp?</a></code>
 
 <pre><code>
 : (low? "a")
@@ -534,9 +535,9 @@ lowercase character. See also <code><a href="refL.html#lowc">lowc</a></code> and
 -> NIL
 : (low? ".")
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="lowc"><code>(lowc 'any) -> any</code></a>
+<dt><a id="lowc"><code>(lowc 'any) -> any</code></a></dt>
 <dd>Lower case conversion: If <code>any</code> is not a symbol, it is returned
 as it is. Otherwise, a new transient symbol with all characters of
 <code>any</code>, converted to lower case, is returned. See also <code><a
@@ -549,9 +550,9 @@ href="refL.html#low?">low?</a></code>.
 -> 123
 : (lowc "ABC")
 -> "abc"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="lt0"><code>(lt0 'any) -> num | NIL</code></a>
+<dt><a id="lt0"><code>(lt0 'any) -> num | NIL</code></a></dt>
 <dd>Returns <code>num</code> when the argument is a number and less than zero,
 otherwise <code>NIL</code>. See also <code><a
 href="refL.html#le0">le0</a></code>, <code><a
@@ -564,10 +565,10 @@ and <code><a href="refN.html#n0">n0</a></code>.
 -> -2
 : (lt0 3)
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="lup"><code>(lup 'lst 'any) -> lst</code></a>
-<dt><code>(lup 'lst 'any 'any2) -> lst</code>
+<dt><a id="lup"><code>(lup 'lst 'any) -> lst</code></a></dt>
+<dt><code>(lup 'lst 'any 'any2) -> lst</code></dt>
 <dd>Looks up <code>any</code> in the CAR-elements of cons pairs stored in the
 index tree <code>lst</code>, as built-up by <code><a
 href="refI.html#idx">idx</a></code>. In the first form, the first found cons
@@ -600,7 +601,7 @@ href="refA.html#assoc">assoc</a></code>.
 -> ((1 . a) (1 . b) (1 . c))
 : (lup A 1 2)
 -> ((1 . a) (1 . b) (1 . c) (2 . d))
-</code></pre>
+</code></pre></dd>
 
 </dl>
 

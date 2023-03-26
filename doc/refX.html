@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -11,7 +11,7 @@
 
 <dl>
 
-<dt><a name="xchg"><code>(xchg 'var 'var ..) -> any</code></a>
+<dt><a id="xchg"><code>(xchg 'var 'var ..) -> any</code></a></dt>
 <dd>Exchange the values of successive <code>var</code> argument pairs. See also
 <code><a href="refS.html#swap">swap</a></code> and <code><a
 href="refS.html#set">set</a></code>.
@@ -27,9 +27,9 @@ href="refS.html#set">set</a></code>.
 -> b
 : C
 -> (1 2 c)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="xor"><code>(xor 'any 'any) -> flg</code></a>
+<dt><a id="xor"><code>(xor 'any 'any) -> flg</code></a></dt>
 <dd>Returns T if exactly one of the arguments evaluates to non-<code>NIL</code>.
 
 <pre><code>
@@ -37,13 +37,13 @@ href="refS.html#set">set</a></code>.
 -> T
 : (xor T T)
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="x|"><code>(x| 'num ..) -> num</code></a>
+<dt><a id="xVT"><code>(x| 'num ..) -> num</code></a></dt>
 <dd>Returns the bitwise <code>XOR</code> of all <code>num</code> arguments. When
 one of the arguments evaluates to <code>NIL</code>, it is returned immediately.
 See also <code><a href="ref_.html#&">&</a></code>, <code><a
-href="ref_.html#|">|</a></code> and <code><a
+href="ref_.html#VT">|</a></code> and <code><a
 href="refB.html#bit?">bit?</a></code>.
 
 <pre><code>
@@ -51,7 +51,7 @@ href="refB.html#bit?">bit?</a></code>.
 -> 5
 : (x| 2 7 1)
 -> 4
-</code></pre>
+</code></pre></dd>
 
 </dl>
 

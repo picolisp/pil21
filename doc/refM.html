@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -11,11 +11,11 @@
 
 <dl>
 
-<dt><a name="*Msg"><code>*Msg</code></a>
+<dt><a id="*Msg"><code>*Msg</code></a></dt>
 <dd>A global variable holding the last recently issued error message. See also
 <code><a href="ref.html#errors">Error Handling</a></code>, <code><a
 href="refE.html#*Err">*Err</a></code> and <code><a
-href="ref_.html#^">^</a></code>.
+href="ref_.html#HAT">^</a></code>.
 
 <pre><code>
 : (+ 'A 2)
@@ -25,9 +25,9 @@ A -- Number expected
 :
 : *Msg
 -> "Number expected"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="+Mis"><code>+Mis</code></a>
+<dt><a id="+Mis"><code>+Mis</code></a></dt>
 <dd>Prefix class to explicitly specify validation functions for <code><a
 href="refR.html#+relation">+relation</a></code>s. Expects a function that takes
 a value and an entity object, and returns <code>NIL</code> if everything is
@@ -40,9 +40,9 @@ correct, or an error string. See also <a href="ref.html#dbase">Database</a>.
       (when (memq NIL Val)
          "There are empty positions" ) )
    ord (+Pos) )
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="macro"><code>(macro prg) -> any</code></a>
+<dt><a id="macro"><code>(macro prg) -> any</code></a></dt>
 <dd>Substitues all <code><a href="refP.html#pat?">pat?</a></code> symbols in
 <code>prg</code> (using <code><a href="refF.html#fill">fill</a></code>), and
 executes the result with <code><a href="refR.html#run">run</a></code>. Used
@@ -65,9 +65,9 @@ occasionally to call functions which otherwise do not evaluate their arguments.
 : Timer 6000
 Timer 12000
 ...
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="made"><code>(made ['lst1 ['lst2]]) -> lst</code></a>
+<dt><a id="made"><code>(made ['lst1 ['lst2]]) -> lst</code></a></dt>
 <dd>Initializes a new list value for the current <code><a
 href="refM.html#make">make</a></code> environment. All list elements already
 produced with <code><a href="refC.html#chain">chain</a></code>, <code><a
@@ -86,9 +86,9 @@ current list is returned.
    (link 4) )              # Link 4
 (a b c)
 -> (1 2 3 4)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="mail"><code>(mail 'any 'cnt|lst 'sym1|lst2 'sym2|lst3 'sym3 'lst4 . prg)'</code></a>
+<dt><a id="mail"><code>(mail 'any 'cnt|lst 'sym1|lst2 'sym2|lst3 'sym3 'lst4 . prg)'</code></a></dt>
 <dd>Sends an eMail via SMTP to a mail server at host <code>any</code>, port
 <code>cnt</code>. If the second argument is a list, it should be a structure
 <code>(user password . port)</code>, and "@bin/ssl" will be called to establish
@@ -111,9 +111,9 @@ href="refC.html#connect">connect</a></code>.
    "Hello,"                                        # First line
    NIL                                             # (empty line)
    (prinl (pack "This is mail #" (+ 3 4))) )       # Third line
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="make"><code>(make .. [(made 'lst ..)] .. [(link 'any ..)] ..) -> any</code></a>
+<dt><a id="make"><code>(make .. [(made 'lst ..)] .. [(link 'any ..)] ..) -> any</code></a></dt>
 <dd>Initializes and executes a list-building process with the <code><a
 href="refM.html#made">made</a></code>, <code><a
 href="refC.html#chain">chain</a></code>, <code><a
@@ -127,9 +127,9 @@ internally.
 -> (1 2 3 4)
 : (make (made (1 2 3)) (link 4))
 -> (1 2 3 4)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="map"><code>(map 'fun 'lst ..) -> lst</code></a>
+<dt><a id="map"><code>(map 'fun 'lst ..) -> lst</code></a></dt>
 <dd>Applies <code>fun</code> to <code>lst</code> and all successive CDRs. When
 additional <code>lst</code> arguments are given, they are passed to
 <code>fun</code> in the same way. Returns the result of the last application.
@@ -147,9 +147,9 @@ href="refF.html#filter">filter</a></code>.
 (3 4) (C)
 (4) NIL
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="map/3"><code>map/3</code></a>
+<dt><a id="map/3"><code>map/3</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that returns a list and
 subsequent CDRs of that list, after applying the <code><a
 href="refG.html#get">get</a></code> algorithm to that object and the following
@@ -162,9 +162,9 @@ href="refL.html#lst/3">lst/3</a></code>.
  @Ord={B7} @L=({A2} {A3})
  @Ord={B7} @L=({A3})
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="mapc"><code>(mapc 'fun 'lst ..) -> any</code></a>
+<dt><a id="mapc"><code>(mapc 'fun 'lst ..) -> any</code></a></dt>
 <dd>Applies <code>fun</code> to each element of <code>lst</code>. When
 additional <code>lst</code> arguments are given, their elements are also passed
 to <code>fun</code>. Returns the result of the last application. See also
@@ -182,9 +182,9 @@ href="refF.html#filter">filter</a></code>.
 3 C
 4 NIL
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="mapcan"><code>(mapcan 'fun 'lst ..) -> lst</code></a>
+<dt><a id="mapcan"><code>(mapcan 'fun 'lst ..) -> lst</code></a></dt>
 <dd>Applies <code>fun</code> to each element of <code>lst</code>. When
 additional <code>lst</code> arguments are given, their elements are also passed
 to <code>fun</code>. Returns a (destructively) concatenated list of all results.
@@ -198,9 +198,9 @@ href="refF.html#filter">filter</a></code>.
 <pre><code>
 : (mapcan reverse '((a b c) (d e f) (g h i)))
 -> (c b a f e d i h g)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="mapcar"><code>(mapcar 'fun 'lst ..) -> lst</code></a>
+<dt><a id="mapcar"><code>(mapcar 'fun 'lst ..) -> lst</code></a></dt>
 <dd>Applies <code>fun</code> to each element of <code>lst</code>. When
 additional <code>lst</code> arguments are given, their elements are also passed
 to <code>fun</code>. Returns a list of all results. See also <code><a
@@ -218,9 +218,9 @@ href="refF.html#filter">filter</a></code>.
 -> (6 7 8)
 : (mapcar '((X Y) (+ X (* Y Y))) (1 2 3 4) (5 6 7 8))
 -> (26 38 52 68)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="mapcon"><code>(mapcon 'fun 'lst ..) -> lst</code></a>
+<dt><a id="mapcon"><code>(mapcon 'fun 'lst ..) -> lst</code></a></dt>
 <dd>Applies <code>fun</code> to <code>lst</code> and all successive CDRs. When
 additional <code>lst</code> arguments are given, they are passed to
 <code>fun</code> in the same way. Returns a (destructively) concatenated list of
@@ -234,9 +234,9 @@ href="refF.html#filter">filter</a></code>.
 <pre><code>
 : (mapcon copy '(1 2 3 4 5))
 -> (1 2 3 4 5 2 3 4 5 3 4 5 4 5 5)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="maplist"><code>(maplist 'fun 'lst ..) -> lst</code></a>
+<dt><a id="maplist"><code>(maplist 'fun 'lst ..) -> lst</code></a></dt>
 <dd>Applies <code>fun</code> to <code>lst</code> and all successive CDRs. When
 additional <code>lst</code> arguments are given, they are passed to
 <code>fun</code> in the same way. Returns a list of all results. See also
@@ -250,9 +250,9 @@ href="refF.html#filter">filter</a></code>.
 <pre><code>
 : (maplist cons (1 2 3) '(A B C))
 -> (((1 2 3) A B C) ((2 3) B C) ((3) C))
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="maps"><code>(maps 'fun 'sym ['lst ..]) -> any</code></a>
+<dt><a id="maps"><code>(maps 'fun 'sym ['lst ..]) -> any</code></a></dt>
 <dd>Applies <code>fun</code> to all properties of <code>sym</code>. When
 additional <code>lst</code> arguments are given, their elements are also passed
 to <code>fun</code>. Returns the result of the last application. Note that
@@ -275,9 +275,9 @@ flg A
 (2 . b) B
 (1 . a) NIL
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="mark"><code>(mark 'sym|0 ['NIL | 'T | '0]) -> flg</code></a>
+<dt><a id="mark"><code>(mark 'sym|0 ['NIL | 'T | '0]) -> flg</code></a></dt>
 <dd>Tests, sets or resets a mark for <code>sym</code> in the database (for a
 second argument of <code>NIL</code>, <code>T</code> or <code>0</code>,
 respectively), and returns the old value. The marks are local to the current
@@ -295,9 +295,9 @@ the first argument is zero, all marks are cleared.
 -> T
 : (mark '{1})        # Test
 -> NIL               # -> unmarked
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="match"><code>(match 'lst1 'lst2) -> flg</code></a>
+<dt><a id="match"><code>(match 'lst1 'lst2) -> flg</code></a></dt>
 <dd>Takes <code>lst1</code> as a pattern to be matched against
 <code>lst2</code>, and returns <code>T</code> when successful. Atoms must be
 equal, and sublists must match recursively. Symbols in the pattern list with
@@ -323,9 +323,9 @@ href="refF.html#fill">fill</a></code>.
 -> ((e f) g)
 : @Z
 -> (h i)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="max"><code>(max 'any ..) -> any</code></a>
+<dt><a id="max"><code>(max 'any ..) -> any</code></a></dt>
 <dd>Returns the largest of all <code>any</code> arguments. See also <a
 href="refM.html#min">min</a> and <a href="ref.html#cmp">Comparing</a>.
 
@@ -334,9 +334,9 @@ href="refM.html#min">min</a> and <a href="ref.html#cmp">Comparing</a>.
 -> z
 : (max (5) (2 3) 'X)
 -> (5)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="maxKey"><code>(maxKey 'tree ['any1 ['any2]]) -> any</code></a>
+<dt><a id="maxKey"><code>(maxKey 'tree ['any1 ['any2]]) -> any</code></a></dt>
 <dd>Returns the largest key in a database tree. If a minimal key
 <code>any1</code> and/or a maximal key <code>any2</code> is given, the largest
 key from that range is returned. See also <code><a
@@ -350,9 +350,9 @@ href="refG.html#genKey">genKey</a></code>.
 -> 7
 : (maxKey (tree 'nr '+Item) 3 5)
 -> 5
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="maxi"><code>(maxi 'fun 'lst ..) -> any</code></a>
+<dt><a id="maxi"><code>(maxi 'fun 'lst ..) -> any</code></a></dt>
 <dd>Applies <code>fun</code> to each element of <code>lst</code>. When
 additional <code>lst</code> arguments are given, their elements are also passed
 to <code>fun</code>. Returns that element from <code>lst</code> for which
@@ -371,9 +371,9 @@ href="refS.html#sort">sort</a></code>.
       (and (pair (val X)) (size @)) )
    (all) )
 -> pico
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="member"><code>(member 'any 'lst) -> any</code></a>
+<dt><a id="member"><code>(member 'any 'lst) -> any</code></a></dt>
 <dd>Returns the tail of <code>lst</code> that starts with <code>any</code> when
 <code>any</code> is a member of <code>lst</code>, otherwise <code>NIL</code>.
 See also <code><a href="refM.html#memq">memq</a></code>, <code><a
@@ -387,9 +387,9 @@ href="refI.html#idx">idx</a></code>.
 -> NIL
 : (member '(d e f) '((a b c) (d e f) (g h i)))
 -> ((d e f) (g h i))
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="member/2"><code>member/2</code></a>
+<dt><a id="member/2"><code>member/2</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the the first
 argument is a member of the list in the second argument. See also <code><a
 href="refE.html#equal/2">equal/2</a></code> and <code><a
@@ -401,9 +401,9 @@ href="refM.html#member">member</a></code>.
  @X=b
  @X=c
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="memq"><code>(memq 'any 'lst) -> any</code></a>
+<dt><a id="memq"><code>(memq 'any 'lst) -> any</code></a></dt>
 <dd>Returns the tail of <code>lst</code> that starts with <code>any</code> when
 <code>any</code> is a member of <code>lst</code>, otherwise <code>NIL</code>.
 <code><a href="ref_.html#==">==</a></code> is used for comparison (pointer
@@ -418,9 +418,9 @@ href="refD.html#delq">delq</a></code> and <a href="ref.html#cmp">Comparing</a>.
 -> (c d e f)
 : (memq (2) '((1) (2) (3)))
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="meta"><code>(meta 'obj|typ 'sym ['sym2|cnt ..]) -> any</code></a>
+<dt><a id="meta"><code>(meta 'obj|typ 'sym ['sym2|cnt ..]) -> any</code></a></dt>
 <dd>Fetches a property value <code>any</code>, by searching the property lists
 of the classes and superclasses of <code>obj</code>, or the classes in
 <code>typ</code>, for the property key <code>sym</code>, and by applying the
@@ -434,9 +434,9 @@ arguments. See also <code><a href="refV.html#var:">var:</a></code>.
 -> 123
 : (meta 'A 'a)             # Fetch 'a' from 'B'
 -> 123
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="meth"><code>(meth 'obj ['any ..]) -> any</code></a>
+<dt><a id="meth"><code>(meth 'obj ['any ..]) -> any</code></a></dt>
 <dd>This function is usually not called directly, but is used by <code> <a
 href="refD.html#dm">dm</a></code> as a template to initialize the
 <code>VAL</code> of message symbols. It searches for itself in the methods of
@@ -452,9 +452,9 @@ href="refT.html#try">try</a></code>.
 -> 67283504    # Value of 'meth'
 : rel>
 -> 67283504    # Value of any message
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="method"><code>(method 'msg 'obj) -> fun</code></a>
+<dt><a id="method"><code>(method 'msg 'obj) -> fun</code></a></dt>
 <dd>Returns the function body of the method that would be executed upon sending
 the message <code>msg</code> to the object <code>obj</code>. If the message
 cannot be located in <code>obj</code>, its classes and superclasses,
@@ -469,9 +469,9 @@ href="refC.html#class">class</a></code>.
 <pre><code>
 : (method 'mis> '+Number)
 -> ((Val Obj) (and Val (not (num? Val)) "Numeric input expected"))
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="methods"><code>(methods 'sym) -> lst</code></a>
+<dt><a id="methods"><code>(methods 'sym) -> lst</code></a></dt>
 <dd>(Debug mode only) Returns a list of method specifications for the object or
 class <code>sym</code>, as they are inherited from <code>sym</code>'s classes
 and superclasses. See also <a href="ref.html#oop">OO Concepts</a>, <code><a
@@ -492,9 +492,9 @@ href="refC.html#can">can</a></code>.
 (put> . +relation)
 (has> . +relation)
 (ele> . +relation)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="min"><code>(min 'any ..) -> any</code></a>
+<dt><a id="min"><code>(min 'any ..) -> any</code></a></dt>
 <dd>Returns the smallest of all <code>any</code> arguments. See also <a
 href="refM.html#max">max</a> and <a href="ref.html#cmp">Comparing</a>.
 
@@ -503,9 +503,9 @@ href="refM.html#max">max</a> and <a href="ref.html#cmp">Comparing</a>.
 -> 2
 : (min (5) (2 3) 'X)
 -> X
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="minKey"><code>(minKey 'tree ['any1 ['any2]]) -> any</code></a>
+<dt><a id="minKey"><code>(minKey 'tree ['any1 ['any2]]) -> any</code></a></dt>
 <dd>Returns the smallest key in a database tree. If a minimal key
 <code>any1</code> and/or a maximal key <code>any2</code> is given, the smallest
 key from that range is returned. See also <code><a
@@ -519,9 +519,9 @@ href="refG.html#genKey">genKey</a></code>.
 -> 1
 : (minKey (tree 'nr '+Item) 3 5)
 -> 3
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="mini"><code>(mini 'fun 'lst ..) -> any</code></a>
+<dt><a id="mini"><code>(mini 'fun 'lst ..) -> any</code></a></dt>
 <dd>Applies <code>fun</code> to each element of <code>lst</code>. When
 additional <code>lst</code> arguments are given, their elements are also passed
 to <code>fun</code>. Returns that element from <code>lst</code> for which
@@ -535,9 +535,9 @@ href="refS.html#sort">sort</a></code>.
 -> 3
 : (mini val '(A B C))
 -> A
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="mix"><code>(mix 'lst cnt|'any ..) -> lst</code></a>
+<dt><a id="mix"><code>(mix 'lst cnt|'any ..) -> lst</code></a></dt>
 <dd>Builds a list from the elements of the argument <code>lst</code>, as
 specified by the following <code>cnt|'any</code> arguments. If such an argument
 is a positive number, the n'th element from <code>lst</code> is taken. If it is
@@ -551,9 +551,9 @@ result is used.
 -> ((c d) a)
 : (mix '(a b c d) 1 'A 4 'D)
 -> (a A d D)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="mmeq"><code>(mmeq 'lst 'lst) -> any</code></a>
+<dt><a id="mmeq"><code>(mmeq 'lst 'lst) -> any</code></a></dt>
 <dd>Returns the tail of the second argument <code>lst</code> that starts with a
 member of the first argument <code>lst</code>, otherwise <code>NIL</code>.
 <code><a href="ref_.html#==">==</a></code> is used for comparison (pointer
@@ -567,9 +567,9 @@ href="refD.html#delq">delq</a></code>.
 -> NIL
 : (mmeq '(a b c) '(d b x))
 -> (b x)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="money"><code>(money 'num ['sym]) -> sym</code></a>
+<dt><a id="money"><code>(money 'num ['sym]) -> sym</code></a></dt>
 <dd>Formats a number <code>num</code> into a digit string with two decimal
 places, according to the current <code><a
 href="refL.html#locale">locale</a></code>. If an additional currency name is
@@ -587,10 +587,10 @@ href="refF.html#format">format</a></code>.
 -> NIL
 : (money 123456789 "EUR")
 -> "1.234.567,89 EUR"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="more"><code>(more 'lst ['fun]) -> flg</code></a>
-<dt><code>(more 'cls) -> any</code>
+<dt><a id="more"><code>(more 'lst ['fun]) -> flg</code></a></dt>
+<dt><code>(more 'cls) -> any</code></dt>
 <dd>(Debug mode only) Displays the elements of <code>lst</code> (first form), or
 the type and methods of <code>cls</code> (second form). <code>fun</code>
 defaults to <code><a href="refP.html#print">print</a></code>. In the second
@@ -643,9 +643,9 @@ $ 25502044259
    (super Var (cdr Lst)) )
 
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="msg"><code>(msg 'any ['any ..]) -> any</code></a>
+<dt><a id="msg"><code>(msg 'any ['any ..]) -> any</code></a></dt>
 <dd>Prints <code>any</code> with <code><a
 href="refP.html#print">print</a></code>, followed by all <code>any</code>
 arguments (printed with <code><a href="refP.html#prin">prin</a></code>) and a
@@ -655,7 +655,7 @@ newline, to standard error. The first <code>any</code> argument is returned.
 : (msg (1 a 2 b 3 c) " is a mixed " "list")
 (1 a 2 b 3 c) is a mixed list
 -> (1 a 2 b 3 c)
-</code></pre>
+</code></pre></dd>
 
 </dl>
 

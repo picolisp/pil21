@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -10,7 +10,7 @@
 
 <h1>A PicoLisp Tutorial</h1>
 
-<p align=right>(c) Software Lab. Alexander Burger
+<p style="text-align: right">(c) Software Lab. Alexander Burger
 
 <p>This document demonstrates some aspects of the PicoLisp system in detail and
 example. For a general description of the PicoLisp kernel please look at the <a
@@ -73,7 +73,7 @@ just jump anywhere you are interested in.
 </ul>
 
 <p><hr>
-<h2><a name="brw">Browsing</a></h2>
+<h2><a id="brw">Browsing</a></h2>
 
 <p>PicoLisp provides some functionality for inspecting pieces of data and code
 within the running system.
@@ -391,7 +391,7 @@ href="refR.html#+relation">+relation</a></code>, and has a single subclass
 
 
 <p><hr>
-<h2><a name="fun">Defining Functions</a></h2>
+<h2><a id="fun">Defining Functions</a></h2>
 
 <p>Most of the time during programming is spent defining functions (or methods).
 In the following we will concentrate on functions, but most will be true for
@@ -596,7 +596,7 @@ also <a href="faq.html#lambda">this FAQ entry</a>).
 
 
 <p><hr>
-<h2><a name="dbg">Debugging</a></h2>
+<h2><a id="dbg">Debugging</a></h2>
 
 <p>There are two major ways to debug functions (and methods) at runtime:
 <i>Tracing</i> and <i>single-stepping</i>.
@@ -723,8 +723,8 @@ function <code><a href="refD.html#debug">debug</a></code> inserts a breakpoint
 into each top-level expression of a function. When the function is called, it
 stops at each breakpoint, displays the expression it is about to execute next
 (this expression is also stored into the global variable <code><a
-href="ref_.html#^">^</a></code>) and enters a read-eval-loop. The programmer can
-then
+href="ref_.html#HAT">^</a></code>) and enters a read-eval-loop. The programmer
+can then
 
 <ul>
 
@@ -847,7 +847,7 @@ continue execution with ENTER when you are done.
 
 
 <p><hr>
-<h2><a name="funio">Functional I/O</a></h2>
+<h2><a id="funio">Functional I/O</a></h2>
 
 <p>Input and output in PicoLisp is functional, in the sense that there are not
 variables assigned to file descriptors, which need then to be passed to I/O
@@ -970,7 +970,7 @@ fields. A typical way to import the contents of such a file is:
 
 
 <p><hr>
-<h2><a name="script">Scripting</a></h2>
+<h2><a id="script">Scripting</a></h2>
 
 <p>There are two possibilities to get the PicoLisp interpreter into doing useful
 work: via command line arguments, or as a stand-alone script.

@@ -1,4 +1,4 @@
-# 28dec22 Software Lab. Alexander Burger
+# 26mar23 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -23,7 +23,7 @@
    (when (; Sym doc)
       (prinl "========================================")
       (in @
-         (from (pack "<dt><a name=\"" Sym "\">"))
+         (from (pack "<dt><a id=\"" Sym "\">"))
          (out '("w3m" "-T" "text/html" "-dump")
             (echo "</a>")
             (echo "<dd>")
@@ -43,7 +43,7 @@
             (when (match '("r" "e" "f" @ "." "h" "t" "m" "l") (chop F))
                (let P (pack Dir F)
                   (in P
-                     (while (from "<dt><a name=\"")
+                     (while (from "<dt><a id=\"")
                         (let S (till "\"")
                            (cond
                               ((member (pack S) All)

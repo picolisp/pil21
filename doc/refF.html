@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -11,7 +11,7 @@
 
 <dl>
 
-<dt><a name="*Fork"><code>*Fork</code></a>
+<dt><a id="*Fork"><code>*Fork</code></a></dt>
 <dd>A global variable holding a (possibly empty) <code>prg</code> body, to be
 executed after a call to <code><a href="refF.html#fork">fork</a></code> in the
 child process.
@@ -19,9 +19,9 @@ child process.
 <pre><code>
 : (push '*Fork '(off *Tmp))   # Clear '*Tmp' in child process
 -> (off *Tmp)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="+Fold"><code>+Fold</code></a>
+<dt><a id="+Fold"><code>+Fold</code></a></dt>
 <dd>Prefix class for maintaining <code><a
 href="refF.html#fold">fold</a></code>ed indexes to <code><a
 href="refS.html#+String">+String</a></code> relations. Typically used in
@@ -34,27 +34,27 @@ href="ref.html#dbase">Database</a>.
 (rel nm (+Fold +Idx +String))   # Item Description
 ...
 (rel tel (+Fold +Ref +String))  # Phone number
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="fail"><code>(fail) -> lst</code></a>
+<dt><a id="fail"><code>(fail) -> lst</code></a></dt>
 <dd>Constructs an empty <a href="ref.html#pilog">Pilog</a> query, i.e. a query
 that will always fail. See also <code><a href="refG.html#goal">goal</a></code>.
 
 <pre><code>
 (dm clr> ()                # Clear query chart in search dialogs
    (query> This (fail)) )
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="fail/0"><code>fail/0</code></a>
+<dt><a id="fail/0"><code>fail/0</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that always fails. See also
 <code><a href="refT.html#true/0">true/0</a></code>.
 
 <pre><code>
 : (? (fail))
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="fd"><code>(fd ['cnt]) -> cnt</code></a>
+<dt><a id="fd"><code>(fd ['cnt]) -> cnt</code></a></dt>
 <dd>Return the current file descriptor, typically of the closest <code><a
 href="refI.html#in">in</a></code> or <code><a
 href="refO.html#out">out</a></code> channel. If a second file descriptor
@@ -66,9 +66,9 @@ href="refO.html#opid">opid</a></code>.
 <pre><code>
 : (in "@lib.l" (fd))
 -> 3
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="fetch"><code>(fetch 'tree 'any) -> any</code></a>
+<dt><a id="fetch"><code>(fetch 'tree 'any) -> any</code></a></dt>
 <dd>Fetches a value for the key <code>any</code> from a database tree. See also
 <code><a href="refT.html#tree">tree</a></code> and <code><a
 href="refS.html#store">store</a></code>.
@@ -76,9 +76,9 @@ href="refS.html#store">store</a></code>.
 <pre><code>
 : (fetch (tree 'nr '+Item) 2)
 -> {B2}
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="fifo"><code>(fifo 'var ['any ..]) -> any</code></a>
+<dt><a id="fifo"><code>(fifo 'var ['any ..]) -> any</code></a></dt>
 <dd>Implements a first-in-first-out structure using a circular list. When called
 with <code>any</code> arguments, they will be concatenated to end of the
 structure. Otherwise, the first element is removed from the structure and
@@ -102,9 +102,9 @@ href="refC.html#circ">circ</a></code>.
 -> 2
 : X
 -> (3 .)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="file"><code>(file) -> (sym1 sym2 . num) | NIL</code></a>
+<dt><a id="file"><code>(file) -> (sym1 sym2 . num) | NIL</code></a></dt>
 <dd>Returns for the current input channel the path name <code>sym1</code>, the
 file name <code>sym2</code>, and the current line number <code>num</code>. If
 the current input channel is not a file, <code>NIL</code> is returned. See also
@@ -114,10 +114,10 @@ href="refL.html#load">load</a></code>.
 
 <pre><code>
 : (load (pack (car (file)) "localFile.l"))  # Load a file in same directory
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="fill"><code>(fill 'any ['sym|lst]) -> any</code></a>
-<dt><code>(fill 'any ['cnt|sym] 'any2) -> any</code>
+<dt><a id="fill"><code>(fill 'any ['sym|lst]) -> any</code></a></dt>
+<dt><code>(fill 'any ['cnt|sym] 'any2) -> any</code></dt>
 <dd>Non-destructively fills a pattern <code>any</code>, by substituting
 <code>sym</code>, or all symbols in <code>lst</code>, or - if no second argument
 is given - each pattern symbol in <code>any</code> (see <code><a
@@ -154,9 +154,9 @@ See also <code><a href="refM.html#match">match</a></code>.
 -> T
 : (fill '(Got ^ @X))
 -> (Got a pen)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="filter"><code>(filter 'fun 'lst ..) -> lst</code></a>
+<dt><a id="filter"><code>(filter 'fun 'lst ..) -> lst</code></a></dt>
 <dd>Applies <code>fun</code> to each element of <code>lst</code>. When
 additional <code>lst</code> arguments are given, their elements are also passed
 to <code>fun</code>. Returns a list of all elements of <code>lst</code> where
@@ -169,15 +169,15 @@ href="refE.html#extract">extract</a></code>.
 <pre><code>
 : (filter num? (1 A 2 (B) 3 CDE))
 -> (1 2 3)
-: (filter < (2 9 3 8 4 7) (5 4 3 9 9 5))
+: (filter &lt; (2 9 3 8 4 7) (5 4 3 9 9 5))
 -> (2 8 4)
 : (filter and (1 NIL 3 NIL 5) (2 3 4 5 6) (7 8 NIL 1 1))
 -> (1 5)
 : (filter and (range 1 22) '(NIL NIL T .))
 -> (3 6 9 12 15 18 21)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="fin"><code>(fin 'any) -> num|sym</code></a>
+<dt><a id="fin"><code>(fin 'any) -> num|sym</code></a></dt>
 <dd>Returns <code>any</code> if it is an atom, otherwise the CDR of its last
 cell. See also <code><a href="refL.html#last">last</a></code> and <code><a
 href="refT.html#tail">tail</a></code>.
@@ -191,9 +191,9 @@ href="refT.html#tail">tail</a></code>.
 -> c
 : (fin '(a b c))
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="finally"><code>(finally exe . prg) -> any</code></a>
+<dt><a id="finally"><code>(finally exe . prg) -> any</code></a></dt>
 <dd><code>prg</code> is executed, then <code>exe</code> is evaluated, and the
 result of <code>prg</code> is returned. <code>exe</code> will also be evaluated
 if <code>prg</code> does not terminate normally due to a runtime error or a call
@@ -218,9 +218,9 @@ Done!
 1
 Done!
 -> 123
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="find"><code>(find 'fun 'lst ..) -> any</code></a>
+<dt><a id="find"><code>(find 'fun 'lst ..) -> any</code></a></dt>
 <dd>Applies <code>fun</code> to successive elements of <code>lst</code> until
 non-<code>NIL</code> is returned. Returns that element (and stores the
 non-<code>NIL</code> value in the global variable <code><a
@@ -239,9 +239,9 @@ href="refF.html#filter">filter</a></code>.
 -> 4
 : (find > (1 2 3 4 5 6) (6 5 4 3 2 1))  # shorter
 -> 4
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="fish"><code>(fish 'fun 'any ['any2] ..) -> lst</code></a>
+<dt><a id="fish"><code>(fish 'fun 'any ['any2] ..) -> lst</code></a></dt>
 <dd>Applies <code>fun</code> to each element - and recursively to all sublists -
 of <code>any</code>. Returns a list of all items where <code>fun</code> returned
 non-<code>NIL</code>. If <code>any2</code> is non-<code>NIL</code>, it may be
@@ -259,7 +259,7 @@ See also <code><a href="refF.html#filter">filter</a></code>.
 -> (a b c d)
 : (fish gt0 '(a -2 (1 b (-3 c 2)) 3 d -1 7))
 -> (1 2 3 7)
-: (fish < '(a -2 (1 b (-3 c 2)) 3 d -1 7) NIL 2)
+: (fish &lt; '(a -2 (1 b (-3 c 2)) 3 d -1 7) NIL 2)
 -> (-2 1 -3 -1)
 : (fish
    '((X)
@@ -271,9 +271,9 @@ See also <code><a href="refF.html#filter">filter</a></code>.
 -> (3 7)
 : (fish == '(a 1 (b (3 b)) 3) NIL 'b)
 -> (b b)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="flg?"><code>(flg? 'any) -> flg</code></a>
+<dt><a id="flg?"><code>(flg? 'any) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when the argument <code>any</code> is either
 <code>NIL</code> or <code>T</code>. See also <code><a
 href="refB.html#bool">bool</a></code>. <code>(flg? X)</code> is equivalent to
@@ -286,9 +286,9 @@ href="refB.html#bool">bool</a></code>. <code>(flg? X)</code> is equivalent to
 -> T
 : (flg? (+ 3 4))
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="flip"><code>(flip 'lst ['cnt]) -> lst</code></a>
+<dt><a id="flip"><code>(flip 'lst ['cnt]) -> lst</code></a></dt>
 <dd>Returns <code>lst</code> (destructively) reversed. Without the optional
 <code>cnt</code> argument, the whole list is flipped, otherwise only the first
 <code>cnt</code> elements. See also <code><a
@@ -300,9 +300,9 @@ href="refR.html#rot">rot</a></code>.
 -> (4 3 2 1)
 : (flip (1 2 3 4 5 6) 3)   # Flip only the first three elements
 -> (3 2 1 4 5 6)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="flood"><code>(flood 'lst1 'fun 'lst2) -> lst</code></a>
+<dt><a id="flood"><code>(flood 'lst1 'fun 'lst2) -> lst</code></a></dt>
 <dd>Implements a flooding algorithm, returning a list of flooded nodes of a
 graph. <code>lst1</code> is a list of relevant nodes, <code>fun</code> a
 function accepting a node and returning a list of connected nodes, and
@@ -321,9 +321,9 @@ function accepting a node and returning a list of connected nodes, and
          (list (cdr X)) ) )
    (list (cddr *Graph)) )           # Seed third (middle) cell
 -> ((3 4 5) (2 3 4 5) (4 5))        # -> Cells (3 ..) (2 ..) (4 ..)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="flush"><code>(flush) -> flg</code></a>
+<dt><a id="flush"><code>(flush) -> flg</code></a></dt>
 <dd>Flushes the current output stream by writing all buffered data. A call to
 <code>flush</code> for standard output is done automatically before a call to
 <code><a href="refK.html#key">key</a></code>. Returns <code>T</code> when
@@ -332,9 +332,9 @@ successful. See also <code><a href="refR.html#rewind">rewind</a></code>.
 <pre><code>
 : (flush)
 -> T
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="fold"><code>(fold 'any ['cnt]) -> sym</code></a>
+<dt><a id="fold"><code>(fold 'any ['cnt]) -> sym</code></a></dt>
 <dd>Folding to a canonical form: If <code>any</code> is not a symbol, it is
 returned as it is. Otherwise, a new transient symbol with all digits and all
 letters of <code>any</code>, converted to lower case, is returned. If the
@@ -346,9 +346,9 @@ length. See also <code><a href="refL.html#lowc">lowc</a></code>.
 -> "1a2b3"
 : (fold " 1A 2-B/3" 3)
 -> "1a2"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="fold/3"><code>fold/3</code></a>
+<dt><a id="fold/3"><code>fold/3</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the first
 argument, after <code><a href="refF.html#fold">fold</a></code>ing it to a
 canonical form, is a <i>prefix</i> of the folded string representation of the
@@ -374,11 +374,11 @@ href="refT.html#tolr/3">tolr/3</a></code>.
       (fold @Nm @Item nm) ) )
  @Nr=(1 . 5) @Nm="main" @Item={B1}
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="for"><code>(for sym 'num ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code></a>
-<dt><code>(for sym|(sym2 . sym) 'lst ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code>
-<dt><code>(for (sym|(sym2 . sym) 'any1 'any2 [. prg]) ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code>
+<dt><a id="for"><code>(for sym 'num ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code></a></dt>
+<dt><code>(for sym|(sym2 . sym) 'lst ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code></dt>
+<dt><code>(for (sym|(sym2 . sym) 'any1 'any2 [. prg]) ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code></dt>
 <dd>Conditional loop with local variable(s) and multiple conditional exits:<br>
 In the first form, the value of <code>sym</code> is saved, <code>sym</code> is
 bound to <code>1</code>, and the body is executed with increasing values up to
@@ -408,9 +408,9 @@ href="refL.html#loop">loop</a></code>.
 # First form:
 : (for N 5 (printsp N))
 1 2 3 4 5 -> 5
-: (for N 5 (printsp N) (NIL (< N 3) (printsp 'enough)))
+: (for N 5 (printsp N) (NIL (&lt; N 3) (printsp 'enough)))
 1 2 3 enough -> enough
-: (for N 5 (T (> N 3) (printsp 'enough)) (printsp N))
+: (for N 5 (T (&gt; N 3) (printsp 'enough)) (printsp N))
 1 2 3 enough -> enough
 
 # Second form:
@@ -432,11 +432,11 @@ href="refL.html#loop">loop</a></code>.
 2 (c d e f)
 3 (e f)
 -> (e f)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="for/2"><code>for/2</code></a>
-<dt><a name="for/3"><code>for/3</code></a>
-<dt><a name="for/4"><code>for/4</code></a>
+<dt><a id="for/2"><code>for/2</code></a></dt>
+<dt><a id="for/3"><code>for/3</code></a></dt>
+<dt><a id="for/4"><code>for/4</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that generates a sequence of
 numbers. See also <code><a href="refF.html#for">for</a></code> and <code><a
 href="refR.html#range">range</a></code>.
@@ -467,10 +467,10 @@ href="refR.html#range">range</a></code>.
  @N=2
  @N=3
  ...
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="forall"><code>(forall 'cls . prg) -> any</code></a>
-<dt><code>(forall '(cnt . cls) . prg) -> any</code>
+<dt><a id="forall"><code>(forall 'cls . prg) -> any</code></a></dt>
+<dt><code>(forall '(cnt . cls) . prg) -> any</code></dt>
 <dd>Runs <code>prg</code> on all database objects of the class <code>cls</code>,
 as given by the <code><a href="refD.html#dbs">dbs</a></code> definition. In the
 second form, the <code>cnt</code>'th database file is used instead. The global
@@ -486,9 +486,9 @@ href="refC.html#collect">collect</a></code>.
 4 "Enhancement Additive"
 5 "Metal Fittings"
 6 "Gadget Appliance"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="fork"><code>(fork) -> pid | NIL</code></a>
+<dt><a id="fork"><code>(fork) -> pid | NIL</code></a></dt>
 <dd>Forks a child process. Returns <code>NIL</code> in the child, and the
 child's process ID <code>pid</code> in the parent. In the child, the
 <code>VAL</code> of the global variable <code><a
@@ -507,10 +507,10 @@ OK                                              # Child's output
 OK
 OK
 OK
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="format"><code>(format 'num ['cnt ['sym1 ['sym2]]]) -> sym</code></a>
-<dt><code>(format 'sym|lst ['cnt ['sym1 ['sym2]]]) -> num</code>
+<dt><a id="format"><code>(format 'num ['cnt ['sym1 ['sym2]]]) -> sym</code></a></dt>
+<dt><code>(format 'sym|lst ['cnt ['sym1 ['sym2]]]) -> num</code></dt>
 <dd>Converts a number <code>num</code> to a string, or a string
 <code>sym|lst</code> to a number. In both cases, optionally a precision
 <code>cnt</code>, a decimal-separator <code>sym1</code> and a
@@ -547,9 +547,9 @@ href="refR.html#round">round</a></code>.
 -> NIL
 : (format "1.234.567,89" 4 "," ".")
 -> 12345678900
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="free"><code>(free 'cnt) -> (sym . lst)</code></a>
+<dt><a id="free"><code>(free 'cnt) -> (sym . lst)</code></a></dt>
 <dd>Returns, for the <code>cnt</code>'th database file, the next available
 symbol <code>sym</code> (i.e. the first symbol greater than any symbol in the
 database), and the list <code>lst</code> of free symbols. See also <code><a
@@ -574,9 +574,9 @@ href="refD.html#dbck">dbck</a></code>.
 -> T
 : (free 1)        # Now {2} is in the free list
 -> ({4} {2})
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="from"><code>(from 'any ..) -> sym</code></a>
+<dt><a id="from"><code>(from 'any ..) -> sym</code></a></dt>
 <dd>Skips the current input channel until one of the strings <code>any</code> is
 found, and starts subsequent reading from that point. The found <code>any</code>
 argument (or <code>NIL</code> if none is found) is returned. See also <code><a
@@ -587,9 +587,9 @@ href="refE.html#echo">echo</a></code>.
 : (and (from "val='") (till "'" T))
 test val='abc'
 -> "abc"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="full"><code>(full 'any) -> bool</code></a>
+<dt><a id="full"><code>(full 'any) -> bool</code></a></dt>
 <dd>Returns <code>NIL</code> if <code>any</code> is a non-empty list with at
 least one <code>NIL</code> element, otherwise <code>T</code>. <code>(full
 X)</code> is equivalent to <code>(not (memq NIL X))</code>. See also <code><a
@@ -602,9 +602,9 @@ href="refF.html#fully">fully</a></code>.
 -> NIL
 : (full 123)
 -> T
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="fully"><code>(fully 'fun 'lst ..) -> flg</code></a>
+<dt><a id="fully"><code>(fully 'fun 'lst ..) -> flg</code></a></dt>
 <dd>Applies <code>fun</code> to successive elements of <code>lst</code>, and
 returns <code>NIL</code> immediately if one of the results is <code>NIL</code>.
 Otherwise, <code>T</code> is returned. When additional <code>lst</code>
@@ -618,9 +618,9 @@ X))) Lst))</code>. See also <code><a href="refF.html#find">find</a></code> and
 -> T
 : (fully gt0 (1 -2 3))
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="fun"><code>(fun 'fun ['any ..]) -> any</code></a>
+<dt><a id="fun"><code>(fun 'fun ['any ..]) -> any</code></a></dt>
 <dd>Applies <code>fun</code> to the <code>any</code> arguments. <code>(fun foo
 'args)</code> is equivalent to <code>(foo 'args)</code>, and <code>(fun (expr)
 'args)</code> is equivalent to <code>((expr) 'args)</code>. See also <code><a
@@ -634,9 +634,9 @@ href="refP.html#pass">pass</a></code>.
 -> num?
 : (find fun '(sym? ((X) (> X 3)) num?) 4)
 -> ((X) (> X 3))
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="fun?"><code>(fun? 'any) -> any</code></a>
+<dt><a id="fun?"><code>(fun? 'any) -> any</code></a></dt>
 <dd>Returns <code>NIL</code> when the argument <code>any</code> is neither a
 number suitable for a code-pointer, nor a list suitable for a lambda expression
 (function). Otherwise a number is returned for a code-pointer, <code>T</code>
@@ -657,7 +657,7 @@ href="refG.html#getd">getd</a></code>.
 -> NIL
 : (fun? '((A 2 B) (* A B)))      # Not a lambda expression
 -> NIL
-</code></pre>
+</code></pre></dd>
 
 </dl>
 

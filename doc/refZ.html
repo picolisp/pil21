@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -11,7 +11,7 @@
 
 <dl>
 
-<dt><a name="*Zap"><code>*Zap</code></a>
+<dt><a id="*Zap"><code>*Zap</code></a></dt>
 <dd>A global variable holding a list and a pathname. If given, and the value of
 <code><a href="refS.html#*Solo">*Solo</a></code> is <code>NIL</code>, external
 symbols which are no longer accessible can be collected in the CAR, e.g. during
@@ -22,9 +22,9 @@ href="refC.html#commit">commit</a></code>. A (typically periodic) call to
 <pre><code>
 : (setq *Zap '(NIL . "db/app/_zap"))
 -> (NIL . "db/app/_zap")
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="zap"><code>(zap 'sym) -> sym</code></a>
+<dt><a id="zap"><code>(zap 'sym) -> sym</code></a></dt>
 <dd>"Delete" the symbol <code>sym</code>. For internal symbols, that means to
 remove it from the current namespace, effectively transforming it to a transient
 symbol. For external symbols, it means to mark it as "deleted", so that upon a
@@ -46,9 +46,9 @@ the database file. See also <code><a href="refI.html#intern">intern</a></code>.
 !? (car (1 2 3))
 car -- Undefined
 ?
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="zapTree"><code>(zapTree 'sym)</code></a>
+<dt><a id="zapTree"><code>(zapTree 'sym)</code></a></dt>
 <dd>Recursively deletes a tree structure from the database. See also <code><a
 href="refT.html#tree">tree</a></code>, <code><a
 href="refC.html#chkTree">chkTree</a></code> and <code><a
@@ -56,9 +56,9 @@ href="refP.html#prune">prune</a></code>.
 
 <pre><code>
 : (zapTree (cdr (root (tree 'nm '+Item))))
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="zap_"><code>(zap_)</code></a>
+<dt><a id="zap_"><code>(zap_)</code></a></dt>
 <dd>Delayed deletion (with <code><a href="refZ.html#zap">zap</a></code>) of
 external symbols which were collected e.g. during DB tree processing. An
 auxiliary file (with the name taken from the CDR of the value of <code><a
@@ -79,9 +79,9 @@ character) is used as an intermediary file.
 ...
 -rw-r--r-- 1 abu abu     1536 2007-06-23 12:34 Z_
 ...
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="zero"><code>(zero var ..) -> 0</code></a>
+<dt><a id="zero"><code>(zero var ..) -> 0</code></a></dt>
 <dd>Stores <code>0</code> in all <code>var</code> arguments. See also <code><a
 href="refO.html#one">one</a></code>, <code><a href="refO.html#on">on</a></code>,
 <code><a href="refO.html#off">off</a></code> and <code><a
@@ -94,7 +94,7 @@ href="refO.html#onOff">onOff</a></code>.
 -> 0
 : B
 -> 0
-</code></pre>
+</code></pre></dd>
 
 </dl>
 

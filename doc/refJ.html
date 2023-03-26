@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -11,7 +11,7 @@
 
 <dl>
 
-<dt><a name="+Joint"><code>+Joint</code></a>
+<dt><a id="+Joint"><code>+Joint</code></a></dt>
 <dd>Class for bidirectional object relations, a subclass of <code><a
 href="refL.html#+Link">+Link</a></code>. Expects a (symbolic) attribute, a list
 of classes as <code><a href="refT.html#type">type</a></code> of the referred
@@ -27,9 +27,9 @@ href="ref.html#dbase">Database</a>.
 ...
 (class +Pos +Entity)                   # Position class
 (rel ord (+Joint) pos (+Ord))          # Back-link to the parent order
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="job"><code>(job 'lst . prg) -> any</code></a>
+<dt><a id="job"><code>(job 'lst . prg) -> any</code></a></dt>
 <dd>Executes a job within its own environment (as specified by symbol-value
 pairs in <code>lst</code>). The current values of all symbols are saved, the
 symbols are bound to the values in <code>lst</code>, <code>prg</code> is
@@ -63,9 +63,9 @@ href="refS.html#state">state</a></code>.
    (job '((A . 3) (B . 6))
       (println (inc 'A) (inc 'B 2)) ) )
 -> tst
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="journal"><code>(journal ['T] 'any ..) -> T</code></a>
+<dt><a id="journal"><code>(journal ['T] 'any ..) -> T</code></a></dt>
 <dd>Reads journal data from the files with the names <code>any</code>, and
 writes all changes to the database. If the first argument is <code>T</code>, the
 replication journal and transaction logs are disabled. See also <code><a
@@ -74,7 +74,7 @@ href="refP.html#pool">pool</a></code>.
 <pre><code>
 : (journal "db.log")
 -> T
-</code></pre>
+</code></pre></dd>
 
 </dl>
 

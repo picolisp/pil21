@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -10,7 +10,7 @@
 
 <h1>Native C Calls</h1>
 
-<p align=right>(c) Software Lab. Alexander Burger
+<p style="text-align: right">(c) Software Lab. Alexander Burger
 
 <p>This document describes how to call C functions in shared object files
 (libraries) from PicoLisp, using the built-in <code><a
@@ -49,7 +49,7 @@ href="refL.html#lisp">lisp</a></code> functions.
 
 
 <p><hr>
-<h2><a name="overview">Overview</a></h2>
+<h2><a id="overview">Overview</a></h2>
 
 <p>
 <code><a href="refN.html#native">native</a></code> calls a C function in a
@@ -74,7 +74,7 @@ scalar (a numeric representation of a C value) to convert it to a Lisp item, or
 structures. <code>lisp</code> allows you to install callback functions, callable
 from C code, written in Lisp.
 
-<p><code><a href="ref_.html#%@">%@</a></code> is a convenience function,
+<p><code><a href="ref_.html#PERCENT@">%@</a></code> is a convenience function,
 simplifying the most common use case of <code>native</code>.
 
 <p>In combination, these functions can interface PicoLisp to almost any C
@@ -87,7 +87,7 @@ functions can even be called interactively from the REPL.
 
 
 <p><hr>
-<h2><a name="syntax">Syntax</a></h2>
+<h2><a id="syntax">Syntax</a></h2>
 
 <p>The arguments to <code>native</code> are
 
@@ -114,7 +114,7 @@ void fun(void);
 
 
 <p><hr>
-<h3><a name="libs">Libraries</a></h3>
+<h3><a id="libs">Libraries</a></h3>
 
 <p>The first argument to <code>native</code> specifies the library. It is either
 the <i>name</i> of a library (a symbol), or the <i>handle</i> of a previously
@@ -156,7 +156,7 @@ again.
 
 
 <p><hr>
-<h3><a name="funs">Functions</a></h3>
+<h3><a id="funs">Functions</a></h3>
 
 <p>The same rules applies to the second argument, the function. When called with
 a symbol, <code>native</code> stores the function pointer in its value, so that
@@ -205,7 +205,7 @@ caching, the second call would otherwise (wrongly) go to the first function.
 
 
 <p><hr>
-<h3><a name="retval">Return Value</a></h3>
+<h3><a id="retval">Return Value</a></h3>
 
 <p>The (optional) third argument to <code>native</code> specifies the return
 value. A C function can return many types of values, like integer or floating
@@ -218,7 +218,7 @@ the third argument should consist of a pattern which tells <code>native</code>
 how to extract the proper value.
 
 
-<h4><a name="primRet">Primitive Types</a></h4>
+<h4><a id="primRet">Primitive Types</a></h4>
 
 <p>In the simplest case, the result specification is <code>NIL</code> like in
 the examples so far. This means that either the C function returns
@@ -255,7 +255,7 @@ convert a returned <code>double</code> (if the number is positive) or
 </code></pre>
 
 
-<h4><a name="structRet">Arrays and Structures</a></h4>
+<h4><a id="structRet">Arrays and Structures</a></h4>
 
 <p>If the result specification is a list, it means that the C function returned
 a pointer to an array, or an arbitrary memory structure. The specification list
@@ -292,13 +292,13 @@ extraction.
 
 
 <p><hr>
-<h3><a name="args">Arguments</a></h3>
+<h3><a id="args">Arguments</a></h3>
 
 <p>The (optional) fourth and following arguments to <code>native</code> specify
 the arguments to the C function.
 
 
-<h4><a name="primArg">Primitive Types</a></h4>
+<h4><a id="primArg">Primitive Types</a></h4>
 
 <p>Integer arguments (up to 64 bits, signed or unsigned <code>char</code>,
 <code>short</code>, <code>int</code> or <code>long</code>) can be passed as they
@@ -342,7 +342,7 @@ number is passed as a <code>double</code>, otherwise as a <code>float</code>.
 </code></pre>
 
 
-<h4><a name="structArg">Arrays and Structures</a></h4>
+<h4><a id="structArg">Arrays and Structures</a></h4>
 
 <p>Composite arguments are specified as nested list structures.
 <code>native</code> allocates memory for each array or structure (with
@@ -456,7 +456,7 @@ direct return via the argument reference.
 
 
 <p><hr>
-<h2><a name="memory">Memory Management</a></h2>
+<h2><a id="memory">Memory Management</a></h2>
 
 <p>The preceding <a href="#args">Arguments</a> section mentions that
 <code>native</code> implicitly allocates and releases memory for strings, arrays
@@ -566,7 +566,7 @@ above is:
 </code></pre>
 
 
-<h4><a name="fftw">Fast Fourier Transform</a></h4>
+<h4><a id="fftw">Fast Fourier Transform</a></h4>
 
 <p>For a more typical example, we might call the Fast Fourier Transform using
 the library from the <a href="http://fftw.org">FFTW</a> package. With the
@@ -633,7 +633,7 @@ via the <code><a href="refP.html#prog1">prog1</a></code>. Finally, all memory is
 released.
 
 
-<h4><a name="const">Constant Data</a></h4>
+<h4><a id="const">Constant Data</a></h4>
 
 <p>If such allocated data (strings, arrays or structures passed to
 <code>native</code>) are constant during the lifetime of a program, it makes
@@ -654,13 +654,13 @@ prints a floating point number in scientific notation:
 
 
 <p><hr>
-<h2><a name="callbacks">Callbacks</a></h2>
+<h2><a id="callbacks">Callbacks</a></h2>
 
 <p>Sometimes it is necessary to do the reverse: Call Lisp code from C code. This
 can be done in two ways - with certain limitations.
 
 
-<h4><a name="byName">Call by Name</a></h4>
+<h4><a id="byName">Call by Name</a></h4>
 
 <p>The first way is actually not a <a
 href="http://en.wikipedia.org/wiki/Callback_(computer_programming)">callback</a>
@@ -696,7 +696,7 @@ prepare and/or extract the proper data with <code><a
 href="refS.html#struct">struct</a></code> and memory management operations.
 
 
-<h4><a name="funptr">Function Pointer</a></h4>
+<h4><a id="funptr">Function Pointer</a></h4>
 
 <p>This is a true <a
 href="http://en.wikipedia.org/wiki/Callback_(computer_programming)">callback</a>

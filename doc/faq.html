@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -8,7 +8,7 @@
 <body>
 <a href="mailto:abu@software-lab.de">abu@software-lab.de</a>
 
-<p align=right>
+<p style="text-align: right">
 <i>Monk: "If I have nothing in my mind, what shall I do?"</i><br>
 <i>Joshu: "Throw it out."</i><br>
 <i>Monk: "But if there is nothing, how can I throw it out?"</i><br>
@@ -17,7 +17,7 @@
 
 <h1>PicoLisp Frequently Asked Questions</h1>
 
-<p align=right>(c) Software Lab. Alexander Burger
+<p style="text-align: right">(c) Software Lab. Alexander Burger
 
 <p><ul>
 <li><a href="#yet">Why did you write yet another Lisp?</a>
@@ -44,7 +44,7 @@
 </ul>
 
 <p><hr>
-<h2><a name="yet">Why did you write yet another Lisp?</a></h2>
+<h2><a id="yet">Why did you write yet another Lisp?</a></h2>
 
 <p>Because other Lisps are not the way I'd like them to be. They concentrate on
 efficient compilation, and lost the one-to-one relationship of language and
@@ -54,7 +54,7 @@ are the case-insensitivity and complexity of current Lisp systems.
 
 
 <p><hr>
-<h2><a name="who">Who can use PicoLisp?</a></h2>
+<h2><a id="who">Who can use PicoLisp?</a></h2>
 
 <p>PicoLisp is for programmers who want to control their programming
 environment, at all levels, from the application domain down to the bare metal,
@@ -69,7 +69,7 @@ better protects them from their own mistakes.
 
 
 <p><hr>
-<h2><a name="advantages">What are the advantages over other Lisp systems?</a></h2>
+<h2><a id="advantages">What are the advantages over other Lisp systems?</a></h2>
 
 <h3>Simplicity</h3>
 <p>PicoLisp is easy to understand and adapt. There is no compiler enforcing
@@ -230,7 +230,7 @@ write country- and language-independent applications.
 
 
 <p><hr>
-<h2><a name="performance">How is the performance compared to other Lisp systems?</a></h2>
+<h2><a id="performance">How is the performance compared to other Lisp systems?</a></h2>
 
 <p>Despite the fact that PicoLisp is an interpreted-only system, the performance
 is quite good. Typical Lisp programs operating on list data structures are
@@ -255,7 +255,7 @@ constraints.
 
 
 <p><hr>
-<h2><a name="interpreted">What does "interpreted" mean?</a></h2>
+<h2><a id="interpreted">What does "interpreted" mean?</a></h2>
 
 <p>It means to directly execute Lisp data as program code. No transformation to
 another representation of the code (e.g. compilation), and no structural
@@ -300,7 +300,7 @@ dynamically generated GUI, a fast interpreter is preferable over any compiler.
 
 
 <p><hr>
-<h2><a name="compiler">Is there (or will be in the future) a compiler available?</a></h2>
+<h2><a id="compiler">Is there (or will be in the future) a compiler available?</a></h2>
 
 <p>No. That would contradict the idea of PicoLisp's simple virtual machine
 structure. A compiler transforms it to another (physical) machine, with the
@@ -313,7 +313,7 @@ thrown away; a process that would be considerably slowed down by compilation.
 
 
 <p><hr>
-<h2><a name="portable">Is it portable?</a></h2>
+<h2><a id="portable">Is it portable?</a></h2>
 
 <p>Yes and No. Though we wrote and tested PicoLisp originally only on Linux, it
 now also runs on many other POSIX systems. The first versions were even fully
@@ -326,7 +326,7 @@ Internet an application <u>server</u> does not really need to be portable.
 
 
 <p><hr>
-<h2><a name="webServer">Is PicoLisp a web server?</a></h2>
+<h2><a id="webServer">Is PicoLisp a web server?</a></h2>
 
 <p>Not really, but it evolved a great deal into that direction.
 
@@ -338,7 +338,7 @@ This is much simpler than to develop a full-blown web server.
 
 
 <p><hr>
-<h2><a name="lambda">I cannot find the LAMBDA keyword in PicoLisp</a></h2>
+<h2><a id="lambda">I cannot find the LAMBDA keyword in PicoLisp</a></h2>
 
 <p>Because it isn't there. The reason is that it is redundant; it is equivalent
 to the <code>quote</code> function in any aspect, because there's no distinction
@@ -357,7 +357,7 @@ between code and data in PicoLisp, and <code>quote</code> returns the whole
 
 
 <p><hr>
-<h2><a name="dynamic">Why do you use dynamic variable binding?</a></h2>
+<h2><a id="dynamic">Why do you use dynamic variable binding?</a></h2>
 
 <p>Dynamic binding is very powerful, because there is only one single,
 dynamically changing environment active all the time. This makes it possible
@@ -404,7 +404,7 @@ anonymous recursion so elegantly with lexical binding?
 
 
 <p><hr>
-<h2><a name="problems">Are there no problems caused by dynamic binding?</a></h2>
+<h2><a id="problems">Are there no problems caused by dynamic binding?</a></h2>
 
 <p>You mean the <i>funarg</i> problem, or problems that arise when a variable
 might be bound to <i>itself</i>? For that reason we have a convention in
@@ -467,7 +467,7 @@ utilities than in production code, so that they can be easily encapsulated.
 
 
 <p><hr>
-<h2><a name="closures">But with dynamic binding I cannot implement closures!</a></h2>
+<h2><a id="closures">But with dynamic binding I cannot implement closures!</a></h2>
 
 <p>This is not true. Closures are a matter of scope, not of binding.
 
@@ -548,7 +548,7 @@ to build.
 
 
 <p><hr>
-<h2><a name="macros">Do you have macros?</a></h2>
+<h2><a id="macros">Do you have macros?</a></h2>
 
 <p>Yes, there is a macro mechanism in PicoLisp, to build and immediately execute
 a list of expressions. But it is seldom used. Macros are a kludge. Most things
@@ -572,7 +572,7 @@ debugged.
 
 
 <p><hr>
-<h2><a name="threads">Can I run threads?</a></h2>
+<h2><a id="threads">Can I run threads?</a></h2>
 
 <p>This is not possible. Threads share memory and other resources (as opposed to
 processes, which are better isolated from each other). Each thread has its own
@@ -591,7 +591,7 @@ across multiple machines, and therefore scale better.
 
 
 <p><hr>
-<h2><a name="strings">Why are there no strings?</a></h2>
+<h2><a id="strings">Why are there no strings?</a></h2>
 
 <p>Because PicoLisp has something better: <a
 href="ref.html#transient-io">Transient symbols</a>. They look and behave like
@@ -626,7 +626,7 @@ occur multiple times within the same file.
 
 
 <p><hr>
-<h2><a name="arrays">What about arrays?</a></h2>
+<h2><a id="arrays">What about arrays?</a></h2>
 
 <p>PicoLisp has no array or vector data type. Instead, lists must be used for
 any type of sequentially arranged data.
@@ -654,7 +654,7 @@ space a linear list would require, and is very fast.
 
 
 <p><hr>
-<h2><a name="floats">How to do floating point arithmetic?</a></h2>
+<h2><a id="floats">How to do floating point arithmetic?</a></h2>
 
 <p>PicoLisp does not support real floating point numbers. You can do all kinds
 of floating point calculations by calling existing library functions via
@@ -678,7 +678,7 @@ string conversions. The rest is under programmer's control and responsibility
 
 
 <p><hr>
-<h2><a name="bind">What happens when I locally bind a symbol which has a function definition?</a></h2>
+<h2><a id="bind">What happens when I locally bind a symbol which has a function definition?</a></h2>
 
 <p>That's not a good idea. The next time that function gets executed within the
 dynamic context the program may crash. Therefore we have a convention to use an
@@ -694,7 +694,7 @@ upper case first letter for locally bound symbols:
 
 
 <p><hr>
-<h2><a name="hardware">Would it make sense to build PicoLisp in hardware?</a></h2>
+<h2><a id="hardware">Would it make sense to build PicoLisp in hardware?</a></h2>
 
 <p>At least it should be interesting. It would be a machine executing list
 (tree) structures instead of linear instruction sequences. "Instruction
@@ -715,7 +715,7 @@ microcode levels) are s-expressions: The machine language is <i>Lisp</i>.
 
 
 <p><hr>
-<h2><a name="segfault">I get a segfault if I ...</a></h2>
+<h2><a id="segfault">I get a segfault if I ...</a></h2>
 
 <p>It is easy to produce a segfault in PicoLisp. Just set a symbol to a value
 which is not a function, and call it:
@@ -746,7 +746,7 @@ href="ref.html#conv">naming conventions</a>.
 
 
 <p><hr>
-<h2><a name="ask">Where can I ask questions?</a></h2>
+<h2><a id="ask">Where can I ask questions?</a></h2>
 
 <p>The best place is the <a
 href="mailto:picolisp@software-lab.de?subject=Subscribe">PicoLisp Mailing

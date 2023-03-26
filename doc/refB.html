@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -11,16 +11,16 @@
 
 <dl>
 
-<dt><a name="*Blob"><code>*Blob</code></a>
+<dt><a id="*Blob"><code>*Blob</code></a></dt>
 <dd>A global variable holding the pathname of the database blob directory. See
 also <code><a href="refB.html#blob">blob</a></code>.
 
 <pre><code>
 : *Blob
 -> "blob/app/"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="*Bye"><code>*Bye</code></a>
+<dt><a id="*Bye"><code>*Bye</code></a></dt>
 <dd>A global variable holding a (possibly empty) <code>prg</code> body, to be
 executed just before the termination of the PicoLisp interpreter. See also
 <code><a href="refB.html#bye">bye</a></code> and <code><a
@@ -29,9 +29,9 @@ href="refT.html#tmp">tmp</a></code>.
 <pre><code>
 : (push1 '*Bye '(call 'rm "myfile.tmp"))  # Remove a temporary file
 -> (call 'rm "myfile.tmp")
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="+Bag"><code>+Bag</code></a>
+<dt><a id="+Bag"><code>+Bag</code></a></dt>
 <dd>Class for a list of arbitrary relations, a subclass of <code><a
 href="refR.html#+relation">+relation</a></code>. Objects of that class maintain
 a list of heterogeneous relations. Typically used in combination with the
@@ -46,9 +46,9 @@ href="ref.html#dbase">Database</a>.
    ((+Number))                   # Quantity
    ((+String))                   # Memo text
    ((+Number) 2) )               # Total amount
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="+Blob"><code>+Blob</code></a>
+<dt><a id="+Blob"><code>+Blob</code></a></dt>
 <dd>Class for blob relations, a subclass of <code><a
 href="refR.html#+relation">+relation</a></code>. Objects of that class maintain
 blobs, as stubs in database objects pointing to actual files for arbitrary
@@ -58,9 +58,9 @@ href="ref.html#dbase">Database</a>.
 
 <pre><code>
 (rel jpg (+Blob))  # Picture
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="+Bool"><code>+Bool</code></a>
+<dt><a id="+Bool"><code>+Bool</code></a></dt>
 <dd>Class for boolean relations, a subclass of <code><a
 href="refR.html#+relation">+relation</a></code>. Objects of that class expect
 either <code>T</code> or <code>NIL</code> as value (though, as always, only
@@ -69,9 +69,9 @@ href="ref.html#dbase">Database</a>.
 
 <pre><code>
 (rel ok (+Ref +Bool))  # Indexed flag
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="balance"><code>(balance 'var 'lst ['flg])</code></a>
+<dt><a id="balance"><code>(balance 'var 'lst ['flg])</code></a></dt>
 <dd>Builds a balanced binary <code><a href="refI.html#idx">idx</a></code> tree
 in <code>var</code>, from the sorted list in <code>lst</code>. Normally, if
 arbitary - or, in the worst case, ordered - data are inserted with
@@ -102,9 +102,9 @@ href="refS.html#sort">sort</a></code>.
 -> NIL
 : (idx 'I)
 -> (1 2 3 4 5 6 7 8 9 10 20 30 40 50 60 70 80 90)
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="basename"><code>(basename 'any) -> sym</code></a>
+<dt><a id="basename"><code>(basename 'any) -> sym</code></a></dt>
 <dd>Returns the filename part of a path name <code>any</code>. See also <code><a
 href="refD.html#dirname">dirname</a></code> and <code><a
 href="refP.html#path">path</a></code>.
@@ -112,9 +112,9 @@ href="refP.html#path">path</a></code>.
 <pre><code>
 : (basename "a/b/c/d")
 -> "d"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="be"><code>(be sym . any) -> sym</code></a>
+<dt><a id="be"><code>(be sym . any) -> sym</code></a></dt>
 <dd>Declares a <a href="ref.html#pilog">Pilog</a> fact or rule for the
 <code>sym</code> argument, by concatenating the <code>any</code> argument to the
 <code>T</code> property of <code>sym</code>. Groups of declarations are
@@ -149,9 +149,9 @@ href="refP.html#prove">prove</a></code>.
 : (? (likes John @X))
  @X=Mary
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="beep"><code>(beep) -> NIL</code></a>
+<dt><a id="beep"><code>(beep) -> NIL</code></a></dt>
 <dd>Send the bell character to the console. See also <code><a
 href="refS.html#space">space</a></code>, <code><a
 href="refP.html#prin">prin</a></code> and <code><a
@@ -160,9 +160,9 @@ href="refC.html#char">char</a></code>.
 <pre><code>
 : (beep)
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="bench"><code>(bench . prg) -> any</code></a>
+<dt><a id="bench"><code>(bench . prg) -> any</code></a></dt>
 <dd>(Debug mode only) Benchmarks <code>prg</code>, by printing the time it took
 to execute, and returns the result. See also <code><a
 href="refU.html#usec">usec</a></code>.
@@ -171,10 +171,10 @@ href="refU.html#usec">usec</a></code>.
 : (bench (wait 2000))
 1.996 sec
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="bin"><code>(bin 'num ['num]) -> sym</code></a>
-<dt><code>(bin 'sym) -> num</code>
+<dt><a id="bin"><code>(bin 'num ['num]) -> sym</code></a></dt>
+<dt><code>(bin 'sym) -> num</code></dt>
 <dd>Converts a number <code>num</code> to a binary string, or a binary string
 <code>sym</code> to a number. In the first case, if the second argument is
 given, the result is separated by spaces into groups of such many digits. See
@@ -190,9 +190,9 @@ href="refF.html#format">format</a></code>.
 -> 73
 : (bin 1234567 4)
 -> "1 0010 1101 0110 1000 0111"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="bind"><code>(bind 'sym|lst . prg) -> any</code></a>
+<dt><a id="bind"><code>(bind 'sym|lst . prg) -> any</code></a></dt>
 <dd>Binds value(s) to symbol(s). The first argument must evaluate to a symbol,
 or a list of symbols or symbol-value pairs. The values of these symbols are
 saved (and the symbols bound to the values in the case of pairs),
@@ -214,15 +214,15 @@ href="refU.html#use">use</a></code>.
 -> 12
 : X
 -> 123                                       # X is restored to 123
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="bit?"><code>(bit? 'num ..) -> num | NIL</code></a>
+<dt><a id="bit?"><code>(bit? 'num ..) -> num | NIL</code></a></dt>
 <dd>Returns the first <code>num</code> argument when all bits which are 1 in the
 first argument are also 1 in all following arguments, otherwise
 <code>NIL</code>. When one of those arguments evaluates to <code>NIL</code>, it
 is returned immediately. See also <code><a href="ref_.html#&">&</a></code>,
-<code><a href="ref_.html#|">|</a></code> and <code><a
-href="refX.html#x|">x|</a></code>.
+<code><a href="ref_.html#VT">|</a></code> and <code><a
+href="refX.html#xVT">x|</a></code>.
 
 <pre><code>
 : (bit? 7 15 255)
@@ -231,10 +231,10 @@ href="refX.html#x|">x|</a></code>.
 -> 1
 : (bit? 1 2)
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="blk"><code>(blk 'fd 'cnt 'siz ['fd2]) -> lst</code></a>
-<dt><code>(blk 'fd 0) -> (cnt . siz)</code>
+<dt><a id="blk"><code>(blk 'fd 'cnt 'siz ['fd2]) -> lst</code></a></dt>
+<dt><code>(blk 'fd 0) -> (cnt . siz)</code></dt>
 <dd>Reads raw object data from the <code>cnt</code>'th block in the file open on
 descriptor <code>fd</code>. Returns a cons pair of the value and property list
 of that database object, or <code>NIL</code> for an invalid block. If
@@ -258,9 +258,9 @@ and <code><a href="refQ.html#qsym">qsym</a></code>.
 -> 15
 : (blk 15 4 3 15)
 -> ((+Role) (({15} {13} {11}) . usr) ((Customer Item Order Report Delete) . perm) ("Accounting" . nm))
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="blob"><code>(blob 'obj 'sym) -> sym</code></a>
+<dt><a id="blob"><code>(blob 'obj 'sym) -> sym</code></a></dt>
 <dd>Returns the blob file name for <code>var</code> in <code>obj</code>. See
 also <code><a href="refB.html#*Blob">*Blob</a></code>, <code><a
 href="refB.html#blob!">blob!</a></code> and <code><a
@@ -278,18 +278,18 @@ href="refP.html#pack">pack</a></code>.
 -> {B1}
 : (blob '{B1} 'jpg)
 -> "blob/app/3/-/1.jpg"
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="blob!"><code>(blob! 'obj 'sym 'file)</code></a>
+<dt><a id="blob!"><code>(blob! 'obj 'sym 'file)</code></a></dt>
 <dd>Stores the contents of <code>file</code> in a <code><a
 href="refB.html#blob">blob</a></code>. See also <code><a
 href="refE.html#entityMesssages">put!></a></code>.
 
 <pre><code>
 (blob! *ID 'jpg "picture.jpg")
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="bool"><code>(bool 'any) -> flg</code></a>
+<dt><a id="bool"><code>(bool 'any) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when the argument <code>any</code> is
 non-<code>NIL</code>. This function is only needed when <code>T</code> is
 strictly required for a "true" condition (Usually, any non-<code>NIL</code>
@@ -301,9 +301,9 @@ href="refF.html#flg?">flg?</a></code>.
 -> 4
 : (bool (and 3 4))
 -> T
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="bool/3"><code>bool/3</code></a>
+<dt><a id="bool/3"><code>bool/3</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the first
 argument has the same truth value as the result of applying the <code><a
 href="refG.html#get">get</a></code> algorithm to the following arguments.
@@ -324,9 +324,9 @@ href="refT.html#tolr/3">tolr/3</a></code>.
    (bool @OK @Ord ok) )
  @OK=T @Ord={B7}
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="box"><code>(box 'any) -> sym</code></a>
+<dt><a id="box"><code>(box 'any) -> sym</code></a></dt>
 <dd>Creates and returns a new anonymous symbol. The initial value is set to the
 <code>any</code> argument. See also <code><a href="refN.html#new">new</a></code>
 and <code><a href="refB.html#box?">box?</a></code>.
@@ -335,9 +335,9 @@ and <code><a href="refB.html#box?">box?</a></code>.
 : (show (box '(A B C)))
 $134425627 (A B C)
 -> $134425627
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="box?"><code>(box? 'any) -> sym | NIL</code></a>
+<dt><a id="box?"><code>(box? 'any) -> sym | NIL</code></a></dt>
 <dd>Returns the argument <code>any</code> when it is an anonymous symbol,
 otherwise <code>NIL</code>. See also <code><a
 href="refB.html#box">box</a></code>, <code><a
@@ -353,9 +353,9 @@ href="refE.html#ext?">ext?</a></code>.
 -> NIL
 : (box? NIL)
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="bt"><code>(bt ['flg]) -> flg</code></a>
+<dt><a id="bt"><code>(bt ['flg]) -> flg</code></a></dt>
 <dd>(Debug mode only) Formatted stack backtrace printing (see <code><a
 href="refT.html#trail">trail</a></code>) for the current point of program
 execution. For each bind frame, the function call (reduced with <code><a
@@ -390,9 +390,9 @@ Div/0
    B 1
    F 7
 -> NIL
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="buf"><code>(buf sym 'cnt . prg) -> any</code></a>
+<dt><a id="buf"><code>(buf sym 'cnt . prg) -> any</code></a></dt>
 <dd>Creates a temporary local memory buffer on the stack, and binds
 <code>sym</code> to the pointer during the execution of <code>prg</code>. The
 current value of <code>sym</code> is saved and restored appropriately. The
@@ -400,7 +400,7 @@ return value is the result of <code>prg</code>. See also <code><a
 href="refL.html#let">let</a></code>, <code><a
 href="refN.html#native">native</a></code>, <code><a
 href="refS.html#struct">struct</a></code> and <code><a
-href="ref_.html#%@">%@</a></code>.
+href="ref_.html#PERCENT@">%@</a></code>.
 
 <pre><code>
 (buf Buf BUFSIZ
@@ -415,9 +415,9 @@ This is functionally equivalent to (but more efficient than)
    (%@ "read" 'I Fd Buf BUFSIZ)
    (%@ "write" 'I Fd2 Buf BUFSIZ)
    (%@ "free" NIL Buf) )
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="by"><code>(by 'fun1 'fun2 'lst ..) -> lst</code></a>
+<dt><a id="by"><code>(by 'fun1 'fun2 'lst ..) -> lst</code></a></dt>
 <dd>Applies <code>fun1</code> to each element of <code>lst</code>. When
 additional <code>lst</code> arguments are given, their elements are also passed
 to <code>fun1</code>. Each result of <code>fun1</code> is CONSed with its
@@ -431,9 +431,9 @@ list which is passed to <code>fun2</code>. For the list returned from
 -> (A B C)
 : (by '((N) (bit? 1 N)) group (3 11 6 2 9 5 4 10 12 7 8 1))
 -> ((3 11 9 5 7 1) (6 2 4 10 12 8))
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="bye"><code>(bye ['cnt])</code></a>
+<dt><a id="bye"><code>(bye ['cnt])</code></a></dt>
 <dd>Executes all pending <code><a href="refF.html#finally">finally</a></code>
 expressions, closes all open files, executes the <code>VAL</code> of the global
 variable <code><a href="refB.html#*Bye">*Bye</a></code> (should be a
@@ -448,9 +448,9 @@ is missing or <code>NIL</code>.
 OK
 bye
 $
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="byte"><code>(byte 'num ['cnt]) -> cnt</code></a>
+<dt><a id="byte"><code>(byte 'num ['cnt]) -> cnt</code></a></dt>
 <dd>Returns - if the second argument is not given - a byte value (0 .. 255) from
 the memory location pointed to by <code>num</code>. Otherwise <code>cnt</code>
 is stored in the memory location and returned. See also <code><a
@@ -476,9 +476,9 @@ href="refA.html#adr">adr</a></code>.
 -> "ABC"
 : (native "@" "free" 'N P)             # Free buffer
 -> 0
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="bytes"><code>(bytes 'any) -> cnt</code></a>
+<dt><a id="bytes"><code>(bytes 'any) -> cnt</code></a></dt>
 <dd>Returns the number of bytes <code>any</code> would occupy in encoded binary
 format (as generated by <code><a href="refP.html#pr">pr</a></code>). See also
 <code><a href="refS.html#size">size</a></code> and <code><a
@@ -497,7 +497,7 @@ href="refL.html#length">length</a></code>.
 -> 10
 : (bytes (101 102 103 .))
 -> 9
-</code></pre>
+</code></pre></dd>
 
 </dl>
 

@@ -1,4 +1,4 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN" "http://www.w3.org/TR/1998/REC-html40-19980424/loose.dtd">
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -11,7 +11,7 @@
 
 <dl>
 
-<dt><a name="yield"><code>(yield 'any ['any2]) -> any</code></a>
+<dt><a id="yield"><code>(yield 'any ['any2]) -> any</code></a></dt>
 <dd>Transfers control from the current <a
 href="ref.html#coroutines">coroutine</a> back to the caller (when the
 <code>any2</code> tag is not given), or to some other coroutine (specified by
@@ -34,9 +34,9 @@ href="refT.html#throw">throw</a></code>.
    (yield 2 "rt1") )                   # Send '2' to "rt1"
 2 in rt1 from rt2
 -> 7
-</code></pre>
+</code></pre></dd>
 
-<dt><a name="yoke"><code>(yoke 'any ..) -> any</code></a>
+<dt><a id="yoke"><code>(yoke 'any ..) -> any</code></a></dt>
 <dd>Inserts one or several new elements <code>any</code> in front of the list in
 the current <code><a href="refM.html#make">make</a></code> environment.
 <code>yoke</code> returns the last inserted argument. See also <code><a
@@ -47,7 +47,7 @@ href="refM.html#made">made</a></code>.
 <pre><code>
 : (make (link 2 3) (yoke 1) (link 4))
 -> (1 2 3 4)
-</code></pre>
+</code></pre></dd>
 
 </dl>
 
