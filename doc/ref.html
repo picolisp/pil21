@@ -1345,7 +1345,7 @@ breakpoint routine, as if <code><a href="ref_.html#!">!</a></code> were called.
 <code>Ctrl-D</code> or <code>(<a href="refQ.html#quit">quit</a>)</code> will
 abort evaluation and return the interpreter to the top level. See also <code><a
 href="refD.html#debug">debug</a></code>, <code><a
-href="refE.html#e">e</a></code>, <code><a href="ref_.html#HAT">^</a></code> and
+href="refE.html#e">e</a></code>, <code><a href="ref_.html#%5E">^</a></code> and
 <code><a href="refD.html#*Dbg">*Dbg</a></code>
 
 <p>Other interrupts may be handled by <code><a
@@ -1368,7 +1368,7 @@ entered.
 location (if possible) and the reason of the error, followed by an error
 message. That message is also stored in the global <code><a
 href="refM.html#*Msg">*Msg</a></code>, and the location of the error in <code><a
-href="ref_.html#HAT">^</a></code>. If the VAL of the global <code><a
+href="ref_.html#%5E">^</a></code>. If the VAL of the global <code><a
 href="refE.html#*Err">*Err</a></code> is non-<code>NIL</code> it is executed as
 a <code>prg</code> body. If the standard input is from a terminal, a
 read-eval-print loop (with a question mark "<code>?</code>" as prompt) is
@@ -1524,9 +1524,10 @@ mixed data types:
 
 <p>See also <code><a href="refM.html#max">max</a></code>, <code><a
 href="refM.html#min">min</a></code>, <code><a
-href="refR.html#rank">rank</a></code>, <code><a href="ref_.html#LT">&lt;</a></code>,
-<code><a href="ref_.html#=">=</a></code>, <code><a
-href="ref_.html#GT">&gt;</a></code> etc.
+href="refR.html#rank">rank</a></code>, <code><a
+href="ref_.html#%3C">&lt;</a></code>, <code><a
+href="ref_.html#=">=</a></code>, <code><a href="ref_.html#%3E">&gt;</a></code>
+etc.
 
 
 <p><hr>
@@ -1796,8 +1797,8 @@ CADR.
 <li>Within such a Lisp expression in a Pilog clause, the current bindings of
 Pilog variables are directly accessible in the corresponding Lisp symbol
 bindings or can be accessed with the <code><a
-href="ref_.html#-GT">-&gt;</a></code> function (the latter is only necessary to
-access non-top-level Pilog environments).
+href="ref_.html#-%3E">-&gt;</a></code> function (the latter is only necessary
+to access non-top-level Pilog environments).
 
 </ul>
 
@@ -2140,16 +2141,16 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="ref_.html#==">==</a>
    <a href="refN.html#n==">n==</a>
    <a href="ref_.html#=">=</a>
-   <a href="ref_.html#LTGT">&lt;&gt;</a>
+   <a href="ref_.html#%3C%3E">&lt;&gt;</a>
    <a href="ref_.html#=0">=0</a>
    <a href="ref_.html#=1">=1</a>
    <a href="ref_.html#=T">=T</a>
    <a href="refN.html#n0">n0</a>
    <a href="refN.html#nT">nT</a>
-   <a href="ref_.html#LT">&lt;</a>
-   <a href="ref_.html#LE">&lt;=</a>
-   <a href="ref_.html#GT">&gt;</a>
-   <a href="ref_.html#GE">&gt;=</a>
+   <a href="ref_.html#%3C">&lt;</a>
+   <a href="ref_.html#%3C=">&lt;=</a>
+   <a href="ref_.html#%3E">&gt;</a>
+   <a href="ref_.html#%3E=">&gt;=</a>
    <a href="refM.html#match">match</a>
    <a href="refF.html#full">full</a>
 </code>
@@ -2161,12 +2162,12 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="ref_.html#-">-</a>
    <a href="ref_.html#*">*</a>
    <a href="ref_.html#/">/</a>
-   <a href="ref_.html#PC">%</a>
+   <a href="ref_.html#%25">%</a>
    <a href="ref_.html#*/">*/</a>
    <a href="ref_.html#**">**</a>
    <a href="refI.html#inc">inc</a>
    <a href="refD.html#dec">dec</a>
-   <a href="ref_.html#GTGT">&gt;&gt;</a>
+   <a href="ref_.html#%3E%3E">&gt;&gt;</a>
    <a href="refR.html#rev">rev</a>
    <a href="refL.html#lt0">lt0</a>
    <a href="refL.html#le0">le0</a>
@@ -2175,8 +2176,8 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refA.html#abs">abs</a>
    <a href="refB.html#bit?">bit?</a>
    <a href="ref_.html#&">&</a>
-   <a href="ref_.html#VT">|</a>
-   <a href="refX.html#xVT">x|</a>
+   <a href="ref_.html#%7C">|</a>
+   <a href="refX.html#x%7C">x|</a>
    <a href="refS.html#sqrt">sqrt</a>
    <a href="refS.html#seed">seed</a>
    <a href="refH.html#hash">hash</a>
@@ -2633,7 +2634,7 @@ prg)</code> indicates an unevaluated list of further arguments.
 <dt>Pilog</dt>
 <dd><code>
    <a href="refP.html#prove">prove</a>
-   <a href="ref_.html#-GT">-&gt;</a>
+   <a href="ref_.html#-%3E">-&gt;</a>
    <a href="refU.html#unify">unify</a>
    <a href="refB.html#be">be</a>
    <a href="refC.html#clause">clause</a>
@@ -2777,7 +2778,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refB.html#basename">basename</a>
    <a href="refE.html#errno">errno</a>
    <a href="refN.html#native">native</a>
-   <a href="ref_.html#PC@">%@</a>
+   <a href="ref_.html#%25@">%@</a>
    <a href="refS.html#struct">struct</a>
    <a href="refL.html#lisp">lisp</a>
    <a href="refE.html#exec">exec</a>
@@ -2824,7 +2825,7 @@ prg)</code> indicates an unevaluated list of further arguments.
    <a href="refT.html#*TStp1">*TStp1</a>
    <a href="refT.html#*TStp2">*TStp2</a>
    <a href="refT.html#*Term">*Term</a>
-   <a href="ref_.html#HAT">^</a>
+   <a href="ref_.html#%5E">^</a>
    <a href="refE.html#*Err">*Err</a>
    <a href="refM.html#*Msg">*Msg</a>
    <a href="refU.html#*Uni">*Uni</a>

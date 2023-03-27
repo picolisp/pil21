@@ -1,4 +1,4 @@
-# 26mar23 Software Lab. Alexander Burger
+# 27mar23 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -23,7 +23,16 @@
    (when (; Sym doc)
       (prinl "========================================")
       (in @
-         (from (pack "<dt><a id=\"" Sym "\">"))
+         (from
+            (pack
+               "<dt><a id=\""
+               (replace (chop Sym)
+                  "%" "%25"
+                  "<" "%3C"
+                  ">" "%3E"
+                  "\^" "%5E"
+                  "|" "%7C")
+               "\">" ) )
          (out '("w3m" "-T" "text/html" "-dump")
             (echo "</a>")
             (echo "<dd>")
@@ -44,15 +53,14 @@
                (let P (pack Dir F)
                   (in P
                      (while (from "<dt><a id=\"")
-                        (let S (till "\"")
+                        (let (L (till "\"")  S (ht:Pack L T))
                            (cond
-                              ((member (pack S) All)
-                                 (put (car @) 'doc P) )
+                              ((member S All) (put (car @) 'doc P))
                               ((and
-                                    (not (cddr (setq S (split S "/"))))
-                                    (format (cadr S))
-                                    (member (pack (car S)) All) )
-                                 (put (intern (glue "/" S)) 'doc P) ) ) ) ) ) ) ) ) ) ) )
+                                    (not (cddr (setq L (split L "/"))))
+                                    (format (cadr L))
+                                    (member (pack (car L)) All) )
+                                 (put (intern S) 'doc P) ) ) ) ) ) ) ) ) ) ) )
 
 (de doc (Sym Browser)
    (call (or Browser (sys "BROWSER") "w3m")
@@ -61,7 +69,13 @@
          (and (= `(char '/) (char (path "@"))) "//")
          (path
             (if (get Sym 'doc)
-               (pack @ "#" Sym)
+               (pack @ "#"
+                  (replace (chop Sym)
+                     "%" "%25"
+                     "<" "%3C"
+                     ">" "%3E"
+                     "\^" "%5E"
+                     "|" "%7C" ) )
                "@doc/ref.html" ) ) ) ) )
 
 (de more (M Fun)

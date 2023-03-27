@@ -1,8 +1,31 @@
+27mar23
+   Fix escapes for special characters
+      lib/debug.l
+      doc/ref.html
+      doc/refB.html
+      doc/refD.html
+      doc/refE.html
+      doc/refN.html
+      doc/refM.html
+      doc/refP.html
+      doc/refR.html
+      doc/refU.html
+      doc/refX.html
+      doc/ref_.html
+      doc/tut.html
+      doc/native.html
+
 26mar23
    Fix various markup issues
-      ref.html ref?.html faq.html tut.html native.html select.html httpGate.html
       lib/debug.l
       lib/form.l
+      ref.html
+      ref?.html
+      faq.html
+      tut.html
+      native.html
+      select.html
+      httpGate.html
    Set download link to demoApp.tgz
       doc/select.html
 

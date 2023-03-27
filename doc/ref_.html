@@ -20,7 +20,7 @@ environment. An empty input line terminates the read-eval-print-loop, the
 environment and I/O channels are restored, and the result of <code>exe</code> is
 returned. <code>!</code> is normally inserted into existing programs with the
 <code><a href="refD.html#debug">debug</a></code> function. See also <code><a
-href="refE.html#e">e</a></code>, <code><a href="ref_.html#HAT">^</a></code> and
+href="refE.html#e">e</a></code>, <code><a href="ref_.html#%5E">^</a></code> and
 <code><a href="refD.html#*Dbg">*Dbg</a></code>.
 
 <pre><code>
@@ -93,7 +93,7 @@ href="ref_.html#$dat">$dat</a></code>.
 -> (10 0 0)
 </code></pre></dd>
 
-<dt><a id="PC"><code>(% 'num ..) -> num</code></a></dt>
+<dt><a id="%25"><code>(% 'num ..) -> num</code></a></dt>
 <dd>Returns the remainder from the divisions of successive <code>num</code>
 arguments. The sign of the result is that of the first argument. When one of the
 arguments evaluates to <code>NIL</code>, it is returned immediately. See also
@@ -113,7 +113,7 @@ href="ref_.html#*/">*/</a></code> .
 -> 1
 </code></pre></dd>
 
-<dt><a id="PC@"><code>(%@ 'cnt|sym 'any 'any ..) -> any</code></a></dt>
+<dt><a id="%25@"><code>(%@ 'cnt|sym 'any 'any ..) -> any</code></a></dt>
 <dd>Convenience function for a common use case of <code><a
 href="refN.html#native">native</a></code>. <code>(%@ "fun" ...)</code> is
 equivalent to <code>(native "@" "fun" ...)</code>.
@@ -136,8 +136,8 @@ equivalent to <code>(native "@" "fun" ...)</code>.
 <dt><a id="&"><code>(& 'num ..) -> num</code></a></dt>
 <dd>Returns the bitwise <code>AND</code> of all <code>num</code> arguments. When
 one of the arguments evaluates to <code>NIL</code>, it is returned immediately.
-See also <code><a href="ref_.html#VT">|</a></code>, <code><a
-href="refX.html#xVT">x|</a></code> and <code><a
+See also <code><a href="ref_.html#%7C">|</a></code>, <code><a
+href="refX.html#x%7C">x|</a></code> and <code><a
 href="refB.html#bit?">bit?</a></code>.
 
 <pre><code>
@@ -241,7 +241,7 @@ href="ref_.html#*/">*/</a></code>.
 -> 4
 </code></pre></dd>
 
-<dt><a id="-GT"><code>(-&gt any [cnt]) -> any</code></a></dt>
+<dt><a id="-%3E"><code>(-&gt; any [cnt]) -> any</code></a></dt>
 <dd>Searches for the value of <code>any</code> (typically a <a
 href="ref.html#pilog">Pilog</a> variable, or an expression of variables) at top
 level (or level <code>cnt</code>) in the current environment. See also <code><a
@@ -260,7 +260,7 @@ X = (1 2 3 4 5 6)
 following arguments. When one of the arguments evaluates to <code>NIL</code>, it
 is returned immediately. See also <code><a href="ref_.html#*">*</a></code>,
 <code><a href="ref_.html#*/">*/</a></code>, <code><a
-href="ref_.html#%">%</a></code>, <code><a href="ref_.html#+">+</a></code> and
+href="ref_.html#%25">%</a></code>, <code><a href="ref_.html#+">+</a></code> and
 <code><a href="ref_.html#-">-</a></code>.
 
 <pre><code>
@@ -324,43 +324,43 @@ href="ref_.html#:">:</a></code>, <code><a href="ref_.html#=:">=:</a></code> and
 -> 7
 </code></pre></dd>
 
-<dt><a id="LT"><code>(< 'any ..) -> flg</code></a></dt>
+<dt><a id="%3C"><code>(&lt; 'any ..) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when all arguments <code>any</code> are in strictly
 increasing order. See also <a href="ref.html#cmp">Comparing</a>.
 
 <pre><code>
-: (< 3 4)
+: (&lt; 3 4)
 -> T
-: (< 'a 'b 'c)
+: (&lt; 'a 'b 'c)
 -> T
-: (< 999 'a)
+: (&lt; 999 'a)
 -> T
 </code></pre></dd>
 
-<dt><a id="LE"><code>(<= 'any ..) -> flg</code></a></dt>
+<dt><a id="%3C="><code>(&lt;= 'any ..) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when all arguments <code>any</code> are in strictly
 non-decreasing order. See also <a href="ref.html#cmp">Comparing</a>.
 
 <pre><code>
-: (<= 3 3)
+: (&lt;= 3 3)
 -> T
-: (<= 1 2 3)
+: (&lt;= 1 2 3)
 -> T
-: (<= "abc" "abc" "def")
+: (&lt;= "abc" "abc" "def")
 -> T
 </code></pre></dd>
 
-<dt><a id="LTGT"><code>(&lt;&gt; 'any ..) -> flg</code></a></dt>
+<dt><a id="%3C%3E"><code>(&lt;&gt; 'any ..) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when not all <code>any</code> arguments are equal
-(structure equality). <code>(<&gt 'any ..)</code> is equivalent to <code>(not (=
-'any ..))</code>. See also <a href="ref.html#cmp">Comparing</a>.
+(structure equality). <code>(&lt;&gt; 'any ..)</code> is equivalent to
+<code>(not (= 'any ..))</code>. See also <a href="ref.html#cmp">Comparing</a>.
 
 <pre><code>
-: (<&gt 'a 'b)
+: (&lt;&gt; 'a 'b)
 -> T
-: (<&gt 'a 'b 'b)
+: (&lt;&gt; 'a 'b 'b)
 -> T
-: (<&gt 'a 'a 'a)
+: (&lt;&gt; 'a 'a 'a)
 -> NIL
 </code></pre></dd>
 
@@ -472,7 +472,7 @@ href="refN.html#nT">nT</a>.
 -> T
 </code></pre></dd>
 
-<dt><a id="GT"><code>(> 'any ..) -> flg</code></a></dt>
+<dt><a id="%3E"><code>(> 'any ..) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when all arguments <code>any</code> are in strictly
 decreasing order. See also <a href="ref.html#cmp">Comparing</a>.
 
@@ -483,7 +483,7 @@ decreasing order. See also <a href="ref.html#cmp">Comparing</a>.
 -> T
 </code></pre></dd>
 
-<dt><a id="GE"><code>(>= 'any ..) -> flg</code></a></dt>
+<dt><a id="%3E="><code>(>= 'any ..) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when all arguments <code>any</code> are in strictly
 non-increasing order. See also <a href="ref.html#cmp">Comparing</a>.
 
@@ -494,7 +494,7 @@ non-increasing order. See also <a href="ref.html#cmp">Comparing</a>.
 -> T
 </code></pre></dd>
 
-<dt><a id="GTGT"><code>(&gt;&gt; 'cnt 'num) -> num</code></a></dt>
+<dt><a id="%3E%3E"><code>(&gt;&gt; 'cnt 'num) -> num</code></a></dt>
 <dd>Shifts right the <code>num</code> argument by <code>cnt</code>
 bit-positions. If <code>cnt</code> is negative, a corresponding left shift is
 performed. See also <code><a href="refR.html#rev">rev</a></code>.
@@ -554,17 +554,20 @@ evaluation of flow functions (see <code><a href="ref.html#atres">@
 Result</a></code>). When <code>@</code> is used as a formal parameter in <a
 href="ref.html#lambda">lambda expressions</a>, it denotes a variable number of
 evaluated arguments.
+</dd>
 
 <dt><a id="@@"><code>@@</code></a></dt>
 <dd>Holds the result of the second last top level expression in the current
 read-eval-print loop (see <code><a href="ref.html#atres">@ Result</a></code>).
 Some functions store a secondary return value in <code>@@</code>.
+</dd>
 
 <dt><a id="@@@"><code>@@@</code></a></dt>
 <dd>Holds the result of the third last top level expression in the current
 read-eval-print loop (see <code><a href="ref.html#atres">@ Result</a></code>).
+</dd>
 
-<dt><a id="HAT"><code>^</code></a></dt>
+<dt><a id="%5E"><code>^</code></a></dt>
 <dd>Holds the currently executed expression during a breakpoint or an error. See
 also <code><a href="refD.html#debug">debug</a></code>, <code><a
 href="ref_.html#!">!</a></code>, <code><a href="refE.html#e">e</a></code> and
@@ -578,10 +581,10 @@ Div/0
 -> (/ 7 0)
 </code></pre></dd>
 
-<dt><a id="VT"><code>(| 'num ..) -> num</code></a></dt>
+<dt><a id="%7C"><code>(| 'num ..) -> num</code></a></dt>
 <dd>Returns the bitwise <code>OR</code> of all <code>num</code> arguments. When
 one of the arguments evaluates to <code>NIL</code>, it is returned immediately.
-See also <code><a href="refX.html#xVT">x|</a></code>, <code><a
+See also <code><a href="refX.html#%7C">x|</a></code>, <code><a
 href="ref_.html#&">&</a></code> and <code><a
 href="refB.html#bit?">bit?</a></code>.
 
