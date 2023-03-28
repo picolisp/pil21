@@ -1,4 +1,4 @@
-# 12aug21 Software Lab. Alexander Burger
+# 28mar23 Software Lab. Alexander Burger
 
 (private) (CL Q R L Prg)
 
@@ -228,6 +228,7 @@
 
 # (db var cls obj)
 (be db (@Var @Cls @Obj)
+   (^ @C (box))  # (obj ..)
    (^ @Q
       (box
          (with (or (get @Cls @Var) (meta @Cls @Var))
@@ -236,6 +237,7 @@
 
 # (db var cls hook|val obj)
 (be db (@Var @Cls @X @Obj)
+   (^ @C (box))  # (obj ..)
    (^ @Q
       (box
          (with (or (get @Cls @Var) (meta @Cls @Var))
@@ -246,6 +248,7 @@
 
 # (db var cls hook val obj)
 (be db (@Var @Cls @Hook @Val @Obj)
+   (^ @C (box))  # (obj ..)
    (^ @Q
       (box
          (with (or (get @Cls @Var) (meta @Cls @Var))
@@ -257,11 +260,14 @@
       (let (Q (val (-> @Q 2))  Cls (-> @Cls 2))
          (loop
             (NIL (step Q (= '(NIL) (caaar Q))) T)
-            (T (isa Cls (setq R @))) ) ) )
+            (T
+               (and
+                  (isa Cls (setq *R @))
+                  (not (idx (-> @C 2) *R T)) ) ) ) ) )
    T
    (fail) )
 
-(be _db (@Obj) (^ @Obj R))
+(be _db (@Obj) (^ @Obj *R))
 
 (repeat)
 
