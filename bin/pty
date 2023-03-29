@@ -1,6 +1,7 @@
 #!/usr/bin/pil
-# 15feb23abu
+# 29mar23abu
 # Pseudo Terminal (PilBox)
+# pty [port] [flg]
 
 (load "@lib/term.l")
 
@@ -16,17 +17,18 @@
    (out *Sock (space) (pass println))
    (in *Sock (till "-") (till "\n")) )
 
-(task (port (+ *Port 2))
-   (let? S (accept @)
-      (catch '(NIL)
-         (in S
-            (when (= (rd) (in "~/.pty" (line T)))
-               (casq (rd)
-                  (+ (in (rd) (out S (echo))))
-                  (- (out (rd) (echo))) ) ) )
-         (off *Msg) )
-      (close S)
-      (and *Msg (prinl @)) ) )
+(unless (opt)
+   (task (port (+ *Port 2))
+      (let? S (accept @)
+         (catch '(NIL)
+            (in S
+               (when (= (rd) (in "~/.pty" (line T)))
+                  (casq (rd)
+                     (+ (in (rd) (out S (echo))))
+                     (- (out (rd) (echo))) ) ) )
+            (off *Msg) )
+         (close S)
+         (and *Msg (prinl @)) ) ) )
 
 (when (getTerm)
    (sendCmd
