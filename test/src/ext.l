@@ -1,4 +1,4 @@
-# 06oct20 Software Lab. Alexander Burger
+# 03apr23 Software Lab. Alexander Burger
 
 ### ext:Snx ###
 (test "PSLSFSNTSNNLSF"
@@ -12,6 +12,12 @@
    (pipe (ext:Base64 77) (line T)) )
 (test "AQID"
    (pipe (ext:Base64 1 2 3) (line T)) )
+(test '("A" "Q" "I" "D" "B" "A" "U" "G" "B" "w" "=" "=")
+   (make
+      (let L (1 2 3 4 5 6 7)
+         (output (link @@)
+            (while L
+               (ext:Base64 (++ L) (++ L) (++ L)) ) ) ) ) )
 
 (test (77)
    (pipe
@@ -21,6 +27,11 @@
    (pipe
       (prinl "AQID")
       (make (while (ext:Base64) (link @))) ) )
+(test (1 2 3 4 5 6 7)
+   (let L '("A" "Q" "I" "D" "B" "A" "U" "G" "B" "w" "=" "=")
+      (make
+         (input (++ L)
+            (while (ext:Base64) (link @)) ) ) ) )
 
 (let F (tmp "base64")
    (out F

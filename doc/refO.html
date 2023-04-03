@@ -315,6 +315,13 @@ ABC
 -> "abc"
 : (pack (make (output (link @@) (print '(+ 2 (* 3 4))))))
 -> "(+ 2 (* 3 4))"
+: (pack
+   (make
+      (let L (1 2 3 4 5 6 7)
+         (output (link @@)
+            (while L
+               (ext:Base64 (++ L) (++ L) (++ L)) ) ) ) ) )
+-> "AQIDBAUGBw=="
 </code></pre></dd>
 
 </dl>

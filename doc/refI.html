@@ -331,13 +331,11 @@ href="refP.html#pipe">pipe</a></code>.
 -> "A"
 : (let S (chop "(+ 2 (* 3 4))") (input (++ S) (read)))
 -> (+ 2 (* 3 4))
-: (let S (chop "aGVpc2UuZGU=")
-   (input (++ S)
+: (let L (chop "AQIDBAUGBw==")
+   (input (++ L)
       (while (ext:Base64)
-      (prin (char @)) ) )
-   (prinl) )
-heise.de
--> NIL
+         (printsp @) ) ) )
+1 2 3 4 5 6 7 -> 7
 </code></pre></dd>
 
 <dt><a id="insert"><code>(insert 'cnt 'lst 'any) -> lst</code></a></dt>

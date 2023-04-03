@@ -1,6 +1,8 @@
 03apr23
-   Example for 'input' calling 'ext:Base64'
+   Examples and test cases for 'ext:Base64' in 'input' and 'output'
+      test/src/ext.l
       doc/refI.html
+      doc/refO.html
 
 ####### 23.3 #######
 29mar23
