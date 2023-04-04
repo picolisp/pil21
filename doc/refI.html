@@ -329,7 +329,8 @@ href="refP.html#pipe">pipe</a></code>.
 <pre><code>
 : (input "A" (char))
 -> "A"
-: (let S (chop "(+ 2 (* 3 4))") (input (++ S) (read)))
+: (let L (chop "(+ 2 (* 3 4))")
+   (input (++ L) (read)) )
 -> (+ 2 (* 3 4))
 : (let L (chop "AQIDBAUGBw==")
    (input (++ L)

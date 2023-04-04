@@ -313,7 +313,10 @@ ABC
 "b" "c"
 "c" NIL
 -> "abc"
-: (pack (make (output (link @@) (print '(+ 2 (* 3 4))))))
+: (pack
+   (make
+      (output (link @@)
+         (print '(+ 2 (* 3 4))) ) ) )
 -> "(+ 2 (* 3 4))"
 : (pack
    (make
