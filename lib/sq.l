@@ -1,4 +1,4 @@
-# 03jul22 Software Lab. Alexander Burger
+# 05apr23 Software Lab. Alexander Burger
 
 # (select [var ..] cls [hook|T] [var val ..])
 (de select Lst
@@ -58,21 +58,21 @@
                                  ((isa '+Idx (get Cls Var)) 'hold)
                                  (T 'head) )
                               Val '@@ Var ) ) ) ) ) ) )
-         (use Obj
+         (use This
             (loop
-               (NIL (setq Obj (cdr (asoq '@@ (prove Q)))))
+               (NIL (setq This (cdr (asoq '@@ (prove Q)))))
                (ifn Vars
-                  (show Obj)
-                  (for Var Vars
+                  (show This)
+                  (for X Vars
                      (cond
-                        ((pair Var)
-                           (print (apply get Var Obj)) )
-                        ((meta Obj Var)
-                           (print> @ (get Obj Var)) )
-                        (T (print (get Obj Var))) )
-                     (space) )
-                  (print Obj) )
-               (T (line) Obj)
+                        ((pair X)
+                           (printsp (eval X)) )
+                        ((meta This X)
+                           (print> @ (get This X))
+                           (space) )
+                        (T (printsp (get This X))) ) )
+                  (print This) )
+               (T (line) This)
                (prinl) ) ) ) ) )
 
 (dm (print> . +relation) (Val)

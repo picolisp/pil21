@@ -1,3 +1,8 @@
+05apr23
+   Evaluate list arguments in 'select'
+      lib/sq.l
+      doc/refS.html
+
 03apr23
    Examples and test cases for 'ext:Base64' in 'input' and 'output'
       test/src/ext.l
