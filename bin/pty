@@ -1,5 +1,5 @@
 #!/usr/bin/pil
-# 29mar23abu
+# 13apr23abu
 # Pseudo Terminal (PilBox)
 # pty [port] [flg]
 
@@ -11,7 +11,7 @@
    (bye) )
 (out *Sock (in "~/.pty" (echo)))  # Sync with ~/.pty in PilBox
 
-(push '*Bye '(prinl))
+(finish (prinl))
 
 (de sendCmd @
    (out *Sock (space) (pass println))

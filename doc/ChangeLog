@@ -3,6 +3,8 @@
       lib.l
       lib/app.l
       lib/heartbeat.l
+      bin/pty
+      bin/watchdog
       doc/ref.html
       doc/refB.html
       doc/refF.html
