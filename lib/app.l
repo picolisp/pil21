@@ -1,4 +1,4 @@
-# 27jul22 Software Lab. Alexander Burger
+# 13apr23 Software Lab. Alexander Burger
 
 # Exit on error
 (de *Err
@@ -44,5 +44,4 @@
 
 # Bye message
 (push '*Fork
-   '(push '*Bye
-      '(and *SesId (msg *Pid " - " (stamp))) ) )
+   '(finish (and *SesId (msg *Pid " - " (stamp)))) )

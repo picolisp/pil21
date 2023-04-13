@@ -1,3 +1,13 @@
+13apr23
+   'finish' function
+      lib.l
+      lib/app.l
+      lib/heartbeat.l
+      doc/ref.html
+      doc/refB.html
+      doc/refF.html
+      doc/refO.html
+
 05apr23
    Evaluate list arguments in 'select'
       lib/sq.l

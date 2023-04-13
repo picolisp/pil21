@@ -1,4 +1,4 @@
-# 28dec22 Software Lab. Alexander Burger
+# 13apr23 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -165,6 +165,9 @@
    (unless (idx '*Once (file) T)
       (run "Prg" 1) ) )
 
+(de finish Prg
+   (apply push (reverse Prg) '*Bye) )
+
 (de rc (File Key . @)
    (ctl File
       (in File
@@ -197,7 +200,7 @@
 # Temporary Files
 (de tmp @
    (unless *Tmp
-      (push '*Bye '(call "rm" "-r" *Tmp))
+      (finish (call "rm" "-r" *Tmp))
       (push '*Fork '(off *Tmp))
       (call "mkdir" "-p"
          (setq *Tmp (pack (path "~/.pil/tmp/") *Pid "/")) ) )

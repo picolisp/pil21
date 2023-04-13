@@ -23,11 +23,12 @@ also <code><a href="refB.html#blob">blob</a></code>.
 <dt><a id="*Bye"><code>*Bye</code></a></dt>
 <dd>A global variable holding a (possibly empty) <code>prg</code> body, to be
 executed just before the termination of the PicoLisp interpreter. See also
-<code><a href="refB.html#bye">bye</a></code> and <code><a
+<code><a href="refB.html#bye">bye</a></code>, <code><a
+href="refF.html#finish">finish</a></code> and <code><a
 href="refT.html#tmp">tmp</a></code>.
 
 <pre><code>
-: (push1 '*Bye '(call 'rm "myfile.tmp"))  # Remove a temporary file
+: (push1 '*Bye '(call "rm" "myfile.tmp"))  # Remove a temporary file
 -> (call 'rm "myfile.tmp")
 </code></pre></dd>
 

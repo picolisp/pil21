@@ -241,6 +241,20 @@ href="refF.html#filter">filter</a></code>.
 -> 4
 </code></pre></dd>
 
+
+<dt><a id="finish"><code>(finish . prg) -> exe</code></a></dt>
+<dd>Pushes the expressions in <code>prg</code> into the global <code><a
+href="refB.html#*Bye">*Bye</a></code> in reverse order, to be executed just
+before the termination of the PicoLisp interpreter. <code>(finish (foo)
+(bar))</code> is equivalent to <code>(push '*Bye '(bar) '(foo))</code> See also
+<code><a href="refB.html#bye">bye</a></code> and <code><a
+href="refO.html#once">once</a></code>.
+
+<pre><code>
+: (finish (call "rm" "myfile.tmp"))  # Remove a temporary file
+-> (call 'rm "myfile.tmp")
+</code></pre></dd>
+
 <dt><a id="fish"><code>(fish 'fun 'any ['any2] ..) -> lst</code></a></dt>
 <dd>Applies <code>fun</code> to each element - and recursively to all sublists -
 of <code>any</code>. Returns a list of all items where <code>fun</code> returned
