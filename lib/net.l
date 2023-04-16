@@ -1,9 +1,9 @@
-# 13sep22 Software Lab. Alexander Burger
+# 16apr23 Software Lab. Alexander Burger
 
 (sysdefs "errno")
 (sysdefs "networking")
 
-(private) (ipErr A Type Sd Addr Port Var)
+(private) (ipErr Var)
 
 (de ipErr (Msg)
    (quit Msg (%@ "strErrno" 'S)) )
