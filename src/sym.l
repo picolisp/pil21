@@ -1,4 +1,4 @@
-# 11nov22 Software Lab. Alexander Burger
+# 18apr23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1480,37 +1480,35 @@
       (NIL (argErr Exe Key)) ) )
 
 (de get (Sym Key)
-   (if (== Key ZERO)
-      (val Sym)
-      (let Tail (val (tail Sym))
-         (unless (num? Tail)
-            (let (L (any (& Tail -9))  X (car L))
-               (if (atom X)
-                  (when (== Key X)
-                     (ret $T) )
-                  (when (== Key (cdr X))
-                     (ret (car X)) ) )
-               (while (pair (setq X (cdr L)))
-                  (let Y (car X)
-                     (if (atom Y)
-                        (when (== Key Y)
-                           (set 2 L (cdr X))  # Unlink cell
-                           (ifn (sym? Tail)
-                              (set 2 X Tail)
-                              (set 2 X (& Tail -9))
-                              (setq X (sym X)) )
-                           (set (tail Sym) X)
-                           (ret $T) )
-                        (when (== Key (cdr Y))
-                           (set 2 L (cdr X))  # Unlink cell
-                           (ifn (sym? Tail)
-                              (set 2 X Tail)
-                              (set 2 X (& Tail -9))
-                              (setq X (sym X)) )
-                           (set (tail Sym) X)
-                           (ret (car Y)) ) )
-                     (setq L X) ) ) ) )
-         $Nil ) ) )
+   (let Tail (val (tail Sym))
+      (unless (num? Tail)
+         (let (L (any (& Tail -9))  X (car L))
+            (if (atom X)
+               (when (== Key X)
+                  (ret $T) )
+               (when (== Key (cdr X))
+                  (ret (car X)) ) )
+            (while (pair (setq X (cdr L)))
+               (let Y (car X)
+                  (if (atom Y)
+                     (when (== Key Y)
+                        (set 2 L (cdr X))  # Unlink cell
+                        (ifn (sym? Tail)
+                           (set 2 X Tail)
+                           (set 2 X (& Tail -9))
+                           (setq X (sym X)) )
+                        (set (tail Sym) X)
+                        (ret $T) )
+                     (when (== Key (cdr Y))
+                        (set 2 L (cdr X))  # Unlink cell
+                        (ifn (sym? Tail)
+                           (set 2 X Tail)
+                           (set 2 X (& Tail -9))
+                           (setq X (sym X)) )
+                        (set (tail Sym) X)
+                        (ret (car Y)) ) )
+                  (setq L X) ) ) ) )
+      $Nil ) )
 
 (de getn (Exe X Key)
    (when (num? X)  # Need symbol or pair
@@ -1527,7 +1525,9 @@
          (NIL $Nil) )
       (when (sym? (val (tail X)))
          (dbFetch Exe X) )
-      (tailcall (get X Key)) ) )
+      (if (== Key ZERO)
+         (val X)
+         (tailcall (get X Key)) ) ) )
 
 (de prop (Sym Key)
    (let Tail (val (tail Sym))
@@ -1757,7 +1757,11 @@
       (? (atom X) $Nil)
       (let Y (car X)
          (when (symb? Y)
-            (? (not (nil? (get Y Key))) @)
+            (?
+               (not
+                  (nil?
+                     (if (== Key ZERO) (val Y) (get Y Key)) ) )
+               @ )
             (stkChk 0)
             (? (not (nil? (meta (car Y) Key))) @) ) )
       (shift X) ) )

@@ -1,3 +1,10 @@
+18apr23
+   Clean up ZERO key handling in 'put' and 'get'
+      src/sym.l
+      src/flow.l
+   Bug in ffiPrep() for direct Lisp arguments
+      src/lib.c
+
 16apr23
    'private' cosmetics
       lib/net.l

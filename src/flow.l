@@ -1,4 +1,4 @@
-# 13jan23 Software Lab. Alexander Burger
+# 18apr23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -127,6 +127,7 @@
          Y (save (eval (++ X))) )
       (if (pair X)
          (let Val (save (eval (car X)))
+            (needSymb Exe Y)
             (when (sym? (val (tail Sym)))
                (if (nil? Y)
                   (dbFetch Exe Sym)  # Volatile property
@@ -169,7 +170,8 @@
                (let Z @
                   (get
                      (if (nil? (cdr Z)) (val $Class) @)
-                     (car Z) ) ) ) ) )
+                     (needSymb Exe (car Z)) ) ) ) ) )
+      (chkVar Exe Cls)
       (unless (t? Msg)
          (redefine Exe Msg (val $Meth)) )
       (when (symb? Fun)
@@ -338,9 +340,9 @@
          ((pair X)
             (let K (link (push NIL NIL))
                (loop
-                  (put Obj
-                     (set K (eval (++ X)))
-                     (eval (++ X)) )
+                  (when (== ZERO (set K (eval (++ X))))
+                     (argErr Exe ZERO) )
+                  (put Obj (val K) (eval (++ X)))
                   (? (atom X)) ) ) ) )
       Obj ) )
 

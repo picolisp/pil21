@@ -1,4 +1,4 @@
-// 13jan23 Software Lab. Alexander Burger
+// 18apr23 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -659,7 +659,7 @@ ffi *ffiPrep(char *lib, char *fun, uint64_t lst) {
       x  = car(y);
       if (num(x))
          p->args[i] = &ffi_type_sint64;
-      else if (sym(x))
+      else if (sym(x) || car(x) == (uint64_t)(SymTab + T))
          p->args[i] = &ffi_type_pointer;
       else if (cnt(cdr(x)))
          p->args[i] = (cdr(x) & 8)? &ffi_type_float : &ffi_type_double;
