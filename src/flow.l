@@ -1087,7 +1087,13 @@
          (set $Catch (Ca: link)) ) ) )
 
 # Coroutines
-(local) (reentErr saveCoIO saveCoEnv loadCoEnv)
+(local) (coErr tagErr reentErr saveCoIO saveCoEnv loadCoEnv)
+
+(de NIL coErr (Exe Tag)
+   (err Exe Tag ($ "Coroutine not found") null) )
+
+(de NIL tagErr (Exe)
+   (err Exe 0 ($ "Tag expected") null) )
 
 (de NIL reentErr (Exe Tag)
    (err Exe Tag ($ "Reentrant coroutine") null) )
@@ -1122,10 +1128,11 @@
             $Nil )
          (let Tag (eval (++ X))
             (cond
+               ((nil? Tag) (tagErr Exe))
                ((pair X)  # 'prg'
                   (unless (val $Coroutines)  # First call
                      (let Main: (coroutine (alloc null (+ (val JmpBufSize) (coroutine T))))
-                        (Main: tag $T)  # Tag 'T'
+                        (put (Main: tag $T) ZERO (| (i64 (Main:)) 2))  # Tag 'T'
                         (Main: prv null)
                         (Main: nxt null)
                         (Main: org null)
@@ -1174,6 +1181,8 @@
                         ((coroutine P) nxt null) )
                      (let Dst: (coroutine P)
                         (Dst: tag Tag)
+                        (when (symb? Tag)
+                           (put Tag ZERO (| (i64 (Dst:)) 2)) )
                         (Dst: org (val $Current))
                         (Dst: prg X)
                         (let (Siz (val $StkSize)  Stk (stack))
@@ -1248,21 +1257,25 @@
             (coroutine
                (cond
                   ((not (nil? Tag))
-                     (loop
-                        (let Crt: (coroutine Crt)
-                           (? (== Tag (Crt: tag))
-                              (unless (Crt: at)
-                                 (reentErr Exe Tag) )
-                              Crt )
-                           (unless (setq Crt (Crt: nxt))
-                              (err Exe Tag ($ "Coroutine not found") null) ) ) ) )
+                     (nond
+                        ((symb? Tag)
+                           (loop
+                              (let Crt: (coroutine Crt)
+                                 (? (== Tag (Crt: tag)) Crt)
+                                 (unless (setq Crt (Crt: nxt))
+                                    (coErr Exe Tag) ) ) ) )
+                        ((cnt? (get Tag ZERO))
+                           (coErr Exe Tag) )
+                        (NIL (i8* (& @ -3))) ) )
                   ((Src: org) @)
-                  (T (err Exe 0 ($ "Tag expected") null)) ) )
+                  (T (tagErr Exe)) ) )
             Lnk (any 0)
             Bnd (any 0)
             Ca (i8* null)
             In (val $Stdin)
             Out (val $Stdout) )
+         (unless (Dst: at)
+            (reentErr Exe Tag) )
          (saveCoIO)
          (unless (t? (Src: tag))
             (let P (val $Link)  # Reverse Stack(s)

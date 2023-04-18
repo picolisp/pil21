@@ -1,4 +1,4 @@
-# 13jan23 Software Lab. Alexander Burger
+# 18apr23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -35,8 +35,11 @@
    X )
 
 
-(local) (tosInFile popInFiles tosOutFile popOutFiles popErrFiles popCtlFiles)
+(local) (put get tosInFile popInFiles tosOutFile popOutFiles popErrFiles
+popCtlFiles)
 
+(de void put (any any any))
+(de any get (any any))
 (de void tosInFile ())
 (de void popInFiles ())
 (de void tosOutFile ())
@@ -48,6 +51,8 @@
 
 # Stop coroutine
 (de void stop ((i8* . Crt))
+   (when (symb? ((coroutine Crt) tag))
+      (put @ ZERO $Nil) )
    ((coroutine Crt) tag 0)  # Set unused
    (while ((coroutine Crt) nxt)  # Find bottom
       (setq Crt @) )

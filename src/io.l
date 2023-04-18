@@ -1,4 +1,4 @@
-# 04feb23 Software Lab. Alexander Burger
+# 18apr23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2828,7 +2828,7 @@ selectErr)
       X ) )
 
 (de repl (Exe (i8* . Prmt) X)
-   (if (and (sym? X) (== (firstByte X) (char "-")))
+   (if (and (symb? X) (== (firstByte X) (char "-")))
       (let E (save (parse (xName Exe X) YES (hex "5D0A") 0))  # '\n', ']', EOF
          (evList E) )
       (let
