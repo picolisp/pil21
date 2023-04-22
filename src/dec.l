@@ -1,4 +1,4 @@
-# 19nov22 Software Lab. Alexander Burger
+# 22apr23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -238,6 +238,7 @@ socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (de T i32 wifStopped (i32*))
 
 (local) (nErrno gErrno)
+
 (de T i32 nErrno ())
 (de T i32 gErrno ())
 
@@ -297,12 +298,18 @@ socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (de T i64 ffiCall (i8* i64))
 
 (local) (boxFloat boxFlt boxDouble boxDbl bufFloat bufDouble)
+
 (de T i64 boxFloat (i32 i64))
 (de T i64 boxFlt ())
 (de T i64 boxDouble (i64 i64))
 (de T i64 boxDbl ())
 (de T void bufFloat (i64 i64 i8*))
 (de T void bufDouble (i64 i64 i8*))
+
+# Util
+(local) chance
+
+(de T i1 chance (i64))
 
 # Case mappings lib.c
 (local) (isLowc isUppc isLetterOrDigit toUpperCase toLowerCase)

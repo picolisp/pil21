@@ -1,4 +1,4 @@
-// 18apr23 Software Lab. Alexander Burger
+// 22apr23 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -737,6 +737,14 @@ uint64_t ffiCall(ffi *p, uint64_t lst) {
 void *arg(void *p) {
    return p;
 }
+
+// Util
+int chance(int64_t m) {
+   static uint32_t seed = 1664525;
+
+   return (((seed = seed * 1664525 + 1) >> 16) & (int32_t)m) != 0;
+}
+
 
 // Case mappings from the GNU Kaffe Project
 #define CHAR_UPPERCASE  1

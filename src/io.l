@@ -1,4 +1,4 @@
-# 18apr23 Software Lab. Alexander Burger
+# 21apr23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1479,7 +1479,7 @@ selectErr)
                      (if (t? (val $Uni))
                         X
                         (save X
-                           (if (pair (idxPut $Uni X))
+                           (if (pair (idxPut $Uni X $T))
                               (car @)
                               X ) ) ) )
                   (set 2 $Transient Tr2)

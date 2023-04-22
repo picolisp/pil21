@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Discrete-Event Simulation</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+<a href="mailto:abu@software-lab.de">abu@software-lab.de</a>
+
+<h1>Discrete-Event Simulation (DES)</h1>
+
+<p style="text-align: right">(c) Software Lab. Alexander Burger
+
+<p>PicoLisp has a <a
+href="http://en.wikipedia.org/wiki/Discrete-event_simulation">Discrete-Event
+Simulation</a> library in <code>"@lib/simul.l"</code>.
+
+<p><ul>
+<li><a href="#impl">Implementation</a>
+<li><a href="#glob">Global Variables</a>
+<li><a href="#fun">Functions</a>
+<li><a href="#use">Usage</a>
+<li><a href="#xmpl">An Example</a>
+</ul>
+
+
+<p><hr>
+<h2><a id="impl">Implementation</a></h2>
+
+<p>The simulated objects (often called "Agents") are implemented as separate <a
+href="http://software-lab.de/doc/ref.html#coroutines">coroutines</a>. These are
+created the normal way with <a
+href="http://software-lab.de/doc/refC.html#co">co</a>, and the library functions
+use <a href="http://software-lab.de/doc/refY.html#yield">yield</a> to transfer
+control between them.
+
+<p>Only one coroutine may be running at one point in time. All others are either
+
+<p><ul>
+<li>ready to run,
+<li>waiting for the next scheduled point in time, or
+<li>waiting for a specific signal (event).
+</ul>
+
+<p>A running coroutine can suspend itself, and cause another coroutine to
+resume, by either
+
+<p><ul>
+<li>passing control to the next coroutine,
+<li>pausing for a given amount of time, or
+<li>pausing until a given signal arrives.
+</ul>
+
+<p>The simulation can optionally run in realtime mode. In that case, it sleeps
+between the scheduled points in time, and accepts key strokes for user
+interaction.
+
+<p>The library consists of five global variables and four functions.
+
+
+<p><hr>
+<h2><a id="glob">Global Variables</a></h2>
+
+<dl>
+
+<dt><code>*Time</code></dt>
+<dd>Simulated system time since the start of the simulation. It can be in any
+unit, but should be in milliseconds if in realtime mode.</dd>
+
+<dt><code>*Ready</code></dt>
+<dd>Queue of coroutines ready to run.</dd>
+
+<dt><code>*Next</code></dt>
+<dd>Sorted list of coroutines pausing for a given time.</dd>
+
+<dt><code>*Rt</code></dt>
+<dd>Realtime: Either <code>NIL</code>, or 1 for wall clock speed, 2 for double
+speed etc.</dd>
+
+<dt><code>*Keys</code></dt>
+<dd>Holds possibly queued key presses (only in realtime mode).</dd>
+
+</dl>
+
+
+<p><hr>
+<h2><a id="fun">Functions</a></h2>
+
+<dl>
+
+<dt><code>(des [. prg])</code></dt>
+<dd>Performs one discrete-event simulation step. It first runs all coroutines in
+<code>*Ready</code> until that queue is empty. Then - if <code>*Next</code> is
+not empty - advances the simulation to the next point in time, and resumes the
+corresponding coroutine. In that case, if in realtime mode, it delays execution
+as necessary, handles possible key presses, and runs <code>prg</code> after each
+key.</dd>
+
+<dt><code>(pause ['cnt|sym]) -> any</code></dt>
+<dd>Waits for an event (i.e. a time span elapsed or a signal arrived). If called
+with a number, the current coroutine is scheduled in <code>*Next</code> for a
+point in time after that number of time units. If called with a symbol, the
+current coroutine is queued in that symbol's event queue. In any case, control
+is passed to the next coroutine.</dd>
+
+<dt><code>(event 'sym [. prg])</code></dt>
+<dd>Sends the signal <code>sym</code> to all coroutines waiting in that symbol's
+event queue. As a result, these coroutines are removed from the queue and
+appended to the <code>*Ready</code> queue, with the optional <code>prg</code>
+body to be executed when resumed. The current coroutine continues to run.</dd>
+
+<dt><code>(wake 'sym [. prg])</code></dt>
+<dd>Wakes up another coroutine <code>sym</code>, by appending it to the
+<code>*Ready</code> queue with the optional 'prg' body to be executed when
+resumed. This means that if <code>sym</code> is currently waiting for a point in
+time in <code>*Next</code>, it is removed from that list (i.e. the pause is
+aborted). Otherwise, if <code>sym</code> is waiting for a signal, it is removed
+from that event queue. The current coroutine continues to run.</dd>
+
+</dl>
+
+
+<p><hr>
+<h2><a id="use">Usage</a></h2>
+
+<p>A typical DES program will start some coroutines and let them perform their
+initial work until they need to pause.
+
+<p>That means, if a given operation in the simulation is supposed to take
+<code>cnt</code> time units, this coroutine calls <code>pause</code> with that
+number. Otherwise, if it depends on some signal from another part of the
+program, it calls <code>pause</code> with that symbol. In both cases - as it has
+nothing else to do - it goes to sleep.
+
+<p>When all of them wait for a time or signal, control is returned to the main
+program. All coroutines are now waiting in <code>*Next</code> or some signal
+event queue (or in <code>*Ready</code> if they just gave up control with
+<code>(pause)</code>).
+
+<p>The main program may now check <code>*Next</code> and perhaps
+<code>*Ready</code>. If both are empty, no further events can occur, and the
+program may terminate.
+
+<p>Otherwise, it calls <code>des</code> to continue with the next step(s).
+
+<p>At any time, a coroutine or the main program may call <code>wake</code>, for
+example to interrupt another coroutine and cause it to <a
+href="http://software-lab.de/doc/refT.html#throw">throw</a> into some other
+context, or have that coroutine's <code>pause</code> return a special value by
+running the <code>prg</code> argument.
+
+
+
+<p><hr>
+<h2><a id="xmpl">An Example</a></h2>
+
+<p>Let's use DES to demonstrate the well-known <a
+href="http://en.wikipedia.org/wiki/Dining_philosophers_problem">Dining
+Philosophers Problem</a>.
+
+<p> Put the following code into a file "dining.l".
+
+<hr>
+<pre>
+# 16apr23 Software Lab. Alexander Burger
+# Dining Philosophers
+# pil dining.l -dining~main +
+
+(load "@lib/simul.l")
+
+(symbols 'dining 'simul 'pico)
+
+(local) (*ForkA '*ForkB '*ForkC '*ForkD '*ForkE now think done)
+
+(de now (Str)
+   (prinl (tim$ (* 60 *Time)) " " (co) " " Str) )
+
+(de think (Left Right)
+   (loop
+      (now "thinking")
+      (pause (rand 180 240))  # 3 to 4 hours
+      (now "hungry")
+      (while (or (val Left) (val Right))
+         (now "waiting")
+         (pause 'done) )
+      (set Left (set Right (co)))
+      (now "eating")
+      (pause 20)  # 20 minutes
+      (set Left (set Right NIL))
+      (event 'done) ) )
+
+(local) main
+
+(de main ()
+   (symbols '(dining simul pico))
+   (co 'Aristotle
+      (think '*ForkA '*ForkB) )
+   (co 'Kant
+      (think '*ForkB '*ForkC) )
+   (co 'Spinoza
+      (think '*ForkC '*ForkD) )
+   (co 'Marx
+      (think '*ForkD '*ForkE) )
+   (co 'Russell
+      (think '*ForkE '*ForkA) ) )
+</pre>
+<hr>
+
+<p>It uses five global variables <code>*ForkA</code> through <code>*ForkE</code>
+and five coroutines <code>Aristotle</code>, <code>Kant</code>,
+<code>Spinoza</code>, <code>Marx</code> and <code>Russell</code>. They all run
+the same function <code>think</code>, with their neighboring forks as
+<code>Left</code> and <code>Right</code> arguments.
+
+<p>In <code>think</code>, each philospher is first "thinking" for a random time
+between three and four hours. Then it gets "hungry", tries to pick up both
+forks, and - if at least one of the forks is in use - starts "waiting" for a
+<code>done</code> signal from another philosopher to check the forks again.
+
+<p>Now both forks are free. The philosopher puts himself into both (it could put
+in fact any non-<code>NIL</code> value), then is "eating" for 20 minutes,
+releases both forks by setting them to <code>NIL</code>, and sends a
+<code>done</code> signal to other philosophers possibly waiting for the forks.
+
+<p>The simulation cannot deadlock, because both forks are picked up and released
+atomically, and because coroutines waiting for <code>done</code> are always
+queued after the other waiting coroutines.
+
+<h2>Sample Run</h2>
+
+<pre>
+$ ./pil misc/dining.l -dining~main +
+00:00 Aristotle thinking
+00:00 Kant thinking
+00:00 Spinoza thinking
+00:00 Marx thinking
+00:00 Russell thinking
+dining: (more (stack))
+(Russell . 62)
+(Marx . 62)
+(Spinoza . 62)
+(Kant . 62)
+(Aristotle . 62)
+(T . 155)
+-> NIL
+dining: *Ready
+-> NIL
+dining: (more *Next)
+(180 . Aristotle)
+(194 . Marx)
+(198 . Russell)
+(201 . Spinoza)
+(229 . Kant)
+-> NIL
+dining: (des)
+03:00 Aristotle hungry
+03:00 Aristotle eating
+-> NIL
+dining: (des)
+03:14 Marx hungry
+03:14 Marx eating
+-> NIL
+dining: (des)
+03:18 Russell hungry
+03:18 Russell waiting
+-> NIL
+dining: (do 40 (des))
+03:20 Aristotle thinking
+03:20 Russell waiting
+03:21 Spinoza hungry
+03:21 Spinoza waiting
+03:34 Marx thinking
+03:34 Russell eating
+03:34 Spinoza eating
+03:49 Kant hungry
+03:49 Kant waiting
+03:54 Russell thinking
+03:54 Kant waiting
+03:54 Spinoza thinking
+03:54 Kant eating
+04:14 Kant thinking
+06:27 Aristotle hungry
+06:27 Aristotle eating
+06:47 Marx hungry
+06:47 Marx eating
+06:47 Aristotle thinking
+07:07 Marx thinking
+07:40 Russell hungry
+07:40 Russell eating
+07:41 Kant hungry
+07:41 Kant eating
+07:47 Spinoza hungry
+07:47 Spinoza waiting
+08:00 Russell thinking
+08:00 Spinoza waiting
+08:01 Kant thinking
+08:01 Spinoza eating
+08:21 Spinoza thinking
+09:57 Aristotle hungry
+09:57 Aristotle eating
+10:17 Aristotle thinking
+10:41 Marx hungry
+10:41 Marx eating
+11:01 Marx thinking
+11:45 Spinoza hungry
+11:45 Spinoza eating
+11:50 Russell hungry
+11:50 Russell eating
+11:52 Kant hungry
+11:52 Kant waiting
+12:05 Spinoza thinking
+12:05 Kant eating
+12:10 Russell thinking
+12:25 Kant thinking
+13:57 Aristotle hungry
+13:57 Aristotle eating
+14:02 Marx hungry
+14:02 Marx eating
+14:17 Aristotle thinking
+14:22 Marx thinking
+15:40 Russell hungry
+15:40 Russell eating
+15:46 Spinoza hungry
+15:46 Spinoza eating
+15:52 Kant hungry
+15:52 Kant waiting
+16:00 Russell thinking
+16:00 Kant waiting
+16:06 Spinoza thinking
+16:06 Kant eating
+16:26 Kant thinking
+17:52 Aristotle hungry
+17:52 Aristotle eating
+18:12 Aristotle thinking
+18:22 Marx hungry
+18:22 Marx eating
+-> NIL
+dining:
+</pre>
+
+</body>
+</html>

@@ -75,11 +75,15 @@ an external symbol, or an external symbol to a number or a pair of numbers.
 corresponding subtree is returned, otherwise <code>NIL</code>. In the first
 form, <code>any</code> is destructively inserted into the tree if
 <code>flg</code> is non-<code>NIL</code> (and <code>any</code> was not already
-there), or deleted from the tree if <code>flg</code> is <code>NIL</code>. The
-second form only checks for existence, but does not change the index tree. In
-the third form (when called with a single <code>var</code> argument) the
-contents of the tree are returned as a sorted list. If all elements are inserted
-in sorted order, the tree degenerates into a linear list. See also <code><a
+there), or deleted from the tree if <code>flg</code> is <code>NIL</code>. If all
+elements are inserted in sorted order, the tree degenerates into a linear list.
+In such cases, <code>0</code> may be passed for <code>flg</code> to randomize
+the insertion order. The second form only checks for existence, but does not
+change the index tree. In the third form (when called with a single
+<code>var</code> argument) the contents of the tree are returned as a sorted
+list.
+
+See also <code><a
 href="refL.html#lup">lup</a></code>, <code><a
 href="refE.html#enum">enum</a></code>, <code><a
 href="refH.html#hash">hash</a></code>, <code><a
@@ -118,6 +122,35 @@ href="refM.html#member">member</a></code>.
 -> (d (2 NIL A) (a b c) NIL T)               # View it again
 : (idx 'X)
 -> (2 A d (a b c) T)                         # '17' is deleted
+
+: (off X Y)
+-> NIL
+: (for I 9 (idx 'X I T))                     # Sorted insert order
+-> NIL
+: (for I 9 (idx 'Y I 0))                     # Randomize
+-> NIL
+: (view X T)
+                        9
+                     8
+                  7
+               6
+            5
+         4
+      3
+   2
+1
+-> NIL
+: (view Y T)
+         9
+      8
+         7
+   6
+      5
+         4
+3
+   2
+      1
+-> NIL
 </code></pre></dd>
 
 <dt><a id="if"><code>(if 'any1 any2 . prg) -> any</code></a></dt>

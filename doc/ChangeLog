@@ -1,3 +1,15 @@
+22apr23
+   New file
+      doc/des.html
+   Return max and min from 'idx' for 'T' and 'NIL' key arguments
+   Randomize 'idx' if 'flg' is '0'
+      src/sym.l
+      src/io.l
+      doc/refI.html
+   chance() function
+      src/dec.l
+      src/lib.c
+
 18apr23
    Needs 'symb?' instead of 'sym?' in 'repl'
       src/io.l

@@ -1,4 +1,4 @@
-# 18apr23 Software Lab. Alexander Burger
+# 22apr23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1251,7 +1251,7 @@
 
 (local) (idxPut idxGet idxDel)
 
-(de idxPut (Var Key)
+(de idxPut (Var Key Flg)
    (let X (val Var)
       (if (pair X)
          (loop
@@ -1260,30 +1260,79 @@
                (cond
                   ((lt0 @)  # Entry is smaller
                      (? (atom Y)  # No link yet
-                        (set 2 X (cons $Nil (cons Key $Nil)))
+                        (if (or (t? Flg) (chance 1))
+                           (set 2 X (cons $Nil (cons Key $Nil)))
+                           (set 2 X (cons (cons (car X) $Nil) $Nil))
+                           (set X Key) )
                         $Nil )
-                     (? (atom (setq Y (cdr (setq X Y))))
-                        (set 2 X (cons Key $Nil))
-                        $Nil ) )
+                     (? (atom (setq Y (cdr Y)))
+                        (if (or (t? Flg) (chance 1))
+                           (set 2 (cdr X) (cons Key $Nil))
+                           (set (cdr X)
+                              (cons (car X) (cons (cadr X) $Nil)) )
+                           (set X Key) )
+                        $Nil )
+                     (if
+                        (or
+                           (t? Flg)
+                           (atom (cdr Y))
+                           (gt0 (compare (car Y) Key))
+                           (chance (hex "FFF")) )
+                        (setq X Y)
+                        (xchg X Y)
+                        (set
+                           2 (cdr X) (cddr Y)
+                           2 (cdr Y) (cadr Y)
+                           (cdr Y) (cadr X)
+                           (cdr X) Y ) ) )
                   (T  # Entry is greater
                      (? (atom Y)  # No link yet
-                        (set 2 X (cons (cons Key $Nil) $Nil))
+                        (if (or (t? Flg) (chance 1))
+                           (set 2 X (cons (cons Key $Nil) $Nil))
+                           (set 2 X (cons $Nil (cons (car X) $Nil)))
+                           (set X Key) )
                         $Nil )
-                     (? (atom (setq Y (car (setq X Y))))
-                        (set X (cons Key $Nil))
-                        $Nil ) ) )
-               (setq X Y) ) )
+                     (? (atom (setq Y (car Y)))
+                        (if (or (t? Flg) (chance 1))
+                           (set (cdr X) (cons Key $Nil))
+                           (set 2 (cdr X)
+                              (cons (car X) (cons $Nil (cddr X))) )
+                           (set X Key) )
+                        $Nil )
+                     (if
+                        (or
+                           (t? Flg)
+                           (atom (cdr Y))
+                           (lt0 (compare (car Y) Key))
+                           (chance (hex "FFF")) )
+                        (setq X Y)
+                        (xchg X Y)
+                        (set
+                           (cdr X) (cadr Y)
+                           (cdr Y) (cddr Y)
+                           2 (cdr Y) (cddr X)
+                           2 (cdr X) Y ) ) ) ) ) )
          (set Var (cons Key $Nil))
          $Nil ) ) )
 
 (de idxGet (Var Key)
    (let X (val Var)
-      (loop
-         (? (atom X) $Nil)
-         (? (=0 (compare (car X) Key)) X)  # Found key
-         (let Y (cdr X)  # Get link cell
-            (setq X
-               (if (lt0 @) (cdr Y) (car Y)) ) ) ) ) )
+      (cond
+         ((nil? Key)
+            (while (pair (cadr X))
+               (setq X @) )
+            X )
+         ((t? Key)
+            (while (pair (cddr X))
+               (setq X @) )
+            X )
+         (T
+            (loop
+               (? (atom X) $Nil)
+               (? (=0 (compare (car X) Key)) X)  # Found key
+               (let Y (cdr X)  # Get link cell
+                  (setq X
+                     (if (lt0 @) (cdr Y) (car Y)) ) ) ) ) ) ) )
 
 (de idxDel (Var Key)
    (loop
@@ -1329,7 +1378,7 @@
                (cond
                   ((atom X) (idxGet Var Key))  # Two args
                   ((nil? (eval (car X))) (idxDel Var Key))  # Delete
-                  (T (idxPut Var Key)) ) ) ) ) ) )
+                  (T (idxPut Var Key @)) ) ) ) ) ) )
 
 # (lup 'lst 'any) -> lst
 # (lup 'lst 'any 'any2) -> lst
