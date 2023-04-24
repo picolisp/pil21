@@ -1,4 +1,4 @@
-# 18apr23 Software Lab. Alexander Burger
+# 24apr23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -834,9 +834,8 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                      ((== ZERO NmX)
                         (nond
                            ((== ZERO NmY) -1)
-                           ((== X Y) 0)
-                           ((> X Y) +1)
-                           (NIL -1) ) )
+                           ((> X Y) -1)
+                           (NIL +1) ) )
                      ((== ZERO NmY) +1)
                      (T
                         (loop

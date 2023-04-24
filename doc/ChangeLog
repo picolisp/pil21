@@ -1,3 +1,7 @@
+24apr23
+   Bug in 'compare' for anonymous symbols
+      src/main.l
+
 22apr23
    New file
       doc/des.html
