@@ -166,8 +166,7 @@
          (for S (: e)
             (rid (prop S 's) This) )
          (=: e NIL)
-         (fifo '*Ready
-            (cons This (or Prg (list (lit This)))) ) ) ) )
+         (fifo '*Ready (cons This Prg)) ) ) )
 
 # Wake up
 (de wake (This . Prg)
@@ -178,8 +177,7 @@
    (=: e NIL)
    (if (asoq This *Ready)
       (con @ Prg)
-      (fifo '*Ready
-         (cons This (or Prg '(T))) ) ) )
+      (fifo '*Ready (cons This Prg)) ) )
 
 ### Grids ###
 (local) (grid west east south north)
