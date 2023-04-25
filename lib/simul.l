@@ -123,7 +123,7 @@
    (while (fifo '*Ready)
       (yield (cdr @) (car @)) )
    (when (idx '*Next NIL)
-      (let (X (car @) (Time . This) X)
+      (let (X (car @)  (Time . This) X)
          (idx '*Next X (=: n NIL))
          (for S (: e)
             (rid (prop S 's) This) )
@@ -137,7 +137,7 @@
                   (NIL (gt0 Dly))
                   (run Prg) ) ) )
          (setq *Time Time)
-         (yield NIL This) ) ) )
+         (yield 0 This) ) ) )
 
 # Wait for time and/or events
 (de pause @
@@ -166,7 +166,8 @@
          (for S (: e)
             (rid (prop S 's) This) )
          (=: e NIL)
-         (fifo '*Ready (cons This Prg)) ) ) )
+         (fifo '*Ready
+            (cons This (or Prg (list (lit This)))) ) ) ) )
 
 # Wake up
 (de wake (This . Prg)
@@ -177,7 +178,8 @@
    (=: e NIL)
    (if (asoq This *Ready)
       (con @ Prg)
-      (fifo '*Ready (cons This Prg)) ) )
+      (fifo '*Ready
+         (cons This (or Prg '(T))) ) ) )
 
 ### Grids ###
 (local) (grid west east south north)
