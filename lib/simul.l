@@ -1,4 +1,4 @@
-# 05feb23 Software Lab. Alexander Burger
+# 25apr23 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -114,7 +114,7 @@
 
 ### Discrete-Event Simulation ###
 (local) (*Rt *Keys *Time *Ready *Next des pause event wake)
-(private) (Prg queue)
+(private) (Prg X Time Dly n e s)
 
 (one *Rt)  # Realtime
 (zero *Time)  # Current simulation time
@@ -122,10 +122,14 @@
 (de des Prg
    (while (fifo '*Ready)
       (yield (cdr @) (car @)) )
-   (off *Keys)
-   (when *Next
-      (let ((Time . Co) (pop '*Next))
+   (when (idx '*Next NIL)
+      (let (X (car @) (Time . This) X)
+         (idx '*Next X (=: n NIL))
+         (for S (: e)
+            (rid (prop S 's) This) )
+         (=: e NIL)
          (when *Rt
+            (off *Keys)
             (let Dly (*/ (- Time *Time) *Rt)
                (loop
                   (NIL (key Dly 'Dly))
@@ -133,38 +137,47 @@
                   (NIL (gt0 Dly))
                   (run Prg) ) ) )
          (setq *Time Time)
-         (yield NIL Co) ) ) )
+         (yield NIL This) ) ) )
 
-# Wait for time or event
-(de pause (E)
+# Wait for time and/or events
+(de pause @
    (with (co)
-      (cond
-         ((num? E)
-            (let X (cons (+ E *Time) This)
-               (if (rank (car X) *Next)
-                  (let P (memq @ *Next)
-                     (con P (cons X (cdr P))) )
-                  (push '*Next X) ) ) )
-         (E (fifo (prop (=: event E) 'queue) This))
-         (T (fifo '*Ready (cons This))) )
+      (ifn (args)
+         (fifo '*Ready (cons This))
+         (let Time T
+            (while
+               (let E (next)
+                  (if (num? E)
+                     (setq Time (min E Time))
+                     (fifo (prop (push (:: e) E) 's) This) )
+                  (args)) )
+            (when (num? Time)
+               (idx '*Next
+                  (=: n (cons (+ Time *Time) This))
+                  0 ) ) ) )
       (run (yield)) ) )
 
 # Send event
 (de event (This . Prg)
-   (while (fifo (:: queue))
-      (put @ 'event NIL)
-      (fifo '*Ready (cons @ Prg)) ) )
+   (while (fifo (:: s))
+      (with @
+         (when (: n)
+            (idx '*Next @ (=: n NIL)) )
+         (for S (: e)
+            (rid (prop S 's) This) )
+         (=: e NIL)
+         (fifo '*Ready (cons This Prg)) ) ) )
 
 # Wake up
 (de wake (This . Prg)
-   (cond
-      ((asoq This *Ready) (con @ Prg))
-      ((rasoq This *Next)
-         (del @ '*Next)
-         (fifo '*Ready (cons This Prg)) )
-      ((: event)
-         (rid (prop @ 'queue) This)
-         (fifo '*Ready (cons This Prg)) ) ) )
+   (when (: n)
+      (idx '*Next @ (=: n NIL)) )
+   (for S (: e)
+      (rid (prop S 's) This) )
+   (=: e NIL)
+   (if (asoq This *Ready)
+      (con @ Prg)
+      (fifo '*Ready (cons This Prg)) ) )
 
 ### Grids ###
 (local) (grid west east south north)

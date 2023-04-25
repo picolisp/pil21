@@ -1,4 +1,12 @@
+25apr23
+   Wait for multiple events in 'pause'
+      lib/simul.l
+      doc/des.html
+
 24apr23
+   Use 'idx' instead of 'rank' in '*Next'
+      lib/simul.l
+      doc/des.html
    Bug in 'compare' for anonymous symbols
       src/main.l
 
