@@ -1,3 +1,7 @@
+28apr23
+   Set 'home' property in '<drawCanvas>' to *Top
+      lib/canvas.l
+
 25apr23
    Wait for multiple events in 'pause'
       lib/simul.l

@@ -1,4 +1,4 @@
-# 02sep22 Software Lab. Alexander Burger
+# 28apr23 Software Lab. Alexander Burger
 
 (allow "!jsDraw" )
 (push1 '*JS (allow "@lib/plio.js") (allow "@lib/canvas.js"))
@@ -82,6 +82,9 @@
    (prinl ">" Alt "</canvas>" ) )
 
 (de <drawCanvas> (Id DX DY Dly Post)
+   (unless (str? Id)
+      (put Id 'home *Top)
+      (setq Id (pack "$" Id)) )
    (<canvas> Id DX DY)
    (if Post
       (<javascript> "Post = function() {drawCanvas('" Id "', " Dly ")}; Post()")
