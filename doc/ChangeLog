@@ -1,3 +1,7 @@
+05may23
+   Fix description of left/right fork signals
+      doc/des.html
+
 28apr23
    Set 'home' property in '<drawCanvas>' to *Top
       lib/canvas.l

@@ -163,7 +163,7 @@ Philosophers Problem</a>.
 
 <hr>
 <pre>
-# 25apr23 Software Lab. Alexander Burger
+# 05may23 Software Lab. Alexander Burger
 # Dining Philosophers
 # pil dining.l -dining~main +
 
@@ -171,7 +171,7 @@ Philosophers Problem</a>.
 
 (symbols 'dining 'simul 'pico)
 
-(local) (*ForkA '*ForkB '*ForkC '*ForkD '*ForkE now think done)
+(local) (*ForkA '*ForkB '*ForkC '*ForkD '*ForkE now think)
 
 (de now (Str)
    (prinl (tim$ (* 60 *Time)) " " (co) " " Str) )
@@ -217,16 +217,17 @@ the same function <code>think</code>, with their neighboring forks as
 <p>In <code>think</code>, each philospher is first "thinking" for a random time
 between three and four hours. Then it gets "hungry", tries to pick up both
 forks, and - if at least one of the forks is in use - starts "waiting" for a
-<code>done</code> signal from another philosopher to check the forks again.
+left or right fork signal from another philosopher, and checks the forks again.
 
 <p>Now both forks are free. The philosopher puts himself into both (it could put
 in fact any non-<code>NIL</code> value), then is "eating" for 20 minutes,
-releases both forks by setting them to <code>NIL</code>, and sends a
-<code>done</code> signal to other philosophers possibly waiting for the forks.
+releases both forks by setting them to <code>NIL</code>, and sends a left and a
+right fork signal to the neighboring philosophers possibly waiting for the
+forks.
 
 <p>The simulation cannot deadlock, because both forks are picked up and released
-atomically, and because coroutines waiting for <code>done</code> are always
-queued after the other waiting coroutines.
+atomically, and because coroutines waiting for fork signals are always queued
+after the other waiting coroutines.
 
 <h2>Sample Run</h2>
 
