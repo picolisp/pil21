@@ -1,3 +1,8 @@
+06may23
+   Show buffer and dirty status also for long path names
+   Deprecate "ta" abbreviation for "tag" command
+      lib/vip.l
+
 05may23
    Fix description of left/right fork signals
       doc/des.html

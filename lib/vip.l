@@ -1,4 +1,4 @@
-# 17mar23 Software Lab. Alexander Burger
+# 06may23 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -382,18 +382,13 @@ s-expr command vi)
                   0 )
                "%" ) )
          (attr REVERS)
-         (cond
-            ((ge0
-                  (setq N
-                     (- *Columns (length A) (length F) (length Z)) ) )
-               (prin A F (need N " ") Z) )
-            ((onOff *StatNm)
-               (prin (align (- *Columns) (tail *Columns (chop F)))) )
-            (T
-               (prin
-                  A
-                  (need (- *Columns (length A) (length Z)) " ")
-                  Z ) ) )
+         (let N (- *Columns (length (prin A)))
+            (cond
+               ((ge0 (- N (length F) (length Z)))
+                  (prin F (need @ " ") Z) )
+               ((onOff *StatNm)
+                  (prin (align (- N) (tail N (chop F)))) )
+               (T (prin (need (- N (length Z)) " ") Z)) ) )
          (attr)
          (flush) ) ) )
 
@@ -1325,7 +1320,7 @@ s-expr command vi)
                               (in (: mark) (move 'goAbs (read) (read))) ) )
                         ("n" (nextBuf))  # Next buffer
                         ("N" (nextBuf T))  # Previous buffer
-                        (("ta" "tag") (apply tag (str L)))
+                        ("tag" (apply tag (str L)))
                         ("v" (reload (syms (str L)) 1 1))
                         ("e" (reload (rplFile L)))  # (Edit) Reload buffer
                         ("E"  # (Edit) Toggle subdir recursion and reload buffer
