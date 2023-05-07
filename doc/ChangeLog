@@ -1,5 +1,8 @@
-06may23
+07may23
    Show buffer and dirty status also for long path names
+      lib/vip.l
+
+06may23
    Deprecate "ta" abbreviation for "tag" command
       lib/vip.l
 

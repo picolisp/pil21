@@ -1,4 +1,4 @@
-# 06may23 Software Lab. Alexander Burger
+# 07may23 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -386,8 +386,7 @@ s-expr command vi)
             (cond
                ((ge0 (- N (length F) (length Z)))
                   (prin F (need @ " ") Z) )
-               ((onOff *StatNm)
-                  (prin (align (- N) (tail N (chop F)))) )
+               ((onOff *StatNm) (prin (tail N (chop F))))
                (T (prin (need (- N (length Z)) " ") Z)) ) )
          (attr)
          (flush) ) ) )
