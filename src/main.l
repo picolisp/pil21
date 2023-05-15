@@ -1,4 +1,4 @@
-# 24apr23 Software Lab. Alexander Burger
+# 15may23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -88,7 +88,7 @@ popCtlFiles)
                (unless (== Src Dst)
                   (stop Src)
                   (let Crt: (coroutine (set $Current Dst))
-                     (getCrtEnv (Crt:) NO)
+                     (getCrtEnv (Crt:))
                      (set $At (Crt: at)) ) ) )
             (getCaEnv (Ca:))
             (eval (Ca: fin))  # Evaluate 'finally' expression
@@ -118,7 +118,7 @@ popCtlFiles)
          (unless (== Src Dst)
             (stop Src)
             (let Crt: (coroutine (set $Current Dst))
-               (getCrtEnv (Crt:) NO)
+               (getCrtEnv (Crt:))
                (set $At (Crt: at)) ) ) ) ) )
 
 # Exit

@@ -1,4 +1,4 @@
-# 18apr23 Software Lab. Alexander Burger
+# 15may23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1112,7 +1112,9 @@
 
 (de loadCoEnv ((i8* . Crt))
    (let Crt: (coroutine (set $Current Crt))
-      (getCrtEnv (Crt:) YES)
+      (memcpy (env) (Crt: (env)) (env T) T)
+      (set $StkLimit (+ (Crt: lim) 4096))
+      (getCrtEnv (Crt:))
       (tosInFile)
       (tosOutFile)
       (set $At (Crt: at))

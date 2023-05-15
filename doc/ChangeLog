@@ -1,3 +1,9 @@
+15may23
+   Remove 'Cpy' from getCrtEnv(), set 'env' and '$StkLimit' in loadCoEnv()
+      src/dec.l
+      src/main.l
+      src/flow.l
+
 07may23
    Show buffer and dirty status also for long path names
       lib/vip.l
@@ -11,7 +17,7 @@
       doc/des.html
 
 28apr23
-   Set 'home' property in '<drawCanvas>' to *Top
+   Set 'home' property in '<drawCanvas>' to '*Top'
       lib/canvas.l
 
 25apr23
