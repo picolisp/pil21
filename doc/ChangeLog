@@ -1,3 +1,10 @@
+24may23
+   Add more stack checks
+      src/flow.l
+   Change stack segment safety margin from 4096 to 1024
+      src/glob.l
+      src/flow.l
+
 15may23
    Remove 'Cpy' from getCrtEnv(), set 'env' and '$StkLimit' in loadCoEnv()
       src/dec.l

@@ -1,4 +1,4 @@
-# 15may23 Software Lab. Alexander Burger
+# 24may23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1033,6 +1033,7 @@
          Z (needCnt Exe (eval (++ X)))
          P (set $Bind (push (val Y) Y (val $Bind))) )  # [[sym] sym LINK]
       (set Y (box64 (i64 (b8+ (int Z)))))
+      (stkChk Exe)
       (prog1
          (run X)
          (set Y (val P)  $Bind (val 3 P)) ) ) )
@@ -1042,6 +1043,7 @@
    (let
       (X (cdr Exe)
          Ca: (caFrame (b8+ (+ (val JmpBufSize) (caFrame T)))) )
+      (stkChk Exe)
       (Ca: tag (eval (++ X)))
       (Ca: link (val $Catch))
       (set $Catch (Ca:))
@@ -1075,6 +1077,7 @@
    (let
       (X (cdr Exe)
          Ca: (caFrame (b8+ (+ (val JmpBufSize) (caFrame T)))) )
+      (stkChk Exe)
       (Ca: tag 0)
       (Ca: link (val $Catch))
       (set $Catch (Ca:))
@@ -1087,7 +1090,7 @@
          (set $Catch (Ca: link)) ) ) )
 
 # Coroutines
-(local) (coErr tagErr reentErr saveCoIO saveCoEnv loadCoEnv)
+(local) (coErr tagErr reentErr stkOverErr saveCoIO saveCoEnv loadCoEnv)
 
 (de NIL coErr (Exe Tag)
    (err Exe Tag ($ "Coroutine not found") null) )
@@ -1098,6 +1101,9 @@
 (de NIL reentErr (Exe Tag)
    (err Exe Tag ($ "Reentrant coroutine") null) )
 
+(de NIL stkOverErr (Tag)
+   (err 0 Tag ($ "Stack overwritten") null) )
+
 # Switch coroutines
 (de void saveCoIO ()
    ((ioFrame (val $OutFrames)) fun (val (i8** $Put)))
@@ -1107,13 +1113,15 @@
 
 (de void saveCoEnv ((i8* . Crt))
    (let Crt: (coroutine Crt)
+      (unless (== (hex "0707070707070707") (val (i64* (Crt: lim))))
+         (stkOverErr (Crt: tag)) )
       (Crt: at (val $At))  # Not running
       (putCrtEnv (Crt:) YES) ) )
 
 (de loadCoEnv ((i8* . Crt))
    (let Crt: (coroutine (set $Current Crt))
       (memcpy (env) (Crt: (env)) (env T) T)
-      (set $StkLimit (+ (Crt: lim) 4096))
+      (set $StkLimit (+ (Crt: lim) 1024))
       (getCrtEnv (Crt:))
       (tosInFile)
       (tosOutFile)
@@ -1205,8 +1213,10 @@
                            $Make 0
                            $Yoke 0
                            $Current (Dst:)
-                           $StkLimit (+ (Dst: lim) 4096) )
+                           $StkLimit (+ (Dst: lim) 1024) )
                         (set $Ret (run X))
+                        (unless (== (hex "0707070707070707") (val (i64* (Dst: lim))))
+                           (stkOverErr (Dst: tag)) )
                         (stop (Dst:))  # Stop coroutine
                         (let Org: (coroutine (Dst: org))
                            (longjmp
@@ -1488,11 +1498,13 @@
          Av (b8* (inc (length X)))
          Cmd (xName Exe (evSym X)) )
       (set Av (pathString Cmd (b8 (pathSize Cmd))))
+      (stkChk Exe)
       (let A Av
          (while (pair (shift X))
             (let Nm (xName Exe (evSym X))
                (set (inc 'A)
-                  (bufString Nm (b8 (bufSize Nm))) ) ) )
+                  (bufString Nm (b8 (bufSize Nm))) ) )
+            (stkChk Exe) )
          (set (inc 'A) null) )
       (flushAll)
       (execvp (val Av) Av)  # Execute program
@@ -1505,11 +1517,13 @@
          Av (b8* (inc (length X)))
          Cmd (xName Exe (evSym X)) )
       (set Av (pathString Cmd (b8 (pathSize Cmd))))
+      (stkChk Exe)
       (let A Av
          (while (pair (shift X))
             (let Nm (xName Exe (evSym X))
                (set (inc 'A)
-                  (bufString Nm (b8 (bufSize Nm))) ) ) )
+                  (bufString Nm (b8 (bufSize Nm))) ) )
+            (stkChk Exe) )
          (set (inc 'A) null) )
       (flushAll)
       (let
