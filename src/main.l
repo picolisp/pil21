@@ -1,4 +1,4 @@
-# 15may23 Software Lab. Alexander Burger
+# 25may23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -128,8 +128,8 @@ popCtlFiles)
    (setCooked)
    (exit N) )
 
-(de NIL giveup ((i8* . Fmt) (i8* . Msg))
-   (stderrMsg Fmt Msg)
+(de NIL giveup ((i8* . Msg))
+   (stderrMsg ($ "Give up: %s\n") Msg)
    (finish 1) )
 
 (de NIL bye ((i32 . N))
@@ -149,7 +149,7 @@ popCtlFiles)
 
 (de i8* alloc ((i8* . Ptr) (i64 . Siz))
    (unless (realloc Ptr Siz)   # Reallocate pointer
-      (giveup ($ "No memory") null) )
+      (giveup ($ "No memory")) )
    @ )
 
 (de void heapAlloc ()
@@ -313,9 +313,9 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                ((outFile (val 2 (val $OutFiles))) tty) )
             (bye 1) )
          (repl 0 ($ "? ") $Nil) )
-      (unwind null)
       (unless (val $StkLimit)
-         (set $StkLimit (val $StkBrk)) )
+         (giveup ($ "No stack")) )
+      (unwind null)
       (set
          $Link 0
          $Protect 0

@@ -1,4 +1,4 @@
-# 24may23 Software Lab. Alexander Burger
+# 25may23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1102,6 +1102,7 @@
    (err Exe Tag ($ "Reentrant coroutine") null) )
 
 (de NIL stkOverErr (Tag)
+   (set $StkLimit null)
    (err 0 Tag ($ "Stack overwritten") null) )
 
 # Switch coroutines

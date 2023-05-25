@@ -1,6 +1,9 @@
-24may23
+25may23
    Add more stack checks
+      src/main.l
       src/flow.l
+
+24may23
    Change stack segment safety margin from 4096 to 1024
       src/glob.l
       src/flow.l
