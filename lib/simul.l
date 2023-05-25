@@ -1,4 +1,4 @@
-# 25apr23 Software Lab. Alexander Burger
+# 25may23 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -261,3 +261,168 @@
       (for L Grid
          (prin (if (and (nT How) (Dir (car L))) "   +" "---+")) )
       (prinl) ) )
+
+### Tracks network ###
+(local) (connectors crossing linkFromTo linkFrom linkTo tracks)
+(private) Var
+
+(de connectors ()
+   (=: a (list This NIL NIL))  # Connector A
+   (=: b (list This NIL NIL))  # Connector B
+   (con (cddr (: a)) (: b))
+   (con (cddr (: b)) (: a)) )
+
+(de crossing (Sym)
+   (with (=: c (box))
+      (connectors)
+      (linkFromTo Sym) )  )
+
+(de linkFromTo (Sym)
+   (if2 (; Sym a 2) (: b 2)
+      (set
+         (; Sym b -1) (: b)
+         (: a -1) (; Sym a) )
+      (set
+         (; Sym b -1) (: a)
+         (: b -1) (; Sym a) )
+      (set
+         (; Sym a -1) (: b)
+         (: a -1) (; Sym b) )
+      (set
+         (; Sym a -1) (: a)
+         (: b -1) (; Sym b) ) ) )
+
+(de linkFrom (Sym Ref)
+   (let Con
+      (if (; Sym a 2)
+         (; Sym a)
+         (; Sym b) )
+      (if (== Ref (: b 2 1))
+         (set
+            (cddddr Con) (: a)
+            (: b -2) Con )
+         (set
+            (cddddr Con) (: b)
+            (: a -2) Con ) ) ) )
+
+(de linkTo (Sym Ref)
+   (let Con (if (: a 2) (: a) (: b))
+      (if (== Ref (; Sym b 2 1))
+         (set
+            (cddddr Con) (; Sym a)
+            (; Sym b -2) Con )
+         (set
+            (cddddr Con) (; Sym b)
+            (; Sym a -2) Con ) ) ) )
+
+# Define tracks
+(de tracks (Var)
+   (def Var  # Layout
+      (clip
+         (make
+            (until (or (eof) (= "(" (peek)))
+               (link (line)) ) ) ) )
+   (for (Y . L) (val Var)  # Init
+      (for (X . This) L
+         (=: x X)
+         (=: y Y)
+         (unless (sp? This)
+            (connectors) ) ) )
+   (for 1st (1 NIL)
+      (map
+         '(((PU P))
+            (map
+               '(((Left This Right) (UpL Up UpR))
+                  (case This
+                     ("|"
+                        (cond
+                           ((= "|" Up)
+                              #  |    \|     |/
+                              #  |     |     |
+                              (if 1st
+                                 (linkFromTo Up)
+                                 (when (= "\\" UpL)
+                                    # \|
+                                    #  |
+                                    (linkFrom UpL Up) )
+                                 (when (= "/" UpR)
+                                    #  |/
+                                    #  |
+                                    (linkFrom UpR Up) ) ) )
+                           ((= "\\" UpL)
+                              # \
+                              #  |
+                              (and 1st (linkFromTo UpL)) )
+                           ((= "/" UpR)
+                              #   /
+                              #  |
+                              (and 1st (linkFromTo UpR)) ) )
+                        (when 1st
+                           # -|
+                           (and (= "-" Left) (crossing Left))
+                           #  -
+                           #  |
+                           (and (= "-" Up) (; Up c) (linkFromTo @)) ) )
+                     ("/"
+                        (cond
+                           ((member UpR '("|" "/"))
+                              #   |     |     /
+                              #  /     /|    /
+                              (if2 1st (= "|" Right)
+                                 NIL
+                                 (linkFromTo UpR)
+                                 (linkTo UpR Right) ) )
+                           ((= "-" UpR)
+                              #   -    --
+                              #  /     /
+                              (if2 1st (= "-" Up)
+                                 NIL
+                                 (linkFromTo UpR)
+                                 (linkTo UpR Up) ) ) ) )
+                     ("-"
+                        (cond
+                           ((= "-" Left)
+                              #       \       /     /
+                              # --    --    --    ---
+                              (if 1st
+                                 (linkFromTo Left)
+                                 (when (= "\\" UpL)
+                                    # \
+                                    # --
+                                    (linkFrom UpL Left) ) )
+                              (when (= "/" UpR)
+                                 #   /      /
+                                 # --     ---
+                                 (if2 1st (= "-" Right)
+                                    NIL
+                                    (linkFromTo UpR)
+                                    (linkFrom UpR Right) ) ) )
+                           ((= "\\" UpL)
+                              # \
+                              #  -
+                              (and 1st (linkFromTo UpL)) ) )
+                        (when 1st
+                           #  |
+                           #  -
+                           (and (= "|" Up) (crossing Up))
+                           #  |-
+                           (and (= "|" Left) (; Left c) (linkFromTo @)) ) )
+                     ("\\"
+                        (cond
+                           ((member UpL '("|" "\\"))
+                              # |     |     \
+                              #  \    |\     \
+                              (if2 1st (= "|" Left)
+                                 NIL
+                                 (linkFromTo UpL)
+                                 (linkTo UpL Left) ) )
+                           ((= "-" UpL)
+                              # -     --
+                              #  \     \
+                              (if2 1st (= "-" Up)
+                                 NIL
+                                 (linkFromTo UpL)
+                                 (linkTo UpL Up) ) ) ) ) ) )
+               (cons NIL P)
+               (cons NIL PU) ) )
+         (cons NIL (val Var)) ) ) )
