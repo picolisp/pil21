@@ -1,6 +1,7 @@
-# 26mar23 Software Lab. Alexander Burger
+# 27may23 Software Lab. Alexander Burger
 
-# *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt *Lock *Spans
+# *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
+# *Lock *Spans *AlwaysAsk
 
 (private) (*Chart *App *Ix *Err *Foc *Post2 *Stat *Cho *TZO)
 
@@ -1326,7 +1327,7 @@
          (_delRow (: exe))
          (ask (if (: del) (eval @) ,"Delete row?")
             (with (: home btn)
-               (=: home del T)
+               (or *AlwaysAsk (=: home del T))
                (_delRow (: exe)) ) ) ) )
    (=: chg T) )
 
