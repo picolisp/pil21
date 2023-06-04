@@ -1,4 +1,4 @@
-# 20aug22 Software Lab. Alexander Burger
+# 04jun23 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -245,7 +245,7 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
 (de pointee (Typ)
    (if (== 'any Typ)
       Typ
-      (intern (pack (head -1 (chop Typ)))) ) )
+      (intern (head -1 (chop Typ))) ) )
 
 (de store (X P Ofs)
    (nond

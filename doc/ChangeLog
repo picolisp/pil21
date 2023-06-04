@@ -1,3 +1,13 @@
+23.6.4
+   Accept 'any' in 'intern'
+      src/lib/llvm.l
+      src/sym.l
+      lib.l
+      test/src/sym.l
+      doc/refI.html
+      lib/form.l
+      lib/dbgc.l
+
 23.5.27
    Global '*AlwaysAsk'
       lib/form.l

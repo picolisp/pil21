@@ -1,4 +1,4 @@
-# 27may23 Software Lab. Alexander Burger
+# 04jun23 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
 # *Lock *Spans *AlwaysAsk
@@ -207,7 +207,7 @@
                   (notAllowed *Url)
                   (http404) )
                ((= "!" (car Url))
-                  ((intern (pack (cdr Url)))) )
+                  ((intern (cdr Url))) )
                ((tail '("." "l") Url)
                   (load *Url) ) ) ) ) ) )
 

@@ -1,4 +1,4 @@
-# 22apr23 Software Lab. Alexander Burger
+# 04jun23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -676,17 +676,15 @@
                      (set $Intern R)
                      (putSrc (car R) 0) ) ) ) ) ) ) )
 
-# (intern 'sym ['nsp]) -> sym
+# (intern 'any ['nsp]) -> sym
 (de _intern (Exe)
-   (let
-      (X (cdr Exe)
-         Sym (save (needSymb Exe (eval (++ X)))) )
+   (let (X (cdr Exe)  Sym (save (evSym X)))
       (cond
          ((sym? (val (tail Sym))) $Nil)  # External symbol
          ((== (name @) ZERO) $Nil)  # Anonymous symbol
          (T
             (let Nm @
-               (if (nil? (eval (car X)))
+               (if (nil? (eval (cadr X)))
                   (let L (val $Intern)
                      (intern Sym 0 Nm
                         (cdar (car L))

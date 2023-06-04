@@ -1,4 +1,4 @@
-# 26may22 Software Lab. Alexander Burger
+# 04jun23 Software Lab. Alexander Burger
 
 ### name ###
 (test "abc" (name 'abc))
@@ -58,6 +58,7 @@
 
 ### intern ###
 (test car (val (intern (pack "c" "a" "r"))))
+(test car (val (intern '("c" "a" "r"))))
 
 
 ### ==== ###

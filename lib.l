@@ -1,4 +1,4 @@
-# 13apr23 Software Lab. Alexander Burger
+# 04jun23 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -290,7 +290,7 @@
             (let (L (split (chop S) "~")  N NIL  S)
                (while (cdr L)
                   (setq
-                     N (intern (pack (car L)) N)
+                     N (intern (car L) N)
                      S (pack S (++ L) "~") ) )
                (let P (pack (car L))
                   (extract

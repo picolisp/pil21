@@ -1,4 +1,4 @@
-# 21oct22 Software Lab. Alexander Burger
+# 04jun23 Software Lab. Alexander Burger
 
 ### DB Garbage Collection ###
 
@@ -43,7 +43,7 @@
                      (unless
                         (and
                            (setq S (extern (pack (delete "/" @S T))))
-                           (get S (intern (pack @R))) )
+                           (get S (intern @R)) )
                         (inc 'Cnt)
                         (%@ "unlink" NIL (pack F)) )
                      (wipe S) ) ) ) ) ) )
