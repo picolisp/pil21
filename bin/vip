@@ -1,5 +1,5 @@
 #!/usr/bin/picolisp /usr/lib/picolisp/lib.l
-# 19nov22abu
+# 04jun23abu
 
 (unless *Dbg
    (load "@lib/vip.l") )
@@ -11,16 +11,18 @@
       (vip~vi  ## [+<pat> | +[<num>]] <file1>  [+[<num>]] <file2> ..
          (make
             (while (opt)
-               (let S @
+               (let (S @  L (chop S))
                   (cond
                      ((pre? "+" S)
                         (link
-                           (cons
-                              (cond
-                                 ((= "+" S) T)
-                                 ((format S) @)
-                                 (T (cdr (chop S))) )
-                              (opt) ) ) )
+                           (if (get (intern (cdr L)) '*Dbg 1)
+                              (cons (car @) (cadr @))
+                              (cons
+                                 (cond
+                                    ((= "+" S) T)
+                                    ((format S) @)
+                                    (T (cdr L)) )
+                                 (opt) ) ) ) )
                      ((pre? "-" S) (load S))
                      (T (link S)) ) ) ) ) )
       0

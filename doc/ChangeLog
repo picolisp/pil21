@@ -1,4 +1,6 @@
 23.6.4
+   '+<pat>' defaults to tag in debug mode
+      bin/vip
    Accept 'any' in 'intern'
       src/lib/llvm.l
       src/sym.l
