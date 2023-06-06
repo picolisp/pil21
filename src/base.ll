@@ -1520,7 +1520,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 370,
   i64 98,
-  i64 66
+  i64 98
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -44426,7 +44426,7 @@ $5:
   br i1 %63, label %$20, label %$19
 $20:
   %64 = phi i64 [%61, %$5] ; # X
-; # (let (Nm (xName Exe X) S (pathString Nm (b8 (pathSize Nm))) Flg (...
+; # (let (Nm (xName Exe X) S (pathString Nm (b8 (pathSize Nm))) Fd T)...
 ; # (xName Exe X)
   %65 = call i64 @xName(i64 %0, i64 %64)
 ; # (pathSize Nm)
@@ -44435,270 +44435,234 @@ $20:
   %67 = alloca i8, i64 %66
 ; # (pathString Nm (b8 (pathSize Nm)))
   %68 = call i8* @pathString(i64 %65, i8* %67)
-; # (val S)
-  %69 = load i8, i8* %68
-; # (== (val S) (char "+"))
-  %70 = icmp eq i8 %69, 43
-; # (when Flg (setq S (ofs S 1)))
-  br i1 %70, label %$21, label %$22
+; # (while (lt0 (setq Fd (openRd S))) (unless (== (gErrno) EINTR) (op...
+  br label %$21
 $21:
-  %71 = phi i64 [%64, %$20] ; # X
-  %72 = phi i8* [%68, %$20] ; # S
-; # (ofs S 1)
-  %73 = getelementptr i8, i8* %72, i32 1
-  br label %$22
-$22:
-  %74 = phi i64 [%64, %$20], [%71, %$21] ; # X
-  %75 = phi i8* [%68, %$20], [%73, %$21] ; # S
-; # (while (lt0 (setq Fd (if Flg (openRdWrAppend S) (openRd S)))) (un...
-  br label %$23
-$23:
-  %76 = phi i64 [%74, %$22], [%96, %$32] ; # X
-  %77 = phi i8* [%75, %$22], [%97, %$32] ; # S
-; # (if Flg (openRdWrAppend S) (openRd S))
-  br i1 %70, label %$24, label %$25
-$24:
-  %78 = phi i64 [%76, %$23] ; # X
-  %79 = phi i8* [%77, %$23] ; # S
-; # (openRdWrAppend S)
-  %80 = call i32 @openRdWrAppend(i8* %79)
-  br label %$26
-$25:
-  %81 = phi i64 [%76, %$23] ; # X
-  %82 = phi i8* [%77, %$23] ; # S
+  %69 = phi i64 [%64, %$20], [%78, %$27] ; # X
 ; # (openRd S)
-  %83 = call i32 @openRd(i8* %82)
-  br label %$26
-$26:
-  %84 = phi i64 [%78, %$24], [%81, %$25] ; # X
-  %85 = phi i8* [%79, %$24], [%82, %$25] ; # S
-  %86 = phi i32 [%80, %$24], [%83, %$25] ; # ->
-; # (lt0 (setq Fd (if Flg (openRdWrAppend S) (openRd S))))
-  %87 = icmp slt i32 %86, 0
-  br i1 %87, label %$27, label %$28
-$27:
-  %88 = phi i64 [%84, %$26] ; # X
-  %89 = phi i8* [%85, %$26] ; # S
-  %90 = phi i32 [%86, %$26] ; # Fd
+  %70 = call i32 @openRd(i8* %68)
+; # (lt0 (setq Fd (openRd S)))
+  %71 = icmp slt i32 %70, 0
+  br i1 %71, label %$22, label %$23
+$22:
+  %72 = phi i64 [%69, %$21] ; # X
+  %73 = phi i32 [%70, %$21] ; # Fd
 ; # (unless (== (gErrno) EINTR) (openErr Exe X))
 ; # (gErrno)
-  %91 = call i32 @gErrno()
+  %74 = call i32 @gErrno()
 ; # (== (gErrno) EINTR)
-  %92 = icmp eq i32 %91, 2
-  br i1 %92, label %$30, label %$29
-$29:
-  %93 = phi i64 [%88, %$27] ; # X
-  %94 = phi i8* [%89, %$27] ; # S
-  %95 = phi i32 [%90, %$27] ; # Fd
+  %75 = icmp eq i32 %74, 2
+  br i1 %75, label %$25, label %$24
+$24:
+  %76 = phi i64 [%72, %$22] ; # X
+  %77 = phi i32 [%73, %$22] ; # Fd
 ; # (openErr Exe X)
-  call void @openErr(i64 %0, i64 %93)
+  call void @openErr(i64 %0, i64 %76)
   unreachable
-$30:
-  %96 = phi i64 [%88, %$27] ; # X
-  %97 = phi i8* [%89, %$27] ; # S
-  %98 = phi i32 [%90, %$27] ; # Fd
+$25:
+  %78 = phi i64 [%72, %$22] ; # X
+  %79 = phi i32 [%73, %$22] ; # Fd
 ; # (sigChk Exe)
-  %99 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
-  %100 = icmp ne i32 %99, 0
-  br i1 %100, label %$31, label %$32
-$31:
+  %80 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %81 = icmp ne i32 %80, 0
+  br i1 %81, label %$26, label %$27
+$26:
   call void @sighandler(i64 %0)
-  br label %$32
-$32:
-  br label %$23
-$28:
-  %101 = phi i64 [%84, %$26] ; # X
-  %102 = phi i8* [%85, %$26] ; # S
-  %103 = phi i32 [%86, %$26] ; # Fd
+  br label %$27
+$27:
+  br label %$21
+$23:
+  %82 = phi i64 [%69, %$21] ; # X
+  %83 = phi i32 [%70, %$21] ; # Fd
 ; # (closeOnExec Exe Fd)
-  call void @closeOnExec(i64 %0, i32 %103)
+  call void @closeOnExec(i64 %0, i32 %83)
 ; # (strdup S)
-  %104 = call i8* @strdup(i8* %102)
+  %84 = call i8* @strdup(i8* %68)
 ; # (initInFile Fd (strdup S))
-  %105 = call i8* @initInFile(i32 %103, i8* %104)
+  %85 = call i8* @initInFile(i32 %83, i8* %84)
 ; # (pushInFile Io (initInFile Fd (strdup S)) 1)
-  call void @pushInFile(i8* %2, i8* %105, i32 1)
+  call void @pushInFile(i8* %2, i8* %85, i32 1)
   br label %$2
 $19:
-  %106 = phi i64 [%61, %$5] ; # X
+  %86 = phi i64 [%61, %$5] ; # X
 ; # (let (Pfd (b32 2) Av (b8* (inc (length X))) Cmd (xName Exe (xSym ...
 ; # (b32 2)
-  %107 = alloca i32, i64 2
+  %87 = alloca i32, i64 2
 ; # (length X)
+  br label %$28
+$28:
+  %88 = phi i64 [%86, %$19], [%97, %$29] ; # X
+  %89 = phi i64 [0, %$19], [%94, %$29] ; # N
+  %90 = and i64 %88, 15
+  %91 = icmp eq i64 %90, 0
+  br i1 %91, label %$29, label %$30
+$29:
+  %92 = phi i64 [%88, %$28] ; # X
+  %93 = phi i64 [%89, %$28] ; # N
+  %94 = add i64 %93, 1
+  %95 = inttoptr i64 %92 to i64*
+  %96 = getelementptr i64, i64* %95, i32 1
+  %97 = load i64, i64* %96
+  br label %$28
+$30:
+  %98 = phi i64 [%88, %$28] ; # X
+  %99 = phi i64 [%89, %$28] ; # N
+; # (inc (length X))
+  %100 = add i64 %99, 1
+; # (b8* (inc (length X)))
+  %101 = alloca i8*, i64 %100
+; # (car X)
+  %102 = inttoptr i64 %86 to i64*
+  %103 = load i64, i64* %102
+; # (xSym (car X))
+  %104 = call i64 @xSym(i64 %103)
+; # (xName Exe (xSym (car X)))
+  %105 = call i64 @xName(i64 %0, i64 %104)
+; # (when (lt0 (pipe Pfd)) (pipeErr Exe))
+; # (pipe Pfd)
+  %106 = call i32 @pipe(i32* %87)
+; # (lt0 (pipe Pfd))
+  %107 = icmp slt i32 %106, 0
+  br i1 %107, label %$31, label %$32
+$31:
+  %108 = phi i64 [%86, %$30] ; # X
+; # (pipeErr Exe)
+  call void @pipeErr(i64 %0)
+  unreachable
+$32:
+  %109 = phi i64 [%86, %$30] ; # X
+; # (set Av (pathString Cmd (b8 (pathSize Cmd))))
+; # (pathSize Cmd)
+  %110 = call i64 @pathSize(i64 %105)
+; # (b8 (pathSize Cmd))
+  %111 = alloca i8, i64 %110
+; # (pathString Cmd (b8 (pathSize Cmd)))
+  %112 = call i8* @pathString(i64 %105, i8* %111)
+  store i8* %112, i8** %101
+; # (let A Av (while (pair (shift X)) (let Nm (xName Exe (xSym (car X...
+; # (while (pair (shift X)) (let Nm (xName Exe (xSym (car X))) (set (...
   br label %$33
 $33:
-  %108 = phi i64 [%106, %$19], [%117, %$34] ; # X
-  %109 = phi i64 [0, %$19], [%114, %$34] ; # N
-  %110 = and i64 %108, 15
-  %111 = icmp eq i64 %110, 0
-  br i1 %111, label %$34, label %$35
-$34:
-  %112 = phi i64 [%108, %$33] ; # X
-  %113 = phi i64 [%109, %$33] ; # N
-  %114 = add i64 %113, 1
-  %115 = inttoptr i64 %112 to i64*
+  %113 = phi i64 [%109, %$32], [%120, %$34] ; # X
+  %114 = phi i8** [%101, %$32], [%126, %$34] ; # A
+; # (shift X)
+  %115 = inttoptr i64 %113 to i64*
   %116 = getelementptr i64, i64* %115, i32 1
   %117 = load i64, i64* %116
-  br label %$33
-$35:
-  %118 = phi i64 [%108, %$33] ; # X
-  %119 = phi i64 [%109, %$33] ; # N
-; # (inc (length X))
-  %120 = add i64 %119, 1
-; # (b8* (inc (length X)))
-  %121 = alloca i8*, i64 %120
+; # (pair (shift X))
+  %118 = and i64 %117, 15
+  %119 = icmp eq i64 %118, 0
+  br i1 %119, label %$34, label %$35
+$34:
+  %120 = phi i64 [%117, %$33] ; # X
+  %121 = phi i8** [%114, %$33] ; # A
+; # (let Nm (xName Exe (xSym (car X))) (set (inc 'A) (bufString Nm (b...
 ; # (car X)
-  %122 = inttoptr i64 %106 to i64*
+  %122 = inttoptr i64 %120 to i64*
   %123 = load i64, i64* %122
 ; # (xSym (car X))
   %124 = call i64 @xSym(i64 %123)
 ; # (xName Exe (xSym (car X)))
   %125 = call i64 @xName(i64 %0, i64 %124)
-; # (when (lt0 (pipe Pfd)) (pipeErr Exe))
-; # (pipe Pfd)
-  %126 = call i32 @pipe(i32* %107)
-; # (lt0 (pipe Pfd))
-  %127 = icmp slt i32 %126, 0
-  br i1 %127, label %$36, label %$37
-$36:
-  %128 = phi i64 [%106, %$35] ; # X
-; # (pipeErr Exe)
-  call void @pipeErr(i64 %0)
-  unreachable
-$37:
-  %129 = phi i64 [%106, %$35] ; # X
-; # (set Av (pathString Cmd (b8 (pathSize Cmd))))
-; # (pathSize Cmd)
-  %130 = call i64 @pathSize(i64 %125)
-; # (b8 (pathSize Cmd))
-  %131 = alloca i8, i64 %130
-; # (pathString Cmd (b8 (pathSize Cmd)))
-  %132 = call i8* @pathString(i64 %125, i8* %131)
-  store i8* %132, i8** %121
-; # (let A Av (while (pair (shift X)) (let Nm (xName Exe (xSym (car X...
-; # (while (pair (shift X)) (let Nm (xName Exe (xSym (car X))) (set (...
-  br label %$38
-$38:
-  %133 = phi i64 [%129, %$37], [%140, %$39] ; # X
-  %134 = phi i8** [%121, %$37], [%146, %$39] ; # A
-; # (shift X)
-  %135 = inttoptr i64 %133 to i64*
-  %136 = getelementptr i64, i64* %135, i32 1
-  %137 = load i64, i64* %136
-; # (pair (shift X))
-  %138 = and i64 %137, 15
-  %139 = icmp eq i64 %138, 0
-  br i1 %139, label %$39, label %$40
-$39:
-  %140 = phi i64 [%137, %$38] ; # X
-  %141 = phi i8** [%134, %$38] ; # A
-; # (let Nm (xName Exe (xSym (car X))) (set (inc 'A) (bufString Nm (b...
-; # (car X)
-  %142 = inttoptr i64 %140 to i64*
-  %143 = load i64, i64* %142
-; # (xSym (car X))
-  %144 = call i64 @xSym(i64 %143)
-; # (xName Exe (xSym (car X)))
-  %145 = call i64 @xName(i64 %0, i64 %144)
 ; # (set (inc 'A) (bufString Nm (b8 (bufSize Nm))))
 ; # (inc 'A)
-  %146 = getelementptr i8*, i8** %141, i32 1
+  %126 = getelementptr i8*, i8** %121, i32 1
 ; # (bufSize Nm)
-  %147 = call i64 @bufSize(i64 %145)
+  %127 = call i64 @bufSize(i64 %125)
 ; # (b8 (bufSize Nm))
-  %148 = alloca i8, i64 %147
+  %128 = alloca i8, i64 %127
 ; # (bufString Nm (b8 (bufSize Nm)))
-  %149 = call i8* @bufString(i64 %145, i8* %148)
-  store i8* %149, i8** %146
-  br label %$38
-$40:
-  %150 = phi i64 [%137, %$38] ; # X
-  %151 = phi i8** [%134, %$38] ; # A
+  %129 = call i8* @bufString(i64 %125, i8* %128)
+  store i8* %129, i8** %126
+  br label %$33
+$35:
+  %130 = phi i64 [%117, %$33] ; # X
+  %131 = phi i8** [%114, %$33] ; # A
 ; # (set (inc 'A) null)
 ; # (inc 'A)
-  %152 = getelementptr i8*, i8** %151, i32 1
-  store i8* null, i8** %152
+  %132 = getelementptr i8*, i8** %131, i32 1
+  store i8* null, i8** %132
 ; # (cond ((lt0 (fork)) (forkErr Exe)) ((=0 @) (setpgid 0 0) (close (...
 ; # (fork)
-  %153 = call i32 @fork()
+  %133 = call i32 @fork()
 ; # (lt0 (fork))
-  %154 = icmp slt i32 %153, 0
-  br i1 %154, label %$43, label %$42
-$43:
-  %155 = phi i64 [%150, %$40] ; # X
+  %134 = icmp slt i32 %133, 0
+  br i1 %134, label %$38, label %$37
+$38:
+  %135 = phi i64 [%130, %$35] ; # X
 ; # (forkErr Exe)
   call void @forkErr(i64 %0)
   unreachable
-$42:
-  %156 = phi i64 [%150, %$40] ; # X
+$37:
+  %136 = phi i64 [%130, %$35] ; # X
 ; # (=0 @)
-  %157 = icmp eq i32 %153, 0
-  br i1 %157, label %$45, label %$44
-$45:
-  %158 = phi i64 [%156, %$42] ; # X
+  %137 = icmp eq i32 %133, 0
+  br i1 %137, label %$40, label %$39
+$40:
+  %138 = phi i64 [%136, %$37] ; # X
 ; # (setpgid 0 0)
-  %159 = call i32 @setpgid(i32 0, i32 0)
+  %139 = call i32 @setpgid(i32 0, i32 0)
 ; # (val Pfd)
-  %160 = load i32, i32* %107
+  %140 = load i32, i32* %87
 ; # (close (val Pfd))
-  %161 = call i32 @close(i32 %160)
+  %141 = call i32 @close(i32 %140)
 ; # (unless (== (val 2 Pfd) 1) (dup2 @ 1) (close @))
 ; # (val 2 Pfd)
-  %162 = getelementptr i32, i32* %107, i32 1
-  %163 = load i32, i32* %162
+  %142 = getelementptr i32, i32* %87, i32 1
+  %143 = load i32, i32* %142
 ; # (== (val 2 Pfd) 1)
-  %164 = icmp eq i32 %163, 1
-  br i1 %164, label %$47, label %$46
-$46:
-  %165 = phi i64 [%158, %$45] ; # X
-; # (dup2 @ 1)
-  %166 = call i32 @dup2(i32 %163, i32 1)
-; # (close @)
-  %167 = call i32 @close(i32 %163)
-  br label %$47
-$47:
-  %168 = phi i64 [%158, %$45], [%165, %$46] ; # X
-; # (val SIGPIPE Sig)
-  %169 = getelementptr i32, i32* @Sig, i32 4
-  %170 = load i32, i32* %169
-; # (val SigDfl)
-  %171 = load i8*, i8** @SigDfl
-; # (signal (val SIGPIPE Sig) (val SigDfl))
-  %172 = call i8* @signal(i32 %170, i8* %171)
-; # (val Av)
-  %173 = load i8*, i8** %121
-; # (execvp (val Av) Av)
-  %174 = call i32 @execvp(i8* %173, i8** %121)
-; # (val Av)
-  %175 = load i8*, i8** %121
-; # (execErr (val Av))
-  call void @execErr(i8* %175)
-  unreachable
-$44:
-  %176 = phi i64 [%156, %$42] ; # X
-  br label %$41
+  %144 = icmp eq i32 %143, 1
+  br i1 %144, label %$42, label %$41
 $41:
-  %177 = phi i64 [%176, %$44] ; # X
-  %178 = phi i64 [0, %$44] ; # ->
+  %145 = phi i64 [%138, %$40] ; # X
+; # (dup2 @ 1)
+  %146 = call i32 @dup2(i32 %143, i32 1)
+; # (close @)
+  %147 = call i32 @close(i32 %143)
+  br label %$42
+$42:
+  %148 = phi i64 [%138, %$40], [%145, %$41] ; # X
+; # (val SIGPIPE Sig)
+  %149 = getelementptr i32, i32* @Sig, i32 4
+  %150 = load i32, i32* %149
+; # (val SigDfl)
+  %151 = load i8*, i8** @SigDfl
+; # (signal (val SIGPIPE Sig) (val SigDfl))
+  %152 = call i8* @signal(i32 %150, i8* %151)
+; # (val Av)
+  %153 = load i8*, i8** %101
+; # (execvp (val Av) Av)
+  %154 = call i32 @execvp(i8* %153, i8** %101)
+; # (val Av)
+  %155 = load i8*, i8** %101
+; # (execErr (val Av))
+  call void @execErr(i8* %155)
+  unreachable
+$39:
+  %156 = phi i64 [%136, %$37] ; # X
+  br label %$36
+$36:
+  %157 = phi i64 [%156, %$39] ; # X
+  %158 = phi i64 [0, %$39] ; # ->
 ; # (let (Pid @ Fd (val Pfd)) (setpgid Pid 0) (close (val 2 Pfd)) (cl...
 ; # (val Pfd)
-  %179 = load i32, i32* %107
+  %159 = load i32, i32* %87
 ; # (setpgid Pid 0)
-  %180 = call i32 @setpgid(i32 %153, i32 0)
+  %160 = call i32 @setpgid(i32 %133, i32 0)
 ; # (val 2 Pfd)
-  %181 = getelementptr i32, i32* %107, i32 1
-  %182 = load i32, i32* %181
+  %161 = getelementptr i32, i32* %87, i32 1
+  %162 = load i32, i32* %161
 ; # (close (val 2 Pfd))
-  %183 = call i32 @close(i32 %182)
+  %163 = call i32 @close(i32 %162)
 ; # (closeOnExec Exe Fd)
-  call void @closeOnExec(i64 %0, i32 %179)
+  call void @closeOnExec(i64 %0, i32 %159)
 ; # (initInFile Fd null)
-  %184 = call i8* @initInFile(i32 %179, i8* null)
+  %164 = call i8* @initInFile(i32 %159, i8* null)
 ; # (pushInFile Io (initInFile Fd null) Pid)
-  call void @pushInFile(i8* %2, i8* %184, i32 %153)
+  call void @pushInFile(i8* %2, i8* %164, i32 %133)
   br label %$2
 $2:
-  %185 = phi i64 [%4, %$4], [%58, %$7], [%101, %$28], [%177, %$41] ; # X
+  %165 = phi i64 [%4, %$4], [%58, %$7], [%82, %$23], [%157, %$36] ; # X
   ret void
 }
 
@@ -44861,18 +44825,18 @@ $21:
 $22:
   %75 = phi i64 [%65, %$20], [%72, %$21] ; # X
   %76 = phi i8* [%69, %$20], [%74, %$21] ; # S
-; # (while (lt0 (setq Fd (if Flg (openWrAppend S) (openWr S)))) (unle...
+; # (while (lt0 (setq Fd (if Flg (openRdWrAppend S) (openWr S)))) (un...
   br label %$23
 $23:
   %77 = phi i64 [%75, %$22], [%97, %$32] ; # X
   %78 = phi i8* [%76, %$22], [%98, %$32] ; # S
-; # (if Flg (openWrAppend S) (openWr S))
+; # (if Flg (openRdWrAppend S) (openWr S))
   br i1 %71, label %$24, label %$25
 $24:
   %79 = phi i64 [%77, %$23] ; # X
   %80 = phi i8* [%78, %$23] ; # S
-; # (openWrAppend S)
-  %81 = call i32 @openWrAppend(i8* %80)
+; # (openRdWrAppend S)
+  %81 = call i32 @openRdWrAppend(i8* %80)
   br label %$26
 $25:
   %82 = phi i64 [%77, %$23] ; # X
@@ -44884,7 +44848,7 @@ $26:
   %85 = phi i64 [%79, %$24], [%82, %$25] ; # X
   %86 = phi i8* [%80, %$24], [%83, %$25] ; # S
   %87 = phi i32 [%81, %$24], [%84, %$25] ; # ->
-; # (lt0 (setq Fd (if Flg (openWrAppend S) (openWr S))))
+; # (lt0 (setq Fd (if Flg (openRdWrAppend S) (openWr S))))
   %88 = icmp slt i32 %87, 0
   br i1 %88, label %$27, label %$28
 $27:

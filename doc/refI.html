@@ -226,20 +226,20 @@ of symbols. See also <code><a href="refP.html#pico">pico</a></code>,
 <dd>Opens <code>any</code> as input channel during the execution of
 <code>prg</code>. The current input channel will be saved and restored
 appropriately. If the argument is <code>NIL</code>, standard input is used. If
-the argument is a symbol, it is used as a file name (opened for reading
-<i>and</i> writing if the first character is "<code>+</code>"). If it is a
-positive number, it is used as the descriptor of an open file. If it is a
-negative number, the saved input channel such many levels above the current one
-is used. Otherwise (if it is a list), it is taken as a command with arguments,
-and a pipe is opened for input. The (system dependent) exit status code of the
-child process is stored in the global variable <code><a
+the argument is a symbol, it is used as a file name (opened in read-only mode).
+If it is a positive number, it is used as the descriptor of an open file. If it
+is a negative number, the saved input channel such many levels above the current
+one is used. Otherwise (if it is a list), it is taken as a command with
+arguments, and a pipe is opened for input. The (system dependent) exit status
+code of the child process is stored in the global variable <code><a
 href="ref_.html#@@">@@</a></code>. See also <code><a
+href="refO.html#out">out</a></code>, <code><a
+href="refE.html#err">err</a></code>, <code><a
+href="refF.html#fd">fd</a></code>, <code><a
 href="refI.html#ipid">ipid</a></code>, <code><a
 href="refC.html#call">call</a></code>, <code><a
 href="refL.html#load">load</a></code>, <code><a
 href="refF.html#file">file</a></code>, <code><a
-href="refO.html#out">out</a></code>, <code><a
-href="refE.html#err">err</a></code>, <code><a
 href="refP.html#poll">poll</a></code>, <code><a
 href="refP.html#pipe">pipe</a></code> and <code><a
 href="refC.html#ctl">ctl</a></code>.

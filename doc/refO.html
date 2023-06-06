@@ -262,24 +262,26 @@ href="refN.html#not/1">not/1</a></code>.
       ((equal 3 @X) (equal @X 4))
       ((equal 7 @X) (equal @X 7)) ) )
  @X=7
--> NIL</code></pre>
+-> NIL
+</code></pre></dd>
 
 <dt><a id="out"><code>(out 'any . prg) -> any</code></a></dt>
 <dd>Opens <code>any</code> as output channel during the execution of
 <code>prg</code>. The current output channel will be saved and restored
 appropriately. If the argument is <code>NIL</code>, standard output is used. If
-the argument is a symbol, it is used as a file name (opened in "append" mode if
-the first character is "<code>+</code>"). If it is a positive number, it is used
-as the descriptor of an open file. If it is a negative number, the saved output
-channel such many levels above the current one is used. Otherwise (if it is a
-list), it is taken as a command with arguments, and a pipe is opened for output.
-The (system dependent) exit status code of the child process is stored in the
-global variable <code><a href="ref_.html#@@">@@</a></code>. In all cases,
+the argument is a symbol, it is used as a file name (opened in read/write-append
+mode if the first character is "<code>+</code>"). If it is a positive number, it
+is used as the descriptor of an open file. If it is a negative number, the saved
+output channel such many levels above the current one is used. Otherwise (if it
+is a list), it is taken as a command with arguments, and a pipe is opened for
+output. The (system dependent) exit status code of the child process is stored
+in the global variable <code><a href="ref_.html#@@">@@</a></code>. In all cases,
 <code><a href="refF.html#flush">flush</a></code> is called when <code>prg</code>
-is done. See also <code><a href="refO.html#opid">opid</a></code>, <code> <a
-href="refC.html#call">call</a></code>, <code><a
-href="refI.html#in">in</a></code>, <code> <a
+is done. See also <code><a href="refI.html#in">in</a></code>, <code> <a
 href="refE.html#err">err</a></code>, <code> <a
+href="refF.html#fd">fd</a></code>, <code><a
+href="refO.html#opid">opid</a></code>, <code> <a
+href="refC.html#call">call</a></code>, <code><a
 href="refC.html#ctl">ctl</a></code>, <code><a
 href="refP.html#pipe">pipe</a></code>, <code> <a
 href="refP.html#poll">poll</a></code>, <code> <a

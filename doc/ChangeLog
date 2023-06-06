@@ -1,3 +1,9 @@
+23.6.6
+   Disallow append mode (via "+file") in 'in' and 'load'
+      src/io.l
+      doc/refI.html
+      doc/refO.html
+
 23.6.4
    '+<pat>' defaults to tag in debug mode
       bin/vip

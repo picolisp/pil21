@@ -1,4 +1,4 @@
-# 21apr23 Software Lab. Alexander Burger
+# 06jun23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1005,11 +1005,8 @@ selectErr)
          (let
             (Nm (xName Exe X)
                S (pathString Nm (b8 (pathSize Nm)))
-               Flg (== (val S) (char "+"))
                Fd T )
-            (when Flg
-               (setq S (ofs S 1)) )
-            (while (lt0 (setq Fd (if Flg (openRdWrAppend S) (openRd S))))
+            (while (lt0 (setq Fd (openRd S)))
                (unless (== (gErrno) EINTR)
                   (openErr Exe X) )
                (sigChk Exe) )
@@ -1076,7 +1073,7 @@ selectErr)
                Fd T )
             (when Flg
                (setq S (ofs S 1)) )
-            (while (lt0 (setq Fd (if Flg (openWrAppend S) (openWr S))))
+            (while (lt0 (setq Fd (if Flg (openRdWrAppend S) (openWr S))))
                (unless (== (gErrno) EINTR)
                   (openErr Exe X) )
                (sigChk Exe) )
