@@ -1,3 +1,7 @@
+23.6.16
+   Minor elaboration on the 'sect' reference
+      doc/refS.html
+
 23.6.6
    Disallow append mode (via "+file") in 'in' and 'load'
       src/io.l
