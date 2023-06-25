@@ -1,3 +1,11 @@
+23.6.25
+   Print current coroutine in 'stkErr'
+      src/main.l
+
+23.6.18
+   Minor comment
+      bin/pty
+
 23.6.16
    Minor elaboration on the 'sect' reference
       doc/refS.html

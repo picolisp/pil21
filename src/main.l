@@ -1,4 +1,4 @@
-# 25may23 Software Lab. Alexander Burger
+# 25jun23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -329,7 +329,12 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de NIL stkErr (Exe)
    (set $StkLimit null)
-   (err Exe 0 ($ "Stack overflow") null) )
+   (err Exe
+      (if (val $Current)
+         ((coroutine @) tag)
+         0 )
+      ($ "Stack overflow")
+      null ) )
 
 (de NIL argErr (Exe X)
    (err Exe X ($ "Bad argument") null) )

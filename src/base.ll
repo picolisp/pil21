@@ -1520,7 +1520,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 370,
   i64 98,
-  i64 258
+  i64 402
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -3537,8 +3537,23 @@ define void @stkErr(i64) align 8 {
 $1:
 ; # (set $StkLimit null)
   store i8* null, i8** @$StkLimit
-; # (err Exe 0 ($ "Stack overflow") null)
-  call void @err(i64 %0, i64 0, i8* bitcast ([15 x i8]* @$9 to i8*), i8* null)
+; # (if (val $Current) ((coroutine @) tag) 0)
+; # (val $Current)
+  %1 = load i8*, i8** @$Current
+  %2 = icmp ne i8* %1, null
+  br i1 %2, label %$2, label %$3
+$2:
+; # ((coroutine @) tag)
+  %3 = ptrtoint i8* %1 to i64
+  %4 = inttoptr i64 %3 to i64*
+  %5 = load i64, i64* %4
+  br label %$4
+$3:
+  br label %$4
+$4:
+  %6 = phi i64 [%5, %$2], [0, %$3] ; # ->
+; # (err Exe (if (val $Current) ((coroutine @) tag) 0) ($ "Stack over...
+  call void @err(i64 %0, i64 %6, i8* bitcast ([15 x i8]* @$9 to i8*), i8* null)
   unreachable
 }
 

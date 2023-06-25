@@ -1,7 +1,7 @@
 #!/usr/bin/pil
-# 13apr23abu
+# 18jun23abu
 # Pseudo Terminal (PilBox)
-# pty [port] [flg]
+# pty [host] [flg]
 
 (load "@lib/term.l")
 
