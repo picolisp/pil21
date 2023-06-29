@@ -1,3 +1,4 @@
+####### 23.6 #######
 23.6.25
    Print current coroutine in 'stkErr'
       src/main.l
