@@ -1,4 +1,4 @@
-# 19mar23 Software Lab. Alexander Burger
+# 02jul23 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -300,15 +300,6 @@
       "output" (fileUri Dst) ) )
 
 # ZXing QR-Codes
-(local) zxing?
-
-(de zxing? ()
-   (with
-      (java (java CONTEXT 'getPackageManager) 'queryIntentActivities
-         (java "android.content.Intent" T "com.google.zxing.client.android.SCAN")
-         65536 )  # MATCH_DEFAULT_ONLY
-      (gt0 (: size)) ) )
-
 ## '((Intent)
 ##    (java Intent 'getStringExtra "SCAN_RESULT")
 ##    (java Intent 'getStringExtra "SCAN_RESULT_FORMAT") )

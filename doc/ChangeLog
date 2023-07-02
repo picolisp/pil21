@@ -1,3 +1,7 @@
+23.7.2
+   Deprecate 'zxing?' / 'queryIntentActivities'
+      lib/android.l
+
 ####### 23.6 #######
 23.6.25
    Print current coroutine in 'stkErr'
