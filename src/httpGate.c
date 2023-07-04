@@ -1,4 +1,4 @@
-// 10may22 Software Lab. Alexander Burger
+// 04jul23 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -160,13 +160,6 @@ static name *findName(char *p, char *q) {
       }
    *q = c;
    return NULL;
-}
-
-static inline bool pre(char *p, char *s) {
-   while (*s)
-      if (*p++ != *s++)
-         return NO;
-   return YES;
 }
 
 static int slow(SSL *ssl, int fd, char *p, int cnt) {
@@ -421,16 +414,8 @@ int main(int ac, char *av[]) {
              * "POST /url HTTP/1.x"
              * "POST /8080/url HTTP/1.x"
              */
-            if (pre(buf, "GET /"))
-               p = buf + 5;
-            else if (pre(buf, "POST /"))
-               p = buf + 6;
-            else if (pre(buf, "PUT /"))
-               p = buf + 5;
-            else if (pre(buf, "PATCH /"))
-               p = buf + 7;
-            else if (pre(buf, "DELETE /"))
-               p = buf + 8;
+            if ((p = strchr(buf, ' ')) && *++p == '/')
+               ++p;
             else
                return 1;
 

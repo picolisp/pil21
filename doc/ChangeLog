@@ -1,3 +1,7 @@
+23.7.4
+   Generalize HTTP method support
+      src/httpGate.c
+
 23.7.2
    Deprecate 'zxing?' / 'queryIntentActivities'
       lib/android.l
