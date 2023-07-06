@@ -1,3 +1,7 @@
+23.7.6
+   Use 'str' instead of direct 'intern' to handle namespaces
+      bin/vip
+
 23.7.4
    Generalize HTTP method support
       src/httpGate.c
