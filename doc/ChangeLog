@@ -1,4 +1,6 @@
 23.7.7
+   'all*' function
+      doc/ref.html
    Exponent notation in 'parseJson' and 'readJson'
       lib/json.l
 
