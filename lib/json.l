@@ -1,4 +1,4 @@
-# 16aug21 Software Lab. Alexander Burger
+# 07jul23 Software Lab. Alexander Burger
 
 (de checkJson (X Item)
    (unless (= X Item)
@@ -27,6 +27,11 @@
                      ((pair X) (pack X))
                      ((and (= "-" X) (format (car L)))
                         (- (++ L)) )
+                     ((and (num? X) (sub? (car L) "Ee"))
+                        (and
+                           (or (index "," (shift 'L)) (index "}" L))
+                           (format (cut (dec @) 'L))
+                           ((if (lt0 @) */ *) X (** 10 (abs @))) ) )
                      (T X) ) ) ) ) ) ) )
 
 (de readJson ()
@@ -50,6 +55,9 @@
                ((pair X) (pack X))
                ((and (= "-" X) (format (peek)))
                   (- (read)) )
+               ((and (num? X) (sub? (peek) "Ee"))
+                  (when (format (cdr (till ",}")))
+                     ((if (lt0 @) */ *) X (** 10 (abs @))) ) )
                (T X) ) ) ) ) )
 
 (de packJson (Item)
