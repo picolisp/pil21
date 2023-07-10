@@ -1,4 +1,4 @@
-# 07may23 Software Lab. Alexander Burger
+# 10jul23 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -981,9 +981,20 @@ s-expr command vi)
                   (let (S (list @)  L (get (: buffer text) (: posY)))
                      (cond
                         ((<> @ "\t") (off *Complete))
-                        ((and (== This *CmdWin) (= '(":" " ") L))
+                        ((and (== This *CmdWin) (member L '((":") (":" " "))))
                            (setq S
-                              (chop (car (rot (setq *Complete (history))))) ) )
+                              (chop
+                                 (car
+                                    (rot
+                                       (setq *Complete
+                                          (uniq
+                                             (conc
+                                                (and (cdr L) (history))
+                                                (extract
+                                                   '((B)
+                                                      (when (head L B)
+                                                         (pack ((if (cdr L) cddr cdr) B)) ) )
+                                                   (: buffer text) ) ) ) ) ) ) ) ) )
                         ((or Rpl (nor *Complete (setq S (pack (getWord)))))
                            (setq S
                               (make
