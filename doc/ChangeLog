@@ -1,4 +1,6 @@
 23.7.10
+   Revert change from 23.7.6
+      bin/vip
    TAB-completion also from command history
       lib/vip.l
 
