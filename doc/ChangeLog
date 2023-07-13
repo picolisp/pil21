@@ -1,3 +1,7 @@
+23.7.13
+   Bug in 'input' and 'output': Must preserve '@'
+      src/io.l
+
 23.7.10
    Revert change from 23.7.6
       bin/vip

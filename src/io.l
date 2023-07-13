@@ -1,4 +1,4 @@
-# 06jun23 Software Lab. Alexander Burger
+# 13jul23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1929,7 +1929,7 @@ selectErr)
             (set $IoChar (shr @ 8))
             (i32 (i8 @)) )
          ((nil?
-               (let Get: (getFrame (val $Input))
+               (let (Get: (getFrame (val $Input))  At (save (val $At)))
                   (prog2
                      (set
                         $Chr (Get: chr)
@@ -1938,7 +1938,8 @@ selectErr)
                      (eval (Get: exe))
                      (set
                         $Input (Get:)
-                        $Get (fun (i32) getIn) )
+                        $Get (fun (i32) getIn)
+                        $At At )
                      (Get: chr (val $Chr)) ) ) )
             -1 )
          ((sym? @)
@@ -1975,6 +1976,7 @@ selectErr)
 (de void put1 ((i8* . Put) C D)
    (let
       (Put: (putFrame Put)
+         At (save (val $At))
          At2 (save (val $At2))
          At3 (save (val $At3)) )
       (set
@@ -1984,10 +1986,11 @@ selectErr)
          $At3 D )
       (eval (Put: exe))
       (set
+         $Output (Put:)
+         $Put (fun (void i8) putOut)
          $At3 At3
          $At2 At2
-         $Output (Put:)
-         $Put (fun (void i8) putOut) ) ) )
+         $At At ) ) )
 
 (de void putOut ((i8 . B))
    (nond
