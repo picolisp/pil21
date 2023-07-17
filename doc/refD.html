@@ -504,15 +504,15 @@ href="ref_.html#-">-</a></code>.
 </code></pre></dd>
 
 <dt><a id="def"><code>(def 'sym 'any) -> sym</code></a></dt>
-<dt><code>(def 'sym1 'sym2 'any) -> sym1</code></dt>
+<dt><code>(def 'sym1 'sym2|cnt 'any) -> sym1</code></dt>
 <dd>The first form assigns a definition to the first <code>sym</code> argument,
 by setting its <code>VAL</code>'s to <code>any</code>. The second form defines a
-property value <code>any</code> for the first argument's <code>sym2</code> key.
-If any of these values existed and was changed in the process, a "redefined"
-message is issued. When the value of the global variable <a
-href="refD.html#*Dbg">*Dbg</a> is non-<code>NIL</code>, the current line number
-and file name (if any) are stored in the <code>*Dbg</code> property of
-<code>sym</code>. See also <code><a href="refD.html#de">de</a></code> and
+property value <code>any</code> for the first argument's <code>sym2</code> key
+(or the symbol value for zero). If any of these values existed and was changed
+in the process, a "redefined" message is issued. When the value of the global
+variable <a href="refD.html#*Dbg">*Dbg</a> is non-<code>NIL</code>, the current
+line number and file name (if any) are stored in the <code>*Dbg</code> property
+of <code>sym</code>. See also <code><a href="refD.html#de">de</a></code> and
 <code><a href="refD.html#dm">dm</a></code>.
 
 <pre><code>
