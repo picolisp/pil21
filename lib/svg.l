@@ -1,4 +1,4 @@
-# 17jul23 Software Lab. Alexander Burger
+# 19jul23 Software Lab. Alexander Burger
 
 (symbols 'svg 'pico)
 
@@ -321,7 +321,8 @@
    (let Src (tmp "pdf.svg")
       (out Src (run Prg))
       (call "rsvg-convert" "-f" "pdf" "-o" Dst Src) )
-   (allow Dst) )
+   (and *Tmp (pre? *Tmp Dst) (allow Dst))
+   Dst )
 
 # Multipage PDF
 # (pdf "src" "dst")
