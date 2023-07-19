@@ -1,4 +1,6 @@
 23.7.19
+   Missing arg to "getnameinfo" in 'host'
+      lib/net.l
    Revisit 'allow'
       lib/svg.l
 

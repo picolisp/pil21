@@ -1,4 +1,4 @@
-# 16apr23 Software Lab. Alexander Burger
+# 19jul23 Software Lab. Alexander Burger
 
 (sysdefs "errno")
 (sysdefs "networking")
@@ -112,7 +112,7 @@
                               (struct (+ P ai_addrlen) 'I)
                               Host
                               NI_MAXHOST
-                              0
+                              0 0
                               NI_NAMEREQD ) )
                         (struct Host 'S) )
                      (T
