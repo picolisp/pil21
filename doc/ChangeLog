@@ -1,8 +1,10 @@
+23.7.20
+   Revisit 'allow'
+      lib/svg.l
+
 23.7.19
    Missing arg to "getnameinfo" in 'host'
       lib/net.l
-   Revisit 'allow'
-      lib/svg.l
 
 23.7.17
    Generalize 'def' for 'any' keys
