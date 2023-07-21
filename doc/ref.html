@@ -1428,9 +1428,8 @@ order (i.e the latest result is in <code>@</code>).
 </dd>
 
 <dt>Flow functions</dt>
-<dd>Flow- and logic-functions store the result of their controlling expression -
-respectively non-<code>NIL</code> results of their conditional expression - in
-<code>@</code>.
+<dd>Flow functions store the non-nil results of controlling expressions, and
+logic functions their non-nil results, in <code>@</code>.
 
 <pre><code>
 : (while (read) (println 'got: @))
