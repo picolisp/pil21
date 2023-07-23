@@ -1,3 +1,12 @@
+23.7.23
+   New Vip commands
+      - "gw" View Web page
+      - "gh" View HTTP code
+      - "gb" Invoke Browser (w3m)
+   Implicit writing to 'scratch' files
+   'cmd+g' and 'cmd+q' functions
+      lib/vip.l
+
 23.7.21
    Minor clarification of @-result
       doc/ref.html

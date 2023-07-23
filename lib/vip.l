@@ -1,4 +1,4 @@
-# 10jul23 Software Lab. Alexander Burger
+# 23jul23 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -28,8 +28,8 @@ goLeft goRight goUp goDown goAbs goFind word lword tword end lend getWord
 _forward goForward _backward goBackward goPFore goPBack shift shiftY indent cutX
 cutN paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe
 evRpt move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN
-nextBuf shell shFile prCmd cmd _map map+ map+g map+q reset posChar getText
-s-expr command vi)
+nextBuf shell shFile prCmd cmd _map map+ map+g map+q cmd+g cmd+q reset posChar
+getText s-expr command vi)
 
 
 (class +Buffer)
@@ -498,7 +498,8 @@ s-expr command vi)
       (repaint) ) )
 
 (de scratch (File Lst Y)
-   (setq File (fName File))
+   (out (setq File (fName File))
+      (mapc prinl Lst) )
    (if (find '((This) (= File (: file))) *Buffers)
       (with @
          (=: text Lst)
@@ -674,7 +675,7 @@ s-expr command vi)
 (de getWord (Flg)
    (make
       (let Lst (get (: buffer text) (: posY))
-         (when Flg
+         (unless Flg
             (for C (nth Lst (: posX))
                (T (delim C))
                (link C) ) )
@@ -995,7 +996,7 @@ s-expr command vi)
                                                       (when (head L B)
                                                          (pack ((if (cdr L) cddr cdr) B)) ) )
                                                    (: buffer text) ) ) ) ) ) ) ) ) )
-                        ((or Rpl (nor *Complete (setq S (pack (getWord)))))
+                        ((or Rpl (nor *Complete (setq S (pack (getWord T)))))
                            (setq S
                               (make
                                  (do (- 3 (% (dec (: posX)) 3))
@@ -1246,6 +1247,12 @@ s-expr command vi)
 
 (de map+q @
    (pass _map '*KeyMap-q) )
+
+(de cmd+g (C . Prg)
+   (push1 '*KeyMap-g (cons C Prg)) )
+
+(de cmd+q (C . Prg)
+   (push1 '*KeyMap-q (cons C Prg)) )
 
 (de posChar ()
    (get (: buffer text) (: posY) (: posX)) )
@@ -1536,9 +1543,9 @@ s-expr command vi)
                                        (move 'goBackward (lit @) *Cnt)
                                        (beep) ) )
                                  ("*"  # Search word under cursor
-                                    (and (getWord T) (moveSearch 'goForward (wordFun @))) )
+                                    (and (getWord) (moveSearch 'goForward (wordFun @))) )
                                  ("#"  # Search word under cursor backward
-                                    (and (getWord T) (moveSearch 'goBackward (wordFun @))) )
+                                    (and (getWord) (moveSearch 'goBackward (wordFun @))) )
                                  ("%"  # Matching parenthesis
                                     (case (posChar)
                                        ("(" (parMatch 'goForward 1 0 "(" ")" "[" "]"))
@@ -1599,7 +1606,20 @@ s-expr command vi)
                                        (case *Chr
                                           ("f"  # [gf] Edit file under cursor
                                              (pushTag (: buffer file))
-                                             (reload (pack (getWord T))) )
+                                             (reload (pack (getWord))) )
+                                          ("w"  # [gw] Web page
+                                             (scratch (tmp "web" (inc (0)))
+                                                (in (list "w3m" "-cols" *Columns (getWord))
+                                                   (rdLines) ) ) )
+                                          ("h"  # [gh] HTTP code
+                                             (scratch (tmp "http" (inc (0)))
+                                                (in (list "w3m" "-dump_both" (getWord))
+                                                   (rdLines) ) ) )
+                                          ("b"  # [gb] Browser
+                                             (screen1)
+                                             (call "w3m" (getWord))
+                                             (screen2)
+                                             (repaint) )
                                           ("g" (move 'goAbs 1 (or (format *Count) 1)))  # [gg] Go to beginning of text
                                           ("s" (spell))
                                           (T (beep)) ) ) )
@@ -1632,14 +1652,14 @@ s-expr command vi)
                                              (chgwin (inc (: lines))) ) ) ) )
                                  ("=" (eqwin))  # Set all windows to equal size
                                  ("K"  # Edit symbol
-                                    (let S (any (getWord T))
+                                    (let S (any (getWord))
                                        (ifn (: buffer syms)
                                           (tag S)
                                           (pushTag @)
                                           (syms> (: buffer) (cons S @))
                                           (reload (: buffer file) 1 1) ) ) )
                                  ("^]"  # Edit symbol definition
-                                    (tag (any (getWord T))) )
+                                    (tag (any (getWord))) )
                                  (("Q" "^T")  # Pop tag stack
                                     (ifn *TagStack
                                        (beep)
