@@ -28,8 +28,8 @@ goLeft goRight goUp goDown goAbs goFind word lword tword end lend getWord
 _forward goForward _backward goBackward goPFore goPBack shift shiftY indent cutX
 cutN paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe
 evRpt move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN
-nextBuf shell shFile prCmd cmd _map map+ map+g map+q cmd+g cmd+q reset posChar
-getText s-expr command vi)
+nextBuf shell shFile prCmd cmd _map map+ map+g map+q reset posChar getText
+s-expr command vi)
 
 
 (class +Buffer)
@@ -1239,20 +1239,20 @@ getText s-expr command vi)
    (macro
       (push1 '@Map '(@C (setq *Keys (chop @S)))) ) )
 
-(de map+ @
-   (pass _map '*KeyMap) )
+(de map+ (C . X)
+   (if (str? (car X))
+      (_map '*KeyMap C @)
+      (push1 '*KeyMap (cons C X)) ) )
 
-(de map+g @
-   (pass _map '*KeyMap-g) )
+(de map+g (C . X)
+   (if (str? (car X))
+      (_map '*KeyMap-g C @)
+      (push1 '*KeyMap-g (cons C X)) ) )
 
-(de map+q @
-   (pass _map '*KeyMap-q) )
-
-(de cmd+g (C . Prg)
-   (push1 '*KeyMap-g (cons C Prg)) )
-
-(de cmd+q (C . Prg)
-   (push1 '*KeyMap-q (cons C Prg)) )
+(de map+q (C . X)
+   (if (str? (car X))
+      (_map '*KeyMap-q C @)
+      (push1 '*KeyMap-q (cons C X)) ) )
 
 (de posChar ()
    (get (: buffer text) (: posY) (: posX)) )

@@ -4,7 +4,7 @@
       - "gh" View HTTP code
       - "gb" Invoke Browser (w3m)
    Implicit writing to 'scratch' files
-   'cmd+g' and 'cmd+q' functions
+   Extend 'map+', 'map+g' and 'map+q'
       lib/vip.l
 
 23.7.21
