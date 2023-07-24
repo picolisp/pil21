@@ -1,4 +1,4 @@
-# 04jun23 Software Lab. Alexander Burger
+# 24jul23 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
 # *Lock *Spans *AlwaysAsk
@@ -1035,7 +1035,7 @@
    (pass extra) )
 
 (dm show> (Var)
-   (<style> (eval (: style)) (extra Var)) )
+   (<style> (pack (eval (: style)) " ") (extra Var)) )
 
 (dm js> ()
    (pack (extra) "&#" (eval (: style))) )

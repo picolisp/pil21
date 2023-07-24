@@ -1,3 +1,8 @@
+23.7.24
+   Partially revert style simplification from 21.11.21
+      lib/form.l
+      lib/form.js
+
 23.7.23
    New Vip commands
       - "gw" View Web page
