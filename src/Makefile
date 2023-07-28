@@ -1,4 +1,4 @@
-# 24sep22 Software Lab. Alexander Burger
+# 28jul23 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -12,7 +12,7 @@ SHARED = -shared
 STRIP = strip
 
 LLVM = $(shell llvm-config --version | cut -d. -f1)
-ifeq ($(shell test $(LLVM) -ge 15; echo $$?), 0)
+ifeq ($(shell test $(LLVM) -ge 15 -a $(LLVM) -lt 18; echo $$?), 0)
 	ASM += -opaque-pointers
 endif
 

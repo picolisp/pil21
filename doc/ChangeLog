@@ -1,3 +1,7 @@
+23.7.28
+   opaque-pointers for '18 > LLVM >= 15' (Mike Pechkin)
+      src/Makefile
+
 23.7.24
    Partially revert style simplification from 21.11.21
       lib/form.l
