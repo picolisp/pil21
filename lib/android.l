@@ -1,4 +1,4 @@
-# 02jul23 Software Lab. Alexander Burger
+# 01aug23 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -111,11 +111,11 @@
 (de permit (Str)
    (or
       (=0
-         (java  "android.support.v4.content.ContextCompat"
+         (java  "androidx.core.content.ContextCompat"
             'checkSelfPermission
             (; CONTEXT GUI)
             Str ) )
-      (java  "android.support.v4.app.ActivityCompat"
+      (java  "androidx.core.app.ActivityCompat"
          'requestPermissions
          (; CONTEXT GUI)
          (list Str)
@@ -148,7 +148,7 @@
 (local) fileUri
 
 (de fileUri (File)
-   (java "android.support.v4.content.FileProvider" 'getUriForFile
+   (java "androidx.core.content.FileProvider" 'getUriForFile
       CONTEXT "de.software_lab.pilbox.fileprovider"
       (java "java.io.File" T File) ) )
 
@@ -191,7 +191,7 @@
          (let B
             `(if (>= (format (sys "SDK_INT")) 26)
                '(java "android.app.Notification$Builder" T CONTEXT "pil")
-               '(java "android.support.v4.app.NotificationCompat$Builder" T CONTEXT) )
+               '(java "androidx.core.app.NotificationCompat$Builder" T CONTEXT) )
             (java B 'setSmallIcon (java "de.software_lab.pilbox.R$drawable" "notify"))
             (java B 'setContentTitle Ttl)
             (java B 'setContentText (or Msg null))
