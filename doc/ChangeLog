@@ -1,4 +1,7 @@
 23.8.1
+   Fixes to 'native' description
+      doc/refN.html
+      doc/native.html
    Target SDK 34 / androidx
       lib/android.l
 

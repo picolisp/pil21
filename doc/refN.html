@@ -153,9 +153,9 @@ NIL
 library, either <code>"@"</code> (the current main program), <code>sym1</code>
 (a library path name), or <code>cnt1</code> (a library handle obtained by a
 previous call). The second argument should be a symbol name <code>sym2</code>,
-or a function pointer <code>cnt2</code> obtained by a previous call).
+or a function handle <code>cnt2</code> obtained by a previous call).
 Practically, the first two arguments will be always passed as transient symbols,
-which will get the library handle and function pointer assigned as values to be
+which will get the library handle and function handle assigned as values to be
 cached and used in subsequent calls. The third argument <code>any</code> is a
 result specification, while all following arguments are the arguments to the
 native function. The functionality is described in detail in <a

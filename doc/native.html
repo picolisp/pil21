@@ -159,8 +159,8 @@ again.
 <h3><a id="funs">Functions</a></h3>
 
 <p>The same rules applies to the second argument, the function. When called with
-a symbol, <code>native</code> stores the function pointer in its value, so that
-subsequent calls evaluate to that pointer, and <code>native</code> can directly
+a symbol, <code>native</code> stores the function handle in its value, so that
+subsequent calls evaluate to that handle, and <code>native</code> can directly
 jump to the function.
 
 <p><code>native</code> uses <code>dlsym(3)</code> internally to obtain the
@@ -197,11 +197,16 @@ was called, the symbol <code>"lib.so"</code> will hold the library handle. And
 each function <code>"fun1"</code>, <code>"fun2"</code> and <code>"fun3"</code>
 will be searched only when called the first time.
 
+<p>Note that the function handle points to a structure in memory, which is
+automatically allocated. This implies that a memory leak may occur if the
+transient symbol holding the function handle goes out of scope (e.g. by repeated
+(re)<code><a href="refL.html#load">load</a>ing the library after executing its
+functions).
+
 <p>Warning: It should be avoided to put more than one library into a single
 transient scope if there is a chance that two different functions with the same
-name will be called in two different libraries. Because of the function pointer
+name will be called in two different libraries. Because of the function handle
 caching, the second call would otherwise (wrongly) go to the first function.
-
 
 
 <p><hr>
