@@ -1,3 +1,7 @@
+23.8.3
+   Defer advancing the list pointer in 'for'
+      src/flow.l
+
 23.8.1
    Fixes to 'native' description
       doc/refN.html
