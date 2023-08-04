@@ -258,10 +258,13 @@ _lintq lintFun A C Lst S X Y *L *X *Var *Dup *Def *Bnd *Use)
                   (for Y @
                      (and
                         (pair Y)
-                        (fun? (cdr Y))
+                        (pair (cdr Y))
                         (lint (car Y) X)
                         (link (cons (cons (car Y) X) @)) ) ) )
-               ((and (not (global? X)) (pair (getd X)) (lint X))
+               ((and
+                     (not (global? X))
+                     (pair (val X))
+                     (lint X) )
                   (link (cons X @)) ) ) )
          (while (args)
             (let A (next)
