@@ -1,4 +1,4 @@
-# 17jul23 Software Lab. Alexander Burger
+# 04aug23 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -959,7 +959,8 @@
 ### Debug ###
 `*Dbg
 
+(noLint 'micro 'PRG)
 (noLint '<row> 'Beg)
 (noLint '<row> 'C)
 (noLint '<row> 'End)
-(noLint 'micro 'PRG)
+(noLint '<spread> 'norm)

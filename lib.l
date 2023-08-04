@@ -1,4 +1,4 @@
-# 04jun23 Software Lab. Alexander Burger
+# 04aug23 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -636,5 +636,6 @@
 
 (load "@lib/lint.l" "@lib/debug.l" "@lib/vip.l")
 
+(noLint 'recurse)
 (mapc noLint '(pretty _pretty) 'Z)
 (mapc noLint '(pretty _pretty prtty0 prtty1 prtty2 prtty3) 'P)

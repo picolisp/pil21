@@ -1,3 +1,11 @@
+23.8.4
+   Check local variables for lower case in 'lint'
+      lib.l
+      lib/lint.l
+      lib/xhtml.l
+      lib/form.l
+      lib/svg.l
+
 23.8.3
    Defer advancing the list pointer in 'for'
       src/flow.l

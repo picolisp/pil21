@@ -1,4 +1,4 @@
-# 19mar23 Software Lab. Alexander Burger
+# 04aug23 Software Lab. Alexander Burger
 
 # *NoLint
 
@@ -15,7 +15,7 @@ _lintq lintFun A C Lst S X Y *L *X *Var *Dup *Def *Bnd *Use)
       (memq S '(NIL ^ @ @@ @@@ This T))
       (member (char S) '(`(char '*) `(char '+)))
       (== '\~ (car (pair (val S))))
-      (memq X *NoLint)
+      (memq S *NoLint)
       (and
          (>= (length S) 4)
          (fully upp? (delete "-" (chop S))) ) ) )
@@ -43,8 +43,7 @@ _lintq lintFun A C Lst S X Y *L *X *Var *Dup *Def *Bnd *Use)
                      (getd X)
                      (global? X)
                      (member (cons *X X) *NoLint)
-                     (memq X *Bnd)
-                     (push '*Bnd X) ) ) ) ) )
+                     (push1q '*Bnd X) ) ) ) ) )
       ((num? (car X)))
       (T
          (casq (car X)
@@ -170,8 +169,7 @@ _lintq lintFun A C Lst S X Y *L *X *Var *Dup *Def *Bnd *Use)
                         (dlsym? (car X))
                         (== '@ (car X))
                         (memq (car X) *NoLint)
-                        (memq (car X) *Def)
-                        (push '*Def (car X)) )
+                        (push1q '*Def (car X)) )
                      (mapc lint1 (cdr X)) ) ) ) ) ) ) )
 
 (de lint2 (X Mark)
@@ -184,14 +182,14 @@ _lintq lintFun A C Lst S X Y *L *X *Var *Dup *Def *Bnd *Use)
 
 (de lintVar (X Flg)
    (cond
-      ((or (not (sym? X)) (memq X '(NIL *DB *Solo ^ meth quote T)))
+      ((or
+            (not (sym? X))
+            (memq X '(NIL *DB *Solo ^ meth quote T)) )
          (push '*Var X) )
       ((not (global? X))
-         (or
-            Flg
-            (member (cons *X X) *NoLint)
-            (memq X *Use)
-            (push '*Use X) )
+         (unless (member (cons *X X) *NoLint)
+            (or Flg (push1q '*Use X))
+            (and (low? X) (push '*Var X)) )
          (push '*L X) ) ) )
 
 (de lintDup (X Lst)

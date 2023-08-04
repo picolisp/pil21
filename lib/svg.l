@@ -1,4 +1,4 @@
-# 20jul23 Software Lab. Alexander Burger
+# 04aug23 Software Lab. Alexander Burger
 
 (symbols 'svg 'pico)
 
@@ -290,7 +290,7 @@
    (window 65 125 210 90
       (run Prg 2) ) )
 
-(local) (svgOut svgPages page.svg svgPdf pdf)
+(local) (svgOut svgPages page page.svg svgPdf pdf)
 (private) (Src Dst Prg Prg2)
 
 # Direct SVG display
@@ -355,5 +355,4 @@
 ### Debug ###
 `*Dbg
 
-(noLint 'svgPages 'page)
-(noLint 'pdf 'page)
+(noLint 'page)
