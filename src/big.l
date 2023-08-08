@@ -1,4 +1,4 @@
-# 12dec21 Software Lab. Alexander Burger
+# 08aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1064,7 +1064,7 @@
 
 # (format 'num ['cnt ['sym1 ['sym2]]]) -> sym
 # (format 'sym|lst ['cnt ['sym1 ['sym2]]]) -> num
-(de _format (Exe)
+(de _Format (Exe)
    (let
       (X (cdr Exe)
          A (save (eval (++ X)))
@@ -1100,7 +1100,7 @@
 
 ### Arithmetics ###
 # (+ 'num ..) -> num
-(de _add (Exe)
+(de _Add (Exe)
    (let X (cdr Exe)
       (if (nil? (eval (car X)))
          @
@@ -1113,7 +1113,7 @@
                   (set R (adds (val R) @)) ) ) ) ) ) )
 
 # (- 'num ..) -> num
-(de _sub (Exe)
+(de _Sub (Exe)
    (let (X (cdr Exe)  N (eval (++ X)))
       (if (nil? N)
          N
@@ -1130,7 +1130,7 @@
 
 # (inc 'num) -> num
 # (inc 'var ['num]) -> num
-(de _inc (Exe)
+(de _Inc (Exe)
    (let X (cdr Exe)
       (cond
          ((nil? (eval (car X))) @)
@@ -1151,7 +1151,7 @@
 
 # (dec 'num) -> num
 # (dec 'var ['num]) -> num
-(de _dec (Exe)
+(de _Dec (Exe)
    (let X (cdr Exe)
       (cond
          ((nil? (eval (car X))) @)
@@ -1171,7 +1171,7 @@
                         (T (set Y (subs (needNum Exe N) (needNum Exe D)))) ) ) ) ) ) ) ) )
 
 # (* 'num ..) -> num
-(de _mul (Exe)
+(de _Mul (Exe)
    (let X (cdr Exe)
       (if (nil? (eval (car X)))
          @
@@ -1192,7 +1192,7 @@
                      (set R (mulu (val R) N)) ) ) ) ) ) ) )
 
 # (*/ 'num1 ['num2 ..] 'num3) -> num
-(de _mulDiv (Exe)
+(de _MulDiv (Exe)
    (let X (cdr Exe)
       (if (nil? (eval (car X)))
          @
@@ -1220,7 +1220,7 @@
                      (set R (mulu (val R) N)) ) ) ) ) ) ) )
 
 # (/ 'num ..) -> num
-(de _div (Exe)
+(de _Div (Exe)
    (let X (cdr Exe)
       (if (nil? (eval (car X)))
          @
@@ -1242,7 +1242,7 @@
                      (set R (divu (val R) N)) ) ) ) ) ) ) )
 
 # (% 'num ..) -> num
-(de _rem (Exe)
+(de _Rem (Exe)
    (let X (cdr Exe)
       (if (nil? (eval (car X)))
          @
@@ -1264,7 +1264,7 @@
                            (safe (pos (needNum Exe N))) ) ) ) ) ) ) ) ) )
 
 # (>> 'cnt 'num) -> num
-(de _shr (Exe)
+(de _Shr (Exe)
    (let
       (X (cdr Exe)
          N (evCnt Exe X)
@@ -1298,7 +1298,7 @@
                (if Sign (neg Y) Y) ) ) ) ) )
 
 # (rev 'cnt1 'cnt2) -> cnt
-(de _rev (Exe)
+(de _Rev (Exe)
    (let
       (X (cdr Exe)
          C (evCnt Exe X)
@@ -1312,13 +1312,13 @@
       (cnt R) ) )
 
 # (lt0 'any) -> num | NIL
-(de _lt0 (Exe)
+(de _Lt0 (Exe)
    (if (and (num? (eval (cadr Exe))) (sign? @))
       @
       $Nil ) )
 
 # (le0 'any) -> num | NIL
-(de _le0 (Exe)
+(de _Le0 (Exe)
    (if
       (and
          (num? (eval (cadr Exe)))
@@ -1327,7 +1327,7 @@
       $Nil ) )
 
 # (ge0 'any) -> num | NIL
-(de _ge0 (Exe)
+(de _Ge0 (Exe)
    (if
       (and
          (num? (eval (cadr Exe)))
@@ -1336,7 +1336,7 @@
       $Nil ) )
 
 # (gt0 'any) -> num | NIL
-(de _gt0 (Exe)
+(de _Gt0 (Exe)
    (if
       (and
          (num? (eval (cadr Exe)))
@@ -1346,14 +1346,14 @@
       $Nil ) )
 
 # (abs 'num) -> num
-(de _abs (Exe)
+(de _Abs (Exe)
    (if (nil? (eval (cadr Exe)))
       @
       (pos (needNum Exe @)) ) )
 
 ### Bit operations ###
 # (bit? 'num ..) -> num | NIL
-(de _bitQ (Exe)
+(de _BitQ (Exe)
    (let
       (X (cdr Exe)
          N (save (pos (needNum Exe (eval (++ X))))) )
@@ -1377,7 +1377,7 @@
                (? (<> Z (& Y Z)) $Nil) ) ) ) ) )
 
 # (& 'num ..) -> num
-(de _bitAnd (Exe)
+(de _BitAnd (Exe)
    (let X (cdr Exe)
       (if (nil? (eval (car X)))
          @
@@ -1390,7 +1390,7 @@
                   (set R (andu (val R) (pos @))) ) ) ) ) ) )
 
 # (| 'num ..) -> num
-(de _bitOr (Exe)
+(de _BitOr (Exe)
    (let X (cdr Exe)
       (if (nil? (eval (car X)))
          @
@@ -1403,7 +1403,7 @@
                   (set R (oru (val R) (pos @))) ) ) ) ) ) )
 
 # (x| 'num ..) -> num
-(de _bitXor (Exe)
+(de _BitXor (Exe)
    (let X (cdr Exe)
       (if (nil? (eval (car X)))
          @
@@ -1416,7 +1416,7 @@
                   (set R (xoru (val R) (pos @))) ) ) ) ) ) )
 
 # (sqrt 'num ['flg|num]) -> num
-(de _sqrt (Exe)
+(de _Sqrt (Exe)
    (let X (cdr Exe)
       (if (nil? (eval (car X)))
          @
@@ -1491,13 +1491,13 @@
       C ) )
 
 # (seed 'any) -> cnt
-(de _seed (Exe)
+(de _Seed (Exe)
    (let N (mul 6364136223846793005 (initSeed (eval (cadr Exe))))
       (set $SeedL N  $SeedH @@@)
       (| (& (shr N (- 32 3)) -8) 2) ) )  # Get higher 32 bits
 
 # (hash 'any) -> cnt
-(de _hash (Exe)
+(de _Hash (Exe)
    (let (N (initSeed (eval (cadr Exe)))  C 64  R 0)
       (loop
          (when (& (x| N R) 1)
@@ -1507,7 +1507,7 @@
       (cnt (inc R)) ) )
 
 # (rand ['cnt1 'cnt2] | ['T]) -> cnt | flg
-(de _rand (Exe)
+(de _Rand (Exe)
    (let
       (X (cdr Exe)
          Y (eval (++ X))

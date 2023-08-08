@@ -1,3 +1,24 @@
+23.8.8
+   Rename lisp-level functions '_xxx' to '_Xxx'
+      src/glob.l
+      src/main.l
+      src/gc.l
+      src/big.l
+      src/sym.l
+      src/io.l
+      src/db.l
+      src/apply.l
+      src/flow.l
+      src/subr.l
+
+23.8.7
+   'startForeground' with service type
+      lib/android.l
+
+23.8.6
+   Set SSL_CERT_FILE only if on mobile device
+      lib/android.l
+
 23.8.4
    Check local variables for lower case in 'lint'
       lib.l

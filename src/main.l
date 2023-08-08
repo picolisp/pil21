@@ -1,4 +1,4 @@
-# 25jun23 Software Lab. Alexander Burger
+# 08aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -481,7 +481,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                      (? (not (nil? Y)) 0) ) ) ) ) ) ) )
 
 # (tty . prg) -> any
-(de _tty (Exe)
+(de _Tty (Exe)
    (let (Out (val $OutFile)  Put (val (i8** $Put)))
       (set
          $OutFile (val 3 (val $OutFiles))  # Stderr
@@ -494,7 +494,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (set (i8** $Put) Put  $OutFile Out) ) ) )
 
 # (raw ['flg]) -> flg
-(de _raw (Exe)
+(de _Raw (Exe)
    (let X (cdr Exe)
       (cond
          ((atom X)
@@ -503,21 +503,21 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (T (setRaw) @) ) ) )
 
 # (alarm 'cnt . prg) -> cnt
-(de _alarm (Exe)
+(de _Alarm (Exe)
    (let X (cdr Exe)
       (prog1
          (cnt (i64 (alarm (i32 (evCnt Exe X)))))
          (set $Alarm (cdr X)) ) ) )
 
 # (sigio 'cnt . prg) -> cnt
-(de _sigio (Exe)
+(de _Sigio (Exe)
    (let (X (cdr Exe)  Fd (evCnt Exe X))
       (set $Sigio (cdr X))
       (fcntlSetOwn (i32 Fd) (i32 (int (val $Pid))))
       (cnt Fd) ) )
 
 # (kids) -> lst
-(de _kids (Exe)
+(de _Kids (Exe)
    (let
       (X $Nil
          Cld (val $Child)  # Iterate children
@@ -529,7 +529,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       X ) )
 
 # (protect . prg) -> any
-(de _protect (Exe)
+(de _Protect (Exe)
    (let X (cdr Exe)
       (prog2
          (set $Protect (+ (val $Protect) 1))
@@ -537,7 +537,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (set $Protect (- (val $Protect) 1)) ) ) )
 
 # (heap 'flg) -> cnt
-(de _heap (Exe)
+(de _Heap (Exe)
    (if (nil? (eval (cadr Exe)))
       (let (N 1  P (val $Heaps))
          (while (setq P (val (ofs P HEAP)))
@@ -550,7 +550,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (cnt (shr N (- 20 4))) ) ) )  # Divide by CELLS (1M/16)
 
 # (stack ['cnt ['cnt]]) -> cnt | (.. (any . cnt) . cnt)
-(de _stack (Exe)
+(de _Stack (Exe)
    (let (X (cdr Exe)  Crt (val $Coroutines))
       (if (or (atom X) (and Crt ((coroutine Crt) nxt)))
          (let R (cnt (shr (val $StkSize) 10))
@@ -625,7 +625,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 # (date 'dat) -> (y m d)
 # (date 'y 'm 'd) -> dat | NIL
 # (date '(y m d)) -> dat | NIL
-(de _date (Exe)
+(de _Date (Exe)
    (let X (cdr Exe)
       (cond
          ((atom X)
@@ -677,7 +677,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 # (time 'tim) -> (h m s)
 # (time 'h 'm ['s]) -> tim | NIL
 # (time '(h m [s])) -> tim | NIL
-(de _time (Exe)
+(de _Time (Exe)
    (let X (cdr Exe)
       (cond
          ((atom X) (cnt (getTime)))
@@ -707,7 +707,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                            (cons (cnt (% N 60)) $Nil) ) ) ) ) ) ) ) ) )
 
 # (usec ['flg]) -> num
-(de _usec (Exe)
+(de _Usec (Exe)
    (cnt
       (if (nil? (eval (cadr Exe)))
          (- (getUsec YES) (val $USec))
@@ -998,7 +998,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (load "io.l" "db.l" "apply.l" "flow.l" "subr.l")
 
 # (quit ['any ['any]])
-(de _quit (Exe)
+(de _Quit (Exe)
    (let
       (X (cdr Exe)
          Nm (xName Exe (evSym X))
@@ -1011,7 +1011,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          Msg ) ) )
 
 # (sys 'any ['any]) -> sym
-(de _sys (Exe)
+(de _Sys (Exe)
    (let
       (X (cdr Exe)
          Nm (xName Exe (evSym X))
@@ -1027,14 +1027,14 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                Y ) ) ) ) )
 
 # (pwd) -> sym
-(de _pwd (Exe)
+(de _Pwd (Exe)
    (let P (getcwd null 0)
       (if P
          (prog1 (mkStr P) (free P))
          $Nil ) ) )
 
 # (cd 'any) -> sym
-(de _cd (Exe)
+(de _Cd (Exe)
    (let
       (Nm (xName Exe (evSym (cdr Exe)))
          P (getcwd null 0) )
@@ -1048,7 +1048,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 # (ctty 'pid) -> pid
 # (ctty 'any) -> any | NIL
-(de _ctty (Exe)
+(de _Ctty (Exe)
    (let X (eval (cadr Exe))
       (cond
          ((cnt? X)
@@ -1103,14 +1103,14 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   $Nil ) ) ) ) ) )
 
 # (cmd ['any]) -> sym
-(de _cmd (Exe)
+(de _Cmd (Exe)
    (if (nil? (evSym (cdr Exe)))
       (mkStr (val $AV0))
       (bufString (xName Exe @) (val $AV0))
       @ ) )
 
 # (dir ['any] ['flg]) -> lst
-(de _dir (Exe)
+(de _Dir (Exe)
    (let X (cdr Exe)
       (if
          (getDir
@@ -1131,7 +1131,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          $Nil ) ) )
 
 # (info 'any ['flg]) -> (cnt|flg dat . tim)
-(de _info (Exe)
+(de _Info (Exe)
    (let
       (X (cdr Exe)
          Nm (xName Exe (set $At2 (evSym X)))
@@ -1158,7 +1158,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (cnt (shr N 8)) ) ) ) ) ) )
 
 # (file) -> (sym1 sym2 . num) | NIL
-(de _file (Exe)
+(de _File (Exe)
    (let In: (inFile (val $InFile))
       (ifn (and (In:) (In: name))
          $Nil
@@ -1172,7 +1172,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (cons $Nil (cons (mkStr S) N)) ) ) ) ) )
 
 # (argv [var ..] [. sym]) -> lst|sym
-(de _argv (Exe)
+(de _Argv (Exe)
    (let (X (cdr Exe)  A (val $AV)  P (val A))
       (when
          (and
@@ -1206,7 +1206,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (? (nil? X) Y) ) ) ) ) )
 
 # (opt) -> sym
-(de _opt (Exe)
+(de _Opt (Exe)
    (let (A (val $AV)  P (val A))
       (if
          (or
@@ -1219,7 +1219,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (mkStr P) ) ) )
 
 # (errno) -> cnt
-(de _errno (Exe)
+(de _Errno (Exe)
    (cnt (i64 (nErrno))) )
 
 # Native calls
@@ -1449,7 +1449,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (T (natErr Spec)) ) ) )
 
 # (%@ 'cnt2|sym2 'any 'any ..) -> any
-(de _nat (Exe)
+(de _Nat (Exe)
    (let
       (X (cdr Exe)
          Fun (save (eval (++ X)))  # Eval function 'cnt2|sym2'
@@ -1462,7 +1462,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (tailcall (ffi Exe null Fun Args)) ) )
 
 # (native 'cnt1|sym1 'cnt2|sym2 'any 'any ..) -> any
-(de _native (Exe)
+(de _Native (Exe)
    (let
       (X (cdr Exe)
          Y (eval (++ X))  # Eval library 'cnt1|sym1'
@@ -1489,7 +1489,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (tailcall (ffi Exe Lib Fun Args)) ) )
 
 # (struct 'num 'any 'any ..) -> any
-(de _struct (Exe)
+(de _Struct (Exe)
    (let
       (X (cdr Exe)
          N  # Native value (pointer or scalar)
@@ -1528,80 +1528,80 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (set P (ofs P 3)) )
       (xCnt 0 (evList Exe)) ) )
 
-(de _cb1 (A B C D E)
+(de _Cb1 (A B C D E)
    (cbl (val 2 $Lisp) A B C D E) )
 
-(de _cb2 (A B C D E)
+(de _Cb2 (A B C D E)
    (cbl (val 4 $Lisp) A B C D E) )
 
-(de _cb3 (A B C D E)
+(de _Cb3 (A B C D E)
    (cbl (val 6 $Lisp) A B C D E) )
 
-(de _cb4 (A B C D E)
+(de _Cb4 (A B C D E)
    (cbl (val 8 $Lisp) A B C D E) )
 
-(de _cb5 (A B C D E)
+(de _Cb5 (A B C D E)
    (cbl (val 10 $Lisp) A B C D E) )
 
-(de _cb6 (A B C D E)
+(de _Cb6 (A B C D E)
    (cbl (val 12 $Lisp) A B C D E) )
 
-(de _cb7 (A B C D E)
+(de _Cb7 (A B C D E)
    (cbl (val 14 $Lisp) A B C D E) )
 
-(de _cb8 (A B C D E)
+(de _Cb8 (A B C D E)
    (cbl (val 16 $Lisp) A B C D E) )
 
-(de _cb9 (A B C D E)
+(de _Cb9 (A B C D E)
    (cbl (val 18 $Lisp) A B C D E) )
 
-(de _cb10 (A B C D E)
+(de _Cb10 (A B C D E)
    (cbl (val 20 $Lisp) A B C D E) )
 
-(de _cb11 (A B C D E)
+(de _Cb11 (A B C D E)
    (cbl (val 22 $Lisp) A B C D E) )
 
-(de _cb12 (A B C D E)
+(de _Cb12 (A B C D E)
    (cbl (val 24 $Lisp) A B C D E) )
 
-(de _cb13 (A B C D E)
+(de _Cb13 (A B C D E)
    (cbl (val 26 $Lisp) A B C D E) )
 
-(de _cb14 (A B C D E)
+(de _Cb14 (A B C D E)
    (cbl (val 28 $Lisp) A B C D E) )
 
-(de _cb15 (A B C D E)
+(de _Cb15 (A B C D E)
    (cbl (val 30 $Lisp) A B C D E) )
 
-(de _cb16 (A B C D E)
+(de _Cb16 (A B C D E)
    (cbl (val 32 $Lisp) A B C D E) )
 
-(de _cb17 (A B C D E)
+(de _Cb17 (A B C D E)
    (cbl (val 34 $Lisp) A B C D E) )
 
-(de _cb18 (A B C D E)
+(de _Cb18 (A B C D E)
    (cbl (val 36 $Lisp) A B C D E) )
 
-(de _cb19 (A B C D E)
+(de _Cb19 (A B C D E)
    (cbl (val 38 $Lisp) A B C D E) )
 
-(de _cb20 (A B C D E)
+(de _Cb20 (A B C D E)
    (cbl (val 40 $Lisp) A B C D E) )
 
-(de _cb21 (A B C D E)
+(de _Cb21 (A B C D E)
    (cbl (val 42 $Lisp) A B C D E) )
 
-(de _cb22 (A B C D E)
+(de _Cb22 (A B C D E)
    (cbl (val 44 $Lisp) A B C D E) )
 
-(de _cb23 (A B C D E)
+(de _Cb23 (A B C D E)
    (cbl (val 46 $Lisp) A B C D E) )
 
-(de _cb24 (A B C D E)
+(de _Cb24 (A B C D E)
    (cbl (val 48 $Lisp) A B C D E) )
 
 # (lisp 'sym ['fun]) -> num
-(de _lisp (Exe)
+(de _Lisp (Exe)
    (let (X (cdr Exe)  Y (evSym X))
       (let (P $Lisp  Q (i8** (cbFuns)))
          (loop  # Search for tag 'sym'
@@ -1618,17 +1618,17 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (box64 (i64 (val Q))) ) ) )
 
 # (args) -> flg
-(de _args (Exe)
+(de _Args (Exe)
    (if (pair (val $Next)) $T $Nil) )
 
 # (next) -> any
-(de _next (Exe)
+(de _Next (Exe)
    (let X (val $Next)
       (set $Next (car X))
       (cdr X) ) )
 
 # (arg 'cnt) -> any
-(de _arg (Exe)
+(de _Arg (Exe)
    (if (le0 (evCnt Exe (cdr Exe)))
       $Nil
       (let (N @  X (val $Next))
@@ -1637,7 +1637,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (cdr X) ) ) )
 
 # (rest) -> lst
-(de _rest (Exe)
+(de _Rest (Exe)
    (let X (val $Next)
       (if (atom X)
          X
@@ -1648,14 +1648,14 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 # (adr 'var) -> num
 # (adr 'num) -> var
-(de _adr (Exe)
+(de _Adr (Exe)
    (cond
       ((cnt? (eval (cadr Exe))) (int @))  # Make 'var'
       ((big? @) (val (dig @)))
       (T (box64 @)) ) )  # Make 'num'
 
 # (byte 'num ['cnt]) -> cnt
-(de _byte (Exe)
+(de _Byte (Exe)
    (let
       (X (cdr Exe)
          P
@@ -1673,7 +1673,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             Y ) ) ) )
 
 # (env ['lst] | ['sym 'val] ..) -> lst
-(de _env (Exe)
+(de _Env (Exe)
    (let (X (cdr Exe)  R (save $Nil))
       (if (atom X)
          (let Bnd (val $Bind)
@@ -1708,7 +1708,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       R ) )
 
 # (trail ['flg]) -> lst
-(de _trail (Exe)
+(de _Trail (Exe)
    (let
       (F (not (nil? (eval (cadr Exe))))
          Bnd (val $Bind)
@@ -1730,7 +1730,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       R ) )
 
 # (up [cnt] sym ['val]) -> any
-(de _up (Exe)
+(de _Up (Exe)
    (let
       (X (cdr Exe)
          Y (car X)
@@ -1765,7 +1765,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (set Z (eval (car X))) ) ) ) ) )
 
 # (history ['lst]) -> lst
-(de _history (Exe)
+(de _History (Exe)
    (let X (cdr Exe)
       (if (atom X)
          (let P (history_list)
@@ -1788,7 +1788,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             Y ) ) ) )
 
 # (version ['flg]) -> lst
-(de _version (Exe)
+(de _Version (Exe)
    (when (nil? (eval (cadr Exe)))
       (outWord (int (val $Y)))
       (call $Put (char "."))

@@ -1,4 +1,4 @@
-# 13jul23 Software Lab. Alexander Burger
+# 08aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -658,7 +658,7 @@ selectErr)
       (set $CtlFrames (Ct: link)) ) )
 
 # (path 'any) -> sym
-(de _path (Exe)
+(de _Path (Exe)
    (let Nm (xName Exe (evSym (cdr Exe)))
       (mkStr (pathString Nm (b8 (pathSize Nm)))) ) )
 
@@ -875,7 +875,7 @@ selectErr)
 
 # (wait 'cnt|NIL . prg) -> any
 # (wait 'cnt|NIL T 'fd) -> fd|NIL
-(de _wait (Exe)
+(de _Wait (Exe)
    (let
       (X (cdr Exe)
          N
@@ -893,7 +893,7 @@ selectErr)
             (setq N @) ) ) ) )
 
 # (sync) -> flg
-(de _sync (Exe)
+(de _Sync (Exe)
    (cond
       ((or (=0 (val $Mic)) (=0 (val $Hear)))
          $Nil )
@@ -915,7 +915,7 @@ selectErr)
          $T ) ) )
 
 # (hear 'cnt) -> cnt
-(de _hear (Exe)
+(de _Hear (Exe)
    (let
       (X (eval (cadr Exe))
          Fd (i32 (xCnt Exe X)) )
@@ -934,7 +934,7 @@ selectErr)
       X ) )
 
 # (tell ['cnt] 'sym ['any ..]) -> any
-(de _tell (Exe)
+(de _Tell (Exe)
    (cond
       ((and (=0 (val $Tell)) (=0 (val $Children)))
          $Nil )
@@ -959,7 +959,7 @@ selectErr)
                Y ) ) ) ) )
 
 # (poll 'cnt) -> cnt | NIL
-(de _poll (Exe)
+(de _Poll (Exe)
    (let
       (C (eval (cadr Exe))
          Fd (i32 (xCnt Exe C)) )
@@ -1612,7 +1612,7 @@ selectErr)
                      (requestSym (val 3 P)) ) ) ) ) ) ) )
 
 # (read ['sym1 ['sym2]]) -> any
-(de _read (Exe)
+(de _Read (Exe)
    (let X (cdr Exe)
       (prog1
          (if (atom X)
@@ -1627,7 +1627,7 @@ selectErr)
             (set $Chr 0) ) ) ) )
 
 # (key ['cnt ['var]]) -> sym
-(de _key (Exe)
+(de _Key (Exe)
    (flushAll)
    (let
       (X (cdr Exe)
@@ -1668,7 +1668,7 @@ selectErr)
             (setCooked) ) ) ) )
 
 # (peek) -> sym
-(de _peek (Exe)
+(de _Peek (Exe)
    (let Chr (val $Chr)
       (unless Chr
          (setq Chr (call $Get)) )
@@ -1678,7 +1678,7 @@ selectErr)
 # (char 'cnt) -> sym
 # (char T) -> sym
 # (char 'sym) -> cnt
-(de _char (Exe)
+(de _Char (Exe)
    (let X (cdr Exe)
       (cond
          ((atom X)
@@ -1699,20 +1699,20 @@ selectErr)
          (T (atomErr Exe @)) ) ) )
 
 # (skip ['any]) -> sym
-(de _skip (Exe)
+(de _Skip (Exe)
    (if (lt0 (skipc (firstChar (evSym (cdr Exe)))))
       $Nil
       (mkChar @) ) )
 
 # (eol) -> flg
-(de _eol (Exe)
+(de _Eol (Exe)
    (let C (if (val $Chr) @ (call $Get))
       (if (or (le0 C) (== C (char "\n")))
          $T
          $Nil ) ) )
 
 # (eof ['flg]) -> flg
-(de _eof (Exe)
+(de _Eof (Exe)
    (nond
       ((nil? (eval (cadr Exe)))
          (set $Chr -1)
@@ -1723,7 +1723,7 @@ selectErr)
          (if (lt0 (call $Get)) $T $Nil) ) ) )
 
 # (from 'any ..) -> sym
-(de _from (Exe)
+(de _From (Exe)
    (let
       (X (cdr Exe)
          N 1
@@ -1768,7 +1768,7 @@ selectErr)
       $Nil ) )
 
 # (till 'any ['flg]) -> lst|sym
-(de _till (Exe)
+(de _Till (Exe)
    (let
       (X (cdr Exe)
          Nm (xName Exe (evSym X))
@@ -1814,7 +1814,7 @@ selectErr)
       (T NO) ) )
 
 # (line 'flg ['cnt ..]) -> lst|sym
-(de _line (Exe)
+(de _Line (Exe)
    (let C (val $Chr)
       (unless C
          (setq C (call $Get)) )
@@ -1887,7 +1887,7 @@ selectErr)
                         R ) ) ) ) ) ) ) )
 
 # (in 'any . prg) -> any
-(de _in (Exe)
+(de _In (Exe)
    (let X (cdr Exe)
       (rdOpen Exe (eval (++ X)) (b8+ (ioFrame T)))
       (prog1
@@ -1896,7 +1896,7 @@ selectErr)
          (tosInFile) ) ) )
 
 # (out 'any . prg) -> any
-(de _out (Exe)
+(de _Out (Exe)
    (let X (cdr Exe)
       (wrOpen Exe (eval (++ X)) (b8+ (ioFrame T)))
       (prog1
@@ -1905,7 +1905,7 @@ selectErr)
          (tosOutFile) ) ) )
 
 # (err 'sym . prg) -> any
-(de _err (Exe)
+(de _Err (Exe)
    (let X (cdr Exe)
       (erOpen Exe (eval (++ X)) (b8+ (ctFrame T)))
       (prog1
@@ -1913,7 +1913,7 @@ selectErr)
          (popErrFiles) ) ) )
 
 # (ctl 'sym . prg) -> any
-(de _ctl (Exe)
+(de _Ctl (Exe)
    (let X (cdr Exe)
       (ctOpen Exe (eval (++ X)) (b8+ (ctFrame T)))
       (prog1
@@ -1955,7 +1955,7 @@ selectErr)
          (T (symErr 0 @)) ) ) )
 
 # (input exe . prg) -> any
-(de _input (Exe)
+(de _Input (Exe)
    (let (X (cdr Exe)  Get: (getFrame (b8+ (getFrame T))))
       (Get: link (val $Input))
       (Get: exe (++ X))
@@ -2022,7 +2022,7 @@ selectErr)
       (Put: char C) ) )
 
 # (output exe . prg) -> any
-(de _output (Exe)
+(de _Output (Exe)
    (let (X (cdr Exe)  Put: (putFrame (b8+ (putFrame T))))
       (Put: link (val $Output))
       (Put: exe (++ X))
@@ -2040,7 +2040,7 @@ selectErr)
             $Output (Put: link) ) ) ) )
 
 # (fd ['cnt]) -> cnt
-(de _fd (Exe)
+(de _Fd (Exe)
    (let (X (eval (cadr Exe))  Fd (currFd Exe))
       (unless (nil? X)
          (dup2 Fd (i32 (xCnt Exe X))) )
@@ -2158,7 +2158,7 @@ selectErr)
 
 # (pipe exe) -> cnt
 # (pipe exe . prg) -> any
-(de _pipe (Exe)
+(de _Pipe (Exe)
    (let
       (X (cdr Exe)
          E (++ X)
@@ -2203,7 +2203,7 @@ selectErr)
          (bye 0) ) ) )
 
 # (open 'any ['flg]) -> cnt | NIL
-(de _open (Exe)
+(de _Open (Exe)
    (let
       (X (cdr Exe)
          Nm (xName Exe (evSym X))
@@ -2219,7 +2219,7 @@ selectErr)
          (sigChk Exe) ) ) )
 
 # (close 'cnt) -> cnt | NIL
-(de _close (Exe)
+(de _Close (Exe)
    (let
       (X (eval (cadr Exe))
          Fd (i32 (xCnt Exe X)) )
@@ -2232,7 +2232,7 @@ selectErr)
          (sigChk Exe) ) ) )
 
 # (echo ['cnt ['cnt]] | ['sym ..]) -> sym
-(de _echo (Exe)
+(de _Echo (Exe)
    (let (X (cdr Exe)  Y (eval (++ X)))
       (cond
          ((and (nil? Y) (atom X))
@@ -2530,7 +2530,7 @@ selectErr)
          (T (prName (name @))) ) ) )
 
 # (prin 'any ..) -> any
-(de _prin (Exe)
+(de _Prin (Exe)
    (let X (cdr Exe)
       (loop
          (let Y (eval (++ X))
@@ -2538,11 +2538,11 @@ selectErr)
             (? (atom X) Y) ) ) ) )
 
 # (prinl 'any ..) -> any
-(de _prinl (Exe)
-   (prog1 (_prin Exe) (newline)) )
+(de _Prinl (Exe)
+   (prog1 (_Prin Exe) (newline)) )
 
 # (space ['cnt]) -> cnt
-(de _space (Exe)
+(de _Space (Exe)
    (let X (eval (cadr Exe))
       (ifn (nil? X)
          (let N (xCnt Exe X)
@@ -2553,7 +2553,7 @@ selectErr)
          ONE ) ) )
 
 # (print 'any ..) -> any
-(de _print (Exe)
+(de _Print (Exe)
    (let X (cdr Exe)
       (loop
          (let Y (eval (++ X))
@@ -2562,19 +2562,19 @@ selectErr)
             (space) ) ) ) )
 
 # (printsp 'any ..) -> any
-(de _printsp (Exe)
-   (prog1 (_print Exe) (space)) )
+(de _Printsp (Exe)
+   (prog1 (_Print Exe) (space)) )
 
 # (println 'any ..) -> any
-(de _println (Exe)
-   (prog1 (_print Exe) (newline)) )
+(de _Println (Exe)
+   (prog1 (_Print Exe) (newline)) )
 
 # (flush) -> flg
-(de _flush (Exe)
+(de _Flush (Exe)
    (if (flush (val $OutFile)) $T $Nil) )
 
 # (rewind) -> flg
-(de _rewind (Exe)
+(de _Rewind (Exe)
    (let Out: (outFile (val $OutFile))
       (if
          (and
@@ -2586,7 +2586,7 @@ selectErr)
          $Nil ) ) )
 
 # (ext 'cnt . prg) -> any
-(de _ext (Exe)
+(de _Ext (Exe)
    (let (X (cdr Exe)  N (evCnt Exe X)  Old (val $ExtN))
       (set $ExtN (i32 N))
       (prog1
@@ -2608,7 +2608,7 @@ selectErr)
 
 # (plio 'num) -> any
 # (plio 'num 'cnt 'any) -> cnt
-(de _plio (Exe)
+(de _Plio (Exe)
    (let
       (X (cdr Exe)
          P
@@ -2634,7 +2634,7 @@ selectErr)
 
 # (rd ['sym]) -> any
 # (rd 'cnt) -> num | NIL
-(de _rd (Exe)
+(de _Rd (Exe)
    (let X (save (eval (cadr Exe)))
       (cond
          ((lt0 ((inFile (val $InFile)) fd)) $Nil)
@@ -2673,7 +2673,7 @@ selectErr)
             (if (binRead) @ X) ) ) ) )
 
 # (pr 'any ..) -> any
-(de _pr (Exe)
+(de _Pr (Exe)
    (let X (cdr Exe)
       (loop
          (let Y (eval (++ X))
@@ -2682,7 +2682,7 @@ selectErr)
             (? (atom X) Y) ) ) ) )
 
 # (wr 'cnt ..) -> cnt
-(de _wr (Exe)
+(de _Wr (Exe)
    (let X (cdr Exe)
       (loop
          (let N (eval (++ X))
@@ -2750,13 +2750,13 @@ selectErr)
          (consStr (val Q)) ) ) )
 
 # (any 'sym) -> any
-(de _any (Exe)
+(de _Any (Exe)
    (if (sym? (val (tail (save (evSym (cdr Exe))))))
       $Nil
       (parse (name @) YES (hex "20") 1) ) )  # Blank, EOF
 
 # (sym 'any) -> sym
-(de _sym (Exe)
+(de _Sym (Exe)
    (let X (eval (cadr Exe))
       (begString (push 4 NIL ZERO NIL NIL NIL))  # [cnt last name link fun ptr]
       (print X)
@@ -2764,7 +2764,7 @@ selectErr)
 
 # (str 'sym ['sym1]) -> lst
 # (str 'lst) -> sym
-(de _str (Exe)
+(de _Str (Exe)
    (let (X (cdr Exe)  Y (eval (car X)))
       (cond
          ((nil? Y) Y)
@@ -2883,7 +2883,7 @@ selectErr)
       X ) )
 
 # (load 'any ..) -> any
-(de _load (Exe)
+(de _Load (Exe)
    (let X (cdr Exe)
       (loop
          (let Y

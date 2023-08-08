@@ -1,4 +1,4 @@
-# 30oct22 Software Lab. Alexander Burger
+# 08aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -272,7 +272,7 @@
          (gc) ) ) )
 
 # (gc ['cnt [cnt2]]) -> cnt | NIL
-(de _gc (Exe)
+(de _Gc (Exe)
    (let (X (cdr Exe)  Y (eval (car X)))  # MiBs
       (if (nil? Y)
          (gc)

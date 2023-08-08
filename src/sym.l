@@ -1,4 +1,4 @@
-# 04jun23 Software Lab. Alexander Burger
+# 08aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -507,7 +507,7 @@
                   (if (lt0 I) (ofs X 1) X) ) ) ) ) ) )
 
 # (name 'sym) -> sym
-(de _name (Exe)
+(de _Name (Exe)
    (let Tail (val (tail (needSymb Exe (eval (cadr Exe)))))
       (if (sym? Tail)  # External
          (let P (push 4 NIL ZERO NIL)  # [cnt last name link]
@@ -517,7 +517,7 @@
          (consStr (name Tail)) ) ) )
 
 # (nsp 'sym) -> sym
-(de _nsp (Exe)
+(de _Nsp (Exe)
    (let Sym (needSymb Exe (eval (cadr Exe)))
       (if (sym? (val (tail Sym)))
          $Nil
@@ -529,26 +529,26 @@
                (shift Lst) ) ) ) ) )
 
 # (sp? 'any) -> flg
-(de _spQ (Exe)
+(de _SpQ (Exe)
    (if (isBlank (eval (cadr Exe)))
       $T
       $Nil ) )
 
 # (pat? 'any) -> sym | NIL
-(de _patQ (Exe)
+(de _PatQ (Exe)
    (let X (eval (cadr Exe))
       (if (and (symb? X) (== (firstChar X) (char "@")))
          X
          $Nil ) ) )
 
 # (fun? 'any) -> any
-(de _funQ (Exe)
+(de _FunQ (Exe)
    (if (funq (eval (cadr Exe)))
       @
       $Nil ) )
 
 # (getd 'any) -> fun | NIL
-(de _getd (Exe)
+(de _Getd (Exe)
    (let (X (eval (cadr Exe))  V T)
       (cond
          ((not (symb? X)) $Nil)
@@ -603,7 +603,7 @@
                         (set Q P) ) ) ) ) ) ) ) )  # Save tree
 
 # (all ['NIL | 'T | '0 | 'sym | '(NIL . flg) | '(T . flg) | '(0)]) -> lst
-(de _all (Exe)
+(de _All (Exe)
    (let X (eval (cadr Exe))
       (cond
          ((nil? X)  # Internal symbols
@@ -637,7 +637,7 @@
 # (symbols 'lst) -> lst
 # (symbols 'lst . prg) -> any
 # (symbols 'sym1 'sym2 ..) -> lst
-(de _symbols (Exe)
+(de _Symbols (Exe)
    (let X (cdr Exe)
       (if (atom X)  # No args
          (val $Intern)
@@ -677,7 +677,7 @@
                      (putSrc (car R) 0) ) ) ) ) ) ) )
 
 # (intern 'any ['nsp]) -> sym
-(de _intern (Exe)
+(de _Intern (Exe)
    (let (X (cdr Exe)  Sym (save (evSym X)))
       (cond
          ((sym? (val (tail Sym))) $Nil)  # External symbol
@@ -698,11 +698,11 @@
                      NO ) ) ) ) ) ) )
 
 # (====) -> NIL
-(de _hide (Exe)
+(de _Hide (Exe)
    (set $Transient (set 2 $Transient $Nil)) )
 
 # (box? 'any) -> sym | NIL
-(de _boxQ (Exe)
+(de _BoxQ (Exe)
    (let X (eval (cadr Exe))
       (if
          (and
@@ -713,7 +713,7 @@
          $Nil ) ) )
 
 # (str? 'any) -> sym | NIL
-(de _strQ (Exe)
+(de _StrQ (Exe)
    (let X (eval (cadr Exe))
       (cond
          ((not (symb? X)) $Nil)
@@ -724,7 +724,7 @@
          (T X) ) ) )
 
 # (zap 'sym) -> sym
-(de _zap (Exe)
+(de _Zap (Exe)
    (let Sym (needSymb Exe (eval (cadr Exe)))
       (if (sym? (val (tail Sym)))  # External
          (dbZap Sym)
@@ -732,7 +732,7 @@
       Sym ) )
 
 # (chop 'any) -> lst
-(de _chop (Exe)
+(de _Chop (Exe)
    (let X (eval (cadr Exe))
       (if (or (pair X) (nil? X))
          X
@@ -750,7 +750,7 @@
                      $Nil ) ) ) ) ) ) )
 
 # (pack 'any ..) -> sym
-(de _pack (Exe)
+(de _Pack (Exe)
    (save -ZERO
       (let
          (X (cdr Exe)
@@ -761,7 +761,7 @@
          (consStr (val 3 P)) ) ) )
 
 # (glue 'any 'lst) -> sym
-(de _glue (Exe)
+(de _Glue (Exe)
    (let (X (cdr Exe)  Y (save (eval (++ X))))  # 'any'
       (if (atom (eval (++ X)))  # 'lst'
          @
@@ -774,7 +774,7 @@
             (consStr (val 3 P)) ) ) ) )
 
 # (text 'any1 'any ..) -> sym
-(de _text (Exe)
+(de _Text (Exe)
    (let (X (cdr Exe)  Y (evSym X))
       (if (nil? Y)
          Y
@@ -825,7 +825,7 @@
                (set P Cnt  2 P Nm) ) ) ) ) )
 
 # (pre? 'any1 'any2) -> any2 | NIL
-(de _preQ (Exe)
+(de _PreQ (Exe)
    (let (X (cdr Exe)  Y (save (evSym X))  Z (evSym (shift X)))
       (cond
          ((nil? Y) Z)
@@ -839,21 +839,21 @@
                   (T $Nil) ) ) ) ) ) )
 
 # (sub? 'any1 'any2) -> any2 | NIL
-(de _subQ (Exe)
+(de _SubQ (Exe)
    (let (X (cdr Exe)  Y (save (evSym X))  Z (evSym (shift X)))
       (if (subStr Y Z)
          Z
          $Nil ) ) )
 
 # (val 'var) -> any
-(de _val (Exe)
+(de _Val (Exe)
    (let V (needVar Exe (eval (cadr Exe)))
       (when (and (sym? V) (sym? (val (tail V))))
          (dbFetch Exe V) )
       (val V) ) )
 
 # (set 'var 'any ..) -> any
-(de _set (Exe)
+(de _Set (Exe)
    (save -ZERO
       (let X (cdr Exe)
          (loop
@@ -865,14 +865,14 @@
                   (? (atom X) Z) ) ) ) ) ) )
 
 # (setq var 'any ..) -> any
-(de _setq (Exe)
+(de _Setq (Exe)
    (let X (cdr Exe)
       (loop
          (let Y (set (needChkVar Exe (++ X)) (eval (++ X)))
             (? (atom X) Y) ) ) ) )
 
 # (swap 'var 'any) -> any
-(de _swap (Exe)
+(de _Swap (Exe)
    (let
       (X (cdr Exe)
          Y (save (needChkVar Exe (eval (++ X)))) )
@@ -883,7 +883,7 @@
          V ) ) )
 
 # (xchg 'var 'var ..) -> any
-(de _xchg (Exe)
+(de _Xchg (Exe)
    (save -ZERO
       (let X (cdr Exe)
          (loop
@@ -897,21 +897,21 @@
                   (? (atom X) Z) ) ) ) ) ) )
 
 # (on var ..) -> T
-(de _on (Exe)
+(de _On (Exe)
    (let X (cdr Exe)
       (loop
          (set (needChkVar Exe (++ X)) $T)
          (? (atom X) $T) ) ) )
 
 # (off var ..) -> NIL
-(de _off (Exe)
+(de _Off (Exe)
    (let X (cdr Exe)
       (loop
          (set (needChkVar Exe (++ X)) $Nil)
          (? (atom X) $Nil) ) ) )
 
 # (onOff var ..) -> flg
-(de _onOff (Exe)
+(de _OnOff (Exe)
    (let X (cdr Exe)
       (loop
          (let
@@ -921,21 +921,21 @@
             (? (atom X) Z) ) ) ) )
 
 # (zero var ..) -> 0
-(de _zero (Exe)
+(de _Zero (Exe)
    (let X (cdr Exe)
       (loop
          (set (needChkVar Exe (++ X)) ZERO)
          (? (atom X) ZERO) ) ) )
 
 # (one var ..) -> 1
-(de _one (Exe)
+(de _One (Exe)
    (let X (cdr Exe)
       (loop
          (set (needChkVar Exe (++ X)) ONE)
          (? (atom X) ONE) ) ) )
 
 # (default sym 'any ..) -> any
-(de _default (Exe)
+(de _Default (Exe)
    (let X (cdr Exe)
       (loop
          (let Y (needChkVar Exe (++ X))
@@ -944,7 +944,7 @@
             (? (atom (shift X)) (val Y)) ) ) ) )
 
 # (push 'var 'any ..) -> any
-(de _push (Exe)
+(de _Push (Exe)
    (let
       (X (cdr Exe)
          Y (save (needChkVar Exe (eval (++ X)))) )
@@ -956,7 +956,7 @@
             (? (atom X) Z) ) ) ) )
 
 # (push1 'var 'any ..) -> any
-(de _push1 (Exe)
+(de _Push1 (Exe)
    (let
       (X (cdr Exe)
          Y (save (needChkVar Exe (eval (++ X)))) )
@@ -969,7 +969,7 @@
             (? (atom X) Z) ) ) ) )
 
 # (push1q 'var 'any ..) -> any
-(de _push1q (Exe)
+(de _Push1q (Exe)
    (let
       (X (cdr Exe)
          Y (save (needChkVar Exe (eval (++ X)))) )
@@ -982,7 +982,7 @@
             (? (atom X) Z) ) ) ) )
 
 # (pop 'var) -> any
-(de _pop (Exe)
+(de _Pop (Exe)
    (let X (needChkVar Exe (eval (cadr Exe)))
       (when (and (sym? X) (sym? (val (tail X))))
          (dbTouch Exe X) )
@@ -992,7 +992,7 @@
          (car @) ) ) )
 
 # (++ var) -> any
-(de _popq (Exe)
+(de _Popq (Exe)
    (let X (needChkVar Exe (cadr Exe))
       (if (atom (val X))
          @
@@ -1000,14 +1000,14 @@
          (car @) ) ) )
 
 # (shift 'var) -> any
-(de _shift (Exe)
+(de _Shift (Exe)
    (let X (needChkVar Exe (eval (cadr Exe)))
       (when (and (sym? X) (sym? (val (tail X))))
          (dbTouch Exe X) )
       (set X (cdr (needLst Exe (val X)))) ) )
 
 # (cut 'cnt 'var) -> lst
-(de _cut (Exe)
+(de _Cut (Exe)
    (let (X (cdr Exe)  N (evCnt Exe X))
       (if (le0 N)
          $Nil
@@ -1026,7 +1026,7 @@
                   R ) ) ) ) ) )
 
 # (del 'any 'var ['flg]) -> lst
-(de _del (Exe)
+(de _Del (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -1051,7 +1051,7 @@
             (? Flg V) ) ) ) )
 
 # (queue 'var 'any) -> any
-(de _queue (Exe)
+(de _Queue (Exe)
    (let
       (X (cdr Exe)
          Y (save (needChkVar Exe (eval (++ X)))) )
@@ -1069,7 +1069,7 @@
          Z ) ) )
 
 # (fifo 'var ['any ..]) -> any
-(de _fifo (Exe)
+(de _Fifo (Exe)
    (let
       (X (cdr Exe)
          Y (save (needChkVar Exe (eval (++ X)))) )
@@ -1100,7 +1100,7 @@
                (car @) ) ) ) ) )  # and return
 
 # (rid 'var 'any) -> any
-(de _rid (Exe)
+(de _Rid (Exe)
    (let
       (X (cdr Exe)
          Y (save (needChkVar Exe (eval (++ X)))) )
@@ -1133,7 +1133,7 @@
 
 # (enum 'var 'cnt ['cnt ..]) -> lst
 # (enum 'var) -> lst
-(de _enum (Exe)
+(de _Enum (Exe)
    (let
       (X (cdr Exe)
          Var (save (needChkVar Exe (eval (++ X))))
@@ -1230,7 +1230,7 @@
                            (set Q P) ) ) ) ) ) ) ) ) )  # Save tree
 
 # (enum? 'lst 'cnt ['cnt ..]) -> lst | NIL
-(de _enumQ (Exe)
+(de _EnumQ (Exe)
    (let
       (X (cdr Exe)
          P (save (eval (++ X)))
@@ -1365,7 +1365,7 @@
 # (idx 'var 'any 'flg) -> lst
 # (idx 'var 'any) -> lst
 # (idx 'var) -> lst
-(de _idx (Exe)
+(de _Idx (Exe)
    (let
       (X (cdr Exe)
          Var (needChkVar Exe (eval (++ X))) )
@@ -1380,7 +1380,7 @@
 
 # (lup 'lst 'any) -> lst
 # (lup 'lst 'any 'any2) -> lst
-(de _lup (Exe)
+(de _Lup (Exe)
    (let (X (cdr Exe)  P (save (eval (++ X))))
       (if (atom P)
          P
@@ -1613,7 +1613,7 @@
          R ) ) )
 
 # (put 'sym1|lst ['sym2|cnt ..] 'any) -> any
-(de _put (Exe)
+(de _Put (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -1638,7 +1638,7 @@
          Val ) ) )
 
 # (get 'sym1|lst ['sym2|cnt ..]) -> any
-(de _get (Exe)
+(de _Get (Exe)
    (let (X (cdr Exe)  Y (eval (++ X)))
       (when (pair X)
          (save Y
@@ -1649,7 +1649,7 @@
       Y ) )
 
 # (prop 'sym1|lst ['sym2|cnt ..] 'sym) -> var
-(de _prop (Exe)
+(de _Prop (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -1667,7 +1667,7 @@
       (prop Y Key) ) )
 
 # (; 'sym1|lst [sym2|cnt ..]) -> any
-(de _semicol (Exe)
+(de _Semicol (Exe)
    (let (X (cdr Exe)  Y (eval (++ X)))
       (when (pair X)
          (save Y
@@ -1678,7 +1678,7 @@
       Y ) )
 
 # (=: sym|0 [sym1|cnt ..] 'any) -> any
-(de _setCol (Exe)
+(de _SetCol (Exe)
    (let (X (cdr Exe)  Y (val $This)  Key T)
       (loop
          (setq Key (++ X))
@@ -1699,14 +1699,14 @@
          Val ) ) )
 
 # (: sym|0 [sym1|cnt ..]) -> any
-(de _col (Exe)
+(de _Col (Exe)
    (let (X (cdr Exe)  Y (val $This))
       (loop
          (setq Y (getn Exe Y (++ X)))
          (? (atom X) Y) ) ) )
 
 # (:: sym|0 [sym1|cnt .. sym2]) -> var
-(de _propCol (Exe)
+(de _PropCol (Exe)
    (let (X (cdr Exe)  Y (val $This)  Key T)
       (loop
          (setq Key (++ X))
@@ -1720,7 +1720,7 @@
       (prop Y Key) ) )
 
 # (putl 'sym1|lst1 ['sym2|cnt ..] 'lst) -> lst
-(de _putl (Exe)
+(de _Putl (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -1750,7 +1750,7 @@
          R ) ) )
 
 # (getl 'sym1|lst1 ['sym2|cnt ..]) -> lst
-(de _getl (Exe)
+(de _Getl (Exe)
    (let (X (cdr Exe)  Y (save (eval (car X))))
       (while (pair (shift X))
          (setq Y
@@ -1786,7 +1786,7 @@
                   (tail X) (sym (shr Nm 2)) ) ) ) ) ) )  # Set "not loaded"
 
 # (wipe 'sym|lst) -> sym|lst
-(de _wipe (Exe)
+(de _Wipe (Exe)
    (let X (eval (cadr Exe))
       (unless (nil? X)
          (if (atom X)
@@ -1814,7 +1814,7 @@
       (shift X) ) )
 
 # (meta 'obj|typ 'sym ['sym2|cnt ..]) -> any
-(de _meta (Exe)
+(de _Meta (Exe)
    (let (X (cdr Exe)  Y (save (eval (++ X))))
       (when (num? Y)  # Need symbol or pair
          (argErr Exe Y) )
@@ -1829,21 +1829,21 @@
       Y ) )
 
 # (low? 'any) -> sym | NIL
-(de _lowQ (Exe)
+(de _LowQ (Exe)
    (let X (eval (cadr Exe))
       (if (and (symb? X) (isLowc (firstChar X)))
          X
          $Nil ) ) )
 
 # (upp? 'any) -> sym | NIL
-(de _uppQ (Exe)
+(de _UppQ (Exe)
    (let X (eval (cadr Exe))
       (if (and (symb? X) (isUppc (firstChar X)))
          X
          $Nil ) ) )
 
 # (lowc 'any) -> any
-(de _lowc (Exe)
+(de _Lowc (Exe)
    (let X (eval (cadr Exe))
       (if (or (not (symb? X)) (nil? X))
          X
@@ -1858,7 +1858,7 @@
             (consStr (val 3 R)) ) ) ) )
 
 # (uppc 'any) -> any
-(de _uppc (Exe)
+(de _Uppc (Exe)
    (let X (eval (cadr Exe))
       (if (or (not (symb? X)) (nil? X))
          X
@@ -1876,7 +1876,7 @@
             (consStr (val 3 R)) ) ) ) )
 
 # (fold 'any ['cnt]) -> sym
-(de _fold (Exe)
+(de _Fold (Exe)
    (let (X (cdr Exe)  Y (eval (++ X)))
       (if (or (not (symb? Y)) (nil? Y))
          Y

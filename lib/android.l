@@ -1,4 +1,4 @@
-# 01aug23 Software Lab. Alexander Burger
+# 07aug23 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -11,7 +11,7 @@
 (symbols 'android 'pico)
 
 # SSL
-(sys "SSL_CERT_FILE" "tls/cert.pem")
+(and *Uuid (sys "SSL_CERT_FILE" "tls/cert.pem"))
 
 # Android Context
 (local) (CONTEXT GUI Config javaExt)
@@ -214,9 +214,10 @@
 # Service foreground state
 (local) (startForeground stopForeground)
 
-(de startForeground (Ttl Msg)
+(de startForeground (Ttl Msg Type)
    (java CONTEXT 'startForeground 1
-      (notify 1 Ttl Msg) ) )
+      (notify 1 Ttl Msg)
+      ~(as (>= (format (sys "SDK_INT")) 29) Type) ) )
 
 (de stopForeground ()
    (java CONTEXT 'stopForeground T) )

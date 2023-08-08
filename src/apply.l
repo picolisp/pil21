@@ -1,9 +1,9 @@
-# 01may22 Software Lab. Alexander Burger
+# 08aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
 # (apply 'fun 'lst ['any ..]) -> any
-(de _apply (Exe)
+(de _Apply (Exe)
    (let
       (X (cdr Exe)
          E (push NIL $Nil ZERO (eval (++ X)) NIL) )  # [car cdr name fun link]
@@ -22,7 +22,7 @@
          (evList E) ) ) )
 
 # (pass 'fun ['any ..]) -> any
-(de _pass (Exe)
+(de _Pass (Exe)
    (let
       (X (cdr Exe)
          E (push NIL $Nil ZERO (eval (++ X)) NIL) )
@@ -42,11 +42,11 @@
       (evList E) ) )
 
 # (fun 'fun ['any ..]) -> any
-(de _fun (Exe)
+(de _Fun (Exe)
    (evList (cdr Exe)) )
 
 # (maps 'fun 'sym ['lst ..]) -> any
-(de _maps (Exe)
+(de _Maps (Exe)
    (let
       (X (cdr Exe)
          R $Nil
@@ -91,7 +91,7 @@
       R ) )
 
 # (map 'fun 'lst ..) -> lst
-(de _map (Exe)
+(de _Map (Exe)
    (let
       (X (cdr Exe)
          R $Nil
@@ -114,7 +114,7 @@
       R ) )
 
 # (mapc 'fun 'lst ..) -> lst
-(de _mapc (Exe)
+(de _Mapc (Exe)
    (let
       (X (cdr Exe)
          R $Nil
@@ -146,7 +146,7 @@
       R ) )
 
 # (maplist 'fun 'lst ..) -> lst
-(de _maplist (Exe)
+(de _Maplist (Exe)
    (let
       (X (cdr Exe)
          R (save $Nil)
@@ -174,7 +174,7 @@
       R ) )
 
 # (mapcar 'fun 'lst ..) -> lst
-(de _mapcar (Exe)
+(de _Mapcar (Exe)
    (let
       (X (cdr Exe)
          R (save $Nil)
@@ -211,7 +211,7 @@
       R ) )
 
 # (mapcon 'fun 'lst ..) -> lst
-(de _mapcon (Exe)
+(de _Mapcon (Exe)
    (let
       (X (cdr Exe)
          R (save $Nil)
@@ -243,7 +243,7 @@
       R ) )
 
 # (mapcan 'fun 'lst ..) -> lst
-(de _mapcan (Exe)
+(de _Mapcan (Exe)
    (let
       (X (cdr Exe)
          R (save $Nil)
@@ -284,7 +284,7 @@
       R ) )
 
 # (filter 'fun 'lst ..) -> lst
-(de _filter (Exe)
+(de _Filter (Exe)
    (let
       (X (cdr Exe)
          R (save $Nil)
@@ -322,7 +322,7 @@
       R ) )
 
 # (extract 'fun 'lst ..) -> lst
-(de _extract (Exe)
+(de _Extract (Exe)
    (let
       (X (cdr Exe)
          R (save $Nil)
@@ -360,7 +360,7 @@
       R ) )
 
 # (seek 'fun 'lst ..) -> lst
-(de _seek (Exe)
+(de _Seek (Exe)
    (let
       (X (cdr Exe)
          E (push NIL $Nil ZERO (eval (car X)) NIL) )
@@ -383,7 +383,7 @@
                (? (atom (shift P))) ) ) ) ) )
 
 # (find 'fun 'lst ..) -> any
-(de _find (Exe)
+(de _Find (Exe)
    (let
       (X (cdr Exe)
          E (push NIL $Nil ZERO (eval (++ X)) NIL)
@@ -416,7 +416,7 @@
                         (T (car @)) ) ) ) ) ) ) ) )
 
 # (pick 'fun 'lst ..) -> any
-(de _pick (Exe)
+(de _Pick (Exe)
    (let
       (X (cdr Exe)
          E (push NIL $Nil ZERO (eval (++ X)) NIL)
@@ -447,7 +447,7 @@
                         (T (car @)) ) ) ) ) ) ) ) )
 
 # (fully 'fun 'lst ..) -> flg
-(de _fully (Exe)
+(de _Fully (Exe)
    (let
       (X (cdr Exe)
          E (push NIL $Nil ZERO (eval (++ X)) NIL)
@@ -478,7 +478,7 @@
                         (T (car @)) ) ) ) ) ) ) ) )
 
 # (cnt 'fun 'lst ..) -> cnt
-(de _cnt (Exe)
+(de _Cnt (Exe)
    (let
       (X (cdr Exe)
          R ZERO
@@ -511,7 +511,7 @@
       R ) )
 
 # (sum 'fun 'lst ..) -> num
-(de _sum (Exe)
+(de _Sum (Exe)
    (let
       (X (cdr Exe)
          R (save ZERO)
@@ -545,7 +545,7 @@
       R ) )
 
 # (maxi 'fun 'lst ..) -> any
-(de _maxi (Exe)
+(de _Maxi (Exe)
    (let
       (X (cdr Exe)
          R $Nil
@@ -582,7 +582,7 @@
       R ) )
 
 # (mini 'fun 'lst ..) -> any
-(de _mini (Exe)
+(de _Mini (Exe)
    (let
       (X (cdr Exe)
          R $Nil
@@ -633,7 +633,7 @@
          (set R (cons V (val R))) ) ) )
 
 # (fish 'fun 'any ['any2] ..) -> lst
-(de _fish (Exe)
+(de _Fish (Exe)
    (let
       (X (cdr Exe)
          R (link (push $Nil NIL) T)
@@ -655,7 +655,7 @@
          (val R) ) ) )
 
 # (by 'fun1 'fun2 'lst ..) -> lst
-(de _by (Exe)
+(de _By (Exe)
    (let
       (X (cdr Exe)
          R (save $Nil)

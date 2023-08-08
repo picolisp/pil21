@@ -1,4 +1,4 @@
-# 26oct22 Software Lab. Alexander Burger
+# 08aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -243,7 +243,7 @@
       NO ) )
 
 # (ext? 'any) -> sym | NIL
-(de _extQ (Exe)
+(de _ExtQ (Exe)
    (let X (eval (cadr Exe))
       (if
          (and
@@ -296,7 +296,7 @@
       (set $BlkPtr (inc P)) ) )
 
 # (rollback) -> flg
-(de _rollback (Exe)
+(de _Rollback (Exe)
    (if (and (=0 (val $DBs)) (atom (val $Ext)))
       $Nil
       (let (Tos 0  P (val $Extern))  # Iterate external symbol tree
@@ -345,7 +345,7 @@
       $T ) )
 
 # (extern 'sym) -> sym | NIL
-(de _extern (Exe)
+(de _Extern (Exe)
    (let
       (Sym (needSymb Exe (eval (cadr Exe)))
          Nm (name (& (val (tail Sym)) -9)) )
@@ -452,7 +452,7 @@
          (err Exe 0 ($ "Log truncate error: %s") (strErrno)) ) ) )
 
 # (pool ['sym1 ['lst] ['sym2] ['sym3]]) -> T
-(de _pool (Exe)
+(de _Pool (Exe)
    (let
       (X (cdr Exe)
          Sym1 (save (evSym X))  # Database name
@@ -461,7 +461,7 @@
          Sym3 (save (evSym (shift X))) )  # Transaction log
       (set $Solo ZERO)  # Reset solo mode
       (when (val $DBs)
-         (_rollback ZERO)
+         (_Rollback ZERO)
          (let (Db (val $DbFiles)  C @)  # Iterate DB files
             (loop
                (let Db: (dbFile Db)
@@ -561,7 +561,7 @@
    $T )
 
 # (pool2 'sym . prg) -> any
-(de _pool2 (Exe)
+(de _Pool2 (Exe)
    (let
       (X (cdr Exe)
          Sym (evSym X)
@@ -602,7 +602,7 @@
             (set $DbLog Log  $DbJnl Jnl) ) ) ) )
 
 # (journal ['T] 'any ..) -> T
-(de _journal (Exe)
+(de _Journal (Exe)
    (let
       (X (cdr Exe)
          Sym (evSym X)
@@ -651,7 +651,7 @@
 # (id 'num ['num]) -> sym
 # (id 'sym [NIL]) -> num
 # (id 'sym T) -> (num . num)
-(de _id (Exe)
+(de _Id (Exe)
    (let (X (cdr Exe)  Y (eval (++ X)))
       (if (cnt? Y)  # File number or object ID
          (extern
@@ -672,7 +672,7 @@
 
 # (blk 'fd 'cnt 'siz ['fd2]) -> lst
 # (blk 'fd 0) -> (cnt . siz)
-(de _blk (Exe)
+(de _Blk (Exe)
    (let (X (cdr Exe)  Db: (dbFile (b8+ (dbFile T))))
       (Db: fd (i32 (evCnt Exe X)))  # File descriptor
       (if (=0 (evCnt Exe (shift X)))  # Block number
@@ -721,7 +721,7 @@
                   (unLock @ 0 0) ) ) ) ) ) )
 
 # (seq 'cnt|sym1) -> sym | NIL
-(de _seq (Exe)
+(de _Seq (Exe)
    (let
       (X (eval (cadr Exe))
          F (dec (i32 (int X)))
@@ -752,7 +752,7 @@
                (unLockDb 1) ) ) ) ) )  # Unlock
 
 # (lieu 'any) -> sym | NIL
-(de _lieu (Exe)
+(de _Lieu (Exe)
    (let X (eval (cadr Exe))
       (nond
          ((symb? X) $Nil)
@@ -769,7 +769,7 @@
                      (if @@ X $Nil) ) ) ) ) ) ) )  # Loaded
 
 # (lock ['sym]) -> cnt | NIL
-(de _lock (Exe)
+(de _Lock (Exe)
    (if
       (if (nil? (eval (cadr Exe)))
          (tryLock (val $DbFiles) 0 0)  # Use first dbFile
@@ -865,7 +865,7 @@
             (tailcall (db Exe Sym Nm)) ) ) ) )
 
 # (touch 'sym) -> sym
-(de _touch (Exe)
+(de _Touch (Exe)
    (let X (eval (cadr Exe))
       (when (and (symb? X) (sym? (val (tail X))))
          (dbTouch Exe X) )
@@ -882,7 +882,7 @@
       (set Sym $Nil) ) )  # Clear value
 
 # (commit ['any] [exe1] [exe2]) -> T
-(de _commit (Exe)
+(de _Commit (Exe)
    (let (Args (cdr Exe)  Rpc (save (eval (++ Args)))  Notify NO)
       (set $Protect (inc (val $Protect)))
       (wrLockDb)
@@ -1118,7 +1118,7 @@
       $T ) )
 
 # (mark 'sym|0 [NIL | T | 0]) -> flg
-(de _mark (Exe)
+(de _Mark (Exe)
    (let (X (cdr Exe)  Y (eval (++ X)))
       (if (== Y ZERO)  # Clear all marks
          (let (Db (val $DbFiles)  C (val $DBs))  # Iterate DB files
@@ -1166,7 +1166,7 @@
                            $Nil ) ) ) ) ) ) ) ) )  # Return NIL
 
 # (free 'cnt) -> (sym . lst)
-(de _free (Exe)
+(de _Free (Exe)
    (let
       (X (cdr Exe)
          F (dec (i32 (evCnt Exe X)))
@@ -1194,7 +1194,7 @@
          R ) ) )
 
 # (dbck ['cnt] 'flg) -> any
-(de _dbck (Exe)
+(de _Dbck (Exe)
    (let
       (X (cdr Exe)
          Y (eval (car X))

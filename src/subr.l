@@ -1,4 +1,4 @@
-# 08feb23 Software Lab. Alexander Burger
+# 08aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -14,99 +14,99 @@
    (err Exe 0 ($ "Not making") null) )
 
 # (car 'var) -> any
-(de _car (Exe)
+(de _Car (Exe)
    (chkA (eval (cadr Exe))) )
 
 # (cdr 'lst) -> any
-(de _cdr (Exe)
+(de _Cdr (Exe)
    (chkD (eval (cadr Exe))) )
 
-(de _caar (Exe)
+(de _Caar (Exe)
    (chkA (chkA (eval (cadr Exe)))) )
 
-(de _cadr (Exe)
+(de _Cadr (Exe)
    (chkA (chkD (eval (cadr Exe)))) )
 
-(de _cdar (Exe)
+(de _Cdar (Exe)
    (chkD (chkA (eval (cadr Exe)))) )
 
-(de _cddr (Exe)
+(de _Cddr (Exe)
    (chkD (chkD (eval (cadr Exe)))) )
 
-(de _caaar (Exe)
+(de _Caaar (Exe)
    (chkA (chkA (chkA (eval (cadr Exe))))) )
 
-(de _caadr (Exe)
+(de _Caadr (Exe)
    (chkA (chkA (chkD (eval (cadr Exe))))) )
 
-(de _cadar (Exe)
+(de _Cadar (Exe)
    (chkA (chkD (chkA (eval (cadr Exe))))) )
 
-(de _caddr (Exe)
+(de _Caddr (Exe)
    (chkA (chkD (chkD (eval (cadr Exe))))) )
 
-(de _cdaar (Exe)
+(de _Cdaar (Exe)
    (chkD (chkA (chkA (eval (cadr Exe))))) )
 
-(de _cdadr (Exe)
+(de _Cdadr (Exe)
    (chkD (chkA (chkD (eval (cadr Exe))))) )
 
-(de _cddar (Exe)
+(de _Cddar (Exe)
    (chkD (chkD (chkA (eval (cadr Exe))))) )
 
-(de _cdddr (Exe)
+(de _Cdddr (Exe)
    (chkD (chkD (chkD (eval (cadr Exe))))) )
 
-(de _caaaar (Exe)
+(de _Caaaar (Exe)
    (chkA (chkA (chkA (chkA (eval (cadr Exe)))))) )
 
-(de _caaadr (Exe)
+(de _Caaadr (Exe)
    (chkA (chkA (chkA (chkD (eval (cadr Exe)))))) )
 
-(de _caadar (Exe)
+(de _Caadar (Exe)
    (chkA (chkA (chkD (chkA (eval (cadr Exe)))))) )
 
-(de _caaddr (Exe)
+(de _Caaddr (Exe)
    (chkA (chkA (chkD (chkD (eval (cadr Exe)))))) )
 
-(de _cadaar (Exe)
+(de _Cadaar (Exe)
    (chkA (chkD (chkA (chkA (eval (cadr Exe)))))) )
 
-(de _cadadr (Exe)
+(de _Cadadr (Exe)
    (chkA (chkD (chkA (chkD (eval (cadr Exe)))))) )
 
-(de _caddar (Exe)
+(de _Caddar (Exe)
    (chkA (chkD (chkD (chkA (eval (cadr Exe)))))) )
 
-(de _cadddr (Exe)
+(de _Cadddr (Exe)
    (chkA (chkD (chkD (chkD (eval (cadr Exe)))))) )
 
-(de _cdaaar (Exe)
+(de _Cdaaar (Exe)
    (chkD (chkA (chkA (chkA (eval (cadr Exe)))))) )
 
-(de _cdaadr (Exe)
+(de _Cdaadr (Exe)
    (chkD (chkA (chkA (chkD (eval (cadr Exe)))))) )
 
-(de _cdadar (Exe)
+(de _Cdadar (Exe)
    (chkD (chkA (chkD (chkA (eval (cadr Exe)))))) )
 
-(de _cdaddr (Exe)
+(de _Cdaddr (Exe)
    (chkD (chkA (chkD (chkD (eval (cadr Exe)))))) )
 
-(de _cddaar (Exe)
+(de _Cddaar (Exe)
    (chkD (chkD (chkA (chkA (eval (cadr Exe)))))) )
 
-(de _cddadr (Exe)
+(de _Cddadr (Exe)
    (chkD (chkD (chkA (chkD (eval (cadr Exe)))))) )
 
-(de _cdddar (Exe)
+(de _Cdddar (Exe)
    (chkD (chkD (chkD (chkA (eval (cadr Exe)))))) )
 
-(de _cddddr (Exe)
+(de _Cddddr (Exe)
    (chkD (chkD (chkD (chkD (eval (cadr Exe)))))) )
 
 # (nth 'lst 'cnt ..) -> lst
-(de _nth (Exe)
+(de _Nth (Exe)
    (let (X (cdr Exe)  Y (save (eval (++ X))))
       (loop
          (? (atom Y) Y)
@@ -118,14 +118,14 @@
          (setq Y (car Y)) ) ) )
 
 # (con 'lst 'any) -> any
-(de _con (Exe)
+(de _Con (Exe)
    (let X (cdr Exe)
       (set 2
          (save (needPair Exe (eval (++ X))))
          (eval (car X)) ) ) )
 
 # (cons 'any ['any ..]) -> lst
-(de _cons (Exe)
+(de _Cons (Exe)
    (let
       (X (cdr Exe)
          Y (cons (eval (car X)) $Nil)
@@ -137,7 +137,7 @@
       R ) )
 
 # (conc 'lst ..) -> lst
-(de _conc (Exe)
+(de _Conc (Exe)
    (let
       (X (cdr Exe)
          Y (eval (car X))
@@ -152,7 +152,7 @@
       R ) )
 
 # (circ 'any ..) -> lst
-(de _circ (Exe)
+(de _Circ (Exe)
    (let
       (X (cdr Exe)
          Y (cons (eval (car X)) $Nil)
@@ -163,7 +163,7 @@
       (set 2 Y R) ) )
 
 # (rot 'lst ['cnt]) -> lst
-(de _rot (Exe)
+(de _Rot (Exe)
    (let (X (cdr Exe)  R (eval (car X)))
       (when (pair R)
          (let (Y R  A (++ Y))
@@ -184,7 +184,7 @@
          R ) )
 
 # (list 'any ['any ..]) -> lst
-(de _list (Exe)
+(de _List (Exe)
    (let
       (X (cdr Exe)
          Y (cons (eval (car X)) $Nil)
@@ -196,7 +196,7 @@
 
 # (need 'cnt ['lst ['any]]) -> lst
 # (need 'cnt ['num|sym]) -> lst
-(de _need (Exe)
+(de _Need (Exe)
    (let
       (X (cdr Exe)
          C (evCnt Exe X)
@@ -228,7 +228,7 @@
       R ) )
 
 # (range 'num1 'num2 ['num3]) -> lst
-(de _range (Exe)
+(de _Range (Exe)
    (let
       (X (cdr Exe)
          N (needNum Exe (eval (++ X)))
@@ -249,7 +249,7 @@
       R ) )
 
 # (full 'any) -> bool
-(de _full (Exe)
+(de _Full (Exe)
    (let X (eval (cadr Exe))
       (loop
          (? (atom X) $T)
@@ -257,7 +257,7 @@
          (shift X) ) ) )
 
 # (make .. [(made 'lst ..)] .. [(link 'any ..)] ..) -> any
-(de _make (Exe)
+(de _Make (Exe)
    (let
       (Make (val $Make)
          Yoke (val $Yoke)
@@ -268,7 +268,7 @@
       (pop R) ) )
 
 # (made ['lst1 ['lst2]]) -> lst
-(de _made (Exe)
+(de _Made (Exe)
    (let X (cdr Exe)
       (unless (val $Make)
          (makeErr Exe) )
@@ -284,7 +284,7 @@
       (val (val $Yoke)) ) )
 
 # (chain 'lst ..) -> lst
-(de _chain (Exe)
+(de _Chain (Exe)
    (let X (cdr Exe)
       (unless (val $Make)
          (makeErr Exe) )
@@ -298,7 +298,7 @@
             (? (atom X) Y) ) ) ) )
 
 # (link 'any ..) -> any
-(de _link (Exe)
+(de _Link (Exe)
    (let X (cdr Exe)
       (unless (val $Make)
          (makeErr Exe) )
@@ -311,7 +311,7 @@
             (? (atom X) Y) ) ) ) )
 
 # (yoke 'any ..) -> any
-(de _yoke (Exe)
+(de _Yoke (Exe)
    (let X (cdr Exe)
       (unless (val $Make)
          (makeErr Exe) )
@@ -327,7 +327,7 @@
                Y ) ) ) ) )
 
 # (copy 'any) -> any
-(de _copy (Exe)
+(de _Copy (Exe)
    (let X (cdr Exe)
       (if (atom (setq X (eval (car X))))
          X
@@ -342,7 +342,7 @@
             R ) ) ) )
 
 # (mix 'lst cnt|'any ..) -> lst
-(de _mix (Exe)
+(de _Mix (Exe)
    (let (X (cdr Exe)  Y (eval (car X)))
       (nond
          ((or (pair Y) (nil? Y)) Y)
@@ -368,7 +368,7 @@
                   R ) ) ) ) ) )
 
 # (append 'lst ..) -> lst
-(de _append (Exe)
+(de _Append (Exe)
    (let X Exe
       (loop
          (? (atom (cdr (shift X)))
@@ -388,7 +388,7 @@
                R ) ) ) ) )
 
 # (delete 'any 'lst ['flg]) -> lst
-(de _delete (Exe)
+(de _Delete (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -409,7 +409,7 @@
          (? F L) ) ) )
 
 # (delq 'any 'lst ['flg]) -> lst
-(de _delq (Exe)
+(de _Delq (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -430,7 +430,7 @@
          (? F L) ) ) )
 
 # (replace 'lst 'any1 'any2 ..) -> lst
-(de _replace (Exe)
+(de _Replace (Exe)
    (let (X (cdr Exe)  L (save (eval (car X))))
       (if (atom L)
          @
@@ -455,7 +455,7 @@
             (val R) ) ) ) )
 
 # (insert 'cnt 'lst 'any) -> lst
-(de _insert (Exe)
+(de _Insert (Exe)
    (let
       (X (cdr Exe)
          N (evCnt Exe X)
@@ -470,7 +470,7 @@
             R ) ) ) )
 
 # (remove 'cnt 'lst) -> lst
-(de _remove (Exe)
+(de _Remove (Exe)
    (let
       (X (cdr Exe)
          N (evCnt Exe X)
@@ -489,7 +489,7 @@
                R ) ) ) ) )
 
 # (place 'cnt 'lst 'any) -> lst
-(de _place (Exe)
+(de _Place (Exe)
    (let
       (X (cdr Exe)
          N (evCnt Exe X)
@@ -509,7 +509,7 @@
                R ) ) ) ) )
 
 # (strip 'any) -> any
-(de _strip (Exe)
+(de _Strip (Exe)
    (let X (eval (cadr Exe))
       (while (and (pair X) (== $Quote (car X)))
          (? (== (cdr X) X))  # Circular
@@ -517,7 +517,7 @@
       X ) )
 
 # (split 'lst 'any ..) -> lst
-(de _split (Exe)
+(de _Split (Exe)
    (let (X (cdr Exe)  L (save (eval (car X))))
       (if (atom L)
          @
@@ -554,7 +554,7 @@
                      (val R) ) ) ) ) ) ) )
 
 # (reverse 'lst) -> lst
-(de _reverse (Exe)
+(de _Reverse (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (car X)))
@@ -564,7 +564,7 @@
       Z ) )
 
 # (flip 'lst ['cnt]) -> lst
-(de _flip (Exe)
+(de _Flip (Exe)
    (let (X (cdr Exe)  Y (eval (car X)))
       (if (atom Y)
          Y
@@ -603,18 +603,18 @@
             (cons (car X) Y) ) ) ) )
 
 # (trim 'lst) -> lst
-(de _trim (Exe)
+(de _Trim (Exe)
    (trim (save (eval (cadr Exe)))) )
 
 # (clip 'lst) -> lst
-(de _clip (Exe)
+(de _Clip (Exe)
    (let (X (cdr Exe)  Y (eval (car X)))
       (while (and (pair Y) (isBlank (car Y)))
          (shift Y) )
       (trim (save Y)) ) )
 
 # (head 'cnt|lst 'lst) -> lst
-(de _head (Exe)
+(de _Head (Exe)
    (let (X (cdr Exe)  Y (eval (++ X)))
       (cond
          ((nil? Y) Y)
@@ -647,7 +647,7 @@
                            R ) ) ) ) ) ) ) ) )
 
 # (tail 'cnt|lst 'lst) -> lst
-(de _tail (Exe)
+(de _Tail (Exe)
    (let (X (cdr Exe)  Y (eval (++ X)))
       (cond
          ((nil? Y) Y)
@@ -677,7 +677,7 @@
                         L ) ) ) ) ) ) ) )
 
 # (stem 'lst 'any ..) -> lst
-(de _stem (Exe)
+(de _Stem (Exe)
    (let (X (cdr Exe)  L (save (eval (++ X))))
       (if (atom X)
          L
@@ -697,14 +697,14 @@
             R ) ) ) )
 
 # (fin 'any) -> num|sym
-(de _fin (Exe)
+(de _Fin (Exe)
    (let X (eval (cadr Exe))
       (while (pair X)
          (shift X) )
       X ) )
 
 # (last 'lst) -> any
-(de _last (Exe)
+(de _Last (Exe)
    (let X (eval (cadr Exe))
       (if (atom X)
          X
@@ -713,55 +713,55 @@
          (car X) ) ) )
 
 # (== 'any ..) -> flg
-(de _eq (Exe)
+(de _Eq (Exe)
    (let (X (cdr Exe)  Y (save (eval (car X))))
       (loop
          (? (atom (shift X)) $T)
          (? (<> Y (eval (car X))) $Nil) ) ) )
 
 # (n== 'any ..) -> flg
-(de _neq (Exe)
+(de _Neq (Exe)
    (let (X (cdr Exe)  Y (save (eval (car X))))
       (loop
          (? (atom (shift X)) $Nil)
          (? (<> Y (eval (car X))) $T) ) ) )
 
 # (= 'any ..) -> flg
-(de _equal (Exe)
+(de _Equal (Exe)
    (let (X (cdr Exe)  Y (save (eval (car X))))
       (loop
          (? (atom (shift X)) $T)
          (? (not (equal Y (eval (car X)))) $Nil) ) ) )
 
 # (<> 'any ..) -> flg
-(de _nequal (Exe)
+(de _Nequal (Exe)
    (let (X (cdr Exe)  Y (save (eval (car X))))
       (loop
          (? (atom (shift X)) $Nil)
          (? (not (equal Y (eval (car X)))) $T) ) ) )
 
 # (=0 'any) -> 0 | NIL
-(de _eq0 (Exe)
+(de _Eq0 (Exe)
    (if (== (eval (cadr Exe)) ZERO) @ $Nil) )
 
 # (=1 'any) -> 1 | NIL
-(de _eq1 (Exe)
+(de _Eq1 (Exe)
    (if (== (eval (cadr Exe)) ONE) @ $Nil) )
 
 # (=T 'any) -> flg
-(de _eqT (Exe)
+(de _EqT (Exe)
    (if (t? (eval (cadr Exe))) @ $Nil) )
 
 # (n0 'any) -> flg
-(de _neq0 (Exe)
+(de _Neq0 (Exe)
    (if (== (eval (cadr Exe)) ZERO) $Nil $T) )
 
 # (nT 'any) -> flg
-(de _neqT (Exe)
+(de _NeqT (Exe)
    (if (t? (eval (cadr Exe))) $Nil $T) )
 
 # (< 'any ..) -> flg
-(de _lt (Exe)
+(de _Lt (Exe)
    (let (X (cdr Exe)  Y (save (eval (car X))))
       (loop
          (? (atom (shift X)) $T)
@@ -770,7 +770,7 @@
             (setq Y (safe Z)) ) ) ) )
 
 # (<= 'any ..) -> flg
-(de _le (Exe)
+(de _Le (Exe)
    (let (X (cdr Exe)  Y (save (eval (car X))))
       (loop
          (? (atom (shift X)) $T)
@@ -779,7 +779,7 @@
             (setq Y (safe Z)) ) ) ) )
 
 # (> 'any ..) -> flg
-(de _gt (Exe)
+(de _Gt (Exe)
    (let (X (cdr Exe)  Y (save (eval (car X))))
       (loop
          (? (atom (shift X)) $T)
@@ -788,7 +788,7 @@
             (setq Y (safe Z)) ) ) ) )
 
 # (>= 'any ..) -> flg
-(de _ge (Exe)
+(de _Ge (Exe)
    (let (X (cdr Exe)  Y (save (eval (car X))))
       (loop
          (? (atom (shift X)) $T)
@@ -797,7 +797,7 @@
             (setq Y (safe Z)) ) ) ) )
 
 # (max 'any ..) -> any
-(de _max (Exe)
+(de _Max (Exe)
    (let (X (cdr Exe)  R (save (eval (car X))))
       (while (pair (shift X))
          (let Z (eval (car X))
@@ -806,7 +806,7 @@
       R ) )
 
 # (min 'any ..) -> any
-(de _min (Exe)
+(de _Min (Exe)
    (let (X (cdr Exe)  R (save (eval (car X))))
       (while (pair (shift X))
          (let Z (eval (car X))
@@ -815,41 +815,41 @@
       R ) )
 
 # (atom 'any) -> flg
-(de _atom (Exe)
+(de _Atom (Exe)
    (if (atom (eval (cadr Exe))) $T $Nil) )
 
 # (pair 'any) -> any
-(de _pair (Exe)
+(de _Pair (Exe)
    (if (pair (eval (cadr Exe))) @ $Nil) )
 
 # (circ? 'any) -> any
-(de _circQ (Exe)
+(de _CircQ (Exe)
    (if (circ (eval (cadr Exe))) @ $Nil) )
 
 # (lst? 'any) -> flg
-(de _lstQ (Exe)
+(de _LstQ (Exe)
    (if (or (pair (eval (cadr Exe))) (nil? @))
       $T
       $Nil ) )
 
 # (num? 'any) -> num | NIL
-(de _numQ (Exe)
+(de _NumQ (Exe)
    (if (num? (eval (cadr Exe))) @ $Nil) )
 
 # (sym? 'any) -> flg
-(de _symQ (Exe)
+(de _SymQ (Exe)
    (if (symb? (eval (cadr Exe)))
       $T
       $Nil ) )
 
 # (flg? 'any) -> flg
-(de _flgQ (Exe)
+(de _FlgQ (Exe)
    (if (or (t? (eval (cadr Exe))) (nil? @))
       $T
       $Nil ) )
 
 # (member 'any 'lst) -> any
-(de _member (Exe)
+(de _Member (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -862,7 +862,7 @@
          (? (== H (shift Z)) $Nil) ) ) )
 
 # (memq 'any 'lst) -> any
-(de _memq (Exe)
+(de _Memq (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -875,7 +875,7 @@
          (? (== H (shift Z)) $Nil) ) ) )
 
 # (mmeq 'lst 'lst) -> any
-(de _mmeq (Exe)
+(de _Mmeq (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -891,7 +891,7 @@
       $Nil ) )
 
 # (sect 'lst 'lst) -> lst
-(de _sect (Exe)
+(de _Sect (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -909,7 +909,7 @@
       (val R) ) )
 
 # (diff 'lst 'lst) -> lst
-(de _diff (Exe)
+(de _Diff (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -927,7 +927,7 @@
       (val R) ) )
 
 # (index 'any 'lst) -> cnt | NIL
-(de _index (Exe)
+(de _Index (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -941,7 +941,7 @@
          (? (== U (shift Z)) $Nil) ) ) )
 
 # (offset 'lst1 'lst2) -> cnt | NIL
-(de _offset (Exe)
+(de _Offset (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -954,7 +954,7 @@
          (shift Z) ) ) )
 
 # (prior 'lst1 'lst2) -> lst | NIL
-(de _prior (Exe)
+(de _Prior (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -967,7 +967,7 @@
       $Nil ) )
 
 # (length 'any) -> cnt | T
-(de _length (Exe)
+(de _Length (Exe)
    (let X (eval (cadr Exe))
       (cond
          ((num? X) (fmtNum X -2 0 0 null))
@@ -1070,7 +1070,7 @@
                (? (atom X) (+ C (binSize X))) ) ) ) ) )
 
 # (size 'any) -> cnt
-(de _size (Exe)
+(de _Size (Exe)
    (let X (eval (cadr Exe))
       (cond
          ((cnt? X)
@@ -1127,11 +1127,11 @@
                C ) ) ) ) )
 
 # (bytes 'any) -> cnt
-(de _bytes (Exe)
+(de _Bytes (Exe)
    (cnt (binSize (eval (cadr Exe)))) )
 
 # (assoc 'any 'lst) -> lst
-(de _assoc (Exe)
+(de _Assoc (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -1144,7 +1144,7 @@
          (? (== H (shift Z)) $Nil) ) ) )
 
 # (rassoc 'any 'lst) -> lst
-(de _rassoc (Exe)
+(de _Rassoc (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -1157,7 +1157,7 @@
          (? (== H (shift Z)) $Nil) ) ) )
 
 # (asoq 'any 'lst) -> lst
-(de _asoq (Exe)
+(de _Asoq (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -1170,7 +1170,7 @@
          (? (== H (shift Z)) $Nil) ) ) )
 
 # (rasoq 'any 'lst) -> lst
-(de _rasoq (Exe)
+(de _Rasoq (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -1183,7 +1183,7 @@
          (? (== H (shift Z)) $Nil) ) ) )
 
 # (rank 'any 'lst ['flg]) -> lst
-(de _rank (Exe)
+(de _Rank (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -1229,7 +1229,7 @@
       (shift Dat) ) )
 
 # (match 'lst1 'lst2) -> flg
-(de _match (Exe)
+(de _Match (Exe)
    (let X (cdr Exe)
       (if
          (match
@@ -1290,7 +1290,7 @@
 
 # (fill 'any ['sym|lst]) -> any
 # (fill 'any ['cnt|sym] 'any2) -> any
-(de _fill (Exe)
+(de _Fill (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -1458,7 +1458,7 @@
                   (setq Z U) ) ) ) ) ) )
 
 # (prove 'lst ['lst]) -> lst
-(de _prove (Exe)
+(de _Prove (Exe)
    (let X (cdr Exe)
       (if (atom (eval (car X)))
          $Nil
@@ -1591,7 +1591,7 @@
                (T $Nil) ) ) ) ) )
 
 # (-> any [cnt]) -> any
-(de _arrow (Exe)
+(de _Arrow (Exe)
    (let (X (cdr Exe)  L (val (val $Pnl)))
       (when (cnt? (cadr X))
          (let I (int @)
@@ -1601,7 +1601,7 @@
 
 # (unify 'any) -> lst
 # (unify 'cnt) -> cnt
-(de _unify (Exe)
+(de _Unify (Exe)
    (let
       (X (eval (cadr Exe))
          Pnl (val (val $Pnl))
@@ -1624,7 +1624,7 @@
             X ) ) ) )
 
 # (group 'lst) -> lst
-(de _group (Exe)
+(de _Group (Exe)
    (let X (save (eval (cadr Exe)))
       (if (atom X)
          $Nil
@@ -1660,7 +1660,7 @@
    (if (nil? (evList E)) 0 -1) )
 
 # (sort 'lst ['fun]) -> lst
-(de _sort (Exe)
+(de _Sort (Exe)
    (let (X (cdr Exe)  Y (eval (++ X)))
       (cond
          ((atom Y) @)

@@ -147,10 +147,10 @@ declare void @llvm.stackrestore(i8*)
   i64 0,
   ; # [240] meth
   i64 28039337682,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64,i64)* @__meth to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64,i64)* @__Meth to i8*), i32 2) to i64),
   ; # [256] quote
   i64 6971922536210,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_quote to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Quote to i8*), i32 2) to i64),
   ; # [272] T
   i64 1346,
   i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 280) to i64),
@@ -262,1155 +262,1155 @@ declare void @llvm.stackrestore(i8*)
   i64 2,
   ; # [864] gc
   i64 407154,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_gc to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Gc to i8*), i32 2) to i64),
   ; # [880] format
   i64 2047388749854306,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_format to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Format to i8*), i32 2) to i64),
   ; # [896] +
   i64 690,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_add to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Add to i8*), i32 2) to i64),
   ; # [912] -
   i64 722,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_sub to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Sub to i8*), i32 2) to i64),
   ; # [928] inc
   i64 104261266,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_inc to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Inc to i8*), i32 2) to i64),
   ; # [944] dec
   i64 104224322,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_dec to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Dec to i8*), i32 2) to i64),
   ; # [960] *
   i64 674,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_mul to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Mul to i8*), i32 2) to i64),
   ; # [976] */
   i64 193186,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_mulDiv to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_MulDiv to i8*), i32 2) to i64),
   ; # [992] /
   i64 754,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_div to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Div to i8*), i32 2) to i64),
   ; # [1008] %
   i64 594,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_rem to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Rem to i8*), i32 2) to i64),
   ; # [1024] >>
   i64 254946,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_shr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Shr to i8*), i32 2) to i64),
   ; # [1040] rev
   i64 124147490,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_rev to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Rev to i8*), i32 2) to i64),
   ; # [1056] lt0
   i64 50808514,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_lt0 to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Lt0 to i8*), i32 2) to i64),
   ; # [1072] le0
   i64 50747074,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_le0 to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Le0 to i8*), i32 2) to i64),
   ; # [1088] ge0
   i64 50746994,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_ge0 to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Ge0 to i8*), i32 2) to i64),
   ; # [1104] gt0
   i64 50808434,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_gt0 to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Gt0 to i8*), i32 2) to i64),
   ; # [1120] abs
   i64 120989202,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_abs to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Abs to i8*), i32 2) to i64),
   ; # [1136] bit?
   i64 17033500194,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_bitQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_BitQ to i8*), i32 2) to i64),
   ; # [1152] &
   i64 610,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_bitAnd to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_BitAnd to i8*), i32 2) to i64),
   ; # [1168] |
   i64 1986,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_bitOr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_BitOr to i8*), i32 2) to i64),
   ; # [1184] x|
   i64 509826,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_bitXor to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_BitXor to i8*), i32 2) to i64),
   ; # [1200] sqrt
   i64 31258515250,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_sqrt to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Sqrt to i8*), i32 2) to i64),
   ; # [1216] seed
   i64 26949867314,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_seed to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Seed to i8*), i32 2) to i64),
   ; # [1232] hash
   i64 28038272642,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_hash to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Hash to i8*), i32 2) to i64),
   ; # [1248] rand
   i64 26959288098,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_rand to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Rand to i8*), i32 2) to i64),
   ; # [1264] name
   i64 27226674914,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_name to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Name to i8*), i32 2) to i64),
   ; # [1280] nsp
   i64 117913314,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_nsp to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Nsp to i8*), i32 2) to i64),
   ; # [1296] sp?
   i64 66520882,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_spQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_SpQ to i8*), i32 2) to i64),
   ; # [1312] pat?
   i64 17033467650,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_patQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_PatQ to i8*), i32 2) to i64),
   ; # [1328] fun?
   i64 17027257954,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_funQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_FunQ to i8*), i32 2) to i64),
   ; # [1344] getd
   i64 26965595762,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_getd to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Getd to i8*), i32 2) to i64),
   ; # [1360] all
   i64 113690130,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_all to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_All to i8*), i32 2) to i64),
   ; # [1376] symbols
   i64 519821567523788594,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_symbols to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Symbols to i8*), i32 2) to i64),
   ; # [1392] intern
   i64 1943001719301778,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_intern to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Intern to i8*), i32 2) to i64),
   ; # [1408] ====
   i64 16438776786,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_hide to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Hide to i8*), i32 2) to i64),
   ; # [1424] box?
   i64 17037719074,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_boxQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_BoxQ to i8*), i32 2) to i64),
   ; # [1440] str?
   i64 17031448370,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_strQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_StrQ to i8*), i32 2) to i64),
   ; # [1456] zap
   i64 117839778,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_zap to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Zap to i8*), i32 2) to i64),
   ; # [1472] chop
   i64 30181590578,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_chop to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Chop to i8*), i32 2) to i64),
   ; # [1488] pack
   i64 28826801922,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_pack to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Pack to i8*), i32 2) to i64),
   ; # [1504] glue
   i64 27235108466,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_glue to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Glue to i8*), i32 2) to i64),
   ; # [1520] text
   i64 31264757570,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_text to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Text to i8*), i32 2) to i64),
   ; # [1536] pre?
   i64 17017808642,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_preQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_PreQ to i8*), i32 2) to i64),
   ; # [1552] sub?
   i64 17014675250,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_subQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_SubQ to i8*), i32 2) to i64),
   ; # [1568] val
   i64 113645410,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_val to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Val to i8*), i32 2) to i64),
   ; # [1584] set
   i64 122050354,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_set to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Set to i8*), i32 2) to i64),
   ; # [1600] setq
   i64 30455256882,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_setq to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Setq to i8*), i32 2) to i64),
   ; # [1616] swap
   i64 30166972210,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_swap to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Swap to i8*), i32 2) to i64),
   ; # [1632] xchg
   i64 27758311298,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_xchg to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Xchg to i8*), i32 2) to i64),
   ; # [1648] on
   i64 452338,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_on to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_On to i8*), i32 2) to i64),
   ; # [1664] off
   i64 107374322,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_off to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Off to i8*), i32 2) to i64),
   ; # [1680] onOff
   i64 7036850333426,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_onOff to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_OnOff to i8*), i32 2) to i64),
   ; # [1696] zero
   i64 29916288930,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_zero to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Zero to i8*), i32 2) to i64),
   ; # [1712] one
   i64 106358514,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_one to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_One to i8*), i32 2) to i64),
   ; # [1728] default
   i64 524325579192161858,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_default to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Default to i8*), i32 2) to i64),
   ; # [1744] push
   i64 28038354690,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_push to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Push to i8*), i32 2) to i64),
   ; # [1760] push1
   i64 3395292714754,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_push1 to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Push1 to i8*), i32 2) to i64),
   ; # [1776] push1q
   i64 1991312315733762,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_push1q to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Push1q to i8*), i32 2) to i64),
   ; # [1792] pop
   i64 117896962,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_pop to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Pop to i8*), i32 2) to i64),
   ; # [1808] ++
   i64 176818,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_popq to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Popq to i8*), i32 2) to i64),
   ; # [1824] shift
   i64 7998950246194,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_shift to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Shift to i8*), i32 2) to i64),
   ; # [1840] cut
   i64 122115634,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cut to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cut to i8*), i32 2) to i64),
   ; # [1856] del
   i64 113661506,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_del to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Del to i8*), i32 2) to i64),
   ; # [1872] queue
   i64 6972180485906,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_queue to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Queue to i8*), i32 2) to i64),
   ; # [1888] fifo
   i64 29903722082,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_fifo to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Fifo to i8*), i32 2) to i64),
   ; # [1904] rid
   i64 105289506,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_rid to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Rid to i8*), i32 2) to i64),
   ; # [1920] enum
   i64 29382600274,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_enum to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Enum to i8*), i32 2) to i64),
   ; # [1936] enum?
   i64 4358709634642,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_enumQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_EnumQ to i8*), i32 2) to i64),
   ; # [1952] idx
   i64 126240402,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_idx to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Idx to i8*), i32 2) to i64),
   ; # [1968] lup
   i64 117921474,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_lup to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Lup to i8*), i32 2) to i64),
   ; # [1984] put
   i64 122115842,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_put to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Put to i8*), i32 2) to i64),
   ; # [2000] get
   i64 122050162,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_get to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Get to i8*), i32 2) to i64),
   ; # [2016] prop
   i64 30181631746,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_prop to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Prop to i8*), i32 2) to i64),
   ; # [2032] ;
   i64 946,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_semicol to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Semicol to i8*), i32 2) to i64),
   ; # [2048] =:
   i64 238546,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_setCol to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_SetCol to i8*), i32 2) to i64),
   ; # [2064] :
   i64 930,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_col to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Col to i8*), i32 2) to i64),
   ; # [2080] ::
   i64 238498,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_propCol to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_PropCol to i8*), i32 2) to i64),
   ; # [2096] putl
   i64 29113145090,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_putl to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Putl to i8*), i32 2) to i64),
   ; # [2112] getl
   i64 29113079410,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_getl to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Getl to i8*), i32 2) to i64),
   ; # [2128] wipe
   i64 27229853554,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_wipe to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Wipe to i8*), i32 2) to i64),
   ; # [2144] meta
   i64 26160289490,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_meta to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Meta to i8*), i32 2) to i64),
   ; # [2160] low?
   i64 17036670658,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_lowQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_LowQ to i8*), i32 2) to i64),
   ; # [2176] upp?
   i64 17029334866,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_uppQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_UppQ to i8*), i32 2) to i64),
   ; # [2192] lowc
   i64 26700347074,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_lowc to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Lowc to i8*), i32 2) to i64),
   ; # [2208] uppc
   i64 26693011282,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_uppc to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Uppc to i8*), i32 2) to i64),
   ; # [2224] fold
   i64 26957248098,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_fold to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Fold to i8*), i32 2) to i64),
   ; # [2240] path
   i64 28039321346,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_path to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Path to i8*), i32 2) to i64),
   ; # [2256] wait
   i64 31249012594,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_wait to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Wait to i8*), i32 2) to i64),
   ; # [2272] sync
   i64 26690950962,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_sync to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Sync to i8*), i32 2) to i64),
   ; # [2288] hear
   i64 30703769218,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_hear to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Hear to i8*), i32 2) to i64),
   ; # [2304] tell
   i64 29104691010,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_tell to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Tell to i8*), i32 2) to i64),
   ; # [2320] poll
   i64 29104731906,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_poll to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Poll to i8*), i32 2) to i64),
   ; # [2336] read
   i64 26945672994,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_read to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Read to i8*), i32 2) to i64),
   ; # [2352] key
   i64 127293106,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_key to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Key to i8*), i32 2) to i64),
   ; # [2368] peek
   i64 28828915458,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_peek to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Peek to i8*), i32 2) to i64),
   ; # [2384] char
   i64 30703781426,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_char to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Char to i8*), i32 2) to i64),
   ; # [2400] skip
   i64 30175311666,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_skip to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Skip to i8*), i32 2) to i64),
   ; # [2416] eol
   i64 113702482,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_eol to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Eol to i8*), i32 2) to i64),
   ; # [2432] eof
   i64 107411026,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_eof to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Eof to i8*), i32 2) to i64),
   ; # [2448] from
   i64 29376325218,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_from to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_From to i8*), i32 2) to i64),
   ; # [2464] till
   i64 29104707394,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_till to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Till to i8*), i32 2) to i64),
   ; # [2480] line
   i64 27227756226,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_line to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Line to i8*), i32 2) to i64),
   ; # [2496] in
   i64 452242,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_in to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_In to i8*), i32 2) to i64),
   ; # [2512] out
   i64 122115826,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_out to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Out to i8*), i32 2) to i64),
   ; # [2528] err
   i64 120006226,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_err to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Err to i8*), i32 2) to i64),
   ; # [2544] ctl
   i64 113722930,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_ctl to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Ctl to i8*), i32 2) to i64),
   ; # [2560] input
   i64 8002984142482,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_input to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Input to i8*), i32 2) to i64),
   ; # [2576] output
   i64 2048763946817266,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_output to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Output to i8*), i32 2) to i64),
   ; # [2592] fd
   i64 411234,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_fd to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Fd to i8*), i32 2) to i64),
   ; # [2608] pipe
   i64 27229853442,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_pipe to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Pipe to i8*), i32 2) to i64),
   ; # [2624] open
   i64 29634266866,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_open to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Open to i8*), i32 2) to i64),
   ; # [2640] close
   i64 6971654063666,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_close to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Close to i8*), i32 2) to i64),
   ; # [2656] echo
   i64 29905794642,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_echo to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Echo to i8*), i32 2) to i64),
   ; # [2672] prin
   i64 29638469378,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_prin to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Prin to i8*), i32 2) to i64),
   ; # [2688] prinl
   i64 7451341956866,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_prinl to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Prinl to i8*), i32 2) to i64),
   ; # [2704] space
   i64 6967344432946,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_space to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Space to i8*), i32 2) to i64),
   ; # [2720] print
   i64 8001097770754,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_print to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Print to i8*), i32 2) to i64),
   ; # [2736] printsp
   i64 506434260758374146,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_printsp to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Printsp to i8*), i32 2) to i64),
   ; # [2752] println
   i64 497303916201322242,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_println to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Println to i8*), i32 2) to i64),
   ; # [2768] flush
   i64 7177818785378,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_flush to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Flush to i8*), i32 2) to i64),
   ; # [2784] rewind
   i64 1766806057801506,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_rewind to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Rewind to i8*), i32 2) to i64),
   ; # [2800] ext
   i64 122127954,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_ext to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Ext to i8*), i32 2) to i64),
   ; # [2816] plio
   i64 29906880258,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_plio to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Plio to i8*), i32 2) to i64),
   ; # [2832] rd
   i64 411426,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_rd to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Rd to i8*), i32 2) to i64),
   ; # [2848] pr
   i64 468738,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_pr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Pr to i8*), i32 2) to i64),
   ; # [2864] wr
   i64 468850,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_wr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Wr to i8*), i32 2) to i64),
   ; # [2880] any
   i64 127329810,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_any to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Any to i8*), i32 2) to i64),
   ; # [2896] sym
   i64 114792242,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_sym to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Sym to i8*), i32 2) to i64),
   ; # [2912] str
   i64 120014642,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_str to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Str to i8*), i32 2) to i64),
   ; # [2928] load
   i64 26945713858,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_load to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Load to i8*), i32 2) to i64),
   ; # [2944] ext?
   i64 17033561682,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_extQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_ExtQ to i8*), i32 2) to i64),
   ; # [2960] rollback
   i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 2980) to i64),
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_rollback to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Rollback to i8*), i32 2) to i64),
   i64 7738135660106379122,
   i64 2,
   ; # [2992] extern
   i64 1943001719342674,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_extern to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Extern to i8*), i32 2) to i64),
   ; # [3008] pool
   i64 29107877634,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_pool to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Pool to i8*), i32 2) to i64),
   ; # [3024] pool2
   i64 3465081714434,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_pool2 to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Pool2 to i8*), i32 2) to i64),
   ; # [3040] journal
   i64 488102791669544610,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_journal to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Journal to i8*), i32 2) to i64),
   ; # [3056] id
   i64 411282,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_id to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Id to i8*), i32 2) to i64),
   ; # [3072] blk
   i64 112641570,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_blk to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Blk to i8*), i32 2) to i64),
   ; # [3088] seq
   i64 118904626,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_seq to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Seq to i8*), i32 2) to i64),
   ; # [3104] lieu
   i64 31513286338,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_lieu to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Lieu to i8*), i32 2) to i64),
   ; # [3120] lock
   i64 28826859202,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_lock to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Lock to i8*), i32 2) to i64),
   ; # [3136] touch
   i64 7173523830594,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_touch to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Touch to i8*), i32 2) to i64),
   ; # [3152] commit
   i64 2047938500425266,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_commit to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Commit to i8*), i32 2) to i64),
   ; # [3168] mark
   i64 28842530514,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_mark to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Mark to i8*), i32 2) to i64),
   ; # [3184] free
   i64 27218355810,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_free to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Free to i8*), i32 2) to i64),
   ; # [3200] dbck
   i64 28826805826,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_dbck to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Dbck to i8*), i32 2) to i64),
   ; # [3216] apply
   i64 8344165615122,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_apply to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Apply to i8*), i32 2) to i64),
   ; # [3232] pass
   i64 30991062786,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_pass to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Pass to i8*), i32 2) to i64),
   ; # [3248] fun
   i64 115824226,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_fun to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Fun to i8*), i32 2) to i64),
   ; # [3264] maps
   i64 30987917010,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_maps to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Maps to i8*), i32 2) to i64),
   ; # [3280] map
   i64 117839570,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_map to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Map to i8*), i32 2) to i64),
   ; # [3296] mapc
   i64 26692949714,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_mapc to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Mapc to i8*), i32 2) to i64),
   ; # [3312] maplist
   i64 524447902824011474,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_maplist to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Maplist to i8*), i32 2) to i64),
   ; # [3328] mapcar
   i64 2012201691256530,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_mapcar to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Mapcar to i8*), i32 2) to i64),
   ; # [3344] mapcon
   i64 1942795019753170,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_mapcon to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Mapcon to i8*), i32 2) to i64),
   ; # [3360] mapcan
   i64 1941832947078866,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_mapcan to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Mapcan to i8*), i32 2) to i64),
   ; # [3376] filter
   i64 2012481128404578,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_filter to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Filter to i8*), i32 2) to i64),
   ; # [3392] extract
   i64 524165879706388050,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_extract to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Extract to i8*), i32 2) to i64),
   ; # [3408] seek
   i64 28828915506,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_seek to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Seek to i8*), i32 2) to i64),
   ; # [3424] find
   i64 26959320674,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_find to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Find to i8*), i32 2) to i64),
   ; # [3440] pick
   i64 28826834690,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_pick to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Pick to i8*), i32 2) to i64),
   ; # [3456] fully
   i64 8344161441378,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_fully to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Fully to i8*), i32 2) to i64),
   ; # [3472] cnt
   i64 122086962,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cnt to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cnt to i8*), i32 2) to i64),
   ; # [3488] sum
   i64 114775858,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_sum to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Sum to i8*), i32 2) to i64),
   ; # [3504] maxi
   i64 28311951058,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_maxi to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Maxi to i8*), i32 2) to i64),
   ; # [3520] mini
   i64 28301498066,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_mini to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Mini to i8*), i32 2) to i64),
   ; # [3536] fish
   i64 28038305378,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_fish to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Fish to i8*), i32 2) to i64),
   ; # [3552] by
   i64 497186,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_by to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_By to i8*), i32 2) to i64),
   ; # [3568] as
   i64 472594,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_as to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_As to i8*), i32 2) to i64),
   ; # [3584] lit
   i64 122066626,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_lit to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Lit to i8*), i32 2) to i64),
   ; # [3600] eval
   i64 29093226066,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_eval to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Eval to i8*), i32 2) to i64),
   ; # [3616] run
   i64 115824418,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_run to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Run to i8*), i32 2) to i64),
   ; # [3632] def
   i64 107370050,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_def to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Def to i8*), i32 2) to i64),
   ; # [3648] de
   i64 415298,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_de to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_De to i8*), i32 2) to i64),
   ; # [3664] dm
   i64 448066,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_dm to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Dm to i8*), i32 2) to i64),
   ; # [3680] box
   i64 126285346,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_box to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Box to i8*), i32 2) to i64),
   ; # [3696] new
   i64 125196002,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_new to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_New to i8*), i32 2) to i64),
   ; # [3712] type
   i64 27229919042,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_type to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Type to i8*), i32 2) to i64),
   ; # [3728] isa
   i64 102184594,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_isa to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Isa to i8*), i32 2) to i64),
   ; # [3744] method
   i64 1766874505696978,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_method to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Method to i8*), i32 2) to i64),
   ; # [3760] send
   i64 26959304498,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_send to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Send to i8*), i32 2) to i64),
   ; # [3776] try
   i64 127346498,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_try to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Try to i8*), i32 2) to i64),
   ; # [3792] super
   i64 7861250250546,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_super to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Super to i8*), i32 2) to i64),
   ; # [3808] extra
   i64 6696513013330,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_extra to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Extra to i8*), i32 2) to i64),
   ; # [3824] and
   i64 105309714,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_and to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_And to i8*), i32 2) to i64),
   ; # [3840] or
   i64 468722,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_or to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Or to i8*), i32 2) to i64),
   ; # [3856] nand
   i64 26959288034,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_nand to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Nand to i8*), i32 2) to i64),
   ; # [3872] nor
   i64 119994082,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_nor to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Nor to i8*), i32 2) to i64),
   ; # [3888] xor
   i64 119994242,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_xor to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Xor to i8*), i32 2) to i64),
   ; # [3904] bool
   i64 29107877410,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_bool to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Bool to i8*), i32 2) to i64),
   ; # [3920] not
   i64 122091234,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_not to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Not to i8*), i32 2) to i64),
   ; # [3936] nil
   i64 113678050,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_nil to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Nil to i8*), i32 2) to i64),
   ; # [3952] t
   i64 1858,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_t to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_T to i8*), i32 2) to i64),
   ; # [3968] prog
   i64 27765712642,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_prog to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Prog to i8*), i32 2) to i64),
   ; # [3984] prog1
   i64 3395020072706,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_prog1 to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Prog1 to i8*), i32 2) to i64),
   ; # [4000] prog2
   i64 3463739549442,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_prog2 to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Prog2 to i8*), i32 2) to i64),
   ; # [4016] if
   i64 419474,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_if to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_If to i8*), i32 2) to i64),
   ; # [4032] ifn
   i64 115762834,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_ifn to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Ifn to i8*), i32 2) to i64),
   ; # [4048] if2
   i64 52848274,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_if2 to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_If2 to i8*), i32 2) to i64),
   ; # [4064] when
   i64 29634234226,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_when to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_When to i8*), i32 2) to i64),
   ; # [4080] unless
   i64 2031031360612178,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_unless to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Unless to i8*), i32 2) to i64),
   ; # [4096] cond
   i64 26959345202,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cond to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cond to i8*), i32 2) to i64),
   ; # [4112] nond
   i64 26959345378,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_nond to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Nond to i8*), i32 2) to i64),
   ; # [4128] case
   i64 27232966194,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_case to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Case to i8*), i32 2) to i64),
   ; # [4144] casq
   i64 30454191666,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_casq to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Casq to i8*), i32 2) to i64),
   ; # [4160] state
   i64 6971907852082,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_state to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_State to i8*), i32 2) to i64),
   ; # [4176] while
   i64 6969768707954,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_while to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_While to i8*), i32 2) to i64),
   ; # [4192] until
   i64 7450011297618,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_until to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Until to i8*), i32 2) to i64),
   ; # [4208] at
   i64 476690,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_at to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_At to i8*), i32 2) to i64),
   ; # [4224] do
   i64 456258,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_do to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Do to i8*), i32 2) to i64),
   ; # [4240] loop
   i64 30181619394,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_loop to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Loop to i8*), i32 2) to i64),
   ; # [4256] for
   i64 119993954,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_for to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_For to i8*), i32 2) to i64),
   ; # [4272] with
   i64 28039354226,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_with to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_With to i8*), i32 2) to i64),
   ; # [4288] bind
   i64 26959320610,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_bind to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Bind to i8*), i32 2) to i64),
   ; # [4304] job
   i64 103216802,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_job to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Job to i8*), i32 2) to i64),
   ; # [4320] let
   i64 122050242,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_let to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Let to i8*), i32 2) to i64),
   ; # [4336] let?
   i64 17033483970,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_letQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_LetQ to i8*), i32 2) to i64),
   ; # [4352] use
   i64 106379090,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_use to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Use to i8*), i32 2) to i64),
   ; # [4368] buf
   i64 107435554,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_buf to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Buf to i8*), i32 2) to i64),
   ; # [4384] catch
   i64 7173522724402,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_catch to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Catch to i8*), i32 2) to i64),
   ; # [4400] throw
   i64 8207534032706,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_throw to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Throw to i8*), i32 2) to i64),
   ; # [4416] finally
   i64 546842958862128738,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_finally to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Finally to i8*), i32 2) to i64),
   ; # [4432] co
   i64 456242,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_co to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Co to i8*), i32 2) to i64),
   ; # [4448] yield
   i64 6901045041042,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_yield to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Yield to i8*), i32 2) to i64),
   ; # [4464] !
   i64 530,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_break to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Break to i8*), i32 2) to i64),
   ; # [4480] e
   i64 1618,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_e to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_E to i8*), i32 2) to i64),
   ; # [4496] $
   i64 578,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_trace to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Trace to i8*), i32 2) to i64),
   ; # [4512] exec
   i64 26681509458,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_exec to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Exec to i8*), i32 2) to i64),
   ; # [4528] call
   i64 29104674354,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_call to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Call to i8*), i32 2) to i64),
   ; # [4544] ipid
   i64 26954106514,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_ipid to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Ipid to i8*), i32 2) to i64),
   ; # [4560] opid
   i64 26954106610,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_opid to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Opid to i8*), i32 2) to i64),
   ; # [4576] kill
   i64 29104707250,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_kill to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Kill to i8*), i32 2) to i64),
   ; # [4592] fork
   i64 28842587746,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_fork to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Fork to i8*), i32 2) to i64),
   ; # [4608] detach
   i64 1836416737105474,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_detach to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Detach to i8*), i32 2) to i64),
   ; # [4624] bye
   i64 106403362,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_bye to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Bye to i8*), i32 2) to i64),
   ; # [4640] car
   i64 119936562,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_car to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Car to i8*), i32 2) to i64),
   ; # [4656] cdr
   i64 119948850,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cdr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cdr to i8*), i32 2) to i64),
   ; # [4672] caar
   i64 30703752754,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_caar to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Caar to i8*), i32 2) to i64),
   ; # [4688] cadr
   i64 30706898482,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cadr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cadr to i8*), i32 2) to i64),
   ; # [4704] cdar
   i64 30703765042,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cdar to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cdar to i8*), i32 2) to i64),
   ; # [4720] cddr
   i64 30706910770,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cddr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cddr to i8*), i32 2) to i64),
   ; # [4736] caaar
   i64 7860160697906,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_caaar to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Caaar to i8*), i32 2) to i64),
   ; # [4752] caadr
   i64 7860966004274,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_caadr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Caadr to i8*), i32 2) to i64),
   ; # [4768] cadar
   i64 7860163843634,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cadar to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cadar to i8*), i32 2) to i64),
   ; # [4784] caddr
   i64 7860969150002,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_caddr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Caddr to i8*), i32 2) to i64),
   ; # [4800] cdaar
   i64 7860160710194,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cdaar to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cdaar to i8*), i32 2) to i64),
   ; # [4816] cdadr
   i64 7860966016562,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cdadr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cdadr to i8*), i32 2) to i64),
   ; # [4832] cddar
   i64 7860163855922,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cddar to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cddar to i8*), i32 2) to i64),
   ; # [4848] cdddr
   i64 7860969162290,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cdddr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cdddr to i8*), i32 2) to i64),
   ; # [4864] caaaar
   i64 2012201138656818,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_caaaar to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Caaaar to i8*), i32 2) to i64),
   ; # [4880] caaadr
   i64 2012407297087026,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_caaadr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Caaadr to i8*), i32 2) to i64),
   ; # [4896] caadar
   i64 2012201943963186,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_caadar to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Caadar to i8*), i32 2) to i64),
   ; # [4912] caaddr
   i64 2012408102393394,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_caaddr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Caaddr to i8*), i32 2) to i64),
   ; # [4928] cadaar
   i64 2012201141802546,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cadaar to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cadaar to i8*), i32 2) to i64),
   ; # [4944] cadadr
   i64 2012407300232754,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cadadr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cadadr to i8*), i32 2) to i64),
   ; # [4960] caddar
   i64 2012201947108914,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_caddar to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Caddar to i8*), i32 2) to i64),
   ; # [4976] cadddr
   i64 2012408105539122,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cadddr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cadddr to i8*), i32 2) to i64),
   ; # [4992] cdaaar
   i64 2012201138669106,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cdaaar to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cdaaar to i8*), i32 2) to i64),
   ; # [5008] cdaadr
   i64 2012407297099314,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cdaadr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cdaadr to i8*), i32 2) to i64),
   ; # [5024] cdadar
   i64 2012201943975474,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cdadar to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cdadar to i8*), i32 2) to i64),
   ; # [5040] cdaddr
   i64 2012408102405682,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cdaddr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cdaddr to i8*), i32 2) to i64),
   ; # [5056] cddaar
   i64 2012201141814834,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cddaar to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cddaar to i8*), i32 2) to i64),
   ; # [5072] cddadr
   i64 2012407300245042,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cddadr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cddadr to i8*), i32 2) to i64),
   ; # [5088] cdddar
   i64 2012201947121202,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cdddar to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cdddar to i8*), i32 2) to i64),
   ; # [5104] cddddr
   i64 2012408105551410,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cddddr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cddddr to i8*), i32 2) to i64),
   ; # [5120] nth
   i64 109528802,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_nth to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Nth to i8*), i32 2) to i64),
   ; # [5136] con
   i64 115799602,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_con to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Con to i8*), i32 2) to i64),
   ; # [5152] cons
   i64 30985877042,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cons to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cons to i8*), i32 2) to i64),
   ; # [5168] conc
   i64 26690909746,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_conc to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Conc to i8*), i32 2) to i64),
   ; # [5184] circ
   i64 26695079474,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_circ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Circ to i8*), i32 2) to i64),
   ; # [5200] rot
   i64 122091298,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_rot to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Rot to i8*), i32 2) to i64),
   ; # [5216] list
   i64 31259530946,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_list to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_List to i8*), i32 2) to i64),
   ; # [5232] need
   i64 26949867234,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_need to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Need to i8*), i32 2) to i64),
   ; # [5248] range
   i64 6968431744802,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_range to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Range to i8*), i32 2) to i64),
   ; # [5264] full
   i64 29104756322,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_full to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Full to i8*), i32 2) to i64),
   ; # [5280] make
   i64 27224577746,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_make to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Make to i8*), i32 2) to i64),
   ; # [5296] made
   i64 27217237714,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_made to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Made to i8*), i32 2) to i64),
   ; # [5312] chain
   i64 7587430303282,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_chain to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Chain to i8*), i32 2) to i64),
   ; # [5328] link
   i64 28838368962,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_link to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Link to i8*), i32 2) to i64),
   ; # [5344] yoke
   i64 27224635282,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_yoke to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Yoke to i8*), i32 2) to i64),
   ; # [5360] copy
   i64 32598586930,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_copy to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Copy to i8*), i32 2) to i64),
   ; # [5376] mix
   i64 126260946,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_mix to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Mix to i8*), i32 2) to i64),
   ; # [5392] append
   i64 1766804976764434,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_append to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Append to i8*), i32 2) to i64),
   ; # [5408] delete
   i64 1784809475429954,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_delete to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Delete to i8*), i32 2) to i64),
   ; # [5424] delq
   i64 30446868034,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_delq to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Delq to i8*), i32 2) to i64),
   ; # [5440] replace
   i64 456611883680945954,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_replace to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Replace to i8*), i32 2) to i64),
   ; # [5456] insert
   i64 2048554834519698,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_insert to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Insert to i8*), i32 2) to i64),
   ; # [5472] remove
   i64 1784949599786786,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_remove to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Remove to i8*), i32 2) to i64),
   ; # [5488] place
   i64 6967344416514,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_place to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Place to i8*), i32 2) to i64),
   ; # [5504] strip
   i64 7724887131954,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_strip to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Strip to i8*), i32 2) to i64),
   ; # [5520] split
   i64 7999758731058,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_split to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Split to i8*), i32 2) to i64),
   ; # [5536] reverse
   i64 456894525016004386,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_reverse to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Reverse to i8*), i32 2) to i64),
   ; # [5552] flip
   i64 30175315554,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_flip to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Flip to i8*), i32 2) to i64),
   ; # [5568] trim
   i64 29370033986,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_trim to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Trim to i8*), i32 2) to i64),
   ; # [5584] clip
   i64 30175315506,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_clip to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Clip to i8*), i32 2) to i64),
   ; # [5600] head
   i64 26945672834,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_head to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Head to i8*), i32 2) to i64),
   ; # [5616] tail
   i64 29101528898,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_tail to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Tail to i8*), i32 2) to i64),
   ; # [5632] stem
   i64 29365847858,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_stem to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Stem to i8*), i32 2) to i64),
   ; # [5648] fin
   i64 115775074,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_fin to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Fin to i8*), i32 2) to i64),
   ; # [5664] last
   i64 31259498178,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_last to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Last to i8*), i32 2) to i64),
   ; # [5680] ==
   i64 250834,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_eq to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Eq to i8*), i32 2) to i64),
   ; # [5696] n==
   i64 64214754,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_neq to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Neq to i8*), i32 2) to i64),
   ; # [5712] =
   i64 978,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_equal to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Equal to i8*), i32 2) to i64),
   ; # [5728] <>
   i64 254914,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_nequal to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Nequal to i8*), i32 2) to i64),
   ; # [5744] =0
   i64 197586,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_eq0 to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Eq0 to i8*), i32 2) to i64),
   ; # [5760] =1
   i64 201682,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_eq1 to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Eq1 to i8*), i32 2) to i64),
   ; # [5776] =T
   i64 345042,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_eqT to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_EqT to i8*), i32 2) to i64),
   ; # [5792] n0
   i64 198370,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_neq0 to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Neq0 to i8*), i32 2) to i64),
   ; # [5808] nT
   i64 345826,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_neqT to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_NeqT to i8*), i32 2) to i64),
   ; # [5824] <
   i64 962,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_lt to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Lt to i8*), i32 2) to i64),
   ; # [5840] <=
   i64 250818,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_le to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Le to i8*), i32 2) to i64),
   ; # [5856] >
   i64 994,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_gt to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Gt to i8*), i32 2) to i64),
   ; # [5872] >=
   i64 250850,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_ge to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Ge to i8*), i32 2) to i64),
   ; # [5888] max
   i64 126228178,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_max to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Max to i8*), i32 2) to i64),
   ; # [5904] min
   i64 115775186,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_min to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Min to i8*), i32 2) to i64),
   ; # [5920] atom
   i64 29376333330,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_atom to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Atom to i8*), i32 2) to i64),
   ; # [5936] pair
   i64 30712141570,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_pair to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Pair to i8*), i32 2) to i64),
   ; # [5952] circ?
   i64 4356022113842,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_circQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_CircQ to i8*), i32 2) to i64),
   ; # [5968] lst?
   i64 17033541314,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_lstQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_LstQ to i8*), i32 2) to i64),
   ; # [5984] num?
   i64 17026209506,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_numQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_NumQ to i8*), i32 2) to i64),
   ; # [6000] sym?
   i64 17026225970,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_symQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_SymQ to i8*), i32 2) to i64),
   ; # [6016] flg?
   i64 17019881058,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_flgQ to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_FlgQ to i8*), i32 2) to i64),
   ; # [6032] member
   i64 2012476297598674,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_member to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Member to i8*), i32 2) to i64),
   ; # [6048] memq
   i64 30447916754,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_memq to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Memq to i8*), i32 2) to i64),
   ; # [6064] mmeq
   i64 30439560914,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_mmeq to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Mmeq to i8*), i32 2) to i64),
   ; # [6080] sect
   i64 31242737458,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_sect to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Sect to i8*), i32 2) to i64),
   ; # [6096] diff
   i64 27487802946,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_diff to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Diff to i8*), i32 2) to i64),
   ; # [6112] index
   i64 8273554499218,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_index to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Index to i8*), i32 2) to i64),
   ; # [6128] offset
   i64 2047665225754354,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_offset to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Offset to i8*), i32 2) to i64),
   ; # [6144] prior
   i64 7863927252738,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_prior to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Prior to i8*), i32 2) to i64),
   ; # [6160] length
   i64 1837586572531394,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_length to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Length to i8*), i32 2) to i64),
   ; # [6176] size
   i64 27240339250,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_size to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Size to i8*), i32 2) to i64),
   ; # [6192] bytes
   i64 7929973937698,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_bytes to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Bytes to i8*), i32 2) to i64),
   ; # [6208] assoc
   i64 6833145591314,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_assoc to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Assoc to i8*), i32 2) to i64),
   ; # [6224] rassoc
   i64 1749285271377698,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_rassoc to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Rassoc to i8*), i32 2) to i64),
   ; # [6240] asoq
   i64 30450071058,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_asoq to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Asoq to i8*), i32 2) to i64),
   ; # [6256] rasoq
   i64 7795218192162,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_rasoq to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Rasoq to i8*), i32 2) to i64),
   ; # [6272] rank
   i64 28838336290,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_rank to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Rank to i8*), i32 2) to i64),
   ; # [6288] match
   i64 7173522724562,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_match to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Match to i8*), i32 2) to i64),
   ; # [6304] fill
   i64 29104707170,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_fill to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Fill to i8*), i32 2) to i64),
   ; # [6320] prove
   i64 6972459394818,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_prove to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Prove to i8*), i32 2) to i64),
   ; # [6336] ->
   i64 254674,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_arrow to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Arrow to i8*), i32 2) to i64),
   ; # [6352] unify
   i64 8342547654482,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_unify to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Unify to i8*), i32 2) to i64),
   ; # [6368] group
   i64 7728105203314,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_group to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Group to i8*), i32 2) to i64),
   ; # [6384] sort
   i64 31258507058,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_sort to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Sort to i8*), i32 2) to i64),
   ; # [6400] tty
   i64 127354690,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_tty to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Tty to i8*), i32 2) to i64),
   ; # [6416] raw
   i64 125179682,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_raw to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Raw to i8*), i32 2) to i64),
   ; # [6432] alarm
   i64 7521126762002,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_alarm to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Alarm to i8*), i32 2) to i64),
   ; # [6448] sigio
   i64 7656156075826,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_sigio to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Sigio to i8*), i32 2) to i64),
   ; # [6464] kids
   i64 30975366834,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_kids to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Kids to i8*), i32 2) to i64),
   ; # [6480] protect
   i64 524166155115898626,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_protect to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Protect to i8*), i32 2) to i64),
   ; # [6496] heap
   i64 30166898306,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_heap to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Heap to i8*), i32 2) to i64),
   ; # [6512] stack
   i64 7379661309746,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_stack to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Stack to i8*), i32 2) to i64),
   ; # [6528] byte
   i64 27234113058,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_byte to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Byte to i8*), i32 2) to i64),
   ; # [6544] env
   i64 124184146,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_env to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Env to i8*), i32 2) to i64),
   ; # [6560] date
   i64 27234014786,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_date to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Date to i8*), i32 2) to i64),
   ; # [6576] time
   i64 27226707778,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_time to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Time to i8*), i32 2) to i64),
   ; # [6592] usec
   i64 26681489234,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_usec to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Usec to i8*), i32 2) to i64),
   ; # [6608] quit
   i64 31249094418,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_quit to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Quit to i8*), i32 2) to i64),
   ; # [6624] sys
   i64 121083698,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_sys to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Sys to i8*), i32 2) to i64),
   ; # [6640] pwd
   i64 105346818,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_pwd to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Pwd to i8*), i32 2) to i64),
   ; # [6656] cd
   i64 411186,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cd to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cd to i8*), i32 2) to i64),
   ; # [6672] ctty
   i64 32602801714,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_ctty to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Ctty to i8*), i32 2) to i64),
   ; # [6688] cmd
   i64 105305650,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_cmd to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Cmd to i8*), i32 2) to i64),
   ; # [6704] dir
   i64 119969346,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_dir to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Dir to i8*), i32 2) to i64),
   ; # [6720] info
   i64 29903742610,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_info to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Info to i8*), i32 2) to i64),
   ; # [6736] file
   i64 27225658978,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_file to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_File to i8*), i32 2) to i64),
   ; # [6752] argv
   i64 31783855634,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_argv to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Argv to i8*), i32 2) to i64),
   ; # [6768] opt
   i64 122095346,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_opt to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Opt to i8*), i32 2) to i64),
   ; # [6784] errno
   i64 7657509824082,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_errno to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Errno to i8*), i32 2) to i64),
   ; # [6800] %@
   i64 262738,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_nat to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Nat to i8*), i32 2) to i64),
   ; # [6816] native
   i64 1784947996497634,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_native to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Native to i8*), i32 2) to i64),
   ; # [6832] struct
   i64 2047528336312114,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_struct to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Struct to i8*), i32 2) to i64),
   ; # [6848] lisp
   i64 30185789122,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_lisp to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Lisp to i8*), i32 2) to i64),
   ; # [6864] args
   i64 30978549266,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_args to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Args to i8*), i32 2) to i64),
   ; # [6880] next
   i64 31264757474,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_next to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Next to i8*), i32 2) to i64),
   ; # [6896] arg
   i64 108471826,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_arg to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Arg to i8*), i32 2) to i64),
   ; # [6912] rest
   i64 31259514658,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_rest to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Rest to i8*), i32 2) to i64),
   ; # [6928] adr
   i64 119948818,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_adr to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Adr to i8*), i32 2) to i64),
   ; # [6944] trail
   i64 7449991391042,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_trail to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Trail to i8*), i32 2) to i64),
   ; # [6960] up
   i64 460626,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_up to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Up to i8*), i32 2) to i64),
   ; # [6976] history
   i64 546948723242342018,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_history to i8*), i32 2) to i64),
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_History to i8*), i32 2) to i64),
   ; # [6992] version
   i64 497355938196772706,
-  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_version to i8*), i32 2) to i64)
+  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast (i64(i64)* @_Version to i8*), i32 2) to i64)
 ], align 16
 @gcData = global [53 x i64] [
   i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 96) to i64),
@@ -1468,30 +1468,30 @@ declare void @llvm.stackrestore(i8*)
   i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64)
 ], align 8
 @cbFuns = global [24 x i64] [
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb1 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb2 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb3 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb4 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb5 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb6 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb7 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb8 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb9 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb10 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb11 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb12 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb13 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb14 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb15 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb16 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb17 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb18 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb19 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb20 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb21 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb22 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb23 to i64),
-  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_cb24 to i64)
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb1 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb2 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb3 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb4 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb5 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb6 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb7 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb8 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb9 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb10 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb11 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb12 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb13 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb14 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb15 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb16 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb17 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb18 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb19 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb20 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb21 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb22 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb23 to i64),
+  i64 ptrtoint (i64(i64,i64,i64,i64,i64)* @_Cb24 to i64)
 ], align 8
 @env = global [18 x i64] [
   i64 0,
@@ -1520,7 +1520,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 370,
   i64 130,
-  i64 66
+  i64 130
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -4454,7 +4454,7 @@ $2:
   ret i64 %210
 }
 
-define i64 @_tty(i64) align 8 {
+define i64 @_Tty(i64) align 8 {
 $1:
 ; # (let (Out (val $OutFile) Put (val (i8** $Put))) (set $OutFile (va...
 ; # (val $OutFile)
@@ -4542,7 +4542,7 @@ $4:
   ret i64 %35
 }
 
-define i64 @_raw(i64) align 8 {
+define i64 @_Raw(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (cond ((atom X) (if (val Termio) $T $Nil)) ((nil...
 ; # (cdr Exe)
@@ -4606,7 +4606,7 @@ $2:
   ret i64 %20
 }
 
-define i64 @_alarm(i64) align 8 {
+define i64 @_Alarm(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (prog1 (cnt (i64 (alarm (i32 (evCnt Exe X))))) (...
 ; # (cdr Exe)
@@ -4635,7 +4635,7 @@ $1:
   ret i64 %9
 }
 
-define i64 @_sigio(i64) align 8 {
+define i64 @_Sigio(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Fd (evCnt Exe X)) (set $Sigio (cdr X)) (fcntlSe...
 ; # (cdr Exe)
@@ -4668,7 +4668,7 @@ $1:
   ret i64 %15
 }
 
-define i64 @_kids(i64) align 8 {
+define i64 @_Kids(i64) align 8 {
 $1:
 ; # (let (X $Nil Cld (val $Child) <Cld (ofs Cld (* (val $Children) (c...
 ; # (val $Child)
@@ -4720,7 +4720,7 @@ $4:
   ret i64 %23
 }
 
-define i64 @_protect(i64) align 8 {
+define i64 @_Protect(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (prog2 (set $Protect (+ (val $Protect) 1)) (run ...
 ; # (cdr Exe)
@@ -4792,7 +4792,7 @@ $4:
   ret i64 %31
 }
 
-define i64 @_heap(i64) align 8 {
+define i64 @_Heap(i64) align 8 {
 $1:
 ; # (if (nil? (eval (cadr Exe))) (let (N 1 P (val $Heaps)) (while (se...
 ; # (cadr Exe)
@@ -4887,7 +4887,7 @@ $9:
   ret i64 %43
 }
 
-define i64 @_stack(i64) align 8 {
+define i64 @_Stack(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Crt (val $Coroutines)) (if (or (atom X) (and Cr...
 ; # (cdr Exe)
@@ -5255,7 +5255,7 @@ $9:
   ret i64 %15
 }
 
-define i64 @_date(i64) align 8 {
+define i64 @_Date(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (cond ((atom X) (let N (getDate) (tmDate (& N (h...
 ; # (cdr Exe)
@@ -5506,7 +5506,7 @@ $2:
   ret i64 %127
 }
 
-define i64 @_time(i64) align 8 {
+define i64 @_Time(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (cond ((atom X) (cnt (getTime))) ((t? (eval (car...
 ; # (cdr Exe)
@@ -5725,7 +5725,7 @@ $2:
   ret i64 %110
 }
 
-define i64 @_usec(i64) align 8 {
+define i64 @_Usec(i64) align 8 {
 $1:
 ; # (if (nil? (eval (cadr Exe))) (- (getUsec YES) (val $USec)) (getUs...
 ; # (cadr Exe)
@@ -7547,7 +7547,7 @@ $6:
   ret void
 }
 
-define i64 @_gc(i64) align 8 {
+define i64 @_Gc(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X))) (if (nil? Y) (gc) (set $GcCou...
 ; # (cdr Exe)
@@ -16283,7 +16283,7 @@ $33:
   ret i64 %595
 }
 
-define i64 @_format(i64) align 8 {
+define i64 @_Format(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) A (save (eval (++ X))) Y (eval (++ X)) Scl (if ...
 ; # (cdr Exe)
@@ -16625,7 +16625,7 @@ $33:
   ret i64 %174
 }
 
-define i64 @_add(i64) align 8 {
+define i64 @_Add(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (save -ZERO (let R (...
 ; # (cdr Exe)
@@ -16785,7 +16785,7 @@ $9:
   ret i64 %72
 }
 
-define i64 @_sub(i64) align 8 {
+define i64 @_Sub(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (eval (++ X))) (if (nil? N) N (needNum Exe N)...
 ; # (cdr Exe)
@@ -16969,7 +16969,7 @@ $9:
   ret i64 %82
 }
 
-define i64 @_inc(i64) align 8 {
+define i64 @_Inc(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (cond ((nil? (eval (car X))) @) ((num? @) (incs ...
 ; # (cdr Exe)
@@ -17212,7 +17212,7 @@ $2:
   ret i64 %104
 }
 
-define i64 @_dec(i64) align 8 {
+define i64 @_Dec(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (cond ((nil? (eval (car X))) @) ((num? @) (decs ...
 ; # (cdr Exe)
@@ -17455,7 +17455,7 @@ $2:
   ret i64 %104
 }
 
-define i64 @_mul(i64) align 8 {
+define i64 @_Mul(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (save -ZERO (let (Si...
 ; # (cdr Exe)
@@ -17685,7 +17685,7 @@ $9:
   ret i64 %110
 }
 
-define i64 @_mulDiv(i64) align 8 {
+define i64 @_MulDiv(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (save -ZERO (let (Si...
 ; # (cdr Exe)
@@ -17960,7 +17960,7 @@ $9:
   ret i64 %137
 }
 
-define i64 @_div(i64) align 8 {
+define i64 @_Div(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (save -ZERO (let (Si...
 ; # (cdr Exe)
@@ -18192,7 +18192,7 @@ $9:
   ret i64 %110
 }
 
-define i64 @_rem(i64) align 8 {
+define i64 @_Rem(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (save -ZERO (let (Si...
 ; # (cdr Exe)
@@ -18393,7 +18393,7 @@ $9:
   ret i64 %86
 }
 
-define i64 @_shr(i64) align 8 {
+define i64 @_Shr(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (evCnt Exe X) Y (eval (cadr X))) (if (or (=0 ...
 ; # (cdr Exe)
@@ -18668,7 +18668,7 @@ $14:
   ret i64 %131
 }
 
-define i64 @_rev(i64) align 8 {
+define i64 @_Rev(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) C (evCnt Exe X) N (evCnt Exe (cdr X)) R 0) (loo...
 ; # (cdr Exe)
@@ -18718,7 +18718,7 @@ $4:
   ret i64 %26
 }
 
-define i64 @_lt0(i64) align 8 {
+define i64 @_Lt0(i64) align 8 {
 $1:
 ; # (if (and (num? (eval (cadr Exe))) (sign? @)) @ $Nil)
 ; # (and (num? (eval (cadr Exe))) (sign? @))
@@ -18768,7 +18768,7 @@ $11:
   ret i64 %19
 }
 
-define i64 @_le0(i64) align 8 {
+define i64 @_Le0(i64) align 8 {
 $1:
 ; # (if (and (num? (eval (cadr Exe))) (or (== @ ZERO) (sign? @))) @ $...
 ; # (and (num? (eval (cadr Exe))) (or (== @ ZERO) (sign? @)))
@@ -18826,7 +18826,7 @@ $13:
   ret i64 %21
 }
 
-define i64 @_ge0(i64) align 8 {
+define i64 @_Ge0(i64) align 8 {
 $1:
 ; # (if (and (num? (eval (cadr Exe))) (not (sign? @))) @ $Nil)
 ; # (and (num? (eval (cadr Exe))) (not (sign? @)))
@@ -18878,7 +18878,7 @@ $11:
   ret i64 %20
 }
 
-define i64 @_gt0(i64) align 8 {
+define i64 @_Gt0(i64) align 8 {
 $1:
 ; # (if (and (num? (eval (cadr Exe))) (<> @ ZERO) (not (sign? @))) @ ...
 ; # (and (num? (eval (cadr Exe))) (<> @ ZERO) (not (sign? @)))
@@ -18934,7 +18934,7 @@ $12:
   ret i64 %21
 }
 
-define i64 @_abs(i64) align 8 {
+define i64 @_Abs(i64) align 8 {
 $1:
 ; # (if (nil? (eval (cadr Exe))) @ (pos (needNum Exe @)))
 ; # (cadr Exe)
@@ -18984,7 +18984,7 @@ $9:
   ret i64 %18
 }
 
-define i64 @_bitQ(i64) align 8 {
+define i64 @_BitQ(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (save (pos (needNum Exe (eval (++ X)))))) (lo...
 ; # (cdr Exe)
@@ -19230,7 +19230,7 @@ $11:
   ret i64 %120
 }
 
-define i64 @_bitAnd(i64) align 8 {
+define i64 @_BitAnd(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (save -ZERO (let R (...
 ; # (cdr Exe)
@@ -19394,7 +19394,7 @@ $9:
   ret i64 %74
 }
 
-define i64 @_bitOr(i64) align 8 {
+define i64 @_BitOr(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (save -ZERO (let R (...
 ; # (cdr Exe)
@@ -19558,7 +19558,7 @@ $9:
   ret i64 %74
 }
 
-define i64 @_bitXor(i64) align 8 {
+define i64 @_BitXor(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (save -ZERO (let R (...
 ; # (cdr Exe)
@@ -19722,7 +19722,7 @@ $9:
   ret i64 %74
 }
 
-define i64 @_sqrt(i64) align 8 {
+define i64 @_Sqrt(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (when (sign? (needNu...
 ; # (cdr Exe)
@@ -20339,7 +20339,7 @@ $6:
   ret i64 %74
 }
 
-define i64 @_seed(i64) align 8 {
+define i64 @_Seed(i64) align 8 {
 $1:
 ; # (let N (mul 6364136223846793005 (initSeed (eval (cadr Exe)))) (se...
 ; # (cadr Exe)
@@ -20388,7 +20388,7 @@ $2:
   ret i64 %22
 }
 
-define i64 @_hash(i64) align 8 {
+define i64 @_Hash(i64) align 8 {
 $1:
 ; # (let (N (initSeed (eval (cadr Exe))) C 64 R 0) (loop (when (& (x|...
 ; # (cadr Exe)
@@ -20470,7 +20470,7 @@ $11:
   ret i64 %41
 }
 
-define i64 @_rand(i64) align 8 {
+define i64 @_Rand(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X)) N (add (mul 6364136223846793005...
 ; # (cdr Exe)
@@ -23722,7 +23722,7 @@ $4:
   ret void
 }
 
-define i64 @_name(i64) align 8 {
+define i64 @_Name(i64) align 8 {
 $1:
 ; # (let Tail (val (tail (needSymb Exe (eval (cadr Exe))))) (if (sym?...
 ; # (cadr Exe)
@@ -23842,7 +23842,7 @@ $11:
   ret i64 %56
 }
 
-define i64 @_nsp(i64) align 8 {
+define i64 @_Nsp(i64) align 8 {
 $1:
 ; # (let Sym (needSymb Exe (eval (cadr Exe))) (if (sym? (val (tail Sy...
 ; # (cadr Exe)
@@ -23960,7 +23960,7 @@ $11:
   ret i64 %53
 }
 
-define i64 @_spQ(i64) align 8 {
+define i64 @_SpQ(i64) align 8 {
 $1:
 ; # (if (isBlank (eval (cadr Exe))) $T $Nil)
 ; # (cadr Exe)
@@ -24000,7 +24000,7 @@ $9:
   ret i64 %15
 }
 
-define i64 @_patQ(i64) align 8 {
+define i64 @_PatQ(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (and (symb? X) (== (firstChar X) (ch...
 ; # (cadr Exe)
@@ -24053,7 +24053,7 @@ $11:
   ret i64 %20
 }
 
-define i64 @_funQ(i64) align 8 {
+define i64 @_FunQ(i64) align 8 {
 $1:
 ; # (if (funq (eval (cadr Exe))) @ $Nil)
 ; # (cadr Exe)
@@ -24094,7 +24094,7 @@ $9:
   ret i64 %16
 }
 
-define i64 @_getd(i64) align 8 {
+define i64 @_Getd(i64) align 8 {
 $1:
 ; # (let (X (eval (cadr Exe)) V T) (cond ((not (symb? X)) $Nil) ((fun...
 ; # (cadr Exe)
@@ -24402,7 +24402,7 @@ $4:
   ret i64 %118
 }
 
-define i64 @_all(i64) align 8 {
+define i64 @_All(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (cond ((nil? X) (let Y (val $Intern) (lo...
 ; # (cadr Exe)
@@ -24650,7 +24650,7 @@ $7:
   ret i64 %128
 }
 
-define i64 @_symbols(i64) align 8 {
+define i64 @_Symbols(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (atom X) (val $Intern) (let Y (eval (++ X)) ...
 ; # (cdr Exe)
@@ -25062,7 +25062,7 @@ $4:
   ret i64 %201
 }
 
-define i64 @_intern(i64) align 8 {
+define i64 @_Intern(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Sym (save (evSym X))) (cond ((sym? (val (tail S...
 ; # (cdr Exe)
@@ -25214,7 +25214,7 @@ $2:
   ret i64 %72
 }
 
-define i64 @_hide(i64) align 8 {
+define i64 @_Hide(i64) align 8 {
 $1:
 ; # (set $Transient (set 2 $Transient $Nil))
 ; # (set 2 $Transient $Nil)
@@ -25226,7 +25226,7 @@ $1:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64)
 }
 
-define i64 @_boxQ(i64) align 8 {
+define i64 @_BoxQ(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (and (symb? X) (not (sym? (val (tail...
 ; # (cadr Exe)
@@ -25304,7 +25304,7 @@ $15:
   ret i64 %33
 }
 
-define i64 @_strQ(i64) align 8 {
+define i64 @_StrQ(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (cond ((not (symb? X)) $Nil) ((or (sym? ...
 ; # (cadr Exe)
@@ -25387,7 +25387,7 @@ $7:
   ret i64 %35
 }
 
-define i64 @_zap(i64) align 8 {
+define i64 @_Zap(i64) align 8 {
 $1:
 ; # (let Sym (needSymb Exe (eval (cadr Exe))) (if (sym? (val (tail Sy...
 ; # (cadr Exe)
@@ -25473,7 +25473,7 @@ $11:
   ret i64 %13
 }
 
-define i64 @_chop(i64) align 8 {
+define i64 @_Chop(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (or (pair X) (nil? X)) X (let Tail (...
 ; # (cadr Exe)
@@ -25655,7 +25655,7 @@ $11:
   ret i64 %85
 }
 
-define i64 @_pack(i64) align 8 {
+define i64 @_Pack(i64) align 8 {
 $1:
 ; # (save -ZERO (let (X (cdr Exe) P (push 4 NIL ZERO NIL)) (link (ofs...
   %1 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([18 x i64]* @env to i8*), i32 0) to i64) to i64*
@@ -25746,7 +25746,7 @@ $4:
   ret i64 %41
 }
 
-define i64 @_glue(i64) align 8 {
+define i64 @_Glue(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X)))) (if (atom (eval (++ X))...
 ; # (cdr Exe)
@@ -25897,7 +25897,7 @@ $14:
   ret i64 %74
 }
 
-define i64 @_text(i64) align 8 {
+define i64 @_Text(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (evSym X)) (if (nil? Y) Y (let (P (push 0 (xN...
 ; # (cdr Exe)
@@ -26311,7 +26311,7 @@ $2:
   ret i1 %30
 }
 
-define i64 @_preQ(i64) align 8 {
+define i64 @_PreQ(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (evSym X)) Z (evSym (shift X))) (cond (...
 ; # (cdr Exe)
@@ -26401,7 +26401,7 @@ $2:
   ret i64 %37
 }
 
-define i64 @_subQ(i64) align 8 {
+define i64 @_SubQ(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (evSym X)) Z (evSym (shift X))) (if (su...
 ; # (cdr Exe)
@@ -26447,7 +26447,7 @@ $4:
   ret i64 %18
 }
 
-define i64 @_val(i64) align 8 {
+define i64 @_Val(i64) align 8 {
 $1:
 ; # (let V (needVar Exe (eval (cadr Exe))) (when (and (sym? V) (sym? ...
 ; # (cadr Exe)
@@ -26513,7 +26513,7 @@ $12:
   ret i64 %25
 }
 
-define i64 @_set(i64) align 8 {
+define i64 @_Set(i64) align 8 {
 $1:
 ; # (save -ZERO (let X (cdr Exe) (loop (let Y (safe (needChkVar Exe (...
   %1 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([18 x i64]* @env to i8*), i32 0) to i64) to i64*
@@ -26663,7 +26663,7 @@ $24:
   ret i64 %61
 }
 
-define i64 @_setq(i64) align 8 {
+define i64 @_Setq(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (set (needChkVar Exe (++ X)) (eval ...
 ; # (cdr Exe)
@@ -26744,7 +26744,7 @@ $15:
   ret i64 %32
 }
 
-define i64 @_swap(i64) align 8 {
+define i64 @_Swap(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (needChkVar Exe (eval (++ X))))) (when ...
 ; # (cdr Exe)
@@ -26869,7 +26869,7 @@ $17:
   ret i64 %48
 }
 
-define i64 @_xchg(i64) align 8 {
+define i64 @_Xchg(i64) align 8 {
 $1:
 ; # (save -ZERO (let X (cdr Exe) (loop (let Y (safe (needChkVar Exe (...
   %1 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([18 x i64]* @env to i8*), i32 0) to i64) to i64*
@@ -27077,7 +27077,7 @@ $34:
   ret i64 %87
 }
 
-define i64 @_on(i64) align 8 {
+define i64 @_On(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (set (needChkVar Exe (++ X)) $T) (? (atom ...
 ; # (cdr Exe)
@@ -27133,7 +27133,7 @@ $10:
   ret i64 %20
 }
 
-define i64 @_off(i64) align 8 {
+define i64 @_Off(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (set (needChkVar Exe (++ X)) $Nil) (? (ato...
 ; # (cdr Exe)
@@ -27189,7 +27189,7 @@ $10:
   ret i64 %20
 }
 
-define i64 @_onOff(i64) align 8 {
+define i64 @_OnOff(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let (Y (needChkVar Exe (++ X)) Z (if (nil...
 ; # (cdr Exe)
@@ -27262,7 +27262,7 @@ $13:
   ret i64 %27
 }
 
-define i64 @_zero(i64) align 8 {
+define i64 @_Zero(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (set (needChkVar Exe (++ X)) ZERO) (? (ato...
 ; # (cdr Exe)
@@ -27318,7 +27318,7 @@ $10:
   ret i64 %20
 }
 
-define i64 @_one(i64) align 8 {
+define i64 @_One(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (set (needChkVar Exe (++ X)) ONE) (? (atom...
 ; # (cdr Exe)
@@ -27374,7 +27374,7 @@ $10:
   ret i64 %20
 }
 
-define i64 @_default(i64) align 8 {
+define i64 @_Default(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (needChkVar Exe (++ X)) (when (nil?...
 ; # (cdr Exe)
@@ -27472,7 +27472,7 @@ $17:
   ret i64 %40
 }
 
-define i64 @_push(i64) align 8 {
+define i64 @_Push(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (needChkVar Exe (eval (++ X))))) (when ...
 ; # (cdr Exe)
@@ -27623,7 +27623,7 @@ $24:
   ret i64 %63
 }
 
-define i64 @_push1(i64) align 8 {
+define i64 @_Push1(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (needChkVar Exe (eval (++ X))))) (when ...
 ; # (cdr Exe)
@@ -27809,7 +27809,7 @@ $32:
   ret i64 %80
 }
 
-define i64 @_push1q(i64) align 8 {
+define i64 @_Push1q(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (needChkVar Exe (eval (++ X))))) (when ...
 ; # (cdr Exe)
@@ -27995,7 +27995,7 @@ $32:
   ret i64 %80
 }
 
-define i64 @_pop(i64) align 8 {
+define i64 @_Pop(i64) align 8 {
 $1:
 ; # (let X (needChkVar Exe (eval (cadr Exe))) (when (and (sym? X) (sy...
 ; # (cadr Exe)
@@ -28094,7 +28094,7 @@ $19:
   ret i64 %37
 }
 
-define i64 @_popq(i64) align 8 {
+define i64 @_Popq(i64) align 8 {
 $1:
 ; # (let X (needChkVar Exe (cadr Exe)) (if (atom (val X)) @ (set X (c...
 ; # (cadr Exe)
@@ -28150,7 +28150,7 @@ $10:
   ret i64 %21
 }
 
-define i64 @_shift(i64) align 8 {
+define i64 @_Shift(i64) align 8 {
 $1:
 ; # (let X (needChkVar Exe (eval (cadr Exe))) (when (and (sym? X) (sy...
 ; # (cadr Exe)
@@ -28249,7 +28249,7 @@ $20:
   ret i64 %35
 }
 
-define i64 @_cut(i64) align 8 {
+define i64 @_Cut(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (evCnt Exe X)) (if (le0 N) $Nil (let Y (needC...
 ; # (cdr Exe)
@@ -28451,7 +28451,7 @@ $4:
   ret i64 %100
 }
 
-define i64 @_del(i64) align 8 {
+define i64 @_Del(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Var (save (needChkVar Ex...
 ; # (cdr Exe)
@@ -28741,7 +28741,7 @@ $29:
   ret i64 %137
 }
 
-define i64 @_queue(i64) align 8 {
+define i64 @_Queue(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (needChkVar Exe (eval (++ X))))) (when ...
 ; # (cdr Exe)
@@ -28907,7 +28907,7 @@ $24:
   ret i64 %46
 }
 
-define i64 @_fifo(i64) align 8 {
+define i64 @_Fifo(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (needChkVar Exe (eval (++ X))))) (when ...
 ; # (cdr Exe)
@@ -29187,7 +29187,7 @@ $17:
   ret i64 %137
 }
 
-define i64 @_rid(i64) align 8 {
+define i64 @_Rid(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (needChkVar Exe (eval (++ X))))) (when ...
 ; # (cdr Exe)
@@ -29514,7 +29514,7 @@ $22:
   ret i64 %164
 }
 
-define i64 @_enum(i64) align 8 {
+define i64 @_Enum(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Var (save (needChkVar Exe (eval (++ X)))) Cnt T...
 ; # (cdr Exe)
@@ -30176,7 +30176,7 @@ $15:
   ret i64 %380
 }
 
-define i64 @_enumQ(i64) align 8 {
+define i64 @_EnumQ(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) P (save (eval (++ X))) Cnt T) (loop (? (le0 (se...
 ; # (cdr Exe)
@@ -31265,7 +31265,7 @@ $4:
   ret i64 %130
 }
 
-define i64 @_idx(i64) align 8 {
+define i64 @_Idx(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Var (needChkVar Exe (eval (++ X)))) (if (atom X...
 ; # (cdr Exe)
@@ -31443,7 +31443,7 @@ $15:
   ret i64 %83
 }
 
-define i64 @_lup(i64) align 8 {
+define i64 @_Lup(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) P (save (eval (++ X)))) (if (atom P) P (let Key...
 ; # (cdr Exe)
@@ -33348,7 +33348,7 @@ $29:
   ret i64 %109
 }
 
-define i64 @_put(i64) align 8 {
+define i64 @_Put(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Key T) (loop (setq Key (...
 ; # (cdr Exe)
@@ -33603,7 +33603,7 @@ $24:
   ret i64 %77
 }
 
-define i64 @_get(i64) align 8 {
+define i64 @_Get(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (when (pair X) (save Y (loop (...
 ; # (cdr Exe)
@@ -33714,7 +33714,7 @@ $8:
   ret i64 %56
 }
 
-define i64 @_prop(i64) align 8 {
+define i64 @_Prop(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Key T) (loop (setq Key (...
 ; # (cdr Exe)
@@ -33880,7 +33880,7 @@ $18:
   ret i64 %81
 }
 
-define i64 @_semicol(i64) align 8 {
+define i64 @_Semicol(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (when (pair X) (save Y (loop (...
 ; # (cdr Exe)
@@ -33972,7 +33972,7 @@ $8:
   ret i64 %48
 }
 
-define i64 @_setCol(i64) align 8 {
+define i64 @_SetCol(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (val $This) Key T) (loop (setq Key (++ X)) (?...
 ; # (cdr Exe)
@@ -34153,7 +34153,7 @@ $14:
   ret i64 %42
 }
 
-define i64 @_col(i64) align 8 {
+define i64 @_Col(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (val $This)) (loop (setq Y (getn Exe Y (++ X)...
 ; # (cdr Exe)
@@ -34195,7 +34195,7 @@ $4:
   ret i64 %21
 }
 
-define i64 @_propCol(i64) align 8 {
+define i64 @_PropCol(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (val $This) Key T) (loop (setq Key (++ X)) (?...
 ; # (cdr Exe)
@@ -34287,7 +34287,7 @@ $8:
   ret i64 %46
 }
 
-define i64 @_putl(i64) align 8 {
+define i64 @_Putl(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z T) (loop (setq Z (eval...
 ; # (cdr Exe)
@@ -34579,7 +34579,7 @@ $34:
   ret i64 %47
 }
 
-define i64 @_getl(i64) align 8 {
+define i64 @_Getl(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (while (pair (shift X)...
 ; # (cdr Exe)
@@ -34866,7 +34866,7 @@ $9:
   ret void
 }
 
-define i64 @_wipe(i64) align 8 {
+define i64 @_Wipe(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (unless (nil? X) (if (atom X) (wipe Exe ...
 ; # (cadr Exe)
@@ -35035,7 +35035,7 @@ $4:
   ret i64 %40
 }
 
-define i64 @_meta(i64) align 8 {
+define i64 @_Meta(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X)))) (when (num? Y) (argErr ...
 ; # (cdr Exe)
@@ -35206,7 +35206,7 @@ $20:
   ret i64 %80
 }
 
-define i64 @_lowQ(i64) align 8 {
+define i64 @_LowQ(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (and (symb? X) (isLowc (firstChar X)...
 ; # (cadr Exe)
@@ -35259,7 +35259,7 @@ $11:
   ret i64 %20
 }
 
-define i64 @_uppQ(i64) align 8 {
+define i64 @_UppQ(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (and (symb? X) (isUppc (firstChar X)...
 ; # (cadr Exe)
@@ -35312,7 +35312,7 @@ $11:
   ret i64 %20
 }
 
-define i64 @_lowc(i64) align 8 {
+define i64 @_Lowc(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (or (not (symb? X)) (nil? X)) X (let...
 ; # (cadr Exe)
@@ -35427,7 +35427,7 @@ $11:
   ret i64 %51
 }
 
-define i64 @_uppc(i64) align 8 {
+define i64 @_Uppc(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (or (not (symb? X)) (nil? X)) X (let...
 ; # (cadr Exe)
@@ -35558,7 +35558,7 @@ $11:
   ret i64 %55
 }
 
-define i64 @_fold(i64) align 8 {
+define i64 @_Fold(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (if (or (not (symb? Y)) (nil? ...
 ; # (cdr Exe)
@@ -41802,7 +41802,7 @@ $4:
   ret void
 }
 
-define i64 @_path(i64) align 8 {
+define i64 @_Path(i64) align 8 {
 $1:
 ; # (let Nm (xName Exe (evSym (cdr Exe))) (mkStr (pathString Nm (b8 (...
 ; # (cdr Exe)
@@ -43554,7 +43554,7 @@ $141:
   ret i64 %875
 }
 
-define i64 @_wait(i64) align 8 {
+define i64 @_Wait(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (if (nil? (eval (++ X))) 292MY (xCnt Exe @)))...
 ; # (cdr Exe)
@@ -43770,7 +43770,7 @@ $12:
   ret i64 %101
 }
 
-define i64 @_sync(i64) align 8 {
+define i64 @_Sync(i64) align 8 {
 $1:
 ; # (cond ((or (=0 (val $Mic)) (=0 (val $Hear))) $Nil) ((val $Sync) $...
 ; # (or (=0 (val $Mic)) (=0 (val $Hear)))
@@ -43884,7 +43884,7 @@ $2:
   ret i64 %38
 }
 
-define i64 @_hear(i64) align 8 {
+define i64 @_Hear(i64) align 8 {
 $1:
 ; # (let (X (eval (cadr Exe)) Fd (i32 (xCnt Exe X))) (when (or (lt0 F...
 ; # (cadr Exe)
@@ -43972,7 +43972,7 @@ $14:
   ret i64 %13
 }
 
-define i64 @_tell(i64) align 8 {
+define i64 @_Tell(i64) align 8 {
 $1:
 ; # (cond ((and (=0 (val $Tell)) (=0 (val $Children))) $Nil) ((atom (...
 ; # (and (=0 (val $Tell)) (=0 (val $Children)))
@@ -44157,7 +44157,7 @@ $2:
   ret i64 %77
 }
 
-define i64 @_poll(i64) align 8 {
+define i64 @_Poll(i64) align 8 {
 $1:
 ; # (let (C (eval (cadr Exe)) Fd (i32 (xCnt Exe C))) (when (or (lt0 F...
 ; # (cadr Exe)
@@ -48001,7 +48001,7 @@ $4:
   ret i64 %190
 }
 
-define i64 @_read(i64) align 8 {
+define i64 @_Read(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (prog1 (if (atom X) (read1 0) (let Y (save (need...
 ; # (cdr Exe)
@@ -48153,7 +48153,7 @@ $22:
   ret i64 %57
 }
 
-define i64 @_key(i64) align 8 {
+define i64 @_Key(i64) align 8 {
 $1:
 ; # (flushAll)
   call void @flushAll()
@@ -48384,7 +48384,7 @@ $41:
   ret i64 %77
 }
 
-define i64 @_peek(i64) align 8 {
+define i64 @_Peek(i64) align 8 {
 $1:
 ; # (let Chr (val $Chr) (unless Chr (setq Chr (call $Get))) (if (lt0 ...
 ; # (val $Chr)
@@ -48418,7 +48418,7 @@ $6:
   ret i64 %12
 }
 
-define i64 @_char(i64) align 8 {
+define i64 @_Char(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (cond ((atom X) (let Chr (val $Chr) (unless Chr ...
 ; # (cdr Exe)
@@ -48543,7 +48543,7 @@ $2:
   ret i64 %47
 }
 
-define i64 @_skip(i64) align 8 {
+define i64 @_Skip(i64) align 8 {
 $1:
 ; # (if (lt0 (skipc (firstChar (evSym (cdr Exe))))) $Nil (mkChar @))
 ; # (cdr Exe)
@@ -48570,7 +48570,7 @@ $4:
   ret i64 %9
 }
 
-define i64 @_eol(i64) align 8 {
+define i64 @_Eol(i64) align 8 {
 $1:
 ; # (let C (if (val $Chr) @ (call $Get)) (if (or (le0 C) (== C (char ...
 ; # (if (val $Chr) @ (call $Get))
@@ -48608,7 +48608,7 @@ $9:
   ret i64 %9
 }
 
-define i64 @_eof(i64) align 8 {
+define i64 @_Eof(i64) align 8 {
 $1:
 ; # (nond ((nil? (eval (cadr Exe))) (set $Chr -1) $T) ((=0 (val $Chr)...
 ; # (cadr Exe)
@@ -48681,7 +48681,7 @@ $2:
   ret i64 %23
 }
 
-define i64 @_from(i64) align 8 {
+define i64 @_From(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N 1 Y (evSym X) Nm (xName Exe Y) L (link (push ...
 ; # (cdr Exe)
@@ -49057,7 +49057,7 @@ $9:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64)
 }
 
-define i64 @_till(i64) align 8 {
+define i64 @_Till(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Nm (xName Exe (evSym X)) S (bufString Nm (b8 (b...
 ; # (cdr Exe)
@@ -49312,7 +49312,7 @@ $2:
   ret i1 %7
 }
 
-define i64 @_line(i64) align 8 {
+define i64 @_Line(i64) align 8 {
 $1:
 ; # (let C (val $Chr) (unless C (setq C (call $Get))) (if (eol C) $Ni...
 ; # (val $Chr)
@@ -49907,7 +49907,7 @@ $6:
   ret i64 %329
 }
 
-define i64 @_in(i64) align 8 {
+define i64 @_In(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (rdOpen Exe (eval (++ X)) (b8+ (ioFrame T))) (pr...
 ; # (cdr Exe)
@@ -49999,7 +49999,7 @@ $9:
   ret i64 %42
 }
 
-define i64 @_out(i64) align 8 {
+define i64 @_Out(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (wrOpen Exe (eval (++ X)) (b8+ (ioFrame T))) (pr...
 ; # (cdr Exe)
@@ -50091,7 +50091,7 @@ $9:
   ret i64 %42
 }
 
-define i64 @_err(i64) align 8 {
+define i64 @_Err(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (erOpen Exe (eval (++ X)) (b8+ (ctFrame T))) (pr...
 ; # (cdr Exe)
@@ -50181,7 +50181,7 @@ $9:
   ret i64 %42
 }
 
-define i64 @_ctl(i64) align 8 {
+define i64 @_Ctl(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (ctOpen Exe (eval (++ X)) (b8+ (ctFrame T))) (pr...
 ; # (cdr Exe)
@@ -50451,7 +50451,7 @@ $2:
   ret i32 %75
 }
 
-define i64 @_input(i64) align 8 {
+define i64 @_Input(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Get: (getFrame (b8+ (getFrame T)))) (Get: link ...
 ; # (cdr Exe)
@@ -50785,7 +50785,7 @@ $14:
   ret void
 }
 
-define i64 @_output(i64) align 8 {
+define i64 @_Output(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Put: (putFrame (b8+ (putFrame T)))) (Put: link ...
 ; # (cdr Exe)
@@ -50905,7 +50905,7 @@ $14:
   ret i64 %46
 }
 
-define i64 @_fd(i64) align 8 {
+define i64 @_Fd(i64) align 8 {
 $1:
 ; # (let (X (eval (cadr Exe)) Fd (currFd Exe)) (unless (nil? X) (dup2...
 ; # (cadr Exe)
@@ -51534,7 +51534,7 @@ $14:
   ret i32 %261
 }
 
-define i64 @_pipe(i64) align 8 {
+define i64 @_Pipe(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (++ X) Pfd (b32 2) Io: (ioFrame (b8+ (ioFrame...
 ; # (cdr Exe)
@@ -51761,7 +51761,7 @@ $11:
   ret i64 %88
 }
 
-define i64 @_open(i64) align 8 {
+define i64 @_Open(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Nm (xName Exe (evSym X)) S (pathString Nm (b8 (...
 ; # (cdr Exe)
@@ -51863,7 +51863,7 @@ $12:
   ret i64 %37
 }
 
-define i64 @_close(i64) align 8 {
+define i64 @_Close(i64) align 8 {
 $1:
 ; # (let (X (eval (cadr Exe)) Fd (i32 (xCnt Exe X))) (loop (? (=0 (cl...
 ; # (cadr Exe)
@@ -51934,7 +51934,7 @@ $9:
   ret i64 %22
 }
 
-define i64 @_echo(i64) align 8 {
+define i64 @_Echo(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (cond ((and (nil? Y) (atom X))...
 ; # (cdr Exe)
@@ -54248,7 +54248,7 @@ $5:
   ret void
 }
 
-define i64 @_prin(i64) align 8 {
+define i64 @_Prin(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (eval (++ X)) (prin Y) (? (atom X) ...
 ; # (cdr Exe)
@@ -54303,17 +54303,17 @@ $9:
   ret i64 %22
 }
 
-define i64 @_prinl(i64) align 8 {
+define i64 @_Prinl(i64) align 8 {
 $1:
-; # (prog1 (_prin Exe) (newline))
-; # (_prin Exe)
-  %1 = call i64 @_prin(i64 %0)
+; # (prog1 (_Prin Exe) (newline))
+; # (_Prin Exe)
+  %1 = call i64 @_Prin(i64 %0)
 ; # (newline)
   call void @newline()
   ret i64 %1
 }
 
-define i64 @_space(i64) align 8 {
+define i64 @_Space(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (ifn (nil? X) (let N (xCnt Exe X) (while...
 ; # (cadr Exe)
@@ -54375,7 +54375,7 @@ $9:
   ret i64 %21
 }
 
-define i64 @_print(i64) align 8 {
+define i64 @_Print(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (eval (++ X)) (print Y) (? (atom X)...
 ; # (cdr Exe)
@@ -54432,27 +54432,27 @@ $9:
   ret i64 %22
 }
 
-define i64 @_printsp(i64) align 8 {
+define i64 @_Printsp(i64) align 8 {
 $1:
-; # (prog1 (_print Exe) (space))
-; # (_print Exe)
-  %1 = call i64 @_print(i64 %0)
+; # (prog1 (_Print Exe) (space))
+; # (_Print Exe)
+  %1 = call i64 @_Print(i64 %0)
 ; # (space)
   call void @space()
   ret i64 %1
 }
 
-define i64 @_println(i64) align 8 {
+define i64 @_Println(i64) align 8 {
 $1:
-; # (prog1 (_print Exe) (newline))
-; # (_print Exe)
-  %1 = call i64 @_print(i64 %0)
+; # (prog1 (_Print Exe) (newline))
+; # (_Print Exe)
+  %1 = call i64 @_Print(i64 %0)
 ; # (newline)
   call void @newline()
   ret i64 %1
 }
 
-define i64 @_flush(i64) align 8 {
+define i64 @_Flush(i64) align 8 {
 $1:
 ; # (if (flush (val $OutFile)) $T $Nil)
 ; # (val $OutFile)
@@ -54469,7 +54469,7 @@ $4:
   ret i64 %3
 }
 
-define i64 @_rewind(i64) align 8 {
+define i64 @_Rewind(i64) align 8 {
 $1:
 ; # (let Out: (outFile (val $OutFile)) (if (and (Out:) (let Fd (Out: ...
 ; # (val $OutFile)
@@ -54511,7 +54511,7 @@ $8:
   ret i64 %11
 }
 
-define i64 @_ext(i64) align 8 {
+define i64 @_Ext(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (evCnt Exe X) Old (val $ExtN)) (set $ExtN (i3...
 ; # (cdr Exe)
@@ -54626,7 +54626,7 @@ $3:
   ret void
 }
 
-define i64 @_plio(i64) align 8 {
+define i64 @_Plio(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) P (i8* (if (cnt? (needNum Exe (eval (++ X)))) (...
 ; # (cdr Exe)
@@ -54782,7 +54782,7 @@ $14:
   ret i64 %64
 }
 
-define i64 @_rd(i64) align 8 {
+define i64 @_Rd(i64) align 8 {
 $1:
 ; # (let X (save (eval (cadr Exe))) (cond ((lt0 ((inFile (val $InFile...
 ; # (cadr Exe)
@@ -55040,7 +55040,7 @@ $7:
   ret i64 %106
 }
 
-define i64 @_pr(i64) align 8 {
+define i64 @_Pr(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (eval (++ X)) (set $Extn (val $ExtN...
 ; # (cdr Exe)
@@ -55099,7 +55099,7 @@ $9:
   ret i64 %23
 }
 
-define i64 @_wr(i64) align 8 {
+define i64 @_Wr(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let N (eval (++ X)) (_putStdout (i8 (int ...
 ; # (cdr Exe)
@@ -55420,7 +55420,7 @@ $1:
   ret i64 %10
 }
 
-define i64 @_any(i64) align 8 {
+define i64 @_Any(i64) align 8 {
 $1:
 ; # (if (sym? (val (tail (save (evSym (cdr Exe)))))) $Nil (parse (nam...
 ; # (cdr Exe)
@@ -55482,7 +55482,7 @@ $4:
   ret i64 %27
 }
 
-define i64 @_sym(i64) align 8 {
+define i64 @_Sym(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (begString (push 4 NIL ZERO NIL NIL NIL)...
 ; # (cadr Exe)
@@ -55524,7 +55524,7 @@ $2:
   ret i64 %16
 }
 
-define i64 @_str(i64) align 8 {
+define i64 @_Str(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X))) (cond ((nil? Y) Y) ((num? Y) ...
 ; # (cdr Exe)
@@ -56351,7 +56351,7 @@ $8:
   ret i64 %20
 }
 
-define i64 @_load(i64) align 8 {
+define i64 @_Load(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (if (t? (eval (++ X))) (loadAll Exe...
 ; # (cdr Exe)
@@ -57448,7 +57448,7 @@ $6:
   ret i1 0
 }
 
-define i64 @_extQ(i64) align 8 {
+define i64 @_ExtQ(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (and (symb? X) (sym? (val (tail X)))...
 ; # (cadr Exe)
@@ -57693,7 +57693,7 @@ $3:
   ret void
 }
 
-define i64 @_rollback(i64) align 8 {
+define i64 @_Rollback(i64) align 8 {
 $1:
 ; # (if (and (=0 (val $DBs)) (atom (val $Ext))) $Nil (let (Tos 0 P (v...
 ; # (and (=0 (val $DBs)) (atom (val $Ext)))
@@ -57953,7 +57953,7 @@ $6:
   ret i64 %119
 }
 
-define i64 @_extern(i64) align 8 {
+define i64 @_Extern(i64) align 8 {
 $1:
 ; # (let (Sym (needSymb Exe (eval (cadr Exe))) Nm (name (& (val (tail...
 ; # (cadr Exe)
@@ -58544,7 +58544,7 @@ $5:
   ret void
 }
 
-define i64 @_pool(i64) align 8 {
+define i64 @_Pool(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Sym1 (save (evSym X)) Dbs (save (evLst (shift X...
 ; # (cdr Exe)
@@ -58622,15 +58622,15 @@ $1:
 ; # (set $Solo ZERO)
   %49 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 424) to i64) to i64*
   store i64 2, i64* %49
-; # (when (val $DBs) (_rollback ZERO) (let (Db (val $DbFiles) C @) (l...
+; # (when (val $DBs) (_Rollback ZERO) (let (Db (val $DbFiles) C @) (l...
 ; # (val $DBs)
   %50 = load i32, i32* @$DBs
   %51 = icmp ne i32 %50, 0
   br i1 %51, label %$2, label %$3
 $2:
   %52 = phi i64 [%16, %$1] ; # Dbs
-; # (_rollback ZERO)
-  %53 = call i64 @_rollback(i64 2)
+; # (_Rollback ZERO)
+  %53 = call i64 @_Rollback(i64 2)
 ; # (let (Db (val $DbFiles) C @) (loop (let Db: (dbFile Db) (close (D...
 ; # (val $DbFiles)
   %54 = load i8*, i8** @$DbFiles
@@ -59192,7 +59192,7 @@ $12:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 280) to i64)
 }
 
-define i64 @_pool2(i64) align 8 {
+define i64 @_Pool2(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Sym (evSym X) Nm (xName Exe Sym) Jnl (val $DbJn...
 ; # (cdr Exe)
@@ -59370,7 +59370,7 @@ $12:
   ret i64 %80
 }
 
-define i64 @_journal(i64) align 8 {
+define i64 @_Journal(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Sym (evSym X) Jnl (val $DbJnl) Log (val $DbLog)...
 ; # (cdr Exe)
@@ -59610,7 +59610,7 @@ $26:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 280) to i64)
 }
 
-define i64 @_id(i64) align 8 {
+define i64 @_Id(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (if (cnt? Y) (extern (if (nil?...
 ; # (cdr Exe)
@@ -59807,7 +59807,7 @@ $9:
   ret i64 %82
 }
 
-define i64 @_blk(i64) align 8 {
+define i64 @_Blk(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Db: (dbFile (b8+ (dbFile T)))) (Db: fd (i32 (ev...
 ; # (cdr Exe)
@@ -60062,7 +60062,7 @@ $4:
   ret i64 %113
 }
 
-define i64 @_seq(i64) align 8 {
+define i64 @_Seq(i64) align 8 {
 $1:
 ; # (let (X (eval (cadr Exe)) F (dec (i32 (int X))) N 0 Buf (b8 BLK))...
 ; # (cadr Exe)
@@ -60258,7 +60258,7 @@ $20:
   ret i64 %86
 }
 
-define i64 @_lieu(i64) align 8 {
+define i64 @_Lieu(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (nond ((symb? X) $Nil) ((sym? (val (tail...
 ; # (cadr Exe)
@@ -60381,7 +60381,7 @@ $7:
   ret i64 %55
 }
 
-define i64 @_lock(i64) align 8 {
+define i64 @_Lock(i64) align 8 {
 $1:
 ; # (if (if (nil? (eval (cadr Exe))) (tryLock (val $DbFiles) 0 0) (le...
 ; # (if (nil? (eval (cadr Exe))) (tryLock (val $DbFiles) 0 0) (let X ...
@@ -61073,7 +61073,7 @@ $8:
   ret void
 }
 
-define i64 @_touch(i64) align 8 {
+define i64 @_Touch(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (when (and (symb? X) (sym? (val (tail X)...
 ; # (cadr Exe)
@@ -61185,7 +61185,7 @@ $3:
   ret void
 }
 
-define i64 @_commit(i64) align 8 {
+define i64 @_Commit(i64) align 8 {
 $1:
 ; # (let (Args (cdr Exe) Rpc (save (eval (++ Args))) Notify NO) (set ...
 ; # (cdr Exe)
@@ -62763,7 +62763,7 @@ $132:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 280) to i64)
 }
 
-define i64 @_mark(i64) align 8 {
+define i64 @_Mark(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (if (== Y ZERO) (let (Db (val ...
 ; # (cdr Exe)
@@ -63047,7 +63047,7 @@ $9:
   ret i64 %128
 }
 
-define i64 @_free(i64) align 8 {
+define i64 @_Free(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) F (dec (i32 (evCnt Exe X))) Buf (b8 (* BLK 2)))...
 ; # (cdr Exe)
@@ -63154,7 +63154,7 @@ $6:
   ret i64 %19
 }
 
-define i64 @_dbck(i64) align 8 {
+define i64 @_Dbck(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X)) Jnl (val $DbJnl) Buf (b8 (* BL...
 ; # (cdr Exe)
@@ -63662,7 +63662,7 @@ $48:
   ret i64 %260
 }
 
-define i64 @_apply(i64) align 8 {
+define i64 @_Apply(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (push NIL $Nil ZERO (eval (++ X)) NIL)) (set ...
 ; # (cdr Exe)
@@ -63900,7 +63900,7 @@ $22:
   ret i64 %125
 }
 
-define i64 @_pass(i64) align 8 {
+define i64 @_Pass(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (push NIL $Nil ZERO (eval (++ X)) NIL)) (set ...
 ; # (cdr Exe)
@@ -64096,7 +64096,7 @@ $17:
   ret i64 %103
 }
 
-define i64 @_fun(i64) align 8 {
+define i64 @_Fun(i64) align 8 {
 $1:
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -64107,7 +64107,7 @@ $1:
   ret i64 %4
 }
 
-define i64 @_maps(i64) align 8 {
+define i64 @_Maps(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R $Nil E (push NIL $Nil ZERO (eval (++ X)) NIL)...
 ; # (cdr Exe)
@@ -64560,7 +64560,7 @@ $30:
   ret i64 %260
 }
 
-define i64 @_map(i64) align 8 {
+define i64 @_Map(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R $Nil E (push NIL $Nil ZERO (eval (car X)) NIL...
 ; # (cdr Exe)
@@ -64779,7 +64779,7 @@ $17:
   ret i64 %116
 }
 
-define i64 @_mapc(i64) align 8 {
+define i64 @_Mapc(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R $Nil E (push NIL $Nil ZERO (eval (++ X)) NIL)...
 ; # (cdr Exe)
@@ -65112,7 +65112,7 @@ $18:
   ret i64 %190
 }
 
-define i64 @_maplist(i64) align 8 {
+define i64 @_Maplist(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save $Nil) L 0 E (push NIL $Nil ZERO (eval (...
 ; # (cdr Exe)
@@ -65385,7 +65385,7 @@ $17:
   ret i64 %152
 }
 
-define i64 @_mapcar(i64) align 8 {
+define i64 @_Mapcar(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save $Nil) L 0 E (push NIL $Nil ZERO (eval (...
 ; # (cdr Exe)
@@ -65776,7 +65776,7 @@ $18:
   ret i64 %230
 }
 
-define i64 @_mapcon(i64) align 8 {
+define i64 @_Mapcon(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save $Nil) L 0 E (push NIL $Nil ZERO (eval (...
 ; # (cdr Exe)
@@ -66093,7 +66093,7 @@ $17:
   ret i64 %181
 }
 
-define i64 @_mapcan(i64) align 8 {
+define i64 @_Mapcan(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save $Nil) L 0 E (push NIL $Nil ZERO (eval (...
 ; # (cdr Exe)
@@ -66523,7 +66523,7 @@ $18:
   ret i64 %254
 }
 
-define i64 @_filter(i64) align 8 {
+define i64 @_Filter(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save $Nil) L 0 E (push NIL $Nil ZERO (eval (...
 ; # (cdr Exe)
@@ -66932,7 +66932,7 @@ $18:
   ret i64 %241
 }
 
-define i64 @_extract(i64) align 8 {
+define i64 @_Extract(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save $Nil) L 0 E (push NIL $Nil ZERO (eval (...
 ; # (cdr Exe)
@@ -67336,7 +67336,7 @@ $18:
   ret i64 %237
 }
 
-define i64 @_seek(i64) align 8 {
+define i64 @_Seek(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (push NIL $Nil ZERO (eval (car X)) NIL)) (set...
 ; # (cdr Exe)
@@ -67568,7 +67568,7 @@ $17:
   ret i64 %118
 }
 
-define i64 @_find(i64) align 8 {
+define i64 @_Find(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (push NIL $Nil ZERO (eval (++ X)) NIL) A (pus...
 ; # (cdr Exe)
@@ -67909,7 +67909,7 @@ $19:
   ret i64 %184
 }
 
-define i64 @_pick(i64) align 8 {
+define i64 @_Pick(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (push NIL $Nil ZERO (eval (++ X)) NIL) A (pus...
 ; # (cdr Exe)
@@ -68242,7 +68242,7 @@ $19:
   ret i64 %179
 }
 
-define i64 @_fully(i64) align 8 {
+define i64 @_Fully(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (push NIL $Nil ZERO (eval (++ X)) NIL) A (pus...
 ; # (cdr Exe)
@@ -68573,7 +68573,7 @@ $19:
   ret i64 %178
 }
 
-define i64 @_cnt(i64) align 8 {
+define i64 @_Cnt(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R ZERO E (push NIL $Nil ZERO (eval (++ X)) NIL)...
 ; # (cdr Exe)
@@ -68919,7 +68919,7 @@ $18:
   ret i64 %196
 }
 
-define i64 @_sum(i64) align 8 {
+define i64 @_Sum(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save ZERO) E (push NIL $Nil ZERO (eval (++ X...
 ; # (cdr Exe)
@@ -69299,7 +69299,7 @@ $18:
   ret i64 %218
 }
 
-define i64 @_maxi(i64) align 8 {
+define i64 @_Maxi(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R $Nil R2 (save $Nil) E (push NIL $Nil ZERO (ev...
 ; # (cdr Exe)
@@ -69689,7 +69689,7 @@ $18:
   ret i64 %228
 }
 
-define i64 @_mini(i64) align 8 {
+define i64 @_Mini(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R $Nil R2 (save $T) E (push NIL $Nil ZERO (eval...
 ; # (cdr Exe)
@@ -70147,7 +70147,7 @@ $2:
   ret void
 }
 
-define i64 @_fish(i64) align 8 {
+define i64 @_Fish(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (link (push $Nil NIL) T) P (push NIL $Nil ZER...
 ; # (cdr Exe)
@@ -70387,7 +70387,7 @@ $19:
   ret i64 %125
 }
 
-define i64 @_by(i64) align 8 {
+define i64 @_By(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save $Nil) L 0 E (push NIL $Nil ZERO (eval (...
 ; # (cdr Exe)
@@ -71276,7 +71276,7 @@ $12:
   ret void
 }
 
-define i64 @_quote(i64) align 8 {
+define i64 @_Quote(i64) align 8 {
 $1:
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -71285,7 +71285,7 @@ $1:
   ret i64 %3
 }
 
-define i64 @_as(i64) align 8 {
+define i64 @_As(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (car X))) @ (cdr X)))
 ; # (cdr Exe)
@@ -71331,7 +71331,7 @@ $9:
   ret i64 %18
 }
 
-define i64 @_lit(i64) align 8 {
+define i64 @_Lit(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (or (num? X) (nil? X) (t? X) (and (p...
 ; # (cadr Exe)
@@ -71404,7 +71404,7 @@ $15:
   ret i64 %27
 }
 
-define i64 @_eval(i64) align 8 {
+define i64 @_Eval(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (save (eval (car X)))) (when (pair (cdr X)) (...
 ; # (cdr Exe)
@@ -71582,7 +71582,7 @@ $24:
   ret i64 %79
 }
 
-define i64 @_run(i64) align 8 {
+define i64 @_Run(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (eval (car X))) (cond ((num? E) E) ((sym? E) ...
 ; # (cdr Exe)
@@ -71764,7 +71764,7 @@ $7:
   ret i64 %83
 }
 
-define i64 @_def(i64) align 8 {
+define i64 @_Def(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Sym (save (needSymb Exe (eval (++ X)))) Y (save...
 ; # (cdr Exe)
@@ -72047,7 +72047,7 @@ $16:
   ret i64 %15
 }
 
-define i64 @_de(i64) align 8 {
+define i64 @_De(i64) align 8 {
 $1:
 ; # (let S (cadr Exe) (redefine Exe S (cddr Exe)) S)
 ; # (cadr Exe)
@@ -72068,7 +72068,7 @@ $1:
   ret i64 %5
 }
 
-define i64 @_dm(i64) align 8 {
+define i64 @_Dm(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (car X) Fun (cdr X) Msg (if (atom Y) Y (car Y...
 ; # (cdr Exe)
@@ -73435,7 +73435,7 @@ $3:
   ret i64 0
 }
 
-define i64 @__meth(i64, i64) align 8 {
+define i64 @__Meth(i64, i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Obj (save (eval (car X)))) (when (sym? (val (ta...
 ; # (cdr Exe)
@@ -73532,7 +73532,7 @@ $13:
   ret i64 %38
 }
 
-define i64 @_box(i64) align 8 {
+define i64 @_Box(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -73564,7 +73564,7 @@ $2:
   ret i64 %14
 }
 
-define i64 @_new(i64) align 8 {
+define i64 @_New(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X)) Obj (save (cond ((pair Y) (cons...
 ; # (cdr Exe)
@@ -73839,7 +73839,7 @@ $22:
   ret i64 %43
 }
 
-define i64 @_type(i64) align 8 {
+define i64 @_Type(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X))) (ifn (symb? Y) $Nil (when (sy...
 ; # (cdr Exe)
@@ -74134,7 +74134,7 @@ $4:
   ret i1 %52
 }
 
-define i64 @_isa(i64) align 8 {
+define i64 @_Isa(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X))) (ifn (...
 ; # (cdr Exe)
@@ -74298,7 +74298,7 @@ $14:
   ret i64 %72
 }
 
-define i64 @_method(i64) align 8 {
+define i64 @_Method(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Msg (save (eval (++ X))) Obj (needSymb Exe (eva...
 ; # (cdr Exe)
@@ -74407,7 +74407,7 @@ $18:
   ret i64 %44
 }
 
-define i64 @_send(i64) align 8 {
+define i64 @_Send(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Msg (save (eval (++ X))) Obj (save (needSymb Ex...
 ; # (cdr Exe)
@@ -74540,7 +74540,7 @@ $18:
   ret i64 %57
 }
 
-define i64 @_try(i64) align 8 {
+define i64 @_Try(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Msg (save (eval (++ X))) Obj (save (eval (car X...
 ; # (cdr Exe)
@@ -74685,7 +74685,7 @@ $14:
   ret i64 %59
 }
 
-define i64 @_super(i64) align 8 {
+define i64 @_Super(i64) align 8 {
 $1:
 ; # (let (Lst (val (if (val $Typ) (car @) (val $This))) Key (val $Key...
 ; # (if (val $Typ) (car @) (val $This))
@@ -74965,7 +74965,7 @@ $7:
   ret i64 %72
 }
 
-define i64 @_extra(i64) align 8 {
+define i64 @_Extra(i64) align 8 {
 $1:
 ; # (let Key (val $Key) (unless (> (extra (val $This) Key) 1) (err Ex...
 ; # (val $Key)
@@ -75010,7 +75010,7 @@ $3:
   ret i64 %14
 }
 
-define i64 @_and(i64) align 8 {
+define i64 @_And(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (eval (car X)) (? (nil? Y) Y) (set ...
 ; # (cdr Exe)
@@ -75077,7 +75077,7 @@ $9:
   ret i64 %27
 }
 
-define i64 @_or(i64) align 8 {
+define i64 @_Or(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (eval (car X)) (? (not (nil? Y)) (s...
 ; # (cdr Exe)
@@ -75146,7 +75146,7 @@ $9:
   ret i64 %28
 }
 
-define i64 @_nand(i64) align 8 {
+define i64 @_Nand(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (eval (car X)) (? (nil? Y) $T) (set...
 ; # (cdr Exe)
@@ -75213,7 +75213,7 @@ $9:
   ret i64 %27
 }
 
-define i64 @_nor(i64) align 8 {
+define i64 @_Nor(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (loop (let Y (eval (car X)) (? (not (nil? Y)) (s...
 ; # (cdr Exe)
@@ -75282,7 +75282,7 @@ $9:
   ret i64 %28
 }
 
-define i64 @_xor(i64) align 8 {
+define i64 @_Xor(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (++ X))) (if (nil? (eval (car X)...
 ; # (cdr Exe)
@@ -75399,7 +75399,7 @@ $9:
   ret i64 %50
 }
 
-define i64 @_bool(i64) align 8 {
+define i64 @_Bool(i64) align 8 {
 $1:
 ; # (if (nil? (eval (cadr Exe))) @ $T)
 ; # (cadr Exe)
@@ -75439,7 +75439,7 @@ $9:
   ret i64 %15
 }
 
-define i64 @_not(i64) align 8 {
+define i64 @_Not(i64) align 8 {
 $1:
 ; # (if (nil? (eval (cadr Exe))) $T (set $At @) $Nil)
 ; # (cadr Exe)
@@ -75482,7 +75482,7 @@ $9:
   ret i64 %16
 }
 
-define i64 @_nil(i64) align 8 {
+define i64 @_Nil(i64) align 8 {
 $1:
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -75517,7 +75517,7 @@ $6:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64)
 }
 
-define i64 @_t(i64) align 8 {
+define i64 @_T(i64) align 8 {
 $1:
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -75552,7 +75552,7 @@ $6:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 280) to i64)
 }
 
-define i64 @_prog(i64) align 8 {
+define i64 @_Prog(i64) align 8 {
 $1:
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -75610,7 +75610,7 @@ $4:
   ret i64 %29
 }
 
-define i64 @_prog1(i64) align 8 {
+define i64 @_Prog1(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (prog1 (set $At (save (eval (++ X)))) (exec X)))...
 ; # (cdr Exe)
@@ -75692,7 +75692,7 @@ $11:
   ret i64 %15
 }
 
-define i64 @_prog2(i64) align 8 {
+define i64 @_Prog2(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (prog2 (eval (++ X)) (set $At (save (eval (++ X)...
 ; # (cdr Exe)
@@ -75798,7 +75798,7 @@ $16:
   ret i64 %27
 }
 
-define i64 @_if(i64) align 8 {
+define i64 @_If(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (++ X))) (run (cdr X)) (set $At ...
 ; # (cdr Exe)
@@ -75923,7 +75923,7 @@ $9:
   ret i64 %60
 }
 
-define i64 @_ifn(i64) align 8 {
+define i64 @_Ifn(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (++ X))) (eval (car X)) (set $At...
 ; # (cdr Exe)
@@ -76048,7 +76048,7 @@ $9:
   ret i64 %60
 }
 
-define i64 @_if2(i64) align 8 {
+define i64 @_If2(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (++ X))) (if (nil? (eval (++ X))...
 ; # (cdr Exe)
@@ -76314,7 +76314,7 @@ $9:
   ret i64 %131
 }
 
-define i64 @_when(i64) align 8 {
+define i64 @_When(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (++ X))) @ (set $At @) (run X)))...
 ; # (cdr Exe)
@@ -76413,7 +76413,7 @@ $9:
   ret i64 %47
 }
 
-define i64 @_unless(i64) align 8 {
+define i64 @_Unless(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (eval (++ X))) (run X) (set $At @) $Ni...
 ; # (cdr Exe)
@@ -76512,7 +76512,7 @@ $9:
   ret i64 %47
 }
 
-define i64 @_cond(i64) align 8 {
+define i64 @_Cond(i64) align 8 {
 $1:
 ; # (let X Exe (loop (? (atom (shift X)) $Nil) (let Y (car X) (? (not...
 ; # (loop (? (atom (shift X)) $Nil) (let Y (car X) (? (not (nil? (eva...
@@ -76633,7 +76633,7 @@ $4:
   ret i64 %56
 }
 
-define i64 @_nond(i64) align 8 {
+define i64 @_Nond(i64) align 8 {
 $1:
 ; # (let X Exe (loop (? (atom (shift X)) $Nil) (let Y (car X) (? (nil...
 ; # (loop (? (atom (shift X)) $Nil) (let Y (car X) (? (nil? (eval (ca...
@@ -76752,7 +76752,7 @@ $4:
   ret i64 %55
 }
 
-define i64 @_case(i64) align 8 {
+define i64 @_Case(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) A (set $At (eval (car X)))) (loop (? (atom (shi...
 ; # (cdr Exe)
@@ -76930,7 +76930,7 @@ $9:
   ret i64 %85
 }
 
-define i64 @_casq(i64) align 8 {
+define i64 @_Casq(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) A (set $At (eval (car X)))) (loop (? (atom (shi...
 ; # (cdr Exe)
@@ -77097,7 +77097,7 @@ $9:
   ret i64 %80
 }
 
-define i64 @_state(i64) align 8 {
+define i64 @_State(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Var (save (needChkVar Exe (eval (car X))))) (lo...
 ; # (cdr Exe)
@@ -77359,7 +77359,7 @@ $15:
   ret i64 %123
 }
 
-define i64 @_while(i64) align 8 {
+define i64 @_While(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (++ X) R (save $Nil)) (until (nil? (eval E)) ...
 ; # (cdr Exe)
@@ -77478,7 +77478,7 @@ $9:
   ret i64 %55
 }
 
-define i64 @_until(i64) align 8 {
+define i64 @_Until(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) E (++ X) R (save $Nil)) (while (nil? (eval E)) ...
 ; # (cdr Exe)
@@ -77597,7 +77597,7 @@ $9:
   ret i64 %54
 }
 
-define i64 @_at(i64) align 8 {
+define i64 @_At(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (needPair Exe (eval (car X))) Z (cdr Y)) (con...
 ; # (cdr Exe)
@@ -78269,7 +78269,7 @@ $48:
   br label %$2
 }
 
-define i64 @_do(i64) align 8 {
+define i64 @_Do(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (cond ((nil? Y) Y) ((cnt? Y) (...
 ; # (cdr Exe)
@@ -78384,7 +78384,7 @@ $7:
   ret i64 %44
 }
 
-define i64 @_loop(i64) align 8 {
+define i64 @_Loop(i64) align 8 {
 $1:
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -78395,7 +78395,7 @@ $1:
   ret i64 %4
 }
 
-define i64 @_for(i64) align 8 {
+define i64 @_For(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (++ X) R $Nil) (cond ((atom Y) (needChkVar Ex...
 ; # (cdr Exe)
@@ -79480,7 +79480,7 @@ $2:
   ret i64 %573
 }
 
-define i64 @_with(i64) align 8 {
+define i64 @_With(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (needVar Exe (eval (++ X)))) (if (nil? Y) Y (...
 ; # (cdr Exe)
@@ -79618,7 +79618,7 @@ $11:
   ret i64 %65
 }
 
-define i64 @_bind(i64) align 8 {
+define i64 @_Bind(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (cond ((num? Y) (argErr Exe Y)...
 ; # (cdr Exe)
@@ -80050,7 +80050,7 @@ $7:
   ret i64 %210
 }
 
-define i64 @_job(i64) align 8 {
+define i64 @_Job(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) P (val $Bind) Q P) (whil...
 ; # (cdr Exe)
@@ -80365,7 +80365,7 @@ $11:
   ret void
 }
 
-define i64 @_let(i64) align 8 {
+define i64 @_Let(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (++ X)) (if (atom Y) (let P (set $Bind (push ...
 ; # (cdr Exe)
@@ -81034,7 +81034,7 @@ $4:
   ret i64 %352
 }
 
-define i64 @_letQ(i64) align 8 {
+define i64 @_LetQ(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (needChkVar Exe (++ X))) (if (nil? (eval (car...
 ; # (cdr Exe)
@@ -81191,7 +81191,7 @@ $15:
   ret i64 %73
 }
 
-define i64 @_use(i64) align 8 {
+define i64 @_Use(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (++ X)) (if (atom Y) (let P (set $Bind (push ...
 ; # (cdr Exe)
@@ -81434,7 +81434,7 @@ $4:
   ret i64 %128
 }
 
-define i64 @_buf(i64) align 8 {
+define i64 @_Buf(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (needChkVar Exe (++ X)) Z (needCnt Exe (eval ...
 ; # (cdr Exe)
@@ -81614,7 +81614,7 @@ $22:
   ret i64 %77
 }
 
-define i64 @_catch(i64) align 8 {
+define i64 @_Catch(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Ca: (caFrame (b8+ (+ (val JmpBufSize) (caFrame ...
 ; # (cdr Exe)
@@ -81793,7 +81793,7 @@ $11:
   ret i64 %95
 }
 
-define i64 @_throw(i64) align 8 {
+define i64 @_Throw(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Tag (save (eval (++ X))) R (save (eval (car X))...
 ; # (cdr Exe)
@@ -81930,7 +81930,7 @@ $14:
   unreachable
 }
 
-define i64 @_finally(i64) align 8 {
+define i64 @_Finally(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Ca: (caFrame (b8+ (+ (val JmpBufSize) (caFrame ...
 ; # (cdr Exe)
@@ -82326,7 +82326,7 @@ $1:
   ret i64 %42
 }
 
-define i64 @_co(i64) align 8 {
+define i64 @_Co(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (atom X) (if (val $Current) ((coroutine @) t...
 ; # (cdr Exe)
@@ -83234,7 +83234,7 @@ $4:
   ret i64 %476
 }
 
-define i64 @_yield(i64) align 8 {
+define i64 @_Yield(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Val (save (eval (++ X))) Tag (eval (++ X)) Crt ...
 ; # (cdr Exe)
@@ -84234,7 +84234,7 @@ $6:
   ret i64 %84
 }
 
-define i64 @_break(i64) align 8 {
+define i64 @_Break(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (unless (nil? (val $Dbg)) (setq X (brkLoad X))) ...
 ; # (cdr Exe)
@@ -84277,7 +84277,7 @@ $4:
   ret i64 %17
 }
 
-define i64 @_e(i64) align 8 {
+define i64 @_E(i64) align 8 {
 $1:
 ; # (let P (val $Break) (unless P (err Exe 0 ($ "No Break") null)) (l...
 ; # (val $Break)
@@ -84561,7 +84561,7 @@ $9:
   ret void
 }
 
-define i64 @_trace(i64) align 8 {
+define i64 @_Trace(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (nil? (val $Dbg)) (run (cddr X)) (let (Out (...
 ; # (cdr Exe)
@@ -84858,7 +84858,7 @@ $4:
   ret i64 %135
 }
 
-define i64 @_exec(i64) align 8 {
+define i64 @_Exec(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Av (b8* (inc (length X))) Cmd (xName Exe (evSym...
 ; # (cdr Exe)
@@ -84971,7 +84971,7 @@ $9:
   unreachable
 }
 
-define i64 @_call(i64) align 8 {
+define i64 @_Call(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Av (b8* (inc (length X))) Cmd (xName Exe (evSym...
 ; # (cdr Exe)
@@ -85256,7 +85256,7 @@ $34:
   ret i64 %114
 }
 
-define i64 @_ipid(i64) align 8 {
+define i64 @_Ipid(i64) align 8 {
 $1:
 ; # (let Io: (ioFrame (val $InFrames)) (if (and (Io:) (> (Io: pid) 1)...
 ; # (val $InFrames)
@@ -85295,7 +85295,7 @@ $6:
   ret i64 %14
 }
 
-define i64 @_opid(i64) align 8 {
+define i64 @_Opid(i64) align 8 {
 $1:
 ; # (let Io: (ioFrame (val $OutFrames)) (if (and (Io:) (> (Io: pid) 1...
 ; # (val $OutFrames)
@@ -85334,7 +85334,7 @@ $6:
   ret i64 %14
 }
 
-define i64 @_kill(i64) align 8 {
+define i64 @_Kill(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Pid (i32 (evCnt Exe X))) (if (kill Pid (if (ato...
 ; # (cdr Exe)
@@ -85387,7 +85387,7 @@ $7:
   ret i64 %24
 }
 
-define i64 @_fork(i64) align 8 {
+define i64 @_Fork(i64) align 8 {
 $1:
 ; # (if (forkLisp Exe) (cnt (i64 @)) $Nil)
 ; # (forkLisp Exe)
@@ -85408,7 +85408,7 @@ $4:
   ret i64 %6
 }
 
-define i64 @_detach(i64) align 8 {
+define i64 @_Detach(i64) align 8 {
 $1:
 ; # (prog1 (val $PPid) (unless (nil? @) (set $PPid $Nil) (close (val ...
 ; # (val $PPid)
@@ -85454,7 +85454,7 @@ $3:
   ret i64 %2
 }
 
-define i64 @_bye(i64) align 8 {
+define i64 @_Bye(i64) align 8 {
 $1:
 ; # (if (nil? (eval (cadr Exe))) 0 (i32 (xCnt Exe @)))
 ; # (cadr Exe)
@@ -85507,7 +85507,7 @@ $1:
   unreachable
 }
 
-define i64 @_car(i64) align 8 {
+define i64 @_Car(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -85547,7 +85547,7 @@ $8:
   ret i64 %17
 }
 
-define i64 @_cdr(i64) align 8 {
+define i64 @_Cdr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -85594,7 +85594,7 @@ $10:
   ret i64 %20
 }
 
-define i64 @_caar(i64) align 8 {
+define i64 @_Caar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -85644,7 +85644,7 @@ $10:
   ret i64 %21
 }
 
-define i64 @_cadr(i64) align 8 {
+define i64 @_Cadr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -85701,7 +85701,7 @@ $12:
   ret i64 %24
 }
 
-define i64 @_cdar(i64) align 8 {
+define i64 @_Cdar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -85758,7 +85758,7 @@ $12:
   ret i64 %24
 }
 
-define i64 @_cddr(i64) align 8 {
+define i64 @_Cddr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -85822,7 +85822,7 @@ $14:
   ret i64 %27
 }
 
-define i64 @_caaar(i64) align 8 {
+define i64 @_Caaar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -85882,7 +85882,7 @@ $12:
   ret i64 %25
 }
 
-define i64 @_caadr(i64) align 8 {
+define i64 @_Caadr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -85949,7 +85949,7 @@ $14:
   ret i64 %28
 }
 
-define i64 @_cadar(i64) align 8 {
+define i64 @_Cadar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -86016,7 +86016,7 @@ $14:
   ret i64 %28
 }
 
-define i64 @_caddr(i64) align 8 {
+define i64 @_Caddr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -86090,7 +86090,7 @@ $16:
   ret i64 %31
 }
 
-define i64 @_cdaar(i64) align 8 {
+define i64 @_Cdaar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -86157,7 +86157,7 @@ $14:
   ret i64 %28
 }
 
-define i64 @_cdadr(i64) align 8 {
+define i64 @_Cdadr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -86231,7 +86231,7 @@ $16:
   ret i64 %31
 }
 
-define i64 @_cddar(i64) align 8 {
+define i64 @_Cddar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -86305,7 +86305,7 @@ $16:
   ret i64 %31
 }
 
-define i64 @_cdddr(i64) align 8 {
+define i64 @_Cdddr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -86386,7 +86386,7 @@ $18:
   ret i64 %34
 }
 
-define i64 @_caaaar(i64) align 8 {
+define i64 @_Caaaar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -86456,7 +86456,7 @@ $14:
   ret i64 %29
 }
 
-define i64 @_caaadr(i64) align 8 {
+define i64 @_Caaadr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -86533,7 +86533,7 @@ $16:
   ret i64 %32
 }
 
-define i64 @_caadar(i64) align 8 {
+define i64 @_Caadar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -86610,7 +86610,7 @@ $16:
   ret i64 %32
 }
 
-define i64 @_caaddr(i64) align 8 {
+define i64 @_Caaddr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -86694,7 +86694,7 @@ $18:
   ret i64 %35
 }
 
-define i64 @_cadaar(i64) align 8 {
+define i64 @_Cadaar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -86771,7 +86771,7 @@ $16:
   ret i64 %32
 }
 
-define i64 @_cadadr(i64) align 8 {
+define i64 @_Cadadr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -86855,7 +86855,7 @@ $18:
   ret i64 %35
 }
 
-define i64 @_caddar(i64) align 8 {
+define i64 @_Caddar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -86939,7 +86939,7 @@ $18:
   ret i64 %35
 }
 
-define i64 @_cadddr(i64) align 8 {
+define i64 @_Cadddr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -87030,7 +87030,7 @@ $20:
   ret i64 %38
 }
 
-define i64 @_cdaaar(i64) align 8 {
+define i64 @_Cdaaar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -87107,7 +87107,7 @@ $16:
   ret i64 %32
 }
 
-define i64 @_cdaadr(i64) align 8 {
+define i64 @_Cdaadr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -87191,7 +87191,7 @@ $18:
   ret i64 %35
 }
 
-define i64 @_cdadar(i64) align 8 {
+define i64 @_Cdadar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -87275,7 +87275,7 @@ $18:
   ret i64 %35
 }
 
-define i64 @_cdaddr(i64) align 8 {
+define i64 @_Cdaddr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -87366,7 +87366,7 @@ $20:
   ret i64 %38
 }
 
-define i64 @_cddaar(i64) align 8 {
+define i64 @_Cddaar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -87450,7 +87450,7 @@ $18:
   ret i64 %35
 }
 
-define i64 @_cddadr(i64) align 8 {
+define i64 @_Cddadr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -87541,7 +87541,7 @@ $20:
   ret i64 %38
 }
 
-define i64 @_cdddar(i64) align 8 {
+define i64 @_Cdddar(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -87632,7 +87632,7 @@ $20:
   ret i64 %38
 }
 
-define i64 @_cddddr(i64) align 8 {
+define i64 @_Cddddr(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -87730,7 +87730,7 @@ $22:
   ret i64 %41
 }
 
-define i64 @_nth(i64) align 8 {
+define i64 @_Nth(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X)))) (loop (? (atom Y) Y) (l...
 ; # (cdr Exe)
@@ -87865,7 +87865,7 @@ $9:
   ret i64 %68
 }
 
-define i64 @_con(i64) align 8 {
+define i64 @_Con(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (set 2 (save (needPair Exe (eval (++ X)))) (eval...
 ; # (cdr Exe)
@@ -87951,7 +87951,7 @@ $9:
   ret i64 %35
 }
 
-define i64 @_cons(i64) align 8 {
+define i64 @_Cons(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (cons (eval (car X)) $Nil) R (save Y)) (while...
 ; # (cdr Exe)
@@ -88081,7 +88081,7 @@ $15:
   ret i64 %14
 }
 
-define i64 @_conc(i64) align 8 {
+define i64 @_Conc(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X)) R (save Y)) (while (pair (shif...
 ; # (cdr Exe)
@@ -88227,7 +88227,7 @@ $9:
   ret i64 %74
 }
 
-define i64 @_circ(i64) align 8 {
+define i64 @_Circ(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (cons (eval (car X)) $Nil) R (save Y)) (while...
 ; # (cdr Exe)
@@ -88331,7 +88331,7 @@ $9:
   ret i64 %14
 }
 
-define i64 @_rot(i64) align 8 {
+define i64 @_Rot(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (eval (car X))) (when (pair R) (let (Y R A (+...
 ; # (cdr Exe)
@@ -88528,7 +88528,7 @@ $8:
   ret i64 %13
 }
 
-define i64 @_list(i64) align 8 {
+define i64 @_List(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (cons (eval (car X)) $Nil) R (save Y)) (while...
 ; # (cdr Exe)
@@ -88628,7 +88628,7 @@ $9:
   ret i64 %14
 }
 
-define i64 @_need(i64) align 8 {
+define i64 @_Need(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) C (evCnt Exe X) R (save (eval (car (shift X))))...
 ; # (cdr Exe)
@@ -88910,7 +88910,7 @@ $18:
   ret i64 %150
 }
 
-define i64 @_range(i64) align 8 {
+define i64 @_Range(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (needNum Exe (eval (++ X))) R (save (cons N $...
 ; # (cdr Exe)
@@ -89161,7 +89161,7 @@ $32:
   ret i64 %18
 }
 
-define i64 @_full(i64) align 8 {
+define i64 @_Full(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (loop (? (atom X) $T) (? (nil? (car X)) ...
 ; # (cadr Exe)
@@ -89226,7 +89226,7 @@ $9:
   ret i64 %28
 }
 
-define i64 @_make(i64) align 8 {
+define i64 @_Make(i64) align 8 {
 $1:
 ; # (let (Make (val $Make) Yoke (val $Yoke) R (link (push $Nil NIL)))...
 ; # (val $Make)
@@ -89300,7 +89300,7 @@ $6:
   ret i64 %36
 }
 
-define i64 @_made(i64) align 8 {
+define i64 @_Made(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (unless (val $Make) (makeErr Exe)) (when (pair X...
 ; # (cdr Exe)
@@ -89455,7 +89455,7 @@ $5:
   ret i64 %73
 }
 
-define i64 @_chain(i64) align 8 {
+define i64 @_Chain(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (unless (val $Make) (makeErr Exe)) (loop (let Y ...
 ; # (cdr Exe)
@@ -89563,7 +89563,7 @@ $16:
   ret i64 %47
 }
 
-define i64 @_link(i64) align 8 {
+define i64 @_Link(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (unless (val $Make) (makeErr Exe)) (loop (let Y ...
 ; # (cdr Exe)
@@ -89642,7 +89642,7 @@ $11:
   ret i64 %33
 }
 
-define i64 @_yoke(i64) align 8 {
+define i64 @_Yoke(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (unless (val $Make) (makeErr Exe)) (loop (let Y ...
 ; # (cdr Exe)
@@ -89748,7 +89748,7 @@ $11:
   ret i64 %47
 }
 
-define i64 @_copy(i64) align 8 {
+define i64 @_Copy(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (atom (setq X (eval (car X)))) X (let (Y (co...
 ; # (cdr Exe)
@@ -89870,7 +89870,7 @@ $9:
   ret i64 %63
 }
 
-define i64 @_mix(i64) align 8 {
+define i64 @_Mix(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X))) (nond ((or (pair Y) (nil? Y))...
 ; # (cdr Exe)
@@ -90151,7 +90151,7 @@ $7:
   ret i64 %152
 }
 
-define i64 @_append(i64) align 8 {
+define i64 @_Append(i64) align 8 {
 $1:
 ; # (let X Exe (loop (? (atom (cdr (shift X))) (eval (car X))) (? (pa...
 ; # (loop (? (atom (cdr (shift X))) (eval (car X))) (? (pair (eval (c...
@@ -90416,7 +90416,7 @@ $4:
   ret i64 %141
 }
 
-define i64 @_delete(i64) align 8 {
+define i64 @_Delete(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) L (save (eval (++ X))) F...
 ; # (cdr Exe)
@@ -90671,7 +90671,7 @@ $19:
   ret i64 %130
 }
 
-define i64 @_delq(i64) align 8 {
+define i64 @_Delq(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) L (save (eval (++ X))) F...
 ; # (cdr Exe)
@@ -90924,7 +90924,7 @@ $19:
   ret i64 %129
 }
 
-define i64 @_replace(i64) align 8 {
+define i64 @_Replace(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) L (save (eval (car X)))) (if (atom L) @ (let (A...
 ; # (cdr Exe)
@@ -91296,7 +91296,7 @@ $9:
   ret i64 %231
 }
 
-define i64 @_insert(i64) align 8 {
+define i64 @_Insert(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (evCnt Exe X) L (save (eval (car (shift X))))...
 ; # (cdr Exe)
@@ -91492,7 +91492,7 @@ $16:
   ret i64 %107
 }
 
-define i64 @_remove(i64) align 8 {
+define i64 @_Remove(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (evCnt Exe X) L (save (eval (car (shift X))))...
 ; # (cdr Exe)
@@ -91677,7 +91677,7 @@ $7:
   ret i64 %98
 }
 
-define i64 @_place(i64) align 8 {
+define i64 @_Place(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (evCnt Exe X) L (save (eval (car (shift X))))...
 ; # (cdr Exe)
@@ -91896,7 +91896,7 @@ $12:
   ret i64 %117
 }
 
-define i64 @_strip(i64) align 8 {
+define i64 @_Strip(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (while (and (pair X) (== $Quote (car X))...
 ; # (cadr Exe)
@@ -91963,7 +91963,7 @@ $11:
   ret i64 %29
 }
 
-define i64 @_split(i64) align 8 {
+define i64 @_Split(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) L (save (eval (car X)))) (if (atom L) @ (let (A...
 ; # (cdr Exe)
@@ -92367,7 +92367,7 @@ $9:
   ret i64 %253
 }
 
-define i64 @_reverse(i64) align 8 {
+define i64 @_Reverse(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X))) Z $Nil) (while (pair Y)...
 ; # (cdr Exe)
@@ -92440,7 +92440,7 @@ $9:
   ret i64 %34
 }
 
-define i64 @_flip(i64) align 8 {
+define i64 @_Flip(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X))) (if (atom Y) Y (let Z (cdr Y)...
 ; # (cdr Exe)
@@ -92738,7 +92738,7 @@ $4:
   ret i64 %19
 }
 
-define i64 @_trim(i64) align 8 {
+define i64 @_Trim(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -92788,7 +92788,7 @@ $2:
   ret i64 %22
 }
 
-define i64 @_clip(i64) align 8 {
+define i64 @_Clip(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (car X))) (while (and (pair Y) (isBlank...
 ; # (cdr Exe)
@@ -92870,7 +92870,7 @@ $11:
   ret i64 %36
 }
 
-define i64 @_head(i64) align 8 {
+define i64 @_Head(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (cond ((nil? Y) Y) ((pair Y) (...
 ; # (cdr Exe)
@@ -93198,7 +93198,7 @@ $7:
   ret i64 %171
 }
 
-define i64 @_tail(i64) align 8 {
+define i64 @_Tail(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (cond ((nil? Y) Y) ((pair Y) (...
 ; # (cdr Exe)
@@ -93479,7 +93479,7 @@ $7:
   ret i64 %135
 }
 
-define i64 @_stem(i64) align 8 {
+define i64 @_Stem(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) L (save (eval (++ X)))) (if (atom X) L (let (R ...
 ; # (cdr Exe)
@@ -93717,7 +93717,7 @@ $9:
   ret i64 %141
 }
 
-define i64 @_fin(i64) align 8 {
+define i64 @_Fin(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (while (pair X) (shift X)) X)
 ; # (cadr Exe)
@@ -93765,7 +93765,7 @@ $9:
   ret i64 %21
 }
 
-define i64 @_last(i64) align 8 {
+define i64 @_Last(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (if (atom X) X (while (pair (cdr X)) (se...
 ; # (cadr Exe)
@@ -93830,7 +93830,7 @@ $9:
   ret i64 %29
 }
 
-define i64 @_eq(i64) align 8 {
+define i64 @_Eq(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (loop (? (atom (shift ...
 ; # (cdr Exe)
@@ -93933,7 +93933,7 @@ $9:
   ret i64 %44
 }
 
-define i64 @_neq(i64) align 8 {
+define i64 @_Neq(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (loop (? (atom (shift ...
 ; # (cdr Exe)
@@ -94036,7 +94036,7 @@ $9:
   ret i64 %44
 }
 
-define i64 @_equal(i64) align 8 {
+define i64 @_Equal(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (loop (? (atom (shift ...
 ; # (cdr Exe)
@@ -94141,7 +94141,7 @@ $9:
   ret i64 %45
 }
 
-define i64 @_nequal(i64) align 8 {
+define i64 @_Nequal(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (loop (? (atom (shift ...
 ; # (cdr Exe)
@@ -94246,7 +94246,7 @@ $9:
   ret i64 %45
 }
 
-define i64 @_eq0(i64) align 8 {
+define i64 @_Eq0(i64) align 8 {
 $1:
 ; # (if (== (eval (cadr Exe)) ZERO) @ $Nil)
 ; # (cadr Exe)
@@ -94286,7 +94286,7 @@ $9:
   ret i64 %15
 }
 
-define i64 @_eq1(i64) align 8 {
+define i64 @_Eq1(i64) align 8 {
 $1:
 ; # (if (== (eval (cadr Exe)) ONE) @ $Nil)
 ; # (cadr Exe)
@@ -94326,7 +94326,7 @@ $9:
   ret i64 %15
 }
 
-define i64 @_eqT(i64) align 8 {
+define i64 @_EqT(i64) align 8 {
 $1:
 ; # (if (t? (eval (cadr Exe))) @ $Nil)
 ; # (cadr Exe)
@@ -94366,7 +94366,7 @@ $9:
   ret i64 %15
 }
 
-define i64 @_neq0(i64) align 8 {
+define i64 @_Neq0(i64) align 8 {
 $1:
 ; # (if (== (eval (cadr Exe)) ZERO) $Nil $T)
 ; # (cadr Exe)
@@ -94406,7 +94406,7 @@ $9:
   ret i64 %15
 }
 
-define i64 @_neqT(i64) align 8 {
+define i64 @_NeqT(i64) align 8 {
 $1:
 ; # (if (t? (eval (cadr Exe))) $Nil $T)
 ; # (cadr Exe)
@@ -94446,7 +94446,7 @@ $9:
   ret i64 %15
 }
 
-define i64 @_lt(i64) align 8 {
+define i64 @_Lt(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (loop (? (atom (shift ...
 ; # (cdr Exe)
@@ -94561,7 +94561,7 @@ $9:
   ret i64 %52
 }
 
-define i64 @_le(i64) align 8 {
+define i64 @_Le(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (loop (? (atom (shift ...
 ; # (cdr Exe)
@@ -94676,7 +94676,7 @@ $9:
   ret i64 %52
 }
 
-define i64 @_gt(i64) align 8 {
+define i64 @_Gt(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (loop (? (atom (shift ...
 ; # (cdr Exe)
@@ -94791,7 +94791,7 @@ $9:
   ret i64 %52
 }
 
-define i64 @_ge(i64) align 8 {
+define i64 @_Ge(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (car X)))) (loop (? (atom (shift ...
 ; # (cdr Exe)
@@ -94906,7 +94906,7 @@ $9:
   ret i64 %52
 }
 
-define i64 @_max(i64) align 8 {
+define i64 @_Max(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save (eval (car X)))) (while (pair (shift X)...
 ; # (cdr Exe)
@@ -95015,7 +95015,7 @@ $9:
   ret i64 %49
 }
 
-define i64 @_min(i64) align 8 {
+define i64 @_Min(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save (eval (car X)))) (while (pair (shift X)...
 ; # (cdr Exe)
@@ -95124,7 +95124,7 @@ $9:
   ret i64 %49
 }
 
-define i64 @_atom(i64) align 8 {
+define i64 @_Atom(i64) align 8 {
 $1:
 ; # (if (atom (eval (cadr Exe))) $T $Nil)
 ; # (cadr Exe)
@@ -95165,7 +95165,7 @@ $9:
   ret i64 %16
 }
 
-define i64 @_pair(i64) align 8 {
+define i64 @_Pair(i64) align 8 {
 $1:
 ; # (if (pair (eval (cadr Exe))) @ $Nil)
 ; # (cadr Exe)
@@ -95206,7 +95206,7 @@ $9:
   ret i64 %16
 }
 
-define i64 @_circQ(i64) align 8 {
+define i64 @_CircQ(i64) align 8 {
 $1:
 ; # (if (circ (eval (cadr Exe))) @ $Nil)
 ; # (cadr Exe)
@@ -95247,7 +95247,7 @@ $9:
   ret i64 %16
 }
 
-define i64 @_lstQ(i64) align 8 {
+define i64 @_LstQ(i64) align 8 {
 $1:
 ; # (if (or (pair (eval (cadr Exe))) (nil? @)) $T $Nil)
 ; # (or (pair (eval (cadr Exe))) (nil? @))
@@ -95296,7 +95296,7 @@ $11:
   ret i64 %18
 }
 
-define i64 @_numQ(i64) align 8 {
+define i64 @_NumQ(i64) align 8 {
 $1:
 ; # (if (num? (eval (cadr Exe))) @ $Nil)
 ; # (cadr Exe)
@@ -95337,7 +95337,7 @@ $9:
   ret i64 %16
 }
 
-define i64 @_symQ(i64) align 8 {
+define i64 @_SymQ(i64) align 8 {
 $1:
 ; # (if (symb? (eval (cadr Exe))) $T $Nil)
 ; # (cadr Exe)
@@ -95379,7 +95379,7 @@ $9:
   ret i64 %17
 }
 
-define i64 @_flgQ(i64) align 8 {
+define i64 @_FlgQ(i64) align 8 {
 $1:
 ; # (if (or (t? (eval (cadr Exe))) (nil? @)) $T $Nil)
 ; # (or (t? (eval (cadr Exe))) (nil? @))
@@ -95427,7 +95427,7 @@ $11:
   ret i64 %17
 }
 
-define i64 @_member(i64) align 8 {
+define i64 @_Member(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X)) H Z) (l...
 ; # (cdr Exe)
@@ -95557,7 +95557,7 @@ $14:
   ret i64 %56
 }
 
-define i64 @_memq(i64) align 8 {
+define i64 @_Memq(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X)) H Z) (l...
 ; # (cdr Exe)
@@ -95687,7 +95687,7 @@ $14:
   ret i64 %56
 }
 
-define i64 @_mmeq(i64) align 8 {
+define i64 @_Mmeq(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X))) (while...
 ; # (cdr Exe)
@@ -95850,7 +95850,7 @@ $14:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64)
 }
 
-define i64 @_sect(i64) align 8 {
+define i64 @_Sect(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (save (eval (car X))) ...
 ; # (cdr Exe)
@@ -96036,7 +96036,7 @@ $14:
   ret i64 %94
 }
 
-define i64 @_diff(i64) align 8 {
+define i64 @_Diff(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (save (eval (car X))) ...
 ; # (cdr Exe)
@@ -96222,7 +96222,7 @@ $14:
   ret i64 %94
 }
 
-define i64 @_index(i64) align 8 {
+define i64 @_Index(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X)) Cnt 1 U...
 ; # (cdr Exe)
@@ -96352,7 +96352,7 @@ $14:
   ret i64 %62
 }
 
-define i64 @_offset(i64) align 8 {
+define i64 @_Offset(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X)) Cnt 1) ...
 ; # (cdr Exe)
@@ -96468,7 +96468,7 @@ $14:
   ret i64 %55
 }
 
-define i64 @_prior(i64) align 8 {
+define i64 @_Prior(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X))) (when ...
 ; # (cdr Exe)
@@ -96595,7 +96595,7 @@ $15:
   ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64)
 }
 
-define i64 @_length(i64) align 8 {
+define i64 @_Length(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (cond ((num? X) (fmtNum X -2 0 0 null)) ...
 ; # (cadr Exe)
@@ -97374,7 +97374,7 @@ $2:
   ret i64 %147
 }
 
-define i64 @_size(i64) align 8 {
+define i64 @_Size(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (cond ((cnt? X) (setq X (shr X 3)) (let ...
 ; # (cadr Exe)
@@ -97772,7 +97772,7 @@ $7:
   ret i64 %208
 }
 
-define i64 @_bytes(i64) align 8 {
+define i64 @_Bytes(i64) align 8 {
 $1:
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
@@ -97807,7 +97807,7 @@ $2:
   ret i64 %16
 }
 
-define i64 @_assoc(i64) align 8 {
+define i64 @_Assoc(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X)) H Z) (l...
 ; # (cdr Exe)
@@ -97939,7 +97939,7 @@ $14:
   ret i64 %58
 }
 
-define i64 @_rassoc(i64) align 8 {
+define i64 @_Rassoc(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X)) H Z) (l...
 ; # (cdr Exe)
@@ -98072,7 +98072,7 @@ $14:
   ret i64 %59
 }
 
-define i64 @_asoq(i64) align 8 {
+define i64 @_Asoq(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X)) H Z) (l...
 ; # (cdr Exe)
@@ -98204,7 +98204,7 @@ $14:
   ret i64 %58
 }
 
-define i64 @_rasoq(i64) align 8 {
+define i64 @_Rasoq(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (eval (car X)) H Z) (l...
 ; # (cdr Exe)
@@ -98337,7 +98337,7 @@ $14:
   ret i64 %59
 }
 
-define i64 @_rank(i64) align 8 {
+define i64 @_Rank(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (save (eval (++ X))) R...
 ; # (cdr Exe)
@@ -98775,7 +98775,7 @@ $4:
   ret i1 %124
 }
 
-define i64 @_match(i64) align 8 {
+define i64 @_Match(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (match (save (eval (++ X))) (save (eval (car...
 ; # (cdr Exe)
@@ -99351,7 +99351,7 @@ $4:
   ret i64 %50
 }
 
-define i64 @_fill(i64) align 8 {
+define i64 @_Fill(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (save (eval (++ X))) Z (save (eval (++ X)))) ...
 ; # (cdr Exe)
@@ -100798,7 +100798,7 @@ $13:
   br label %$2
 }
 
-define i64 @_prove(i64) align 8 {
+define i64 @_Prove(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (atom (eval (car X))) $Nil (let (Q (save @) ...
 ; # (cdr Exe)
@@ -102004,7 +102004,7 @@ $9:
   ret i64 %734
 }
 
-define i64 @_arrow(i64) align 8 {
+define i64 @_Arrow(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) L (val (val $Pnl))) (when (cnt? (cadr X)) (let ...
 ; # (cdr Exe)
@@ -102067,7 +102067,7 @@ $3:
   ret i64 %32
 }
 
-define i64 @_unify(i64) align 8 {
+define i64 @_Unify(i64) align 8 {
 $1:
 ; # (let (X (eval (cadr Exe)) Pnl (val (val $Pnl)) N (car Pnl)) (ifn ...
 ; # (cadr Exe)
@@ -102251,7 +102251,7 @@ $9:
   ret i64 %100
 }
 
-define i64 @_group(i64) align 8 {
+define i64 @_Group(i64) align 8 {
 $1:
 ; # (let X (save (eval (cadr Exe))) (if (atom X) $Nil (let Y (cons (c...
 ; # (cadr Exe)
@@ -102500,7 +102500,7 @@ $9:
   ret i64 %138
 }
 
-define i64 @_sort(i64) align 8 {
+define i64 @_Sort(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X))) (cond ((atom Y) @) ((atom X) (...
 ; # (cdr Exe)
@@ -103951,7 +103951,7 @@ $7:
   ret i64 %924
 }
 
-define i64 @_quit(i64) align 8 {
+define i64 @_Quit(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Nm (xName Exe (evSym X)) Msg (bufString Nm (b8 ...
 ; # (cdr Exe)
@@ -104013,7 +104013,7 @@ $4:
   unreachable
 }
 
-define i64 @_sys(i64) align 8 {
+define i64 @_Sys(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Nm (xName Exe (evSym X)) S (bufString Nm (b8 (b...
 ; # (cdr Exe)
@@ -104080,7 +104080,7 @@ $4:
   ret i64 %30
 }
 
-define i64 @_pwd(i64) align 8 {
+define i64 @_Pwd(i64) align 8 {
 $1:
 ; # (let P (getcwd null 0) (if P (prog1 (mkStr P) (free P)) $Nil))
 ; # (getcwd null 0)
@@ -104102,7 +104102,7 @@ $4:
   ret i64 %4
 }
 
-define i64 @_cd(i64) align 8 {
+define i64 @_Cd(i64) align 8 {
 $1:
 ; # (let (Nm (xName Exe (evSym (cdr Exe))) P (getcwd null 0)) (if P (...
 ; # (cdr Exe)
@@ -104150,7 +104150,7 @@ $4:
   ret i64 %15
 }
 
-define i64 @_ctty(i64) align 8 {
+define i64 @_Ctty(i64) align 8 {
 $1:
 ; # (let X (eval (cadr Exe)) (cond ((cnt? X) (set $TtyPid (i32 (int @...
 ; # (cadr Exe)
@@ -104439,7 +104439,7 @@ $7:
   ret i64 %105
 }
 
-define i64 @_cmd(i64) align 8 {
+define i64 @_Cmd(i64) align 8 {
 $1:
 ; # (if (nil? (evSym (cdr Exe))) (mkStr (val $AV0)) (bufString (xName...
 ; # (cdr Exe)
@@ -104470,7 +104470,7 @@ $4:
   ret i64 %11
 }
 
-define i64 @_dir(i64) align 8 {
+define i64 @_Dir(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (getDir (if (nil? (evSym X)) ($ ".") (let Nm...
 ; # (cdr Exe)
@@ -104665,7 +104665,7 @@ $7:
   ret i64 %96
 }
 
-define i64 @_info(i64) align 8 {
+define i64 @_Info(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Nm (xName Exe (set $At2 (evSym X))) Size (b64 1...
 ; # (cdr Exe)
@@ -104797,7 +104797,7 @@ $9:
   ret i64 %60
 }
 
-define i64 @_file(i64) align 8 {
+define i64 @_File(i64) align 8 {
 $1:
 ; # (let In: (inFile (val $InFile)) (ifn (and (In:) (In: name)) $Nil ...
 ; # (val $InFile)
@@ -104887,7 +104887,7 @@ $6:
   ret i64 %41
 }
 
-define i64 @_argv(i64) align 8 {
+define i64 @_Argv(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) A (val $AV) P (val A)) (when (and P (== (val P)...
 ; # (cdr Exe)
@@ -105225,7 +105225,7 @@ $9:
   ret i64 %181
 }
 
-define i64 @_opt(i64) align 8 {
+define i64 @_Opt(i64) align 8 {
 $1:
 ; # (let (A (val $AV) P (val A)) (if (or (=0 P) (and (== (val P) (cha...
 ; # (val $AV)
@@ -105272,7 +105272,7 @@ $8:
   ret i64 %13
 }
 
-define i64 @_errno(i64) align 8 {
+define i64 @_Errno(i64) align 8 {
 $1:
 ; # (nErrno)
   %1 = call i32 @nErrno()
@@ -106984,7 +106984,7 @@ $14:
   ret i64 %267
 }
 
-define i64 @_nat(i64) align 8 {
+define i64 @_Nat(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Fun (save (eval (++ X))) Args (save (cons (eval...
 ; # (cdr Exe)
@@ -107141,7 +107141,7 @@ $14:
   ret i64 %80
 }
 
-define i64 @_native(i64) align 8 {
+define i64 @_Native(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (eval (++ X)) Lib (cond ((cnt? Y) (i8* (int Y...
 ; # (cdr Exe)
@@ -107419,7 +107419,7 @@ $33:
   ret i64 %133
 }
 
-define i64 @_struct(i64) align 8 {
+define i64 @_Struct(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) N (if (cnt? (needNum Exe (eval (++ X)))) (int @...
 ; # (cdr Exe)
@@ -107735,7 +107735,7 @@ $1:
   ret i64 %72
 }
 
-define i64 @_cb1(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb1(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 2 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107746,7 +107746,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb2(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb2(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 4 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107757,7 +107757,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb3(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb3(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 6 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107768,7 +107768,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb4(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb4(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 8 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107779,7 +107779,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb5(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb5(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 10 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107790,7 +107790,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb6(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb6(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 12 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107801,7 +107801,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb7(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb7(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 14 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107812,7 +107812,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb8(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb8(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 16 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107823,7 +107823,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb9(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb9(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 18 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107834,7 +107834,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb10(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb10(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 20 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107845,7 +107845,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb11(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb11(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 22 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107856,7 +107856,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb12(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb12(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 24 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107867,7 +107867,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb13(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb13(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 26 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107878,7 +107878,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb14(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb14(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 28 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107889,7 +107889,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb15(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb15(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 30 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107900,7 +107900,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb16(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb16(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 32 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107911,7 +107911,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb17(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb17(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 34 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107922,7 +107922,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb18(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb18(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 36 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107933,7 +107933,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb19(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb19(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 38 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107944,7 +107944,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb20(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb20(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 40 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107955,7 +107955,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb21(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb21(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 42 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107966,7 +107966,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb22(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb22(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 44 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107977,7 +107977,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb23(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb23(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 46 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107988,7 +107988,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_cb24(i64, i64, i64, i64, i64) align 8 {
+define i64 @_Cb24(i64, i64, i64, i64, i64) align 8 {
 $1:
 ; # (val 48 $Lisp)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 40) to i64) to i64*
@@ -107999,7 +107999,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_lisp(i64) align 8 {
+define i64 @_Lisp(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (evSym X)) (let (P $Lisp Q (i8** (cbFuns))) (...
 ; # (cdr Exe)
@@ -108140,7 +108140,7 @@ $19:
   ret i64 %66
 }
 
-define i64 @_args(i64) align 8 {
+define i64 @_Args(i64) align 8 {
 $1:
 ; # (if (pair (val $Next)) $T $Nil)
 ; # (val $Next)
@@ -108159,7 +108159,7 @@ $4:
   ret i64 %5
 }
 
-define i64 @_next(i64) align 8 {
+define i64 @_Next(i64) align 8 {
 $1:
 ; # (let X (val $Next) (set $Next (car X)) (cdr X))
 ; # (val $Next)
@@ -108178,7 +108178,7 @@ $1:
   ret i64 %8
 }
 
-define i64 @_arg(i64) align 8 {
+define i64 @_Arg(i64) align 8 {
 $1:
 ; # (if (le0 (evCnt Exe (cdr Exe))) $Nil (let (N @ X (val $Next)) (wh...
 ; # (cdr Exe)
@@ -108227,7 +108227,7 @@ $4:
   ret i64 %21
 }
 
-define i64 @_rest(i64) align 8 {
+define i64 @_Rest(i64) align 8 {
 $1:
 ; # (let X (val $Next) (if (atom X) X (let (Y (cons (cdr X) $Nil) R (...
 ; # (val $Next)
@@ -108304,7 +108304,7 @@ $4:
   ret i64 %40
 }
 
-define i64 @_adr(i64) align 8 {
+define i64 @_Adr(i64) align 8 {
 $1:
 ; # (cond ((cnt? (eval (cadr Exe))) (int @)) ((big? @) (val (dig @)))...
 ; # (cadr Exe)
@@ -108372,7 +108372,7 @@ $2:
   ret i64 %28
 }
 
-define i64 @_byte(i64) align 8 {
+define i64 @_Byte(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) P (i8* (if (cnt? (needNum Exe (eval (++ X)))) (...
 ; # (cdr Exe)
@@ -108502,7 +108502,7 @@ $14:
   ret i64 %50
 }
 
-define i64 @_env(i64) align 8 {
+define i64 @_Env(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) R (save $Nil)) (if (atom X) (let Bnd (val $Bind...
 ; # (cdr Exe)
@@ -108823,7 +108823,7 @@ $4:
   ret i64 %176
 }
 
-define i64 @_trail(i64) align 8 {
+define i64 @_Trail(i64) align 8 {
 $1:
 ; # (let (F (not (nil? (eval (cadr Exe)))) Bnd (val $Bind) R $Nil) (w...
 ; # (cadr Exe)
@@ -108983,7 +108983,7 @@ $19:
   ret i64 %84
 }
 
-define i64 @_up(i64) align 8 {
+define i64 @_Up(i64) align 8 {
 $1:
 ; # (let (X (cdr Exe) Y (car X) N 1 Bnd (val $Bind)) (when (num? Y) (...
 ; # (cdr Exe)
@@ -109301,7 +109301,7 @@ $6:
   ret i64 %199
 }
 
-define i64 @_history(i64) align 8 {
+define i64 @_History(i64) align 8 {
 $1:
 ; # (let X (cdr Exe) (if (atom X) (let P (history_list) (if (and P (v...
 ; # (cdr Exe)
@@ -109474,7 +109474,7 @@ $4:
   ret i64 %72
 }
 
-define i64 @_version(i64) align 8 {
+define i64 @_Version(i64) align 8 {
 $1:
 ; # (when (nil? (eval (cadr Exe))) (outWord (int (val $Y))) (call $Pu...
 ; # (cadr Exe)

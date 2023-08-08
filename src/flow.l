@@ -1,4 +1,4 @@
-# 03aug23 Software Lab. Alexander Burger
+# 08aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -55,18 +55,18 @@
    (putSrc Sym 0) )
 
 # (quote . any) -> any
-(de _quote (Exe)
+(de _Quote (Exe)
    (cdr Exe) )
 
 # (as 'any1 . any2) -> any2 | NIL
-(de _as (Exe)
+(de _As (Exe)
    (let X (cdr Exe)
       (if (nil? (eval (car X)))
          @
          (cdr X) ) ) )
 
 # (lit 'any) -> any
-(de _lit (Exe)
+(de _Lit (Exe)
    (let X (eval (cadr Exe))
       (if
          (or
@@ -78,7 +78,7 @@
          (cons $Quote X) ) ) )
 
 # (eval 'any ['cnt]) -> any
-(de _eval (Exe)
+(de _Eval (Exe)
    (let (X (cdr Exe)  E (save (eval (car X))))
       (when (pair (cdr X))
          (let N (needCnt Exe (eval (car @)))
@@ -96,7 +96,7 @@
       (eval E) ) )
 
 # (run 'any ['cnt]) -> any
-(de _run (Exe)
+(de _Run (Exe)
    (let (X (cdr Exe)  E (eval (car X)))
       (cond
          ((num? E) E)
@@ -120,7 +120,7 @@
 
 # (def 'sym 'any) -> sym
 # (def 'sym 'sym|cnt 'any) -> sym
-(de _def (Exe)
+(de _Def (Exe)
    (let
       (X (cdr Exe)
          Sym (save (needSymb Exe (eval (++ X))))
@@ -151,7 +151,7 @@
       Sym ) )
 
 # (de sym . any) -> sym
-(de _de (Exe)
+(de _De (Exe)
    (let S (cadr Exe)
       (redefine Exe S (cddr Exe))
       S ) )
@@ -159,7 +159,7 @@
 # (dm sym . fun|cls2) -> sym
 # (dm (sym . cls) . fun|cls2) -> sym
 # (dm (sym sym2 [. cls]) . fun|cls2) -> sym
-(de _dm (Exe)
+(de _Dm (Exe)
    (let
       (X (cdr Exe)
          Y (car X)
@@ -303,7 +303,7 @@
    0 )
 
 # (meth 'obj ['any ..]) -> any
-(de __meth (Exe Key)
+(de __Meth (Exe Key)
    (let (X (cdr Exe)  Obj (save (eval (car X))))
       (when (sym? (val (tail (needSymb Exe Obj))))
          (dbFetch Exe Obj) )
@@ -313,11 +313,11 @@
          (err Exe Key ($ "Bad message") null) ) ) )
 
 # (box 'any) -> sym
-(de _box (Exe)
+(de _Box (Exe)
    (consSym ZERO (eval (cadr Exe))) )
 
 # (new ['flg|num] ['typ ['any ..]]) -> obj
-(de _new (Exe)
+(de _New (Exe)
    (let
       (X (cdr Exe)
          Y (eval (++ X))
@@ -350,7 +350,7 @@
       Obj ) )
 
 # (type 'any) -> lst
-(de _type (Exe)
+(de _Type (Exe)
    (let (X (cdr Exe)  Y (eval (car X)))
       (ifn (symb? Y)
          $Nil
@@ -385,7 +385,7 @@
          (? (== Z (shift V)) NO) ) ) )
 
 # (isa 'cls|typ 'any) -> obj | NIL
-(de _isa (Exe)
+(de _Isa (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -403,7 +403,7 @@
             (T $Nil) ) ) ) )
 
 # (method 'msg 'obj) -> fun
-(de _method (Exe)
+(de _Method (Exe)
    (let
       (X (cdr Exe)
          Msg (save (eval (++ X)))
@@ -413,7 +413,7 @@
       (if (method Obj Msg) @ $Nil) ) )
 
 # (send 'msg 'obj ['any ..]) -> any
-(de _send (Exe)
+(de _Send (Exe)
    (let
       (X (cdr Exe)
          Msg (save (eval (++ X)))
@@ -426,7 +426,7 @@
          (err Exe Msg ($ "Bad message") null) ) ) )
 
 # (try 'msg 'obj ['any ..]) -> any
-(de _try (Exe)
+(de _Try (Exe)
    (let
       (X (cdr Exe)
          Msg (save (eval (++ X)))
@@ -443,7 +443,7 @@
             (: 1 $Nil) ) ) ) )
 
 # (super ['any ..]) -> any
-(de _super (Exe)
+(de _Super (Exe)
    (let
       (Lst (val (if (val $Typ) (car @) (val $This)))
          Key (val $Key) )
@@ -481,7 +481,7 @@
          (shift Lst) ) ) )  # Try next in class list
 
 # (extra ['any ..]) -> any
-(de _extra (Exe)
+(de _Extra (Exe)
    (let Key (val $Key)
       (unless (> (extra (val $This) Key) 1)
          (err Exe Key ($ "Bad extra") null) )
@@ -492,7 +492,7 @@
             (set $Key KeyS  $Typ TypS) ) ) ) )  # Restore class and key
 
 # (and 'any ..) -> any
-(de _and (Exe)
+(de _And (Exe)
    (let X (cdr Exe)
       (loop
          (let Y (eval (car X))
@@ -501,7 +501,7 @@
             (? (atom (shift X)) Y) ) ) ) )
 
 # (or 'any ..) -> any
-(de _or (Exe)
+(de _Or (Exe)
    (let X (cdr Exe)
       (loop
          (let Y (eval (car X))
@@ -510,7 +510,7 @@
             (? (atom (shift X)) Y) ) ) ) )
 
 # (nand 'any ..) -> flg
-(de _nand (Exe)
+(de _Nand (Exe)
    (let X (cdr Exe)
       (loop
          (let Y (eval (car X))
@@ -519,7 +519,7 @@
             (? (atom (shift X)) $Nil) ) ) ) )
 
 # (nor 'any ..) -> flg
-(de _nor (Exe)
+(de _Nor (Exe)
    (let X (cdr Exe)
       (loop
          (let Y (eval (car X))
@@ -529,46 +529,46 @@
             (? (atom (shift X)) $T) ) ) ) )
 
 # (xor 'any 'any) -> flg
-(de _xor (Exe)
+(de _Xor (Exe)
    (let X (cdr Exe)
       (if (nil? (eval (++ X)))
          (if (nil? (eval (car X))) @ $T)
          (if (nil? (eval (car X))) $T $Nil) ) ) )
 
 # (bool 'any) -> flg
-(de _bool (Exe)
+(de _Bool (Exe)
    (if (nil? (eval (cadr Exe))) @ $T) )
 
 # (not 'any) -> flg
-(de _not (Exe)
+(de _Not (Exe)
    (if (nil? (eval (cadr Exe)))
       $T
       (set $At @)
       $Nil ) )
 
 # (nil . prg) -> NIL
-(de _nil (Exe)
+(de _Nil (Exe)
    (exec (cdr Exe))
    $Nil )
 
 # (t . prg) -> T
-(de _t (Exe)
+(de _T (Exe)
    (exec (cdr Exe))
    $T )
 
 # (prog . prg) -> any
-(de _prog (Exe)
+(de _Prog (Exe)
    (run (cdr Exe)) )
 
 # (prog1 'any1 . prg) -> any1
-(de _prog1 (Exe)
+(de _Prog1 (Exe)
    (let X (cdr Exe)
       (prog1
          (set $At (save (eval (++ X))))
          (exec X) ) ) )
 
 # (prog2 'any1 'any2 . prg) -> any2
-(de _prog2 (Exe)
+(de _Prog2 (Exe)
    (let X (cdr Exe)
       (prog2
          (eval (++ X))
@@ -576,7 +576,7 @@
          (exec X) ) ) )
 
 # (if 'any1 any2 . prg) -> any
-(de _if (Exe)
+(de _If (Exe)
    (let X (cdr Exe)
       (if (nil? (eval (++ X)))
          (run (cdr X))
@@ -584,7 +584,7 @@
          (eval (car X)) ) ) )
 
 # (ifn 'any1 any2 . prg) -> any
-(de _ifn (Exe)
+(de _Ifn (Exe)
    (let X (cdr Exe)
       (if (nil? (eval (++ X)))
          (eval (car X))
@@ -592,7 +592,7 @@
          (run (cdr X)) ) ) )
 
 # (if2 'any1 'any2 any3 any4 any5 . prg) -> any
-(de _if2 (Exe)
+(de _If2 (Exe)
    (let X (cdr Exe)
       (if (nil? (eval (++ X)))
          (if (nil? (eval (++ X)))
@@ -606,7 +606,7 @@
             (eval (car X)) ) ) ) )
 
 # (when 'any . prg) -> any
-(de _when (Exe)
+(de _When (Exe)
    (let X (cdr Exe)
       (if (nil? (eval (++ X)))
          @
@@ -614,7 +614,7 @@
          (run X) ) ) )
 
 # (unless 'any . prg) -> any
-(de _unless (Exe)
+(de _Unless (Exe)
    (let X (cdr Exe)
       (if (nil? (eval (++ X)))
          (run X)
@@ -622,7 +622,7 @@
          $Nil ) ) )
 
 # (cond ('any1 . prg1) ('any2 . prg2) ..) -> any
-(de _cond (Exe)
+(de _Cond (Exe)
    (let X Exe
       (loop
          (? (atom (shift X)) $Nil)
@@ -632,7 +632,7 @@
                (run (cdr Y)) ) ) ) ) )
 
 # (nond ('any1 . prg1) ('any2 . prg2) ..) -> any
-(de _nond (Exe)
+(de _Nond (Exe)
    (let X Exe
       (loop
          (? (atom (shift X)) $Nil)
@@ -642,7 +642,7 @@
          (set $At @) ) ) )
 
 # (case 'any (any1 . prg1) (any2 . prg2) ..) -> any
-(de _case (Exe)
+(de _Case (Exe)
    (let (X (cdr Exe)  A (set $At (eval (car X))))
       (loop
          (? (atom (shift X)) $Nil)
@@ -654,7 +654,7 @@
                (run (cdr Y)) ) ) ) ) )
 
 # (casq 'any (any1 . prg1) (any2 . prg2) ..) -> any
-(de _casq (Exe)
+(de _Casq (Exe)
    (let (X (cdr Exe)  A (set $At (eval (car X))))
       (loop
          (? (atom (shift X)) $Nil)
@@ -663,7 +663,7 @@
                (run (cdr Y)) ) ) ) ) )
 
 # (state 'var (sym|lst exe [. prg]) ..) -> any
-(de _state (Exe)
+(de _State (Exe)
    (let
       (X (cdr Exe)
          Var (save (needChkVar Exe (eval (car X)))) )
@@ -680,7 +680,7 @@
                   (run (cdr Y)) ) ) ) ) ) )
 
 # (while 'any . prg) -> any
-(de _while (Exe)
+(de _While (Exe)
    (let (X (cdr Exe)  E (++ X)  R (save $Nil))
       (until (nil? (eval E))
          (set $At @)
@@ -688,7 +688,7 @@
       R ) )
 
 # (until 'any . prg) -> any
-(de _until (Exe)
+(de _Until (Exe)
    (let (X (cdr Exe)  E (++ X)  R (save $Nil))
       (while (nil? (eval E))
          (setq R (safe (run X))) )
@@ -696,7 +696,7 @@
       R ) )
 
 # (at '(cnt1 . cnt2|NIL) . prg) -> any
-(de _at (Exe)
+(de _At (Exe)
    (let
       (X (cdr Exe)
          Y (needPair Exe (eval (car X)))
@@ -751,7 +751,7 @@
             (? (atom (shift X))) ) ) ) )
 
 # (do 'flg|cnt ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any
-(de _do (Exe)
+(de _Do (Exe)
    (let (X (cdr Exe)  Y (eval (++ X)))
       (cond
          ((nil? Y) Y)
@@ -766,13 +766,13 @@
          (T (loop2 X)) ) ) )  # Non-NIL 'flg'
 
 # (loop ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any
-(de _loop (Exe)
+(de _Loop (Exe)
    (tailcall (loop2 (cdr Exe))) )
 
 # (for sym 'cnt ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any
 # (for sym|(sym2 . sym) 'lst ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any
 # (for (sym|(sym2 . sym) 'any1 'any2 [. prg]) ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any
-(de _for (Exe)
+(de _For (Exe)
    (let
       (X (cdr Exe)
          Y (++ X)
@@ -857,7 +857,7 @@
       R ) )
 
 # (with 'var . prg) -> any
-(de _with (Exe)
+(de _With (Exe)
    (let (X (cdr Exe)  Y (needVar Exe (eval (++ X))))
       (if (nil? Y)
          Y
@@ -868,7 +868,7 @@
                (set $This (val P)  $Bind (val 3 P)) ) ) ) ) )
 
 # (bind 'sym|lst . prg) -> any
-(de _bind (Exe)
+(de _Bind (Exe)
    (let (X (cdr Exe)  Y (eval (++ X)))
       (cond
          ((num? Y) (argErr Exe Y))
@@ -902,7 +902,7 @@
                   (set $Bind P) ) ) ) ) ) )
 
 # (job 'lst . prg) -> any
-(de _job (Exe)
+(de _Job (Exe)
    (let
       (X (cdr Exe)
          Y (save (eval (++ X)))
@@ -940,7 +940,7 @@
 
 # (let sym 'any . prg) -> any
 # (let (sym|lst 'any ..) . prg) -> any
-(de _let (Exe)
+(de _Let (Exe)
    (let (X (cdr Exe)  Y (++ X))
       (if (atom Y)
          (let P
@@ -999,7 +999,7 @@
                (set $Bind P) ) ) ) ) )
 
 # (let? sym 'any . prg) -> any
-(de _letQ (Exe)
+(de _LetQ (Exe)
    (let (X (cdr Exe)  Y (needChkVar Exe (++ X)))
       (if (nil? (eval (car X)))
          @
@@ -1011,7 +1011,7 @@
 
 # (use sym . prg) -> any
 # (use (sym ..) . prg) -> any
-(de _use (Exe)
+(de _Use (Exe)
    (let (X (cdr Exe)  Y (++ X))
       (if (atom Y)
          (let P (set $Bind (push (val Y) Y (val $Bind)))  # [[sym] sym LINK]
@@ -1031,7 +1031,7 @@
                (set $Bind P) ) ) ) ) )
 
 # (buf sym 'cnt . prg) -> any
-(de _buf (Exe)
+(de _Buf (Exe)
    (let
       (X (cdr Exe)
          Y (needChkVar Exe (++ X))
@@ -1044,7 +1044,7 @@
          (set Y (val P)  $Bind (val 3 P)) ) ) )
 
 # (catch 'any . prg) -> any
-(de _catch (Exe)
+(de _Catch (Exe)
    (let
       (X (cdr Exe)
          Ca: (caFrame (b8+ (+ (val JmpBufSize) (caFrame T)))) )
@@ -1062,7 +1062,7 @@
          (set $Catch (Ca: link)) ) ) )
 
 # (throw 'sym 'any)
-(de _throw (Exe)
+(de _Throw (Exe)
    (let
       (X (cdr Exe)
          Tag (save (eval (++ X)))
@@ -1078,7 +1078,7 @@
       (err Exe Tag ($ "Tag not found") null) ) )
 
 # (finally exe . prg) -> any
-(de _finally (Exe)
+(de _Finally (Exe)
    (let
       (X (cdr Exe)
          Ca: (caFrame (b8+ (+ (val JmpBufSize) (caFrame T)))) )
@@ -1136,7 +1136,7 @@
       (val $Ret) ) )
 
 # (co ['any [. prg]]) -> any
-(de _co (Exe)
+(de _Co (Exe)
    (let X (cdr Exe)
       (if (atom X)
          (if (val $Current)
@@ -1261,7 +1261,7 @@
                (T $Nil) ) ) ) ) )
 
 # (yield 'any ['any2]) -> any
-(de _yield (Exe)
+(de _Yield (Exe)
    (let
       (X (cdr Exe)
          Val (save (eval (++ X)))
@@ -1410,14 +1410,14 @@
    Exe )
 
 # (! . exe) -> any
-(de _break (Exe)
+(de _Break (Exe)
    (let X (cdr Exe)
       (unless (nil? (val $Dbg))
          (setq X (brkLoad X)) )
       (eval X) ) )
 
 # (e . prg) -> any
-(de _e (Exe)
+(de _E (Exe)
    (let P (val $Break)
       (unless P
          (err Exe 0 ($ "No Break")  null) )
@@ -1458,7 +1458,7 @@
       (print (val $This)) ) )  # 'This'
 
 # ($ sym|lst lst . prg) -> any
-(de _trace (Exe)
+(de _Trace (Exe)
    (let X (cdr Exe)
       (if (nil? (val $Dbg))
          (run (cddr X))
@@ -1498,7 +1498,7 @@
                   (set (i8** $Put) Put  $OutFile Out) ) ) ) ) ) )
 
 # (exec 'any ..)
-(de _exec (Exe)
+(de _Exec (Exe)
    (let
       (X (cdr Exe)
          Av (b8* (inc (length X)))
@@ -1517,7 +1517,7 @@
       (execErr (val Av)) ) )  # Error if failed
 
 # (call 'any ..) -> flg
-(de _call (Exe)
+(de _Call (Exe)
    (let
       (X (cdr Exe)
          Av (b8* (inc (length X)))
@@ -1564,21 +1564,21 @@
                (kill Pid (val SIGCONT Sig)) ) ) ) ) )
 
 # (ipid) -> pid | NIL
-(de _ipid (Exe)
+(de _Ipid (Exe)
    (let Io: (ioFrame (val $InFrames))
       (if (and (Io:) (> (Io: pid) 1))
          (cnt (i64 (Io: pid)))
          $Nil ) ) )
 
 # (opid) -> pid | NIL
-(de _opid (Exe)
+(de _Opid (Exe)
    (let Io: (ioFrame (val $OutFrames))
       (if (and (Io:) (> (Io: pid) 1))
          (cnt (i64 (Io: pid)))
          $Nil ) ) )
 
 # (kill 'pid ['cnt]) -> flg
-(de _kill (Exe)
+(de _Kill (Exe)
    (let (X (cdr Exe)  Pid (i32 (evCnt Exe X)))
       (if
          (kill
@@ -1590,13 +1590,13 @@
          $T ) ) )
 
 # (fork) -> pid | NIL
-(de _fork (Exe)
+(de _Fork (Exe)
    (if (forkLisp Exe)
       (cnt (i64 @))
       $Nil ) )
 
 # (detach) -> pid | NIL
-(de _detach (Exe)
+(de _Detach (Exe)
    (prog1
       (val $PPid)
       (unless (nil? @)
@@ -1614,7 +1614,7 @@
          (setsid) ) ) )
 
 # (bye ['cnt])
-(de _bye (Exe)
+(de _Bye (Exe)
    (bye
       (if (nil? (eval (cadr Exe)))
          0
