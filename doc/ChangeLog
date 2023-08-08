@@ -1,4 +1,7 @@
 23.8.8
+   Search first 'priv' in 'nsp'
+      src/sym.l
+      doc/refP.html
    Rename lisp-level functions '_xxx' to '_Xxx'
       src/glob.l
       src/main.l

@@ -521,12 +521,15 @@
    (let Sym (needSymb Exe (eval (cadr Exe)))
       (if (sym? (val (tail Sym)))
          $Nil
-         (let (Nm (name @)  Lst (val $Intern))  # Search namespaces
-            (loop
-               (? (atom Lst) $Nil)
-               (let Nsp (car Lst)
-                  (? (== Sym (isIntern Nm (cdar Nsp))) Nsp) )
-               (shift Lst) ) ) ) ) )
+         (let Nm (name @)
+            (if (== Sym (isIntern Nm $PrivT))  # Private?
+               $priv
+               (let Lst (val $Intern)  # Search namespaces
+                  (loop
+                     (? (atom Lst) $Nil)
+                     (let Nsp (car Lst)
+                        (? (== Sym (isIntern Nm (cdar Nsp))) Nsp) )
+                     (shift Lst) ) ) ) ) ) ) )
 
 # (sp? 'any) -> flg
 (de _SpQ (Exe)

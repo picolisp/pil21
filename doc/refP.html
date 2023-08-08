@@ -709,9 +709,9 @@ href="refM.html#memq">memq</a></code>.
 
 <dt><a id="private"><code>(private) sym|lst</code></a></dt>
 <dd>Intern symbols locally into an internal special namespace named
-'<code>priv</code>'. This namespace is never inserted into the search order, but
-is always searched first. <code>(private)</code> expects a single symbol or a
-list of symbols immediately following in the current input stream. See also
+'<code>priv</code>'. This namespace is always searched first, but never gets new
+symbols automatically interned. <code>(private)</code> expects a single symbol
+or a list of symbols immediately following in the current input stream. See also
 <code><a href="refP.html#pico">pico</a></code>, <code><a
 href="refS.html#symbols">symbols</a></code>, <code><a
 href="refL.html#local">local</a></code>, <code><a
