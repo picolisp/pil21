@@ -1,4 +1,4 @@
-# 15jul22 Software Lab. Alexander Burger
+# 12aug23 Software Lab. Alexander Burger
 
 # *Allow
 
@@ -369,7 +369,7 @@
          (and
             (tail '`(chop "200 OK") (line))
             (from "Content-Length:")
-            (setq Size (read))
+            (setq Size (format (till "\r\n")))
             (from "\r\n\r\n")
             (out F (echo))
             (= Size (car (info F)))
