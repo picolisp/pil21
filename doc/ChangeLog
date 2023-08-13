@@ -1,3 +1,7 @@
+23.8.13
+   Clarify 'stack' reference
+      doc/refN.html
+
 23.8.12
    Avoid 'read' in 'download'
       lib/misc.l
