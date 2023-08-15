@@ -1291,7 +1291,8 @@ symbol itself and not just the value:
 <h3><a id="coroutines">Coroutines</a></h3>
 
 <p>Coroutines are independent execution contexts. They may have multiple entry
-and exit points, and preserve their environment between invocations.
+and exit points, and preserve their environment (stack, symbol bindings,
+catch/throw and I/O frames) between invocations.
 
 <p>A coroutine is identified by a tag. This tag can be passed to other
 functions, and (re)invoked as needed. In this regard coroutines are similar to
