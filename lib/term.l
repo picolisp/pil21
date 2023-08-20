@@ -1,21 +1,22 @@
-# 04feb23 Software Lab. Alexander Burger
+# 20aug23 Software Lab. Alexander Burger
 
 (sysdefs "terminal")
 
 (local) (ULINE U-OFF REVERS)
 
-(de ULINE . 4)
-(de U-OFF . 24)
-(de REVERS . 7)
+(de ULINE . "4")
+(de U-OFF . "24")
+(de REVERS . "7")
 
-(local) (RED GREEN BROWN BLUE PURPLE CYAN)
+(local) (RED GREEN BROWN BLUE PURPLE CYAN YELLOW)
 
-(de RED . 31)
-(de GREEN . 32)
-(de BROWN . 33)
-(de BLUE . 34)
-(de PURPLE . 35)
-(de CYAN . 36)
+(de RED . "0;31")
+(de GREEN . "0;32")
+(de BROWN . "0;33")
+(de BLUE . "0;34")
+(de PURPLE . "0;35")
+(de CYAN . "0;36")
+(de YELLOW . "1;33")
 
 (local) (*AttrA *AttrU)
 
