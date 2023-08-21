@@ -1,4 +1,4 @@
-# 20aug23 Software Lab. Alexander Burger
+# 21aug23 Software Lab. Alexander Burger
 
 (sysdefs "terminal")
 
@@ -64,6 +64,9 @@
 
 (de clreol ()
    (prin "\e[0K") )
+
+(de clear ()
+   (prin "\e[H\e[J") )
 
 (de hideCsr ()
    (prin "\e[?25l") )

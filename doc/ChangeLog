@@ -1,3 +1,7 @@
+23.8.21
+   'clear' function
+      lib/term.l
+
 23.8.20
    Generalize 'attr'
       lib/term.l
