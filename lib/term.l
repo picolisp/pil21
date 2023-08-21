@@ -22,7 +22,7 @@
 
 (off *AttrA *AttrU)
 
-(local) (xterm getTerm setTerm)
+(local) (*Lines *Columns xterm getTerm setTerm getSize)
 
 (de xterm ()
    (member (sys "TERM") '("xterm" "screen")) )
@@ -46,6 +46,11 @@
          (cons DX 2)  # ws_xpixel
          (cons DY 2) ) )  # ws_ypixel
    (%@ "rl_reset_terminal" 'I 0) )
+
+(de getSize ()
+   (if (getTerm)
+      (setq *Lines (car @)  *Columns (cadr @))
+      (quit "Can't get terminal size") ) )
 
 (local) (attr cup clreol hideCsr showCsr screen1 screen2)
 

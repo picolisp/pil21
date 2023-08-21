@@ -1,4 +1,4 @@
-# 23jul23 Software Lab. Alexander Burger
+# 21aug23 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -6,16 +6,9 @@
 
 (load "@lib/term.l")
 
-(local) getSize
-
-(de getSize ()
-   (if (getTerm)
-      (setq *Lines (car @)  *Columns (cadr @))
-      (quit "Can't get terminal size") ) )
-
 (local) (*Ns *Shell *CmdWin *StatNm *Chr *Complete *Repeat *Change *Count *Cnt
-*Search *Clip *Lines *Columns *TagStack *Spell *CmdMap *Keys *KeyMap *KeyMap-g
-*KeyMap-q *F7 *F8 *F9 *F10 *F11 *F12 *@)
+*Search *Clip *TagStack *Spell *CmdMap *Keys *KeyMap *KeyMap-g *KeyMap-q *F7 *F8
+*F9 *F10 *F11 *F12 *@)
 
 (def '*Shell (or (sys "SHELL") "sh"))
 

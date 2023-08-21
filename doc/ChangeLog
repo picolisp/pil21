@@ -1,4 +1,7 @@
 23.8.21
+   Move 'getSize' to lib/term.l
+      lib/term.l
+      lib/vip.l
    'clear' function
       lib/term.l
 
