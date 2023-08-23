@@ -1,4 +1,4 @@
-# 08aug23 Software Lab. Alexander Burger
+# 22aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1295,7 +1295,7 @@
          (unless (Dst: at)
             (reentErr Exe Tag) )
          (saveCoIO)
-         (unless (t? (Src: tag))
+         (unless (== (Src:) (Dst: org))
             (let P (val $Link)  # Reverse Stack(s)
                (until (== P (Src: lnk))
                   (let Q P
@@ -1336,7 +1336,7 @@
          (unless (setjmp (Src: (rst)))
             (set $Ret Val)
             (longjmp (Dst: (rst)) 1) )
-         (unless (t? (Src: tag))
+         (unless (== (Src:) (Dst: org))
             (let P (val $OutFrames)  # Restore OutFrames
                (Src: out P)
                (until (== Out (val $Stdout))

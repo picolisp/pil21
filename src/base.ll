@@ -1520,7 +1520,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 370,
   i64 130,
-  i64 338
+  i64 370
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -83460,13 +83460,14 @@ $31:
   %101 = phi i8* [%84, %$14] ; # Out
 ; # (saveCoIO)
   call void @saveCoIO()
-; # (unless (t? (Src: tag)) (let P (val $Link) (until (== P (Src: lnk...
-; # (Src: tag)
-  %102 = ptrtoint i8* %40 to i64
-  %103 = inttoptr i64 %102 to i64*
-  %104 = load i64, i64* %103
-; # (t? (Src: tag))
-  %105 = icmp eq i64 %104, ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 280) to i64)
+; # (unless (== (Src:) (Dst: org)) (let P (val $Link) (until (== P (S...
+; # (Src:)
+; # (Dst: org)
+  %102 = getelementptr i8, i8* %81, i32 24
+  %103 = bitcast i8* %102 to i8**
+  %104 = load i8*, i8** %103
+; # (== (Src:) (Dst: org))
+  %105 = icmp eq i8* %40, %104
   br i1 %105, label %$33, label %$32
 $32:
   %106 = phi i8* [%96, %$31] ; # Crt
@@ -83771,13 +83772,14 @@ $50:
   %295 = phi i8* [%279, %$33] ; # Ca
   %296 = phi i8* [%280, %$33] ; # In
   %297 = phi i8* [%281, %$33] ; # Out
-; # (unless (t? (Src: tag)) (let P (val $OutFrames) (Src: out P) (unt...
-; # (Src: tag)
-  %298 = ptrtoint i8* %40 to i64
-  %299 = inttoptr i64 %298 to i64*
-  %300 = load i64, i64* %299
-; # (t? (Src: tag))
-  %301 = icmp eq i64 %300, ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 280) to i64)
+; # (unless (== (Src:) (Dst: org)) (let P (val $OutFrames) (Src: out ...
+; # (Src:)
+; # (Dst: org)
+  %298 = getelementptr i8, i8* %81, i32 24
+  %299 = bitcast i8* %298 to i8**
+  %300 = load i8*, i8** %299
+; # (== (Src:) (Dst: org))
+  %301 = icmp eq i8* %40, %300
   br i1 %301, label %$52, label %$51
 $51:
   %302 = phi i8* [%292, %$50] ; # Crt
