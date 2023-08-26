@@ -1,4 +1,4 @@
-# 15may23 Software Lab. Alexander Burger
+# 26aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -88,6 +88,8 @@
    (ca 8 i8*)           # Catch marker
    (in 8 i8*)           # InFrames marker
    (out 8 i8*)          # OutFrames marker
+   (err 8 i8*)          # ErrFrames marker
+   (ctl 8 i8*)          # CtlFrames marker
    (env (env T) i8)     # Saved environment
    (intrn 8 any)        # Internal symbols
    (trns1 8 any)        # Transient symbols

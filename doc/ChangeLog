@@ -1,3 +1,14 @@
+23.8.26
+   Handle $ErrFrames and $CtlFrames in coroutines
+      src/flow.l
+      src/dec.l
+   'yield' bug continued
+      src/flow.l
+
+23.8.25
+   Release reference to Java object (Todd Coram)
+      lib/android.l
+
 23.8.22
    Bug in 'yield' for nested coroutines
       src/flow.l

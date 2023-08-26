@@ -1,4 +1,4 @@
-# 07aug23 Software Lab. Alexander Burger
+# 25aug23 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -37,6 +37,7 @@
 # (java T "cls" ["cls" ..]) -> obj         Define interface
 # (java 'obj) -> [lst ..]                  Reflect object
 # (java "cls") -> cls                      Get class
+# (java NIL 'obj) -> NIL                   Release reference to object
 (local) (*Java *Lisp java1 java null)
 
 (de java1 ()

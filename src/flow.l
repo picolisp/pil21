@@ -1,4 +1,4 @@
-# 22aug23 Software Lab. Alexander Burger
+# 26aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1175,10 +1175,6 @@
                                  (ret (loadCoEnv (Src:))) )
                               (set $Ret $Nil)
                               (Crt: org (Src:))
-                              (Crt: lnk (val $Link))
-                              (Crt: ca (val $Catch))
-                              (Crt: in (val $InFrames))
-                              (Crt: out (val $OutFrames))
                               (longjmp (Crt: (rst)) 1) )
                            (or P
                               (Crt: tag)  # Unused
@@ -1199,7 +1195,7 @@
                         (Dst: tag Tag)
                         (when (symb? Tag)
                            (put Tag ZERO (| (i64 (Dst:)) 2)) )
-                        (Dst: org (val $Current))
+                        (Dst: org (Src:))
                         (Dst: prg X)
                         (let (Siz (val $StkSize)  Stk (stack))
                            (memset
@@ -1213,6 +1209,8 @@
                         (Dst: ca (val $Catch))
                         (Dst: in (val $InFrames))
                         (Dst: out (val $OutFrames))
+                        (Dst: err (val $ErrFrames))
+                        (Dst: ctl (val $CtlFrames))
                         (putCrtEnv (Dst:) YES)
                         (set  # Init local env
                            $Next $Nil
@@ -1224,12 +1222,7 @@
                         (unless (== (hex "0707070707070707") (val (i64* (Dst: lim))))
                            (stkOverErr (Dst: tag)) )
                         (stop (Dst:))  # Stop coroutine
-                        (let Org: (coroutine (Dst: org))
-                           (longjmp
-                              (if (Org: tag)  # Still running?
-                                 (Org: (rst))
-                                 ((coroutine (val $Coroutines)) (rst)) )  # Main
-                              1 ) ) ) ) )
+                        (longjmp ((coroutine (Dst: org)) (rst)) 1) ) ) )
                ((t? Tag)
                   (err Exe 0 ($ "Can't stop main routine") null) )
                ((val $Coroutines)
@@ -1237,15 +1230,22 @@
                      (loop
                         (let Crt: (coroutine Crt)
                            (? (== Tag (Crt: tag))  # Found coroutine
+                              (let P (Crt: (env $ErrFrames i8*))  # Close ErrFrames
+                                 (while P
+                                    (let Err: (ctFrame P)
+                                       (when (ge0 (Err: fd))
+                                          (close @) )
+                                       (setq P (Err: link)) ) ) )
                               (let P (Crt: (env $OutFrames i8*))  # Close OutFrames
                                  (until (== P (val $Stdout))
                                     (let (Io: (ioFrame P)  Out: (outFile (Io: file)))
+                                       (flush (Out:))
                                        (when (and (ge0 (Out: fd)) (Io: pid))
                                           (close (Out: fd))
                                           (closeOutFile (Out: fd))
                                           (when (> (Io: pid) 1)
-                                             (waitFile @) )
-                                          (setq P (Io: link)) ) ) ) )
+                                             (waitFile @) ) )
+                                       (setq P (Io: link)) ) ) )
                               (let P (Crt: (env $InFrames i8*))  # Close InFrames
                                  (until (== P (val $Stdin))
                                     (let (Io: (ioFrame P)  In: (inFile (Io: file)))
@@ -1253,8 +1253,8 @@
                                           (close (In: fd))
                                           (closeInFile (In: fd))
                                           (when (> (Io: pid) 1)
-                                             (waitFile @) )
-                                          (setq P (Io: link)) ) ) ) )
+                                             (waitFile @) ) )
+                                       (setq P (Io: link)) ) ) )
                               (stop (Crt:)) )  # Stop it
                            (? (=0 (setq Crt (Crt: nxt)))) ) )
                      Tag ) )
@@ -1271,6 +1271,7 @@
          (err Exe 0 ($ "No coroutines") null) )
       (let
          (Src: (coroutine (val $Current))
+            Org: (coroutine (Src: org))
             Dst:
             (coroutine
                (cond
@@ -1285,17 +1286,19 @@
                         ((cnt? (get Tag ZERO))
                            (coErr Exe Tag) )
                         (NIL (i8* (& @ -3))) ) )
-                  ((Src: org) @)
+                  ((Org:) @)
                   (T (tagErr Exe)) ) )
             Lnk (any 0)
             Bnd (any 0)
             Ca (i8* null)
             In (val $Stdin)
-            Out (val $Stdout) )
+            Out (val $Stdout)
+            Err (i8* null)
+            Ctl (i8* null) )
          (unless (Dst: at)
             (reentErr Exe Tag) )
          (saveCoIO)
-         (unless (== (Src:) (Dst: org))
+         (unless (t? (Src: tag))
             (let P (val $Link)  # Reverse Stack(s)
                (until (== P (Src: lnk))
                   (let Q P
@@ -1331,13 +1334,43 @@
                      (setq P (Out: link))
                      (Out: link Out)
                      (setq Out (Out:)) ) )
-               (set $OutFrames Out) ) )
+               (set $OutFrames Out) )
+            (let P (val $ErrFrames)  # Reverse ErrFrames
+               (until (== P (Src: err))
+                  (let Err: (ctFrame P)
+                     (setq P (Err: link))
+                     (Err: link Err)
+                     (setq Err (Err:)) ) )
+               (set $ErrFrames Err) )
+            (let P (val $CtlFrames)  # Reverse CtlFrames
+               (until (== P (Src: ctl))
+                  (let Ctl: (ctFrame P)
+                     (setq P (Ctl: link))
+                     (Ctl: link Ctl)
+                     (setq Ctl (Ctl:)) ) )
+               (set $CtlFrames Ctl) ) )
          (saveCoEnv (Src:))
          (unless (setjmp (Src: (rst)))
             (set $Ret Val)
             (longjmp (Dst: (rst)) 1) )
-         (unless (== (Src:) (Dst: org))
-            (let P (val $OutFrames)  # Restore OutFrames
+         (unless (t? (Src: tag))
+            (let P (Org: (env $CtlFrames i8*))  # Restore CtlFrames
+               (Src: ctl P)
+               (while Ctl
+                  (let Ctl: (ctFrame Ctl)
+                     (setq Ctl (Ctl: link))
+                     (Ctl: link P)
+                     (setq P (Ctl:)) ) )
+               (Src: (env $CtlFrames i8*) P) )
+            (let P (Org: (env $ErrFrames i8*))  # Restore ErrFrames
+               (Src: err P)
+               (while Err
+                  (let Err: (ctFrame Err)
+                     (setq Err (Err: link))
+                     (Err: link P)
+                     (setq P (Err:)) ) )
+               (Src: (env $ErrFrames i8*) P) )
+            (let P (Org: (env $OutFrames i8*))  # Restore OutFrames
                (Src: out P)
                (until (== Out (val $Stdout))
                   (let Out: (ioFrame Out)
@@ -1345,7 +1378,7 @@
                      (Out: link P)
                      (setq P (Out:)) ) )
                (Src: (env $OutFrames i8*) P) )
-            (let P (val $InFrames)  # Restore InFrames
+            (let P (Org: (env $InFrames i8*))  # Restore InFrames
                (Src: in P)
                (until (== In (val $Stdin))
                   (let In: (ioFrame In)
@@ -1353,7 +1386,7 @@
                      (In: link P)
                      (setq P (In:)) ) )
                (Src: (env $InFrames i8*) P) )
-            (let P (val $Catch)  # Restore CaFrames
+            (let P (Org: (env $Catch i8*))  # Restore CaFrames
                (Src: ca P)
                (while Ca
                   (let Ca: (caFrame Ca)
@@ -1362,7 +1395,7 @@
                      (setq P (Ca:)) ) )
                (Src: (env $Catch i8*) P) )
             (let P (Src: bnd)  # Restore bindings
-               (set 3 P (val $Bind))
+               (set 3 P (Org: (env $Bind any)))
                (while Bnd
                   (let Q Bnd
                      (xchg (val 2 Q) Q)
@@ -1370,7 +1403,7 @@
                      (set 3 Q P)
                      (setq P Q) ) )
                (Src: (env $Bind any) P) )
-            (let P (val $Link)  # Restore Stack(s)
+            (let P (Org: (env $Link any))  # Restore Stack(s)
                (Src: lnk P)
                (while Lnk
                   (let Q Lnk
