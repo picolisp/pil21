@@ -2,7 +2,7 @@
    Handle $ErrFrames and $CtlFrames in coroutines
       src/flow.l
       src/dec.l
-   'yield' bug continued
+   'yield' bug revisited
       src/flow.l
 
 23.8.25
