@@ -1,3 +1,7 @@
+23.8.27
+   Set namespace for '+<pat>' argument in debug mode
+      bin/vip
+
 23.8.26
    Handle $ErrFrames and $CtlFrames in coroutines
       src/flow.l
