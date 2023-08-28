@@ -1,4 +1,4 @@
-# 26aug23 Software Lab. Alexander Burger
+# 28aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -28,17 +28,12 @@
    (fun 8 i8*)          # I/O function
    (pid 4 i32) )        # Process ID
 
-(struct getFrame
+(struct ioxFrame
    (link 8 i8*)         # Frame link
+   (file 8 i8*)         # NULL
+   (fun 8 i8*)          # I/O function
    (exe 8 any)          # Expression
-   (fun 8 i8*)          # Saved $Get
    (chr 4 i32) )        # Saved $Chr
-
-(struct putFrame
-   (link 8 i8*)         # Frame link
-   (exe 8 any)          # Expression
-   (fun 8 i8*)          # Saved $Put
-   (char 8 any) )       # Next char
 
 (struct ctFrame
    (link 8 i8*)         # Frame link

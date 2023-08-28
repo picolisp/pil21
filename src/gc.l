@@ -1,4 +1,4 @@
-# 08aug23 Software Lab. Alexander Burger
+# 27aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -80,12 +80,6 @@
             (mark (Ca: priv1))
             (mark (Ca: priv2))
             (setq Ca (Ca: link)) ) ) )
-   (let Put (val $Output)  # 'output' Put frames
-      (while Put
-         (let Put: (putFrame Put)
-            (when (Put: char)  # Mark 'char'
-               (mark @) )
-            (setq Put (Put: link)) ) ) )
    (let Crt (val $Coroutines)
       (while Crt
          (let Crt: (coroutine Crt)

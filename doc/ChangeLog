@@ -1,3 +1,14 @@
+23.8.28
+   Homogenize 'input' and' 'output'
+      src/glob.l
+      src/dec.l
+      src/main.l
+      src/gc.l
+      src/io.l
+      src/flow.l
+   'null' instead of '@null' in 'table'
+      src/lib/llvm.l
+
 23.8.27
    Set namespace for '+<pat>' argument in debug mode
       bin/vip

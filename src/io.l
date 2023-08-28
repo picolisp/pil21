@@ -1,4 +1,4 @@
-# 08aug23 Software Lab. Alexander Burger
+# 28aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -563,42 +563,120 @@ selectErr)
       (set $At2 (cnt (i64 (val Res)))) ) )
 
 (de i32 currFd (Exe)
-   (let (In (val $InFrames)  Out (val $OutFrames))
+   (let (In: (ioFrame (val $InFrames))  Out: (ioFrame (val $OutFrames)))
       (nond
-         ((or In Out)
+         ((or (In: file) (Out: file))
             (err Exe 0 ($ "No current fd") null) )
-         (Out ((inFile ((ioFrame In) file)) fd))
-         (In ((outFile ((ioFrame Out) file)) fd))
+         ((Out: file) ((inFile (In: file)) fd))
+         ((In: file) ((outFile (Out: file)) fd))
          (NIL
             (if
-               (if (> In (stack))  # Assume stack is growing downwards
-                  (> Out In)
-                  (> In Out) )
-               ((inFile ((ioFrame In) file)) fd)
-               ((outFile ((ioFrame Out) file)) fd) ) ) ) ) )
+               (if (> (In:) (stack))  # Assume stack is growing downwards
+                  (> (Out:) (In:))
+                  (> (In:) (Out:)) )
+               ((inFile (In: file)) fd)
+               ((outFile (Out: file)) fd) ) ) ) ) )
+
+(local) (getIn put1 putOut)
+
+(de i32 getIn ()
+   (set $Chr
+      (cond
+         ((val $IoChar)
+            (set $IoChar (shr @ 8))
+            (i32 (i8 @)) )
+         ((nil?
+               (let (Iox: (ioxFrame (val $InFrames))  At (save (val $At)))
+                  (prog2
+                     (set
+                        $Chr (Iox: chr)
+                        (i8** $Get) (Iox: fun)
+                        $InFrames (Iox: link) )
+                     (eval (Iox: exe))
+                     (set
+                        $InFrames (Iox:)
+                        $Get (fun (i32) getIn)
+                        $At At )
+                     (Iox: chr (val $Chr)) ) ) )
+            -1 )
+         ((sym? @)
+            (let (S @  V (val (tail @)))
+               (if
+                  (or
+                     (sym? V)
+                     (not (cnt? (setq V (name V)))) )
+                  (charErr 0 S)
+                  (let C (int V)
+                     (set $IoChar (shr C 8))
+                     (i32 (i8 C)) ) ) ) )
+         (T (symErr 0 @)) ) ) )
+
+(de void put1 ((i8* . Iox) (i32 . C) (i32 . D))
+   (let
+      (Iox: (ioxFrame Iox)
+         At (save (val $At))
+         At2 (save (val $At2))
+         At3 (save (val $At3)) )
+      (set
+         (i8** $Put) (Iox: fun)
+         $OutFrames (Iox: link)
+         $At2 (consStr (cnt (i64 C)))
+         $At3 (if D (consStr (cnt (i64 @))) $Nil) )
+      (eval (Iox: exe))
+      (set
+         $OutFrames (Iox:)
+         $Put (fun (void i8) putOut)
+         $At3 At3
+         $At2 At2
+         $At At ) ) )
+
+(de void putOut ((i8 . B))
+   (nond
+      ((& B (hex "80"))  # Single byte
+         (set $IoChar (i64 B)) )
+      ((& B (hex "40"))  # Following byte
+         (set $IoChar
+            (|
+               (val $IoChar)
+               (shl
+                  (i64 B)
+                  (set $IoIx (+ (val $IoIx) 8)) ) ) )
+         (when (set $IoCnt (dec (val $IoCnt)))
+            (ret) ) )
+      ((& B (hex "20"))
+         (set $IoCnt 1  $IoIx 0  $IoChar (i64 B))
+         (ret) )
+      ((& B (hex "10"))
+         (set $IoCnt 2  $IoIx 0  $IoChar (i64 B))
+         (ret) )
+      (NIL
+         (set $IoCnt 3  $IoIx 0  $IoChar (i64 B))
+         (ret) ) )
+   (let (Iox: (ioxFrame (val $OutFrames))  C (i32 (val $IoChar)))
+      (when (Iox: chr)
+         (put1 (Iox:) @ C) )
+      (Iox: chr C) ) )
 
 (local) (pushInFile pushOutFile pushErrFile pushCtlFile)
 
 (de void pushInFile ((i8* . Io) (i8* . In) (i32 . Pid))
    (let Io: (ioFrame Io)
+      (Io: link (val $InFrames))
       (when (val $InFile)
          ((inFile @) chr (val $Chr)) )
-      (when (Io: link (val $InFrames))
-         ((ioFrame @) fun (val (i8** $Get))) )
-      (set $Get (fun (i32) _getStdin))
       (set $Chr
          ((inFile (Io: file (set $InFile In))) chr) )
+      (Io: fun (val (i8** $Get)))
       (Io: pid Pid)
-      (set $InFrames (Io:)) ) )
+      (set $InFrames (Io:)  $Get (fun (i32) _getStdin)) ) )
 
 (de void pushOutFile ((i8* . Io) (i8* . Out) (i32 . Pid))
    (let Io: (ioFrame Io)
-      (when (Io: link (val $OutFrames))
-         ((ioFrame @) fun (val (i8** $Put))) )
-      (set $Put (fun (void i8) _putStdout))
+      (Io: link (val $OutFrames))
       (Io: file (set $OutFile Out))
+      (Io: fun (val (i8** $Put)))
       (Io: pid Pid)
-      (set $OutFrames (Io:)) ) )
+      (set $OutFrames (Io:)  $Put (fun (void i8) _putStdout)) ) )
 
 (de void pushErrFile ((i8* . Ct))
    ((ctFrame Ct) link (val $ErrFrames))
@@ -608,41 +686,44 @@ selectErr)
    ((ctFrame Ct) link (val $CtlFrames))
    (set $CtlFrames Ct) )
 
-(local) (popInFiles tosInFile popOutFiles tosOutFile popErrFiles popCtlFiles)
+(local) (popInFiles popOutFiles popErrFiles popCtlFiles)
 
 (de void popInFiles ()
-   (let (Io: (ioFrame (val $InFrames))  In: (inFile (Io: file)))
-      (when (ge0 (In: fd))
-         (ifn (Io: pid)
-            (In: chr (val $Chr))
-            (close (In: fd))
-            (closeInFile (In: fd))
-            (when (> (Io: pid) 1)
-               (waitFile @) ) ) )
-      (set $InFrames (Io: link)) ) )
-
-(de void tosInFile ()
    (let Io: (ioFrame (val $InFrames))
-      (set
-         $Chr ((inFile (set $InFile (Io: file))) chr)
-         (i8** $Get) (Io: fun) ) ) )
+      (when (Io: file)
+         (let In: (inFile @)
+            (when (ge0 (In: fd))
+               (ifn (Io: pid)
+                  (In: chr (val $Chr))
+                  (close (In: fd))
+                  (closeInFile (In: fd))
+                  (when (> (Io: pid) 1)
+                     (waitFile @) ) ) ) ) )
+      (set (i8** $Get) (Io: fun))
+      (setq Io: (ioFrame (set $InFrames (Io: link))))
+      (set $Chr
+         (if (Io: file)
+            ((inFile (set $InFile @)) chr)
+            ((ioxFrame (Io:)) chr) ) ) ) )
 
 (de void popOutFiles ()
-   (flush (val $OutFile))
-   (let (Io: (ioFrame (val $OutFrames))  Out: (outFile (Io: file)))
-      (when (ge0 (Out: fd))
-         (when (Io: pid)
-            (close (Out: fd))
-            (closeOutFile (Out: fd))
-            (when (> (Io: pid) 1)
-               (waitFile @) ) ) )
-      (set $OutFrames (Io: link)) ) )
-
-(de void tosOutFile ()
    (let Io: (ioFrame (val $OutFrames))
-      (set
-         $OutFile (Io: file)
-         (i8** $Put) (Io: fun) ) ) )
+      (cond
+         ((Io: file)
+            (let Out: (outFile @)
+               (flush (val $OutFile))
+               (when (ge0 (Out: fd))
+                  (when (Io: pid)
+                     (close (Out: fd))
+                     (closeOutFile (Out: fd))
+                     (when (> (Io: pid) 1)
+                        (waitFile @) ) ) ) ) )
+         (((ioxFrame (Io:)) chr)
+            (put1 (Io:) @ 0) ) )
+      (set (i8** $Put) (Io: fun))
+      (setq Io: (ioFrame (set $OutFrames (Io: link))))
+      (when (Io: file)
+         (set $OutFile @) ) ) )
 
 (de void popErrFiles ()
    (let Ct: (ctFrame (val $ErrFrames))
@@ -1892,8 +1973,7 @@ selectErr)
       (rdOpen Exe (eval (++ X)) (b8+ (ioFrame T)))
       (prog1
          (run X)
-         (popInFiles)
-         (tosInFile) ) ) )
+         (popInFiles) ) ) )
 
 # (out 'any . prg) -> any
 (de _Out (Exe)
@@ -1901,8 +1981,7 @@ selectErr)
       (wrOpen Exe (eval (++ X)) (b8+ (ioFrame T)))
       (prog1
          (run X)
-         (popOutFiles)
-         (tosOutFile) ) ) )
+         (popOutFiles) ) ) )
 
 # (err 'sym . prg) -> any
 (de _Err (Exe)
@@ -1920,124 +1999,45 @@ selectErr)
          (run X)
          (popCtlFiles) ) ) )
 
-(local) (getIn put1 putOut)
+(local) (pushInput pushOutput)
 
-(de i32 getIn ()
-   (set $Chr
-      (cond
-         ((val $IoChar)
-            (set $IoChar (shr @ 8))
-            (i32 (i8 @)) )
-         ((nil?
-               (let (Get: (getFrame (val $Input))  At (save (val $At)))
-                  (prog2
-                     (set
-                        $Chr (Get: chr)
-                        (i8** $Get) (Get: fun)
-                        $Input (Get: link) )
-                     (eval (Get: exe))
-                     (set
-                        $Input (Get:)
-                        $Get (fun (i32) getIn)
-                        $At At )
-                     (Get: chr (val $Chr)) ) ) )
-            -1 )
-         ((sym? @)
-            (let (S @  V (val (tail @)))
-               (if
-                  (or
-                     (sym? V)
-                     (not (cnt? (setq V (name V)))) )
-                  (charErr 0 S)
-                  (let C (int V)
-                     (set $IoChar (shr C 8))
-                     (i32 (i8 C)) ) ) ) )
-         (T (symErr 0 @)) ) ) )
+(de void pushInput ((i8* . Iox) Exe)
+   (let Iox: (ioxFrame Iox)
+      (Iox: link (val $InFrames))
+      (Iox: file null)
+      (Iox: fun (val (i8** $Get)))
+      (Iox: exe Exe)
+      (Iox: chr (val $Chr))
+      (set
+         $InFrames (Iox:)
+         $Get (fun (i32) getIn)
+         $IoChar 0
+         $Chr 0 ) ) )
+
+(de void pushOutput ((i8* . Iox) Exe)
+   (let Iox: (ioxFrame Iox)
+      (Iox: link (val $OutFrames))
+      (Iox: file null)
+      (Iox: fun (val (i8** $Put)))
+      (Iox: exe Exe)
+      (Iox: chr 0)
+      (set $OutFrames (Iox:)  $Put (fun (void i8) putOut)) ) )
 
 # (input exe . prg) -> any
 (de _Input (Exe)
-   (let (X (cdr Exe)  Get: (getFrame (b8+ (getFrame T))))
-      (Get: link (val $Input))
-      (Get: exe (++ X))
-      (Get: fun (val (i8** $Get)))
-      (Get: chr (val $Chr))
-      (set
-         $Input (Get:)
-         $Get (fun (i32) getIn)
-         $IoChar 0
-         $Chr 0 )
+   (let X (cdr Exe)
+      (pushInput (b8+ (ioxFrame T)) (++ X))
       (prog1
          (run X)
-         (set
-            (i8** $Get) (Get: fun)
-            $Input (Get: link)
-            $Chr 0 ) ) ) )
-
-(de void put1 ((i8* . Put) C D)
-   (let
-      (Put: (putFrame Put)
-         At (save (val $At))
-         At2 (save (val $At2))
-         At3 (save (val $At3)) )
-      (set
-         (i8** $Put) (Put: fun)
-         $Output (Put: link)
-         $At2 C
-         $At3 D )
-      (eval (Put: exe))
-      (set
-         $Output (Put:)
-         $Put (fun (void i8) putOut)
-         $At3 At3
-         $At2 At2
-         $At At ) ) )
-
-(de void putOut ((i8 . B))
-   (nond
-      ((& B (hex "80"))  # Single byte
-         (set $IoChar (i64 B)) )
-      ((& B (hex "40"))  # Following byte
-         (set $IoChar
-            (|
-               (val $IoChar)
-               (shl
-                  (i64 B)
-                  (set $IoIx (+ (val $IoIx) 8)) ) ) )
-         (when (set $IoCnt (dec (val $IoCnt)))
-            (ret) ) )
-      ((& B (hex "20"))
-         (set $IoCnt 1  $IoIx 0  $IoChar (i64 B))
-         (ret) )
-      ((& B (hex "10"))
-         (set $IoCnt 2  $IoIx 0  $IoChar (i64 B))
-         (ret) )
-      (NIL
-         (set $IoCnt 3  $IoIx 0  $IoChar (i64 B))
-         (ret) ) )
-   (let
-      (Put: (putFrame (val $Output))
-         C (consStr (cnt (val $IoChar))) )
-      (unless (nil? (Put: char))
-         (put1 (Put:) @ C) )
-      (Put: char C) ) )
+         (popInFiles) ) ) )
 
 # (output exe . prg) -> any
 (de _Output (Exe)
-   (let (X (cdr Exe)  Put: (putFrame (b8+ (putFrame T))))
-      (Put: link (val $Output))
-      (Put: exe (++ X))
-      (Put: fun (val (i8** $Put)))
-      (Put: char $Nil)
-      (set
-         $Output (Put:)
-         $Put (fun (void i8) putOut) )
+   (let X (cdr Exe)
+      (pushOutput (b8+ (ioxFrame T)) (++ X))
       (prog1
          (run X)
-         (unless (nil? (Put: char))
-            (put1 (Put:) @ $Nil) )
-         (set
-            (i8** $Put) (Put: fun)
-            $Output (Put: link) ) ) ) )
+         (popOutFiles) ) ) )
 
 # (fd ['cnt]) -> cnt
 (de _Fd (Exe)
@@ -2103,12 +2103,14 @@ selectErr)
                (let In (val $InFrames)  # Clear pids in InFrames
                   (while In
                      (let In: (ioFrame In)
-                        (In: pid 0)
+                        (when (In: file)
+                           (In: pid 0) )
                         (setq In (In: link)) ) ) )
                (let Out (val $OutFrames)  # Clear pids in OutFrames
                   (while Out
                      (let Out: (ioFrame Out)
-                        (Out: pid 0)
+                        (when (Out: file)
+                           (Out: pid 0) )
                         (setq Out (Out: link)) ) ) )
                (let Ca (val $Catch)  # Clear 'finally' expressions in Catch frames
                   (while Ca
@@ -2183,8 +2185,7 @@ selectErr)
                      (pushInFile (Io:) (initInFile Fd null) Pid)
                      (prog1
                         (run X)
-                        (popInFiles)
-                        (tosInFile) ) ) ) ) )
+                        (popInFiles) ) ) ) ) )
          # In child
          (close (val Pfd))  # Close read end
          (let Fd (val 2 Pfd)  # Write end
@@ -2858,7 +2859,6 @@ selectErr)
             (until (nil? (read1 0))
                (setq X (eval (set V @))) ) )
          (popInFiles)
-         (tosInFile)
          (when Raw
             (setRaw) )
          (set 2 $PrivT Pr2)

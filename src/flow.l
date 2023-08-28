@@ -1,4 +1,4 @@
-# 26aug23 Software Lab. Alexander Burger
+# 28aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1115,7 +1115,9 @@
    ((ioFrame (val $OutFrames)) fun (val (i8** $Put)))
    (let Io: (ioFrame (val $InFrames))
       (Io: fun (val (i8** $Get)))
-      ((inFile (Io: file)) chr (val $Chr)) ) )
+      (if (Io: file)
+         ((inFile @) chr (val $Chr))
+         ((ioxFrame (Io:)) chr (val $Chr)) ) ) )
 
 (de void saveCoEnv ((i8* . Crt))
    (let Crt: (coroutine Crt)
@@ -1129,8 +1131,6 @@
       (memcpy (env) (Crt: (env)) (env T) T)
       (set $StkLimit (+ (Crt: lim) 1024))
       (getCrtEnv (Crt:))
-      (tosInFile)
-      (tosOutFile)
       (set $At (Crt: at))
       (Crt: at 0)  # Running
       (val $Ret) ) )
@@ -1238,22 +1238,26 @@
                                        (setq P (Err: link)) ) ) )
                               (let P (Crt: (env $OutFrames i8*))  # Close OutFrames
                                  (until (== P (val $Stdout))
-                                    (let (Io: (ioFrame P)  Out: (outFile (Io: file)))
-                                       (flush (Out:))
-                                       (when (and (ge0 (Out: fd)) (Io: pid))
-                                          (close (Out: fd))
-                                          (closeOutFile (Out: fd))
-                                          (when (> (Io: pid) 1)
-                                             (waitFile @) ) )
+                                    (let Io: (ioFrame P)
+                                       (when (Io: file)
+                                          (let Out: (outFile @)
+                                             (flush (Out:))
+                                             (when (and (ge0 (Out: fd)) (Io: pid))
+                                                (close (Out: fd))
+                                                (closeOutFile (Out: fd))
+                                                (when (> (Io: pid) 1)
+                                                   (waitFile @) ) ) ) )
                                        (setq P (Io: link)) ) ) )
                               (let P (Crt: (env $InFrames i8*))  # Close InFrames
                                  (until (== P (val $Stdin))
-                                    (let (Io: (ioFrame P)  In: (inFile (Io: file)))
-                                       (when (and (ge0 (In: fd)) (Io: pid))
-                                          (close (In: fd))
-                                          (closeInFile (In: fd))
-                                          (when (> (Io: pid) 1)
-                                             (waitFile @) ) )
+                                    (let Io: (ioFrame P)
+                                       (when (Io: file)
+                                          (let In: (inFile @)
+                                             (when (and (ge0 (In: fd)) (Io: pid))
+                                                (close (In: fd))
+                                                (closeInFile (In: fd))
+                                                (when (> (Io: pid) 1)
+                                                   (waitFile @) ) ) ) )
                                        (setq P (Io: link)) ) ) )
                               (stop (Crt:)) )  # Stop it
                            (? (=0 (setq Crt (Crt: nxt)))) ) )
@@ -1430,7 +1434,6 @@
       (newline)
       (repl 0 ($ "! ") $Nil)
       (popOutFiles)
-      (tosOutFile)
       (setq Exe (val $Up))
       (let P (val $Bind)
          (set $Run (val P))
@@ -1464,15 +1467,17 @@
             $At (val (val 3 (val 3 P))) )
          (let (In: (ioFrame (val $InFrames))  Out: (ioFrame (val $OutFrames)))
             (popInFiles)
-            (tosInFile)
             (popOutFiles)
-            (tosOutFile)
             (prog1
                (if (pair (cdr Exe))
                   (run @)
                   (eval (val $Up)) )
-               (pushOutFile (Out:) (Out: file) (Out: pid))
-               (pushInFile (In:) (In: file) (In: pid))
+               (if (Out: file)
+                  (pushOutFile (Out:) (Out: file) (Out: pid))
+                  (pushOutput (Out:) ((ioxFrame (Out:)) exe)) )
+               (if (In: file)
+                  (pushInFile (In:) (In: file) (In: pid))
+                  (pushInput (In:) ((ioxFrame (In:)) exe)) )
                (set $Run Run  $At At  $Dbg Dbg) ) ) ) ) )
 
 (local) trace
@@ -1599,14 +1604,14 @@
 # (ipid) -> pid | NIL
 (de _Ipid (Exe)
    (let Io: (ioFrame (val $InFrames))
-      (if (and (Io:) (> (Io: pid) 1))
+      (if (and (Io: file) (> (Io: pid) 1))
          (cnt (i64 (Io: pid)))
          $Nil ) ) )
 
 # (opid) -> pid | NIL
 (de _Opid (Exe)
    (let Io: (ioFrame (val $OutFrames))
-      (if (and (Io:) (> (Io: pid) 1))
+      (if (and (Io: file) (> (Io: pid) 1))
          (cnt (i64 (Io: pid)))
          $Nil ) ) )
 

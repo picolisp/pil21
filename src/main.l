@@ -1,4 +1,4 @@
-# 08aug23 Software Lab. Alexander Burger
+# 28aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -35,14 +35,12 @@
    X )
 
 
-(local) (put get tosInFile popInFiles tosOutFile popOutFiles popErrFiles
+(local) (put get popInFiles popOutFiles popErrFiles
 popCtlFiles)
 
 (de void put (any any any))
 (de any get (any any))
-(de void tosInFile ())
 (de void popInFiles ())
-(de void tosOutFile ())
 (de void popOutFiles ())
 (de void popErrFiles ())
 (de void popCtlFiles ())
@@ -75,13 +73,11 @@ popCtlFiles)
             (unless (== (val $OutFrames) (Ca: (env $OutFrames i8*)))
                (loop
                   (popOutFiles)
-                  (? (== (val $OutFrames) (Ca: (env $OutFrames i8*)))) )
-               (tosOutFile) )
+                  (? (== (val $OutFrames) (Ca: (env $OutFrames i8*)))) ) )
             (unless (== (val $InFrames) (Ca: (env $InFrames i8*)))
                (loop
                   (popInFiles)
-                  (? (== (val $InFrames) (Ca: (env $InFrames i8*)))) )
-               (tosInFile) )
+                  (? (== (val $InFrames) (Ca: (env $InFrames i8*)))) ) )
             (let (Src (val $Current)  Dst (Ca: co))
                (unless Dst
                   (setq Dst (val $Coroutines)) )
@@ -107,13 +103,11 @@ popCtlFiles)
       (unless (== (val $OutFrames) (val $Stdout))
          (loop
             (popOutFiles)
-            (? (== (val $OutFrames) (val $Stdout))) )
-         (tosOutFile) )
+            (? (== (val $OutFrames) (val $Stdout))) ) )
       (unless (== (val $InFrames) (val $Stdin))
          (loop
             (popInFiles)
-            (? (== (val $InFrames) (val $Stdin))) )
-         (tosInFile) )
+            (? (== (val $InFrames) (val $Stdin))) ) )
       (let (Src (val $Current)  Dst (val $Coroutines))
          (unless (== Src Dst)
             (stop Src)

@@ -1,4 +1,4 @@
-# 04jun23 Software Lab. Alexander Burger
+# 28aug23 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -436,7 +436,12 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
                         (if (sub? "*" Typ) "ptrtoint" "sext")
                         " (" (cadr Lst) " " (caddr Lst) " to i64)") )
                   (NIL
-                     (prin "  i64 ptrtoint (" (func pico~@) " @" (caddr Lst) " to i64)") ) )
+                     (prin
+                        "  i64 ptrtoint ("
+                        (func pico~@)
+                        (if (== null (caddr Lst)) " " " @")
+                        (caddr Lst)
+                        " to i64)" ) ) )
                (prinl (unless (== Lst (last Args)) ",")) ) ) ) )
    (unless *Shared
       (prinl "], align 8") ) )
@@ -754,7 +759,7 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
             ((memq V '(i64 any))
                (ssa (inc '*Ssa) "inttoptr i64 " X " to " '@Typ)
                (def (pack "%" *Ssa) '@Typ) )
-            ((== 'null V)
+            ((== null V)
                (ssa (inc '*Ssa) "inttoptr i64 0 to " '@Typ)
                (def (pack "%" *Ssa) '@Typ) )
             ((sub? "*" V)
