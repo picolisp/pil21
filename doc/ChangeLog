@@ -1,3 +1,7 @@
+23.8.29
+   'noLint' for 'RED'
+      lib/term.l
+
 23.8.28
    Homogenize 'input' and' 'output'
       src/glob.l

@@ -1,4 +1,4 @@
-# 21aug23 Software Lab. Alexander Burger
+# 29aug23 Software Lab. Alexander Burger
 
 (sysdefs "terminal")
 
@@ -87,3 +87,8 @@
 
 (de screen2 ()
    (and (xterm) (prin "\e[?1049h")) )
+
+### Debug ###
+`*Dbg
+
+(noLint 'RED)
