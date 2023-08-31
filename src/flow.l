@@ -1152,6 +1152,7 @@
                         (Main: prv null)
                         (Main: nxt null)
                         (Main: org null)
+                        (Main: otg $Nil)
                         (Main: prg $Nil)
                         (let (Siz (val $StkSizeT)  Stk (stack))
                            (memset
@@ -1175,6 +1176,7 @@
                                  (ret (loadCoEnv (Src:))) )
                               (set $Ret $Nil)
                               (Crt: org (Src:))
+                              (Crt: otg (Src: tag))
                               (longjmp (Crt: (rst)) 1) )
                            (or P
                               (Crt: tag)  # Unused
@@ -1191,11 +1193,12 @@
                         ((coroutine Crt) nxt P)
                         ((coroutine P) prv Crt)
                         ((coroutine P) nxt null) )
-                     (let (Dst: (coroutine P)  OrgTag (Src: tag))
+                     (let Dst: (coroutine P)
                         (Dst: tag Tag)
                         (when (symb? Tag)
                            (put Tag ZERO (| (i64 (Dst:)) 2)) )
                         (Dst: org (Src:))
+                        (Dst: otg (Src: tag))
                         (Dst: prg X)
                         (let (Siz (val $StkSize)  Stk (stack))
                            (memset
@@ -1223,8 +1226,8 @@
                            (stkOverErr (Dst: tag)) )
                         (stop (Dst:))  # Stop coroutine
                         (let Org: (coroutine (Dst: org))
-                           (unless (== OrgTag (Org: tag))
-                              (coErr Exe OrgTag) )
+                           (unless (== (Org: tag) (Dst: otg))
+                              (coErr Exe (Dst: otg)) )
                            (longjmp (Org: (rst)) 1) ) ) ) )
                ((t? Tag)
                   (err Exe 0 ($ "Can't stop main routine") null) )
@@ -1297,7 +1300,11 @@
                               (i8* (& @ -3))
                               (unless (== Tag ((coroutine @) tag))
                                  (coErr Exe Tag) ) ) ) ) )
-                  ((Org:) @)
+                  ((Org:)
+                     (prog1
+                        @
+                        (unless (== (Org: tag) (Src: otg))
+                           (coErr Exe (Src: otg)) ) ) )
                   (T (tagErr Exe)) ) )
             Lnk (any 0)
             Bnd (any 0)

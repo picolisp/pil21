@@ -1,4 +1,4 @@
-# 28aug23 Software Lab. Alexander Burger
+# 31aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -75,6 +75,7 @@
    (prv 8 i8*)          # Previous coroutine
    (nxt 8 i8*)          # Next coroutine
    (org 8 i8*)          # Originator
+   (otg 8 any)          # Originator tag
    (prg 8 any)          # Code body
    (lim 8 i8*)          # Stack limit
    (at 8 any)           # Saved [@]

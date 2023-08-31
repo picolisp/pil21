@@ -1,5 +1,6 @@
 23.8.31
    Tag checks in 'co' and 'yield'
+      src/dec.l
       src/flow.l
    Cosmetics
       doc/des.html
