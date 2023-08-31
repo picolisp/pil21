@@ -1,4 +1,4 @@
-# 28aug23 Software Lab. Alexander Burger
+# 31aug23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1191,7 +1191,7 @@
                         ((coroutine Crt) nxt P)
                         ((coroutine P) prv Crt)
                         ((coroutine P) nxt null) )
-                     (let Dst: (coroutine P)
+                     (let (Dst: (coroutine P)  OrgTag (Src: tag))
                         (Dst: tag Tag)
                         (when (symb? Tag)
                            (put Tag ZERO (| (i64 (Dst:)) 2)) )
@@ -1222,7 +1222,10 @@
                         (unless (== (hex "0707070707070707") (val (i64* (Dst: lim))))
                            (stkOverErr (Dst: tag)) )
                         (stop (Dst:))  # Stop coroutine
-                        (longjmp ((coroutine (Dst: org)) (rst)) 1) ) ) )
+                        (let Org: (coroutine (Dst: org))
+                           (unless (== OrgTag (Org: tag))
+                              (coErr Exe OrgTag) )
+                           (longjmp (Org: (rst)) 1) ) ) ) )
                ((t? Tag)
                   (err Exe 0 ($ "Can't stop main routine") null) )
                ((val $Coroutines)
@@ -1289,7 +1292,11 @@
                                     (coErr Exe Tag) ) ) ) )
                         ((cnt? (get Tag ZERO))
                            (coErr Exe Tag) )
-                        (NIL (i8* (& @ -3))) ) )
+                        (NIL
+                           (prog1
+                              (i8* (& @ -3))
+                              (unless (== Tag ((coroutine @) tag))
+                                 (coErr Exe Tag) ) ) ) ) )
                   ((Org:) @)
                   (T (tagErr Exe)) ) )
             Lnk (any 0)
