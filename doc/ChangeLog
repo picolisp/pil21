@@ -1,3 +1,8 @@
+23.9.3
+   Allow reentrancy in coroutines
+      src/flow.l
+      doc/ref.html
+
 23.8.31
    Tag checks in 'co' and 'yield'
       src/dec.l

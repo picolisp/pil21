@@ -1,4 +1,4 @@
-# 31aug23 Software Lab. Alexander Burger
+# 03sep23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1095,16 +1095,13 @@
          (set $Catch (Ca: link)) ) ) )
 
 # Coroutines
-(local) (coErr tagErr reentErr stkOverErr saveCoIO saveCoEnv loadCoEnv)
+(local) (coErr tagErr stkOverErr saveCoIO saveCoEnv loadCoEnv)
 
 (de NIL coErr (Exe Tag)
    (err Exe Tag ($ "Coroutine not found") null) )
 
 (de NIL tagErr (Exe)
    (err Exe 0 ($ "Tag expected") null) )
-
-(de NIL reentErr (Exe Tag)
-   (err Exe Tag ($ "Reentrant coroutine") null) )
 
 (de NIL stkOverErr (Tag)
    (set $StkLimit null)
@@ -1170,8 +1167,6 @@
                      (loop
                         (let Crt: (coroutine Crt)
                            (when (== Tag (Crt: tag))  # Found running coroutine
-                              (unless (Crt: at)
-                                 (reentErr Exe Tag) )
                               (when (setjmp (Src: (rst)))
                                  (ret (loadCoEnv (Src:))) )
                               (set $Ret $Nil)
@@ -1313,8 +1308,6 @@
             Out (val $Stdout)
             Err (i8* null)
             Ctl (i8* null) )
-         (unless (Dst: at)
-            (reentErr Exe Tag) )
          (saveCoIO)
          (unless (t? (Src: tag))
             (let P (val $Link)  # Reverse Stack(s)
