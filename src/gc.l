@@ -1,4 +1,4 @@
-# 27aug23 Software Lab. Alexander Burger
+# 04sep23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -83,36 +83,37 @@
    (let Crt (val $Coroutines)
       (while Crt
          (let Crt: (coroutine Crt)
-            (when (and (Crt: tag) (Crt: at))
+            (when (Crt: tag)
                (mark (Crt: tag))
                (mark (Crt: prg))
-               (mark (Crt: at))
-               (mark (Crt: intrn))
-               (mark (Crt: trns1))
-               (mark (Crt: trns2))
-               (mark (Crt: priv1))
-               (mark (Crt: priv2))
-               (let P (Crt: (env $Link any))  # Stack(s)
-                  (while P
-                     (mark (val P))  # Mark item
-                     (shift P) ) )
-               (let P (Crt: (env $Bind any))  # Bind frames
-                  (while P
-                     (mark (val P))  # Mark saved value
-                     (mark (val 2 P))  # Mark symbol
-                     (setq P (val 3 P)) ) )
-               (let Ca (Crt: (env $Catch i8*))
-                  (while Ca
-                     (let Ca: (caFrame Ca)
-                        (when (Ca: tag)  # Mark 'tag'
-                           (mark (Ca: tag)) )
-                        (mark (Ca: fin))
-                        (mark (Ca: intrn))
-                        (mark (Ca: trns1))
-                        (mark (Ca: trns2))
-                        (mark (Ca: priv1))
-                        (mark (Ca: priv2))
-                        (setq Ca (Ca: link)) ) ) ) )
+               (when (Crt: at)
+                  (mark (Crt: at))
+                  (mark (Crt: intrn))
+                  (mark (Crt: trns1))
+                  (mark (Crt: trns2))
+                  (mark (Crt: priv1))
+                  (mark (Crt: priv2))
+                  (let P (Crt: (env $Link any))  # Stack(s)
+                     (while P
+                        (mark (val P))  # Mark item
+                        (shift P) ) )
+                  (let P (Crt: (env $Bind any))  # Bind frames
+                     (while P
+                        (mark (val P))  # Mark saved value
+                        (mark (val 2 P))  # Mark symbol
+                        (setq P (val 3 P)) ) )
+                  (let Ca (Crt: (env $Catch i8*))
+                     (while Ca
+                        (let Ca: (caFrame Ca)
+                           (when (Ca: tag)  # Mark 'tag'
+                              (mark (Ca: tag)) )
+                           (mark (Ca: fin))
+                           (mark (Ca: intrn))
+                           (mark (Ca: trns1))
+                           (mark (Ca: trns2))
+                           (mark (Ca: priv1))
+                           (mark (Ca: priv2))
+                           (setq Ca (Ca: link)) ) ) ) ) )
             (setq Crt (Crt: nxt)) ) ) )
    (let (Tos 0  P (val $Extern))  # Externals
       (loop
