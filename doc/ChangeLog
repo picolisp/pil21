@@ -1,3 +1,7 @@
+23.9.5
+   Adjust LLVM version check (Mike Pechkin)
+      src/Makefile
+
 23.9.4
    Mark 'tag' and 'prg' also in non-running coroutines
       src/gc.l
