@@ -1303,6 +1303,9 @@ Its <code>prg</code> body will be executed, and unless <code><a
 href="refY.html#yield">yield</a></code> is called at some point, the coroutine
 will "fall off" at the end and disappear.
 
+<p>The initial value of <code><a href="refT.html#This">This</a></code> is bound
+and preserved in the coroutine environment.
+
 <p>When <code><a href="refY.html#yield">yield</a></code> is called, control is
 either transferred back to the caller, or to some other - explicitly specified,
 and already running - coroutine.

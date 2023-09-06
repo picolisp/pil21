@@ -1,3 +1,8 @@
+23.9.6
+   Preserve initial 'This' in coroutines
+      src/flow.l
+      doc/ref.html
+
 23.9.5
    Adjust LLVM version check (Mike Pechkin)
       src/Makefile

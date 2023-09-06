@@ -1,4 +1,4 @@
-# 03sep23 Software Lab. Alexander Burger
+# 06sep23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1202,8 +1202,9 @@
                            (stack Stk) )
                         (Dst: at 0)
                         (Dst: lnk (val $Link))
-                        (Dst: bnd
-                           (set $Bind (push ZERO $At (val $Bind) Exe)) )  # [0 @ LINK exe]
+                        (set $Bind
+                           (push (val $This) $This  # [[This] This LINK]
+                              (Dst: bnd (push ZERO $At (val $Bind) Exe)) ) )  # [0 @ LINK exe]
                         (Dst: ca (val $Catch))
                         (Dst: in (val $InFrames))
                         (Dst: out (val $OutFrames))
