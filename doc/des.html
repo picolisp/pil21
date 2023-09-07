@@ -163,13 +163,15 @@ Philosophers Problem</a>.
 
 <hr>
 <pre>
-# 05may23 Software Lab. Alexander Burger
+# 07sep23 Software Lab. Alexander Burger
 # Dining Philosophers
 # pil dining.l -dining~main +
 
 (load "@lib/simul.l")
 
 (symbols 'dining 'simul 'pico)
+
+(off *Rt)  # Realtime mode off
 
 (local) (*ForkA *ForkB *ForkC *ForkD *ForkE now think)
 
