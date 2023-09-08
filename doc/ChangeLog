@@ -1,4 +1,6 @@
 23.9.8
+   Don't fall back to stdin/stdout for closed files
+      src/io.l
    Load also "@lib/lint.l" in 'psh'
       lib/http.l
 

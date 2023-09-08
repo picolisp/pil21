@@ -38557,60 +38557,39 @@ $9:
 
 define void @closeInFile(i32) align 8 {
 $1:
-; # (when (> (val $InFDs) Fd) (let (P (ofs (val $InFiles) Fd) In (val...
+; # (when (> (val $InFDs) Fd) (let P (ofs (val $InFiles) Fd) (when (v...
 ; # (val $InFDs)
   %1 = load i32, i32* @$InFDs
 ; # (> (val $InFDs) Fd)
   %2 = icmp sgt i32 %1, %0
   br i1 %2, label %$2, label %$3
 $2:
-; # (let (P (ofs (val $InFiles) Fd) In (val P)) (when (== In (val $In...
+; # (let P (ofs (val $InFiles) Fd) (when (val P) (let In: (inFile @) ...
 ; # (val $InFiles)
   %3 = load i8**, i8*** @$InFiles
 ; # (ofs (val $InFiles) Fd)
   %4 = getelementptr i8*, i8** %3, i32 %0
+; # (when (val P) (let In: (inFile @) (free (In: name)) (In: name nul...
 ; # (val P)
   %5 = load i8*, i8** %4
-; # (when (== In (val $InFile)) (set $Chr ((inFile (set $InFile (val ...
-; # (val $InFile)
-  %6 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 72) to i8**)
-; # (== In (val $InFile))
-  %7 = icmp eq i8* %5, %6
-  br i1 %7, label %$4, label %$5
+  %6 = icmp ne i8* %5, null
+  br i1 %6, label %$4, label %$5
 $4:
-; # (set $Chr ((inFile (set $InFile (val (val $InFiles)))) chr))
-; # (set $InFile (val (val $InFiles)))
-; # (val $InFiles)
-  %8 = load i8**, i8*** @$InFiles
-; # (val (val $InFiles))
-  %9 = load i8*, i8** %8
-  store i8* %9, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 72) to i8**)
-; # ((inFile (set $InFile (val (val $InFiles)))) chr)
-  %10 = getelementptr i8, i8* %9, i32 12
-  %11 = bitcast i8* %10 to i32*
-  %12 = load i32, i32* %11
-  store i32 %12, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 64) to i32*)
-  br label %$5
-$5:
-; # (when In (let In: (inFile @) (free (In: name)) (In: name null) (I...
-  %13 = icmp ne i8* %5, null
-  br i1 %13, label %$6, label %$7
-$6:
 ; # (let In: (inFile @) (free (In: name)) (In: name null) (In: fd -1)...
 ; # (In: name)
-  %14 = bitcast i8* %5 to i8**
-  %15 = load i8*, i8** %14
+  %7 = bitcast i8* %5 to i8**
+  %8 = load i8*, i8** %7
 ; # (free (In: name))
-  call void @free(i8* %15)
+  call void @free(i8* %8)
 ; # (In: name null)
-  %16 = bitcast i8* %5 to i8**
-  store i8* null, i8** %16
+  %9 = bitcast i8* %5 to i8**
+  store i8* null, i8** %9
 ; # (In: fd -1)
-  %17 = getelementptr i8, i8* %5, i32 8
-  %18 = bitcast i8* %17 to i32*
-  store i32 -1, i32* %18
-  br label %$7
-$7:
+  %10 = getelementptr i8, i8* %5, i32 8
+  %11 = bitcast i8* %10 to i32*
+  store i32 -1, i32* %11
+  br label %$5
+$5:
   br label %$3
 $3:
   ret void
@@ -38618,45 +38597,29 @@ $3:
 
 define void @closeOutFile(i32) align 8 {
 $1:
-; # (when (> (val $OutFDs) Fd) (let (P (ofs (val $OutFiles) Fd) Out (...
+; # (when (> (val $OutFDs) Fd) (let P (ofs (val $OutFiles) Fd) (when ...
 ; # (val $OutFDs)
   %1 = load i32, i32* @$OutFDs
 ; # (> (val $OutFDs) Fd)
   %2 = icmp sgt i32 %1, %0
   br i1 %2, label %$2, label %$3
 $2:
-; # (let (P (ofs (val $OutFiles) Fd) Out (val P)) (when (== Out (val ...
+; # (let P (ofs (val $OutFiles) Fd) (when (val P) ((outFile @) fd -1)...
 ; # (val $OutFiles)
   %3 = load i8**, i8*** @$OutFiles
 ; # (ofs (val $OutFiles) Fd)
   %4 = getelementptr i8*, i8** %3, i32 %0
+; # (when (val P) ((outFile @) fd -1))
 ; # (val P)
   %5 = load i8*, i8** %4
-; # (when (== Out (val $OutFile)) (set $OutFile (val 2 (val $OutFiles...
-; # (val $OutFile)
-  %6 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 80) to i8**)
-; # (== Out (val $OutFile))
-  %7 = icmp eq i8* %5, %6
-  br i1 %7, label %$4, label %$5
+  %6 = icmp ne i8* %5, null
+  br i1 %6, label %$4, label %$5
 $4:
-; # (set $OutFile (val 2 (val $OutFiles)))
-; # (val $OutFiles)
-  %8 = load i8**, i8*** @$OutFiles
-; # (val 2 (val $OutFiles))
-  %9 = getelementptr i8*, i8** %8, i32 1
-  %10 = load i8*, i8** %9
-  store i8* %10, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 80) to i8**)
+; # ((outFile @) fd -1)
+  %7 = bitcast i8* %5 to i32*
+  store i32 -1, i32* %7
   br label %$5
 $5:
-; # (when Out ((outFile @) fd -1))
-  %11 = icmp ne i8* %5, null
-  br i1 %11, label %$6, label %$7
-$6:
-; # ((outFile @) fd -1)
-  %12 = bitcast i8* %5 to i32*
-  store i32 -1, i32* %12
-  br label %$7
-$7:
   br label %$3
 $3:
   ret void
@@ -39075,124 +39038,135 @@ $18:
 
 define i1 @wrBytes(i32, i8*, i32) align 8 {
 $1:
-; # (loop (let N (i32 (write Fd P (i64 Cnt))) (if (lt0 N) (let E (gEr...
+; # (loop (? (lt0 Fd) NO) (let N (i32 (write Fd P (i64 Cnt))) (if (lt...
   br label %$2
 $2:
-  %3 = phi i8* [%1, %$1], [%48, %$5] ; # P
-  %4 = phi i32 [%2, %$1], [%49, %$5] ; # Cnt
+  %3 = phi i8* [%1, %$1], [%53, %$8] ; # P
+  %4 = phi i32 [%2, %$1], [%54, %$8] ; # Cnt
+; # (? (lt0 Fd) NO)
+; # (lt0 Fd)
+  %5 = icmp slt i32 %0, 0
+  br i1 %5, label %$5, label %$3
+$5:
+  %6 = phi i8* [%3, %$2] ; # P
+  %7 = phi i32 [%4, %$2] ; # Cnt
+  br label %$4
+$3:
+  %8 = phi i8* [%3, %$2] ; # P
+  %9 = phi i32 [%4, %$2] ; # Cnt
 ; # (let N (i32 (write Fd P (i64 Cnt))) (if (lt0 N) (let E (gErrno) (...
 ; # (i64 Cnt)
-  %5 = sext i32 %4 to i64
+  %10 = sext i32 %9 to i64
 ; # (write Fd P (i64 Cnt))
-  %6 = call i64 @write(i32 %0, i8* %3, i64 %5)
+  %11 = call i64 @write(i32 %0, i8* %8, i64 %10)
 ; # (i32 (write Fd P (i64 Cnt)))
-  %7 = trunc i64 %6 to i32
+  %12 = trunc i64 %11 to i32
 ; # (if (lt0 N) (let E (gErrno) (? (== E EBADF) NO) (? (== E EPIPE) N...
 ; # (lt0 N)
-  %8 = icmp slt i32 %7, 0
-  br i1 %8, label %$3, label %$4
-$3:
-  %9 = phi i8* [%3, %$2] ; # P
-  %10 = phi i32 [%4, %$2] ; # Cnt
+  %13 = icmp slt i32 %12, 0
+  br i1 %13, label %$6, label %$7
+$6:
+  %14 = phi i8* [%8, %$3] ; # P
+  %15 = phi i32 [%9, %$3] ; # Cnt
 ; # (let E (gErrno) (? (== E EBADF) NO) (? (== E EPIPE) NO) (? (== E ...
 ; # (gErrno)
-  %11 = call i32 @gErrno()
+  %16 = call i32 @gErrno()
 ; # (? (== E EBADF) NO)
 ; # (== E EBADF)
-  %12 = icmp eq i32 %11, 3
-  br i1 %12, label %$8, label %$6
-$8:
-  %13 = phi i8* [%9, %$3] ; # P
-  %14 = phi i32 [%10, %$3] ; # Cnt
-  br label %$7
-$6:
-  %15 = phi i8* [%9, %$3] ; # P
-  %16 = phi i32 [%10, %$3] ; # Cnt
-; # (? (== E EPIPE) NO)
-; # (== E EPIPE)
-  %17 = icmp eq i32 %11, 6
+  %17 = icmp eq i32 %16, 3
   br i1 %17, label %$10, label %$9
 $10:
-  %18 = phi i8* [%15, %$6] ; # P
-  %19 = phi i32 [%16, %$6] ; # Cnt
-  br label %$7
+  %18 = phi i8* [%14, %$6] ; # P
+  %19 = phi i32 [%15, %$6] ; # Cnt
+  br label %$4
 $9:
-  %20 = phi i8* [%15, %$6] ; # P
-  %21 = phi i32 [%16, %$6] ; # Cnt
-; # (? (== E ECONNRESET) NO)
-; # (== E ECONNRESET)
-  %22 = icmp eq i32 %11, 7
+  %20 = phi i8* [%14, %$6] ; # P
+  %21 = phi i32 [%15, %$6] ; # Cnt
+; # (? (== E EPIPE) NO)
+; # (== E EPIPE)
+  %22 = icmp eq i32 %16, 6
   br i1 %22, label %$12, label %$11
 $12:
   %23 = phi i8* [%20, %$9] ; # P
   %24 = phi i32 [%21, %$9] ; # Cnt
-  br label %$7
+  br label %$4
 $11:
   %25 = phi i8* [%20, %$9] ; # P
   %26 = phi i32 [%21, %$9] ; # Cnt
-; # (unless (== E EINTR) (when (== Fd 2) (bye 2)) (writeErr ($ "bytes...
-; # (== E EINTR)
-  %27 = icmp eq i32 %11, 2
+; # (? (== E ECONNRESET) NO)
+; # (== E ECONNRESET)
+  %27 = icmp eq i32 %16, 7
   br i1 %27, label %$14, label %$13
-$13:
+$14:
   %28 = phi i8* [%25, %$11] ; # P
   %29 = phi i32 [%26, %$11] ; # Cnt
+  br label %$4
+$13:
+  %30 = phi i8* [%25, %$11] ; # P
+  %31 = phi i32 [%26, %$11] ; # Cnt
+; # (unless (== E EINTR) (when (== Fd 2) (bye 2)) (writeErr ($ "bytes...
+; # (== E EINTR)
+  %32 = icmp eq i32 %16, 2
+  br i1 %32, label %$16, label %$15
+$15:
+  %33 = phi i8* [%30, %$13] ; # P
+  %34 = phi i32 [%31, %$13] ; # Cnt
 ; # (when (== Fd 2) (bye 2))
 ; # (== Fd 2)
-  %30 = icmp eq i32 %0, 2
-  br i1 %30, label %$15, label %$16
-$15:
-  %31 = phi i8* [%28, %$13] ; # P
-  %32 = phi i32 [%29, %$13] ; # Cnt
+  %35 = icmp eq i32 %0, 2
+  br i1 %35, label %$17, label %$18
+$17:
+  %36 = phi i8* [%33, %$15] ; # P
+  %37 = phi i32 [%34, %$15] ; # Cnt
 ; # (bye 2)
   call void @bye(i32 2)
   unreachable
-$16:
-  %33 = phi i8* [%28, %$13] ; # P
-  %34 = phi i32 [%29, %$13] ; # Cnt
+$18:
+  %38 = phi i8* [%33, %$15] ; # P
+  %39 = phi i32 [%34, %$15] ; # Cnt
 ; # (writeErr ($ "bytes write: %s"))
   call void @writeErr(i8* bitcast ([16 x i8]* @$39 to i8*))
   unreachable
-$14:
-  %35 = phi i8* [%25, %$11] ; # P
-  %36 = phi i32 [%26, %$11] ; # Cnt
+$16:
+  %40 = phi i8* [%30, %$13] ; # P
+  %41 = phi i32 [%31, %$13] ; # Cnt
 ; # (sigChk 0)
-  %37 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
-  %38 = icmp ne i32 %37, 0
-  br i1 %38, label %$17, label %$18
-$17:
+  %42 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %43 = icmp ne i32 %42, 0
+  br i1 %43, label %$19, label %$20
+$19:
   call void @sighandler(i64 0)
-  br label %$18
-$18:
-  br label %$5
-$4:
-  %39 = phi i8* [%3, %$2] ; # P
-  %40 = phi i32 [%4, %$2] ; # Cnt
+  br label %$20
+$20:
+  br label %$8
+$7:
+  %44 = phi i8* [%8, %$3] ; # P
+  %45 = phi i32 [%9, %$3] ; # Cnt
 ; # (? (=0 (dec 'Cnt N)) YES)
 ; # (dec 'Cnt N)
-  %41 = sub i32 %40, %7
+  %46 = sub i32 %45, %12
 ; # (=0 (dec 'Cnt N))
-  %42 = icmp eq i32 %41, 0
-  br i1 %42, label %$20, label %$19
-$20:
-  %43 = phi i8* [%39, %$4] ; # P
-  %44 = phi i32 [%41, %$4] ; # Cnt
-  br label %$7
-$19:
-  %45 = phi i8* [%39, %$4] ; # P
-  %46 = phi i32 [%41, %$4] ; # Cnt
+  %47 = icmp eq i32 %46, 0
+  br i1 %47, label %$22, label %$21
+$22:
+  %48 = phi i8* [%44, %$7] ; # P
+  %49 = phi i32 [%46, %$7] ; # Cnt
+  br label %$4
+$21:
+  %50 = phi i8* [%44, %$7] ; # P
+  %51 = phi i32 [%46, %$7] ; # Cnt
 ; # (inc 'P N)
-  %47 = getelementptr i8, i8* %45, i32 %7
-  br label %$5
-$5:
-  %48 = phi i8* [%35, %$18], [%47, %$19] ; # P
-  %49 = phi i32 [%36, %$18], [%46, %$19] ; # Cnt
+  %52 = getelementptr i8, i8* %50, i32 %12
+  br label %$8
+$8:
+  %53 = phi i8* [%40, %$20], [%52, %$21] ; # P
+  %54 = phi i32 [%41, %$20], [%51, %$21] ; # Cnt
   br label %$2
-$7:
-  %50 = phi i8* [%13, %$8], [%18, %$10], [%23, %$12], [%43, %$20] ; # P
-  %51 = phi i32 [%14, %$8], [%19, %$10], [%24, %$12], [%44, %$20] ; # Cnt
-  %52 = phi i1 [0, %$8], [0, %$10], [0, %$12], [1, %$20] ; # ->
-  ret i1 %52
+$4:
+  %55 = phi i8* [%6, %$5], [%18, %$10], [%23, %$12], [%28, %$14], [%48, %$22] ; # P
+  %56 = phi i32 [%7, %$5], [%19, %$10], [%24, %$12], [%29, %$14], [%49, %$22] ; # Cnt
+  %57 = phi i1 [0, %$5], [0, %$10], [0, %$12], [0, %$14], [1, %$22] ; # ->
+  ret i1 %57
 }
 
 define void @clsChild(i8*) align 8 {

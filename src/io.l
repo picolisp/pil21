@@ -1,4 +1,4 @@
-# 28aug23 Software Lab. Alexander Burger
+# 08sep23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -104,11 +104,8 @@ selectErr)
 
 (de void closeInFile ((i32 . Fd))
    (when (> (val $InFDs) Fd)
-      (let (P (ofs (val $InFiles) Fd)  In (val P))
-         (when (== In (val $InFile))
-            (set $Chr
-               ((inFile (set $InFile (val (val $InFiles)))) chr) ) )   # Stdin
-         (when In
+      (let P (ofs (val $InFiles) Fd)
+         (when (val P)
             (let In: (inFile @)
                (free (In: name))
                (In: name null)
@@ -116,10 +113,8 @@ selectErr)
 
 (de void closeOutFile ((i32 . Fd))
    (when (> (val $OutFDs) Fd)
-      (let (P (ofs (val $OutFiles) Fd)  Out (val P))
-         (when (== Out (val $OutFile))
-            (set $OutFile (val 2 (val $OutFiles))) )  # Stdout
-         (when Out
+      (let P (ofs (val $OutFiles) Fd)
+         (when (val P)
             ((outFile @) fd -1) ) ) ) )
 
 (local) (slow slowNb rdBytes rdBytesNb wrBytes clsChild wrChild flush flushAll)
@@ -189,6 +184,7 @@ selectErr)
 
 (de i1 wrBytes ((i32 . Fd) (i8* . P) (i32 . Cnt))
    (loop
+      (? (lt0 Fd) NO)
       (let N (i32 (write Fd P (i64 Cnt)))
          (if (lt0 N)
             (let E (gErrno)
