@@ -1,3 +1,7 @@
+23.9.9
+   Remove "form.html" and "app.html", add "des.html"
+      doc/toc.html
+
 23.9.8
    Don't fall back to stdin/stdout for closed files
       src/io.l
