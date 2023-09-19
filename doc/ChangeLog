@@ -1,3 +1,12 @@
+23.9.19
+   Optionally cache image in 'csDrawImage'
+      lib/canvas.l
+      lib/canvas.js
+
+23.9.17
+   Missing semicolon
+      lib/canvas.js
+
 23.9.13
    Remove 'Queue' global
       lib/form.js

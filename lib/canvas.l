@@ -1,4 +1,4 @@
-# 28apr23 Software Lab. Alexander Burger
+# 19sep23 Software Lab. Alexander Burger
 
 (allow "!jsDraw" )
 (push1 '*JS (allow "@lib/plio.js") (allow "@lib/canvas.js"))
@@ -39,7 +39,7 @@
       (csDef Key DX DY Lst)
       (csDraw Key X Y)
       (csDrawDots DX DY Lst)
-      (csDrawImage Img X Y Lst DX DY)
+      (csDrawImage Img X Y Lst DX DY Key)
       (csTranslate X Y)
       (csRotate A)
       (csScale X Y)
