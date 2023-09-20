@@ -1,6 +1,5 @@
 23.9.20
    Change global 'FormReq' to local
-   'window.pilBusy' instead of global 'Busy'
       lib/form.js
 
 23.9.19
