@@ -1,4 +1,4 @@
-# 04aug23 Software Lab. Alexander Burger
+# 23sep23 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
 # *Lock *Spans *AlwaysAsk
@@ -179,25 +179,28 @@
          '(Prg
             (off *Err)
             (with (postForm)
-               (catch 'stop
-                  (postGui)
-                  (httpHead "text/plain; charset=utf-8")
-                  (if
-                     (and
-                        (= (car *Stat) *Err)
-                        (= (cdr *Stat) (get *FormLst (- *FormIx *Get))) )
-                     (ht:Out *Chunked
-                        (when (: auto)
-                           (prin "i" *Form "-" (: auto 1 id) ":" (: auto -1))
-                           (=: auto) )
-                        (for S *Spans
-                           (prin "&" (car S) "&" (run (cdr S))) )
-                        (for This (: gui)
-                           (if (: id)
-                              (prin "&i" *Form "-" @ "&" (js> This))
-                              (setq *Chart This) ) ) )
-                     (setq *Post2 (cons *Get *Form *PRG))
-                     (ht:Out *Chunked (prin T)) ) ) )
+               (ifn (= *Evt (: evt))
+                  (respond)
+                  (catch 'stop
+                     (postGui)
+                     (httpHead "text/plain; charset=utf-8")
+                     (if
+                        (and
+                           (= (car *Stat) *Err)
+                           (= (cdr *Stat) (get *FormLst (- *FormIx *Get))) )
+                        (ht:Out *Chunked
+                           (prin (setq *Evt (inc (:: evt))) "&")
+                           (when (: auto)
+                              (prin "i" *Form "-" (: auto 1 id) ":" (: auto -1))
+                              (=: auto) )
+                           (for S *Spans
+                              (prin "&" (car S) "&" (run (cdr S))) )
+                           (for This (: gui)
+                              (if (: id)
+                                 (prin "&i" *Form "-" @ "&" (js> This))
+                                 (setq *Chart This) ) ) )
+                        (setq *Post2 (cons *Get *Form *PRG))
+                        (ht:Out *Chunked (prin T)) ) ) ) )
             (off *PRG) )
          (use @X
             (cond

@@ -1,4 +1,4 @@
-# 21aug23 Software Lab. Alexander Burger
+# 23sep23 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1747,21 +1747,6 @@ s-expr command vi)
                (T X) ) )
          (cddr C) )
       X ) )
-
-(de pico~vf (Pat Dir Ext)
-   (setq Pat (chop Pat))
-   (when
-      (in
-         (list
-            "grep" "-Rl"
-            (if Ext (pack "--include=*" @) "--exclude=*-")
-            (cons
-               "\\(\^\\|[[:space:]\"'(),`{}~]\\|\\[\\|\\]\\)"
-               (replace Pat "." "\\." "*" "\\*")
-               "\\([[:space:]\"'(),`{}~]\\|\\[\\|\\]\\|$\\)" )
-            (or (path Dir) ".") )
-         (make (while (line T) (link @))) )
-      (vi (cons (cons Pat (car @)) (cdr @))) ) )
 
 (de pico~v Lst
    (cond
