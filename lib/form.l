@@ -44,12 +44,12 @@
          (for (F . L) Lst
             (let *Form (- F (length Lst))
                (cond
-                  ((and (== *PRG (car L)) (memq App (get *PRG 'top)))
+                  ((and (== *PRG (car L)) (memq App (; *PRG top)))
                      (apply "form" L) )
-                  ((or (== *PRG App) (memq App (get *PRG 'top)))
-                     (if (get L 1 'top)
+                  ((or (== *PRG App) (memq App (; *PRG top)))
+                     (if (; L 1 top)
                         (apply "form" L)
-                        (put (car L) 'top (cons *PRG (get *PRG 'top)))
+                        (put (car L) 'top (cons *PRG (; *PRG top)))
                         (let *PRG NIL (apply "form" L)) ) ) ) ) ) )
       ("form" App Attr Prg) ) )
 
@@ -97,7 +97,7 @@
                                        (let Fld (pass new)
                                           (set (nth L X) Fld)
                                           (put Fld 'chart (list This (: rows) X))
-                                          (and (get Fld 'chg) (get Fld 'able) (=: lock))
+                                          (and (; Fld chg) (; Fld able) (=: lock))
                                           (set> Fld
                                              (get
                                                 ((: put)
@@ -159,7 +159,7 @@
 
 (de pushForm (L)
    (push '*FormLst L)
-   (and (nth *FormLst 99) (con @))
+   (and (nth *FormLst 999) (con @))
    (setq *Get *FormIx)
    (inc '*FormIx) )
 
@@ -463,17 +463,17 @@
    (gui '(+Button) ,"Save" Exe) )
 
 (de closeButton (Lbl Exe)
-   (when (get *App 'top)
+   (when (; *App top)
       (gui '(+Rid +Close +Button) Lbl Exe) ) )
 
 (de okButton (Exe)
-   (when (get *App 'top)
+   (when (; *App top)
       (if (=T Exe)
          (gui '(+Force +Close +Button) T "OK")
          (gui '(+Close +Button) "OK" Exe) ) ) )
 
 (de cancelButton ()
-   (when (get *App 'top)
+   (when (; *App top)
       (gui '(+Force +Close +Button) T ',"Cancel") ) )
 
 (de yesButton (Exe)
