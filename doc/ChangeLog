@@ -1,9 +1,9 @@
 23.9.23
-   Remove 'vf'
-      lib/vip.l
    Use '*Evt' mechanism instead of 'Busy'
       lib/form.l
       lib/form.js
+   Remove 'vf'
+      lib/vip.l
 
 23.9.20
    Change global 'FormReq' to local
