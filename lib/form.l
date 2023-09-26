@@ -1,4 +1,4 @@
-# 23sep23 Software Lab. Alexander Burger
+# 26sep23 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
 # *Lock *Spans *AlwaysAsk
@@ -39,7 +39,7 @@
                   (put *Top '*Dbg
                      (list (cons (cddr @) (pack (car @) (cadr @)))) ) ) )
             (put *Top 'home *Top)
-            (queue (nth *FormLst (- *FormIx *Get)) *Top) ) )
+            (and (nth *FormLst (- *FormIx *Get)) (queue @ *Top)) ) )
       (let Lst (get *FormLst (- *FormIx *Get) 1)
          (for (F . L) Lst
             (let *Form (- F (length Lst))
@@ -49,7 +49,7 @@
                   ((or (== *PRG App) (memq App (; *PRG top)))
                      (if (; L 1 top)
                         (apply "form" L)
-                        (put (car L) 'top (cons *PRG (; *PRG top)))
+                        (put L 1 'top (cons *PRG (; *PRG top)))
                         (let *PRG NIL (apply "form" L)) ) ) ) ) ) )
       ("form" App Attr Prg) ) )
 
@@ -159,7 +159,7 @@
 
 (de pushForm (L)
    (push '*FormLst L)
-   (and (nth *FormLst 999) (con @))
+   (and (nth *FormLst 99) (con @))
    (setq *Get *FormIx)
    (inc '*FormIx) )
 
@@ -413,7 +413,7 @@
 
 # Dialogs
 (de dlg (Attr Env Prg)
-   (let L (get *FormLst (- *FormIx *Get))
+   (let? L (get *FormLst (- *FormIx *Get))
       (while (and (car L) (n== *PRG (caar @)))
          (pop L) )
       (push L
