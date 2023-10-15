@@ -1,3 +1,19 @@
+23.10.15
+   Change 'select' to use 'search'
+      lib/sq.l
+   '+DbChart' and 'hintQ' functions
+      lib/form.l
+   'search' function with 'iter>' and 'match>' methods
+      lib/db.l
+      doc/ref.html
+      doc/refC.html
+      doc/refS.html
+      doc/search
+
+23.10.5
+   Check 'status != 200' in 'onload'
+      lib/form.js
+
 ####### 23.9 #######
 23.9.27
    Add namespace "-ap~main"

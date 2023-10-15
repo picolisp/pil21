@@ -1,4 +1,4 @@
-# 16jul22 Software Lab. Alexander Burger
+# 14oct23 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -72,8 +72,29 @@
 
 (dm keep> (Obj Val))
 
+# Search
+(dm iter> (X Lst)
+   (cons
+      (list (: cls Dbf 1))
+      (let @Cls (: cls)
+         (curry (@Cls) (P)
+            (loop
+               (NIL (and (car P) (set P (seq (car P)))))
+               (T (and (isa '@Cls @) (not (; @ T)))
+                  (car P) ) ) ) ) ) )
+
+(dm match> (X Val Obj)
+   (cond
+      ((not X) T)
+      ((str? X) (pre? X Val))
+      ((atom X) (= X Val))
+      ((>= (cdr X) (car X))
+         (>= (cdr X) Val (car X)) )
+      (T (>= (car X) Val (cdr X))) ) )
+
 # Finalizer
 (dm zap> (Obj Val))
+
 
 (class +Any +relation)
 
@@ -168,6 +189,20 @@
       (: bag)
       Val ) )
 
+(dm iter> (X Lst)
+   (if
+      (find
+         '((B) (isa '+index B))
+         (: bag) )
+      (iter> @ X Lst)
+      (super X Lst) ) )
+
+(dm match> (X Val Obj)
+   (find 'match> (: bag)
+      (circ X)
+      Val
+      (circ Obj) ) )
+
 
 (class +Bool +relation)
 
@@ -213,6 +248,7 @@
 
 (dm mis> (Val Obj)
    (and Val (not (str? Val)) ,"String type expected") )
+
 
 (private) canQuery
 
@@ -378,6 +414,7 @@
 
 (dm rel?> (Obj Val Hook))
 
+
 # (+Key +relation) [hook]
 (class +Key +index)
 
@@ -420,6 +457,22 @@
       (tree (: var) (: cls) (or Hook (and (: hook) (get Obj @))))
       Val Obj (: dbf) )
    (extra Obj Val Hook) )
+
+(dm iter> (X Lst)
+   (let Tree (apply tree Lst)
+      (cons
+         (nond
+            ((atom X)
+               (nond
+                  ((str? (car X))
+                     (init Tree (car X) (cdr X)) )
+                  ((>= (cdr X) (car X))
+                     (init Tree (pack (car X) `(char T)) (cdr X)) )
+                  (NIL
+                     (init Tree (car X) (pack (cdr X) `(char T))) ) ) )
+            ((str? X) (init Tree X X))
+            (NIL (init Tree X (pack X `(char T)))) )
+         step ) ) )
 
 
 # (+Ref +relation) [hook]
@@ -478,6 +531,35 @@
          Obj
          (: dbf) ) )
    (extra Obj Val Hook) )
+
+(dm iter> (X Lst)
+   (let Tree (apply tree Lst)
+      (cons
+         (nond
+            (X (init Tree NIL T))
+            ((atom X)
+               (nond
+                  ((str? (car X))
+                     (if (>= (cdr X) (car X))
+                        (init Tree
+                           (cons (car X))
+                           (cons (cdr X) T) )
+                        (init Tree
+                           (cons (car X) T)
+                           (cons (cdr X)) ) ) )
+                  ((>= (cdr X) (car X))
+                     (init Tree
+                        (cons (pack (car X) `(char T)) T)
+                        (cons (cdr X)) ) )
+                  (NIL
+                     (init Tree
+                        (cons (car X))
+                        (cons (pack (cdr X) `(char T)) T) ) ) ) )
+            ((str? X)
+               (init Tree (cons X) (cons X T)) )
+            (NIL
+               (init Tree (cons X) (cons (pack X `(char T)) T)) ) )
+         step ) ) )
 
 
 # Backing index prefix
@@ -590,6 +672,9 @@
       Hook )
    (extra Obj Val Hook) )
 
+(dm match> (X Val Obj)
+   (sub? X Val) )
+
 
 # (+Sn +index) [hook]
 (class +Sn)
@@ -632,6 +717,25 @@
          Obj (: dbf) ) )
    (extra Obj Val Hook) )
 
+(dm iter> (X Lst)
+   (let Tree (apply tree Lst)
+      (cons
+         (list
+            (list
+               (init Tree (cons X) (cons (pack X `(char T)) T))
+               (init Tree
+                  (cons (setq X (ext:Snx X)))
+                  (cons (pack X `(char T)) T) ) ) )
+         '((Q)
+            (or
+               (step (caar Q))
+               (and (cdar Q) (shift Q) (step (caar Q))) ) ) ) ) )
+
+(dm match> (X Val Obj)
+   (or
+      (extra X Val Obj)
+      (pre? (ext:Snx X) (ext:Snx Val)) ) )
+
 
 # (+Fold +index) [hook]
 (class +Fold)
@@ -652,6 +756,21 @@
 
 (dm keep> (Obj Val Hook)
    (extra Obj (fold Val) Hook) )
+
+(dm iter> (X Lst)
+   (extra
+      (if (pair X)
+         (cons (fold (car X)) (fold (cdr X)))
+         (fold X) )
+      Lst ) )
+
+(dm match> (X Val Obj)
+   (extra
+      (if (pair X)
+         (cons (fold (car X)) (fold (cdr X)))
+         (fold X) )
+      (fold Val)
+      Obj ) )
 
 
 # (+IdxFold +relation) [cnt [hook]]
@@ -701,6 +820,12 @@
       Hook )
    (extra Obj Val Hook) )
 
+(dm iter> (X Lst)
+   (super (fold X) Lst) )
+
+(dm match> (X Val Obj)
+   (sub? (fold X) (fold Val)) )
+
 
 # (+Aux) lst
 (class +Aux)
@@ -723,6 +848,30 @@
       (for A Lst
          (rel> (meta Obj A) Obj NIL (get Obj A)) ) ) )
 
+(dm iter> (X Lst)
+   (if (or (atom X) (atom (car X)))
+      (extra X Lst)
+      (let Tree (apply tree Lst)
+         (cons
+            (if (>= (cdr X) (car X))
+               (init Tree
+                  (car X)
+                  (append (cdr X) T) )
+               (init Tree
+                  (append (car X) T)
+                  (cdr X) ) )
+            step ) ) ) )
+
+(dm match> (X Val Obj)
+   (if (or (atom X) (atom (car X)))
+      (extra X Val Obj)
+      (setq Val
+         (cons Val
+            (mapcar '((S) (get Obj S)) (: aux)) ) )
+      (if (>= (cdr X) (car X))
+         (>= (append (cdr X) T) Val (car X))
+         (>= (append (car X) T) Val (cdr X)) ) ) )
+
 
 # UB-Tree (+Aux prefix)
 (class +UB)
@@ -742,6 +891,13 @@
                   (setq M (>> -1 M)  Val (>> N Val)) )
                V )
             X ) ) ) )
+
+(dm iter> (X Lst)
+   (cons
+      (init (apply tree Lst)
+         (ubZval (car X))
+         (ubZval (cdr X) T) )
+      step ) )
 
 
 ### Relation prefix classes ###
@@ -838,6 +994,9 @@
       (extra Obj Val Hook)
       (for V Val
          (extra Obj V Hook) ) ) )
+
+(dm match> (X Val Obj)
+   (find '((Y) (extra X Y Obj)) Val) )
 
 
 (class +Need)
@@ -1450,6 +1609,118 @@
                         (and (isa Cls X) (link (pass get X))) )
                      X1 X2
                      (or (isa '+Idx This) (isa '+IdxFold This)) ) ) ) ) ) ) )
+
+# Combined search
+(de relQ (X Lst)
+   (iter> (meta (cdr Lst) (car Lst)) X Lst) )
+
+(private) search1
+
+(de search1 (Val Lst)  # ((Q . stepFun) . lst)
+   (let X (++ Lst)
+      (cons
+         (cond
+            ((pair (cdr X)) (relQ Val X))
+            ((pair (setq X (get Val (cdr X))))
+               (cons (list X) pop) )
+            (T (cons (list (list X)) pop)) )
+         Lst ) ) )
+
+(de search (X Y . @)
+   (ifn Y
+      (for (P (cdr X)  P  (or (cdr P) (cdr X)))  # Next search result
+         (NIL (setq Y ((cadar P) (caaar P))))
+         (T
+            (unless (idx X Y T)
+               (fully
+                  '((L) ((cddr L) Y (cdar L)))
+                  (cdr X) ) )
+            (setq P
+               (rot (cdr X) (offset P (cdr X))) )
+            Y ) )
+      # Init search
+      (make
+         (link)  # 'idx' var
+         (loop
+            (when (or X (nor (args) (cdr (made))))
+               (link  # ((Q . V) genFun . filterFun)
+                  (cons
+                     (cons
+                        (list
+                           (if (pair (caar Y))
+                              (cons ((car Y) X) (cddr Y))  # (init . step)
+                              (search1 X Y) ) )
+                        X )
+                     '((Q)  # Generator
+                        (use Obj
+                           (loop
+                              (T
+                                 (nor  # Done
+                                    (setq Obj ((cdaar Q) (caaar Q)))
+                                    (cdr Q) ) )
+                              (T (unless (cdar Q) Obj) Obj)  # Result
+                              (if Obj
+                                 (let L (cdar Q)
+                                    (con Q (cons (car Q) (cdr Q)))
+                                    (set Q (search1 Obj L)) )
+                                 (set Q (cadr Q))
+                                 (con Q (cddr Q)) ) ) ) )
+                     (let  # Filter
+                        (@Exe
+                           (if (pair (caar Y))
+                              (cons
+                                 (lit (car (shift 'Y)))
+                                 '(X V) )
+                              (list 'match>
+                                 (lit
+                                    (if (atom (cdar Y))
+                                       (with (meta X (cdar Y))  # +Joint
+                                          (meta (: type) (: slot)) )
+                                       (meta (cdar Y) (caar Y)) ) )  # +index
+                                 'V
+                                 (list '; 'X (caar Y))
+                                 'X ) )
+                           @Lst (flip (mapcar car (cdr Y))) )
+                        (curry (@Lst @Exe) (X V)
+                           (let L '@Lst
+                              (recur (X L)
+                                 (nond
+                                    (L @Exe)
+                                    ((atom X)
+                                       (pick
+                                          '((Y)
+                                             (recurse (get Y (car L)) (cdr L)) )
+                                          X ) )
+                                    (NIL (recurse (get X (car L)) (cdr L))) ) ) ) ) ) ) ) )
+            (setq X (next))
+            (NIL (setq Y (next))) ) ) ) )
+
+# Multiple indexes
+(de relQs (@Lst . @)
+   (cons
+      (curry (@Lst) (X)
+         (cons
+            (list
+               (mapcar '((Y) (relQ X Y)) '@Lst) )
+            '((Q)
+               (or
+                  ((cdaar Q) (caaar Q))
+                  (and
+                     (cdar Q)
+                     (shift Q)
+                     ((cdaar Q) (caaar Q)) ) ) ) ) )
+      (let
+         (@L
+            (mapcar
+               '((Y) (meta (cdr Y) (car Y)))
+               @Lst )
+            @V (mapcar car @Lst) )
+         (curry (@L @V) (X Val)
+            (find
+               '((R V) (match> R Val (get X V) X))
+               '@L
+               '@V ) ) )
+      (rest) ) )
 
 # Iterate all objects of given class
 (de forall (X . Prg)

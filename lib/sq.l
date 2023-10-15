@@ -1,16 +1,13 @@
-# 05apr23 Software Lab. Alexander Burger
+# 14oct23 Software Lab. Alexander Burger
 
 # (select [var ..] cls [hook|T] [var val ..])
 (de select Lst
    (let
       (Vars
          (make
-            (until
-               (or
-                  (atom Lst)
-                  (and
-                     (sym? (car Lst))
-                     (= `(char "+") (char (car Lst))) ) )
+            (until (pre? "+" (car Lst))
+               (unless Lst
+                  (quit "Missing class") )
                (link (++ Lst)) ) )
          Cls (++ Lst)
          Hook (cond
@@ -24,56 +21,36 @@
                   (find
                      '((X) (isa '(+Need +index) (car X)))
                      (getl Cls) )
-                  (get (car @) 'var) )
+                  (; @ 1 var) )
                (cdr
                   (maxi caar
                      (getl (get (or Hook *DB) Cls)) ) ) ) ) )
-      (let Q
-         (goal
-            (cons
+      (for
+         (Q
+            (apply search
                (make
-                  (link
-                     'select
-                     '(@@)
-                     (make
-                        (for (L Lst L)
-                           (link
-                              (make
-                                 (link (++ L) Cls)
-                                 (and Hook (link Hook))
-                                 (link (if L (++ L) '(NIL . T))) ) ) ) ) )
-                  (link (list 'isa Cls '@@))
-                  (while Lst
-                     (let (Var (++ Lst)  Val (if Lst (++ Lst) '(NIL . T)))
+                  (loop
+                     (prog1 (++ Lst)
                         (link
+                           (++ Lst)
                            (list
-                              (cond
-                                 ((pair Val) 'range)
-                                 ((or (num? Val) (ext? Val)) 'same)
-                                 ((=T Val) 'bool)
-                                 ((isa '+Sn (get Cls Var)) 'tolr)
-                                 ((isa '(+IdxFold) (get Cls Var)) 'part)
-                                 ((isa '(+Fold +Idx) (get Cls Var)) 'part)
-                                 ((isa '+Fold (get Cls Var)) 'fold)
-                                 ((isa '+Idx (get Cls Var)) 'hold)
-                                 (T 'head) )
-                              Val '@@ Var ) ) ) ) ) ) )
-         (use This
-            (loop
-               (NIL (setq This (cdr (asoq '@@ (prove Q)))))
-               (ifn Vars
-                  (show This)
-                  (for X Vars
-                     (cond
-                        ((pair X)
-                           (printsp (eval X)) )
-                        ((meta This X)
-                           (print> @ (get This X))
-                           (space) )
-                        (T (printsp (get This X))) ) )
-                  (print This) )
-               (T (line) This)
-               (prinl) ) ) ) ) )
+                              (make (link @ Cls) (and Hook (link Hook))) ) ) )
+                     (NIL Lst) ) ) )
+            (search Q) )
+         (NIL (setq This (isa Cls @)))
+         (ifn Vars
+            (show This)
+            (for X Vars
+               (cond
+                  ((pair X)
+                     (printsp (eval X)) )
+                  ((meta This X)
+                     (print> @ (get This X))
+                     (space) )
+                  (T (printsp (get This X))) ) )
+            (print This) )
+         (T (line) This)
+         (prinl) ) ) )
 
 (dm (print> . +relation) (Val)
    (print Val) )

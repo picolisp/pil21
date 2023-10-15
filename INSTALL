@@ -1,4 +1,4 @@
-# 06jan23 Software Lab. Alexander Burger
+# 14oct23 Software Lab. Alexander Burger
 
 
          PicoLisp Installation
@@ -108,9 +108,8 @@ Note that 'pil' can also serve as a template for your own stand-alone scripts.
       -------------
 
 For further information, please look at "doc/index.html". There you find the
-PicoLisp Reference Manual ("doc/ref.html"), the PicoLisp tutorials
-("doc/tut.html", "doc/native.html", "doc/select.html" and "doc/httpGate.html"),
-and the frequently asked questions ("doc/faq.html").
+PicoLisp Reference Manual ("doc/ref.html"), the PicoLisp tutorial
+("doc/tut.html"), and the frequently asked questions ("doc/faq.html").
 
 As always, the most accurate and complete documentation is the source code ;-)
 

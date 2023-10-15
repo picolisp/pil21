@@ -1,0 +1,80 @@
+Search criteria
+   Numbers
+      3
+      (3 . 4)
+   Strings
+      "abc"
+      ("a" . "z")
+   Objects
+      {2}
+   Symbols
+      abc
+      (a . z)
+
+Relation types
+   Number, Date, Time
+      (+Key +Number)
+         7 {2}
+
+      (+Ref +Number)
+         (7 . {2}) {2}
+
+   Keywords
+      (+Key +String)
+         "Regen Axer" {2}
+
+      (+Ref +String)
+         ("Regen Axer" . {2}) {2}
+
+   Phone numbers
+      (+Fold +Ref +String)
+         ("regenaxer" . {2}) {2}
+
+   E-Mail addresses
+      (+Fold +Idx +String)
+         ("axer" {2}) {2}
+         ("egenaxer" {2}) {2}
+         ("enaxer" {2}) {2}
+         ("genaxer" {2}) {2}
+         ("naxer" {2}) {2}
+         ("regenaxer" . {2}) {2}
+         ("xer" {2}) {2}
+
+   Personal names
+      (+Sn +IdxFold +String)
+         ("RSNSR" {2} . T) {2}
+         ("Regen Axer" . {2}) {2}
+         ("axer" {2}) {2}
+         ("egen" {2}) {2}
+         ("gen" {2}) {2}
+         ("regenaxer" {2}) {2}
+         ("xer" {2}) {2}
+
+   Item names
+      (+IdxFold +String)
+         ("Regen Axer" . {2}) {2}
+         ("axer" {2}) {2}
+         ("egen" {2}) {2}
+         ("gen" {2}) {2}
+         ("regenaxer" {2}) {2}
+         ("xer" {2}) {2}
+
+      (+List +Fold +Ref +String)
+         ("axer" . {2}) {2}
+         ("regen" . {2}) {2}
+
+   Identifiers
+      (+Idx +String)
+         ("Axer" {2}) {2}
+         ("Regen Axer" . {2}) {2}
+         ("egen" {2}) {2}
+         ("gen" {2}) {2}
+         ("xer" {2}) {2}
+
+   GIS coordinates
+      (+UB +Aux +Ref +Number)
+         (56919522950766600 . {2}) {2}
+
+   Objects
+      (+Ref +Link)
+         ({7} . {2}) {2}

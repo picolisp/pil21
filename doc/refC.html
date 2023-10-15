@@ -534,8 +534,9 @@ values for the result list are obtained by applying the <code><a
 href="refG.html#get">get</a></code> algorithm. See also <code><a
 href="refD.html#db">db</a></code>, <code><a href="refA.html#aux">aux</a></code>,
 <code><a href="refF.html#fetch">fetch</a></code>, <code><a
-href="refI.html#init">init</a></code> and <code><a
-href="refS.html#step">step</a></code>.
+href="refI.html#init">init</a></code>, <code><a
+href="refS.html#step">step</a></code> and and <code><a
+href="refS.html#search">search</a></code>.
 
 <pre><code>
 : (collect 'nr '+Item)
@@ -713,24 +714,24 @@ href="refR.html#root">root</a></code>.
 </code></pre></dd>
 
 <dt><a id="create"><code>(create 'typ 'sym 'lst . prg)</code></a></dt>
-<dd>Creates or updates <code><a href="ref.html#dbase">database</a></code>
-objects of the type <code>typ</code> with the properties in <code>sym</code> and
-<code>lst</code>. It handles large amounts of data, by sorting and traversing
-each database index separately. <code>prg</code> is executed repeatedly - and
-should return a list of values for the properties in <code>sym</code> and
-<code>lst</code> - until it returns <code>NIL</code>. If the <code><a
-href="refF.html#fin">fin</a></code> of the list is <code>NIL</code>, a new
-object of type <code>typ</code> is created, otherwise it should be an existing
-object to be updated. If <code>sym</code> is non-<code>NIL</code>, the first
-column of the input data is assigned to the <code>sym</code> property and should
-already be sorted. The rest of the input data is assigned to the properties in
-<code>lst</code>. <code>create</code> allocates heap memory, and builds
-temporary files which increase disk requirements while it runs. No explicit
-<code><a href="refL.html#lock">lock</a></code> should be established on the
-database, and no other processes should operate on this database while it runs.
-When creating more than a few hundred million index entries per file, it might
-be necessary to increase the number of open files with e.g. <code>ulimit -n
-10000</code>. See also <code><a href="refD.html#dbs">dbs</a></code>, <code><a
+<dd>Creates or updates <a href="ref.html#dbase">database</a> objects of the type
+<code>typ</code> with the properties in <code>sym</code> and <code>lst</code>.
+It handles large amounts of data, by sorting and traversing each database index
+separately. <code>prg</code> is executed repeatedly - and should return a list
+of values for the properties in <code>sym</code> and <code>lst</code> - until it
+returns <code>NIL</code>. If the <code><a href="refF.html#fin">fin</a></code> of
+the list is <code>NIL</code>, a new object of type <code>typ</code> is created,
+otherwise it should be an existing object to be updated. If <code>sym</code> is
+non-<code>NIL</code>, the first column of the input data is assigned to the
+<code>sym</code> property and should already be sorted. The rest of the input
+data is assigned to the properties in <code>lst</code>. <code>create</code>
+allocates heap memory, and builds temporary files which increase disk
+requirements while it runs. No explicit <code><a
+href="refL.html#lock">lock</a></code> should be established on the database, and
+no other processes should operate on this database while it runs. When creating
+more than a few hundred million index entries per file, it might be necessary to
+increase the number of open files with e.g. <code>ulimit -n 10000</code>. See
+also <code><a href="refD.html#dbs">dbs</a></code>, <code><a
 href="refN.html#new">new</a></code>, <code><a
 href="refC.html#commit">commit</a></code> and <code><a
 href="refP.html#prune">prune</a></code>.

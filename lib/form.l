@@ -1,4 +1,4 @@
-# 26sep23 Software Lab. Alexander Burger
+# 13oct23 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
 # *Lock *Spans *AlwaysAsk
@@ -660,21 +660,30 @@
 (dm hint> (Str)
    ((: hint) (extra Str)) )
 
-(de queryHint (Var CL Str)
+(de hintQ (Var CL Str)
+   (make
+      (for ((I . Q) (search Str CL) (search Q))
+         (for V
+            (fish
+               '((S) (and (atom S) (sub? (fold Str) (fold S))))
+               (get @ Var) )
+            (unless (member V (made))
+               (link V) ) )
+         (T (== 24 I)) ) ) )
+
+(de dbHint (Str Var Cls Hook)
+   (hintQ Var (list (list Var Cls Hook)) Str) )
+
+(de queryHint (Var CL Str)  #! Will be deprecated (use hintQ instead)
    (make
       (for (Q (goal CL) (prove Q))
          (for V
             (fish
                '((S) (and (atom S) (sub? (fold Str) (fold S))))
-               (get (asoq '@@ @) -1 Var) )
+               (get @ '@@ Var) )
             (unless (member V (made))
                (link V) ) )
          (T (nth (made) 24)) ) ) )
-
-(de dbHint (Str Var Cls Hook)
-   (queryHint Var
-      (cons (list 'db Var Cls Hook Str '@@))
-      Str ) )
 
 
 (class +DbHint +Hint)
@@ -1950,10 +1959,10 @@
                (cdr (or (assoc Rel *Cho) (push '*Cho (list Rel NIL))))
                (cdr Fld) ) )
          (searchButton '(init> (: home query)))
-         (gui 'query '(+QueryChart) (cho)
-            '(goal
-               (list
-                  (list 'db (car Rel) (last Rel) Hook (val> (: home gui 1)) '@@) ) )
+         (gui 'query '(+DbChart) (cho)
+            '(search
+               (val> (: home gui 1))
+               (list (list (car Rel) (last Rel) Hook)) )
             2 '((Obj) (list Obj Obj)) )
          (<table> 'chart
             (pack
@@ -2480,12 +2489,28 @@
       (queue (:: data) @) )
    (super) )
 
+
+# DB search chart
+(class +DbChart +stepChart)
+
+(dm step> ()
+   (search (: query)) )
+
+(dm txt> ()
+   (for ((I . Q) (eval (: iniQ)) (search Q))
+      (txt1> This I @) ) )
+
+(dm all> ()
+   (make
+      (for (Q (eval (: iniQ)) (search Q))
+         (link @) ) ) )
+
 (dm clr> ()
-   (query> This (fail)) )
+   (query> This NIL) )
 
 
 # DB query chart
-(class +QueryChart +stepChart)
+(class +QueryChart +stepChart)  #! Will be deprecated (use +DbChart instead)
 
 (dm step> ()
    (; (prove (: query)) @@) )
@@ -2498,6 +2523,9 @@
    (make
       (for (Q (eval (: iniQ)) (prove Q))
          (link (; @ @@)) ) ) )
+
+(dm clr> ()
+   (query> This (fail)) )
 
 
 # Tree traversal chart
@@ -2514,6 +2542,9 @@
    (make
       (for (Q (eval (: iniQ)) (step Q))
          (link (cons @@ @)) ) ) )
+
+(dm clr> ()
+   (query> This NIL) )
 
 (private) (Attr Var H1 Rows Gui Sep H2 Cols Put Get Prg Len R)
 

@@ -231,6 +231,47 @@ $ pil +
 -> 12
 </code></pre></dd>
 
+<dt><a id="search"><code>(search 'any 'lst ..) -> lst</code></a></dt>
+<dt><code>(search 'lst) -> obj | NIL</code></a></dt> <dd>Searches the <a
+href="ref.html#dbase">database</a> for an arbitrary number of <code>any</code>
+criteria. The first form returns a list of query structures according to the
+corresponding <code>lst</code> lists of relation specifications. A search
+criterion can be an atom for a direct search, or a cons pair for a range search.
+A relation specification can be a list <code>(var cls [hook])</code> for an
+index search, a cons pair <code>(sym . sym)</code> for the two endpoints of a
+<code><a href="refJ.html#+Joint">+Joint</a></code>, or (only in case of the
+first specification in <code>lst</code>) a function returning a suitable query
+structure consisting of a generator function, a filter function, and optional
+association specifiers. The second form takes a query structure as returned from
+the first form, and returns the next result (an object) or <code>NIL</code> (if
+there are no more matching results). See also <code><a
+href="refI.html#init">init</a></code>, <code><a
+href="refS.html#step">step</a></code> and <code><a
+href="refC.html#collect">collect</a></code>.
+
+<pre><code>
+: (for
+   (Q
+      (search
+         (2 . 5) '((nr +Item))  # Select all items with numbers between 2 and 5
+         "Active" '((nm +CuSu) (sup +Item)) )  # and suppliers matching "Active"
+      (search Q) )
+   (show @) )
+{B3} (+Item)
+   sup {C1}
+   nr 3
+   pr 15700
+   inv 100
+   nm "Auxiliary Construction"
+{B5} (+Item)
+   sup {C1}
+   nr 5
+   pr 7980
+   inv 100
+   nm "Metal Fittings"
+-> {B5}
+</code></pre></dd>
+
 <dt><a id="sect"><code>(sect 'lst1 'lst2) -> lst</code></a></dt>
 <dd>Returns the intersection of list arguments, all elements which are both in
 <code>lst1</code> and in <code>lst2</code>. See also <code><a
@@ -279,18 +320,21 @@ href="refP.html#pick">pick</a></code>.
 
 <dt><a id="select"><code>(select [var ..] cls [hook|T] [var val ..]) -> obj | NIL</code></a></dt>
 <dd>(Debug mode only) Interactive database function, loosely modelled after the
-SQL '<code>SELECT</code>' command. A (limited) front-end to the Pilog <code><a
-href="refS.html#select/3">select/3</a></code> predicate. When called with only a
+SQL '<code>SELECT</code>' command. A front-end to <code><a
+href="refS.html#search">search</a></code>. When called with only a
 <code>cls</code> argument, <code>select</code> steps through all objects of that
 class, and <code><a href="refS.html#show">show</a></code>s their complete
 contents (this is analog to 'SELECT * from CLS'). If <code>cls</code> is
 followed by attribute/value specifications, the search is limited to these
-values (this is analog to 'SELECT * from CLS where VAR = VAL'). If between the
-<code>select</code> function and <code>cls</code> one or several attribute names
-are supplied, only these attribute (instead of the full <code>show</code>) are
-printed. These attribute specifications may also be lists, then those will be
-evaluated to retrieve related data. See also <a
-href="ref.html#dbase">Database</a> and <a href="ref.html#pilog">Pilog</a>.
+values (this is analog to 'SELECT * from CLS where VAR = VAL'). If before
+<code>cls</code> one or several attribute names are supplied, only these
+attribute (instead of the full <code>show</code>) are printed. These attribute
+specifications may also be lists, then those will be evaluated to retrieve
+related data. After each step, <code>select</code> waits for console input, and
+terminates when Ctrl-D or a non-empty line is entered. The global variable
+<code><a href="refT.html#This">This</a></code> is set to the last result. See
+also <a href="ref.html#dbase">Database</a> and <a
+href="ref.html#pilog">Pilog</a>.
 
 <pre><code>
 : (select +Item)                       # Show all items
