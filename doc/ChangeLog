@@ -1,3 +1,7 @@
+23.10.16
+   Bug in 'iter>' for '+Sn'
+      lib/db.l
+
 23.10.15
    Change 'select' to use 'search'
       lib/sq.l

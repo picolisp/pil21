@@ -1,4 +1,4 @@
-# 14oct23 Software Lab. Alexander Burger
+# 16oct23 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -718,18 +718,17 @@
    (extra Obj Val Hook) )
 
 (dm iter> (X Lst)
-   (let Tree (apply tree Lst)
-      (cons
+   (cons
+      (list
          (list
-            (list
-               (init Tree (cons X) (cons (pack X `(char T)) T))
-               (init Tree
-                  (cons (setq X (ext:Snx X)))
-                  (cons (pack X `(char T)) T) ) ) )
-         '((Q)
-            (or
-               (step (caar Q))
-               (and (cdar Q) (shift Q) (step (caar Q))) ) ) ) ) )
+            (car (extra X Lst))
+            (init (apply tree Lst)
+               (cons (setq X (ext:Snx X)))
+               (cons (pack X `(char T)) T) ) ) )
+      '((Q)
+         (or
+            (step (caar Q))
+            (and (cdar Q) (shift Q) (step (caar Q))) ) ) ) )
 
 (dm match> (X Val Obj)
    (or
