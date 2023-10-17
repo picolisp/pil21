@@ -1,6 +1,7 @@
 23.10.17
    Optional extract-function argument to 'search'
       lib/db.l
+      doc/refS.html
 
 23.10.16
    Bug in 'iter>' for '+Sn'
