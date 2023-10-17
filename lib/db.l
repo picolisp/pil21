@@ -1,4 +1,4 @@
-# 16oct23 Software Lab. Alexander Burger
+# 17oct23 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1627,21 +1627,23 @@
 
 (de search (X Y . @)
    (ifn Y
-      (for (P (cdr X)  P  (or (cdr P) (cdr X)))  # Next search result
+      (for (P (cddr X)  P  (or (cdr P) (cddr X)))  # Next search result
          (NIL (setq Y ((cadar P) (caaar P))))
          (T
             (unless (idx X Y T)
-               (fully
-                  '((L) ((cddr L) Y (cdar L)))
-                  (cdr X) ) )
+               (and
+                  (fully
+                     '((L) ((cddr L) Y (cdar L)))
+                     (cddr X) )
+                  ((cadr X) Y) ) )
             (setq P
-               (rot (cdr X) (offset P (cdr X))) )
-            Y ) )
+               (rot (cddr X) (offset P (cddr X))) )
+            @ ) )
       # Init search
       (make
-         (link)  # 'idx' var
+         (link NIL prog)  # idx and extract
          (loop
-            (when (or X (nor (args) (cdr (made))))
+            (when (or X (nor (args) (cddr (made))))
                (link  # ((Q . V) genFun . filterFun)
                   (cons
                      (cons
@@ -1692,7 +1694,8 @@
                                           X ) )
                                     (NIL (recurse (get X (car L)) (cdr L))) ) ) ) ) ) ) ) )
             (setq X (next))
-            (NIL (setq Y (next))) ) ) ) )
+            (NIL (setq Y (next))
+               (and X (set (cdr (made)) @)) ) ) ) ) )
 
 # Multiple indexes
 (de relQs (@Lst . @)
