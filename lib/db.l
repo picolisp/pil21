@@ -1,4 +1,4 @@
-# 17oct23 Software Lab. Alexander Burger
+# 18oct23 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -459,7 +459,7 @@
    (extra Obj Val Hook) )
 
 (dm iter> (X Lst)
-   (let Tree (apply tree Lst)
+   (let Tree (tree (: var) (: cls) (caddr Lst))
       (cons
          (nond
             ((atom X)
@@ -472,7 +472,11 @@
                      (init Tree (car X) (pack (cdr X) `(char T))) ) ) )
             ((str? X) (init Tree X X))
             (NIL (init Tree X (pack X `(char T)))) )
-         step ) ) )
+         (let @Cls (cadr Lst)
+            (curry (@Cls) (Q)
+               (loop
+                  (NIL (step Q))
+                  (T (isa '@Cls @) @) ) ) ) ) ) )
 
 
 # (+Ref +relation) [hook]
@@ -533,7 +537,7 @@
    (extra Obj Val Hook) )
 
 (dm iter> (X Lst)
-   (let Tree (apply tree Lst)
+   (let Tree (tree (: var) (: cls) (caddr Lst))
       (cons
          (nond
             (X (init Tree NIL T))
@@ -559,7 +563,11 @@
                (init Tree (cons X) (cons X T)) )
             (NIL
                (init Tree (cons X) (cons (pack X `(char T)) T)) ) )
-         step ) ) )
+         (let @Cls (cadr Lst)
+            (curry (@Cls) (Q)
+               (loop
+                  (NIL (step Q))
+                  (T (isa '@Cls @) @) ) ) ) ) ) )
 
 
 # Backing index prefix
@@ -722,13 +730,17 @@
       (list
          (list
             (car (extra X Lst))
-            (init (apply tree Lst)
+            (init (tree (: var) (: cls) (caddr Lst))
                (cons (setq X (ext:Snx X)))
                (cons (pack X `(char T)) T) ) ) )
-      '((Q)
-         (or
-            (step (caar Q))
-            (and (cdar Q) (shift Q) (step (caar Q))) ) ) ) )
+      (let @Cls (cadr Lst)
+         (curry (@Cls) (Q)
+            (loop
+               (NIL
+                  (or
+                     (step (caar Q))
+                     (and (cdar Q) (shift Q) (step (caar Q))) ) )
+               (T (isa '@Cls @) @) ) ) ) ) )
 
 (dm match> (X Val Obj)
    (or
@@ -850,7 +862,7 @@
 (dm iter> (X Lst)
    (if (or (atom X) (atom (car X)))
       (extra X Lst)
-      (let Tree (apply tree Lst)
+      (let Tree (tree (: var) (: cls) (caddr Lst))
          (cons
             (if (>= (cdr X) (car X))
                (init Tree
@@ -859,7 +871,11 @@
                (init Tree
                   (append (car X) T)
                   (cdr X) ) )
-            step ) ) ) )
+            (let @Cls (cadr Lst)
+               (curry (@Cls) (Q)
+                  (loop
+                     (NIL (step Q))
+                     (T (isa '@Cls @) @) ) ) ) ) ) ) )
 
 (dm match> (X Val Obj)
    (if (or (atom X) (atom (car X)))
@@ -893,10 +909,14 @@
 
 (dm iter> (X Lst)
    (cons
-      (init (apply tree Lst)
+      (init (tree (: var) (: cls) (caddr Lst))
          (ubZval (car X))
          (ubZval (cdr X) T) )
-      step ) )
+      (let @Cls (cadr Lst)
+         (curry (@Cls) (Q)
+            (loop
+               (NIL (step Q))
+               (T (isa '@Cls @) @) ) ) ) ) )
 
 
 ### Relation prefix classes ###
