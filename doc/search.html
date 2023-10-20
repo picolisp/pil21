@@ -46,10 +46,10 @@ returns them one at a time.
 <a href="http://software-lab.de/demoApp.tgz">demoApp.tgz</a>). To get an
 interactive prompt, start it as
 
-<pre>
+<code><pre>
 $ pil app/main.l -ap~main +
 :
-</pre>
+</pre></code>
 
 <p>As ever, you can terminate the interpreter by hitting <code>Ctrl-D</code>.
 
@@ -67,25 +67,25 @@ subsequently return the next resulting object, or <code>NIL</code> if no more
 results can be found.
 
 <p>To start a new query, <code>search</code> is called with an arbitrary number
-of argument pairs, each consisting of a search criterion and a relation
-specification, and an optional extraction function which filters and possibly
+of argument pairs, each consisting of a search criterion and a list of relation
+specifications, and an optional extraction function which filters and possibly
 modifies the results.
 
 <p>For example, to find the item with the number 2:
 
-<pre>
+<code><pre>
 ap: (search 2 '((nr +Item)))
 -> (NIL ...
-</pre>
+</pre></code>
 
 <p>The first argument <code>2</code> is a <i>search criterion</i> (the key to
-look for), and <code>((nr +Item))</code> is a <i>relation specification</i> (the
-<code>nr</code> index of the <code>+Item</code> class).
+look for), and <code>((nr +Item))</code> is a list with a single <i>relation
+specification</i> (the <code>nr</code> index of the <code>+Item</code> class).
 
 <p>The returned query structure is abbreviated, because it is big and not
 relevant here. It can now be used to fetch the result:
 
-<pre>
+<code><pre>
 ap: (search @)
 -> {B2}
 ap: (show @)
@@ -96,14 +96,14 @@ ap: (show @)
    sup {C2}
    nm "Spare Part"
 -> {B2}
-</pre>
+</pre></code>
 
 <p>There are no further results, because <code>nr</code> is a unique key:
 
-<pre>
+<code><pre>
 ap: (search @@@)  # '@@@' referst to the third-last REPL result, the query
 -> NIL
-</pre>
+</pre></code>
 
 
 <h3><a id="crit">Search Criteria</a></h3>
@@ -122,21 +122,21 @@ atomic for an exact search, or a cons pair for searching a range of numbers.
 <p>Extending the above example, we may search for all items with number between
 2 and (including) 6:
 
-<pre>
+<code><pre>
 ap: (search (2 . 6) '((nr +Item)))
 -> (NIL ...
-</pre>
+</pre></code>
 
 <p>We may use a <a href="refF.html#for">for</a> loop to retrieve all results:
 
-<pre>
+<code><pre>
 ap: (for
    (Q
       (search (2 . 6) '((nr +Item)))
       (search Q) )
    (printsp @) )
 {B2} {B3} {B4} {B5} {B6}
-</pre>
+</pre></code>
 
 
 <h4><a id="str">Strings</a></h4>
@@ -147,16 +147,16 @@ includes all cases where it matches the heads of the result attributes (string
 prefixes), but may also match substrings and/or tolerant (<a
 href="refF.html#fold">fold</a>ed or soundex-encoded) searches.
 
-<pre>
+<code><pre>
 ap: (for
    (Q
       (search "Api" '((em +CuSu)))
       (search Q) )
    (println (; @ em)) )
 "info@api.tld"
-</pre>
+</pre></code>
 
-<pre>
+<code><pre>
 ap: (for
    (Q
       (search "part" '((nm +Item)))
@@ -165,11 +165,11 @@ ap: (for
       (println (: nr) (: nm)) ) )
 1 "Main Part"
 2 "Spare Part"
-</pre>
+</pre></code>
 
 <p>Or, combined with a number range search:
 
-<pre>
+<code><pre>
 ap: (for
    (Q
       (search
@@ -179,7 +179,7 @@ ap: (for
    (with @
       (println (: nr) (: nm)) ) )
 2 "Spare Part"
-</pre>
+</pre></code>
 
 
 <h4><a id="obj">Objects</a></h4>
@@ -189,25 +189,25 @@ range) of objects makes no sense, because objects by themselves are not ordered.
 
 <p>Searching for all items from a given supplier:
 
-<pre>
+<code><pre>
 ap: (for
    (Q
       (search '{C1} '((sup +Item)))
       (search Q) )
    (printsp @) )
 {B1} {B3} {B5}
-</pre>
+</pre></code>
 
 <p>or for all positions in a given order:
 
-<pre>
+<code><pre>
 ap: (for
    (Q
       (search '{B7} '((ord . pos)))
       (search Q) )
    (printsp @) )
 {A1} {A2} {A3}
-</pre>
+</pre></code>
 
 
 <h3><a id="spec"></a>Relation Specifications</h3>
