@@ -1,4 +1,4 @@
-# 18oct23 Software Lab. Alexander Burger
+# 20oct23 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -536,7 +536,7 @@
          (: dbf) ) )
    (extra Obj Val Hook) )
 
-(dm iter> (X Lst)
+(dm iter> (X Lst @Flg)
    (let Tree (tree (: var) (: cls) (caddr Lst))
       (cons
          (nond
@@ -564,9 +564,9 @@
             (NIL
                (init Tree (cons X) (cons (pack X `(char T)) T)) ) )
          (let @Cls (cadr Lst)
-            (curry (@Cls) (Q)
+            (curry (@Flg @Cls) (Q)
                (loop
-                  (NIL (step Q))
+                  (NIL (step Q @Flg))
                   (T (isa '@Cls @) @) ) ) ) ) ) )
 
 
@@ -679,6 +679,9 @@
       Val NIL (split (cdr (chop Val)) " " "\n")
       Hook )
    (extra Obj Val Hook) )
+
+(dm iter> (X Lst)
+   (super X Lst (not X)) )
 
 (dm match> (X Val Obj)
    (sub? X Val) )
@@ -832,7 +835,7 @@
    (extra Obj Val Hook) )
 
 (dm iter> (X Lst)
-   (super (fold X) Lst) )
+   (super (fold X) Lst (not X)) )
 
 (dm match> (X Val Obj)
    (sub? (fold X) (fold Val)) )

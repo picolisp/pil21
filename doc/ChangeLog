@@ -1,3 +1,17 @@
+23.10.20
+   New file
+      doc/search.html
+   Use (sys "BROWSER") if set
+      lib/vip.l
+
+23.10.19
+   Cosmetics
+      lib/vip/draw.l
+   New file
+      lib/vip/html.l
+   Check for "# VIP " in the first three lines
+      lib/vip.l
+
 23.10.18
    Use inherited tree
       lib/db.l
@@ -21,6 +35,7 @@
       doc/ref.html
       doc/refC.html
       doc/refS.html
+   New file
       doc/search
 
 23.10.5

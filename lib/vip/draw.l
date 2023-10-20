@@ -1,4 +1,4 @@
-# 09oct21 Software Lab. Alexander Burger
+# 19oct23 Software Lab. Alexander Burger
 
 (symbols 'vip~draw 'vip 'pico)
 
@@ -264,16 +264,18 @@
 
 # Override +Buffer methods in object
 (let? *Class (isa '+Buffer This)
-   (dm save> (Win)
-      (super Win)
-      (view> This Win) )
    (dm view> (Win)
+      (=: view T)
       (off *Draw *Boxes)
       (symbols '(vip~draw vip pico)
          (evCmd (load (fName (: file)))) )
       (mapc 'hv> *Boxes)
       (with Win
-         (scratch (tmp "draw") *Draw) ) ) )
+         (scratch (tmp "draw") *Draw) ) )
+   (dm save> (Win)
+      (super Win)
+      (when (: view)
+         (view> This Win) ) ) )
 
 ### Debug ###
 `*Dbg

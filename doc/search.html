@@ -1,0 +1,221 @@
+<!--
+# VIP @lib/vip/html.l
+# 20oct23 Software Lab. Alexander Burger
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>The 'search' Function</title>
+<link rel="stylesheet" href="doc.css" type="text/css">
+</head>
+<body>
+<a href="mailto:abu@software-lab.de">abu@software-lab.de</a>
+
+<h1>The 'search' Function</h1>
+
+<p style="text-align: right">(c) Software Lab. Alexander Burger
+
+<p>The <a href="refS.html#search">search</a> function allows to search the <a
+href="ref.html#dbase">database</a> for a combination of search criteria.
+
+<p>It finds all objects - directly from the criteria or after traversing all
+connecting relations - which fulfill <i>all</i> given search criteria, and
+returns them one at a time.
+
+<p><ul>
+<li><a href="#examples">Examples</a>
+<li><a href="#syntax">Syntax</a>
+   <ul>
+   <li><a href="#crit">Search Criteria</a>
+      <ul>
+      <li><a href="#num">Numbers</a>
+      <li><a href="#str">Strings</a>
+      <li><a href="#obj">Objects</a>
+      </ul>
+   <li><a href="#spec">Relation Specifications</a>
+   </ul>
+</ul>
+
+
+<p><hr>
+<h2><a id="examples">Examples</a></h2>
+
+<p>The examples in this document will use the demo application in "app/*.l" (in
+<a href="http://software-lab.de/demoApp.tgz">demoApp.tgz</a>). To get an
+interactive prompt, start it as
+
+<pre>
+$ pil app/main.l -ap~main +
+:
+</pre>
+
+<p>As ever, you can terminate the interpreter by hitting <code>Ctrl-D</code>.
+
+
+<p><hr>
+<h2><a id="syntax">Syntax</a></h2>
+
+<p><code>search</code> is called in two different forms.
+
+<p>The first form initializes a query. It takes two or more arguments, and
+returns a query structure (a list).
+
+<p>The second form can then be called repeatedly with that structure, and will
+subsequently return the next resulting object, or <code>NIL</code> if no more
+results can be found.
+
+<p>To start a new query, <code>search</code> is called with an arbitrary number
+of argument pairs, each consisting of a search criterion and a relation
+specification, and an optional extraction function which filters and possibly
+modifies the results.
+
+<p>For example, to find the item with the number 2:
+
+<pre>
+ap: (search 2 '((nr +Item)))
+-> (NIL ...
+</pre>
+
+<p>The first argument <code>2</code> is a <i>search criterion</i> (the key to
+look for), and <code>((nr +Item))</code> is a <i>relation specification</i> (the
+<code>nr</code> index of the <code>+Item</code> class).
+
+<p>The returned query structure is abbreviated, because it is big and not
+relevant here. It can now be used to fetch the result:
+
+<pre>
+ap: (search @)
+-> {B2}
+ap: (show @)
+{B2} (+Item)
+   nr 2
+   pr 1250
+   inv 100
+   sup {C2}
+   nm "Spare Part"
+-> {B2}
+</pre>
+
+<p>There are no further results, because <code>nr</code> is a unique key:
+
+<pre>
+ap: (search @@@)  # '@@@' referst to the third-last REPL result, the query
+-> NIL
+</pre>
+
+
+<h3><a id="crit">Search Criteria</a></h4>
+
+<p>Each criterion is an attribute of a database object (like name, e-mail,
+address etc.), or some given database object. It may be used to find objects
+directly, or as a starting point for a recursive search for other objects
+reachable by this object.
+
+
+<h4><a id="num">Numbers</a></h5>
+
+<p>If it is a number (including derived types like date or time), it can be
+atomic for an exact search, or a cons pair for searching a range of numbers.
+
+<p>Extending the above example, we may search for all items with number between
+2 and (including) 6:
+
+<pre>
+ap: (search (2 . 6) '((nr +Item)))
+-> (NIL ...
+</pre>
+
+<p>We may use a <a href="refF.html#for">for</a> loop to retrieve all results:
+
+<pre>
+ap: (for
+   (Q
+      (search (2 . 6) '((nr +Item)))
+      (search Q) )
+   (printsp @) )
+{B2} {B3} {B4} {B5} {B6}
+</pre>
+
+
+<h4><a id="str">Strings</a></h5>
+
+<p>If the search criterion is a string (transient symbol) or an internal symbol,
+or a cons pair of those, the exact behavior depends on the relation type. It
+includes all cases where it matches the heads of the result attributes (string
+prefixes), but may also match substrings and/or tolerant (<a
+href="refF.html#fold">fold</a>ed or soundex-encoded) searches.
+
+<pre>
+ap: (for
+   (Q
+      (search "Api" '((em +CuSu)))
+      (search Q) )
+   (println (; @ em)) )
+"info@api.tld"
+</pre>
+
+<pre>
+ap: (for
+   (Q
+      (search "part" '((nm +Item)))
+      (search Q) )
+   (with @
+      (println (: nr) (: nm)) ) )
+1 "Main Part"
+2 "Spare Part"
+</pre>
+
+<p>Or, combined with a number range search:
+
+<pre>
+ap: (for
+   (Q
+      (search
+         (2 . 6) '((nr +Item))
+         "part" '((nm +Item)) )
+      (search Q) )
+   (with @
+      (println (: nr) (: nm)) ) )
+2 "Spare Part"
+</pre>
+
+
+<h4><a id="obj">Objects</a></h5>
+
+<p>A database object can also be used as a search criterion. A cons pair (i.e. a
+range) of objects makes no sense, because objects by themselves are not ordered.
+
+<p>Searching for all items from a given supplier:
+
+<pre>
+ap: (for
+   (Q
+      (search '{C1} '((sup +Item)))
+      (search Q) )
+   (printsp @) )
+{B1} {B3} {B5}
+</pre>
+
+<p>or for all positions in a given order:
+
+<pre>
+ap: (for
+   (Q
+      (search '{B7} '((ord . pos)))
+      (search Q) )
+   (printsp @) )
+{A1} {A2} {A3}
+</pre>
+
+
+<h3><a id="spec"></a>Relation Specifications</h4>
+
+<p>
+
+
+<h1>... continued ...</h1>
+
+</body>
+</html>

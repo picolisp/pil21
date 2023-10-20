@@ -1,4 +1,4 @@
-# 23sep23 Software Lab. Alexander Burger
+# 20oct23 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -209,14 +209,20 @@ s-expr command vi)
             (get
                (: text)
                (=: posY (min1 (: posY) (length (: text)))) ) ) ) )
-   (when (head '`(chop "# VIP ") (: text 1))
-      (let? L (clip (: text 1 -6))
-         (evCmd
-            (symbols '(vip pico)
-               (if (= "(" (car L))
-                  (run (str (pack L)))
-                  (setq L (split L " "))
-                  (apply script (cdr L) (path (car L))) ) ) ) ) ) )
+   (let? L
+      (nth
+         (find
+            '((L) (head '`(chop "# VIP ") L))
+            (head 3 (: text)) )
+         7 )
+      (evCmd
+         (symbols '(vip pico)
+            (if (= "(" (car L))
+               (run (str (pack L)))
+               (setq L (split L " "))
+               (apply script
+                  (str (glue " " (cdr L)))
+                  (path (car L)) ) ) ) ) ) )
 
 (dm save> (Win)
    (when (: file)
@@ -1610,7 +1616,7 @@ s-expr command vi)
                                                    (rdLines) ) ) )
                                           ("b"  # [gb] Browser
                                              (screen1)
-                                             (call "w3m" (getWord))
+                                             (call (or (sys "BROWSER") "w3m") (getWord))
                                              (screen2)
                                              (repaint) )
                                           ("g" (move 'goAbs 1 (or (format *Count) 1)))  # [gg] Go to beginning of text
