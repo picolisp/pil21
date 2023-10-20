@@ -106,7 +106,7 @@ ap: (search @@@)  # '@@@' referst to the third-last REPL result, the query
 </pre>
 
 
-<h3><a id="crit">Search Criteria</a></h4>
+<h3><a id="crit">Search Criteria</a></h3>
 
 <p>Each criterion is an attribute of a database object (like name, e-mail,
 address etc.), or some given database object. It may be used to find objects
@@ -114,7 +114,7 @@ directly, or as a starting point for a recursive search for other objects
 reachable by this object.
 
 
-<h4><a id="num">Numbers</a></h5>
+<h4><a id="num">Numbers</a></h4>
 
 <p>If it is a number (including derived types like date or time), it can be
 atomic for an exact search, or a cons pair for searching a range of numbers.
@@ -139,7 +139,7 @@ ap: (for
 </pre>
 
 
-<h4><a id="str">Strings</a></h5>
+<h4><a id="str">Strings</a></h4>
 
 <p>If the search criterion is a string (transient symbol) or an internal symbol,
 or a cons pair of those, the exact behavior depends on the relation type. It
@@ -182,7 +182,7 @@ ap: (for
 </pre>
 
 
-<h4><a id="obj">Objects</a></h5>
+<h4><a id="obj">Objects</a></h4>
 
 <p>A database object can also be used as a search criterion. A cons pair (i.e. a
 range) of objects makes no sense, because objects by themselves are not ordered.
@@ -210,7 +210,7 @@ ap: (for
 </pre>
 
 
-<h3><a id="spec"></a>Relation Specifications</h4>
+<h3><a id="spec"></a>Relation Specifications</h3>
 
 <p>
 
