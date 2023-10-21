@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 20oct23 Software Lab. Alexander Burger
+# 21oct23 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -35,6 +35,9 @@ returns them one at a time.
       <li><a href="#obj">Objects</a>
       </ul>
    <li><a href="#spec">Relation Specifications</a>
+   <li><a href="#struct">Query Structure</a>
+   <li><a href="#extract">Extraction Function</a>
+   <li><a href="#sort">Sorting</a>
    </ul>
 </ul>
 
@@ -112,6 +115,11 @@ ap: (search @@@)  # '@@@' referst to the third-last REPL result, the query
 address etc.), or some given database object. It may be used to find objects
 directly, or as a starting point for a recursive search for other objects
 reachable by this object.
+
+<p>For every search criterion which is <code>NIL</code>, no search is performed,
+and the following relation specification is ignored. If, however, <i>all</i>
+search criteria are <code>NIL</code>, a full search over the last relation
+specification is forced.
 
 
 <h4><a id="num">Numbers</a></h4>
@@ -212,10 +220,31 @@ ap: (for
 
 <h3><a id="spec"></a>Relation Specifications</h3>
 
-<p>
+<p>In typical use cases, a relation specification is either
+
+<ul>
+<li>a list <code>(var cls [hook])</code> for an index relation, or
+<li> a cons pair <code>(sym . sym)</code> for a <code><a href="refJ.html#+Joint">+Joint</a></code> relation
+</ul>
+
+<p>For general cases, the <i>first></i> specification in the list may be
+replaced by two functions: A generator function and a filter function. This
+allows to start the search from arbitrary resources like remote databases.
 
 
-<h1>... continued ...</h1>
+<h3><a id="struct"></a>Query Structure</h3>
+
+<h1>...</h1>
+
+
+<h3><a id="extract"></a>Extraction Function</h3>
+
+<h1>...</h1>
+
+
+<h3><a id="sort"></a>Sorting</h3>
+
+<h1>...</h1>
 
 </body>
 </html>

@@ -239,12 +239,11 @@ structure according to the corresponding <code>lst</code> lists of relation
 specifications. A search criterion can be an atom for an exact search, or a cons
 pair for a range search. A relation specification can be a list <code>(var cls
 [hook])</code> for an index search, a cons pair <code>(sym . sym)</code> for the
-two endpoints of a <code><a href="refJ.html#+Joint">+Joint</a></code>, or (only
-in case of the first specification in <code>lst</code>) a function returning a
-suitable query structure consisting of a generator function, a filter function,
-and optional association specifiers. The final <code>fun</code> argument may
-optionally filter and possibly modify each result. The second form takes a query
-structure as returned from the first form, and returns the next result (an
+two endpoints of a <code><a href="refJ.html#+Joint">+Joint</a></code>, or - only
+instead of the first specification in <code>lst</code> - two functions: A
+generator function and a filter function. The final <code>fun</code> argument
+may optionally filter and possibly modify each result. The second form takes a
+query structure as returned from the first form, and returns the next result (an
 object) or <code>NIL</code> (if there are no more matching results).
 <code>search</code> is described in detail in <a href="search.html">The 'search'
 Function</a>. See also <code><a href="refI.html#init">init</a></code>, <code><a
