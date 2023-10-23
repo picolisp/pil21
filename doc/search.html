@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 21oct23 Software Lab. Alexander Burger
+# 23oct23 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -21,8 +21,8 @@
 href="ref.html#dbase">database</a> for a combination of search criteria.
 
 <p>It finds all objects - directly from the criteria or after traversing all
-connecting relations - which fulfill <i>all</i> given search criteria, and
-returns them one at a time.
+associations - which fulfill <i>all</i> given search criteria, and returns them
+one at a time.
 
 <p><ul>
 <li><a href="#examples">Examples</a>
@@ -35,10 +35,13 @@ returns them one at a time.
       <li><a href="#obj">Objects</a>
       </ul>
    <li><a href="#spec">Relation Specifications</a>
-   <li><a href="#struct">Query Structure</a>
-   <li><a href="#extract">Extraction Function</a>
-   <li><a href="#sort">Sorting</a>
    </ul>
+<li><a href="#custom">Custom Generators and Filters</a>
+   <ul>
+   <li><a href="#relQs">Multiple Indexes</a>
+   </ul>
+<li><a href="#extract">Extraction Function</a>
+<li><a href="#sort">Sorting</a>
 </ul>
 
 
@@ -46,13 +49,14 @@ returns them one at a time.
 <h2><a id="examples">Examples</a></h2>
 
 <p>The examples in this document will use the demo application in "app/*.l" (in
-<a href="http://software-lab.de/demoApp.tgz">demoApp.tgz</a>). To get an
-interactive prompt, start it as
+<a href="https://software-lab.de/demoApp.tgz">demoApp.tgz</a>).
 
-<code><pre>
+<p>To get an interactive prompt, start it as:
+
+<pre>
 $ pil app/main.l -ap~main +
 :
-</pre></code>
+</pre>
 
 <p>As ever, you can terminate the interpreter by hitting <code>Ctrl-D</code>.
 
@@ -76,19 +80,19 @@ modifies the results.
 
 <p>For example, to find the item with the number 2:
 
-<code><pre>
+<pre>
 ap: (search 2 '((nr +Item)))
 -> (NIL ...
-</pre></code>
+</pre>
 
 <p>The first argument <code>2</code> is a <i>search criterion</i> (the key to
 look for), and <code>((nr +Item))</code> is a list with a single <i>relation
 specification</i> (the <code>nr</code> index of the <code>+Item</code> class).
 
-<p>The returned query structure is abbreviated, because it is big and not
-relevant here. It can now be used to fetch the result:
+<p>The returned query structure is abbreviated here, because it is big and not
+relevant. It can now be used to fetch the result:
 
-<code><pre>
+<pre>
 ap: (search @)
 -> {B2}
 ap: (show @)
@@ -99,14 +103,14 @@ ap: (show @)
    sup {C2}
    nm "Spare Part"
 -> {B2}
-</pre></code>
+</pre>
 
 <p>There are no further results, because <code>nr</code> is a unique key:
 
-<code><pre>
+<pre>
 ap: (search @@@)  # '@@@' referst to the third-last REPL result, the query
 -> NIL
-</pre></code>
+</pre>
 
 
 <h3><a id="crit">Search Criteria</a></h3>
@@ -124,27 +128,28 @@ specification is forced.
 
 <h4><a id="num">Numbers</a></h4>
 
-<p>If it is a number (including derived types like date or time), it can be
-atomic for an exact search, or a cons pair for searching a range of numbers.
+<p>If the search criterion is numeric (including derived types like date or
+time), it can be atomic for an exact search, or a cons pair for searching a
+range of numbers.
 
-<p>Extending the above example, we may search for all items with number between
-2 and (including) 6:
+<p>Extending the above example, we may search for all items with a number
+between 2 and (including) 6:
 
-<code><pre>
+<pre>
 ap: (search (2 . 6) '((nr +Item)))
 -> (NIL ...
-</pre></code>
+</pre>
 
 <p>We may use a <a href="refF.html#for">for</a> loop to retrieve all results:
 
-<code><pre>
+<pre>
 ap: (for
    (Q
       (search (2 . 6) '((nr +Item)))
       (search Q) )
    (printsp @) )
 {B2} {B3} {B4} {B5} {B6}
-</pre></code>
+</pre>
 
 
 <h4><a id="str">Strings</a></h4>
@@ -155,16 +160,16 @@ includes all cases where it matches the heads of the result attributes (string
 prefixes), but may also match substrings and/or tolerant (<a
 href="refF.html#fold">fold</a>ed or soundex-encoded) searches.
 
-<code><pre>
+<pre>
 ap: (for
    (Q
       (search "Api" '((em +CuSu)))
       (search Q) )
    (println (; @ em)) )
 "info@api.tld"
-</pre></code>
+</pre>
 
-<code><pre>
+<pre>
 ap: (for
    (Q
       (search "part" '((nm +Item)))
@@ -173,11 +178,11 @@ ap: (for
       (println (: nr) (: nm)) ) )
 1 "Main Part"
 2 "Spare Part"
-</pre></code>
+</pre>
 
 <p>Or, combined with a number range search:
 
-<code><pre>
+<pre>
 ap: (for
    (Q
       (search
@@ -187,7 +192,7 @@ ap: (for
    (with @
       (println (: nr) (: nm)) ) )
 2 "Spare Part"
-</pre></code>
+</pre>
 
 
 <h4><a id="obj">Objects</a></h4>
@@ -197,54 +202,238 @@ range) of objects makes no sense, because objects by themselves are not ordered.
 
 <p>Searching for all items from a given supplier:
 
-<code><pre>
+<pre>
 ap: (for
    (Q
       (search '{C1} '((sup +Item)))
       (search Q) )
    (printsp @) )
 {B1} {B3} {B5}
-</pre></code>
+</pre>
 
 <p>or for all positions in a given order:
 
-<code><pre>
+<pre>
 ap: (for
    (Q
       (search '{B7} '((ord . pos)))
       (search Q) )
    (printsp @) )
 {A1} {A2} {A3}
-</pre></code>
+</pre>
 
 
 <h3><a id="spec"></a>Relation Specifications</h3>
 
-<p>In typical use cases, a relation specification is either
+<p>Every second argument to <code>search</code> is a list of relation
+specifications. In typical use cases, a relation specification is either
 
 <ul>
 <li>a list <code>(var cls [hook])</code> for an index relation, or
 <li> a cons pair <code>(sym . sym)</code> for a <code><a href="refJ.html#+Joint">+Joint</a></code> relation
 </ul>
 
-<p>For general cases, the <i>first></i> specification in the list may be
-replaced by two functions: A generator function and a filter function. This
-allows to start the search from arbitrary resources like remote databases.
+<p>For general cases, the <i>first</i> specification in the list may be replaced
+by two custom functions: A generator function and a filter function. This allows
+to start the search from arbitrary resources like remote databases or
+coroutines.
+
+<p>If a specification is <code>(var cls)</code> but <code>var</code> is not an
+index of <code>cls</code>, a brute force search through the objects in the
+database file of <code>cls</code> will be performed. This should only be done
+for small files with ideally all objects of type <code>cls</code>.
+
+<p>The rest of the list contains associations (which are also relation
+specifications) to recursively search through associated objects. They are
+typically <code>(<a href="refJ.html#+Joint">+Joint</a>)</code>, <code>(<a
+href="refL.html#+List">+List</a> <a href="refJ.html#+Joint">+Joint</a>)</code>,
+or <code>(<a href="refR.html#+Ref">+Ref</a> <a
+href="refL.html#+Link">+Link</a>)</code> relations.
+
+<p>Look for example at the <code>choOrd</code> ("choose Order") function in the
+demo application. You can access it directly in the REPL with <code>(vi
+'choOrd)</code>. The <code>search</code> call is
+
+<pre>
+(search
+   *OrdCus '((nm +CuSu) (cus +Ord))
+   *OrdOrt '((ort +CuSu) (cus +Ord))
+   *OrdItem '((nm +Item) (itm +Pos) (pos . ord))
+   *OrdSup '((nm +CuSu) (sup +Item) (itm +Pos) (pos . ord))
+   (and *OrdNr (cons @)) '((nr +Ord))
+   (and *OrdDat (cons @)) '((dat +Ord)) )
+</pre>
+
+<p>The global variables <code>*OrdCus</code> through <code>*OrdDat</code> hold
+the search criteria from the search fields in the dialog GUI.
+
+<p>The line with the longest chain of associations is:
+
+<pre>
+   *OrdSup '((nm +CuSu) (sup +Item) (itm +Pos) (pos . ord))
+</pre>
+
+<p>This means:
+
+<ol>
+<li>Search suppliers by name
+<li>For each matching supplier, go through his items
+<li>For each item, find order positions where it is referred
+<li>For each position, return the order where it is in
+</ol>
+
+<p>Testing this line stand-alone, searching orders only by supplier name:
+
+<pre>
+ap: (for
+   (Q
+      (search
+         "Seven Oaks"
+         (quote
+            (nm +CuSu)
+            (sup +Item)
+            (itm +Pos)
+            (pos . ord) ) )
+      (search Q) )
+   (printsp @) )
+{B7}
+</pre>
+
+<h2><a id="custom"></a>Custom Generators and Filters</h2>
+
+<p>If the list of relation specifications does not start with an index relation
+<code>(var cls)</code> or a joint relation <code>(sym . sym)</code>, but instead
+with a function like <code>((X) (foo))</code>, the first <i>two</i> elements of
+the list are taken as generator and filter functions, respectively.
+
+<p>We could rewrite the last example in slightly a simplified form, but with
+custom functions:
+
+<pre>
+ap: (for
+   (Q
+      (search
+         "Seven Oaks"
+         (quote
+            ((X)  # Generator function
+               (iter> (meta '(+CuSu) 'nm)
+                  "Seven Oaks"
+                  '(nm +CuSu) ) )
+            ((This X)  # Filter function
+               (pre? "Seven Oaks" (: nm)) )
+            (sup +Item)
+            (itm +Pos)
+            (pos . ord) ) )
+      (search Q) )
+   (printsp @) )
+{B7}
+</pre>
+
+<p>The <code>iter&gt;</code> method implements the mechanisms to produce the
+internal query structures for individual relations. There is a convenience
+function <code>relQ</code> for this. It can be used to simplify such standard
+generators. Instead of:
+
+<pre>
+   ((X)  # Generator function
+      (iter> (meta '(+CuSu) 'nm)
+         "Seven Oaks"
+         '(nm +CuSu) ) )
+</pre>
+
+<p>we can write:
+
+<pre>
+   ((X)  # Generator function
+      (relQ "Seven Oaks" '(nm +CuSu)) )
+</pre>
 
 
-<h3><a id="struct"></a>Query Structure</h3>
+<h3><a id="relQs">Multiple Indexes</a></h3>
 
-<h1>...</h1>
+<p>While <code>relQ</code> is normally not used directly by application
+programs, because its functionality is provided by the standard relation
+specification syntax, there is a function <code>relQs</code> which is indeed
+useful.
+
+<p><code>relQs</code> produces proper generator and filter functions which can
+search <i>multiple</i> indexes for a singe search criterion.
+
+<p>The general syntax is:
+
+<pre>
+   (relQs '((var1 +Cls1) (var2 +Cls2) ..) (sym1 ..) (sym2 ..)..)
+</pre>
+
+<p>to search first the index <code>(var1 +Cls1)</code>, then <code>(var2
++Cls2)</code> etc., and then follow the optional associations <code>(sym1
+..)</code>, <code>(sym2 ..)</code> etc.
+
+<p>A typical use case is searching for a telephone number in both the landline
+and mobile attributes. You find an example in the <code>choCuSu</code> ("choose
+Customer/Supplier") function in the demo application, in the line:
+
+<pre>
+   *CuSuTel (relQs '((tel +CuSu) (mob +CuSu)))
+</pre>
+
+<p>Note that <code>(relQs ..)</code> must <i>not</i> be quoted, because it needs
+to be evaluate to produce the right functions and query structure.
 
 
-<h3><a id="extract"></a>Extraction Function</h3>
+<h2><a id="extract"></a>Extraction Function</h2>
 
-<h1>...</h1>
+<p>Sometimes it is necessary to to do further checks on a search result, which
+may not be covered by the standard matching of combined search criteria.
+
+<p>An example can be found in the <a
+href="https://software-lab.de/tut.tgz">tut.tgz</a> tutorial in the file
+"db/family.l", in the <code>contemporaries</code> report. It searches for people
+living roughly at the same time as the given person:
+
+<pre>
+   '(let @Fin
+      (or
+         (: home obj fin)
+         (+ (: home obj dat) 36525) )
+      (search
+         (cons (- (: home obj dat) 36525) @Fin) '((dat +Person))
+         (curry (@Fin) (Obj)
+            (and
+               (n== Obj (: home obj))
+               (>= (; Obj fin) (: home obj dat))
+               (>= @Fin (; Obj dat))
+               Obj ) ) ) )
+</pre>
+
+<p><code>@Fin</code> is set to either the date when the given person died, or to
+the birth date plus ten years if not known. Then all persons born in the range
+of ten years before the given person and <code>@Fin</code> are searched.
+
+<p><a href="refC.html#curry">curry</a> builds the filter function, taking an
+object and doing range checks to see if that person died after the given person
+was born, <i>and</i> that he or she was born before <code>@Fin</code>.
+
+<p>If those conditions are not met, the function returns <code>NIL</code>, and
+<code>search</code> continues to search for the next result.
+
+<p>The extraction function may also - instead of returning the object or
+<code>NIL</code>, return some other value as appropriate for the application.
 
 
-<h3><a id="sort"></a>Sorting</h3>
+<h2><a id="sort"></a>Sorting</h2>
 
-<h1>...</h1>
+<p>In general, the values returned by <code>search</code> are not sorted when
+multiple search criteria are given. This is because the indexes are iterated
+over in an unpredictable order.
+
+<p>If, however, only a single search criterion is given, or only one of the
+search criteria is non-<code>NIL</code>, then the results will be returned in
+sorted sorted order according to the given index.
+
+<p>If <i>all</i> search criteria are <code>NIL</code>, and thus the last
+relation specification is used (see above under <a href="#crit">Search
+Criteria</a>), then the results will turn up in increasing order.
 
 </body>
 </html>

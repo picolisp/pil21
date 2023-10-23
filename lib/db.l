@@ -1,4 +1,4 @@
-# 20oct23 Software Lab. Alexander Burger
+# 23oct23 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1632,7 +1632,7 @@
                      X1 X2
                      (or (isa '+Idx This) (isa '+IdxFold This)) ) ) ) ) ) ) )
 
-# Combined search
+# Combined 'search' function
 (de relQ (X Lst)
    (iter> (meta (cdr Lst) (car Lst)) X Lst) )
 

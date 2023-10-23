@@ -1,4 +1,4 @@
-/* 27oct20 Software Lab. Alexander Burger
+/* 22oct23 Software Lab. Alexander Burger
  * 06dec12jk
  */
 
@@ -30,7 +30,7 @@ dd {
    margin-bottom: 0.4em;
 }
 
-code {
+code, pre {
    color: rgb(0%,40%,0%);
 }
 
