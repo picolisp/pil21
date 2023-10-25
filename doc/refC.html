@@ -290,9 +290,9 @@ href="refW.html#wrap">wrap</a></code>.
 -> " a  b  c"
 </code></pre></dd>
 
-<dt><a id="chain"><code>(chain 'lst ..) -> lst</code></a></dt>
+<dt><a id="chain"><code>(chain 'any ..) -> any</code></a></dt>
 <dd>Concatenates (destructively) one or several new list elements
-<code>lst</code> to the end of the list in the current <code><a
+<code>any</code> to the end of the list in the current <code><a
 href="refM.html#make">make</a></code> environment. This operation is efficient
 also for long lists, because a pointer to the last element of the result list is
 maintained. <code>chain</code> returns the last linked argument. See also

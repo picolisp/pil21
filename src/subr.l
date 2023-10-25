@@ -1,4 +1,4 @@
-# 08aug23 Software Lab. Alexander Burger
+# 25oct23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -283,7 +283,7 @@
                (set $Make (ofs Y 1)) ) ) )
       (val (val $Yoke)) ) )
 
-# (chain 'lst ..) -> lst
+# (chain 'any ..) -> any
 (de _Chain (Exe)
    (let X (cdr Exe)
       (unless (val $Make)
