@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,7 +24,7 @@ decreasing the heap size if possible. If <code>cnt2</code> is given, the reserve
 size (defaults to 1 megabyte) is set to that value. See also <code><a
 href="refH.html#heap">heap</a></code>.
 
-<pre><code>
+<pre>
 : (gc)
 -> NIL
 : (heap)
@@ -28,7 +33,7 @@ href="refH.html#heap">heap</a></code>.
 -> 4
 : (heap)
 -> 5
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="ge0"><code>(ge0 'any) -> num | NIL</code></a></dt>
 <dd>Returns <code>num</code> when the argument is a number and greater or equal
@@ -38,14 +43,14 @@ href="refL.html#le0">le0</a></code>, <code><a
 href="refG.html#gt0">gt0</a></code>, <code><a href="ref_.html#=0">=0</a></code>
 and <code><a href="refN.html#n0">n0</a></code>.
 
-<pre><code>
+<pre>
 : (ge0 -2)
 -> NIL
 : (ge0 3)
 -> 3
 : (ge0 0)
 -> 0
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="genKey"><code>(genKey 'sym 'cls ['hook ['num1 ['num2]]]) -> num</code></a></dt>
 <dd>Generates a key for a database tree. If a minimal key <code>num1</code>
@@ -55,22 +60,22 @@ also <code><a href="refU.html#useKey">useKey</a></code>, <code><a
 href="refG.html#genStrKey">genStrKey</a></code> and <code><a
 href="refM.html#maxKey">maxKey</a></code>.
 
-<pre><code>
+<pre>
 : (maxKey (tree 'nr '+Item))
 -> 8
 : (genKey 'nr '+Item)
 -> 9
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="genStrKey"><code>(genStrKey 'sym 'sym 'cls ['hook]) -> sym</code></a></dt>
 <dd>Generates a unique string for a database tree, by prepending as many "# "
 sequences as necessary. See also <code><a
 href="refG.html#genKey">genKey</a></code>.
 
-<pre><code>
+<pre>
 : (genStrKey "ben" 'nm '+User)
 -> "# ben"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="get"><code>(get 'sym1|lst ['sym2|cnt ..]) -> any</code></a></dt>
 <dd>Fetches a value <code>any</code> from the properties of a symbol, or from a
@@ -84,7 +89,7 @@ n'th CDR (if the next argument is a negative number) from a list. See also
 href="ref_.html#;">;</a></code>, <code><a href="ref_.html#:">:</a></code> and
 <code><a href="refN.html#nth">nth</a></code>.
 
-<pre><code>
+<pre>
 : (put 'X 'a 1)
 -> 1
 : (get 'X 'a)
@@ -103,14 +108,14 @@ href="ref_.html#;">;</a></code>, <code><a href="ref_.html#:">:</a></code> and
 -> Y
 : (get '(X Y Z) 2 'link 'a)
 -> 1
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="getd"><code>(getd 'any) -> fun | NIL</code></a></dt>
 <dd>Returns <code>fun</code> if <code>any</code> is a symbol that has a function
 definition, otherwise <code>NIL</code>. See also <code><a
 href="refF.html#fun?">fun?</a></code>.
 
-<pre><code>
+<pre>
 : (getd '+)
 -> 67327232
 : (getd 'script)
@@ -124,7 +129,7 @@ href="refF.html#fun?">fun?</a></code>.
 -> 8790207171188
 : ht:Fmt             # Now defined
 -> 8790207171188
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="getl"><code>(getl 'sym1|lst1 ['sym2|cnt ..]) -> lst</code></a></dt>
 <dd>Fetches the complete property list <code>lst</code> from a symbol. That
@@ -134,7 +139,7 @@ by applying the <code><a href="refG.html#get">get</a></code> algorithm to
 href="refP.html#putl">putl</a></code> and <code><a
 href="refM.html#maps">maps</a></code>.
 
-<pre><code>
+<pre>
 : (put 'X 'a 1)
 -> 1
 : (put 'X 'b 2)
@@ -143,7 +148,7 @@ href="refM.html#maps">maps</a></code>.
 -> T
 : (getl 'X)
 -> (flg (2 . b) (1 . a))
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="glue"><code>(glue 'any 'lst) -> sym</code></a></dt>
 <dd>Builds a new transient symbol (string) by <code><a
@@ -151,10 +156,10 @@ href="refP.html#pack">pack</a></code>ing the <code>any</code> argument between
 the individual elements of <code>lst</code>. See also <code><a
 href="refT.html#text">text</a></code>.
 
-<pre><code>
+<pre>
 : (glue "," '(a b c d))
 -> "a,b,c,d"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="goal"><code>(goal '([pat 'any ..] . lst) ['sym 'any ..]) -> lst</code></a></dt>
 <dd>Constructs a <a href="ref.html#pilog">Pilog</a> query list from the list of
@@ -165,12 +170,12 @@ form an initial environment. See also <code><a
 href="refP.html#prove">prove</a></code> and <code><a
 href="refF.html#fail">fail</a></code>.
 
-<pre><code>
+<pre>
 : (goal '((likes John @X)))
 -> (((1 (0) NIL ((likes John @X)) NIL T)))
 : (goal '(@X 'John (likes @X @Y)))
 -> (((1 (0) NIL ((likes @X @Y)) NIL ((0 . @X) 1 . John) T)))
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="group"><code>(group 'lst) -> lst</code></a></dt>
 <dd>Builds a list of lists, by grouping all elements of <code>lst</code> with
@@ -180,14 +185,14 @@ href="refB.html#by">by</a></code>, <code><a
 href="refS.html#sort">sort</a></code> and <code><a
 href="refU.html#uniq">uniq</a></code>.
 
-<pre><code>
+<pre>
 : (group '((1 . a) (1 . b) (1 . c) (2 . d) (2 . e) (2 . f)))
 -> ((1 a b c) (2 d e f))
 : (by name group '("x" "x" "y" "z" "x" "z"))
 -> (("x" "x" "x") ("y") ("z" "z"))
 : (by length group '(123 (1 2) "abcd" "xyz" (1 2 3 4) "XY"))
 -> ((123 "xyz") ((1 2) "XY") ("abcd" (1 2 3 4))
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="gt0"><code>(gt0 'any) -> num | NIL</code></a></dt>
 <dd>Returns <code>num</code> when the argument is a number and greater than
@@ -197,12 +202,12 @@ href="refL.html#le0">le0</a></code>, <code><a
 href="refG.html#ge0">ge0</a></code>, <code><a href="ref_.html#=0">=0</a></code>
 and <code><a href="refN.html#n0">n0</a></code>.
 
-<pre><code>
+<pre>
 : (gt0 -2)
 -> NIL
 : (gt0 3)
 -> 3
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

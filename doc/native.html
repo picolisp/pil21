@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -102,15 +107,15 @@ functions can even be called interactively from the REPL.
 arguments. If we assume a library "lib.so", containing a function with the
 prototype
 
-<pre><code>
+<pre>
 void fun(void);
-</code></pre>
+</pre>
 
 <p>then we can call it as
 
-<pre><code>
+<pre>
 (native "lib.so" "fun")
-</code></pre>
+</pre>
 
 
 <p><hr>
@@ -126,15 +131,15 @@ library), and can be used for standard functions like <code>"malloc"</code> or
 <code>"free"</code>.
 Because this is needed so often,
 
-<pre><code>
+<pre>
 (%@ "fun" ...)
-</code></pre>
+</pre>
 
 <p>can be used instead of
 
-<pre><code>
+<pre>
 (native "@" "fun" ...)
-</code></pre>
+</pre>
 
 <p><code>native</code> uses <code>dlopen(3)</code> internally to find and open
 the library, and to obtain the handle. If the name contains a slash ('/'), then
@@ -171,17 +176,17 @@ library. If we keep the code within the same transient scope (i.e. in the same
 source file), each library will be opened - and each function searched - only
 once.
 
-<pre><code>
+<pre>
 (native "lib.so" "fun1")
 (native "lib.so" "fun2")
 (native "lib.so" "fun3")
-</code></pre>
+</pre>
 
 <p>After <code>"fun1"</code> was called, <code>"lib.so"</code> will be open, and
 won't be re-opened for <code>"fun2"</code> and <code>"fun3"</code>. Consider
 the definition of helper functions:
 
-<pre><code>
+<pre>
 (de fun1 ()
    (native "lib.so" "fun1") )
 
@@ -190,7 +195,7 @@ the definition of helper functions:
 
 (de fun3 ()
    (native "lib.so" "fun3") )
-</code></pre>
+</pre>
 
 <p>After any one of <code>fun1</code>, <code>fun2</code> or <code>fun3</code>
 was called, the symbol <code>"lib.so"</code> will hold the library handle. And
@@ -200,8 +205,8 @@ will be searched only when called the first time.
 <p>Note that the function handle points to a structure in memory, which is
 automatically allocated. This implies that a memory leak may occur if the
 transient symbol holding the function handle goes out of scope (e.g. by repeated
-(re)<code><a href="refL.html#load">load</a>ing the library after executing its
-functions).
+(re)<code><a href="refL.html#load">load</a></code>ing the library after
+executing its functions).
 
 <p>Warning: It should be avoided to put more than one library into a single
 transient scope if there is a chance that two different functions with the same
@@ -251,13 +256,13 @@ convert a returned <code>double</code> (if the number is positive) or
 
 <p>Examples for function calls, with their corresponding C prototypes:
 
-<pre><code>
+<pre>
 (native "lib.so" "fun" 'I)             # int fun(void);
 (native "lib.so" "fun" 'N)             # long fun(void);
 (native "lib.so" "fun" 'P)             # void *fun(void);
 (native "lib.so" "fun" 'S)             # char *fun(void);
 (native "lib.so" "fun" 1.0)            # double fun(void);
-</code></pre>
+</pre>
 
 
 <h4><a id="structRet">Arrays and Structures</a></h4>
@@ -270,7 +275,7 @@ denote arrays of the given type.
 
 <p>Examples for function calls, with their corresponding pseudo C prototypes:
 
-<pre><code>
+<pre>
 (native "lib.so" "fun" '(I . 8))       # int *fun(void);  // 8 integers
 (native "lib.so" "fun" '(B . 16))      # unsigned char *fun(void);  // 16 bytes
 
@@ -287,7 +292,7 @@ denote arrays of the given type.
                                        #    char *names[12];
                                        #    long num[8];
                                        # } *fun(void);
-</code></pre>
+</pre>
 
 <p>If a returned structure has an element which is a <i>pointer</i> to some
 other structure (i.e. not an embedded structure like in the last example above),
@@ -309,28 +314,28 @@ the arguments to the C function.
 <code>short</code>, <code>int</code> or <code>long</code>) can be passed as they
 are: As numbers.
 
-<pre><code>
+<pre>
 (native "lib.so" "fun" NIL 123)        # void fun(int);
 (native "lib.so" "fun" NIL 1 2 3)      # void fun(int, long, short);
-</code></pre>
+</pre>
 
 <p>String arguments can be specified as symbols. <code>native</code> allocates
 memory for each string on the stack, passes the pointer to the C function, and
 cleans up the stack when done.
 
-<pre><code>
+<pre>
 (native "lib.so" "fun" NIL "abc")      # void fun(char*);
 (native "lib.so" "fun" NIL 3 "def")    # void fun(int, char*);
-</code></pre>
+</pre>
 
 <p>Note that the allocated string memory is released <i>after</i> the return
 value is extracted. This allows a C function to return the argument string
 pointer, perhaps after modifying the data in-place, and receive the new string
 as the return value (with the <code>S</code> specification).
 
-<pre><code>
+<pre>
 (native "lib.so" "fun" 'S "abc")       # char *fun(char*);
-</code></pre>
+</pre>
 
 <p>Also note that specifying <code>NIL</code> as an argument passes an empty
 string ("", which also reads as <code>NIL</code> in PicoLisp) to the C function.
@@ -341,10 +346,10 @@ Be sure to pass <code>0</code> (the number zero) if a NULL-pointer is desired.
 the CAR, and the CDR holds the fixpoint scale. If the scale is positive, the
 number is passed as a <code>double</code>, otherwise as a <code>float</code>.
 
-<pre><code>
+<pre>
 (native "lib.so" "fun" NIL             # void fun(double, float);
    (12.3 . 1.0) (4.56 . -1.0) )
-</code></pre>
+</pre>
 
 
 <h4><a id="structArg">Arrays and Structures</a></h4>
@@ -369,23 +374,23 @@ the output value to be stored in the variable.
 <p>For example, a minimal case is a function that takes an integer reference,
 and stores the number '123' in that location:
 
-<pre><code>
+<pre>
 void fun(int *i) {
    *i = 123;
 }
-</code></pre>
+</pre>
 
 <p>We call <code>native</code> with a variable <code>X</code> in the CAR of the
 argument specification, a size of 4 (i.e. <code>sizeof(int)</code>), and
 <code>I</code> for the result specification. The stored value is then available
 in the variable <code>X</code>:
 
-<pre><code>
+<pre>
 : (native "lib.so" "fun" NIL '(X (4 . I)))
 -> NIL
 : X
 -> 123
-</code></pre>
+</pre>
 
 <p>The rest (CDDR) of the argument specification may contain initialization
 data, if the C function expects input values in the structure. It should be a
@@ -396,27 +401,27 @@ fill-byte value in the CDR of the last cell.
 then the whole buffer is filled with that byte. For example, to pass a buffer of
 20 bytes, initialized to zero:
 
-<pre><code>
+<pre>
 : (native "lib.so" "fun" NIL '(NIL (20) . 0))
-</code></pre>
+</pre>
 
 <p>A buffer of 20 bytes, with the first 4 bytes initialized to 1, 2, 3, and 4,
 and the rest filled with zero:
 
-<pre><code>
+<pre>
 : (native "lib.so" "fun" NIL '(NIL (20) 1 2 3 4 . 0))
-</code></pre>
+</pre>
 
 <p>and the same, where the buffer contents are returned as a list of bytes in
 the variable <code>X</code>:
 
-<pre><code>
+<pre>
 : (native "lib.so" "fun" NIL '(X (20 B . 20) 1 2 3 4 . 0))
-</code></pre>
+</pre>
 
 <p>For a more extensive example, let's use the following definitions:
 
-<pre><code>
+<pre>
 typedef struct value {
    int x, y;
    double a, b, c;
@@ -430,7 +435,7 @@ void fun(value *val) {
    val->y = 4;
    strcpy(val->nm, "OK");
 }
-</code></pre>
+</pre>
 
 <p>We call this function with a structure of 40 bytes, requesting the returned
 data in <code>V</code>, with two integers <code>(I . 2)</code>, three doubles
@@ -439,17 +444,17 @@ data in <code>V</code>, with two integers <code>(I . 2)</code>, three doubles
 initialized with two integers 7 and 6, three doubles 0.11, 0.22 and 0.33, and
 another integer 5 while the rest of the 40 bytes is cleared to zero
 
-<pre><code>
+<pre>
 : (native "lib.so" "fun" NIL
    '(V (40 (I . 2) (100 . 3) I (C . 4)) -7 -6 (100 11 22 33) -5 . 0) )
-</code></pre>
+</pre>
 
 <p>then it will print the integers 7 and 6, and <code>V</code> will contain the
 returned list
 
-<pre><code>
+<pre>
 ((3 4) (11 22 33) 5 ("O" "K" NIL NIL))
-</code></pre>
+</pre>
 
 <p>i.e. the original integer values 7 and 6 replaced with 3 and 4.
 
@@ -473,22 +478,22 @@ and structures.
 directly, to fetch a 4-byte integer from a given file descriptor. This could be
 done with the following C function:
 
-<pre><code>
+<pre>
 int read4bytes(int fd) {
    char buf[4];
 
    read(fd, buf, 4);
    return *(int*)buf;
 }
-</code></pre>
+</pre>
 
 <p><code>buf</code> is an automatic variable, allocated on the stack, which
 disappears when the function returns. A corresponding <code>native</code> call
 would be:
 
-<pre><code>
+<pre>
 (%@ "read" 'I Fd '(Buf (4 . I)) 4)
-</code></pre>
+</pre>
 
 <p>The structure argument <code>(Buf (4 . I))</code> says that a space of 4
 bytes should be allocated and passed to <code>read</code>, then an integer
@@ -502,9 +507,9 @@ the main program.)
 <p>Instead of a single integer, we might want a list of four bytes to be
 returned from <code>native</code>:
 
-<pre><code>
+<pre>
 (%@ "read" 'I Fd '(Buf (4 B . 4)) 4)
-</code></pre>
+</pre>
 
 <p>The difference is that we wrote <code>(B . 4)</code> (a list of 4 bytes)
 instead of <code>I</code> (a single integer) for the <a
@@ -514,29 +519,29 @@ href="#structArg">Arrays and Structures</a> section).
 <p>Let's see what happens if we extend this example. We'll write the four bytes
 to another file descriptor, after reading them from the first one:
 
-<pre><code>
+<pre>
 void copy4bytes(int fd1, int fd2) {
    char buf[4];
 
    read(fd1, buf, 4);
    write(fd2, buf, 4);
 }
-</code></pre>
+</pre>
 
 <p>Again, <code>buf</code> is an automatic variable. It is passed to both
 <code>read</code> and <code>write</code>. A direct translation would be:
 
-<pre><code>
+<pre>
 (%@ "read" 'I Fd '(Buf (4 B . 4)) 4)
 (%@ "write" 'I Fd2 (cons NIL (4) Buf) 4)
-</code></pre>
+</pre>
 
 <p>This works as expected. <code>read</code> returns a list of four bytes in
 <code>Buf</code>. The call to <code>cons</code> builds the structure
 
-<pre><code>
+<pre>
 (NIL (4) 1 2 3 4)
-</code></pre>
+</pre>
 
 <p>i.e. no return variable, a four-byte memory area, filled with the four bytes
 (assuming that <code>read</code> returned 1, 2, 3 and 4). Then this structure is
@@ -553,22 +558,22 @@ the raw byte array. The data in the list itself are never used.
 the buffer manually, use it for both reading and writing, and then release it.
 This also avoids all intermediate list conversions.
 
-<pre><code>
+<pre>
 (let Buf (%@ "malloc" 'P 4)  # Allocate memory
    (%@ "read" 'I Fd Buf 4)   # (Possibly repeat this several times)
    (%@ "write" 'I Fd2 Buf 4)
    (%@ "free" NIL Buf) )     # Release memory
-</code></pre>
+</pre>
 
 <p>To allocate such a buffer locally on the stack (just like a C function would
 do), <code><a href="refB.html#buf">buf</a></code> can be used. Equivalent to the
 above is:
 
-<pre><code>
+<pre>
 (buf Buf 4  # Allocate local memory
    (%@ "read" 'I Fd Buf 4)
    (%@ "write" 'I Fd2 Buf 4) )
-</code></pre>
+</pre>
 
 
 <h4><a id="fftw">Fast Fourier Transform</a></h4>
@@ -577,7 +582,7 @@ above is:
 the library from the <a href="http://fftw.org">FFTW</a> package. With the
 example code for calculating Complex One-Dimensional DFTs:
 
-<pre><code>
+<pre>
 #include &lt;fftw3.h&gt;
 ...
 {
@@ -593,11 +598,11 @@ example code for calculating Complex One-Dimensional DFTs:
    fftw_destroy_plan(p);
    fftw_free(in); fftw_free(out);
 }
-</code></pre>
+</pre>
 
 <p>we can build the following equivalent:
 
-<pre><code>
+<pre>
 (load "@lib/math.l")
 
 (de FFTW_FORWARD . -1)
@@ -617,15 +622,15 @@ example code for calculating Complex One-Dimensional DFTs:
          (native "libfftw3.so" "fftw_destroy_plan" NIL P)
          (native "libfftw3.so" "fftw_free" NIL Out)
          (native "libfftw3.so" "fftw_free" NIL In) ) ) )
-</code></pre>
+</pre>
 
 <p>This assumes that the argument list <code>Lst</code> is passed as a list
 of complex numbers, each as a list of two numbers for the real and imaginary
 part, like
 
-<pre><code>
+<pre>
 (fft '((1.0 0) (1.0 0) (1.0 0) (1.0 0) (0 0) (0 0) (0 0) (0 0)))
-</code></pre>
+</pre>
 
 <p>The above translation to Lisp is quite straightforward. After the two buffers
 are allocated, and a plan is created, <code><a
@@ -646,7 +651,7 @@ sense to allocate them only once, before their first use. A typical candidate is
 the format string of a <code>printf</code> call. Consider a function which
 prints a floating point number in scientific notation:
 
-<pre><code>
+<pre>
 (load "@lib/math.l")
 
 : (de prf (Flt)
@@ -655,7 +660,7 @@ prints a floating point number in scientific notation:
 
 : (prf (exp 12.3))
 2.196960e+05
-</code></pre>
+</pre>
 
 
 <p><hr>
@@ -677,15 +682,15 @@ arguments, and must return a number.
 <p>The prerequisite is, of course, that you have access to the C source code. To
 use it from C, insert the following prototype somewhere before the first call:
 
-<pre><code>
+<pre>
 long lisp(char*,long,long,long,long,long);
-</code></pre>
+</pre>
 
 <p>Then you can call <code>lisp</code> from C:
 
-<pre><code>
+<pre>
 long n = lisp("myLispFun", a, b, 0, 0, 0);
-</code></pre>
+</pre>
 
 <p>The first argument should be the name of a Lisp function (built-in, or
 defined in Lisp). It is searched for at runtime, so it doesn't need to exist at
@@ -725,10 +730,10 @@ callback, and passes the resulting function pointer to the OpenGL
 <code>glutMouseFunc()</code> function, to set it as a callback for the current
 window:
 
-<pre><code>
+<pre>
 (de mouseFunc (Fun)
    (native `*GlutLib "glutMouseFunc" NIL (lisp 'mouseFunc Fun)) )
-</code></pre>
+</pre>
 
 <p>(The global <code>*GlutLib</code> holds the library
 <code>"/usr/lib/libglut.so"</code>. The backquote (<code>`</code>) is important
@@ -739,11 +744,11 @@ proper library handle at runtime).
 <p>A program using OpenGL may then use <code>mouseFunc</code> to install a
 function
 
-<pre><code>
+<pre>
 (mouseFunc
    '((Btn State X Y)
       (do-something-with Btn State X Y) ) )
-</code></pre>
+</pre>
 
 <p>so that future clicks into the window will pass the button, state and
 coordinates to that function.

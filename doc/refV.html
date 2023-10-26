@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,14 +22,14 @@ href="refS.html#setq">setq</a></code>, <code><a
 href="refS.html#set">set</a></code> and <code><a
 href="refD.html#def">def</a></code>.
 
-<pre><code>
+<pre>
 : (setq L '(a b c))
 -> (a b c)
 : (val 'L)
 -> (a b c)
 : (val (cdr L))
 -> b
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="val/3"><code>val/3</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that returns the value of an
@@ -35,7 +40,7 @@ href="refG.html#get">get</a></code> algorithm to that object. See also <code><a
 href="refD.html#db/3">db/3</a></code> and <code><a
 href="refS.html#select/3">select/3</a></code>.
 
-<pre><code>
+<pre>
 : (?
    (db nr +Item (2 . 5) @Item)   # Fetch articles 2 through 5
    (val @Nm @Item nm)            # Get item description
@@ -45,7 +50,7 @@ href="refS.html#select/3">select/3</a></code>.
  @Item={B4} @Nm="Enhancement Additive" @Sup="Seven Oaks Ltd."
  @Item={B5} @Nm="Metal Fittings" @Sup="Active Parts Inc."
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="var"><code>(var sym . any) -> any</code></a></dt>
 <dt><code>(var (sym . cls) . any) -> any</code></dt>
@@ -57,7 +62,7 @@ href="ref.html#oop">OO Concepts</a>, <code><a
 href="refR.html#rel">rel</a></code> and <code><a
 href="refV.html#var:">var:</a></code>.
 
-<pre><code>
+<pre>
 : (class +A)
 -> +A
 : (var a . 1)
@@ -69,7 +74,7 @@ href="refV.html#var:">var:</a></code>.
    b 2
    a 1
 -> +A
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="var:"><code>(var: sym) -> any</code></a></dt>
 <dd>Fetches the value of a class variable <code>sym</code> for the current
@@ -81,7 +86,7 @@ href="refM.html#meta">meta</a></code>, <code><a href="ref_.html#:">:</a></code>,
 <code><a href="ref_.html#=:">=:</a></code> and <code><a
 href="ref_.html#::">::</a></code>.
 
-<pre><code>
+<pre>
 : (class +A)
 -> +A
 : (var a . 1)
@@ -92,7 +97,7 @@ href="ref_.html#::">::</a></code>.
 -> O
 : (with 'O (list (: a) (: b) (var: a) (var: b)))
 -> (9 8 1 2)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="version"><code>(version ['flg]) -> lst</code></a></dt>
 <dd>Prints the current version as a string of dot-separated numbers, and returns
@@ -102,12 +107,12 @@ additional "JVM" or "C", respectively, separated by a space. When
 href="refC.html#*CPU">*CPU</a></code> and <code><a
 href="refO.html#*OS">*OS</a></code>.
 
-<pre><code>
+<pre>
 $ pil -version
 15.11.0
 : (version T)
 -> (15 11 0)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="vi"><code>(vi 'sym) -> sym | NIL</code></a></dt>
 <dt><code>(vi 'sym 'cls) -> sym | NIL</code></dt>
@@ -122,11 +127,11 @@ href="refD.html#*Dbg">*Dbg</a></code>, <code><a
 href="refD.html#debug">debug</a></code> and <code><a
 href="refP.html#pp">pp</a></code>.
 
-<pre><code>
+<pre>
 : (vi 'put> '+Entity)  # Edit the method's source code
 : (v {1})  # In-memory-edit the database root object
 -> put>
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="view"><code>(view 'lst ['T]) -> any</code></a></dt>
 <dd>Views <code>lst</code> as tree-structured ASCII graphics. When the
@@ -136,7 +141,7 @@ is then shown as a left-rotated tree. See also <code><a
 href="refP.html#pretty">pretty</a></code> and <code><a
 href="refS.html#show">show</a></code>.
 
-<pre><code>
+<pre>
 : (balance 'I '(a b c d e f g h i j k l m n o))
 -> NIL
 : I
@@ -191,7 +196,7 @@ h
       b
          a
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

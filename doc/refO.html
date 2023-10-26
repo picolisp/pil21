@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -15,8 +20,8 @@
 <dd>Holds an <code><a href="refI.html#idx">idx</a></code> tree of objects
 created by <code><a href="refO.html#obj">obj</a></code>.
 
-<pre><code>
-</code></pre></dd>
+<pre>
+</pre></dd>
 
 <dt><a id="*Once"><code>*Once</code></a></dt>
 <dd>Holds an <code><a href="refI.html#idx">idx</a></code> tree of already
@@ -24,10 +29,10 @@ created by <code><a href="refO.html#obj">obj</a></code>.
 by <code><a href="refF.html#file">file</a></code>) See also <code><a
 href="refO.html#once">once</a></code>.
 
-<pre><code>
+<pre>
 : *Once
 -> (("lib/" "misc.l" . 11) (("lib/" "http.l" . 9) (("lib/" "form.l" . 11))))
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="*OS"><code>*OS</code></a></dt>
 <dd>A global constant holding the name of the operating system. Possible values
@@ -36,10 +41,10 @@ include <code>"Linux"</code>, <code>"Android"</code>, <code>"FreeBSD"</code>,
 <code>"Cygwin"</code>. See also <code><a href="refC.html#*CPU">*CPU</a></code>
 and <code><a href="refV.html#version">version</a></code>.
 
-<pre><code>
+<pre>
 : *OS
 -> "Linux"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="obj"><code>(obj (typ sym [hook] val ..) [var1 val1 ..]) -> obj</code></a></dt>
 <dt><code>(obj typ any [var1 val1 ..]) -> obj</code></dt>
@@ -51,10 +56,10 @@ href="refC.html#cache">cache</a></code> to maintain objects without unique
 <code><a href="refK.html#+Key">+Key</a></code>s by indexing <code><a
 href="refO.html#*ObjIdx">*ObjIdx</a></code> with the <code>any</code> argument.
 
-<pre><code>
+<pre>
 : (obj ((+Item) nr 2) nm "Spare Part" sup `(db 'nr '+CuSu 2) inv 100 pr 1250)
 -> {B2}
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="object"><code>(object 'sym 'any ['sym2 'any2 ..]) -> obj</code></a></dt>
 <dd>Defines <code>sym</code> to be an object with the value (or type)
@@ -64,7 +69,7 @@ href="refN.html#new">new</a></code>, <code><a
 href="refT.html#type">type</a></code> and <code><a
 href="refI.html#isa">isa</a></code>.
 
-<pre><code>
+<pre>
 : (object 'Obj '(+A +B +C) 'a 1 'b 2 'c 3)
 -> Obj
 : (show 'Obj)
@@ -73,7 +78,7 @@ Obj (+A +B +C)
    b 2
    a 1
 -> Obj
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="oct"><code>(oct 'num ['num]) -> sym</code></a></dt>
 <dt><code>(oct 'sym) -> num</code></dt>
@@ -85,14 +90,14 @@ href="refH.html#hex">hex</a></code>, <code><a
 href="refH.html#hax">hax</a></code> and <code><a
 href="refF.html#format">format</a></code>.
 
-<pre><code>
+<pre>
 : (oct 73)
 -> "111"
 : (oct "111")
 -> 73
 : (oct 1234567 3)
 -> "4 553 207"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="off"><code>(off var ..) -> NIL</code></a></dt>
 <dd>Stores <code>NIL</code> in all <code>var</code> arguments. See also <code><a
@@ -101,14 +106,14 @@ href="refO.html#onOff">onOff</a></code>, <code><a
 href="refZ.html#zero">zero</a></code> and <code><a
 href="refO.html#one">one</a></code>.
 
-<pre><code>
+<pre>
 : (off A B)
 -> NIL
 : A
 -> NIL
 : B
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="offset"><code>(offset 'lst1 'lst2) -> cnt | NIL</code></a></dt>
 <dd>Returns the <code>cnt</code> position of the tail list <code>lst1</code> in
@@ -117,12 +122,12 @@ href="refI.html#index">index</a></code>, <code><a
 href="refS.html#sub?">sub?</a></code> and <code><a
 href="refT.html#tail">tail</a></code>.
 
-<pre><code>
+<pre>
 : (offset '(c d e f) '(a b c d e f))
 -> 3
 : (offset '(c d e) '(a b c d e f))
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="on"><code>(on var ..) -> T</code></a></dt>
 <dd>Stores <code>T</code> in all <code>var</code> arguments. See also <code><a
@@ -131,14 +136,14 @@ href="refO.html#onOff">onOff</a></code>, <code><a
 href="refZ.html#zero">zero</a></code> and <code><a
 href="refO.html#one">one</a></code>.
 
-<pre><code>
+<pre>
 : (on A B)
 -> T
 : A
 -> T
 : B
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="once"><code>(once . prg) -> any</code></a></dt>
 <dd>Executes <code>prg</code> once, when the current file is <code><a
@@ -147,13 +152,13 @@ later time will not execute <code>prg</code>, and <code>once</code> returns
 <code>NIL</code>. See also <code><a href="refO.html#*Once">*Once</a></code> and
 <code><a href="refF.html#finish">finish</a></code>.
 
-<pre><code>
+<pre>
 (once
    (zero *Cnt1 *Cnt2)  # Init counters
    (load "file1.l" "file2.l") )  # Load other files
 
 `(once T)  # Ignore next time the rest of this file
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="one"><code>(one var ..) -> 1</code></a></dt>
 <dd>Stores <code>1</code> in all <code>var</code> arguments. See also <code><a
@@ -161,14 +166,14 @@ href="refZ.html#zero">zero</a></code>, <code><a
 href="refO.html#on">on</a></code>, <code><a href="refO.html#off">off</a></code>
 and <code><a href="refO.html#onOff">onOff</a></code>.
 
-<pre><code>
+<pre>
 : (one A B)
 -> 1
 : A
 -> 1
 : B
 -> 1
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="onOff"><code>(onOff var ..) -> flg</code></a></dt>
 <dd>Logically negates the values of all <code>var</code> arguments. Returns the
@@ -177,7 +182,7 @@ href="refO.html#on">on</a></code>, <code><a href="refO.html#off">off</a></code>,
 <code><a href="refZ.html#zero">zero</a></code> and <code><a
 href="refO.html#one">one</a></code>.
 
-<pre><code>
+<pre>
 : (onOff A B)
 -> T
 : A
@@ -190,7 +195,7 @@ href="refO.html#one">one</a></code>.
 -> NIL
 : B
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="open"><code>(open 'any ['flg]) -> cnt | NIL</code></a></dt>
 <dd>Opens the file with the name <code>any</code> in read/write mode (or
@@ -205,10 +210,10 @@ href="refO.html#out">out</a></code>. See also <code><a
 href="refC.html#close">close</a></code> and <code><a
 href="refP.html#poll">poll</a></code>.
 
-<pre><code>
+<pre>
 : (open "x")
 -> 3
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="opid"><code>(opid) -> pid | NIL</code></a></dt>
 <dd>Returns the corresponding process ID when the current output channel is
@@ -216,12 +221,12 @@ writing to a pipe, otherwise <code>NIL</code>. See also <code><a
 href="refI.html#ipid">ipid</a></code> and <code><a
 href="refO.html#out">out</a></code>.
 
-<pre><code>
+<pre>
 : (out '(cat) (call 'ps "-p" (opid)))
   PID TTY          TIME CMD
  7127 pts/3    00:00:00 cat
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="opt"><code>(opt) -> sym</code></a></dt>
 <dd>Return the next command line argument ("option", as would be processed by
@@ -230,10 +235,10 @@ the remaining command line arguments. See also <a
 href="ref.html#invoc">Invocation</a> and <code><a
 href="refA.html#argv">argv</a></code>.
 
-<pre><code>
+<pre>
 $ pil  -"de f () (println 'opt (opt))"  -f abc  -bye
 opt "abc"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="or"><code>(or 'any ..) -> any</code></a></dt>
 <dd>Logical OR. The expressions <code>any</code> are evaluated from left to
@@ -243,27 +248,27 @@ immediately. Else the result of the last expression is returned. See also
 href="refA.html#and">and</a></code> and <code><a
 href="refU.html#unless">unless</a></code>.
 
-<pre><code>
+<pre>
 : (or (= 3 3) (read))
 -> T
 : (or (= 3 4) (read))
 abc
 -> abc
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="or/2"><code>or/2</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that takes an arbitrary number
 of clauses, and succeeds if one of them can be proven. See also <code><a
 href="refN.html#not/1">not/1</a></code>.
 
-<pre><code>
+<pre>
 : (?
    (or
       ((equal 3 @X) (equal @X 4))
       ((equal 7 @X) (equal @X 7)) ) )
  @X=7
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="out"><code>(out 'any . prg) -> any</code></a></dt>
 <dd>Opens <code>any</code> as output channel during the execution of
@@ -288,12 +293,12 @@ href="refP.html#poll">poll</a></code>, <code> <a
 href="refC.html#close">close</a></code> and <code><a
 href="refL.html#load">load</a></code>.
 
-<pre><code>
+<pre>
 : (out "a" (println 123 '(a b c) 'def))  # Write one line to file "a"
 -> def
 : (out '(lpr) (prinl "Hello"))  # Send line to line printer
 -> "Hello"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="output"><code>(output exe . prg) -> any</code></a></dt>
 <dd>Establishes an output stream, by redirecting the current output channel
@@ -307,7 +312,7 @@ look-ahead). See also <code><a href="refI.html#input">input</a></code>, <code><a
 href="refO.html#out">out</a></code> and <code><a
 href="refP.html#pipe">pipe</a></code>.
 
-<pre><code>
+<pre>
 : (output (prin (uppc @@)) (prinl "abc"))
 ABC
 -> "abc"
@@ -328,7 +333,7 @@ ABC
             (while L
                (ext:Base64 (++ L) (++ L) (++ L)) ) ) ) ) )
 -> "AQIDBAUGBw=="
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

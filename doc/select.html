@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -59,10 +64,10 @@ on a concrete example.
 <a href="http://software-lab.de/demoApp.tgz">demoApp.tgz</a>). To get an
 interactive prompt, start it as
 
-<pre><code>
+<pre>
 $ pil app/main.l -ap~main +
 :
-</code></pre>
+</pre>
 
 <p>As ever, you can terminate the interpreter by hitting <code>Ctrl-D</code>.
 
@@ -71,7 +76,7 @@ href="refS.html#solve">solve</a> that returns a list of articles with numbers
 between 1 and 4, which contain "Part" in their description, and have a price
 less than 100:
 
-<pre><code>
+<pre>
 (let (Nr (1 . 4)  Nm "Part"  Pr '(NIL . 100.00))
    (solve
       (quote
@@ -84,7 +89,7 @@ less than 100:
                (part @Nm @Item nm)
                (range @Pr @Item pr) ) )
       @Item ) )
-</code></pre>
+</pre>
 
 <p>This expression will return, with the default database setup of "app/init.l",
 a list of exactly one item <code>({B2})</code>, the item with the number 2.
@@ -100,23 +105,23 @@ hundred.
 
 <p>The list of unification variables is
 
-<pre><code>
+<pre>
    <code>(@Item)</code>
-</code></pre>
+</pre>
 
 <p>The list of generator clauses is
 
-<pre><code>
+<pre>
       ((nr +Item @Nr) (nm +Item @Nm) (pr +Item @Pr))
-</code></pre>
+</pre>
 
 <p>The filter clauses are
 
-<pre><code>
+<pre>
          (range @Nr @Item nr)
          (part @Nm @Item nm)
          (range @Pr @Item pr)
-</code></pre>
+</pre>
 
 
 <p><hr>
@@ -163,19 +168,19 @@ probability. "Successful" means that the returned values successfully pass
 href="refD.html#db/3">db/3</a></code> predicate, stepping through a single
 B-Tree. The clause
 
-<pre><code>
+<pre>
 (nr +Item @Nr)
-</code></pre>
+</pre>
 
 <p>generates the same values as would be produced by a stand-alone Pilog clause
 
-<pre><code>
+<pre>
 (db nr +Item @Nr @Item)
-</code></pre>
+</pre>
 
 <p>as can be seen in the following two calls:
 
-<pre><code>
+<pre>
 : (? (db nr +Item (1 . 4) @Item))
  @Item={B1}
  @Item={B2}
@@ -188,7 +193,7 @@ B-Tree. The clause
  @Item={B3}
  @Item={B4}
 -> NIL
-</code></pre>
+</pre>
 
 
 <p><hr>
@@ -222,17 +227,17 @@ one. Then the clause is written actually as a list of clauses.
 
 <p>For example, a generator clause to search for a customer by phone number is
 
-<pre><code>
+<pre>
 (tel +CuSu @Tel)
-</code></pre>
+</pre>
 
 If we want to search for a customer without knowing whether a given number is a
 normal or a mobile phone number, then a combined generator clause searching both
 index trees could look like
 
-<pre><code>
+<pre>
 ((tel +CuSu @Tel  mob +CuSu @Tel))
-</code></pre>
+</pre>
 
 <p>The generator will first traverse all matching entries in the <code><a
 href="refR.html#+Ref">+Ref</a></code> tree of the <code>tel</code> relation, and
@@ -277,14 +282,14 @@ implements the search dialog for <code>+Ord</code> (order) objects. Orders can
 be searched for order number and date, customer name and city, item description
 and supplier name:
 
-<pre><code>
+<pre>
 (select (@@)
    ((nr +Ord @Nr) (dat +Ord @Dat)
       (nm +CuSu @Cus (cus +Ord))
       (ort +CuSu @Ort (cus +Ord))
       (nm +Item @Item (itm +Pos) ord)
       (nm +CuSu @Sup (sup +Item) (itm +Pos) ord) )
-</code></pre>
+</pre>
 
 <p>While <code>(nr +Ord @Nr)</code> and <code>(dat +Ord @Dat)</code> are direct
 index traversals, <code>(nm +CuSu @Cus (cus +Ord))</code> iterates the
@@ -329,19 +334,19 @@ section.
 <p>We can illustrate this with a somewhat useless (but simple) example, which
 replaces the standard generators for item number and supplier name
 
-<pre><code>
+<pre>
 (select (@Item)
    ((nr +Item @Nr) (nm +CuSu @Sup (sup +Item)))
    ...
-</code></pre>
+</pre>
 
 <p>with the equivalent form
 
-<pre><code>
+<pre>
 (select (@Item)
    ((@A (@Nr) ((db nr +Item @Nr @A)))
       (@B (@Sup) ((db nm +CuSu @Sup @B)) (sup +Item)) )
-</code></pre>
+</pre>
 
 <p>That is, a query with the <code><a href="refD.html#db/3">db/3</a></code> tree
 iteration predicate is used to generate appropriate values.
@@ -389,28 +394,28 @@ number in the variable <code>@Nr</code> and the date range for the year in
 
 <p>Now, all positions referred by item #2 can be found by the generator clause
 
-<pre><code>
+<pre>
 (nr +Item @Nr (itm +Pos))
-</code></pre>
+</pre>
 
 <p>and all positions sold in 2007 can be found by
 
-<pre><code>
+<pre>
 (dat +Ord @Year pos)
-</code></pre>
+</pre>
 
 <p>However, the combination of both generator clauses
 
-<pre><code>
+<pre>
 (select (@Pos)
    ((nr +Item @Nr (itm +Pos)) (dat +Ord @Year pos)) )
-</code></pre>
+</pre>
 
 <p>will probably generate too many results, namely all positions with item #2
 <u>OR</u> from the year 2007. Thus, we need two filter clauses. With them, the
 full search expression will be:
 
-<pre><code>
+<pre>
 (?
    @Nr 2                                                 # Item number
    @Year (cons (date 2007 1 1) (date 2007 12 31))        # Date range 2007
@@ -418,11 +423,11 @@ full search expression will be:
       ((nr +Item @Nr (itm +Pos)) (dat +Ord @Year pos))   # Generator clauses
       (same @Nr @Pos itm nr)                             # Filter item number
       (range @Year @Pos ord dat) ) )                     # Filter order date
-</code></pre>
+</pre>
 
 <p>For completeness, let's calculate the total count of sold items:
 
-<pre><code>
+<pre>
 (let Cnt 0     # Counter variable
    (pilog
       (quote
@@ -434,7 +439,7 @@ full search expression will be:
             (range @Year @Pos ord dat) ) )
       (inc 'Cnt (get @Pos 'cnt)) )  # Increment total count
    Cnt )  # Return count
-</code></pre>
+</pre>
 
 
 <p><hr>

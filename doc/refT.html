@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,10 +28,10 @@ href="refW.html#*Winch">*Winch</a></code>, <code><a
 href="refS.html#*Sig1">*Sig[12]</a></code> and <code><a
 href="refT.html#*TStp1">*TStp[12]</a></code>.
 
-<pre><code>
+<pre>
 : (de *Term (msg 'SIGTERM) T)
 -> *Term
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="*TStp1"><code>*TStp1</code></a></dt>
 <dt><a id="*TStp2"><code>*TStp2</code></a></dt>
@@ -40,24 +45,24 @@ href="refW.html#*Winch">*Winch</a></code>, <code><a
 href="refS.html#*Sig1">*Sig[12]</a></code> and <code><a
 href="refT.html#*Term">*Term</a></code>.
 
-<pre><code>
+<pre>
 : (de *TStp1 (msg 'SIGTSTP))
 -> *TStp1
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="*Tmp"><code>*Tmp</code></a></dt>
 <dd>A global variable holding the temporary directory name created with <code><a
 href="refT.html#tmp">tmp</a></code>. See also <code><a
 href="refB.html#*Bye">*Bye</a></code>.
 
-<pre><code>
+<pre>
 : *Bye
 -> ((saveHistory) (and *Tmp (call 'rm "-r" *Tmp)))
 : (tmp "foo" 123)
 -> "/home/app/.pil/tmp/27140/foo123"
 : *Tmp
 -> "/home/app/.pil/tmp/27140/"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="+Time"><code>+Time</code></a></dt>
 <dd>Class for clock time values (as calculated by <code><a
@@ -65,9 +70,9 @@ href="refT.html#time">time</a></code>), a subclass of <code><a
 href="refN.html#+Number">+Number</a></code>. See also <a
 href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 (rel tim (+Time))  # Time of the day
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="T"><code>T</code></a></dt>
 <dd>A global constant, evaluating to itself. <code>T</code> is commonly returned
@@ -78,14 +83,14 @@ href="ref.html#pilog">Pilog</a> clauses, and inside Pilog clauses it is the
 <i>cut</i> operator. See also <code><a href="ref.html#nilSym">NIL</a></code> and
 and <a href="ref.html#cmp">Comparing</a>.
 
-<pre><code>
+<pre>
 : T
 -> T
 : (= 123 123)
 -> T
 : (get 'not T)
 -> ((@P (1 @P) T (fail)) (@P))
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="This"><code>This</code></a></dt>
 <dd>Holds the current object during method execution (see <a
@@ -97,7 +102,7 @@ href="refI.html#isa">isa</a></code>, <code><a href="ref_.html#:">:</a></code>,
 href="ref_.html#::">::</a></code> and <code><a
 href="refV.html#var:">var:</a></code>.
 
-<pre><code>
+<pre>
 : (with 'X (println 'This 'is This))
 This is X
 -> X
@@ -111,7 +116,7 @@ This is X
 -> 222
 : (mapcar '((This) (cons (: a) (: b))) '(X Y))
 -> ((1 . 2) (111 . 222))
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="t"><code>(t . prg) -> T</code></a></dt>
 <dd>Executes <code>prg</code>, and returns <code>T</code>. See also <code><a
@@ -120,11 +125,11 @@ href="refP.html#prog">prog</a></code>, <code><a
 href="refP.html#prog1">prog1</a></code> and <code><a
 href="refP.html#prog2">prog2</a></code>.
 
-<pre><code>
+<pre>
 : (t (println 'OK))
 OK
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="tab"><code>(tab 'lst 'any ..) -> NIL</code></a></dt>
 <dd>Print all <code>any</code> arguments in a tabular format. <code>lst</code>
@@ -134,7 +139,7 @@ right-aligned. See also <code><a href="refA.html#align">align</a></code>,
 <code><a href="refC.html#center">center</a></code> and <code><a
 href="refW.html#wrap">wrap</a></code>.
 
-<pre><code>
+<pre>
 : (let Fmt (-3 14 14)
    (tab Fmt "Key" "Rand 1" "Rand 2")
    (tab Fmt "---" "------" "------")
@@ -149,7 +154,7 @@ D       553475508   -1702133896
 E      1344887256   -1417066392
 F      1812158119   -1999783937
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="tail"><code>(tail 'cnt|lst 'lst) -> lst</code></a></dt>
 <dd>Returns the last <code>cnt</code> elements of <code>lst</code>. If
@@ -163,7 +168,7 @@ href="refH.html#head">head</a></code>, <code><a
 href="refL.html#last">last</a></code> and <code><a
 href="refS.html#stem">stem</a></code>.
 
-<pre><code>
+<pre>
 : (tail 3 '(a b c d e f))
 -> (d e f)
 : (tail -2 '(a b c d e f))
@@ -174,7 +179,7 @@ href="refS.html#stem">stem</a></code>.
 -> (a b c d e f)
 : (tail '(d e f) '(a b c d e f))
 -> (d e f)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="task"><code>(task 'num ['num] [sym 'any ..] [. prg]) -> lst</code></a></dt>
 <dd>A front-end to the <code><a href="refR.html#*Run">*Run</a></code> global. If
@@ -187,7 +192,7 @@ is built for the <code>*Run</code> entry. See also <code><a
 href="refT.html#tasks">tasks</a></code> and <code><a
 href="refT.html#timeout">timeout</a></code>.
 
-<pre><code>
+<pre>
 : (task -10000 5000 N 0 (tty (println (inc 'N))))  # Install task for every 10 seconds
 -> (-10000 5000 (job '((N . 0)) (tty (println (inc 'N)))))
 : 1                                                # ... after 5 seconds
@@ -202,7 +207,7 @@ href="refT.html#timeout">timeout</a></code>.
 # Another session (on the same machine)
 : (udp "localhost" 4444 '(println *Pid))  # Send RPC message
 -> (println *Pid)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="tasks"><code>(tasks . prg)</code></a></dt>
 <dd>Runs a <code><a href="refT.html#task">task</a></code> with variable event
@@ -213,7 +218,7 @@ iteration. The first value must be a timeout. A value of <code>NIL</code>
 removes the task. Uses <code>-2</code> as implicit key. See also <code><a
 href="refT.html#timeout">timeout</a></code>.
 
-<pre><code>
+<pre>
 (tasks  # Three iterations with varying timeout
    (let X (pop '(((-1000 . a) (-4000 . b) (-1000 . c))))
       (tty (println (cdr X)))
@@ -230,7 +235,7 @@ href="refT.html#timeout">timeout</a></code>.
                   (pipe (exec "sh" "-c" "sleep 2; echo 7")) ) )
             (tty (println (in S (read))))
             (close S) ) ) ) )
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="telStr"><code>(telStr 'sym) -> sym</code></a></dt>
 <dd>Formats a telephone number according to the current <code><a
@@ -242,14 +247,14 @@ href="refD.html#datStr">datStr</a></code>, <code><a
 href="refM.html#money">money</a></code> and <code><a
 href="refF.html#format">format</a></code>.
 
-<pre><code>
+<pre>
 : (telStr "49 1234 5678-0")
 -> "+49 1234 5678-0"
 : (locale "DE" "de")
 -> NIL
 : (telStr "49 1234 5678-0")
 -> "01234 5678-0"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="tell"><code>(tell ['cnt] 'sym ['any ..]) -> any</code></a></dt>
 <dd>Family IPC: Send an executable list <code>(sym any ..)</code> to all family
@@ -267,7 +272,7 @@ PIPE_BUF. See also <code><a href="refK.html#kids">kids</a></code>, <code><a
 href="refD.html#detach">detach</a></code> and <code><a
 href="refH.html#hear">hear</a></code>.
 
-<pre><code>
+<pre>
 : (call 'ps "x")                          # Show processes
   PID TTY      STAT   TIME COMMAND
   ..
@@ -281,7 +286,7 @@ href="refH.html#hear">hear</a></code>.
 : (tell 'println '*Pid)                   # Ask all others to print their Pid's
 1324
 -> *Pid
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="test"><code>(test 'any . prg)</code></a></dt>
 <dd>Executes <code>prg</code>, and issues an <code><a
@@ -289,14 +294,14 @@ href="ref.html#errors">error</a></code> if the result does not <code><a
 href="refM.html#match">match</a></code> the <code>any</code> argument. See also
 <code><a href="refA.html#assert">assert</a></code>.
 
-<pre><code>
+<pre>
 : (test 12 (* 3 4))
 -> NIL
 : (test 12 (+ 3 4))
 ((+ 3 4))
 12 -- 'test' failed
 ?
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="text"><code>(text 'any1 'any ..) -> sym</code></a></dt>
 <dd>Builds a new transient symbol (string) from the string representation of
@@ -308,12 +313,12 @@ argument. A literal at-mark in the text can be represented by two successive
 at-marks. See also <code><a href="refP.html#pack">pack</a></code> and <code><a
 href="refG.html#glue">glue</a></code>.
 
-<pre><code>
+<pre>
 : (text "abc @1 def @2" 'XYZ 123)
 -> "abc XYZ def 123"
 : (text "a@@bc.@1" "de")
 -> "a@bc.de"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="throw"><code>(throw 'sym 'any)</code></a></dt>
 <dd>Non-local jump into a previous <code><a
@@ -326,7 +331,7 @@ corresponding <code>catch</code> was called. Then <code>any</code> is returned
 from that <code>catch</code>. See also <code><a
 href="refQ.html#quit">quit</a></code>.
 
-<pre><code>
+<pre>
 : (de foo (N)
    (println N)
    (throw 'OK) )
@@ -335,7 +340,7 @@ href="refQ.html#quit">quit</a></code>.
 7
 1
 -> 1
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="till"><code>(till 'any ['flg]) -> lst|sym</code></a></dt>
 <dd>Reads from the current input channel till a character contained in
@@ -345,14 +350,14 @@ single-character transient symbols is returned. Otherwise, a single string is
 returned. See also <code><a href="refF.html#from">from</a></code> and <code><a
 href="refL.html#line">line</a></code>.
 
-<pre><code>
+<pre>
 : (till ":")
 abc:def
 -> ("a" "b" "c")
 : (till ":" T)
 abc:def
 -> "abc"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="tim$"><code>(tim$ 'tim ['flg]) -> sym</code></a></dt>
 <dd>Formats a <code><a href="refT.html#time">time</a></code> <code>tim</code>.
@@ -360,12 +365,12 @@ If <code>flg</code> is <code>NIL</code>, the format is HH:MM, otherwise it is
 HH:MM:SS. See also <code><a href="ref_.html#$tim">$tim</a></code> and <code><a
 href="refD.html#dat$">dat$</a></code>.
 
-<pre><code>
+<pre>
 : (tim$ (time))
 -> "10:57"
 : (tim$ (time) T)
 -> "10:57:56"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="time"><code>(time ['T]) -> tim</code></a></dt>
 <dt><code>(time 'tim) -> (h m s)</code></dt>
@@ -386,14 +391,14 @@ href="refU.html#usec">usec</a></code>, <code><a
 href="refT.html#tim$">tim$</a></code> and <code><a
 href="ref_.html#$tim">$tim</a></code>.
 
-<pre><code>
+<pre>
 : (time)                         # Now
 -> 32334
 : (time 32334)                   # Now
 -> (8 58 54)
 : (time 12 70)                   # Illegal time
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="timeout"><code>(timeout ['num])</code></a></dt>
 <dd>Sets or refreshes a timeout value in the <code><a
@@ -402,12 +407,12 @@ executes <code><a href="refB.html#bye">bye</a></code> after the given period. If
 called without arguments, the timeout is removed. Uses <code>-1</code> as
 implicit key. See also <code><a href="refT.html#task">task</a></code>.
 
-<pre><code>
+<pre>
 : (timeout 3600000)           # Timeout after one hour
 -> (-1 3600000 (bye))
 : *Run                        # Look after a few seconds
 -> ((-1 3574516 (bye)))
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="tmp"><code>(tmp ['any ..]) -> sym</code></a></dt>
 <dd>Returns the path name to the <code><a
@@ -421,7 +426,7 @@ href="refP.html#pil">pil</a></code>, <code><a
 href="refT.html#*Tmp">*Tmp</a></code> and <code><a
 href="refB.html#*Bye">*Bye</a></code> .
 
-<pre><code>
+<pre>
 : *Pid
 -> 27140
 : (tmp "foo" 123)
@@ -432,7 +437,7 @@ href="refB.html#*Bye">*Bye</a></code> .
 -> ("foo123")
 : (in (tmp "foo" 123) (read))
 -> OK
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="tolr/3"><code>tolr/3</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the first
@@ -450,7 +455,7 @@ href="refH.html#head/3">head/3</a></code>, <code><a
 href="refF.html#fold/3">fold/3</a></code> and <code><a
 href="refP.html#part/3">part/3</a></code>.
 
-<pre><code>
+<pre>
 : (?
    @Nr (1 . 5)
    @Nm "Sven"
@@ -460,7 +465,7 @@ href="refP.html#part/3">part/3</a></code>.
       (tolr @Nm @CuSu nm) )
    (val @Name @CuSu nm) )
  @Nr=(1 . 5) @Nm="Sven" @CuSu={C2} @Name="Seven Oaks Ltd."
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="touch"><code>(touch 'sym) -> sym</code></a></dt>
 <dd>When <code>sym</code> is an external symbol, it is marked as "modified" so
@@ -469,14 +474,14 @@ written to the database file. An explicit call of <code>touch</code> is only
 necessary when the value or properties of <code>sym</code> are indirectly
 modified.
 
-<pre><code>
+<pre>
 : (get '{2} 'lst)
 -> (1 2 3 4 5)
 : (set (cdr (get (touch '{2}) 'lst)) 999)    # Only read-access, need 'touch'
 -> 999
 : (get '{2} 'lst)                            # Modified second list element
 -> (1 999 3 4 5)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="trace"><code>(trace 'sym)</code></a></dt>
 <dt><code>(trace 'sym 'cls)</code></dt>
@@ -493,27 +498,27 @@ href="refU.html#untrace">untrace</a></code>, <code><a
 href="refD.html#debug">debug</a></code> and <code><a
 href="refL.html#lint">lint</a></code>.
 
-<pre><code>
+<pre>
 : (trace '+)
 -> +
 : (+ 3 4)
  + : 3 4
  + = 7
 -> 7
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="-trace"><code>(-trace)</code></a></dt>
 <dd>(Debug mode only) Command line frontend to <code><a
 href="refT.html#trace">trace</a></code>. See also <code><a
 href="refD.html#-debug">-debug</a></code>.
 
-<pre><code>
+<pre>
 $ ./pil --trace append +
 : (append (1 2 3) (4 5 6))
  append : (1 2 3) (4 5 6)
  append = (1 2 3 4 5 6)
 -> (1 2 3 4 5 6)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="traceAll"><code>(traceAll ['lst]) -> sym</code></a></dt>
 <dd>(Debug mode only) Traces all Lisp level functions by inserting a <code><a
@@ -524,10 +529,10 @@ symbols in the global variable <code>*NoTrace</code> are excluded. See also
 href="refU.html#untrace">untrace</a></code> and <code><a
 href="refD.html#*Dbg">*Dbg</a></code>.
 
-<pre><code>
+<pre>
 : (traceAll)      # Trace all Lisp level functions
 -> balance
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="trail"><code>(trail ['flg]) -> lst</code></a></dt>
 <dd>Returns a stack backtrace for the current point of program execution. The
@@ -538,7 +543,7 @@ expressions are returned. See also <code><a href="refB.html#bt">bt</a></code>,
 <code><a href="refU.html#up">up</a></code> and <code><a
 href="refE.html#env">env</a></code>.
 
-<pre><code>
+<pre>
 : (de f (A B)
    (g (inc A) (dec B)) )
 -> f
@@ -547,7 +552,7 @@ href="refE.html#env">env</a></code>.
 -> g
 : (f 3 4)
 -> ((f 3 4) A 3 B 4 (g (inc A) (dec B)) X 4 Y 3)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="tree"><code>(tree 'sym 'cls ['hook]) -> tree</code></a></dt>
 <dd>Returns a data structure specifying a database index tree. <code>sym</code>
@@ -567,32 +572,32 @@ href="refP.html#prune">prune</a></code>, <code><a
 href="refZ.html#zapTree">zapTree</a></code> and <code><a
 href="refC.html#chkTree">chkTree</a></code>.
 
-<pre><code>
+<pre>
 : (tree 'nm '+Item)
 -> (nm . +Item)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="trim"><code>(trim 'lst) -> lst</code></a></dt>
 <dd>Returns a copy of <code>lst</code> with all trailing whitespace characters
 or <code>NIL</code> elements removed. See also <code><a
 href="refC.html#clip">clip</a></code>.
 
-<pre><code>
+<pre>
 : (trim (1 NIL 2 NIL NIL))
 -> (1 NIL 2)
 : (trim '(a b " " " "))
 -> (a b)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="true/0"><code>true/0</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that always succeeds. See also
 <code><a href="refF.html#fail/0">fail/0</a></code> and <code><a
 href="refR.html#repeat/0">repeat/0</a></code>.
 
-<pre><code>
+<pre>
 :  (? (true))
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="try"><code>(try 'msg 'obj ['any ..]) -> any</code></a></dt>
 <dd>Tries to send the message <code>msg</code> to the object <code>obj</code>,
@@ -606,12 +611,12 @@ href="refM.html#meth">meth</a></code>, <code><a
 href="refS.html#super">super</a></code> and <code><a
 href="refE.html#extra">extra</a></code>.
 
-<pre><code>
+<pre>
 : (try 'msg> 123)
 -> NIL
 : (try 'html> 'a)
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="tty"><code>(tty . prg) -> any</code></a></dt>
 <dd>Redirects the current output channel to the terminal (stderr) during the
@@ -619,14 +624,14 @@ execution of <code>prg</code>. The current output channel and the state of
 <code>readline(3)</code> will be saved and restored appropriately. See also
 <code><a href="refO.html#out">out</a></code>.
 
-<pre><code>
+<pre>
 : (task -2000 0 (tty (println (inc (0)))))
 -> (-2000 0 (tty (println (inc (0)))))
 1
 2
 3
 : (* 3 4)  # Typed while numbers are printed
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="type"><code>(type 'any) -> lst</code></a></dt>
 <dd>Return the type (list of classes) of the object <code>sym</code>. See also
@@ -636,12 +641,12 @@ href="refC.html#class">class</a></code>, <code><a
 href="refN.html#new">new</a></code> and <code><a
 href="refO.html#object">object</a></code>.
 
-<pre><code>
+<pre>
 : (type '{1A;3})
 (+Address)
 : (type '+DnButton)
 -> (+Tiny +Rid +JS +Able +Button)
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

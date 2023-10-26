@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,9 +26,9 @@ with the <code><a href="refS.html#+Sn">+Sn</a></code> soundex index, or the
 <code><a href="refF.html#+Fold">+Fold</a></code> index prefix classes. See also
 <a href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 (rel nm (+Sn +Idx +String))  # Name
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="+IdxFold"><code>+IdxFold</code></a></dt>
 <dd>Prefix class for maintaining non-unique indexes to subsequent substrings of
@@ -33,9 +38,9 @@ arguments for the minimally indexed substring length (defaults to 3), and a
 <code><a href="refH.html#+Hook">+Hook</a></code> attribute. See also <code><a
 href="refI.html#+Idx">+Idx</a></code> and <a href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 (rel nm (+IdxFold +String))            # Item Description
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="+index"><code>+index</code></a></dt>
 <dd>Abstract base class of all database B-Tree index relations (prefix classes
@@ -46,9 +51,9 @@ href="refI.html#+Idx">+Idx</a></code> and <code><a
 href="refI.html#+IdxFold">+IdxFold</a></code>. See also <a
 href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 (isa '+index Rel)  # Check for an index relation
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="id"><code>(id 'num ['num]) -> sym</code></a></dt>
 <dt><code>(id 'sym [NIL]) -> num</code></dt>
@@ -56,7 +61,7 @@ href="ref.html#dbase">Database</a>.
 <dd>Converts one (the internal block number) or two (file and block) numbers to
 an external symbol, or an external symbol to a number or a pair of numbers.
 
-<pre><code>
+<pre>
 : (id 7)
 -> {7}
 : (id 1 2)
@@ -65,7 +70,7 @@ an external symbol, or an external symbol to a number or a pair of numbers.
 -> 2
 : (id '{A2} T)
 -> (2 . 2)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="idx"><code>(idx 'var 'any 'flg) -> lst</code></a></dt>
 <dt><code>(idx 'var 'any) -> lst</code></dt>
@@ -93,7 +98,7 @@ href="refS.html#sort">sort</a></code>, <code><a
 href="refB.html#balance">balance</a></code> and <code><a
 href="refM.html#member">member</a></code>.
 
-<pre><code>
+<pre>
 : (idx 'X 'd T)                              # Insert data
 -> NIL
 : (idx 'X 2 T)
@@ -151,7 +156,7 @@ href="refM.html#member">member</a></code>.
    2
       1
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="if"><code>(if 'any1 any2 . prg) -> any</code></a></dt>
 <dd>Conditional execution: If the condition <code>any1</code> evaluates to
@@ -162,14 +167,14 @@ href="refC.html#cond">cond</a></code>, <code><a
 href="refW.html#when">when</a></code> and <code><a
 href="refI.html#if2">if2</a></code>.
 
-<pre><code>
+<pre>
 : (if (> 4 3) (println 'OK) (println 'Bad))
 OK
 -> OK
 : (if (> 3 4) (println 'OK) (println 'Bad))
 Bad
 -> Bad
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="if2"><code>(if2 'any1 'any2 any3 any4 any5 . prg) -> any</code></a></dt>
 <dd>Four-way conditional execution for two conditions: If both conditions
@@ -181,7 +186,7 @@ conditions evaluate to non-<code>NIL</code>, <code>prg</code> is executed and
 the result returned. See also <code><a href="refI.html#if">if</a></code> and
 <code><a href="refC.html#cond">cond</a></code>.
 
-<pre><code>
+<pre>
 : (if2 T T 'both 'first 'second 'none)
 -> both
 : (if2 T NIL 'both 'first 'second 'none)
@@ -190,7 +195,7 @@ the result returned. See also <code><a href="refI.html#if">if</a></code> and
 -> second
 : (if2 NIL NIL 'both 'first 'second 'none)
 -> none
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="ifn"><code>(ifn 'any1 any2 . prg) -> any</code></a></dt>
 <dd>Conditional execution ("If not"): If the condition <code>any1</code>
@@ -202,11 +207,11 @@ href="refN.html#nand">nand</a></code>, <code><a
 href="refU.html#unless">unless</a></code> and <code><a
 href="refN.html#nond">nond</a></code>.
 
-<pre><code>
+<pre>
 : (ifn (= 3 4) (println 'OK) (println 'Bad))
 OK
 -> OK
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="import"><code>(import . lst) -> lst</code></a></dt>
 <dd>Wrapper function for <code><a href="refI.html#intern">intern</a></code>.
@@ -217,10 +222,10 @@ of symbols. See also <code><a href="refP.html#pico">pico</a></code>,
 <code><a href="refL.html#local">local</a></code> and
 <code><a href="refE.html#export">export</a></code>.
 
-<pre><code>
+<pre>
 : (import libA~foo libB~bar)
 -> (foo bar)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="in"><code>(in 'any . prg) -> any</code></a></dt>
 <dd>Opens <code>any</code> as input channel during the execution of
@@ -244,14 +249,14 @@ href="refP.html#poll">poll</a></code>, <code><a
 href="refP.html#pipe">pipe</a></code> and <code><a
 href="refC.html#ctl">ctl</a></code>.
 
-<pre><code>
+<pre>
 : (in "a" (list (read) (read) (read)))  # Read three items from file "a"
 -> (123 (a b c) def)
 
 : (in '(file "-b" "--mime" "bin/picolisp")  # Get the mime type
    (line T) )
 -> "application/x-executable; charset=binary"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="inc"><code>(inc 'num) -> num</code></a></dt>
 <dt><code>(inc 'var ['num]) -> num</code></dt>
@@ -263,7 +268,7 @@ immediately. <code>(inc Num)</code> is equivalent to <code>(+ Num 1)</code> and
 also <code><a href="refD.html#dec">dec</a></code> and <code><a
 href="ref_.html#+">+</a></code>.
 
-<pre><code>
+<pre>
 : (inc 7)
 -> 8
 : (inc -1)
@@ -283,7 +288,7 @@ href="ref_.html#+">+</a></code>.
 -> 3
 : L
 -> (1 3 3 4)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="inc!"><code>(inc! 'obj 'sym ['num]) -> num</code></a></dt>
 <dd><a href="ref.html#trans">Transaction</a> wrapper function for <code><a
@@ -295,9 +300,9 @@ href="refR.html#request!">request!</a></code>, <code><a
 href="refS.html#set!">set!</a></code> and <code><a
 href="refP.html#put!">put!</a></code>.
 
-<pre><code>
+<pre>
 (inc! Obj 'cnt 0)  # Incrementing a property of a non-entity object
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="index"><code>(index 'any 'lst) -> cnt | NIL</code></a></dt>
 <dd>Returns the <code>cnt</code> position of <code>any</code> in
@@ -305,12 +310,12 @@ href="refP.html#put!">put!</a></code>.
 href="refO.html#offset">offset</a></code> and <code><a
 href="refS.html#sub?">sub?</a></code>.
 
-<pre><code>
+<pre>
 : (index 'c '(a b c d e f))
 -> 3
 : (index '(5 6) '((1 2) (3 4) (5 6) (7 8)))
 -> 3
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="info"><code>(info 'any ['flg]) -> (cnt|flg dat . tim)</code></a></dt>
 <dd>Returns information about a file with the name <code>any</code>: The current
@@ -325,7 +330,7 @@ href="refD.html#dir">dir</a></code>, <code><a
 href="refD.html#date">date</a></code> and <code><a
 href="refT.html#time">time</a></code>.
 
-<pre><code>
+<pre>
 $ ls -l x.l
 -rw-r--r--   1 abu      users         208 Jun 17 08:58 x.l
 $ pil +
@@ -333,7 +338,7 @@ $ pil +
 -> (208 730594 . 32315)
 : (stamp 730594 32315)
 -> "2000-06-17 08:58:35"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="init"><code>(init 'tree ['any1] ['any2]) -> lst</code></a></dt>
 <dd>Initializes a structure for stepping iteratively through a database tree.
@@ -344,10 +349,10 @@ opposite direction. See also <code><a href="refT.html#tree">tree</a></code>,
 href="refI.html#iter">iter</a></code> and <code><a
 href="refS.html#scan">scan</a></code>.
 
-<pre><code>
+<pre>
 : (init (tree 'nr '+Item) 3 5)
 -> (((3 . 5) ((3 NIL . {B3}) (4 NIL . {B4}) (5 NIL . {B5}) (6 NIL . {B6}))))
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="input"><code>(input exe . prg) -> any</code></a></dt>
 <dd>Establishes an input stream, by redirecting the current input channel during
@@ -359,7 +364,7 @@ also <code><a href="refO.html#output">output</a></code>, <code><a
 href="refI.html#in">in</a></code> and <code><a
 href="refP.html#pipe">pipe</a></code>.
 
-<pre><code>
+<pre>
 : (input "A" (char))
 -> "A"
 : (let L (chop "(+ 2 (* 3 4))")
@@ -370,7 +375,7 @@ href="refP.html#pipe">pipe</a></code>.
       (while (ext:Base64)
          (printsp @) ) ) )
 1 2 3 4 5 6 7 -> 7
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="insert"><code>(insert 'cnt 'lst 'any) -> lst</code></a></dt>
 <dd>Inserts <code>any</code> into <code>lst</code> at position <code>cnt</code>.
@@ -381,14 +386,14 @@ href="refA.html#append">append</a></code>, <code><a
 href="refD.html#delete">delete</a></code> and <code><a
 href="refR.html#replace">replace</a></code>.
 
-<pre><code>
+<pre>
 : (insert 3 '(a b c d e) 777)
 -> (a b 777 c d e)
 : (insert 1 '(a b c d e) 777)
 -> (777 a b c d e)
 : (insert 9 '(a b c d e) 777)
 -> (a b c d e 777)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="intern"><code>(intern 'any ['nsp]) -> sym</code></a></dt>
 <dd>Creates or finds an internal symbol. If a symbol with the name
@@ -402,7 +407,7 @@ href="refZ.html#zap">zap</a></code>, <code><a
 href="refI.html#import">import</a></code> and <code><a
 href="refE.html#extern">extern</a></code>.
 
-<pre><code>
+<pre>
 : (intern "abc")
 -> abc
 : (intern 'car)
@@ -411,7 +416,7 @@ href="refE.html#extern">extern</a></code>.
 -> 1
 : ((intern '("c" "a" "r")) (1 2 3))
 -> 1
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="ipid"><code>(ipid) -> pid | NIL</code></a></dt>
 <dd>Returns the corresponding process ID when the current input channel is
@@ -421,11 +426,11 @@ href="refI.html#in">in</a></code>, <code><a
 href="refP.html#pipe">pipe</a></code> and <code><a
 href="refL.html#load">load</a></code>.
 
-<pre><code>
+<pre>
 : (in '(ls "-l") (println (line T)) (kill (ipid)))
 "total 7364"
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="isa"><code>(isa 'cls|typ 'obj) -> obj | NIL</code></a></dt>
 <dd>Returns <code>obj</code> when it is an object that inherits from
@@ -435,12 +440,12 @@ href="refT.html#type">type</a></code>, <code><a
 href="refN.html#new">new</a></code> and <code><a
 href="refO.html#object">object</a></code>.
 
-<pre><code>
+<pre>
 : (isa '+Address Obj)
 -> {A17}
 : (isa '(+Male +Person) Obj)
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="isa/2"><code>isa/2</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the second
@@ -456,13 +461,13 @@ href="refF.html#fold/3">fold/3</a></code>, <code><a
 href="refP.html#part/3">part/3</a></code> and <code><a
 href="refT.html#tolr/3">tolr/3</a></code>.
 
-<pre><code>
+<pre>
 : (? (db nm +Person @Prs) (isa +Woman @Prs) (val @Nm @Prs nm))
  @Prs={A44} @Nm="Alexandra of Denmark"
  @Prs={A124} @Nm="Alice Maud Mary"
  @Prs={A21} @Nm="Anne"
  @Prs={A57} @Nm="Augusta Victoria".  # Stop
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="iter"><code>(iter 'tree ['fun] ['any1] ['any2] ['flg])</code></a></dt>
 <dd>Iterates through a database tree by applying <code>fun</code> to all values.
@@ -478,7 +483,7 @@ href="refS.html#scan">scan</a></code>, <code><a
 href="refI.html#init">init</a></code> and <code><a
 href="refS.html#step">step</a></code>.
 
-<pre><code>
+<pre>
 : (iter (tree 'nr '+Item))
 {B1}
 {B2}
@@ -496,7 +501,7 @@ href="refS.html#step">step</a></code>.
 "Gadget Appliance"
 "Testartikel"
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +21,7 @@
 <code><a href="refS.html#swap">swap</a></code> and <code><a
 href="refS.html#set">set</a></code>.
 
-<pre><code>
+<pre>
 : (setq  A 1  B 2  C '(a b c))
 -> (a b c)
 : (xchg  'A C  'B (cdr C))
@@ -27,17 +32,17 @@ href="refS.html#set">set</a></code>.
 -> b
 : C
 -> (1 2 c)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="xor"><code>(xor 'any 'any) -> flg</code></a></dt>
 <dd>Returns T if exactly one of the arguments evaluates to non-<code>NIL</code>.
 
-<pre><code>
+<pre>
 : (xor T NIL)
 -> T
 : (xor T T)
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="x%7C"><code>(x| 'num ..) -> num</code></a></dt>
 <dd>Returns the bitwise <code>XOR</code> of all <code>num</code> arguments. When
@@ -46,12 +51,12 @@ See also <code><a href="ref_.html#&">&</a></code>, <code><a
 href="ref_.html#%7C">|</a></code> and <code><a
 href="refB.html#bit?">bit?</a></code>.
 
-<pre><code>
+<pre>
 : (x| 2 7)
 -> 5
 : (x| 2 7 1)
 -> 4
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,10 +21,10 @@
 See also <code><a href="refL.html#listen">listen</a></code> and <code><a
 href="refA.html#accept">accept</a></code>.
 
-<pre><code>
+<pre>
 : *Adr
 -> "127.0.0.1"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="adr"><code>(adr 'var) -> num</code></a></dt>
 <dt><code>(adr 'num) -> var</code></dt>
@@ -32,7 +37,7 @@ back into the original <code>var</code>. Note that this original
 giving unpredictable results. See also <code><a
 href="refB.html#byte">byte</a></code>.
 
-<pre><code>
+<pre>
 : (setq X (box 7))
 -> $370237372176
 : (adr X)
@@ -45,7 +50,7 @@ href="refB.html#byte">byte</a></code>.
 -> 114
 $: (struct (adr X) T)
 -> 7
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="*Allow"><code>*Allow</code></a></dt>
 <dd>A global variable holding allowed access patterns. If its value is
@@ -55,7 +60,7 @@ prefix strings. See also <code><a href="refA.html#allow">allow</a></code>,
 <code><a href="refA.html#allowed">allowed</a></code> and <code><a
 href="refP.html#pre?">pre?</a></code>.
 
-<pre><code>
+<pre>
 : (allowed ("app/")  # Initialize
    "!start" "!stop" "lib.css" "!psh" )
 -> NIL
@@ -71,7 +76,7 @@ href="refP.html#pre?">pre?</a></code>.
 -> ("!myFoo" "!psh" "!start" "!stop" "lib.css")
 : (cdr *Allow)  # prefixes
 -> ("app/" "myDir/")
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="+Alt"><code>+Alt</code></a></dt>
 <dd>Prefix class specifying an alternative class for a <code><a
@@ -79,10 +84,10 @@ href="refR.html#+relation">+relation</a></code>. This allows indexes or other
 side effects to be maintained in a class different from the current one. See
 also <a href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 (class +EuOrd +Ord)                    # EU-specific order subclass
 (rel nr (+Alt +Key +Number) +XyOrd)    # Maintain the key in the +XyOrd index
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="+Any"><code>+Any</code></a></dt>
 <dd>Class for unspecified relations, a subclass of <code><a
@@ -93,9 +98,9 @@ relation class available. See also <a href="ref.html#dbase">Database</a>.
 <p>In the following example <code>+Any</code> is used simply for the reason that
 there is no direct way to specify dotted pairs:
 
-<pre><code>
+<pre>
 (rel loc (+Any))  # Locale, e.g. ("DE" . "de")
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="+Aux"><code>+Aux</code></a></dt>
 <dd>Prefix class maintaining auxiliary keys for <code><a
@@ -106,11 +111,11 @@ attributes of the same object, and combines all keys in that order into a single
 index key. See also <code><a href="refU.html#+UB">+UB</a></code>, <code><a
 href="refA.html#aux">aux</a></code> and <a href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 (rel nr (+Ref +Number))                # Normal, non-unique index
 (rel nm (+Aux +Ref +String) (nr txt))  # Combined name/number/text index
 (rel txt (+Aux +Sn +Idx +String) (nr)) # Text/number plus tolerant text index
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="abort"><code>(abort 'cnt . prg) -> any</code></a></dt>
 <dd>Aborts the execution of <code>prg</code> if it takes longer than
@@ -119,19 +124,19 @@ href="refA.html#aux">aux</a></code> and <a href="ref.html#dbase">Database</a>.
 is used internally, so care must be taken not to interfer with other calls to
 <code>alarm</code>.
 
-<pre><code>
+<pre>
 : (abort 20 (in Sock (rd)))  # Wait maximally 20 seconds for socket data
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="abs"><code>(abs 'num) -> num</code></a></dt>
 <dd>Returns the absolute value of the <code>num</code> argument.
 
-<pre><code>
+<pre>
 : (abs -7)
 -> 7
 : (abs 7)
 -> 7
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="accept"><code>(accept 'cnt) -> cnt | NIL</code></a></dt>
 <dd>Accepts a connection on descriptor <code>cnt</code> (as received by <code><a
@@ -141,18 +146,18 @@ of the client. See also <code><a href="refL.html#listen">listen</a></code>,
 <code><a href="refC.html#connect">connect</a></code> and <code><a
 href="refA.html#*Adr">*Adr</a></code>.
 
-<pre><code>
+<pre>
 : (setq *Socket
    (accept (port 6789)) )  # Accept connection at port 6789
 -> 4
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="accu"><code>(accu 'var 'any 'num)</code></a></dt>
 <dd>Accumulates <code>num</code> into a sum, using the key <code>any</code> in
 an association list stored in <code>var</code>. See also <code><a
 href="refA.html#assoc">assoc</a></code>.
 
-<pre><code>
+<pre>
 : (off Sum)
 -> NIL
 : (accu 'Sum 'a 1)
@@ -163,7 +168,7 @@ href="refA.html#assoc">assoc</a></code>.
 -> (22 . 100)
 : Sum
 -> ((22 . 100) (a . 6))
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="acquire"><code>(acquire 'sym) -> flg</code></a></dt>
 <dd>Tries to acquire the mutex represented by the file <code>sym</code>, by
@@ -175,10 +180,10 @@ href="refR.html#release">release</a></code>, <code><a
 href="refP.html#*Pid">*Pid</a></code> and <code><a
 href="refR.html#rc">rc</a></code>.
 
-<pre><code>
+<pre>
 : (acquire "sema1")
 -> 28255
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="alarm"><code>(alarm 'cnt . prg) -> cnt</code></a></dt>
 <dd>Sets an alarm timer scheduling <code>prg</code> to be executed after
@@ -193,7 +198,7 @@ href="refS.html#*Sig1">*Sig[12]</a></code>, <code><a
 href="refT.html#*TStp1">*TStp[12]</a></code> and <code><a
 href="refT.html#*Term">*Term</a></code>.
 
-<pre><code>
+<pre>
 : (prinl (tim$ (time) T)) (alarm 10 (prinl (tim$ (time) T)))
 16:36:14
 -> 0
@@ -202,7 +207,7 @@ href="refT.html#*Term">*Term</a></code>.
 : (alarm 10 (bye 0))
 -> 0
 $
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="align"><code>(align 'cnt 'any) -> sym</code></a></dt>
 <dt><code>(align 'lst 'any ..) -> sym</code></dt>
@@ -215,14 +220,14 @@ href="refT.html#tab">tab</a></code>, <code><a
 href="refC.html#center">center</a></code> and <code><a
 href="refW.html#wrap">wrap</a></code>.
 
-<pre><code>
+<pre>
 : (align 4 "a")
 -> "   a"
 : (align -4 12)
 -> "12  "
 : (align (4 4 4) "a" 12 "b")
 -> "   a  12   b"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="all"><code>(all ['T | '0 | 'sym]) -> lst</code></a></dt>
 <dd>Returns a new list of all <a href="ref.html#internal">internal</a> symbols
@@ -234,14 +239,14 @@ symbols of the given namespace <code>sym</code>. See also <code><a
 href="refS.html#symbols">symbols</a></code> and <code><a
 href="refA.html#all*">all*</a></code>.
 
-<pre><code>
+<pre>
 : (all)  # All internal symbols
 -> (inc> leaf nil inc! accept ...
 
 # Find all symbols starting with an underscore character
 : (filter '((X) (= "_" (car (chop X)))) (all))
 -> (_put _nacs _oct _lintq _lst _map _iter _dbg2 _getLine _led ...
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="all*"><code>(all* 'any ['flg]) -> lst</code></a></dt>
 <dd>Returns a sorted list of all (possibly namespaced) symbols and path names
@@ -252,12 +257,12 @@ href="refA.html#all">all</a></code>, <code><a
 href="refS.html#symbols">symbols</a></code> and <code><a
 href="refI.html#intern">intern</a></code>.
 
-<pre><code>
+<pre>
 : (all* "map")
 -> ("map" "map/3" "mapc" "mapcan" "mapcar" "mapcon" "maplist" "maps")
 : (all* "llvm~BLK")
 -> ("llvm~BLK" "llvm~BLKMASK" "llvm~BLKSIZE" "llvm~BLKTAG")
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="allow"><code>(allow 'sym ['flg]) -> sym</code></a></dt>
 <dd>Maintains an index structure of allowed access patterns in the global
@@ -268,14 +273,14 @@ variable <code><a href="refA.html#*Allow">*Allow</a></code>. If the value of
 prefix strings (if <code>flg</code> is non-<code>NIL</code>). See also <code><a
 href="refA.html#allowed">allowed</a></code>.
 
-<pre><code>
+<pre>
 : *Allow
 -> (("!start" ("!psh") "!stop" NIL "lib.css") "app/")
 : (allow "!myFoo")  # additionally allowed item
 -> "!myFoo"
 : (allow "myDir/" T)  # additionally allowed prefix
 -> "myDir/"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="allowed"><code>(allowed lst [sym ..])</code></a></dt>
 <dd>Creates an index structure of allowed access patterns in the global variable
@@ -285,11 +290,11 @@ href="refP.html#pre?">pre?</a></code>), and the <code>sym</code> arguments
 should specify the initially allowed items. See also <code><a
 href="refA.html#allow">allow</a></code>.
 
-<pre><code>
+<pre>
 : (allowed ("app/")  # allowed prefixes
    "!start" "!stop" "lib.css" "!psh" )  # allowed items
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="and"><code>(and 'any ..) -> any</code></a></dt>
 <dd>Logical AND. The expressions <code>any</code> are evaluated from left to
@@ -299,13 +304,13 @@ immediately. Else the result of the last expression is returned. See also
 href="refO.html#or">or</a></code> and <code><a
 href="refW.html#when">when</a></code>.
 
-<pre><code>
+<pre>
 : (and (= 3 3) (read))
 abc  # User input
 -> abc
 : (and (= 3 4) (read))
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="any"><code>(any 'any) -> any</code></a></dt>
 <dd>Parses <code>any</code> from the argument. This is the reverse operation of
@@ -313,12 +318,12 @@ abc  # User input
 href="refS.html#str">str</a></code>, <code>(any 'sym)</code> is equivalent to
 <code>(car (str 'sym))</code>.
 
-<pre><code>
+<pre>
 : (any "(a b # Comment\nc d)")
 -> (a b c d)
 : (any "\"A String\"")
 -> "A String"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="append"><code>(append 'lst ..) -> lst</code></a></dt>
 <dd>Appends all argument lists. See also <code><a
@@ -327,12 +332,12 @@ href="refI.html#insert">insert</a></code>, <code><a
 href="refD.html#delete">delete</a></code> and <code><a
 href="refR.html#remove">remove</a></code>.
 
-<pre><code>
+<pre>
 : (append '(a b c) (1 2 3))
 -> (a b c 1 2 3)
 : (append (1) (2) (3) 4)
 -> (1 2 3 . 4)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="append/3"><code>append/3</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if appending the
@@ -340,14 +345,14 @@ first two list arguments is equal to the third argument. See also <code><a
 href="refA.html#append">append</a></code> and <code><a
 href="refM.html#member/2">member/2</a></code>.
 
-<pre><code>
+<pre>
 : (? (append @X @Y (a b c)))
  @X=NIL @Y=(a b c)
  @X=(a) @Y=(b c)
  @X=(a b) @Y=(c)
  @X=(a b c) @Y=NIL
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="apply"><code>(apply 'fun 'lst ['any ..]) -> any</code></a></dt>
 <dd>Applies <code>fun</code> to <code>lst</code>. If additional <code>any</code>
@@ -355,7 +360,7 @@ arguments are given, they are applied as leading elements of <code>lst</code>.
 <code>(apply 'fun 'lst 'any1 'any2)</code> is equivalent to <code>(apply 'fun
 (cons 'any1 'any2 'lst))</code>.
 
-<pre><code>
+<pre>
 : (apply + (1 2 3))
 -> 6
 : (apply * (5 6) 3 4)
@@ -365,7 +370,7 @@ arguments are given, they are applied as leading elements of <code>lst</code>.
 : (apply println (3 4) 1 2)
 1 2 3 4
 -> 4
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="arg"><code>(arg 'cnt) -> any</code></a></dt>
 <dd>Can only be used inside functions with a variable number of arguments (with
@@ -375,7 +380,7 @@ href="refA.html#args">args</a></code>, <code><a
 href="refR.html#rest">rest</a></code> and <code><a
 href="refP.html#pass">pass</a></code>.
 
-<pre><code>
+<pre>
 : (de foo @
    (println (arg 1) (arg 2))
    (println (next))
@@ -386,7 +391,7 @@ a b
 a
 b c
 -> c
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="args"><code>(args) -> flg</code></a></dt>
 <dd>Can only be used inside functions with a variable number of arguments (with
@@ -397,7 +402,7 @@ href="refA.html#arg">arg</a></code>, <code><a
 href="refR.html#rest">rest</a></code> and <code><a
 href="refP.html#pass">pass</a></code>.
 
-<pre><code>
+<pre>
 : (de foo @ (println (args)))       # Test for arguments
 -> foo
 : (foo)                             # No arguments
@@ -409,7 +414,7 @@ T
 : (foo 123)                         # One argument
 T
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="argv"><code>(argv [var ..] [. sym]) -> lst|sym</code></a></dt>
 <dd>If called without arguments, <code>argv</code> returns a list of strings
@@ -420,7 +425,7 @@ arguments. A hyphen "<code>-</code>" can be used to inhibit the automatic
 href="refC.html#cmd">cmd</a></code>, <a href="ref.html#invoc">Invocation</a> and
 <code><a href="refO.html#opt">opt</a></code>.
 
-<pre><code>
+<pre>
 $ pil -"println 'OK" - abc 123 +
 OK
 : (argv)
@@ -435,7 +440,7 @@ OK
 -> ("abc" "123")
 : Lst
 -> ("abc" "123")
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="as"><code>(as 'any1 . any2) -> any2 | NIL</code></a></dt>
 <dd>Returns <code>any2</code> unevaluated when <code>any1</code> evaluates to
@@ -445,7 +450,7 @@ typically used in <a href="ref.html#macro-io">read-macros</a> to conditionally
 exclude sub-expressions. See also <code><a
 href="refQ.html#quote">quote</a></code>.
 
-<pre><code>
+<pre>
 : (as (= 3 3) A B C)
 -> (A B C)
 
@@ -455,7 +460,7 @@ href="refQ.html#quote">quote</a></code>.
       (doThis)
       (doThat) )
    (doMore) )
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="asoq"><code>(asoq 'any 'lst) -> lst</code></a></dt>
 <dd>Searches an association list. Returns the first element from
@@ -470,12 +475,12 @@ href="refD.html#delq">delq</a></code>, <code><a
 href="refM.html#memq">memq</a></code>, <code><a
 href="refM.html#mmeq">mmeq</a></code> and <a href="ref.html#cmp">Comparing</a>.
 
-<pre><code>
+<pre>
 : (asoq 'a '((999 1 2 3) (b . 7) ("ok" "Hello")))
 -> NIL
 : (asoq 'b '((999 1 2 3) (b . 7) ("ok" "Hello")))
 -> (b . 7)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="assert"><code>(assert exe ..) -> prg | NIL</code></a></dt>
 <dd>When in debug mode (<code><a href="refD.html#*Dbg">*Dbg</a></code> is
@@ -487,7 +492,7 @@ combination with the <code>~</code> tilde <code><a
 href="ref.html#macro-io">read-macro</a></code> to insert the test code only when
 in debug mode. See also <code><a href="refT.html#test">test</a></code>.
 
-<pre><code>
+<pre>
 # Start in debug mode
 $ pil +
 : (de foo (N)
@@ -514,7 +519,7 @@ $ pil
 (de foo (N)
    (bar N) )                     # Assertion code does not exist
 -> foo
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="asserta"><code>(asserta 'lst) -> lst</code></a></dt>
 <dd>Inserts a new <a href="ref.html#pilog">Pilog</a> fact or rule before all
@@ -523,7 +528,7 @@ href="refC.html#clause">clause</a></code>, <code><a
 href="refA.html#assertz">assertz</a></code> and <code><a
 href="refR.html#retract">retract</a></code>.
 
-<pre><code>
+<pre>
 : (be a (2))            # Define two facts
 -> a
 : (be a (3))
@@ -537,7 +542,7 @@ href="refR.html#retract">retract</a></code>.
  @N=2
  @N=3
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="asserta/1"><code>asserta/1</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that inserts a new fact or rule
@@ -546,7 +551,7 @@ href="refA.html#asserta">asserta</a></code>, <code><a
 href="refA.html#assertz/1">assertz/1</a></code> and <code><a
 href="refR.html#retract/1">retract/1</a></code>.
 
-<pre><code>
+<pre>
 : (? (asserta (a (2))))
 -> T
 : (? (asserta (a (1))))
@@ -555,7 +560,7 @@ href="refR.html#retract/1">retract/1</a></code>.
 1 (be a (1))
 2 (be a (2))
 -> a
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="assertz"><code>(assertz 'lst) -> lst</code></a></dt>
 <dd>Appends a new <a href="ref.html#pilog">Pilog</a> fact or rule behind all
@@ -564,7 +569,7 @@ href="refC.html#clause">clause</a></code>, <code><a
 href="refA.html#asserta">asserta</a></code> and <code><a
 href="refR.html#retract">retract</a></code>.
 
-<pre><code>
+<pre>
 : (be a (1))            # Define two facts
 -> a
 : (be a (2))
@@ -578,7 +583,7 @@ href="refR.html#retract">retract</a></code>.
  @N=2
  @N=3
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="assertz/1"><code>assertz/1</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that appends a new fact or rule
@@ -587,7 +592,7 @@ href="refA.html#assertz">assertz</a></code>, <code><a
 href="refA.html#asserta/1">asserta/1</a></code> and <code><a
 href="refR.html#retract/1">retract/1</a></code>.
 
-<pre><code>
+<pre>
 : (? (assertz (a (1))))
 -> T
 : (? (assertz (a (2))))
@@ -596,7 +601,7 @@ href="refR.html#retract/1">retract/1</a></code>.
 1 (be a (1))
 2 (be a (2))
 -> a
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="assoc"><code>(assoc 'any 'lst) -> lst</code></a></dt>
 <dd>Searches an association list. Returns the first element from
@@ -604,14 +609,14 @@ href="refR.html#retract/1">retract/1</a></code>.
 no match is found. See also <code><a href="refA.html#asoq">asoq</a></code> and
 <code><a href="refR.html#rassoc">rassoc</a></code>.
 
-<pre><code>
+<pre>
 : (assoc "b" '((999 1 2 3) ("b" . 7) ("ok" "Hello")))
 -> ("b" . 7)
 : (assoc 999 '((999 1 2 3) ("b" . 7) ("ok" "Hello")))
 -> (999 1 2 3)
 : (assoc 'u '((999 1 2 3) ("b" . 7) ("ok" "Hello")))
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="at"><code>(at '(cnt1 . cnt2|NIL) . prg) -> any</code></a></dt>
 <dd>Increments <code>cnt1</code> (destructively), and returns <code>NIL</code>
@@ -621,10 +626,10 @@ zero and <code>prg</code> is executed. Returns the result of <code>prg</code>.
 If <code>cnt2</code> is <code>NIL</code>, nothing is done, and <code>NIL</code>
 is returned immediately.
 
-<pre><code>
+<pre>
 : (do 11 (prin ".") (at (0 . 3) (prin "!")))
 ...!...!...!..-> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="atom"><code>(atom 'any) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when the argument <code>any</code> is an atom (a
@@ -632,7 +637,7 @@ number or a symbol). See also <code><a href="refN.html#num?">num?</a></code>,
 <code><a href="refS.html#sym?">sym?</a></code> and <code><a
 href="refP.html#pair">pair</a></code>.
 
-<pre><code>
+<pre>
 : (atom 123)
 -> T
 : (atom 'a)
@@ -641,7 +646,7 @@ href="refP.html#pair">pair</a></code>.
 -> T
 : (atom (123))
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="aux"><code>(aux 'sym 'cls ['hook] 'any ..) -> sym</code></a></dt>
 <dd>Returns a database object of class <code>cls</code>, where the value for
@@ -658,7 +663,7 @@ href="refI.html#init">init</a></code>, <code><a
 href="refS.html#step">step</a></code> and <code><a
 href="refA.html#+Aux">+Aux</a></code>.
 
-<pre><code>
+<pre>
 (class +PS +Entity)
 (rel par (+Dep +Joint) (sup) ps (+Part))        # Part
 (rel sup (+Aux +Ref +Link) (par) NIL (+Supp))   # Supplier
@@ -666,7 +671,7 @@ href="refA.html#+Aux">+Aux</a></code>.
    (aux 'sup '+PS                               # Access PS object
       (db 'nr '+Supp 1234)
       (db 'nr '+Part 5678) )
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

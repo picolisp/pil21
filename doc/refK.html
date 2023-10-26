@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,9 +23,9 @@ href="refI.html#+index">+index</a></code>. Accepts an optional argument for a
 <code><a href="refH.html#+Hook">+Hook</a></code> attribute. See also <a
 href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 (rel nr (+Need +Key +Number))  # Mandatory, unique Customer/Supplier number
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="key"><code>(key ['cnt ['var]]) -> sym</code></a></dt>
 <dd>Returns the next character from standard input as a single-character
@@ -34,10 +39,10 @@ are optionally stored in <code>var</code>. See also <code><a
 href="refR.html#raw">raw</a></code> and <code><a
 href="refW.html#wait">wait</a></code>.
 
-<pre><code>
+<pre>
 : (key)           # Wait for a key
 -> "a"            # 'a' pressed
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="kids"><code>(kids) -> lst</code></a></dt>
 <dd>Returns a list of process IDs of all running child processes. See also
@@ -48,7 +53,7 @@ href="refT.html#tell">tell</a></code>, <code><a
 href="refP.html#proc">proc</a></code> and <code><a
 href="refK.html#kill">kill</a></code>.
 
-<pre><code>
+<pre>
 : (unless (fork) (wait 60000) (bye))
 -> NIL
 : (unless (fork) (wait 60000) (bye))
@@ -63,21 +68,21 @@ href="refK.html#kill">kill</a></code>.
 
 : (kids)
 -> (2300 2266)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="kill"><code>(kill 'pid ['cnt]) -> flg</code></a></dt>
 <dd>Sends a signal with the signal number <code>cnt</code> (or SIGTERM if
 <code>cnt</code> is not given) to the process with the ID <code>pid</code>.
 Returns <code>T</code> if successful.
 
-<pre><code>
+<pre>
 : (kill *Pid 20)                                # Stop current process
 
 [2]+  Stopped               pil +               # Unix shell
 $ fg                                            # Job control: Foreground
 pil +
 -> T                                            # 'kill' was successful
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

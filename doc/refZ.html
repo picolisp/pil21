@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -19,10 +24,10 @@ DB tree processing, and written to the file in the CDR at the next <code><a
 href="refC.html#commit">commit</a></code>. A (typically periodic) call to
 <code><a href="refZ.html#zap_">zap_</a></code> will clean them up later.
 
-<pre><code>
+<pre>
 : (setq *Zap '(NIL . "db/app/_zap"))
 -> (NIL . "db/app/_zap")
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="zap"><code>(zap 'sym) -> sym</code></a></dt>
 <dd>"Delete" the symbol <code>sym</code>. For internal symbols, that means to
@@ -31,7 +36,7 @@ symbol. For external symbols, it means to mark it as "deleted", so that upon a
 later <code><a href="refC.html#commit">commit</a></code> it will be removed from
 the database file. See also <code><a href="refI.html#intern">intern</a></code>.
 
-<pre><code>
+<pre>
 : (de foo (Lst) (car Lst))          # 'foo' calls 'car'
 -> foo
 : (zap 'car)                        # Delete the symbol 'car'
@@ -46,7 +51,7 @@ the database file. See also <code><a href="refI.html#intern">intern</a></code>.
 !? (car (1 2 3))
 car -- Undefined
 ?
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="zapTree"><code>(zapTree 'sym)</code></a></dt>
 <dd>Recursively deletes a tree structure from the database. See also <code><a
@@ -54,9 +59,9 @@ href="refT.html#tree">tree</a></code>, <code><a
 href="refC.html#chkTree">chkTree</a></code> and <code><a
 href="refP.html#prune">prune</a></code>.
 
-<pre><code>
+<pre>
 : (zapTree (cdr (root (tree 'nm '+Item))))
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="zap_"><code>(zap_)</code></a></dt>
 <dd>Delayed deletion (with <code><a href="refZ.html#zap">zap</a></code>) of
@@ -65,7 +70,7 @@ auxiliary file (with the name taken from the CDR of the value of <code><a
 href="refZ.html#*Zap">*Zap</a></code>, concatenated with a "<code>_</code>"
 character) is used as an intermediary file.
 
-<pre><code>
+<pre>
 : *Zap
 -> (NIL . "db/app/Z")
 : (call 'ls "-l" "db/app")
@@ -79,7 +84,7 @@ character) is used as an intermediary file.
 ...
 -rw-r--r-- 1 abu abu     1536 2007-06-23 12:34 Z_
 ...
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="zero"><code>(zero var ..) -> 0</code></a></dt>
 <dd>Stores <code>0</code> in all <code>var</code> arguments. See also <code><a
@@ -87,14 +92,14 @@ href="refO.html#one">one</a></code>, <code><a href="refO.html#on">on</a></code>,
 <code><a href="refO.html#off">off</a></code> and <code><a
 href="refO.html#onOff">onOff</a></code>.
 
-<pre><code>
+<pre>
 : (zero A B)
 -> 0
 : A
 -> 0
 : B
 -> 0
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

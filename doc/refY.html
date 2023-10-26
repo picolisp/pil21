@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,7 +29,7 @@ href="refS.html#stack">stack</a></code>, <code><a
 href="refC.html#catch">catch</a></code> and <code><a
 href="refT.html#throw">throw</a></code>.
 
-<pre><code>
+<pre>
 : (co "rt1"                            # Start first routine
    (msg (yield 1) " in rt1 from rt2")  # Return '1', wait for value from "rt2"
    7 )                                 # Then return '7'
@@ -34,7 +39,7 @@ href="refT.html#throw">throw</a></code>.
    (yield 2 "rt1") )                   # Send '2' to "rt1"
 2 in rt1 from rt2
 -> 7
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="yoke"><code>(yoke 'any ..) -> any</code></a></dt>
 <dd>Inserts one or several new elements <code>any</code> in front of the list in
@@ -44,10 +49,10 @@ href="refL.html#link">link</a></code>, <code><a
 href="refC.html#chain">chain</a></code> and <code><a
 href="refM.html#made">made</a></code>.
 
-<pre><code>
+<pre>
 : (make (link 2 3) (yoke 1) (link 4))
 -> (1 2 3 4)
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

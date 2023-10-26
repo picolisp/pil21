@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,10 +26,10 @@ href="refS.html#*Sig1">*Sig[12]</a></code>, <code><a
 href="refT.html#*TStp1">*TStp[12]</a></code> and <code><a
 href="refT.html#*Term">*Term</a></code>.
 
-<pre><code>
+<pre>
 : (de *Winch (msg 'SIGWINCH))
 -> *Winch
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="wait"><code>(wait 'cnt|NIL . prg) -> any</code></a></dt>
 <dt><code>(wait 'cnt|NIL T 'fd) -> fd|NIL</code></dt>
@@ -38,7 +43,7 @@ global variable <code><a href="refR.html#*Run">*Run</a></code>. When
 <code><a href="refK.html#key">key</a></code> and <code><a
 href="refS.html#sync">sync</a></code>.
 
-<pre><code>
+<pre>
 : (wait 2000)                                # Wait 2 seconds
 -> NIL
 : (prog
@@ -55,7 +60,7 @@ href="refS.html#sync">sync</a></code>.
 6
 7
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="week"><code>(week 'dat) -> num</code></a></dt>
 <dd>Returns the number of the week for a given <code><a
@@ -65,12 +70,12 @@ href="refU.html#ultimo">ultimo</a></code>, <code><a
 href="refD.html#datStr">datStr</a></code> and <code><a
 href="refS.html#strDat">strDat</a></code>.
 
-<pre><code>
+<pre>
 : (datStr (date))
 -> "2007-06-01"
 : (week (date))
 -> 22
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="when"><code>(when 'any . prg) -> any</code></a></dt>
 <dd>Conditional execution: When the condition <code>any</code> evaluates to
@@ -80,12 +85,12 @@ href="refU.html#unless">unless</a></code>, <code><a
 href="refI.html#if">if</a></code>, <code><a href="refA.html#and">and</a></code>
 and <code><a href="refC.html#cond">cond</a></code>.
 
-<pre><code>
+<pre>
 : (when (> 4 3) (println 'OK) (println 'Good))
 OK
 Good
 -> Good
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="while"><code>(while 'any . prg) -> any</code></a></dt>
 <dd>Conditional loop: While the condition <code>any</code> evaluates to
@@ -97,7 +102,7 @@ href="refF.html#for">for</a></code>, <code><a
 href="refL.html#loop">loop</a></code> and <code><a
 href="refD.html#do">do</a></code>.
 
-<pre><code>
+<pre>
 : (while (read)
    (println 'got: @) )
 abc
@@ -106,7 +111,7 @@ got: abc
 got: 1234
 NIL
 -> 1234
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="what"><code>(what 'sym) -> lst</code></a></dt>
 <dd>(Debug mode only) Returns a list of all internal symbols that match the
@@ -116,10 +121,10 @@ href="refW.html#who">who</a></code>, <code><a
 href="refH.html#has">has</a></code> and <code><a
 href="refC.html#can">can</a></code>.
 
-<pre><code>
+<pre>
 : (what "cd@dr")
 -> (cdaddr cdaadr cddr cddddr cdddr cddadr cdadr)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="who"><code>(who 'any) -> lst</code></a></dt>
 <dd>(Debug mode only) Returns a list of all functions or method definitions that
@@ -129,7 +134,7 @@ href="refW.html#what">what</a></code>, <code><a
 href="refH.html#has">has</a></code> and <code><a
 href="refC.html#can">can</a></code>.
 
-<pre><code>
+<pre>
 : (who 'caddr)                         # Who is using 'caddr'?
 -> ($dat lint1 expDat datStr $tim tim$ mail _gen dat$ datSym)
 
@@ -144,7 +149,7 @@ href="refC.html#can">can</a></code>.
       "Type error" ) )
 .                                      # Stop
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="wipe"><code>(wipe 'sym|lst) -> sym|lst</code></a></dt>
 <dd>Clears the <code>VAL</code> and the property list of <code>sym</code>, or of
@@ -152,7 +157,7 @@ all symbols in the list <code>lst</code>. When a symbol is an external symbol,
 its state is also set to "not loaded". Does nothing when <code>sym</code> is an
 external symbol that has been modified or deleted ("dirty").
 
-<pre><code>
+<pre>
 : (setq A (1 2 3 4))
 -> (1 2 3 4)
 : (put 'A 'a 1)
@@ -169,7 +174,7 @@ A (1 2 3 4)
 : (show 'A)
 A NIL
 -> A
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="with"><code>(with 'var . prg) -> any</code></a></dt>
 <dd>Saves the current object <code>This</code> and sets it to the new value
@@ -180,27 +185,27 @@ the same manner as inside a method body. <code>prg</code> is not executed (and
 <code>NIL</code> is returned) when <code>var</code> is <code>NIL</code>.
 <code>(with 'X . prg)</code> is equivalent to <code>(let? This 'X . prg)</code>.
 
-<pre><code>
+<pre>
 : (put 'X 'a 1)
 -> 1
 : (put 'X 'b 2)
 -> 2
 : (with 'X (list (: a) (: b)))
 -> (1 2)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="wr"><code>(wr 'cnt ..) -> cnt</code></a></dt>
 <dd>Writes all <code>cnt</code> arguments as raw bytes to the current output
 channel. See also <code><a href="refR.html#rd">rd</a></code> and <code><a
 href="refP.html#pr">pr</a></code>.
 
-<pre><code>
+<pre>
 : (out "x" (wr 1 255 257))  # Write to "x"
 -> 257
 : (hd "x")
 00000000  01 FF 01                                         ...
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="wrap"><code>(wrap 'cnt 'lst) -> sym</code></a></dt>
 <dt><code>(wrap 'cnt 'sym) -> lst</code></dt>
@@ -212,14 +217,14 @@ also <code><a href="refT.html#tab">tab</a></code>, <code><a
 href="refA.html#align">align</a></code> and <code><a
 href="refC.html#center">center</a></code>.
 
-<pre><code>
+<pre>
 : (wrap 20 (chop "The quick brown fox jumps over the lazy dog"))
 -> "The quick brown fox^Jjumps over the lazy^Jdog"
 : (wrap 8 (chop "The quick brown fox jumps over the lazy dog"))
 -> "The^Jquick^Jbrown^Jfox^Jjumps^Jover the^Jlazy dog"
 : (wrap 8 "The quick brown fox jumps over the lazy dog")
 -> ("The" "quick" "brown" "fox" "jumps" "over the" "lazy dog")
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

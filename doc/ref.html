@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -160,11 +165,11 @@ complete control over the machine.
 current (hardware) processors. At the lowest level, it is constructed from a
 single data structure called "cell":
 
-<pre><code>
+<pre>
          +-----+-----+
          | CAR | CDR |
          +-----+-----+
-</code></pre>
+</pre>
 
 <p>A cell is a pair of 64-bit machine words, which traditionally are called CAR
 and CDR in the Lisp terminology. These words can represent either a numeric
@@ -177,9 +182,9 @@ and the pointer size being 8 bytes, each cell has a size of 16 bytes. Therefore,
 the pointer to a cell must point to a 16-byte boundary (a number which is a
 multiple of 16), and its bit-representation will look like:
 
-<pre><code>
+<pre>
       xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx0000
-</code></pre>
+</pre>
 
 <p>(the '<code>x</code>' means "don't care"). For the individual data types, the
 pointer is adjusted to point to other parts of a cell, in effect setting some of
@@ -221,7 +226,7 @@ cannot consist of any other types than these three.
 <p>The following diagram shows the complete data type hierarchy, consisting of
 the three base types and the symbol variations:
 
-<pre><code>
+<pre>
                        cell
                         |
             +-----------+-----------+
@@ -232,7 +237,7 @@ the three base types and the symbol variations:
    +--------+-----------+-----------+
    |        |           |           |
   NIL   Internal    Transient    External
-</code></pre>
+</pre>
 
 
 <p><hr>
@@ -241,9 +246,9 @@ the three base types and the symbol variations:
 <p>A number can represent a signed integral value of arbitrary size. Internally,
 numeric values of up to 60 bits are stored in "short" numbers,
 
-<pre><code>
+<pre>
       xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxS010
-</code></pre>
+</pre>
 
 i.e. the value is directly represented in the pointer, and doesn't take any heap
 space.
@@ -252,7 +257,7 @@ space.
 one or more cells hold the number's "digits" (64 bits each), with the least
 significant digit first, while the CDRs point to the remaining digits.
 
-<pre><code>
+<pre>
          Bignum
          |
          V
@@ -269,16 +274,16 @@ significant digit first, while the CDRs point to the remaining digits.
                   +-----+-----+
                   | DIG | CNT |
                   +-----+-----+
-</code></pre>
+</pre>
 
 The CDR of the final cell holds the remaining bits in a short number.
 
 <p>The pointer to a big number points into the middle of the CAR, with an offset
 of 4 from the cell's start address, and the sign bit in bit(3):
 
-<pre><code>
+<pre>
       xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxS100
-</code></pre>
+</pre>
 
 <p>Thus, a number is recognized by the interpreter when either bit(1) is
 non-zero (a short number) or bit(2) is non-zero (a big number).
@@ -292,14 +297,14 @@ optionally a name and an arbitrary number of properties. The CDR of a symbol
 cell is also called VAL, and the CAR points to the symbol's tail. As a minimum,
 a symbol consists of a single cell, and has no name or properties:
 
-<pre><code>
+<pre>
             Symbol
             |
             V
       +-----+-----+
       |  /  | VAL |
       +-----+-----+
-</code></pre>
+</pre>
 
 <p>That is, the symbol's tail is empty (<code>ZERO</code>, as indicated by the
 '<code>/</code>' character).
@@ -308,9 +313,9 @@ a symbol consists of a single cell, and has no name or properties:
 bytes from the cell's start address. Therefore, the bit pattern of a symbol will
 be:
 
-<pre><code>
+<pre>
       xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx1000
-</code></pre>
+</pre>
 
 <p>Thus, a symbol is recognized by the interpreter when bit(3) is non-zero. (It
 should also be understood that both bit(2) and bit(1) must be zero, thus
@@ -322,7 +327,7 @@ number (short or big) representing the symbol's name. In the following example,
 a symbol with the name <code>"abcdefghijklmno"</code> has three properties: A
 KEY/VAL pair, a cell with only a KEY, and another KEY/VAL pair.
 
-<pre><code>
+<pre>
             Symbol
             |
             V
@@ -340,7 +345,7 @@ KEY/VAL pair, a cell with only a KEY, and another KEY/VAL pair.
             +-----+-----+                       +-----+-----+
             | VAL | KEY |                       | VAL | KEY |
             +-----+-----+                       +-----+-----+
-</code></pre>
+</pre>
 
 <p>Each property in a symbol's tail is either a symbol (like the single KEY
 above, then it represents the boolean value <code>T</code>) or a cons pair with
@@ -382,14 +387,14 @@ system. It is used
 
 <p>For that, <code>NIL</code> has a special structure:
 
-<pre><code>
+<pre>
       NIL:  /
             |
             V
       +-----+-----+-----+-----+
       |'LIN'|  /  |  /  |  /  |
       +-----+-----+-----+-----+
-</code></pre>
+</pre>
 
 <p>The reason for that structure is <code>NIL</code>'s dual nature both as a
 symbol and as a list:
@@ -476,7 +481,7 @@ specified at creation time.
 <p>A list is a sequence of one or more cells (cons pairs), holding numbers,
 symbols, or cons pairs.
 
-<pre><code>
+<pre>
       |
       V
       +-----+-----+
@@ -490,7 +495,7 @@ symbols, or cons pairs.
                         |
                         V
                         ...
-</code></pre>
+</pre>
 
 <p>Lists are used in PicoLisp to implement composite data structures like
 arrays, trees, stacks or queues.
@@ -597,51 +602,51 @@ reserved for application programs.
 <p>The simplest and shortest invocation of PicoLisp does nothing, and exits
 immediately by calling <code><a href="refB.html#bye">bye</a></code>:
 
-<pre><code>
+<pre>
 $ picolisp -bye
 $
-</code></pre>
+</pre>
 
 <p>In interactive mode, the PicoLisp interpreter (see <code><a
 href="refL.html#load">load</a></code>) will also exit when <code>Ctrl-D</code>
 is entered:
 
-<pre><code>
+<pre>
 $ picolisp
 :           # Typed Ctrl-D
 $
-</code></pre>
+</pre>
 
 <p>To start up the standard PicoLisp environment, several files should be
 loaded. The most commonly used things are in "lib.l" and in a bunch of other
 files, which are in turn loaded by "ext.l". Thus, a typical call would be:
 
-<pre><code>
+<pre>
 $ picolisp lib.l ext.l
-</code></pre>
+</pre>
 
 <p>The recommended way, however, is to call the "pil" shell script, which
 includes "lib.l" and "ext.l". Given that your current project is loaded by some
 file "myProject.l" and your startup function is <code>main</code>, your
 invocation would look like:
 
-<pre><code>
+<pre>
 $ pil myProject.l -main
-</code></pre>
+</pre>
 
 <p>For interactive development it is recommended to enable debugging mode, to
 get <code>readline(3)</code> line history, single-stepping, tracing and other
 debugging utilities.
 
-<pre><code>
+<pre>
 $ pil myProject.l -main +
-</code></pre>
+</pre>
 
 <p>This is - in a local installation - equivalent to
 
-<pre><code>
+<pre>
 $ ./pil myProject.l -main +
-</code></pre>
+</pre>
 
 <p>In any case, the directory part of the first file name supplied (normally,
 the path to "lib.l" as called by 'pil') is remembered internally as the
@@ -670,10 +675,10 @@ whether it is entered at the console or read from a file.
 <p>Comments can be embedded in the input stream with the hash <code>#</code>
 character. Everything up to the end of that line will be ignored by the reader.
 
-<pre><code>
+<pre>
 : (* 1 2 3)  # This is a comment
 -> 6
-</code></pre>
+</pre>
 
 <p>A comment spanning several lines (a block comment) may be enclosed between
 <code>#{</code> and <code>}#</code>. Block comments may be nested.
@@ -690,18 +695,18 @@ symbols and lists) and for read-macros:
 '<code>9</code>'), optionally preceded by a sign character ('<code>+</code>' or
 '<code>-</code>'). Legal number input is:
 
-<pre><code>
+<pre>
 : 7
 -> 7
 : -12345678901245678901234567890
 -> -12345678901245678901234567890
-</code></pre>
+</pre>
 
 <p>Fixpoint numbers can be input by embedding a decimal point '<code>.</code>',
 and setting the global variable <code><a href="refS.html#*Scl">*Scl</a></code>
 appropriately:
 
-<pre><code>
+<pre>
 : *Scl
 -> 0
 
@@ -716,7 +721,7 @@ appropriately:
 -> 123450
 : 456.78
 -> 456780
-</code></pre>
+</pre>
 
 <p>Thus, fixpoint input simply scales the number to an integer value
 corresponding to the number of digits in <code><a
@@ -726,12 +731,12 @@ href="refS.html#*Scl">*Scl</a></code>.
 href="refF.html#format">format</a></code> and <code><a
 href="refR.html#round">round</a></code> functions:
 
-<pre><code>
+<pre>
 : (format 1234567890 2)
 -> "12345678.90"
 : (format 1234567890 2 "." ",")
 -> "12,345,678.90"
-</code></pre>
+</pre>
 
 
 <p><hr>
@@ -751,14 +756,14 @@ as <code>CAR</code>.
 <p>Besides the standard form, <code>NIL</code> is also recognized as
 <code>()</code>, <code>[]</code> or <code>""</code>.
 
-<pre><code>
+<pre>
 : NIL
 -> NIL
 : ()
 -> NIL
 : ""
 -> NIL
-</code></pre>
+</pre>
 
 <p>Output will always appear as <code>NIL</code>.
 
@@ -769,9 +774,9 @@ as <code>CAR</code>.
 <p>Internal symbol names can consist of any printable (non-whitespace)
 character, except for the following meta characters:
 
-<pre><code>
+<pre>
    "  '  (  )  ,  [  ]  `  { } ~
-</code></pre>
+</pre>
 
 <p>It is possible, though, to include these special characters into symbol names
 by escaping them with a backslash '<code>\</code>'.
@@ -795,20 +800,20 @@ function definition, and properties.
 <p>Initially, a transient symbol's value is that symbol itself, so that it does
 not need to be quoted for evaluation:
 
-<p><pre><code>
+<pre>
 : "This is a string"
 -> "This is a string"
-</code></pre>
+</pre>
 
 <p>However, care must be taken when assigning a value to a transient symbol.
 This may cause unexpected behavior:
 
-<p><pre><code>
+<pre>
 : (setq "This is a string" 12345)
 -> 12345
 : "This is a string"
 -> 12345
-</code></pre>
+</pre>
 
 <p>The name of a transient symbol can contain any character except the
 null-byte. Control characters can be written with a preceding hat
@@ -816,36 +821,36 @@ null-byte. Control characters can be written with a preceding hat
 with a backslash '<code>\</code>', and a backslash itself has to be escaped with
 another backslash.
 
-<p><pre><code>
+<pre>
 : "We^Ird\\Str\"ing"
 -> "We^Ird\\Str\"ing"
 : (chop @)
 -> ("W" "e" "^I" "r" "d" "\\" "S" "t" "r" "\"" "i" "n" "g")
-</code></pre>
+</pre>
 
 <p>The combination of a backslash followed by 'b', 'e', 'n', 'r' or 't' is
 replaced with backspace ("^H"), escape ("^["), newline ("^J"), return ("^M") or
 TAB ("^I"), respectively.
 
-<p><pre><code>
+<pre>
 : "abc\tdef\r"
 -> "abc^Idef^M"
-</code></pre>
+</pre>
 
 <p>A decimal number between two backslashes can be used to specify any unicode
 character directly.
 
-<p><pre><code>
+<pre>
 : "äöü\8364\xyz"
 -> "äöü€xyz"
-</code></pre>
+</pre>
 
 <p>A backslash in a transient symbol name at the end of a line discards the
 newline, and continues the name in the next line. In that case, all leading
 spaces and tabs in that line are discarded, to allow proper source code
 indentation.
 
-<p><pre><code>
+<pre>
 : "abc\
    def"
 -> "abcdef"
@@ -853,7 +858,7 @@ indentation.
    y \
    z"
 -> "x y z"
-</code></pre>
+</pre>
 
 <p>The index for transient symbols is local when <code><a
 href="refL.html#load">load</a></code>ing a source file. With that mechanism, it
@@ -903,14 +908,14 @@ If the dot in a dotted-pair notation is immediately followed by a closing
 parenthesis, it indicates that the CDR of the last cell points back to the
 beginning of that list.
 
-<pre><code>
+<pre>
 : (let L '(a b c) (conc L L))
 -> (a b c .)
 : (cdr '(a b c .))
 -> (b c a .)
 : (cddddr '(a b c .))
 -> (b c a .)
-</code></pre>
+</pre>
 
 <p>A similar result can be achieved with the function <code><a
 href="refC.html#circ">circ</a></code>. Such lists must be used with care,
@@ -930,7 +935,7 @@ href="refR.html#read">read</a></code>ing an expression, and are not seen by the
 href="refQ.html#quote">quote</a></code> function. Note that the single quote
 character is also printed instead of the full function name.
 
-<pre><code>
+<pre>
 : '(a b c)
 -> (a b c)
 : '(quote . a)
@@ -939,7 +944,7 @@ character is also printed instead of the full function name.
 -> 'a
 : (list 'quote 'a)   # (quote a)
 -> '(a)
-</code></pre>
+</pre>
 
 <p>A comma (<code>,</code>) will cause the reader to collect the following data
 item into an <code><a href="refI.html#idx">idx</a></code> tree in the global
@@ -952,28 +957,28 @@ comma read macro mechanism is disabled.
 <p>A single backquote character "<code>`</code>" will cause the reader to
 evaluate the following expression, and return the result.
 
-<pre><code>
+<pre>
 : '(a `(+ 1 2 3) z)
 -> (a 6 z)
-</code></pre>
+</pre>
 
 <p>A tilde character <code>~</code> inside a list will cause the reader to
 evaluate the following expression, and (destructively) splice the result into
 the list.
 
-<pre><code>
+<pre>
 : '(a b c ~(list 'd 'e 'f) g h i)
 -> (a b c d e f g h i)
-</code></pre>
+</pre>
 
 <p>When a tilde character is used to separate two symbol names (without
 surrounding whitespace), the first is taken as a namespace to look up the
 second.
 
-<pre><code>
+<pre>
 : 'libA~foo  # Look up 'foo' in namespace 'libA'
 -> libA~foo  # "foo" is not interned in the current namespace
-</code></pre>
+</pre>
 
 <p>Reading <code>libA~foo</code> is equivalent to switching the current
 namespace search order to <code>libA</code> <i>only</i> (with <code><a
@@ -987,23 +992,23 @@ href="refS.html#symbols">symbols</a></code>), reading the symbol
 parentheses. A closing bracket will match the innermost opening bracket, or all
 currently open parentheses.
 
-<pre><code>
+<pre>
 : '(a (b (c (d]
 -> (a (b (c (d))))
 : '(a (b [c (d]))
 -> (a (b (c (d))))
-</code></pre>
+</pre>
 
 <p>Finally, reading the sequence '<code>{}</code>' will result in a new
 anonymous symbol with value <code>NIL</code>, equivalent to a call to <code><a
 href="refB.html#box">box</a></code> without arguments.
 
-<pre><code>
+<pre>
 : '({} {} {})
 -> ($177066763035351 $177066763035353 $177066763035355)
 : (mapcar val @)
 -> (NIL NIL NIL)
-</code></pre>
+</pre>
 
 
 <p><hr>
@@ -1023,23 +1028,23 @@ according to these three rules.
 
 </ul>
 
-<pre><code>
+<pre>
 : 1234
 -> 1234        # Number evaluates to itself
 : *Pid
 -> 22972       # Symbol evaluates to its VAL
 : (+ 1 2 3)
 -> 6           # List is evaluated as a function call
-</code></pre>
+</pre>
 
 <p>For the third rule, however, things get a bit more involved. First - as a
 special case - if the CAR of the list is a number, the whole list is returned as
 it is:
 
-<pre><code>
+<pre>
 : (1 2 3 4 5 6)
 -> (1 2 3 4 5 6)
-</code></pre>
+</pre>
 
 <p>This is not really a function call, but just a convenience to avoid having to
 quote simple data lists. The interpreter needs to check it anyway, and returning
@@ -1077,17 +1082,17 @@ not exist in PicoLisp but is implied from context.
 rules. In the most common case, the CAR will be a symbol defined as a function,
 like the <code>*</code> in:
 
-<pre><code>
+<pre>
 : (* 1 2 3)    # Call the function '*'
 -> 6
-</code></pre>
+</pre>
 
 <p>Inspecting the VAL of <code>*</code> gives
 
-<pre><code>
+<pre>
 : *            # Get the VAL of the symbol '*'
 -> 67318096
-</code></pre>
+</pre>
 
 <p>The VAL of <code>*</code> is a number. In fact, it is the numeric
 representation of a function pointer, i.e. a pointer to executable code. This
@@ -1095,7 +1100,7 @@ is the case for all built-in functions of PicoLisp.
 
 <p>Other functions in turn are written as Lisp expressions:
 
-<pre><code>
+<pre>
 : (de foo (X Y)            # Define the function 'foo'
    (* (+ X Y) (+ X Y)) )
 -> foo
@@ -1103,18 +1108,18 @@ is the case for all built-in functions of PicoLisp.
 -> 25
 : foo                      # Get the VAL of the symbol 'foo'
 -> ((X Y) (* (+ X Y) (+ X Y)))
-</code></pre>
+</pre>
 
 <p>The VAL of <code>foo</code> is a list. It is the list that was assigned to
 <code>foo</code> with the <code>de</code> function. It would be perfectly legal
 to use <code>setq</code> instead of <code>de</code>:
 
-<pre><code>
+<pre>
 : (setq foo '((X Y) (* (+ X Y) (+ X Y))))
 -> ((X Y) (* (+ X Y) (+ X Y)))
 : (foo 2 3)
 -> 25
-</code></pre>
+</pre>
 
 <p>If the VAL of <code>foo</code> were another symbol, that symbol's VAL would
 be used instead to search for an executable function.
@@ -1122,16 +1127,16 @@ be used instead to search for an executable function.
 <p>As we said above, if the CAR of the evaluated expression is not a symbol but
 a list, that list is evaluated to obtain an executable function.
 
-<pre><code>
+<pre>
 : ((intern (pack "c" "a" "r")) (1 2 3))
 -> 1
-</code></pre>
+</pre>
 
 <p>Here, the <code>intern</code> function returns the symbol <code>car</code>
 whose VAL is used then. It is also legal, though quite dangerous, to use the <a
 id="codePointer">code-pointer</a> directly:
 
-<pre><code>
+<pre>
 : *
 -> 67318096
 : ((* 2 33659048) 1 2 3)
@@ -1140,7 +1145,7 @@ id="codePointer">code-pointer</a> directly:
 -> 6
 : ((quote . 1234) (1 2 3))
 Segmentation fault
-</code></pre>
+</pre>
 
 <p>When an executable function is defined in Lisp itself, we call it a <a
 id="lambda"><i>lambda expression</i></a>. A lambda expression always has a
@@ -1183,45 +1188,45 @@ expression body.
 <p>In all cases, the return value is the result of the last expression in the
 body.
 
-<pre><code>
+<pre>
 : (de foo (X Y Z)                   # CAR is a list of symbols
    (list X Y Z) )                   # Return a list of all arguments
 -> foo
 : (foo (+ 1 2) (+ 3 4) (+ 5 6))
 -> (3 7 11)                         # all arguments are evaluated
-</code></pre>
+</pre>
 
-<pre><code>
+<pre>
 : (de foo @                         # CAR is the symbol '@'
    (list (next) (next) (next)) )    # Return the first three arguments
 -> foo
 : (foo (+ 1 2) (+ 3 4) (+ 5 6))
 -> (3 7 11)                         # all arguments are evaluated
-</code></pre>
+</pre>
 
-<pre><code>
+<pre>
 : (de foo X                         # CAR is a single symbol
    X )                              # Return the argument
 -> foo
 : (foo (+ 1 2) (+ 3 4) (+ 5 6))
 -> ((+ 1 2) (+ 3 4) (+ 5 6))        # the whole unevaluated list is returned
-</code></pre>
+</pre>
 
 <p>Note that these forms can also be combined. For example, to evaluate only the
 first two arguments, bind the results to <code>X</code> and <code>Y</code>, and
 bind all other arguments (unevaluated) to <code>Z</code>:
 
-<pre><code>
+<pre>
 : (de foo (X Y . Z)                 # CAR is a list with a dotted-pair tail
    (list X Y Z) )                   # Return a list of all arguments
 -> foo
 : (foo (+ 1 2) (+ 3 4) (+ 5 6))
 -> (3 7 ((+ 5 6)))                  # Only the first two arguments are evaluated
-</code></pre>
+</pre>
 
 <p>Or, a single argument followed by a variable number of arguments:
 
-<pre><code>
+<pre>
 : (de foo (X . @)                   # CAR is a dotted-pair with '@'
    (println X)                      # print the first evaluated argument
    (while (args)                    # while there are more arguments
@@ -1232,7 +1237,7 @@ bind all other arguments (unevaluated) to <code>Z</code>:
 7                                   # next argument
 11                                  # and the last argument
 -> 11
-</code></pre>
+</pre>
 
 <p>In general, if more than the expected number of arguments is supplied to a
 function, these extra arguments will be ignored. Missing arguments default to
@@ -1263,17 +1268,17 @@ this function do not require another library search.
 symbols cannot be used directly in a function-passing context (i.e.
 "<code>apply</code>" them) like
 
-<pre><code>
+<pre>
 (apply + (1 2 3))
 (mapcar inc (1 2 3))
-</code></pre>
+</pre>
 
 <p>These calls work because <code>+</code> and <code>inc</code> already have a
 (function) value at this point. Applying a shared library function like
 
-<pre><code>
+<pre>
 (apply ext:Base64 (1 2 3))
-</code></pre>
+</pre>
 
 <p>works <i>only</i> if <code>ext:Base64</code> was either called before (and
 thus automatically received a function definition), or was fetched explicitly
@@ -1282,9 +1287,9 @@ with <code>(getd 'ext:Base64)</code>.
 <p>Therefore, it is recommended to always apply such functions by passing the
 symbol itself and not just the value:
 
-<pre><code>
+<pre>
 (apply 'ext:Base64 (1 2 3))
-</code></pre>
+</pre>
 
 
 <p><hr>
@@ -1328,9 +1333,9 @@ environment is executed
 <p>Before using many coroutines, make sure you have sufficient stack space, e.g.
 by calling
 
-<pre><code>
+<pre>
 $ ulimit -s unlimited
-</code></pre>
+</pre>
 
 <p>Without that, the stack limit in Linux is typically 8 MiB.
 
@@ -1379,7 +1384,7 @@ all variable bindings restored, and all files closed. If the standard input is
 not from a terminal, the interpreter terminates. Otherwise it is reset to its
 top-level state.
 
-<pre><code>
+<pre>
 : (de foo (A B) (badFoo A B))       # 'foo' calls an undefined symbol
 -> foo
 : (foo 3 4)                         # Call 'foo'
@@ -1391,7 +1396,7 @@ badFoo -- Undefined
 -> 4
 ?                                   # Empty line: Exit
 :
-</code></pre>
+</pre>
 
 <p>Errors can be caught with <code><a href="refC.html#catch">catch</a></code>,
 if a list of substrings of possible error messages is supplied for the first
@@ -1418,21 +1423,21 @@ makes the assignment to temporary variables unnecessary.
 are available in <code>@@@</code>, <code>@@</code> and <code>@</code>, in that
 order (i.e the latest result is in <code>@</code>).
 
-<pre><code>
+<pre>
 : (+ 1 2 3)
 -> 6
 : (/ 128 4)
 -> 32
 : (- @ @@)        # Subtract the last two results
 -> 26
-</code></pre>
+</pre>
 </dd>
 
 <dt>Flow functions</dt>
 <dd>Flow functions store the non-nil results of controlling expressions, and
 logic functions their non-nil results, in <code>@</code>.
 
-<pre><code>
+<pre>
 : (while (read) (println 'got: @))
 abc            # User input
 got: abc       # print result
@@ -1447,7 +1452,7 @@ NIL
 -> 999
 : L
 -> (1 2 3 4 5 1 2 999 4 5)
-</code></pre>
+</pre>
 
 <p>Functions with controlling expressions are
    <a href="refC.html#case">case</a>,
@@ -1517,10 +1522,10 @@ greater than anything else.
 <p>To demonstrate this, <code><a href="refS.html#sort">sort</a></code> a list of
 mixed data types:
 
-<pre><code>
+<pre>
 : (sort '("abc" T (d e f) NIL 123 DEF))
 -> (NIL 123 DEF "abc" (d e f) T)
-</code></pre>
+</pre>
 
 <p>See also <code><a href="refM.html#max">max</a></code>, <code><a
 href="refM.html#min">min</a></code>, <code><a
@@ -1747,16 +1752,16 @@ recommended.
 href="refB.html#be">be</a></code> function. For example, a Prolog fact
 '<code>likes(john,mary).</code>' is written in Pilog as:
 
-<pre><code>
+<pre>
 (be likes (John Mary))
-</code></pre>
+</pre>
 
 <p>and a rule '<code>likes(john,X) :- likes(X,wine), likes(X,food).</code>' is
 in Pilog:
 
-<pre><code>
+<pre>
 (be likes (John @X) (likes @X wine) (likes @X food))
-</code></pre>
+</pre>
 
 <p>As in Prolog, the difference between facts and rules is that the latter ones
 have conditions, and usually contain variables.
@@ -1772,9 +1777,9 @@ It will match during unification, but will not be bound to the matched values.
 <p>An interactive query can be done with the <code><a
 href="ref_.html#?">?</a></code> function:
 
-<pre><code>
+<pre>
 (? (likes John @X))
-</code></pre>
+</pre>
 
 <p>This will print all solutions, waiting for user input after each line. If
 <code>Ctrl-D</code> or a non-empty line is typed, it will terminate.
@@ -1831,22 +1836,22 @@ the head of the programmer. Here are the most commonly used ones:
 
 <p>For example, a local variable could easily overshadow a function definition:
 
-<pre><code>
+<pre>
 : (de max-speed (car)
    (.. (get car 'speeds) ..) )
 -> max-speed
-</code></pre>
+</pre>
 
 <p>Inside the body of <code>max-speed</code> (and all other functions called
 during that execution) the kernel function <code>car</code> is redefined to some
 other value, and will surely crash if something like <code>(car Lst)</code> is
 executed. Instead, it is safe to write:
 
-<pre><code>
+<pre>
 : (de max-speed (Car)            # 'Car' with upper case first letter
    (.. (get Car 'speeds) ..) )
 -> max-speed
-</code></pre>
+</pre>
 
 <p>Note that there are also some strict naming rules (as opposed to the
 voluntary conventions) that are required by the corresponding kernel
@@ -1869,10 +1874,10 @@ with transient symbols.
 <p>The symbols <code>T</code> and <code>NIL</code> are global constants, so care
 should be taken not to bind them to some other value by mistake:
 
-<pre><code>
+<pre>
 (de foo (R S T)
    ...
-</code></pre>
+</pre>
 
 <p>However, <code><a href="refL.html#lint">lint</a></code> will issue a warning
 in such a case.
@@ -1971,9 +1976,9 @@ evaluates every second argument (giving any kind of value), while it does
 <i>not</i> evaluate the others (<code>var</code>s, here typically symbols). This
 could be specified as:
 
-<pre><code>
+<pre>
    (setq var1 'any1 var2 'any2 ..) -> any
-</code></pre>
+</pre>
 
 <p>A dotted pair notation in the argument list like <code>(... 'any .
 prg)</code> indicates an unevaluated list of further arguments.

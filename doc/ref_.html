@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -23,7 +28,7 @@ returned. <code>!</code> is normally inserted into existing programs with the
 href="refE.html#e">e</a></code>, <code><a href="ref_.html#%5E">^</a></code> and
 <code><a href="refD.html#*Dbg">*Dbg</a></code>.
 
-<pre><code>
+<pre>
 : (de foo (N) (and (println 1) (! println N) (println 2)))
 -> foo
 : (foo 7)
@@ -40,7 +45,7 @@ href="refE.html#e">e</a></code>, <code><a href="ref_.html#%5E">^</a></code> and
 7                 # Executed '(println N)'
 2                 # Executed '(println 2)'
 -> 2
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="$"><code>($ sym|lst lst . prg) -> any</code></a></dt>
 <dd>Low level trace function: The first argument <code>sym|lst</code> is printed
@@ -54,14 +59,14 @@ similar way (this time with an equals sign <code>=</code> instead of a colon)
 and returned. <code>$</code> is normally inserted into existing programs with
 the <code><a href="refT.html#trace">trace</a></code> function.
 
-<pre><code>
+<pre>
 : (de foo (A B) ($ foo (A B) (* A B)))
 -> foo
 : (foo 3 4)
  foo : 3 4        # Function entry, arguments 3 and 4
  foo = 12         # Function exit, return value 12
 -> 12
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="$dat"><code>($dat 'sym1 ['sym2]) -> dat</code></a></dt>
 <dd>Converts a string <code>sym1</code> in ISO format to a <code><a
@@ -71,12 +76,12 @@ href="refD.html#date">date</a></code>, optionally using a delimiter character
 href="refS.html#strDat">strDat</a></code> and <code><a
 href="refE.html#expDat">expDat</a></code>.
 
-<pre><code>
+<pre>
 : ($dat "20070601")
 -> 733134
 : ($dat "2007-06-01" "-")
 -> 733134
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="$tim"><code>($tim 'sym) -> tim</code></a></dt>
 <dd>Converts a string to a <code><a href="refT.html#time">time</a></code>. The
@@ -84,14 +89,14 @@ minutes and seconds are optional and default to zero. See also <code><a
 href="refT.html#tim$">tim$</a></code> and <code><a
 href="ref_.html#$dat">$dat</a></code>.
 
-<pre><code>
+<pre>
 : (time ($tim "10:57:56"))
 -> (10 57 56)
 : (time ($tim "10:57"))
 -> (10 57 0)
 : (time ($tim "10"))
 -> (10 0 0)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="%25"><code>(% 'num ..) -> num</code></a></dt>
 <dd>Returns the remainder from the divisions of successive <code>num</code>
@@ -100,7 +105,7 @@ arguments evaluates to <code>NIL</code>, it is returned immediately. See also
 <code><a href="ref_.html#/">/</a></code> and <code><a
 href="ref_.html#*/">*/</a></code> .
 
-<pre><code>
+<pre>
 : (% 17 5)
 -> 2
 : (% -17 5)  # Sign is that of the first argument
@@ -111,14 +116,14 @@ href="ref_.html#*/">*/</a></code> .
 -> 5
 : (% 15 10 2)  # (% 15 10) -> 5, then (% 5 2) -> 1
 -> 1
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="%25@"><code>(%@ 'cnt|sym 'any 'any ..) -> any</code></a></dt>
 <dd>Convenience function for a common use case of <code><a
 href="refN.html#native">native</a></code>. <code>(%@ "fun" ...)</code> is
 equivalent to <code>(native "@" "fun" ...)</code>.
 
-<pre><code>
+<pre>
 : (%@ "getenv" 'S "TERM")  # Same as (sys "TERM")
 -> "xterm"
 : (%@ "symlink" 'I "file" "link")
@@ -131,7 +136,7 @@ equivalent to <code>(native "@" "fun" ...)</code>.
    (%@ "time" NIL '(Tim (8 B . 8)))  # time_t 8   # Get time_t structure
    (%@ "localtime" '(I . 9) (cons NIL (8) Tim)) ) # Read local time
 -> (43 19 14 6 10 120 5 310 0)  # 14:19:43, Nov 6th, 2020
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="&"><code>(& 'num ..) -> num</code></a></dt>
 <dd>Returns the bitwise <code>AND</code> of all <code>num</code> arguments. When
@@ -140,12 +145,12 @@ See also <code><a href="ref_.html#%7C">|</a></code>, <code><a
 href="refX.html#x%7C">x|</a></code> and <code><a
 href="refB.html#bit?">bit?</a></code>.
 
-<pre><code>
+<pre>
 : (& 6 3)
 -> 2
 : (& 7 3 1)
 -> 1
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="*"><code>(* 'num ..) -> num</code></a></dt>
 <dd>Returns the product of all <code>num</code> arguments. When one of the
@@ -154,25 +159,25 @@ arguments evaluates to <code>NIL</code>, it is returned immediately. See also
 href="ref_.html#*/">*/</a></code>, <code><a href="ref_.html#+">+</a></code> and
 <code><a href="ref_.html#-">-</a></code>.
 
-<pre><code>
+<pre>
 : (* 1 2 3)
 -> 6
 : (* 5 3 2 2)
 -> 60
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="**"><code>(** 'num1 'num2) -> num</code></a></dt>
 <dd>Integer exponentiation: Returns <code>num1</code> to the power of
 <code>num2</code>.
 
-<pre><code>
+<pre>
 : (** 2 3)
 -> 8
 : (** 100 100)
 -> 10000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000000000000000000000000000000000000000
 00000000000000000000000000000000000000000000
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="*/"><code>(*/ 'num1 ['num2 ..] 'num3) -> num</code></a></dt>
 <dd>Returns the product of <code>num1</code> and all following <code>num2</code>
@@ -185,7 +190,7 @@ by) the scale factor. See also <code><a href="ref_.html#*">*</a></code>,
 href="ref_.html#+">+</a></code>, <code><a href="ref_.html#-">-</a></code> and
 <code><a href="refS.html#sqrt">sqrt</a></code>.
 
-<pre><code>
+<pre>
 : (*/ 3 4 2)
 -> 6
 : (*/ 1234 2 10)
@@ -203,7 +208,7 @@ href="ref_.html#+">+</a></code>, <code><a href="ref_.html#-">-</a></code> and
 : (format (*/ 9.9 9.789 9.56789 `(* 1.0 1.0)) *Scl)
 -> "927.23474457900000000000"
 
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="+"><code>(+ 'num ..) -> num</code></a></dt>
 <dd>Returns the sum of all <code>num</code> arguments. When one of the arguments
@@ -212,18 +217,18 @@ href="refI.html#inc">inc</a></code>, <code><a href="ref_.html#-">-</a></code>,
 <code><a href="ref_.html#*">*</a></code>, <code><a
 href="ref_.html#/">/</a></code> and <code><a href="ref_.html#*/">*/</a></code>.
 
-<pre><code>
+<pre>
 : (+ 1 2 3)
 -> 6
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="++"><code>(++ var) -> any</code></a></dt>
 <dd>Pops the first element (CAR) from the stack in <code>var</code>. <code>(++
 Lst)</code> is equivalent to <code>(pop 'Lst)</code>. See also <code><a
 href="refP.html#pop">pop</a></code>.
 
-<pre><code>
-</code></pre></dd>
+<pre>
+</pre></dd>
 
 <dt><a id="-"><code>(- 'num ..) -> num</code></a></dt>
 <dd>Returns the difference of the first <code>num</code> argument and all
@@ -234,12 +239,12 @@ href="ref_.html#+">+</a></code>, <code><a href="ref_.html#*">*</a></code>,
 <code><a href="ref_.html#/">/</a></code> and <code><a
 href="ref_.html#*/">*/</a></code>.
 
-<pre><code>
+<pre>
 : (- 7)
 -> -7
 : (- 7 2 1)
 -> 4
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="-%3E"><code>(-&gt; any [cnt]) -> any</code></a></dt>
 <dd>Searches for the value of <code>any</code> (typically a <a
@@ -248,12 +253,12 @@ level (or level <code>cnt</code>) in the current environment. See also <code><a
 href="refP.html#prove">prove</a></code> and <code><a
 href="refU.html#unify">unify</a></code>.
 
-<pre><code>
+<pre>
 : (? (append (1 2 3) (4 5 6) @X) (^ @ (println 'X '= (-> @X))))
 X = (1 2 3 4 5 6)
  @X=(1 2 3 4 5 6)
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="/"><code>(/ 'num ..) -> num</code></a></dt>
 <dd>Returns the first <code>num</code> argument successively divided by all
@@ -263,12 +268,12 @@ is returned immediately. See also <code><a href="ref_.html#*">*</a></code>,
 href="ref_.html#%25">%</a></code>, <code><a href="ref_.html#+">+</a></code> and
 <code><a href="ref_.html#-">-</a></code>.
 
-<pre><code>
+<pre>
 : (/ 12 3)
 -> 4
 : (/ 60 -3 2 2)
 -> -5
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id=":"><code>(: sym|0 [sym1|cnt ..]) -> any</code></a></dt>
 <dd>Fetches a value <code>any</code> from the properties (or value) of a symbol,
@@ -279,12 +284,12 @@ methods or <code><a href="refW.html#with">with</a></code> bodies. <code>(:
 href="ref_.html#;">;</a></code>, <code><a href="ref_.html#=:">=:</a></code> and
 <code><a href="ref_.html#::">::</a></code>.
 
-<pre><code>
+<pre>
 : (put 'X 'a 1)
 -> 1
 : (with 'X (: a))
 -> 1
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="::"><code>(:: sym [sym1|cnt .. sym2]) -> var</code></a></dt>
 <dd>Fetches a property for a property key <code>sym</code> or <code>sym2</code>
@@ -299,10 +304,10 @@ href="ref_.html#=:">=:</a></code>, <code><a
 href="refP.html#prop">prop</a></code> and <code><a
 href="ref_.html#:">:</a></code>.
 
-<pre><code>
+<pre>
 : (with 'X (=: cnt 0) (inc (:: cnt)) (: cnt))
 -> 1
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id=";"><code>(; 'sym1|lst [sym2|cnt ..]) -> any</code></a></dt>
 <dd>Fetches a value <code>any</code> from the properties of a symbol, or from a
@@ -311,7 +316,7 @@ list, by applying the <code><a href="refG.html#get">get</a></code> algorithm to
 href="ref_.html#:">:</a></code>, <code><a href="ref_.html#=:">=:</a></code> and
 <code><a href="ref_.html#::">::</a></code>.
 
-<pre><code>
+<pre>
 : (put 'A 'a 1)
 -> 1
 : (put 'A 'b 'B)
@@ -322,53 +327,53 @@ href="ref_.html#:">:</a></code>, <code><a href="ref_.html#=:">=:</a></code> and
 -> 1
 : (; 'A b c)
 -> 7
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="%3C"><code>(&lt; 'any ..) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when all arguments <code>any</code> are in strictly
 increasing order. See also <a href="ref.html#cmp">Comparing</a>.
 
-<pre><code>
+<pre>
 : (&lt; 3 4)
 -> T
 : (&lt; 'a 'b 'c)
 -> T
 : (&lt; 999 'a)
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="%3C="><code>(&lt;= 'any ..) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when all arguments <code>any</code> are in strictly
 non-decreasing order. See also <a href="ref.html#cmp">Comparing</a>.
 
-<pre><code>
+<pre>
 : (&lt;= 3 3)
 -> T
 : (&lt;= 1 2 3)
 -> T
 : (&lt;= "abc" "abc" "def")
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="%3C%3E"><code>(&lt;&gt; 'any ..) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when not all <code>any</code> arguments are equal
 (structure equality). <code>(&lt;&gt; 'any ..)</code> is equivalent to
 <code>(not (= 'any ..))</code>. See also <a href="ref.html#cmp">Comparing</a>.
 
-<pre><code>
+<pre>
 : (&lt;&gt; 'a 'b)
 -> T
 : (&lt;&gt; 'a 'b 'b)
 -> T
 : (&lt;&gt; 'a 'a 'a)
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="="><code>(= 'any ..) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when all <code>any</code> arguments are equal
 (structure equality). See also <a href="ref.html#cmp">Comparing</a>.
 
-<pre><code>
+<pre>
 : (= 6 (* 1 2 3))
 -> T
 : (= "a" "a")
@@ -377,7 +382,7 @@ non-decreasing order. See also <a href="ref.html#cmp">Comparing</a>.
 -> T
 : (= (1 (2) 3) (1 (2) 3))
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="=0"><code>(=0 'any) -> 0 | NIL</code></a></dt>
 <dd>Returns <code>0</code> when <code>any</code> is a number with value zero.
@@ -388,23 +393,23 @@ href="refG.html#ge0">ge0</a></code>, <code><a
 href="refG.html#gt0">gt0</a></code> and <code><a
 href="ref_.html#=1">=1</a></code>.
 
-<pre><code>
+<pre>
 : (=0 (- 6 3 2 1))
 -> 0
 : (=0 'a)
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="=1"><code>(=1 'any) -> 1 | NIL</code></a></dt>
 <dd>Returns <code>1</code> when <code>any</code> is a number with value one.
 See also <code><a href="ref_.html#=0">=0</a></code>.
 
-<pre><code>
+<pre>
 : (=1 (- 6 3 2))
 -> 1
 : (=1 'a)
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="=:"><code>(=: sym|0 [sym1|cnt ..] 'any) -> any</code></a></dt>
 <dd>Stores a new value <code>any</code> for a property key (or in the symbol
@@ -418,28 +423,28 @@ typically in methods or <code><a href="refW.html#with">with</a></code> bodies.
 See also <code><a href="refP.html#put">put</a></code>, <code><a
 href="ref_.html#:">:</a></code> and <code><a href="ref_.html#::">::</a></code>.
 
-<pre><code>
+<pre>
 : (with 'X (=: a 1) (=: b 2))
 -> 2
 : (get 'X 'a)
 -> 1
 : (get 'X 'b)
 -> 2
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="=="><code>(== 'any ..) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when all <code>any</code> arguments are the same
 (pointer equality). See also <code><a href="refN.html#n==">n==</a></code> and <a
 href="ref.html#cmp">Comparing</a>.
 
-<pre><code>
+<pre>
 : (== 'a 'a)
 -> T
 : (== 'NIL NIL (val NIL) (car NIL) (cdr NIL))
 -> T
 : (== (1 2 3) (1 2 3))
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="===="><code>(====) -> NIL</code></a></dt>
 <dd>Close the current transient scope by clearing the transient index. All
@@ -447,7 +452,7 @@ transient symbols become hidden and inaccessible by the reader.
 See also <code><a href="refE.html#extern">extern</a></code> and <code><a
 href="refI.html#intern">intern</a></code>.
 
-<pre><code>
+<pre>
 : (setq S "abc")           # Read "abc"
 -> "abc"
 : (== S "abc")             # Read again, get the same symbol
@@ -456,50 +461,50 @@ href="refI.html#intern">intern</a></code>.
 -> NIL
 : (== S "abc")             # Read again, get another symbol
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="=T"><code>(=T 'any) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when <code>any</code> is the symbol <code>T</code>.
 <code>(=T X)</code> is equivalent to <code>(== T X)</code>. See also <a
 href="refN.html#nT">nT</a>.
 
-<pre><code>
+<pre>
 : (=T 0)
 -> NIL
 : (=T "T")
 -> NIL
 : (=T T)
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="%3E"><code>(> 'any ..) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when all arguments <code>any</code> are in strictly
 decreasing order. See also <a href="ref.html#cmp">Comparing</a>.
 
-<pre><code>
+<pre>
 : (> 4 3)
 -> T
 : (> 'A 999)
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="%3E="><code>(>= 'any ..) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when all arguments <code>any</code> are in strictly
 non-increasing order. See also <a href="ref.html#cmp">Comparing</a>.
 
-<pre><code>
+<pre>
 : (>= 'A 999)
 -> T
 : (>= 3 2 2 1)
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="%3E%3E"><code>(&gt;&gt; 'cnt 'num) -> num</code></a></dt>
 <dd>Shifts right the <code>num</code> argument by <code>cnt</code>
 bit-positions. If <code>cnt</code> is negative, a corresponding left shift is
 performed. See also <code><a href="refR.html#rev">rev</a></code>.
 
-<pre><code>
+<pre>
 : (>> 1 8)
 -> 4
 : (>> 3 16)
@@ -508,7 +513,7 @@ performed. See also <code><a href="refR.html#rev">rev</a></code>.
 -> 128
 : (>> -1 -16)
 -> -32
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="?"><code>(? [sym ..] [pat 'any ..] . lst) -> flg</code></a></dt>
 <dd>Top-level function for interactive <a href="ref.html#pilog">Pilog</a>
@@ -522,7 +527,7 @@ for an initial Pilog environment. See also <code><a
 href="refP.html#pilog">pilog</a></code> and <code><a
 href="refS.html#solve">solve</a></code>.
 
-<pre><code>
+<pre>
 : (? (append (a b c) (d e f) @X))
  @X=(a b c d e f)
 -> NIL
@@ -545,7 +550,7 @@ href="refS.html#solve">solve</a></code>.
 1 (append NIL (b c) (b c))
  @X=(a) @Y=(b c).                      # Stopped
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="@"><code>@</code></a></dt>
 <dd>Holds the result of the last top level expression in the current
@@ -573,13 +578,13 @@ also <code><a href="refD.html#debug">debug</a></code>, <code><a
 href="ref_.html#!">!</a></code>, <code><a href="refE.html#e">e</a></code> and
 <code><a href="refD.html#*Dbg">*Dbg</a></code>.
 
-<pre><code>
+<pre>
 : (* (+ 3 4) (/ 7 0))
 !? (/ 7 0)
 Div/0
 ? ^
 -> (/ 7 0)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="%7C"><code>(| 'num ..) -> num</code></a></dt>
 <dd>Returns the bitwise <code>OR</code> of all <code>num</code> arguments. When
@@ -588,12 +593,12 @@ See also <code><a href="refX.html#%7C">x|</a></code>, <code><a
 href="ref_.html#&">&</a></code> and <code><a
 href="refB.html#bit?">bit?</a></code>.
 
-<pre><code>
+<pre>
 : (| 1 2)
 -> 3
 : (| 1 2 4 8)
 -> 15
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

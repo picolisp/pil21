@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,13 +26,13 @@ and two optional functions called when 'put'ting and/or 'get'ting a value. A
 argument is the relation of the back-link in the referred object. See also <a
 href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 (class +Ord +Entity)                   # Order class
 (rel pos (+List +Joint) ord (+Pos))    # List of positions in that order
 ...
 (class +Pos +Entity)                   # Position class
 (rel ord (+Joint) pos (+Ord))          # Back-link to the parent order
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="job"><code>(job 'lst . prg) -> any</code></a></dt>
 <dd>Executes a job within its own environment (as specified by symbol-value
@@ -44,7 +49,7 @@ href="refL.html#let">let</a></code>, <code><a
 href="refU.html#use">use</a></code> and <code><a
 href="refS.html#state">state</a></code>.
 
-<pre><code>
+<pre>
 : (de tst ()
    (job '((A . 0) (B . 0))
       (println (inc 'A) (inc 'B 2)) ) )
@@ -63,7 +68,7 @@ href="refS.html#state">state</a></code>.
    (job '((A . 3) (B . 6))
       (println (inc 'A) (inc 'B 2)) ) )
 -> tst
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="journal"><code>(journal ['T] 'any ..) -> T</code></a></dt>
 <dd>Reads journal data from the files with the names <code>any</code>, and
@@ -71,10 +76,10 @@ writes all changes to the database. If the first argument is <code>T</code>, the
 replication journal and transaction logs are disabled. See also <code><a
 href="refP.html#pool">pool</a></code>.
 
-<pre><code>
+<pre>
 : (journal "db.log")
 -> T
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

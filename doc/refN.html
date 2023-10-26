@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,9 +23,9 @@ enforce any requirements by itself, it only returns an error message if the
 <code>mis&gt;</code> message is explicitly called, e.g. by GUI functions. See
 also <a href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 (rel nr (+Need +Key +Number))  # Item number is mandatory
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="+Number"><code>+Number</code></a></dt>
 <dd>Class for numeric relations, a subclass of <code><a
@@ -28,9 +33,9 @@ href="refR.html#+relation">+relation</a></code>. Accepts an optional argument
 for the fixpoint scale (currently not used). See also <a
 href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 (rel pr (+Number) 2)  # Price, with two decimal places
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="n=="><code>(n== 'any ..) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when not all <code>any</code> arguments are the same
@@ -38,12 +43,12 @@ href="ref.html#dbase">Database</a>.
 'any ..))</code>. See also <code><a href="ref_.html#==">==</a></code> and <a
 href="ref.html#cmp">Comparing</a>.
 
-<pre><code>
+<pre>
 : (n== 'a 'a)
 -> NIL
 : (n== (1) (1))
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="n0"><code>(n0 'any) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when <code>any</code> is not a number with value
@@ -53,25 +58,25 @@ href="refL.html#le0">le0</a></code>, <code><a
 href="refG.html#ge0">ge0</a></code> and <code><a
 href="refG.html#gt0">gt0</a></code>.
 
-<pre><code>
+<pre>
 : (n0 (- 6 3 2 1))
 -> NIL
 : (n0 'a)
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="nT"><code>(nT 'any) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when <code>any</code> is not the symbol
 <code>T</code>. See also <a href="ref_.html#=T">=T</a>.
 
-<pre><code>
+<pre>
 : (nT 0)
 -> T
 : (nT "T")
 -> T
 : (nT T)
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="name"><code>(name 'sym) -> sym</code></a></dt>
 <dd>Returns a new transient symbol with the name of <code>sym</code>. See also
@@ -81,7 +86,7 @@ href="refS.html#symbols">symbols</a></code>, <code><a
 href="refZ.html#zap">zap</a></code> and <code><a
 href="refI.html#intern">intern</a></code>.
 
-<pre><code>
+<pre>
 : (name 'abc)
 -> "abc"
 : (name "abc")
@@ -90,7 +95,7 @@ href="refI.html#intern">intern</a></code>.
 -> "A17"
 : (name (new))
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="namespaces"><code>(namespaces ['flg]) -> lst</code></a></dt>
 <dd>(Debug mode only) Returns a list of all namespaces nested in the current
@@ -99,7 +104,7 @@ printed as a side effect. See also <code><a
 href="refS.html#symbols">symbols</a></code> and <code><a
 href="refS.html#shadows">shadows</a></code>.
 
-<pre><code>
+<pre>
 $ pil +
 : (namespaces)
 -> (pico vip llvm priv)
@@ -124,7 +129,7 @@ chess: (namespaces T)
       llvm
       priv
 -> (chess simul android steps browser pico svg vip gis llvm priv)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="nand"><code>(nand 'any ..) -> flg</code></a></dt>
 <dd>Logical NAND. The expressions <code>any</code> are evaluated from left to
@@ -137,7 +142,7 @@ href="refU.html#unless">unless</a></code>, <code><a
 href="refI.html#ifn">ifn</a></code> and <code><a
 href="refN.html#nond">nond</a></code>.
 
-<pre><code>
+<pre>
 : (nand (lt0 7) (read))
 -> T
 : (nand (lt0 -7) (read))
@@ -146,7 +151,7 @@ abc
 : (nand (lt0 -7) (read))
 NIL
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="native"><code>(native 'cnt1|sym1 'cnt2|sym2 'any 'any ..) -> any</code></a></dt>
 <dd>Calls a native function. The first argument should specify a shared object
@@ -164,7 +169,7 @@ href="native.html">Native C Calls</a>.
 <p><a id="natResult">The result specification</a> may either be one of the
 atoms
 
-<pre><code>
+<pre>
    NIL   void
    B     byte     # Byte (unsigned 8 bit)
    C     char     # Character (UTF-8, 1-4 bytes)
@@ -176,16 +181,16 @@ atoms
   -1.0   float    # Scaled fixpoint number
   +1.0   double   # Scaled fixpoint number
    T              # Direct Lisp value
-</code></pre>
+</pre>
 
 <p>or nested lists of these atoms with size specifications to denote arrays and
 structures, e.g.
 
-<pre><code>
+<pre>
    (N . 4)        # long[4];           -> (1 2 3 4)
    (N (C . 4))    # {long; char[4];}   -> (1234 ("a" "b" "c" NIL))
    (N (B . 7))    # {long; byte[7];}   -> (1234 (1 2 3 4 5 6 7))
-</code></pre>
+</pre>
 
 <p>Arguments can be
 <ul>
@@ -231,9 +236,9 @@ positive infinity <code>T</code> is returned.
 
 <p>A C function may in turn call a function
 
-<pre><code>
+<pre>
    long lisp(char*, long, long, long, long, long);
-</code></pre>
+</pre>
 
 <p>which accepts a symbol name as the first argument, and up to 5 numbers.
 <code>lisp()</code> calls that symbol with the five numbers, and expects a
@@ -245,12 +250,12 @@ href="refA.html#adr">adr</a></code>, <code><a
 href="refL.html#lisp">lisp</a></code> and <code><a
 href="refE.html#errno">errno</a></code>.
 
-<pre><code>
+<pre>
 : (native "@" "unlink" 'I "file")  # Same as (%@ "unlink" 'I "file")
 -> 0
 : (native "libcrypto.so" "SHA1" '(B . 20) "abcd" 4 0)
 -> (129 254 139 254 135 87 108 62 203 34 66 111 142 87 132 115 130 145 122 207)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="need"><code>(need 'cnt ['lst ['any]]) -> lst</code></a></dt>
 <dt><code>(need 'cnt ['num|sym]) -> lst</code></dt>
@@ -262,7 +267,7 @@ with <code>any</code> elements. In the second form, a list of <code>cnt</code>
 atomic values is returned. See also <code><a
 href="refR.html#range">range</a></code>.
 
-<pre><code>
+<pre>
 : (need 5)
 -> (NIL NIL NIL NIL NIL)  # Allocate 5 cells
 : (need 5 '(a b c))
@@ -275,7 +280,7 @@ href="refR.html#range">range</a></code>.
 -> (0 0 0 0 0 0 0)
 : (need 5 (2 3) 1)
 -> (1 1 1 2 3)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="new"><code>(new ['flg|num] ['typ ['any ..]]) -> obj</code></a></dt>
 <dd>Creates and returns a new object. If <code>flg</code> is given and
@@ -294,12 +299,12 @@ href="refT.html#type">type</a></code>, <code><a
 href="refI.html#isa">isa</a></code>, <code><a
 href="refS.html#send">send</a></code> and <a href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 : (new)
 -> $134426427
 : (new T '(+Address))
 -> {A3}
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="new!"><code>(new! 'typ ['any ..]) -> obj</code></a></dt>
 <dd><a href="ref.html#trans">Transaction</a> wrapper function for <code><a
@@ -310,14 +315,14 @@ href="refS.html#set!">set!</a></code>, <code><a
 href="refP.html#put!">put!</a></code> and <code><a
 href="refI.html#inc!">inc!</a></code>.
 
-<pre><code>
+<pre>
 : (new! '(+Item)  # Create a new item
    'nr 2                      # Item number
    'nm "Spare Part"           # Description
    'sup (db 'nr '+CuSu 2)     # Supplier
    'inv 100                   # Inventory
    'pr 12.50 )                # Price
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="next"><code>(next) -> any</code></a></dt>
 <dd>Can only be used inside functions with a variable number of arguments (with
@@ -327,7 +332,7 @@ href="refA.html#arg">arg</a></code>, <code><a
 href="refR.html#rest">rest</a></code>, and <code><a
 href="refP.html#pass">pass</a></code>.
 
-<pre><code>
+<pre>
 : (de foo @ (println (next)))          # Print next argument
 -> foo
 : (foo)
@@ -336,7 +341,7 @@ NIL
 : (foo 123)
 123
 -> 123
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="nil"><code>(nil . prg) -> NIL</code></a></dt>
 <dd>Executes <code>prg</code>, and returns <code>NIL</code>. See also <code><a
@@ -344,22 +349,22 @@ href="refT.html#t">t</a></code>, <code><a href="refP.html#prog">prog</a></code>,
 <code><a href="refP.html#prog1">prog1</a></code> and <code><a
 href="refP.html#prog2">prog2</a></code>.
 
-<pre><code>
+<pre>
 : (nil (println 'OK))
 OK
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="nil/1"><code>nil/1</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate expects an argument variable,
 and succeeds if that variable is bound to <code>NIL</code>. See also <code><a
 href="refN.html#not/1">not/1</a></code>.
 
-<pre><code>
+<pre>
 : (? @X NIL (nil @X))
  @X=NIL
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="noLint"><code>(noLint 'sym)</code></a></dt>
 <dt><code>(noLint 'sym|(sym . cls) 'sym2)</code></dt>
@@ -370,7 +375,7 @@ href="refN.html#not/1">not/1</a></code>.
 href="refL.html#lint">lint</a></code>. See also <code><a
 href="refL.html#lintAll">lintAll</a></code>.
 
-<pre><code>
+<pre>
 : (de foo ()
    (bar FreeVariable) )
 -> foo
@@ -382,7 +387,7 @@ href="refL.html#lintAll">lintAll</a></code>.
 -> (foo . FreeVariable)
 : (lint 'foo)
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="nond"><code>(nond ('any1 . prg1) ('any2 . prg2) ..) -> any</code></a></dt>
 <dd>Negated ("non-cond") multi-way conditional: If any of the <code>anyN</code>
@@ -395,14 +400,14 @@ href="refU.html#unless">unless</a></code>, <code><a
 href="refN.html#nor">nor</a></code> and <code><a
 href="refN.html#nand">nand</a></code>.
 
-<pre><code>
+<pre>
 : (nond
    ((= 3 3) (println 1))
    ((= 3 4) (println 2))
    (NIL (println 3)) )
 2
 -> 2
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="nor"><code>(nor 'any ..) -> flg</code></a></dt>
 <dd>Logical NOR. The expressions <code>any</code> are evaluated from left to
@@ -415,21 +420,21 @@ href="refU.html#unless">unless</a></code>, <code><a
 href="refI.html#ifn">ifn</a></code> and <code><a
 href="refN.html#nond">nond</a></code>.
 
-<pre><code>
+<pre>
 : (nor (lt0 7) (= 3 4))
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="not"><code>(not 'any) -> flg</code></a></dt>
 <dd>Logical negation. Returns <code>T</code> if <code>any</code> evaluates to
 <code>NIL</code>.
 
-<pre><code>
+<pre>
 : (not (== 'a 'a))
 -> NIL
 : (not (get 'a 'a))
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="not/1"><code>not/1</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if and only if
@@ -438,19 +443,19 @@ href="refN.html#nil/1">nil/1</a></code>, <code><a
 href="refT.html#true/0">true/0</a></code> and <code><a
 href="refF.html#fail/0">fail/0</a></code>.
 
-<pre><code>
+<pre>
 : (? (equal 3 4))
 -> NIL
 : (? (not (equal 3 4)))
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="nsp"><code>(nsp 'sym) -> sym</code></a></dt>
 <dd>Returns the (first) namespace where <code>sym</code> is found in, according
 to the current <code><a href="refS.html#symbols">symbols</a></code> search
 order. See also <code><a href="refP.html#pico">pico</a></code>.
 
-<pre><code>
+<pre>
 (load "@lib/gis.l")
 
 : (symbols '(gis pico))
@@ -461,7 +466,7 @@ gis: (nsp 'Zoom)
 -> gis
 gis: (nsp 'osmStat)
 -> gis
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="nth"><code>(nth 'lst 'cnt ..) -> lst</code></a></dt>
 <dd>Returns the tail of <code>lst</code> starting from the <code>cnt</code>'th
@@ -470,14 +475,14 @@ the CARs of the results in the same way. <code>(nth 'lst 2)</code> is equivalent
 to <code>(cdr 'lst)</code>. See also <code><a
 href="refG.html#get">get</a></code>.
 
-<pre><code>
+<pre>
 : (nth '(a b c d) 2)
 -> (b c d)
 : (nth '(a (b c) d) 2 2)
 -> (c)
 : (cdadr '(a (b c) d))
 -> (c)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="num?"><code>(num? 'any) -> num | NIL</code></a></dt>
 <dd>Returns <code>any</code> when the argument <code>any</code> is a number,
@@ -486,12 +491,12 @@ href="refS.html#sym?">sym?</a></code>, <code><a
 href="refA.html#atom">atom</a></code> and <code><a
 href="refP.html#pair">pair</a></code>.
 
-<pre><code>
+<pre>
 : (num? 123)
 -> 123
 : (num? (1 2 3))
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

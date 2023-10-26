@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -16,7 +21,7 @@
 href="ref.html#num-io">Numbers</a> and <code><a
 href="refS.html#scl">scl</a></code>.
 
-<pre><code>
+<pre>
 : (str "123.45")  # Default value of '*Scl' is 0
 -> (123)
 : (setq *Scl 3)
@@ -28,7 +33,7 @@ href="refS.html#scl">scl</a></code>.
 -> 123457
 : 12.3456
 -> 12346
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="*Sig1"><code>*Sig1</code></a></dt>
 <dt><a id="*Sig2"><code>*Sig2</code></a></dt>
@@ -42,10 +47,10 @@ href="refT.html#*TStp1">*TStp[12]</a></code>, <code><a
 href="refW.html#*Winch">*Winch</a></code> and <code><a
 href="refT.html#*Term">*Term</a></code>.
 
-<pre><code>
+<pre>
 : (de *Sig1 (msg 'SIGUSR1))
 -> *Sig1
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="*Solo"><code>*Solo</code></a></dt>
 <dd>A global variable indicating exclusive database access. Its value is
@@ -54,7 +59,7 @@ cooperative database locks when <code><a href="refL.html#lock">lock</a></code>
 is successfully called with a <code>NIL</code> (or non-<code>NIL</code>)
 argument. See also <code><a href="refZ.html#*Zap">*Zap</a></code>.
 
-<pre><code>
+<pre>
 : *Solo
 -> 0
 : (lock *DB)
@@ -73,7 +78,7 @@ argument. See also <code><a href="refZ.html#*Zap">*Zap</a></code>.
 -> T
 : *Solo
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="+Sn"><code>+Sn</code></a></dt>
 <dd>Prefix class for maintaining indexes according to a modified soundex
@@ -82,9 +87,9 @@ href="refS.html#+String">+String</a></code> relations. Typically used in
 combination with the <code><a href="refI.html#+Idx">+Idx</a></code> prefix
 class. See also <a href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 (rel nm (+Sn +Idx +String))  # Name
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="+String"><code>+String</code></a></dt>
 <dd>Class for string (transient symbol) relations, a subclass of <code><a
@@ -92,9 +97,9 @@ href="refS.html#+Symbol">+Symbol</a></code>. Accepts an optional argument for
 the string length (currently not used). See also <a
 href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 (rel nm (+Sn +Idx +String))  # Name, indexed by soundex and substrings
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="+Swap"><code>+Swap</code></a></dt>
 <dd>Prefix class for <code><a href="refR.html#+relation">+relation</a></code>s
@@ -105,10 +110,10 @@ large and/or rarely accessed. Doesn't work with bidirectional relations
 href="refI.html#+index">+index</a></code>). See also <a
 href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 (rel pw (+Swap +String))               # Password
 (rel nr (+Swap +List +Number))         # List of bignums
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="+Symbol"><code>+Symbol</code></a></dt>
 <dd>Class for symbolic relations, a subclass of <code><a
@@ -117,9 +122,9 @@ maintain internal symbols, as opposed to the more often-used <code><a
 href="refS.html#+String">+String</a></code> for transient symbols. See also <a
 href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 (rel perm (+List +Symbol))  # Permission list
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="same/3"><code>same/3</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the first
@@ -135,7 +140,7 @@ href="refF.html#fold/3">fold/3</a></code>, <code><a
 href="refP.html#part/3">part/3</a></code> and <code><a
 href="refT.html#tolr/3">tolr/3</a></code>.
 
-<pre><code>
+<pre>
 : (?
    @Nr 2
    @Nm "Spare"
@@ -144,7 +149,7 @@ href="refT.html#tolr/3">tolr/3</a></code>.
       (same @Nr @Item nr)
       (head @Nm @Item nm) ) )
  @Nr=2 @Nm="Spare" @Item={B2}
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="scan"><code>(scan 'tree ['fun] ['any1] ['any2] ['flg])</code></a></dt>
 <dd>Scans through a database tree by applying <code>fun</code> to all key-value
@@ -160,7 +165,7 @@ href="refI.html#iter">iter</a></code>, <code><a
 href="refI.html#init">init</a></code> and <code><a
 href="refS.html#step">step</a></code>.
 
-<pre><code>
+<pre>
 : (scan (tree 'nm '+Item))
 ("ASLRSNSTRSTN" {B3} . T) {B3}
 ("Additive" {B4}) {B4}
@@ -182,7 +187,7 @@ href="refS.html#step">step</a></code>.
 ("Metal Fittings" . {B5}) {B5}
 ("Spare Part" . {B2}) {B2}
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="scl"><code>(scl 'num [. prg]) -> num</code></a></dt>
 <dd>If <code>prg</code> is given, it binds <code><a
@@ -191,7 +196,7 @@ execution of <code>prg</code>. Otherwise, it sets <code><a
 href="refS.html#*Scl">*Scl</a></code> globally to <code>num</code>. See also <a
 href="ref.html#num-io">Numbers</a>.
 
-<pre><code>
+<pre>
 : (scl 0)
 -> 0
 : (str "123.45")
@@ -209,7 +214,7 @@ href="ref.html#num-io">Numbers</a>.
 -> (1235)
 : *Scl
 -> 3
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="script"><code>(script 'any ..) -> any</code></a></dt>
 <dd>The first <code>any</code> argument is <code><a
@@ -222,14 +227,14 @@ href="refR.html#rest">rest</a></code>. With that, the syntax in the script is
 the same as that in the body of a function with variable arguments (see <a
 href="ref.html#lambda">lambda expression</a>s, "when the CAR is the symbol @").
 
-<pre><code>
+<pre>
 $ cat x
 (* (next) (next))
 
 $ pil +
 : (script "x" 3 4)
 -> 12
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="search"><code>(search 'any 'lst ['any 'lst ..] ['fun]) -> lst</code></a></dt>
 <dt><code>(search 'lst) -> obj | NIL</code></dt>
@@ -250,7 +255,7 @@ Function</a>. See also <code><a href="refI.html#init">init</a></code>, <code><a
 href="refS.html#step">step</a></code> and <code><a
 href="refC.html#collect">collect</a></code>.
 
-<pre><code>
+<pre>
 : (for
    (Q
       (search
@@ -271,19 +276,19 @@ href="refC.html#collect">collect</a></code>.
    inv 100
    nm "Metal Fittings"
 -> {B5}
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="sect"><code>(sect 'lst1 'lst2) -> lst</code></a></dt>
 <dd>Returns the intersection of list arguments, all elements which are both in
 <code>lst1</code> and in <code>lst2</code>. See also <code><a
 href="refD.html#diff">diff</a></code>.
 
-<pre><code>
+<pre>
 : (sect (1 2 3 4) (3 4 5 6))
 -> (3 4)
 : (sect (1 2 3) (4 5 6))
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="seed"><code>(seed 'any) -> cnt</code></a></dt>
 <dd>Initializes the random generator's seed, and returns a pseudo random number
@@ -291,7 +296,7 @@ in the range -2147483648 .. +2147483647. See also <code><a
 href="refR.html#rand">rand</a></code> and <code><a
 href="refH.html#hash">hash</a></code>.
 
-<pre><code>
+<pre>
 : (seed "init string")
 -> -417605464
 : (rand)
@@ -301,7 +306,7 @@ href="refH.html#hash">hash</a></code>.
 
 : (seed (time))
 -> 128285383
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="seek"><code>(seek 'fun 'lst ..) -> lst</code></a></dt>
 <dd>Applies <code>fun</code> to <code>lst</code> and all successive CDRs, until
@@ -314,10 +319,10 @@ passed to <code>fun</code> in the same way. See also <code><a
 href="refF.html#find">find</a></code>, <code><a
 href="refP.html#pick">pick</a></code>.
 
-<pre><code>
+<pre>
 : (seek '((X) (> (car X) 9)) (1 5 8 12 19 22))
 -> (12 19 22)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="select"><code>(select [var ..] cls [hook|T] [var val ..]) -> obj | NIL</code></a></dt>
 <dd>(Debug mode only) Interactive database function, loosely modelled after the
@@ -337,7 +342,7 @@ terminates when Ctrl-D or a non-empty line is entered. The global variable
 also <a href="ref.html#dbase">Database</a> and <a
 href="ref.html#pilog">Pilog</a>.
 
-<pre><code>
+<pre>
 : (select +Item)                       # Show all items
 {B1} (+Item)
    nr 1
@@ -371,7 +376,7 @@ href="ref.html#pilog">Pilog</a>.
 4 "Enhancement Additive" 9.99 "Seven Oaks Ltd." {B4}
 5 "Metal Fittings" 79.80 "Active Parts Inc." {B5}
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="select/3"><code>select/3</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> database predicate that allows combined
@@ -390,7 +395,7 @@ href="refP.html#part/3">part/3</a></code>, <code><a
 href="refT.html#tolr/3">tolr/3</a></code> and <code><a
 href="refR.html#remote/2">remote/2</a></code>.
 
-<pre><code>
+<pre>
 : (?
    @Nr (2 . 5)          # Select all items with numbers between 2 and 5
    @Sup "Active"        # and suppliers matching "Active"
@@ -401,7 +406,7 @@ href="refR.html#remote/2">remote/2</a></code>.
  @Nr=(2 . 5) @Sup="Active" @Item={B3}
  @Nr=(2 . 5) @Sup="Active" @Item={B5}
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="send"><code>(send 'msg 'obj ['any ..]) -> any</code></a></dt>
 <dd>Sends the message <code>msg</code> to the object <code>obj</code>,
@@ -414,10 +419,10 @@ href="refM.html#meth">meth</a></code>, <code><a
 href="refS.html#super">super</a></code> and <code><a
 href="refE.html#extra">extra</a></code>.
 
-<pre><code>
+<pre>
 : (send 'stop> Dlg)  # Equivalent to (stop> Dlg)
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="seq"><code>(seq 'cnt|sym1) -> sym | NIL</code></a></dt>
 <dd>Sequential single step: Returns the <i>first</i> external symbol in the
@@ -425,14 +430,14 @@ href="refE.html#extra">extra</a></code>.
 <code>sym1</code> in the database, or <code>NIL</code> when the end of the
 database is reached. See also <code><a href="refF.html#free">free</a></code>.
 
-<pre><code>
+<pre>
 : (pool "db")
 -> T
 : (seq *DB)
 -> {2}
 : (seq @)
 -> {3}
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="set"><code>(set 'var 'any ..) -> any</code></a></dt>
 <dd>Stores new values <code>any</code> in the <code>var</code> arguments. See
@@ -442,12 +447,12 @@ href="refS.html#swap">swap</a></code>, <code><a
 href="refC.html#con">con</a></code> and <code><a
 href="refD.html#def">def</a></code>.
 
-<pre><code>
+<pre>
 : (set 'L '(a b c)  (cdr L) 999)
 -> 999
 : L
 -> (a 999 c)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="set!"><code>(set! 'obj 'any) -> any</code></a></dt>
 <dd><a href="ref.html#trans">Transaction</a> wrapper function for <code><a
@@ -458,9 +463,9 @@ href="refR.html#request!">request!</a></code>, <code><a
 href="refP.html#put!">put!</a></code> and <code><a
 href="refI.html#inc!">inc!</a></code>.
 
-<pre><code>
+<pre>
 (set! Obj (* Count Size))  # Setting a non-entity object to a numeric value
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="setq"><code>(setq var 'any ..) -> any</code></a></dt>
 <dd>Stores new values <code>any</code> in the <code>var</code> arguments. See
@@ -468,10 +473,10 @@ also <code><a href="refS.html#set">set</a></code>, <code><a
 href="refV.html#val">val</a></code> and <code><a
 href="refD.html#def">def</a></code>.
 
-<pre><code>
+<pre>
 : (setq  A 123  B (list A A))  # Set 'A' to 123, then 'B' to (123 123)
 -> (123 123)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="shadows"><code>(shadows ['flg]) -> lst</code></a></dt>
 <dd>(Debug mode only) Returns a list of all symbols shadowing other symbols in
@@ -480,7 +485,7 @@ these and the overshadowed symbols are printed as a side effect. See also
 <code><a href="refS.html#symbols">symbols</a></code> and <code><a
 href="refN.html#namespaces">namespaces</a></code>.
 
-<pre><code>
+<pre>
 : (symbols '(vip pico))
 -> (pico)
 vip: (shadows T)
@@ -504,7 +509,7 @@ chess: (nsp 'wake)
 -> simul
 chess: (nsp 'alarm)
 -> android
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="shift"><code>(shift 'var) -> any</code></a></dt>
 <dd>Sets the list in <code>var</code> to its CDR. <code>(shift 'var)</code> is
@@ -512,14 +517,14 @@ equivalent to <code>(set 'var (cdr (val 'var)))</code>. See also <code><a
 href="refP.html#push">push</a></code> and <code><a
 href="refP.html#pop">pop</a></code>.
 
-<pre><code>
+<pre>
 : (setq A (1 2 3))
 -> (1 2 3)
 : (shift 'A)
 -> (2 3)
 : A
 -> (2 3)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="show"><code>(show 'any ['sym|cnt ..]) -> any</code></a></dt>
 <dd>Shows the name, value and property list of a symbol found by applying the
@@ -527,7 +532,7 @@ href="refP.html#pop">pop</a></code>.
 the following arguments. See also <code><a
 href="refV.html#view">view</a></code>.
 
-<pre><code>
+<pre>
 : (setq A 123456)
 -> 123456
 : (put 'A 'x 1)
@@ -546,14 +551,14 @@ A 123456
 
 : (show 'A 'lst 2)
 -> 8
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="show/1"><code>show/1</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that always succeeds, and shows
 the name, value and property list of the argument symbol. See also <code><a
 href="refS.html#show">show</a></code>.
 
-<pre><code>
+<pre>
 : (? (db nr +Item 2 @Item) (show @Item))
 {B2} (+Item)
    nm "Spare Part"
@@ -563,7 +568,7 @@ href="refS.html#show">show</a></code>.
    sup {C2}
  @Item={B2}
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="sigio"><code>(sigio 'cnt . prg) -> cnt</code></a></dt>
 <dd>Sets a signal handler <code>prg</code> for SIGIO on the file descriptor
@@ -575,7 +580,7 @@ href="refS.html#*Sig1">*Sig[12]</a></code>, <code><a
 href="refT.html#*TStp1">*TStp[12]</a></code> and <code><a
 href="refT.html#*Term">*Term</a></code>.
 
-<pre><code>
+<pre>
 # First session
 : (sigio (setq *SigSock (port T 4444))  # Register signal handler at UDP port
    (while (udp *SigSock)                # Queue all received data
@@ -590,7 +595,7 @@ href="refT.html#*Term">*Term</a></code>.
 -> 1
 : (fifo '*SigQueue)
 -> 2
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="size"><code>(size 'any) -> cnt</code></a></dt>
 <dd>Returns the "size" of <code>any</code>. For numbers this is the number of
@@ -601,7 +606,7 @@ number of cells in this list and all its sublists. See also <code><a
 href="refL.html#length">length</a></code> and <code><a
 href="refB.html#bytes">bytes</a></code>.
 
-<pre><code>
+<pre>
 : (size "abc")
 -> 3
 : (size "äbc")
@@ -614,7 +619,7 @@ href="refB.html#bytes">bytes</a></code>.
 -> 4
 : (size (1 2 3 .))
 -> 3
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="skip"><code>(skip ['any]) -> sym</code></a></dt>
 <dd>Skips all whitespace (and comments if <code>any</code> is given) in the
@@ -622,14 +627,14 @@ input stream. Returns the next available character, or <code>NIL</code> upon end
 of file. See also <code><a href="refP.html#peek">peek</a></code> and <code><a
 href="refE.html#eof">eof</a></code>.
 
-<pre><code>
+<pre>
 $ cat a
 # Comment
 abcd
 $ pil +
 : (in "a" (skip "#"))
 -> "a"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="solve"><code>(solve 'lst [. prg]) -> lst</code></a></dt>
 <dd>Evaluates a <a href="ref.html#pilog">Pilog</a> query and, returns the list
@@ -640,13 +645,13 @@ of the results. See also <code><a href="refP.html#pilog">pilog</a></code>,
 href="refG.html#goal">goal</a></code> and <code><a
 href="refP.html#prove">prove</a></code>.
 
-<pre><code>
+<pre>
 : (solve '((append @X @Y (a b c))))
 -> (((@X) (@Y a b c)) ((@X a) (@Y b c)) ((@X a b) (@Y c)) ((@X a b c) (@Y)))
 
 : (solve '((append @X @Y (a b c))) @X)
 -> (NIL (a) (a b) (a b c))
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="sort"><code>(sort 'lst ['fun]) -> lst</code></a></dt>
 <dd>Returns a sorted list by destructively exchanging the elements of
@@ -660,14 +665,14 @@ href="refM.html#maxi">maxi</a></code>, <code><a
 href="refM.html#mini">mini</a></code> and <code><a
 href="refU.html#uniq">uniq</a></code>.
 
-<pre><code>
+<pre>
 : (sort '(a 3 1 (1 2 3) d b 4 T NIL (a b c) (x y z) c 2))
 -> (NIL 1 2 3 4 a b c d (1 2 3) (a b c) (x y z) T)
 : (sort '(a 3 1 (1 2 3) d b 4 T NIL (a b c) (x y z) c 2) >)
 -> (T (x y z) (a b c) (1 2 3) d c b a 4 3 2 1 NIL)
 : (by cadr sort '((1 4 3) (5 1 3) (1 2 4) (3 8 5) (6 4 5)))
 -> ((5 1 3) (1 2 4) (1 4 3) (6 4 5) (3 8 5))
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="space"><code>(space ['cnt]) -> cnt</code></a></dt>
 <dd>Prints <code>cnt</code> spaces, or a single space when <code>cnt</code> is
@@ -675,40 +680,40 @@ not given. See also <code><a href="refB.html#beep">beep</a></code>, <code><a
 href="refP.html#prin">prin</a></code> and <code><a
 href="refC.html#char">char</a></code>.
 
-<pre><code>
+<pre>
 : (space)
  -> 1
 : (space 1)
  -> 1
 : (space 2)
   -> 2
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="sp?"><code>(sp? 'any) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when the argument <code>any</code> is
 <code>NIL</code>, or if it is a string (symbol) that consists only of whitespace
 characters.
 
-<pre><code>
+<pre>
 : (sp? "  ")
 -> T
 : (sp? "ABC")
 -> NIL
 : (sp? 123)
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="split"><code>(split 'lst 'any ..) -> lst</code></a></dt>
 <dd>Splits <code>lst</code> at all places containing an element <code>any</code>
 and returns the resulting list of sublists. See also <code><a
 href="refS.html#stem">stem</a></code>.
 
-<pre><code>
+<pre>
 : (split (1 a 2 b 3 c 4 d 5 e 6) 'e 3 'a)
 -> ((1) (2 b) (c 4 d 5) (6))
 : (mapcar pack (split (chop "The quick brown fox") " "))
 -> ("The" "quick" "brown" "fox")
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="sqrt"><code>(sqrt 'num ['flg|num]) -> num</code></a></dt>
 <dd>Returns the square root of the <code>num</code> argument. If
@@ -717,7 +722,7 @@ If in addition to that <code>flg</code> is a number, the first argument will be
 multiplied with it before doing the square root calculation. See also <code><a
 href="ref_.html#*/">*/</a></code>.
 
-<pre><code>
+<pre>
 : (sqrt 64)
 -> 8
 : (sqrt 1000)
@@ -731,17 +736,17 @@ href="ref_.html#*/">*/</a></code>.
 -> 6
 : (sqrt 2.0 1.0)
 -> 1414214
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="ssl"><code>(ssl 'host 'path . prg) -> any</code></a></dt>
 <dd>Executes <code>prg</code> in an input stream (using <code><a
 href="refI.html#in">in</a></code>) from "@bin/ssl" requesting <code>path</code>
 from <code>host</code>.
 
-<pre><code>
+<pre>
 : (ssl "picolisp.com" "wiki/?home" (line T))
 -> "&lt;!DOCTYPE html&gt;"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="stack"><code>(stack ['cnt ['cnt]]) -> cnt | (.. (any . cnt) . cnt)</code></a></dt>
 <dd>Maintains the stack segment sizes for <a
@@ -756,7 +761,7 @@ the current size in kilobytes is returned and - if there are running coroutines
 href="refC.html#cons">cons</a></code>ed in front of the size. See also <code><a
 href="refH.html#heap">heap</a></code>.
 
-<pre><code>
+<pre>
 $ ulimit -s unlimited  &&  pil +  # Guarantee stack space
 : (stack)        # Current size
 -> 64            # 64 kB
@@ -768,7 +773,7 @@ $ ulimit -s unlimited  &&  pil +  # Guarantee stack space
 -> -1
 : (stack)
 -> ((dec . 19) (inc . 19) (T . 75) . 20)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="stamp"><code>(stamp ['dat 'tim]|['T]) -> sym</code></a></dt>
 <dd>Returns a date-time string in the form "YYYY-MM-DD HH:MM:SS". If
@@ -777,14 +782,14 @@ used. If <code>T</code> is passed, the current Coordinated Universal Time (UTC)
 is used instead. See also <code><a href="refD.html#date">date</a></code> and
 <code><a href="refT.html#time">time</a></code>.
 
-<pre><code>
+<pre>
 : (stamp)
 -> "2000-09-12 07:48:04"
 : (stamp (date) 0)
 -> "2000-09-12 00:00:00"
 : (stamp (date 2000 1 1) (time 12 0 0))
 -> "2000-01-01 12:00:00"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="state"><code>(state 'var (sym|lst exe [. prg]) ..) -> any</code></a></dt>
 <dd>Implements a finite state machine. The variable <code>var</code> holds the
@@ -798,7 +803,7 @@ href="refC.html#case">case</a></code>, <code><a
 href="refC.html#cond">cond</a></code> and <code><a
 href="refJ.html#job">job</a></code>.
 
-<pre><code>
+<pre>
 : (de tst ()
    (job '((Cnt . 4))
       (state '(start)
@@ -830,7 +835,7 @@ start run run -> run
       (state '(run)
       ...
 -> tst
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="stem"><code>(stem 'lst 'any ..) -> lst</code></a></dt>
 <dd>Returns the tail of <code>lst</code> that does not contain any of the
@@ -839,10 +844,10 @@ start run run -> run
 href="refT.html#tail">tail</a></code> and <code><a
 href="refS.html#split">split</a></code>.
 
-<pre><code>
+<pre>
 : (stem (chop "abc/def\\ghi") "/" "\\")
 -> ("g" "h" "i")
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="step"><code>(step 'lst ['flg]) -> any</code></a></dt>
 <dd>Single-steps iteratively through a database tree. <code>lst</code> is a
@@ -856,7 +861,7 @@ href="refI.html#iter">iter</a></code>, <code><a
 href="refL.html#leaf">leaf</a></code> and <code><a
 href="refF.html#fetch">fetch</a></code>.
 
-<pre><code>
+<pre>
 : (setq Q (init (tree 'nr '+Item) 3 5))
 -> (((3 . 5) ((3 NIL . {B3}) (4 NIL . {B4}) (5 NIL . {B5}) (6 NIL . {B6}))))
 : (get (step Q) 'nr)
@@ -867,7 +872,7 @@ href="refF.html#fetch">fetch</a></code>.
 -> 5
 : (get (step Q) 'nr)
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="store"><code>(store 'tree 'any1 'any2 ['(num1 . num2)])</code></a></dt>
 <dd>Stores a value <code>any2</code> for the key <code>any1</code> in a database
@@ -878,9 +883,9 @@ database block size (defaulting to 256). When <code>any2</code> is
 <code><a href="refT.html#tree">tree</a></code> and <code><a
 href="refF.html#fetch">fetch</a></code>.
 
-<pre><code>
+<pre>
 : (store (tree 'nr '+Item) 2 '{B2})
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="str"><code>(str 'sym ['sym1]) -> lst</code></a></dt>
 <dt><code>(str 'lst) -> sym</code></dt>
@@ -894,14 +899,14 @@ href="refA.html#any">any</a></code>, <code><a
 href="refN.html#name">name</a></code> and <code><a
 href="refS.html#sym">sym</a></code>.
 
-<pre><code>
+<pre>
 : (str "a (1 2) b")
 -> (a (1 2) b)
 : (str '(a "Hello" DEF))
 -> "a \"Hello\" DEF"
 : (str "a*3+b*4" "_")
 -> (a "*" 3 "+" b "*" 4)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="str?"><code>(str? 'any) -> sym | NIL</code></a></dt>
 <dd>Returns the argument <code>any</code> when it is a transient symbol
@@ -910,7 +915,7 @@ href="refS.html#sym?">sym?</a></code>, <code><a
 href="refB.html#box?">box?</a></code> and <code><a
 href="refE.html#ext?">ext?</a></code>.
 
-<pre><code>
+<pre>
 : (str? 123)
 -> NIL
 : (str? '{ABC})
@@ -919,7 +924,7 @@ href="refE.html#ext?">ext?</a></code>.
 -> NIL
 : (str? "abc")
 -> "abc"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="strDat"><code>(strDat 'sym) -> dat</code></a></dt>
 <dd>Converts a string <code>sym</code> in the date format of the current
@@ -929,7 +934,7 @@ href="refE.html#expDat">expDat</a></code>, <code><a
 href="ref_.html#$dat">$dat</a></code> and <code><a
 href="refD.html#datStr">datStr</a></code>.
 
-<pre><code>
+<pre>
 : (strDat "2007-06-01")
 -> 733134
 : (strDat "01.06.2007")
@@ -940,20 +945,20 @@ href="refD.html#datStr">datStr</a></code>.
 -> 733134
 : (strDat "1.6.2007")
 -> 733134
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="strip"><code>(strip 'any) -> any</code></a></dt>
 <dd>Strips all leading <code>quote</code> calls from <code>any</code>. See also
 <code><a href="refL.html#lit">lit</a></code>.
 
-<pre><code>
+<pre>
 : (strip 123)
 -> 123
 : (strip '''(a))
 -> (a)
 : (strip (quote quote a b c))
 -> (a b c)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="struct"><code>(struct 'num 'any 'any ..) -> any</code></a></dt>
 <dd>Creates or extracts data structures, suitable to be passed to or returned
@@ -966,7 +971,7 @@ href="refN.html#natItem">initialization items</a> are stored in the structure
 pointed to by the first argument. See also <a href="native.html">Native C
 Calls</a>.
 
-<pre><code>
+<pre>
 : (scl 2)
 -> 2
 
@@ -999,7 +1004,7 @@ Calls</a>.
 # De-allocate structure
 : (%@ "free" NIL P)
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="sub?"><code>(sub? 'any1 'any2) -> any2 | NIL</code></a></dt>
 <dd>Returns <code>any2</code> when the string representation of
@@ -1008,7 +1013,7 @@ Calls</a>.
 <code><a href="refO.html#offset">offset</a></code> and <code><a
 href="refI.html#index">index</a></code>.
 
-<pre><code>
+<pre>
 : (sub? "def" "abcdefg")
 -> "abcdefg"
 : (sub? "abb" "abcdefg")
@@ -1020,13 +1025,13 @@ href="refI.html#index">index</a></code>.
 -> "abcdefg"
 : (sub? '(d e f) "abcdefg")
 -> "abcdefg"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="subr"><code>(subr 'sym) -> num</code></a></dt>
 <dd>Converts a Lisp-function that was previously converted with <code><a
 href="refE.html#expr">expr</a></code> back to a SUBR function.
 
-<pre><code>
+<pre>
 : car
 -> 67313448
 : (expr 'car)
@@ -1035,7 +1040,7 @@ href="refE.html#expr">expr</a></code> back to a SUBR function.
 -> 67313448
 : car
 -> 67313448
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="sum"><code>(sum 'fun 'lst ..) -> num</code></a></dt>
 <dd>Applies <code>fun</code> to each element of <code>lst</code>. When
@@ -1043,7 +1048,7 @@ additional <code>lst</code> arguments are given, their elements are also passed
 to <code>fun</code>. Returns the sum of all numeric values returned from
 <code>fun</code>.
 
-<pre><code>
+<pre>
 : (setq A 1  B 2  C 3)
 -> 3
 : (sum val '(A B C))
@@ -1055,7 +1060,7 @@ to <code>fun</code>. Returns the sum of all numeric values returned from
       (and (pair (val X)) (size @)) )
    (what) )
 -> 32021
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="super"><code>(super ['any ..]) -> any</code></a></dt>
 <dd>Can only be used inside methods. Sends the current message to the current
@@ -1068,18 +1073,18 @@ href="refM.html#meth">meth</a></code>, <code><a
 href="refS.html#send">send</a></code> and <code><a
 href="refT.html#try">try</a></code>.
 
-<pre><code>
+<pre>
 (dm stop> ()         # 'stop>' method of current class
    (super)           # Call the 'stop>' method of the superclass
    ... )             # other things
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="swap"><code>(swap 'var 'any) -> any</code></a></dt>
 <dd>Set the value of <code>var</code> to <code>any</code>, and return the
 previous value. See also <code><a href="refX.html#xchg">xchg</a></code> and
 <code><a href="refS.html#set">set</a></code>.
 
-<pre><code>
+<pre>
 : (setq A 7  L (1 2 3))
 -> (1 2 3)
 : (swap (cdr L) (swap 'A 'xyz))
@@ -1088,7 +1093,7 @@ previous value. See also <code><a href="refX.html#xchg">xchg</a></code> and
 -> xyz
 : L
 -> (1 7 3)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="sym"><code>(sym 'any) -> sym</code></a></dt>
 <dd>Generate the printed representation of <code>any</code> into the name of a
@@ -1097,10 +1102,10 @@ href="refA.html#any">any</a></code>. See also <code><a
 href="refN.html#name">name</a></code> and <code><a
 href="refS.html#str">str</a></code>.
 
-<pre><code>
+<pre>
 : (sym '(abc "Hello" 123))
 -> "(abc \"Hello\" 123)"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="sym?"><code>(sym? 'any) -> flg</code></a></dt>
 <dd>Returns <code>T</code> when the argument <code>any</code> is a symbol. See
@@ -1111,7 +1116,7 @@ href="refS.html#str?">str?</a></code>, <code><a
 href="refB.html#box?">box?</a></code> and <code><a
 href="refE.html#ext?">ext?</a></code>.
 
-<pre><code>
+<pre>
 : (sym? 'a)
 -> T
 : (sym? NIL)
@@ -1120,7 +1125,7 @@ href="refE.html#ext?">ext?</a></code>.
 -> NIL
 : (sym? '(a b))
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="symbols"><code>(symbols) -> lst</code></a></dt>
 <dt><code>(symbols 'lst) -> lst</code></dt>
@@ -1149,7 +1154,7 @@ href="refI.html#import">import</a></code>, <code><a
 href="refI.html#intern">intern</a></code> and <code><a
 href="refL.html#load">load</a></code>.
 
-<pre><code>
+<pre>
 : (symbols 'myLib 'pico)
 -> (pico)
 myLib: (de foo (X)
@@ -1171,7 +1176,7 @@ myLib: (pp 'foo)
    (bar (inc X)) )
 -> foo
 myLib:
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="-symbols"><code>(-symbols) -> lst</code></a></dt>
 <dd>Command line frontend to <code><a
@@ -1181,12 +1186,12 @@ myLib</code> on the command line (see <a href="ref.html#invoc">Invocation</a>)
 is equivalent to <code>-"symbols '(myLib ...)"</code>. See also <code><a
 href="refO.html#opt">opt</a></code>.
 
-<pre><code>
+<pre>
 $ ./pil lib/gis.l lib/simul.l  --symbols gis  --symbols simul  +
 simul: (symbols)
 -> (simul gis pico)
 simul:
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="sync"><code>(sync) -> flg</code></a></dt>
 <dd>Waits for pending data from all family processes. While other processes are
@@ -1206,22 +1211,22 @@ See also <code><a
 href="refK.html#key">key</a></code> and <code><a
 href="refW.html#wait">wait</a></code>.
 
-<pre><code>
+<pre>
 : (or (lock) (sync))       # Ensure database consistency
 -> T                       # (numeric process-id if lock failed)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="sys"><code>(sys 'any ['any]) -> sym</code></a></dt>
 <dd>Returns or sets a system environment variable.
 
-<pre><code>
+<pre>
 : (sys "TERM")  # Get current value
 -> "xterm"
 : (sys "TERM" "vt100")  # Set new value
 -> "vt100"
 : (sys "TERM")
 -> "vt100"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="sysdefs"><code>(sysdefs 'sym1 '[sym2])</code></a></dt>
 <dd>Loads system-dependent definitions for all symbols in the section named
@@ -1230,9 +1235,9 @@ href="refW.html#wait">wait</a></code>.
 href="refD.html#def">def</a></code>ined to their given values. See also <code><a
 href="refN.html#native">native</a></code>.
 
-<pre><code>
+<pre>
 : (sysdefs "networking")  # Load networking system definitions
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

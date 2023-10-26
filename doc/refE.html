@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +23,7 @@ href="ref.html#errors">Error Handling</a></code>, <code><a
 href="refM.html#*Msg">*Msg</a></code> and <code><a
 href="ref_.html#%5E">^</a></code>.
 
-<pre><code>
+<pre>
 : (de *Err (prinl "Fatal error!"))
 -> *Err
 : (/ 3 0)
@@ -26,7 +31,7 @@ href="ref_.html#%5E">^</a></code>.
 Div/0
 Fatal error!
 ?
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="*Ext"><code>*Ext</code></a></dt>
 <dd>A global variable holding a sorted list of cons pairs. The CAR of each pair
@@ -41,7 +46,7 @@ the corresponding symbol in a remote database process. See also <code><a
 href="refQ.html#qsym">qsym</a></code> and <code><a
 href="ref.html#external">external symbols</a></code>.
 
-<pre><code>
+<pre>
 ### On the local machine ###
 : (setq *Ext  # Define extension functions
    (mapcar
@@ -75,7 +80,7 @@ href="ref.html#external">external symbols</a></code>.
          (close Sock) ) )
    ...
 
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="+Entity"><code>+Entity</code></a></dt>
 <dd>Base class of all database objects. See also <code><a
@@ -84,7 +89,7 @@ href="ref.html#dbase">Database</a>.
 
 <p><a id="entityMesssages">Messages</a> to entity objects include
 
-<pre><code>
+<pre>
 zap> ()              # Clean up relational structures, for removal from the DB
 url> (Tab)           # Call the GUI on that object (in optional Tab)
 gui> ()              # Generate object-specific GUI fragment
@@ -111,7 +116,7 @@ set> (Val)           # Set the value (type, i.e. class list)
 set!> (Val)          # Set the value, single transaction
 clone> ()            # Object copy
 clone!> ()           # Object copy, single transaction
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="e"><code>(e . prg) -> any</code></a></dt>
 <dd>Used in a breakpoint. Evaluates <code>prg</code> in the execution
@@ -120,12 +125,12 @@ given. See also <code><a href="refD.html#debug">debug</a></code>, <code><a
 href="ref_.html#!">!</a></code>, <code><a href="ref_.html#%5E">^</a></code> and
 <code><a href="refD.html#*Dbg">*Dbg</a></code>.
 
-<pre><code>
+<pre>
 : (! + 3 4)
 (+ 3 4)
 ! (e)
 -> 7
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="echo"><code>(echo ['cnt ['cnt]] | ['sym ..]) -> sym</code></a></dt>
 <dd>Reads the current input channel, and writes to the current output channel.
@@ -137,12 +142,12 @@ is encountered in the input stream. In this case the name will be read and
 returned, but not written. Returns non-<code>NIL</code> if the operation was
 successfully completed. See also <code><a href="refF.html#from">from</a></code>.
 
-<pre><code>
+<pre>
 : (in "x.l" (echo))  # Display file on console
  ..
 
 : (out "x2.l" (in "x.l" (echo)))  # Copy file "x.l" to "x2.l"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="enum"><code>(enum 'var 'cnt ['cnt ..]) -> lst</code></a></dt>
 <dt><code>(enum 'var) -> lst</code></dt>
@@ -158,7 +163,7 @@ form returns an unsorted association list of all key-value pairs in the tree.
 href="refI.html#idx">idx</a></code> and <code><a
 href="refH.html#hash">hash</a></code>.
 
-<pre><code>
+<pre>
 : (for (I . S) '(a b c d e f g h i j k l m n o)
    (set (enum 'E I) S) )
 -> o
@@ -205,7 +210,7 @@ a
  3-1 3-2 3-3 3-4
  4-1 4-2 4-3 4-4
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="enum?"><code>(enum? 'lst 'cnt ['cnt ..]) -> lst | NIL</code></a></dt>
 <dd>Tests a binary <code><a href="refE.html#enum">enum</a></code> tree for the
@@ -213,12 +218,12 @@ keys in the <code>cnt</code> arguments. Returns the corresponding cell, or
 <code>NIL</code> if not found. The tree is not modified. See also <code><a
 href="refL.html#lup">lup</a></code>.
 
-<pre><code>
+<pre>
 : (enum? E 7)
 -> (g (k) o)
 : (enum? E 16)
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="env"><code>(env ['lst] | ['sym 'val] ..) -> lst</code></a></dt>
 <dd>Return a list of symbol-value pairs of all dynamically bound symbols if
@@ -229,7 +234,7 @@ href="refJ.html#job">job</a></code>, <code><a
 href="refT.html#trail">trail</a></code> and <code><a
 href="refU.html#up">up</a></code>.
 
-<pre><code>
+<pre>
 : (env)
 -> NIL
 : (let (A 1 B 2) (env))
@@ -238,7 +243,7 @@ href="refU.html#up">up</a></code>.
 -> ((B . 2) (A . 1))
 : (let (A 1 B 2) (env 'X 7 '(A B (C . 3)) 'Y 8))
 -> ((Y . 8) (C . 3) (B . 2) (A . 1) (X . 7))
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="eof"><code>(eof ['flg]) -> flg</code></a></dt>
 <dd>Returns the end-of-file status of the current input channel. If
@@ -255,20 +260,20 @@ href="refS.html#skip">skip</a></code> will return <code>NIL</code>. Note that
 href="refR.html#rd">rd</a></code> function. See also <code><a
 href="refE.html#eol">eol</a></code>.
 
-<pre><code>
+<pre>
 : (in "file" (until (eof) (println (line T))))
 ...
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="eol"><code>(eol) -> flg</code></a></dt>
 <dd>Returns the end-of-line status of the current input channel.
 See also <code><a href="refE.html#eof">eof</a></code>.
 
-<pre><code>
+<pre>
 : (make (until (prog (link (read)) (eol))))  # Read line into a list
 a b c (d e f) 123
 -> (a b c (d e f) 123)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="equal/2"><code>equal/2</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the two
@@ -276,13 +281,13 @@ arguments are equal. See also <code><a href="ref_.html#=">=</a></code>, <code><a
 href="refD.html#different/2">different/2</a></code> and <code><a
 href="refM.html#member/2">member/2</a></code>.
 
-<pre><code>
+<pre>
 : (? (equal 3 4))
 -> NIL
 : (? (equal @N 7))
  @N=7
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="err"><code>(err 'sym . prg) -> any</code></a></dt>
 <dd>Redirects the standard error stream to <code>sym</code> during the execution
@@ -294,23 +299,23 @@ written to. See also <code><a href="refI.html#in">in</a></code>, <code><a
 href="refO.html#out">out</a></code> and <code><a
 href="refC.html#ctl">ctl</a></code>.
 
-<pre><code>
+<pre>
 : (err "/dev/null"             # Suppress error messages
    (call 'ls 'noSuchFile) )
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="errno"><code>(errno) -> cnt</code></a></dt>
 <dd>Returns the value of the standard I/O 'errno' variable. See also <code><a
 href="refN.html#native">native</a></code>.
 
-<pre><code>
+<pre>
 : (in "foo")                           # Produce an error
 !? (in "foo")
 "foo" -- Open error: No such file or directory
 ? (errno)
 -> 2                                   # Returned 'ENOENT'
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="eval"><code>(eval 'any ['cnt]) -> any</code></a></dt>
 <dd>Evaluates <code>any</code>. Note that because of the standard argument
@@ -321,7 +326,7 @@ is used during the second evaluation. <code>cnt</code> should be greater than
 zero. See also <code><a href="refR.html#run">run</a></code> and <code><a
 href="refU.html#up">up</a></code>.
 
-<pre><code>
+<pre>
 : (eval (list '+ 1 2 3))
 -> 6
 : (setq X 'Y  Y 7)
@@ -346,7 +351,7 @@ href="refU.html#up">up</a></code>.
 -> 1
 : (g (inc A))
 -> (3 2 1)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="exec"><code>(exec 'any ..)</code></a></dt>
 <dd>Executes an external system command. The <code>any</code> arguments specify
@@ -355,7 +360,7 @@ process is replaced with a new process image. See also <code><a
 href="refF.html#fork">fork</a></code> and <code><a
 href="refC.html#call">call</a></code>.
 
-<pre><code>
+<pre>
 : (pipe (exec 'echo 123 "abc")  # Equivalent to (in '(echo 123 "abc") ..)
    (list (read) (read)) )
 -> (123 abc)
@@ -364,7 +369,7 @@ href="refC.html#call">call</a></code>.
    (exec "@bin/ssl"  # Start replication process
       "10.11.12.13" 443
       "app/!replica" "key/app" "fifo/app" "db/app/blob/" 20 ) )
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="expDat"><code>(expDat 'sym) -> dat</code></a></dt>
 <dd>Expands a <code><a href="refD.html#date">date</a></code> string according to
@@ -377,7 +382,7 @@ href="refD.html#datStr">datStr</a></code>, <code><a
 href="refD.html#day">day</a></code>, <code><a
 href="refE.html#expTel">expTel</a></code>.
 
-<pre><code>
+<pre>
 : (date)
 -> 733133
 : (date (date))
@@ -403,7 +408,7 @@ href="refE.html#expTel">expTel</a></code>.
 -> 733133
 : (expDat "31.5.7")
 -> 733133
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="expTel"><code>(expTel 'sym) -> sym</code></a></dt>
 <dd>Expands a telephone number string. Multiple spaces or hyphens are coalesced.
@@ -413,7 +418,7 @@ returned. See also <code><a href="refT.html#telStr">telStr</a></code>, <code><a
 href="refE.html#expDat">expDat</a></code> and <code><a
 href="refL.html#locale">locale</a></code>.
 
-<pre><code>
+<pre>
 : (expTel "+49 1234 5678-0")
 -> "49 1234 5678-0"
 : (expTel "0049 1234 5678-0")
@@ -424,7 +429,7 @@ href="refL.html#locale">locale</a></code>.
 -> NIL
 : (expTel "01234 5678-0")
 -> "49 1234 5678-0"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="export"><code>(export ['sym]) sym|lst</code></a></dt>
 <dd>Intern symbols explicitly in the second namespace in the current search
@@ -438,25 +443,25 @@ href="refL.html#local">local</a></code>, <code><a
 href="refI.html#import">import</a></code> and <code><a
 href="refI.html#intern">intern</a></code>.
 
-<pre><code>
+<pre>
 : (symbols 'myLib 'pico)
 -> (pico)
 myLib: (export) (foo bar)  # Intern 'foo' and 'bar' in 'pico'
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="expr"><code>(expr 'sym) -> fun</code></a></dt>
 <dd>Converts a built-in function (SUBR) to a Lisp-function. Useful only for
 normal functions (i.e. functions that evaluate all arguments). See also <code><a
 href="refS.html#subr">subr</a></code>.
 
-<pre><code>
+<pre>
 : car
 -> 67313448
 : (expr 'car)
 -> (@ (pass $385260187))
 : (car (1 2 3))
 -> 1
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="ext"><code>(ext 'cnt . prg) -> any</code></a></dt>
 <dd>During the execution of <code>prg</code>, all <code><a
@@ -470,7 +475,7 @@ mechanism. All external symbol's file numbers are decremented by
 <code>cnt</code> during output, and incremented by <code>cnt</code> during
 input.
 
-<pre><code>
+<pre>
 : (out 'a (ext 5 (pr '({A2} ({C4} . a) ({B7} . b)))))
 -> ({A2} ({C4} . a) ({B7} . b))
 
@@ -479,7 +484,7 @@ input.
 
 : (in 'a (ext 5 (rd)))
 -> ({A2} ({C4} . a) ({B7} . b))
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="ext?"><code>(ext? 'any) -> sym | NIL</code></a></dt>
 <dd>Returns the argument <code>any</code> when it is an existing external
@@ -490,7 +495,7 @@ href="refS.html#str?">str?</a></code>, <code><a
 href="refE.html#extern">extern</a></code> and <code><a
 href="refL.html#lieu">lieu</a></code>.
 
-<pre><code>
+<pre>
 : (ext? *DB)
 -> {1}
 : (ext? 'abc)
@@ -499,7 +504,7 @@ href="refL.html#lieu">lieu</a></code>.
 -> NIL
 : (ext? 123)
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="extend"><code>(extend cls) -> cls</code></a></dt>
 <dd>Extends the class <code>cls</code>, by storing it in the global variable
@@ -512,8 +517,8 @@ href="refD.html#dm">dm</a></code>, <code><a href="refV.html#var">var</a></code>,
 href="refT.html#type">type</a></code> and <code><a
 href="refI.html#isa">isa</a></code>.
 
-<pre><code>
-</code></pre></dd>
+<pre>
+</pre></dd>
 
 <dt><a id="extern"><code>(extern 'sym) -> sym | NIL</code></a></dt>
 <dd>Creates or finds an external symbol. If a symbol with the name
@@ -523,12 +528,12 @@ exist in the database. See also <code><a
 href="refI.html#intern">intern</a></code> and <code><a
 href="refE.html#ext?">ext?</a></code>.
 
-<pre><code>
+<pre>
 : (extern "A1b")
 -> {A1b}
 : (extern "{A1b}")
 -> {A1b}
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="extra"><code>(extra ['any ..]) -> any</code></a></dt>
 <dd>Can only be used inside methods. Sends the current message to the current
@@ -541,10 +546,10 @@ href="refM.html#meth">meth</a></code>, <code><a
 href="refS.html#send">send</a></code> and <code><a
 href="refT.html#try">try</a></code>.
 
-<pre><code>
+<pre>
 (dm key> (C)            # 'key>' method of the '+Uppc' class
    (uppc (extra C)) )   # Convert 'key>' of extra classes to upper case
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="extract"><code>(extract 'fun 'lst ..) -> lst</code></a></dt>
 <dd>Applies <code>fun</code> to each element of <code>lst</code>. When
@@ -558,14 +563,14 @@ href="refF.html#find">find</a></code>, <code><a
 href="refP.html#pick">pick</a></code> and <code><a
 href="refM.html#mapcan">mapcan</a></code>.
 
-<pre><code>
+<pre>
 : (setq A NIL  B 1  C NIL  D 2  E NIL  F 3)
 -> 3
 : (filter val '(A B C D E F))
 -> (B D F)
 : (extract val '(A B C D E F))
 -> (1 2 3)
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

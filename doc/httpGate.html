@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -51,9 +56,9 @@ architecture. Its purpose is to perform the following tasks:
 
 <p>A HTTP request to port 80, respectively 443, of the form
 
-<pre><code>
+<pre>
    http[s]://server.org/12345/path/file
-</code></pre>
+</pre>
 
 <p>is forwarded to a server on localhost listening on port 12345, to ask for the
 resource "path/file".
@@ -61,9 +66,9 @@ resource "path/file".
 <p>If httpGate was started with a config file, and that file contains an entry
 for "app", then also the following request is accepted:
 
-<pre><code>
+<pre>
    http[s]://server.org/app/path/file
-</code></pre>
+</pre>
 
 <p>In that case, the "app" server process is started automatically (if it is not
 already running) listening on port 12345, and the request is forwarded as above.
@@ -78,10 +83,10 @@ idle for more than 7 minutes.
 <p>The simplest way to run httpGate is to start it with an explicit port
 argument:
 
-<pre><code>
+<pre>
    bin/httpGate 80 8080
    bin/httpGate 443 8080 pem/www.domain.key,pem/domain.crt
-</code></pre>
+</pre>
 
 <p>When started in this way, httpGate forwards requests from port 80 and 443
 respectively to a PicoLisp application on port 8080. This form has a drawback
@@ -91,10 +96,10 @@ httpGate to forward requests to all of them.
 
 <p>To handle several applications, start httpGate with a "names" config file:
 
-<pre><code>
+<pre>
       bin/httpGate 80 names
       bin/httpGate 443 names pem/www.domain.key,pem/domain.crt
-</code></pre>
+</pre>
 
 <p>httpGate needs to be started as root, but application servers should run
 under normal user accounts. The easiest way to start httpGate automatically is
@@ -107,9 +112,9 @@ to add lines like the ones above to '/etc/rc.local'.
 <p>The "names" config file contains one line per application server. Each line
 holds six whitespace separated tokens, for example:
 
-<pre><code>
+<pre>
    app 12345 tom /home/tom log/app ./pil app/main.l lib/app.l -main -go -wait
-</code></pre>
+</pre>
 
 <p><ol>
 <li>"app" is the name of the application, and the key to this line.
@@ -133,9 +138,9 @@ quotes are not parsed.
 <p>If the port is zero, then a single additional token is expected which should
 denote an URL to redirect the request to:
 
-<pre><code>
+<pre>
    app 0 https://domain/foo/bar
-</code></pre>
+</pre>
 
 This will cause httpGate to respnd with "302 Found" and "Location:
 https://domain/foo/bar".
@@ -147,15 +152,15 @@ recommended to sort it with the 'balance' utility. This may greatly accelerate
 name (key) lookup at runtime. For that, put the above config lines into a file
 "config". The tool 'balance' can be built - together with httpGate - with
 
-<pre><code>
+<pre>
    (cd src; make tools gate)
-</code></pre>
+</pre>
 
 <p>The following command will create a balanced "names" file:
 
-<pre><code>
+<pre>
    cat config | bin/balance -sort &gt; names
-</code></pre>
+</pre>
 
 <h3><a id="voidfile">The "void" file</a></h3>
 
@@ -169,9 +174,9 @@ of that file (normally HTML) are sent as response to the client.
 <p>When the config file is modified, it can be reloaded by sending SIGHUP to all
 running top-level httpGate processes:
 
-<pre><code>
+<pre>
    $ sudo pkill -HUP -P1 httpGate
-</code></pre>
+</pre>
 
 <p>Another possibility is to restart httpGate(s). This is not a problem, and can
 be done also while the server is in production.
@@ -186,7 +191,7 @@ stopping the children).
 
 <p>An example for stopping and restarting a running httpGate is:
 
-<pre><code>
+<pre>
    (let L
       # Build list of all httpGate parents (i.e. on 80 and 443)
       (make
@@ -202,15 +207,15 @@ stopping the children).
       # Start new
       (call "sudo" "bin/httpGate" 80 "names")
       (call "sudo" "bin/httpGate" 443 "names" "pem/...") )
-</code></pre>
+</pre>
 
 <h2><a id="keepalive">Keep-alive and retirement</a></h2>
 
 <p>Applications should call
 
-<pre><code>
+<pre>
    (retire 20)
-</code></pre>
+</pre>
 
 <p>before they call 'server'. This causes the parent server process to terminate
 automatically 20 minutes after the last child process (user session) terminated.
@@ -219,9 +224,9 @@ automatically after 5 minutes (if nobody logged in) or 1 hour (if a user is
 logged in), unless JavaScript is enabled in the client browser and the
 application calls
 
-<pre><code>
+<pre>
    (&lt;ping&gt; 7)
-</code></pre>
+</pre>
 
 <p>in its main 'action' function. In that case, the user session will not
 terminate until the user closes the last window or tab to this application.

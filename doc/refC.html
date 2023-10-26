@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,10 +22,10 @@
 href="refO.html#*OS">*OS</a></code> and <code><a
 href="refV.html#version">version</a></code>.
 
-<pre><code>
+<pre>
 : *CPU
 -> "x86-64"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="*Class"><code>*Class</code></a></dt>
 <dd>A global variable holding the current class. See also <a
@@ -31,12 +36,12 @@ href="refD.html#dm">dm</a></code> and <code><a
 href="refV.html#var">var</a></code> and <code><a
 href="refR.html#rel">rel</a></code>.
 
-<pre><code>
+<pre>
 : (class +Test)
 -> +Test
 : *Class
 -> +Test
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="cache"><code>(cache 'var 'any [. prg]) -> any</code></a></dt>
 <dd>Speeds up some calculations by maintaining a tree of previously calculated
@@ -47,7 +52,7 @@ internally to build the index key. If no <code>prg</code> is given, the internal
 <code>var</code> holding a previously stored value is returned (note that
 <code>var</code> may have a name which is not human-readable).
 
-<pre><code>
+<pre>
 : (de fibonacci (N)
    (cache '(NIL) N
       (if (>= 2 N)
@@ -60,9 +65,9 @@ internally to build the index key. If no <code>prg</code> is given, the internal
 
 : (fibonacci 10000)
 -> 3364476487643178326662161200510754331030 ...  # (2090 digits)
-</code></pre>
+</pre>
 
-<pre><code>
+<pre>
 : (off C)
 -> NIL
 : (cache 'C 1234 (* 3 4))
@@ -71,7 +76,7 @@ internally to build the index key. If no <code>prg</code> is given, the internal
 -> 13
 : (val (cache 'C 1234))
 -> 13
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="call"><code>(call 'any ..) -> flg</code></a></dt>
 <dd>Calls an external system command. The <code>any</code> arguments specify the
@@ -80,20 +85,20 @@ successfully. The (system dependent) exit status code of the child process is
 stored in the global variable <code><a href="ref_.html#@@">@@</a></code>. See
 also <code><a href="refE.html#exec">exec</a></code>.
 
-<pre><code>
+<pre>
 : (when (call 'test "-r" "file.l")  # Test if file exists and is readable
    (load "file.l")  # Load it
    (call 'rm "file.l") )  # Remove it
 
 : (cons (call "sh" "-c" "kill -SEGV $$") @@ (hex @@))
 -> (NIL 11 . "B")
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="call/1"><code>call/1</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the argument
 term can be proven.
 
-<pre><code>
+<pre>
 : (be mapcar (@ NIL NIL))
 -> mapcar
 : (be mapcar (@P (@X . @L) (@Y . @M))
@@ -109,7 +114,7 @@ term can be proven.
  @X=((a c b) (d f e))
  @X=((a c b) (e d f))
  ...
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="can"><code>(can 'msg) -> lst</code></a></dt>
 <dd>(Debug mode only) Returns a list of all classes that accept the message
@@ -120,7 +125,7 @@ href="refD.html#dep">dep</a></code>, <code><a
 href="refW.html#what">what</a></code> and <code><a
 href="refW.html#who">who</a></code>.
 
-<pre><code>
+<pre>
 : (can 'zap>)
 -> ((zap> . +relation) (zap> . +Blob) (zap> . +Entity))
 : (more @ pp)
@@ -137,7 +142,7 @@ href="refW.html#who">who</a></code>.
          (and (meta This X) (zap> @ This V)) ) ) )
 
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="car"><code>(car 'var) -> any</code></a></dt>
 <dd>List access: Returns the value of <code>var</code> if it is a symbol, or the
@@ -145,10 +150,10 @@ first element if it is a list. See also <code><a
 href="refC.html#cdr">cdr</a></code> and <code><a
 href="refC.html#cXr">c..r</a></code>.
 
-<pre><code>
+<pre>
 : (car (1 2 3 4 5 6))
 -> 1
-</code></pre></dd>
+</pre></dd>
 
 <dt>
 <a id="caar"></a>
@@ -186,10 +191,10 @@ href="refC.html#car">car</a></code> and <code><a
 href="refC.html#cdr">cdr</a></code> functions, with up to four letters 'a' and
 'd'.
 
-<pre><code>
+<pre>
 : (cdar '((1 . 2) . 3))
 -> 2
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="case"><code>(case 'any (any1 . prg1) (any2 . prg2) ..) -> any</code></a></dt>
 <dd>Multi-way branch: <code>any</code> is evaluated and compared to the CAR
@@ -201,12 +206,12 @@ elements <code>anyN</code> of each clause. If one of them is a list,
 href="refC.html#casq">casq</a></code> and <code><a
 href="refS.html#state">state</a></code> .
 
-<pre><code>
+<pre>
 : (case (char 66) ("A" (+ 1 2 3)) (("B" "C") "Bambi") ("D" (* 1 2 3)))
 -> "Bambi"
 : (case 'b (a 1) ("b" 2) (b 3) (c 4))
 -> 2
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="casq"><code>(casq 'any (any1 . prg1) (any2 . prg2) ..) -> any</code></a></dt>
 <dd>Multi-way branch: <code>any</code> is evaluated and compared to the CAR
@@ -219,12 +224,12 @@ succeeds, <code>prgN</code> is executed, and the result returned. Otherwise
 href="refC.html#case">case</a></code> and <code><a
 href="refS.html#state">state</a></code>.
 
-<pre><code>
+<pre>
 : (casq 'b (a 1) ("b" 2) (b 3) (c 4))
 -> 3
 : (casq 'b (a 1) ("b" 2) ((a b c) 3) (c 4))
 -> 3
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="catch"><code>(catch 'any . prg) -> any</code></a></dt>
 <dd>Sets up the environment for a non-local jump which may be caused by <code><a
@@ -240,13 +245,13 @@ href="refF.html#finally">finally</a></code>, <code><a
 href="refQ.html#quit">quit</a></code> and
 <code><a href="ref.html#errors">Error Handling</a></code>.
 
-<pre><code>
+<pre>
 : (catch 'OK (println 1) (throw 'OK 999) (println 2))
 1
 -> 999
 : (catch '("No such file") (in "doesntExist" (foo)))
 -> "No such file"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="cd"><code>(cd 'any) -> sym</code></a></dt>
 <dd>Changes the current directory to <code>any</code>. The old directory is
@@ -255,22 +260,22 @@ href="refC.html#chdir">chdir</a></code>, <code><a
 href="refD.html#dir">dir</a></code> and <code><a
 href="refP.html#pwd">pwd</a></code>.
 
-<pre><code>
+<pre>
 : (when (cd "lib")
    (println (length (dir)))
    (cd @) )
 99
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="cdr"><code>(cdr 'lst) -> any</code></a></dt>
 <dd>List access: Returns all but the first element of <code>lst</code>. See also
 <code><a href="refC.html#car">car</a></code> and <code><a
 href="refC.html#cXr">c..r</a></code>.
 
-<pre><code>
+<pre>
 : (cdr (1 2 3 4 5 6))
 -> (2 3 4 5 6)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="center"><code>(center 'cnt|lst 'any ..) -> sym</code></a></dt>
 <dd>Returns a transient symbol with all <code>any</code> arguments <code><a
@@ -279,7 +284,7 @@ are omitted. See also <code><a href="refA.html#align">align</a></code>, <code><a
 href="refT.html#tab">tab</a></code> and <code><a
 href="refW.html#wrap">wrap</a></code>.
 
-<pre><code>
+<pre>
 : (center 4 12)
 -> " 12"
 : (center 4 "a")
@@ -288,7 +293,7 @@ href="refW.html#wrap">wrap</a></code>.
 -> "   a"
 : (center (3 3 3) "a" "b" "c")
 -> " a  b  c"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="chain"><code>(chain 'any ..) -> any</code></a></dt>
 <dd>Concatenates (destructively) one or several new list elements
@@ -300,10 +305,10 @@ maintained. <code>chain</code> returns the last linked argument. See also
 href="refY.html#yoke">yoke</a></code> and <code><a
 href="refM.html#made">made</a></code>.
 
-<pre><code>
+<pre>
 : (make (chain (list 1 2 3) NIL (cons 4)) (chain (list 5 6)))
 -> (1 2 3 4 5 6)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="char"><code>(char) -> sym</code></a></dt>
 <dt><code>(char 'cnt) -> sym</code></dt>
@@ -324,7 +329,7 @@ href="refL.html#line">line</a></code>, <code><a
 href="refT.html#till">till</a></code> and <code><a
 href="refE.html#eof">eof</a></code>.
 
-<pre><code>
+<pre>
 : (char)                   # Read character from console
 A                          # (typed 'A' and a space/return)
 -> "A"
@@ -340,7 +345,7 @@ A                          # (typed 'A' and a space/return)
 -> NIL
 : (char NIL)
 -> 0
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="chdir"><code>(chdir 'any . prg) -> any</code></a></dt>
 <dd>Changes the current directory to <code>any</code> with <code><a
@@ -349,14 +354,14 @@ the previous directory will be restored and the result of <code>prg</code>
 returned. See also <code><a href="refD.html#dir">dir</a></code> and <code><a
 href="refP.html#pwd">pwd</a></code>.
 
-<pre><code>
+<pre>
 : (pwd)
 -> "/usr/abu/pico"
 : (chdir "src" (pwd))
 -> "/usr/abu/pico/src"
 : (pwd)
 -> "/usr/abu/pico"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="chkTree"><code>(chkTree 'sym ['fun]) -> num</code></a></dt>
 <dd>Checks a database tree node (and recursively all sub-nodes) for consistency.
@@ -365,7 +370,7 @@ called with the key and value of each node, and should return <code>NIL</code>
 for failure. See also <code><a href="refT.html#tree">tree</a></code> and
 <code><a href="refR.html#root">root</a></code>.
 
-<pre><code>
+<pre>
 : (show *DB '+Item)
 {40} 6
    nr (6 . {H1})
@@ -375,19 +380,19 @@ for failure. See also <code><a href="refT.html#tree">tree</a></code> and
 -> {40}
 : (chkTree '{H1})   # Check that node
 -> 6
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="chop"><code>(chop 'any) -> lst</code></a></dt>
 <dd>Returns <code>any</code> as a list of single-character strings. If
 <code>any</code> is <code>NIL</code> or a symbol with no name, <code>NIL</code>
 is returned. A list argument is returned unchanged.
 
-<pre><code>
+<pre>
 : (chop 'car)
 -> ("c" "a" "r")
 : (chop "Hello")
 -> ("H" "e" "l" "l" "o")
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="circ"><code>(circ 'any ..) -> lst</code></a></dt>
 <dd>Produces a circular list of all <code>any</code> arguments by <code><a
@@ -396,23 +401,23 @@ CDR of the last cell to the first cell. See also <code><a
 href="refC.html#circ?">circ?</a></code> and <code><a
 href="refL.html#list">list</a></code>.
 
-<pre><code>
+<pre>
 : (circ 'a 'b 'c)
 -> (a b c .)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="circ?"><code>(circ? 'any) -> any</code></a></dt>
 <dd>Returns the circular list tail if <code>any</code> is a circular list, else
 <code>NIL</code>. See also <code><a href="refC.html#circ">circ</a></code>.
 
-<pre><code>
+<pre>
 : (circ? 'a)
 -> NIL
 : (circ? (1 2 3))
 -> NIL
 : (circ? (1 . (2 3 .)))
 -> (2 3 .)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="class"><code>(class sym . typ) -> obj</code></a></dt>
 <dd>Defines <code>sym</code> as a class with the superclass(es)
@@ -425,7 +430,7 @@ href="refT.html#type">type</a></code>, <code><a
 href="refI.html#isa">isa</a></code> and <code><a
 href="refO.html#object">object</a></code>.
 
-<pre><code>
+<pre>
 : (class +A +B +C +D)
 -> +A
 : +A
@@ -434,7 +439,7 @@ href="refO.html#object">object</a></code>.
 -> foo>
 : +A
 -> ((foo> (X) (bar X)) +B +C +D)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="clause"><code>(clause '(sym . any)) -> sym</code></a></dt>
 <dd>Declares a <a href="ref.html#pilog">Pilog</a> fact or rule for the
@@ -443,7 +448,7 @@ href="refO.html#object">object</a></code>.
 href="refR.html#*Rule">*Rule</a></code> and <code><a
 href="refB.html#be">be</a></code>.
 
-<pre><code>
+<pre>
 : (clause '(likes (John Mary)))
 -> likes
 : (clause '(likes (John @X) (likes @X wine) (likes @X food)))
@@ -451,13 +456,13 @@ href="refB.html#be">be</a></code>.
 : (? (likes @X @Y))
  @X=John @Y=Mary
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="clause/2"><code>clause/2</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the first
 argument is a predicate which has the second argument defined as a clause.
 
-<pre><code>
+<pre>
 : (? (clause append ((NIL @X @X))))
 -> T
 
@@ -465,19 +470,19 @@ argument is a predicate which has the second argument defined as a clause.
  @C=((NIL @X @X))
  @C=(((@A . @X) @Y (@A . @Z)) (append @X @Y @Z))
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="clip"><code>(clip 'lst) -> lst</code></a></dt>
 <dd>Returns a copy of <code>lst</code> with all whitespace characters or
 <code>NIL</code> elements removed from both sides. See also <code><a
 href="refT.html#trim">trim</a></code>.
 
-<pre><code>
+<pre>
 : (clip '(NIL 1 NIL 2 NIL))
 -> (1 NIL 2)
 : (clip '(" " a " " b " "))
 -> (a " " b)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="close"><code>(close 'cnt) -> cnt | NIL</code></a></dt>
 <dd>Closes a file descriptor <code>cnt</code>, and returns it when successful.
@@ -487,10 +492,10 @@ for that descriptor. See also <code><a href="refO.html#open">open</a></code>,
 <code><a href="refL.html#listen">listen</a></code> and <code><a
 href="refC.html#connect">connect</a></code>.
 
-<pre><code>
+<pre>
 : (close 2)                            # Close standard error
 -> 2
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="cmd"><code>(cmd ['any]) -> sym</code></a></dt>
 <dd>When called without an argument, the name of the command that invoked the
@@ -501,7 +506,7 @@ href="refA.html#argv">argv</a></code>, <code><a
 href="refF.html#file">file</a></code> and <a
 href="ref.html#invoc">Invocation</a>.
 
-<pre><code>
+<pre>
 $ pil +
 : (cmd)
 -> "/usr/bin/picolisp"
@@ -509,7 +514,7 @@ $ pil +
 -> "!/bin/picolust"
 : (cmd)
 -> "!/bin/picolust"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="cnt"><code>(cnt 'fun 'lst ..) -> cnt</code></a></dt>
 <dd>Applies <code>fun</code> to each element of <code>lst</code>. When
@@ -517,10 +522,10 @@ additional <code>lst</code> arguments are given, their elements are also passed
 to <code>fun</code>. Returns the count of non-<code>NIL</code> values returned
 from <code>fun</code>.
 
-<pre><code>
+<pre>
 : (cnt cdr '((1 . T) (2) (3 4) (5)))
 -> 2
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="collect"><code>(collect 'sym 'cls ['hook] ['any|beg ['end [sym|cnt ..]]])</code></a></dt>
 <dd>Returns a list of all database objects of class <code>cls</code>, where the
@@ -538,7 +543,7 @@ href="refI.html#init">init</a></code>, <code><a
 href="refS.html#step">step</a></code> and and <code><a
 href="refS.html#search">search</a></code>.
 
-<pre><code>
+<pre>
 : (collect 'nr '+Item)
 -> ({B1} {B2} {B3} {B4} {B5} {B6} {B8})
 : (collect 'nr '+Item 3 6 'nr)
@@ -547,7 +552,7 @@ href="refS.html#search">search</a></code>.
 -> ("Auxiliary Construction" "Enhancement Additive" "Metal Fittings" "Gadget Appliance")
 : (collect 'nm '+Item "Main Part")
 -> ({B1})
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="commit"><code>(commit ['any] [exe1] [exe2]) -> T</code></a></dt>
 <dd>Closes a transaction, by writing all new or modified external symbols to,
@@ -560,14 +565,14 @@ href="refL.html#lock">lock</a></code>ed and <code><a
 href="refP.html#protect">protect</a></code>ed. See also <code><a
 href="refR.html#rollback">rollback</a></code>.
 
-<pre><code>
+<pre>
 : (pool "db")
 -> T
 : (put '{1} 'str "Hello")
 -> "Hello"
 : (commit)
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="con"><code>(con 'lst 'any) -> any</code></a></dt>
 <dd>Connects <code>any</code> to the first cell of <code>lst</code>, by
@@ -575,28 +580,28 @@ href="refR.html#rollback">rollback</a></code>.
 also <code><a href="refS.html#set">set</a></code> and <code><a
 href="refC.html#conc">conc</a></code>.
 
-<pre><code>
+<pre>
 : (setq C (1 . a))
 -> (1 . a)
 : (con C '(b c d))
 -> (b c d)
 : C
 -> (1 b c d)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="conc"><code>(conc 'lst ..) -> lst</code></a></dt>
 <dd>Concatenates all argument lists (destructively). See also <code><a
 href="refA.html#append">append</a></code> and <code><a
 href="refC.html#con">con</a></code>.
 
-<pre><code>
+<pre>
 : (setq  A (1 2 3)  B '(a b c))
 -> (a b c)
 : (conc A B)                        # Concatenate lists in 'A' and 'B'
 -> (1 2 3 a b c)
 : A
 -> (1 2 3 a b c)                    # Side effect: List in 'A' is modified!
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="cond"><code>(cond ('any1 . prg1) ('any2 . prg2) ..) -> any</code></a></dt>
 <dd>Multi-way conditional: If any of the <code>anyN</code> conditions evaluates
@@ -607,14 +612,14 @@ href="refI.html#if">if</a></code>, <code><a href="refA.html#and">and</a></code>,
 <code><a href="refI.html#if2">if2</a></code> and <code><a
 href="refW.html#when">when</a></code>.
 
-<pre><code>
+<pre>
 : (cond
    ((= 3 4) (println 1))
    ((= 3 3) (println 2))
    (T (println 3)) )
 2
 -> 2
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="connect"><code>(connect 'any1 'any2) -> cnt | NIL</code></a></dt>
 <dd>Tries to establish a TCP/IP connection to a server listening at host
@@ -626,12 +631,12 @@ connection cannot be established. See also <code><a
 href="refL.html#listen">listen</a></code> and <code><a
 href="refU.html#udp">udp</a></code>.
 
-<pre><code>
+<pre>
 : (connect "localhost" 4444)
 -> 3
 : (connect "some.host.org" "http")
 -> 4
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="cons"><code>(cons 'any ['any ..]) -> lst</code></a></dt>
 <dd>Constructs a new list cell with the first argument in the CAR and the second
@@ -640,7 +645,7 @@ of cells is built. <code>(cons 'a 'b 'c 'd)</code> is equivalent to <code>(cons
 'a (cons 'b (cons 'c 'd)))</code>. See also <code><a
 href="refL.html#list">list</a></code>.
 
-<pre><code>
+<pre>
 : (cons 1 2)
 -> (1 . 2)
 : (cons 'a '(b c d))
@@ -649,13 +654,13 @@ href="refL.html#list">list</a></code>.
 -> ((a b) c d)
 : (cons 'a 'b 'c 'd)
 -> (a b c . d)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="copy"><code>(copy 'any) -> any</code></a></dt>
 <dd>Copies the argument <code>any</code>. For lists, the top level cells are
 copied, while atoms are returned unchanged.
 
-<pre><code>
+<pre>
 : (=T (copy T))               # Atoms are not copied
 -> T
 : (setq L (1 2 3))
@@ -666,7 +671,7 @@ copied, while atoms are returned unchanged.
 -> NIL
 : (= L (copy L))              # But the copy is equal to the original
 -> T
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="co"><code>(co ['any [. prg]]) -> any</code></a></dt>
 <dd>Starts, resumes or stops a <a href="ref.html#coroutines">coroutine</a> with
@@ -683,7 +688,7 @@ coroutine. A coroutine cannot resume itself directly or indirectly. See also
 href="refC.html#catch">catch</a></code> and <code><a
 href="refT.html#throw">throw</a></code>.
 
-<pre><code>
+<pre>
 : (de pythag (N)   # A generator function
    (if (=T N)
       (co 'rt)  # Stop
@@ -701,17 +706,17 @@ href="refT.html#throw">throw</a></code>.
 : (pythag 20)
 -> (6 8 10)
 
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="count"><code>(count 'tree) -> num</code></a></dt>
 <dd>Returns the number of nodes in a database tree. See also <code><a
 href="refT.html#tree">tree</a></code> and <code><a
 href="refR.html#root">root</a></code>.
 
-<pre><code>
+<pre>
 : (count (tree 'nr '+Item))
 -> 7
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="create"><code>(create 'typ 'sym 'lst . prg)</code></a></dt>
 <dd>Creates or updates <a href="ref.html#dbase">database</a> objects of the type
@@ -736,7 +741,7 @@ href="refN.html#new">new</a></code>, <code><a
 href="refC.html#commit">commit</a></code> and <code><a
 href="refP.html#prune">prune</a></code>.
 
-<pre><code>
+<pre>
 # Minimal E/R model
 (class +Cls +Entity)          # Class
 (rel key (+Key +Number))      # with a unique numeric key,
@@ -781,7 +786,7 @@ href="refP.html#prune">prune</a></code>.
 (commit)
 (prune)
 (gc 0)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="ctl"><code>(ctl 'sym . prg) -> any</code></a></dt>
 <dd>Waits until a write (exclusive) lock (or a read (shared) lock if the first
@@ -795,7 +800,7 @@ href="refO.html#out">out</a></code>, <code><a
 href="refE.html#err">err</a></code> and <code><a
 href="refP.html#pipe">pipe</a></code>.
 
-<pre><code>
+<pre>
 $ echo 9 >count                           # Write '9' to file "count"
 $ pil +
 : (ctl ".ctl"                             # Exclusive control, using ".ctl"
@@ -807,7 +812,7 @@ $ pil +
 :
 $ cat count                               # Check "count"
 8
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="ctty"><code>(ctty 'pid) -> pid</code></a></dt>
 <dt><code>(ctty 'any) -> any | NIL</code></dt>
@@ -817,10 +822,10 @@ device to <code>any</code> (or just sets standard I/O to a PTY if
 for serving the PicoLisp process with the process ID <code>pid</code>. See also
 <code><a href="refR.html#raw">raw</a></code>.
 
-<pre><code>
+<pre>
 : (ctty "/dev/tty")
 -> "/dev/tty"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="curry"><code>(curry lst . fun) -> fun</code></a></dt>
 <dd>Builds a new function from the list of symbols or symbol-value pairs
@@ -832,7 +837,7 @@ href="refJ.html#job">job</a></code> environment. <code>curry</code> is a general
 higher-order function, not limited to strict currying (which generates only
 single-argument functions).
 
-<pre><code>
+<pre>
 : (de multiplier (@X)
    (curry (@X) (N) (* @X N)) )
 -> multiplier
@@ -870,7 +875,7 @@ single-argument functions).
 55
 89
 -> 89
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="cut"><code>(cut 'cnt 'var) -> lst</code></a></dt>
 <dd>Pops the first <code>cnt</code> elements (CAR) from the stack in
@@ -878,14 +883,14 @@ single-argument functions).
 <code><a href="refR.html#rid">rid</a></code> and <code><a
 href="refD.html#del">del</a></code>.
 
-<pre><code>
+<pre>
 : (setq S '(1 2 3 4 5 6 7 8))
 -> (1 2 3 4 5 6 7 8)
 : (cut 3 'S)
 -> (1 2 3)
 : S
 -> (4 5 6 7 8)
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 

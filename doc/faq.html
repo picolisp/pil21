@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -97,20 +102,20 @@ symbols, strings, variables, special variables and identifiers.
 <p>Most data-manipulation functions operate on the values of symbols as well as
 the CARs of cons pairs:
 
-<pre><code>
+<pre>
 : (let (N 7  L (7 7 7)) (inc 'N) (inc (cdr L)) (cons N L))
 -> (8 7 8 7)
-</code></pre>
+</pre>
 
 <p>There is only a single functional type, no "special forms". As there is no
 compiler, functions can be used instead of macros. No special "syntax"
 constructs are needed. This allows a completely orthogonal use of functions. For
 example, most other Lisps do not allow calls like
 
-<pre><code>
+<pre>
 : (mapcar if '(T NIL T NIL) (1 2 3 4) (5 6 7 8))
 -> (1 6 3 8)
-</code></pre>
+</pre>
 
 <p>PicoLisp has no such restrictions. It favors the principle of "Least
 Astonishment".
@@ -270,10 +275,10 @@ href="refP.html#print">print</a></code>ing functions).
 <p>The following example builds a function and immediately calls it with two
 arguments:
 
-<pre><code>
+<pre>
 : ((list (list 'X 'Y) (list '* 'X 'Y)) 3 4)
 -> 12
-</code></pre>
+</pre>
 
 <p>Note that no time is wasted to build up a lexical environment. Variable
 bindings take place dynamically during interpretation.
@@ -282,7 +287,7 @@ bindings take place dynamically during interpretation.
 (though this is rarely done in application programming). The following function
 modifies itself by incrementing the '0' in its body:
 
-<pre><code>
+<pre>
 (de incMe ()
    (do 8
       (printsp 0)
@@ -292,7 +297,7 @@ modifies itself by incrementing the '0' in its body:
 0 1 2 3 4 5 6 7 -> 8
 : (incMe)
 8 9 10 11 12 13 14 15 -> 16
-</code></pre>
+</pre>
 
 <p>Only an interpreted Lisp can fully support such "Equivalence of Code and
 Data". If executable pieces of data are used frequently, like in PicoLisp's
@@ -346,14 +351,14 @@ between code and data in PicoLisp, and <code>quote</code> returns the whole
 (unevaluated) argument list. If you insist on it, you can define your own
 <code>lambda</code>:
 
-<pre><code>
+<pre>
 : (def 'lambda quote)
 -> lambda
 : ((lambda (X Y) (+ X Y)) 3 4)
 -> 7
 : (mapcar (lambda (X) (+ 1 X)) (1 2 3 4 5))
 -> (2 3 4 5 6)
-</code></pre>
+</pre>
 
 
 <p><hr>
@@ -376,10 +381,10 @@ variables" to support dynamic binding as well, and constructs like
 dynamically rebound like other variables. As a useful real-world example, take
 this little gem:
 
-<pre><code>
+<pre>
 (de recur recurse
    (run (cdr recurse)) )
-</code></pre>
+</pre>
 
 <p>It implements anonymous recursion, by defining <code>recur</code> statically
 and <code>recurse</code> dynamically. Usually it is very cumbersome to think up
@@ -387,7 +392,7 @@ a name for a function (like the following one) which is used only in a single
 place. But with <code>recur</code> and <code>recurse</code> you can simply
 write:
 
-<pre><code>
+<pre>
 : (mapcar
    '((N)
       (recur (N)
@@ -396,7 +401,7 @@ write:
             (* N (recurse (- N 1))) ) ) )
    (1 2 3 4 5 6 7 8) )
 -> (1 2 6 24 120 720 5040 40320)
-</code></pre>
+</pre>
 
 <p>Needless to say, the call to <code>recurse</code> does not have to reside in
 the same function as the corresponding <code>recur</code>. Can you implement
@@ -431,19 +436,19 @@ dynamic context.
 can be avoided, however, when the above conventions are observed. As an example,
 consider a function which doubles the value in a variable:
 
-<pre><code>
+<pre>
 (de double (Var)
    (set Var (* 2 (val Var))) )
-</code></pre>
+</pre>
 
 <p>This works fine, as long as we call it as <code>(double 'X)</code>, but will
 break if we call it as <code>(double 'Var)</code>. Therefore, the correct
 implementation of <code>double</code> should be:
 
-<pre><code>
+<pre>
 (de double ("Var")
    (set "Var" (* 2 (val "Var"))) )
-</code></pre>
+</pre>
 
 <p>If <code>double</code> is defined that way in a separate source file, then
 the symbol <code><u>Var</u></code> is locked into a private lexical context and
@@ -493,7 +498,7 @@ from the code.
 
 <p>As an example, consider a currying function:
 
-<pre><code>
+<pre>
 (de curry Args
    (list (car Args)
       (list 'list
@@ -502,41 +507,41 @@ from the code.
             (list 'cons
                (list 'lit (list 'env (lit (car Args))))
                (lit (cddr Args)) ) ) ) ) )
-</code></pre>
+</pre>
 
 <p>When called, it returns a function-building function which may be applied to
 some argument:
 
-<pre><code>
+<pre>
 : ((curry (X) (N) (* X N)) 3)
 -> ((N) (job '((X . 3)) (* X N)))
-</code></pre>
+</pre>
 
 <p>or used as:
 
-<pre><code>
+<pre>
 : (((curry (X) (N) (* X N)) 3) 4)
 -> 12
-</code></pre>
+</pre>
 
 <p>In other cases, you are free to choose a shorter and faster solution. If (as
 in the example above) the curried argument is known to be immutable:
 
-<pre><code>
+<pre>
 (de curry Args
    (list
       (cadr Args)
       (list 'fill
          (lit (cons (car Args) (cddr Args)))
          (lit (cadr Args)) ) ) )
-</code></pre>
+</pre>
 
 <p>Then the function built above will just be:
 
-<pre><code>
+<pre>
 : ((curry (X) (N) (* X N)) 3)
 -> ((X) (* X 3))
-</code></pre>
+</pre>
 
 <p>In that case, the "environment build-up" is reduced by a simple (lexical)
 constant substitution with zero runtime overhead.
@@ -558,7 +563,7 @@ debugged.
 
 <p>For example, Common Lisp's <code>DO*</code> macro, written as a function:
 
-<pre><code>
+<pre>
 (de do* "Args"
    (bind (mapcar car (car "Args"))
       (for "A" (car "Args")
@@ -568,7 +573,7 @@ debugged.
          (for "A" (car "Args")
             (and (cddr "A") (set (car "A") (run @))) ) )
       (run (cdadr "Args")) ) )
-</code></pre>
+</pre>
 
 
 <p><hr>
@@ -602,9 +607,9 @@ property list.
 other data that represent the string's translation. This is used extensively for
 localization. When a program calls
 
-<pre><code>
+<pre>
    (prinl "Good morning!")
-</code></pre>
+</pre>
 
 <p>then changing the value of the symbol <code>"Good morning!"</code> to its
 translation will change the program's output at runtime.
@@ -684,11 +689,11 @@ string conversions. The rest is under programmer's control and responsibility
 dynamic context the program may crash. Therefore we have a convention to use an
 upper case first letter for locally bound symbols:
 
-<pre><code>
+<pre>
 (de findCar (Car List)
    (when (member Car (cdr List))
       (list Car (car List)) ) )
-</code></pre>
+</pre>
 
 ;-)
 
@@ -720,12 +725,12 @@ microcode levels) are s-expressions: The machine language is <i>Lisp</i>.
 <p>It is easy to produce a segfault in PicoLisp. Just set a symbol to a value
 which is not a function, and call it:
 
-<pre><code>
+<pre>
 : (setq foo 1)
 -> 1
 : (foo)
 Segmentation fault
-</code></pre>
+</pre>
 
 There is another <a href="ref.html#codePointer">example</a> in the <a
 href="ref.html#ev">Evaluation</a> section of the reference manual.

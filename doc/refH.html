@@ -1,3 +1,8 @@
+<!--
+# VIP @lib/vip/html.l
+# 26oct23 Software Lab. Alexander Burger
+-->
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,10 +26,10 @@ href="refS.html#*Sig1">*Sig[12]</a></code>, <code><a
 href="refT.html#*TStp1">*TStp[12]</a></code> and <code><a
 href="refT.html#*Term">*Term</a></code>.
 
-<pre><code>
+<pre>
 : (de *Hup (msg 'SIGHUP))
 -> *Hup
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="+Hook"><code>+Hook</code></a></dt>
 <dd>Prefix class for <code><a href="refR.html#+relation">+relation</a></code>s,
@@ -32,11 +37,11 @@ typically <code><a href="refL.html#+Link">+Link</a></code> or <code><a
 href="refJ.html#+Joint">+Joint</a></code>. In essence, this maintains an local
 database in the referred object. See also <a href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 (rel sup (+Hook +Link) (+Sup))   # Supplier
 (rel nr (+Key +Number) sup)      # Item number, unique per supplier
 (rel dsc (+Ref +String) sup)     # Item description, indexed per supplier
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="+Hook2"><code>+Hook2</code></a></dt>
 <dd>Prefix class for <code><a href="refI.html#+index">+index</a></code>
@@ -44,9 +49,9 @@ relations. It maintains both a normal (global) index, and an object-local index
 in the corresponding <code><a href="refH.html#+Hook">+Hook</a></code> object.
 See also <a href="ref.html#dbase">Database</a>.
 
-<pre><code>
+<pre>
 (rel nm (+Hook2 +IdxFold +String) 3 shop)       # Global and shop-local index
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="h"><code>(h) -> flg</code></a></dt>
 <dd>(Debug mode only) Edits the history in memory with Vip. Returns
@@ -54,10 +59,10 @@ See also <a href="ref.html#dbase">Database</a>.
 "q". See also <code><a href="refH.html#history">history</a></code> and <code><a
 href="refV.html#vi">vi</a></code>.
 
-<pre><code>
+<pre>
 : (h)    # Edit history
 -> T     # "x"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="has"><code>(has 'any) -> lst</code></a></dt>
 <dd>(Debug mode only) Returns a list of all internal symbols which have the
@@ -66,7 +71,7 @@ value <code>any</code>. See also <code><a href="refW.html#who">who</a></code>,
 href="refW.html#what">what</a></code> and <code><a
 href="refD.html#dep">dep</a></code>.
 
-<pre><code>
+<pre>
 : +
 -> 270310
 : (has 270310)
@@ -75,7 +80,7 @@ href="refD.html#dep">dep</a></code>.
 -> 267259
 : (has 267259)
 -> (@ js> dec> inc> upd> ele> log> chk> val> del> rel> all> url> zap> clr> str> has>
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="hash"><code>(hash 'any) -> cnt</code></a></dt>
 <dd>Generates a 16-bit number (1-65536) from <code>any</code>, suitable as a
@@ -86,14 +91,14 @@ href="refE.html#enum">enum</a></code>, <code><a
 href="refR.html#rev">rev</a></code> and <code><a
 href="refS.html#seed">seed</a></code>.
 
-<pre><code>
+<pre>
 : (hash 0)
 -> 1
 : (hash 1)
 -> 55682
 : (hash "abc")
 -> 8986
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="hax"><code>(hax 'num) -> sym</code></a></dt>
 <dt><code>(hax 'sym) -> num</code></dt>
@@ -106,7 +111,7 @@ See also <code><a href="refH.html#hex">hex</a></code>, <code><a
 href="refB.html#bin">bin</a></code> and <code><a
 href="refO.html#oct">oct</a></code>.
 
-<pre><code>
+<pre>
 : (hax 7)
 -> "G"
 : (hax 16)
@@ -115,21 +120,21 @@ href="refO.html#oct">oct</a></code>.
 -> "OO"
 : (hax "A")
 -> 1
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="hd"><code>(hd 'sym ['cnt]) -> NIL</code></a></dt>
 <dd>(Debug mode only) Displays a hexadecimal dump of the file given by
 <code>sym</code>, limited to <code>cnt</code> lines. See also <code><a
 href="refP.html#proc">proc</a></code>.
 
-<pre><code>
+<pre>
 :  (hd "lib.l" 4)
 00000000  23 20 32 33 64 65 63 30 39 61 62 75 0A 23 20 28  # 23dec09abu.# (
 00000010  63 29 20 53 6F 66 74 77 61 72 65 20 4C 61 62 2E  c) Software Lab.
 00000020  20 41 6C 65 78 61 6E 64 65 72 20 42 75 72 67 65   Alexander Burge
 00000030  72 0A 0A 28 64 65 20 74 61 73 6B 20 28 4B 65 79  r..(de task (Key
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="head"><code>(head 'cnt|lst 'lst) -> lst</code></a></dt>
 <dd>Returns a new list made of the first <code>cnt</code> elements of
@@ -140,7 +145,7 @@ to the head of the second argument, and <code>NIL</code> otherwise. See also
 <code><a href="refT.html#tail">tail</a></code> and <code><a
 href="refP.html#pre?">pre?</a></code>.
 
-<pre><code>
+<pre>
 : (head 3 '(a b c d e f))
 -> (a b c)
 : (head 0 '(a b c d e f))
@@ -151,7 +156,7 @@ href="refP.html#pre?">pre?</a></code>.
 -> (a b c d)
 : (head '(a b c) '(a b c d e f))
 -> (a b c)
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="head/3"><code>head/3</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the first
@@ -168,7 +173,7 @@ href="refF.html#fold/3">fold/3</a></code>, <code><a
 href="refP.html#part/3">part/3</a></code> and <code><a
 href="refT.html#tolr/3">tolr/3</a></code>.
 
-<pre><code>
+<pre>
 : (?
    @Nm "Muller"
    @Tel "37"
@@ -180,7 +185,7 @@ href="refT.html#tolr/3">tolr/3</a></code>.
    (val @Phone @CuSu tel) )
  @Nm="Muller" @Tel="37" @CuSu={C3} @Name="Miller" @Phone="37 4773 82534"
 -> NIL
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="heap"><code>(heap 'flg) -> cnt</code></a></dt>
 <dd>Returns the total size of the cell heap space in megabytes. If
@@ -188,14 +193,14 @@ href="refT.html#tolr/3">tolr/3</a></code>.
 is returned. See also <code><a href="refS.html#stack">stack</a></code> and
 <code><a href="refG.html#gc">gc</a></code>.
 
-<pre><code>
+<pre>
 : (gc 4)
 -> 4
 : (heap)
 -> 5
 : (heap T)
 -> 4
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="hear"><code>(hear 'cnt) -> cnt</code></a></dt>
 <dd>Uses the file descriptor <code>cnt</code> as an asynchronous command input
@@ -204,12 +209,12 @@ background. As this mechanism is also used for inter-family communication (see
 <code><a href="refT.html#tell">tell</a></code>), <code>hear</code> is usually
 only called explicitly by a top level parent process.
 
-<pre><code>
+<pre>
 : (call 'mkfifo "fifo/cmd")
 -> T
 : (hear (open "fifo/cmd"))
 -> 3
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="help"><code>(help 'sym ['flg]) -> sym</code></a></dt>
 <dd>(Debug mode only) Dumps the reference documentation for <code>sym</code> to
@@ -217,7 +222,7 @@ the current output channel. If <code>flg</code> is non-<code>NIL</code>, the
 examples are dumped too. See also <a href="ref.html#fun">Function Reference</a>
 and <code><a href="refD.html#doc">doc</a></code>.
 
-<pre><code>
+<pre>
 : (help 'car)
 ========================================
    (car 'var) -> any List access: Returns the value of var if it is a
@@ -238,13 +243,13 @@ and <code><a href="refD.html#doc">doc</a></code>.
 
 ========================================
 -> car
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="here"><code>(here ['sym]) -> sym</code></a></dt>
 <dd>Echoes the current input stream until <code>sym</code> is encountered, or
 until end of file. See also <code><a href="refE.html#echo">echo</a></code>.
 
-<pre><code>
+<pre>
 $ cat hello.l
 (html 0 "Hello" "lib.css" NIL
    (&lt;h2&gt; NIL "Hello")
@@ -271,7 +276,7 @@ Content-Type: text/html; charset=utf-8
 &lt;p&gt;Hello!&lt;/p&gt;
 &lt;p&gt;This is a test.&lt;/p&gt;
 &lt;/body&gt;&lt;/html&gt;
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="hex"><code>(hex 'num ['num]) -> sym</code></a></dt>
 <dt><code>(hex 'sym) -> num</code></dt>
@@ -283,14 +288,14 @@ href="refO.html#oct">oct</a></code>, <code><a
 href="refH.html#hax">hax</a></code> and <code><a
 href="refF.html#format">format</a></code>.
 
-<pre><code>
+<pre>
 : (hex 273)
 -> "111"
 : (hex "111")
 -> 273
 : (hex 1234567 4)
 -> "12 D687"
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="history"><code>(history ['lst]) -> lst</code></a></dt>
 <dd>When called without argument, <code>history</code> returns the current
@@ -298,21 +303,21 @@ href="refF.html#format">format</a></code>.
 Otherwise, the history is set to <code>lst</code>. See also <a
 href="ref.html#invoc">Invocation</a>.
 
-<pre><code>
+<pre>
 : (+ 1 2 3)
 -> 6
 : (history)
 -> ("(+ 1 2 3)" "(history)")
-</code></pre></dd>
+</pre></dd>
 
 <dt><a id="host"><code>(host 'any) -> sym</code></a></dt>
 <dd>Returns the hostname corresponding to the given IP address. See also
 <code><a href="refA.html#*Adr">*Adr</a></code>.
 
-<pre><code>
+<pre>
 : (host "80.190.158.9")
 -> "www.leo.org"
-</code></pre></dd>
+</pre></dd>
 
 </dl>
 
