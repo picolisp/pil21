@@ -1,6 +1,6 @@
-# 13feb22 Software Lab. Alexander Burger
+# 27oct23 Software Lab. Alexander Burger
 
-(private) (Prg C Q X Y CL Cls Name)
+(private) (Prg C Q X Y Cls Name)
 
 (de admin Prg
    (out 2
@@ -385,10 +385,10 @@
 (dm (dumpValue> . +Entity) (X)
    X )
 
-(de dump CL
+(de dump @
    (let C (cons 0 10000)
-      (for (Q (goal CL) (asoq '@@ (prove Q)))
-         (let (Obj (cdr @)  K (fin (dumpExt Obj)))
+      (for (Q (pass search) (search Q))
+         (let (Obj @  K (fin (dumpExt Obj)))
             (for X (getl Obj)
                (unless (or (= K (fin X)) (= `(char "+") (char (fin X))))
                   (let? Y (dumpValue> Obj X)

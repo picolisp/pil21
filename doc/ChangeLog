@@ -1,3 +1,9 @@
+23.10.27
+   Minor comment
+      lib/svg.l
+   Change 'dump' to use 'search'
+      lib/too.l
+
 23.10.26
    Insert "# VIP " headers
    Fix <pre> markups

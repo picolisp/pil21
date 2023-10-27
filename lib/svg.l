@@ -1,4 +1,4 @@
-# 04aug23 Software Lab. Alexander Burger
+# 27oct23 Software Lab. Alexander Burger
 
 (symbols 'svg 'pico)
 
@@ -16,7 +16,7 @@
    *FontStyle "normal"
    *FontWeight "normal" )
 
-# *Style htStyle dfltCss htPrin (lib/xhtml.l or lib/htm.l)
+# *Style htStyle dfltCss htPrin (lib/xhtml.l)
 
 (local) (<svg> *DX *DY *Pos)
 (private) (DX DY X Y Z Prg)
