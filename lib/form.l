@@ -1,4 +1,4 @@
-# 13oct23 Software Lab. Alexander Burger
+# 28oct23 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
 # *Lock *Spans *AlwaysAsk
@@ -662,14 +662,10 @@
 
 (de hintQ (Var CL Str)
    (make
-      (for ((I . Q) (search Str CL) (search Q))
-         (for V
-            (fish
-               '((S) (and (atom S) (sub? (fold Str) (fold S))))
-               (get @ Var) )
-            (unless (member V (made))
-               (link V) ) )
-         (T (== 24 I)) ) ) )
+      (for (Q (search Str CL) (search Q))
+         (when (match> (meta @ Var) Str (get @ Var) @)
+            (link @) )
+         (T (== 24 (length (made)))) ) ) )
 
 (de dbHint (Str Var Cls Hook)
    (hintQ Var (list (list Var Cls Hook)) Str) )

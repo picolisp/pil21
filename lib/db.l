@@ -1,4 +1,4 @@
-# 23oct23 Software Lab. Alexander Burger
+# 28oct23 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -85,12 +85,12 @@
 
 (dm match> (X Val Obj)
    (cond
-      ((not X) T)
+      ((not X) Val)
       ((str? X) (pre? X Val))
-      ((atom X) (= X Val))
+      ((atom X) (and (= X Val) Val))
       ((>= (cdr X) (car X))
-         (>= (cdr X) Val (car X)) )
-      (T (>= (car X) Val (cdr X))) ) )
+         (and (>= (cdr X) Val (car X)) Val) )
+      ((>= (car X) Val (cdr X)) Val) ) )
 
 # Finalizer
 (dm zap> (Obj Val))
@@ -198,7 +198,7 @@
       (super X Lst) ) )
 
 (dm match> (X Val Obj)
-   (find 'match> (: bag)
+   (pick 'match> (: bag)
       (circ X)
       Val
       (circ Obj) ) )
@@ -748,7 +748,7 @@
 (dm match> (X Val Obj)
    (or
       (extra X Val Obj)
-      (pre? (ext:Snx X) (ext:Snx Val)) ) )
+      (and (pre? (ext:Snx X) (ext:Snx Val)) Val) ) )
 
 
 # (+Fold +index) [hook]
@@ -779,12 +779,14 @@
       Lst ) )
 
 (dm match> (X Val Obj)
-   (extra
-      (if (pair X)
-         (cons (fold (car X)) (fold (cdr X)))
-         (fold X) )
-      (fold Val)
-      Obj ) )
+   (when
+      (extra
+         (if (pair X)
+            (cons (fold (car X)) (fold (cdr X)))
+            (fold X) )
+         (fold Val)
+         Obj )
+      Val ) )
 
 
 # (+IdxFold +relation) [cnt [hook]]
@@ -838,7 +840,7 @@
    (super (fold X) Lst (not X)) )
 
 (dm match> (X Val Obj)
-   (sub? (fold X) (fold Val)) )
+   (and (sub? (fold X) (fold Val)) Val) )
 
 
 # (+Aux) lst
@@ -886,9 +888,11 @@
       (setq Val
          (cons Val
             (mapcar '((S) (get Obj S)) (: aux)) ) )
-      (if (>= (cdr X) (car X))
-         (>= (append (cdr X) T) Val (car X))
-         (>= (append (car X) T) Val (cdr X)) ) ) )
+      (when
+         (if (>= (cdr X) (car X))
+            (>= (append (cdr X) T) Val (car X))
+            (>= (append (car X) T) Val (cdr X)) )
+         Val ) ) )
 
 
 # UB-Tree (+Aux prefix)
@@ -1018,7 +1022,7 @@
          (extra Obj V Hook) ) ) )
 
 (dm match> (X Val Obj)
-   (find '((Y) (extra X Y Obj)) Val) )
+   (pick '((Y) (extra X Y Obj)) Val) )
 
 
 (class +Need)

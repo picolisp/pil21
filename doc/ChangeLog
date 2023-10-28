@@ -1,3 +1,9 @@
+23.10.28
+   Change 'hintQ' to use 'match>'
+      lib/form.l
+   Return 'Val' from 'match>' methods
+      lib/db.l
+
 23.10.27
    Minor comment
       lib/svg.l
