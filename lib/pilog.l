@@ -1,4 +1,4 @@
-# 28mar23 Software Lab. Alexander Burger
+# 29oct23 Software Lab. Alexander Burger
 
 (private) (CL Q R L Prg)
 
@@ -647,8 +647,3 @@
             (NIL (con L (cddr L))) ) ) ) )
 
 (repeat)
-
-### Debug ###
-`*Dbg
-
-(load "@lib/sq.l")

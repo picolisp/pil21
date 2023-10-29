@@ -1,4 +1,4 @@
-# 28oct23 Software Lab. Alexander Burger
+# 29oct23 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1894,3 +1894,5 @@
 `*Dbg
 
 (noLint 'create 'store)
+
+(load "@lib/sq.l")

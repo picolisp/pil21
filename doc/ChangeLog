@@ -1,4 +1,7 @@
 23.10.29
+   Load @lib/sq.l at the end of @lib/db.l
+      lib/db.l
+      lib/pilog.l
    Keep relative file position
       lib/vip/html.l
 
@@ -131,7 +134,7 @@
 23.9.8
    Don't fall back to stdin/stdout for closed files
       src/io.l
-   Load also "@lib/lint.l" in 'psh'
+   Load also @lib/lint.l in 'psh'
       lib/http.l
 
 23.9.7
@@ -2268,7 +2271,7 @@
 
 21.3.17
    Still missing
-      @lib/xm.l
+      lib/xm.l
    Ukrainian and russian localization (Constantine Bitensky)
       loc/RU.l
       loc/uk
@@ -2287,7 +2290,7 @@
 
 21.3.8
    Missing file
-      @lib/xm.l
+      lib/xm.l
 
 21.3.7
    Ukrainian localization (Constantine Bitensky)
