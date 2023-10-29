@@ -1,3 +1,7 @@
+23.10.29
+   Keep relative file position
+      lib/vip/html.l
+
 23.10.28
    Change 'hintQ' to use 'match>'
       lib/form.l
