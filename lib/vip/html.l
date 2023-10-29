@@ -5,7 +5,9 @@
    (dm view> (Win)
       (=: view T)
       (with Win
-         (let (Y (: posY)  N (length (: buffer text)))
+         (let
+            (Y (- (: posY) 13)
+               N (- (length (: buffer text)) 15) )
             (scratch (tmp "html")
                (in (list "w3m" "-cols" *Columns (: buffer file))
                   (rdLines) ) )
