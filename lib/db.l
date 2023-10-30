@@ -1714,8 +1714,8 @@
                               (recur (X L)
                                  (if L
                                     (pick recurse
-                                       (fish ext? (get X (car L)))
-                                       (circ (cdr L)) )
+                                       (fish ext? (get X (++ L)))
+                                       (circ L) )
                                     @Exe ) ) ) ) ) ) ) )
             (setq X (next))
             (NIL (setq Y (next))
