@@ -1,4 +1,6 @@
 23.10.30
+   More general matching in 'search'
+      lib/db.l
    Check duplicates in 'hintQ'
       lib/form.l
 

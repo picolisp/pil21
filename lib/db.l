@@ -1,4 +1,4 @@
-# 29oct23 Software Lab. Alexander Burger
+# 30oct23 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1712,14 +1712,11 @@
                         (curry (@Lst @Exe) (X V)
                            (let L '@Lst
                               (recur (X L)
-                                 (nond
-                                    (L @Exe)
-                                    ((atom X)
-                                       (pick
-                                          '((Y)
-                                             (recurse (get Y (car L)) (cdr L)) )
-                                          X ) )
-                                    (NIL (recurse (get X (car L)) (cdr L))) ) ) ) ) ) ) ) )
+                                 (if L
+                                    (pick recurse
+                                       (fish ext? (get X (car L)))
+                                       (circ (cdr L)) )
+                                    @Exe ) ) ) ) ) ) ) )
             (setq X (next))
             (NIL (setq Y (next))
                (and X (set (cdr (made)) @)) ) ) ) ) )
