@@ -1,4 +1,4 @@
-# 20oct23 Software Lab. Alexander Burger
+# 31oct23 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -237,7 +237,7 @@ s-expr command vi)
       (for (This *CmdWin (setq This (: next)))
          (status) )
       (when (: syms)
-         (and (find ext? @) (pico~dbSync))
+         (and (find ext? @ T) (pico~dbSync))
          (in (: file)
             (while (and (setq "*X" (read)) (atom @))
                (unless (= (val "*X") (setq "*V" (read)))
@@ -245,7 +245,7 @@ s-expr command vi)
                (until (= '(=======) (setq "*K" (read)))
                   (unless (= (get "*X" "*K") (setq "*V" (read)))
                      (put "*X" "*K" "*V") ) ) ) )
-         (when (find ext? (: syms))
+         (when (find ext? (: syms) T)
             (commit 'pico~upd)
             (syms> This (: syms)) ) ) )
    (on *StatNm) )
@@ -255,7 +255,7 @@ s-expr command vi)
       (for "S" (=: syms "Lst")
          (if
             (and
-               (ext? "S")
+               (ext? "S" T)
                (not (rank (car (id "S" T)) *Ext))
                (lock "S") )
             (prinl "# " "S" " locked")

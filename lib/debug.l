@@ -1,4 +1,4 @@
-# 27mar23 Software Lab. Alexander Burger
+# 31oct23 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -107,7 +107,7 @@
 (and noLint (@ 'who 'Prg))
 
 (de _who (Y)
-   (unless (or (ext? Y) (memq Y Who))
+   (unless (or (ext? Y T) (memq Y Who))
       (push 'Who Y)
       (ifn (= `(char "+") (char Y))
          (and (pair (val Y)) (nest @) (link Y))
