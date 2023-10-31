@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 31oct23 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -486,9 +486,10 @@ input.
 -> ({A2} ({C4} . a) ({B7} . b))
 </pre></dd>
 
-<dt><a id="ext?"><code>(ext? 'any) -> sym | NIL</code></a></dt>
-<dd>Returns the argument <code>any</code> when it is an existing external
-symbol, otherwise <code>NIL</code>. See also <code><a
+<dt><a id="ext?"><code>(ext? 'any ['flg]) -> sym | NIL</code></a></dt>
+<dd>Returns the argument <code>any</code> when it is an external symbol,
+otherwise <code>NIL</code>. If <code>flg</code> is non-<code>NIL</code>, also
+physical existence is checked. See also <code><a
 href="refS.html#sym?">sym?</a></code>, <code><a
 href="refB.html#box?">box?</a></code>, <code><a
 href="refS.html#str?">str?</a></code>, <code><a

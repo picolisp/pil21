@@ -1,3 +1,9 @@
+23.10.31
+   Handle external symbols in 'xName'
+      src/main.l
+   'flg' argument to 'ext?' to check physical existence
+      src/db.l
+
 23.10.30
    More general matching in 'search'
       lib/db.l

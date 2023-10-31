@@ -1,4 +1,4 @@
-# 08aug23 Software Lab. Alexander Burger
+# 31oct23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -242,15 +242,15 @@
                (ret YES) ) ) )
       NO ) )
 
-# (ext? 'any) -> sym | NIL
+# (ext? 'any ['flg]) -> sym | NIL
 (de _ExtQ (Exe)
-   (let X (eval (cadr Exe))
+   (let (X (cdr Exe)  Y (save (eval (++ X))))
       (if
          (and
-            (symb? X)
-            (sym? (val (tail X)))
-            (isLife X) )
-         X
+            (symb? Y)
+            (sym? (val (tail Y)))
+            (or (nil? (eval (car X))) (isLife Y)) )
+         Y
          $Nil ) ) )
 
 (de void cleanUp ((i64 . N))

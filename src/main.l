@@ -1,4 +1,4 @@
-# 28aug23 Software Lab. Alexander Burger
+# 31oct23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -246,7 +246,7 @@ popCtlFiles)
 
 # Error handling
 (local) (pushOutFile err stkErr argErr cntErr numErr symErr charErr extErr
-nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
+atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de void pushOutFile (i8* i8* i32))
 
@@ -348,9 +348,6 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de NIL extErr (Exe X)
    (err Exe X ($ "External symbol expected") null) )
 
-(de NIL nameErr (Exe X)
-   (err Exe X ($ "Name expected") null) )
-
 (de NIL atomErr (Exe X)
    (err Exe X ($ "Atom expected") null) )
 
@@ -379,7 +376,7 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (err Exe X ($ "Bad symbol namespace") null) )
 
 # Value access
-(local) (xCnt evCnt evLst xSym evSym xName)
+(local) (xCnt evCnt evLst xSym evSym packExtNm xName)
 
 (de i64 xCnt (Exe X)
    (let N (int (needCnt Exe X))
@@ -405,10 +402,16 @@ nameErr atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de evSym (Exe)
    (xSym (eval (car Exe))) )
 
+(de void packExtNm (any i64*))
+
 (de xName (Exe Sym)
    (cond
       ((nil? Sym) ZERO)
-      ((sym? (val (tail Sym))) (nameErr Exe Sym))
+      ((sym? (val (tail Sym)))
+         (let P (push 4 NIL ZERO NIL)  # [cnt last name link]
+            (link (ofs P 2) T)
+            (packExtNm (name (& @ -9)) P)
+            (val 3 P) ) )
       (T (name @)) ) )
 
 # Structure checks
