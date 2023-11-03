@@ -1,6 +1,6 @@
-# 14oct23 Software Lab. Alexander Burger
+# 03nov23 Software Lab. Alexander Burger
 
-# (select [var ..] cls [hook|T] [var val ..])
+# (select [var ..] cls [hook] [var val ..])
 (de select Lst
    (let
       (Vars
@@ -10,21 +10,23 @@
                   (quit "Missing class") )
                (link (++ Lst)) ) )
          Cls (++ Lst)
-         Hook (cond
-            ((ext? (car Lst)) (++ Lst))
-            ((=T (car Lst)) (++ Lst) *DB) ) )
+         Hook (and (ext? (car Lst)) (++ Lst)) )
       (default Lst
-         (cons
+         (list
             (or
-               (car Vars)
-               (and
-                  (find
-                     '((X) (isa '(+Need +index) (car X)))
-                     (getl Cls) )
-                  (; @ 1 var) )
-               (cdr
-                  (maxi caar
-                     (getl (get (or Hook *DB) Cls)) ) ) ) ) )
+               (and (sym? (car Vars)) (car Vars))
+               (recur (Cls)
+                  (or
+                     (and
+                        (find
+                           '((X)
+                              (isa '(+Need +index) (car (pair X))) )
+                           (getl Cls) )
+                        (; @ 1 var) )
+                     (cdr
+                        (maxi caar
+                           (getl (get (or Hook *DB) Cls)) ) )
+                     (pick recurse (type Cls)) ) ) ) ) )
       (for
          (Q
             (apply search
@@ -37,20 +39,21 @@
                               (make (link @ Cls) (and Hook (link Hook))) ) ) )
                      (NIL Lst) ) ) )
             (search Q) )
-         (NIL (setq This (isa Cls @)))
-         (ifn Vars
-            (show This)
-            (for X Vars
-               (cond
-                  ((pair X)
-                     (printsp (eval X)) )
-                  ((meta This X)
-                     (print> @ (get This X))
-                     (space) )
-                  (T (printsp (get This X))) ) )
-            (print This) )
-         (T (line) This)
-         (prinl) ) ) )
+         (T
+            (when (setq This (isa Cls @))
+               (ifn Vars
+                  (show This)
+                  (for X Vars
+                     (cond
+                        ((pair X)
+                           (printsp (eval X)) )
+                        ((meta This X)
+                           (print> @ (get This X))
+                           (space) )
+                        (T (printsp (get This X))) ) )
+                  (print This) )
+               (or (line) (prinl)) )
+            This ) ) ) )
 
 (dm (print> . +relation) (Val)
    (print Val) )

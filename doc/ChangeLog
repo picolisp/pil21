@@ -1,3 +1,9 @@
+23.11.3
+   Search also for inherited indexes in 'select'
+   Clean up
+      lib/sq.l
+      doc/refS.html
+
 23.10.31
    Handle external symbols in 'xName'
       src/main.l
@@ -9,7 +15,7 @@
 23.10.30
    More general matching in 'search'
       lib/db.l
-   Check duplicates in 'hintQ'
+   Skip duplicates in 'hintQ'
       lib/form.l
 
 23.10.29
