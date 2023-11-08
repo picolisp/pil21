@@ -1,4 +1,4 @@
-# 25aug23 Software Lab. Alexander Burger
+# 07nov23 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -184,15 +184,11 @@
    (let N (java CONTEXT 'getSystemService "notification")  # NotificationManager
       (ifn Ttl
          (java N 'cancel Id)
-         ~(as (>= (format (sys "SDK_INT")) 26)
-            (unless *Notify
-               (java N 'createNotificationChannel
-                  (java "android.app.NotificationChannel" T "pil" "PilBox" 2) )  # IMPORTANCE_LOW = 2
-               (on *Notify) ) )
-         (let B
-            `(if (>= (format (sys "SDK_INT")) 26)
-               '(java "android.app.Notification$Builder" T CONTEXT "pil")
-               '(java "androidx.core.app.NotificationCompat$Builder" T CONTEXT) )
+         (unless *Notify
+            (java N 'createNotificationChannel
+               (java "android.app.NotificationChannel" T "pil" "PilBox" 2) )  # IMPORTANCE_LOW = 2
+            (on *Notify) )
+         (let B (java "android.app.Notification$Builder" T CONTEXT "pil")
             (java B 'setSmallIcon (java "de.software_lab.pilbox.R$drawable" "notify"))
             (java B 'setContentTitle Ttl)
             (java B 'setContentText (or Msg null))
@@ -321,7 +317,8 @@
          Alarm (java CONTEXT 'getSystemService "alarm") )  # AlarmManager
       (ifn When
          (java Alarm 'cancel
-            (java "android.app.PendingIntent" 'getBroadcast CONTEXT N Intent 0) )
+            (java "android.app.PendingIntent" 'getBroadcast
+               CONTEXT N Intent `(hex "1C000000") ) )  # FLAG_ACTIVITY_NEW_TASK | FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE
          (java Intent 'putExtra "UUID" *Uuid)
          (java Intent 'putExtra "SRC" File)
          (java Intent 'putExtra "ARG" N)

@@ -1,3 +1,8 @@
+23.11.7
+   Fix 'cancel' call in 'alarm'
+   Checks for SDK_INT >= 26 are obsolete
+      lib/android.l
+
 23.11.3
    Search also for inherited indexes in 'select'
    Clean up
