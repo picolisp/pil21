@@ -1,3 +1,8 @@
+23.11.12
+   Mark end of layout in 'tracks' also with "#"
+      lib/simul.l
+   Remove @lib/compat.l from distribution
+
 23.11.7
    Fix 'cancel' call in 'alarm'
    Checks for SDK_INT >= 26 are obsolete
@@ -786,7 +791,7 @@
       src/io.l
       src/db.l
       doc/refT.html
-   Remove lib/boss.l from distribution
+   Remove @lib/boss.l from distribution
 
 22.10.21
    Use 'delete' instead of 'replace'

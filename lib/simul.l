@@ -1,4 +1,4 @@
-# 25may23 Software Lab. Alexander Burger
+# 12nov23 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -320,7 +320,7 @@
    (def Var  # Layout
       (clip
          (make
-            (until (or (eof) (= "(" (peek)))
+            (until (or (eof) (sub? (peek) "#("))
                (link (line)) ) ) ) )
    (for (Y . L) (val Var)  # Init
       (for (X . This) L
