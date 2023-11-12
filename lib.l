@@ -1,4 +1,4 @@
-# 04aug23 Software Lab. Alexander Burger
+# 12nov23 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -166,7 +166,7 @@
       (run "Prg" 1) ) )
 
 (de finish Prg
-   (apply push (reverse Prg) '*Bye) )
+   (apply push1 (reverse Prg) '*Bye) )
 
 (de rc (File Key . @)
    (ctl File

@@ -1,4 +1,6 @@
 23.11.12
+   Use 'push1' instead of 'push' in 'finish'
+      lib.l
    Mark end of layout in 'tracks' also with "#"
       lib/simul.l
    Remove @lib/compat.l from distribution
