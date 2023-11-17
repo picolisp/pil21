@@ -1,4 +1,4 @@
-# 28aug23 Software Lab. Alexander Burger
+# 17nov23 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -431,10 +431,9 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
                (nond
                   ((caddr Lst) (const (cadr Lst)))
                   ((pair Typ)
-                     (prin
-                        "  i64 "
-                        (if (sub? "*" Typ) "ptrtoint" "sext")
-                        " (" (cadr Lst) " " (caddr Lst) " to i64)") )
+                     (if (sub? "*" Typ)
+                        (prin "  i64 ptrtoint" " (" (cadr Lst) " " (caddr Lst) " to i64)")
+                        (prin "  i64 " (caddr Lst)) ) )
                   (NIL
                      (prin
                         "  i64 ptrtoint ("

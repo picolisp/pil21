@@ -1497,7 +1497,7 @@ declare void @llvm.stackrestore(i8*)
   i64 ptrtoint (i8* null to i64),
   i64 ptrtoint (i8* null to i64),
   i64 ptrtoint (i8* null to i64),
-  i64 sext (i32 0 to i64),
+  i64 0,
   i64 ptrtoint (i8* null to i64),
   i64 ptrtoint (i8* null to i64),
   i64 ptrtoint (void(i8)* null to i64),
@@ -1508,8 +1508,8 @@ declare void @llvm.stackrestore(i8*)
   i64 0,
   i64 0,
   i64 0,
-  i64 sext (i32 0 to i64),
-  i64 sext (i32 0 to i64)
+  i64 0,
+  i64 0
 ], align 8
 @$Cell = global [2 x i64] [
   i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64),
@@ -1518,7 +1518,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 370,
   i64 178,
-  i64 194
+  i64 274
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,

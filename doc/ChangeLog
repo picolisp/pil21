@@ -1,3 +1,7 @@
+23.11.17
+   'sext' constexprs are deprecated (Mike Pechkin)
+      src/lib/llvm.l
+
 23.11.12
    Use 'push1' instead of 'push' in 'finish'
       lib.l
