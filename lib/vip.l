@@ -1,4 +1,4 @@
-# 31oct23 Software Lab. Alexander Burger
+# 18nov23 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1365,7 +1365,7 @@ s-expr command vi)
                                  (beep) ) ) )
                         ("bd"  # Buffer delete
                            (when (cdr *Buffers)
-                              (let Buf (: buffer)
+                              (let? Buf (if (=0 Cnt) (: buffer) (get *Buffers Cnt))
                                  (for (This *CmdWin (setq This (: next)))
                                     (cond
                                        ((== Buf (: last))

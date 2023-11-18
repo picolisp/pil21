@@ -1,4 +1,6 @@
 23.11.18
+   Handle optional count in ":bd"
+      lib/vip.l
    Explicit symbol argument to 'new'
       src/flow.l
       doc/refN.html
