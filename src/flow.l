@@ -1,4 +1,4 @@
-# 06sep23 Software Lab. Alexander Burger
+# 18nov23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -316,7 +316,7 @@
 (de _Box (Exe)
    (consSym ZERO (eval (cadr Exe))) )
 
-# (new ['flg|num] ['typ ['any ..]]) -> obj
+# (new ['flg|num|sym] ['typ ['any ..]]) -> obj
 (de _New (Exe)
    (let
       (X (cdr Exe)
@@ -326,14 +326,15 @@
             (cond
                ((pair Y) (consSym ZERO Y))  # Anonymous with type
                ((nil? Y) (consSym ZERO ZERO))  # Anonymous with placeholder
-               (T
+               ((or (t? Y) (num? Y))
                   (let Nm
                      (newId Exe  # External
-                        (if (cnt? Y) (i32 (int @)) 1) )
+                        (if (num? Y) (i32 (int @)) 1) )
                      (prog1
                         (extern Nm)
                         (set (tail @)
-                           (sign (shr 1 (add Nm Nm) 1)) ) ) ) ) ) ) )  # Set "dirty"
+                           (sign (shr 1 (add Nm Nm) 1)) ) ) ) )  # Set "dirty"
+               (T Y) ) ) )  # Explicit symbol
       (unless (pair Y)
          (set Obj (eval (++ X))) )
       (set $Ret 0)  # Preset to "No classes"

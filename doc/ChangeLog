@@ -1,3 +1,8 @@
+23.11.18
+   Explicit symbol argument to 'new'
+      src/flow.l
+      doc/refN.html
+
 23.11.17
    'sext' constexprs are deprecated (Mike Pechkin)
       src/lib/llvm.l

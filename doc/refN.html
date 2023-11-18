@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 18nov23 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -282,17 +282,17 @@ href="refR.html#range">range</a></code>.
 -> (1 1 1 2 3)
 </pre></dd>
 
-<dt><a id="new"><code>(new ['flg|num] ['typ ['any ..]]) -> obj</code></a></dt>
-<dd>Creates and returns a new object. If <code>flg</code> is given and
-non-<code>NIL</code>, the new object will be an external symbol (created in
-database file 1 if <code>T</code>, or in the corresponding database file if
-<code>num</code> is given). <code>typ</code> (typically a list of classes) is
-assigned to the <code>VAL</code>, and the initial <code>T</code> message is sent
-with the arguments <code>any</code> to the new object. If no <code>T</code>
-message is defined for the classes in <code>typ</code> or their superclasses,
-the <code>any</code> arguments should evaluate to alternating keys and values
-for the initialization of the new object. See also <code><a
-href="refB.html#box">box</a></code>, <code><a
+<dt><a id="new"><code>(new ['flg|num|sym] ['typ ['any ..]]) -> obj</code></a></dt>
+<dd>Creates and returns a new object. If the first (obtional) argument is
+<code>T</code> or a number, the new object will be an external symbol (created
+in database file 1 if <code>T</code>, or in the corresponding database file if
+<code>num</code> is given). If it is a symbol, it is used directly.
+<code>typ</code> (a list of classes) is assigned to the <code>VAL</code>, and
+the initial <code>T</code> message is sent with the arguments <code>any</code>
+to the new object. If no <code>T</code> message is defined for the classes in
+<code>typ</code> or their superclasses, the <code>any</code> arguments should
+evaluate to alternating keys and values for the initialization of the new
+object. See also <code><a href="refB.html#box">box</a></code>, <code><a
 href="refO.html#object">object</a></code>, <code><a
 href="refC.html#class">class</a></code>, <code><a
 href="refT.html#type">type</a></code>, <code><a
