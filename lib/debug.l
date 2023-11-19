@@ -1,4 +1,4 @@
-# 31oct23 Software Lab. Alexander Burger
+# 19nov23 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -34,15 +34,15 @@
                   "|" "%7C")
                "\">" ) )
          (out '("w3m" "-T" "text/html" "-dump")
+            (prin "<dt>")
             (echo "</a>")
             (echo "<dd>")
-            (prinl "<br>")
-            (echo "\n<pre><code>")
+            (prinl "<br/>")
+            (echo "\n<pre>")
             (ifn Ex
-               (prinl "<br><br>")
-               (prin "<pre><code>")
-               (prinl (echo "\n</code></pre>")) ) ) )
-      (prinl "========================================") )
+               (prinl "<br/><br/>")
+               (prin "<pre>")
+               (prinl (echo "\n</pre>")) ) ) ) )
    Sym )
 
 (de docs (Dir)
