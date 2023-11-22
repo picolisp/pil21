@@ -1,4 +1,4 @@
-# 12nov23 Software Lab. Alexander Burger
+# 22nov23 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -131,10 +131,8 @@
          (when *Rt
             (off *Keys)
             (let Dly (*/ (- Time *Time) *Rt)
-               (loop
-                  (NIL (key Dly 'Dly))
+               (while (and (gt0 Dly) (key Dly 'Dly))
                   (fifo '*Keys @)
-                  (NIL (gt0 Dly))
                   (run Prg) ) ) )
          (setq *Time Time)
          (yield 0 This) ) ) )

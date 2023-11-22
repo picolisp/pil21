@@ -1,4 +1,4 @@
-# 30oct23 Software Lab. Alexander Burger
+# 20nov23 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
 # *Lock *Spans *AlwaysAsk
@@ -2507,7 +2507,7 @@
 
 
 # DB query chart
-(class +QueryChart +stepChart)  #! Will be deprecated (use +DbChart instead)
+(class +QueryChart +stepChart)
 
 (dm step> ()
    (; (prove (: query)) @@) )

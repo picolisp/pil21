@@ -1,3 +1,7 @@
+23.11.22
+   Simplify key loop in 'des'
+      lib/simul.l
+
 23.11.19
    Fix 'help' for new reference format
       lib/debug.l
