@@ -1,4 +1,4 @@
-# 25oct23 Software Lab. Alexander Burger
+# 26nov23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -264,6 +264,10 @@
          R (link (push $Nil NIL)) )
       (set $Make (set $Yoke R))
       (exec (cdr Exe))
+      (set $At2
+         (if (pair (val R))
+            (ofs (val $Make) -1)
+            $Nil ) )
       (set $Make Make  $Yoke Yoke)
       (pop R) ) )
 

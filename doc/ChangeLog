@@ -1,3 +1,15 @@
+23.11.27
+   Resume all coroutines waiting for the same point in time
+      lib/simul.l
+      doc/des.html
+
+23.11.26
+   Use '*@@' instead of '@@'
+      lib/vip.l
+   'make' stores linkage cell in '@@'
+      src/subr.l
+      doc/refM.html
+
 23.11.22
    Simplify key loop in 'des'
       lib/simul.l

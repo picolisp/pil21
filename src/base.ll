@@ -1518,7 +1518,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 370,
   i64 178,
-  i64 354
+  i64 434
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -89861,20 +89861,42 @@ $5:
 $6:
   %31 = phi i64 [%27, %$4] ; # Prg
   %32 = phi i64 [0, %$4] ; # ->
+; # (set $At2 (if (pair (val R)) (ofs (val $Make) -1) $Nil))
+; # (if (pair (val R)) (ofs (val $Make) -1) $Nil)
+; # (val R)
+  %33 = inttoptr i64 %6 to i64*
+  %34 = load i64, i64* %33
+; # (pair (val R))
+  %35 = and i64 %34, 15
+  %36 = icmp eq i64 %35, 0
+  br i1 %36, label %$7, label %$8
+$7:
+; # (val $Make)
+  %37 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 136) to i64) to i64*
+  %38 = load i64, i64* %37
+; # (ofs (val $Make) -1)
+  %39 = add i64 %38, -8
+  br label %$9
+$8:
+  br label %$9
+$9:
+  %40 = phi i64 [%39, %$7], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64), %$8] ; # ->
+  %41 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 456) to i64) to i64*
+  store i64 %40, i64* %41
 ; # (set $Make Make $Yoke Yoke)
-  %33 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 136) to i64) to i64*
-  store i64 %2, i64* %33
-  %34 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 144) to i64) to i64*
-  store i64 %4, i64* %34
+  %42 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 136) to i64) to i64*
+  store i64 %2, i64* %42
+  %43 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 144) to i64) to i64*
+  store i64 %4, i64* %43
 ; # (pop R)
-  %35 = inttoptr i64 %6 to i64*
-  %36 = load i64, i64* %35
-  %37 = inttoptr i64 %6 to i64*
-  %38 = getelementptr i64, i64* %37, i32 1
-  %39 = load i64, i64* %38
-  %40 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %39, i64* %40
-  ret i64 %36
+  %44 = inttoptr i64 %6 to i64*
+  %45 = load i64, i64* %44
+  %46 = inttoptr i64 %6 to i64*
+  %47 = getelementptr i64, i64* %46, i32 1
+  %48 = load i64, i64* %47
+  %49 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %48, i64* %49
+  ret i64 %45
 }
 
 define i64 @_Made(i64) align 8 {

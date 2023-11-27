@@ -1,4 +1,4 @@
-# 18nov23 Software Lab. Alexander Burger
+# 26nov23 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -8,7 +8,7 @@
 
 (local) (*Ns *Shell *CmdWin *StatNm *Chr *Complete *Repeat *Change *Count *Cnt
 *Search *Clip *TagStack *Spell *CmdMap *Keys *KeyMap *KeyMap-g *KeyMap-q *F7 *F8
-*F9 *F10 *F11 *F12 *@)
+*F9 *F10 *F11 *F12 *@ *@@)
 
 (def '*Shell (or (sys "SHELL") "sh"))
 
@@ -605,13 +605,13 @@ s-expr command vi)
 (de jmp@@ (Y)
    (=: buffer lastX (: posX))
    (=: buffer lastY (: posY))
-   (setq @@ Y) )
+   (setq *@@ Y) )
 
 (de cnt@@ ()
-   (- @@ (: posY) -1) )
+   (- *@@ (: posY) -1) )
 
 (de goCol (N)
-   (setq @@ (: posY))
+   (setq *@@ (: posY))
    N )
 
 (de goLeft (N)
@@ -626,24 +626,24 @@ s-expr command vi)
             (length (get (: buffer text) (: posY))) ) ) ) )
 
 (de goUp (N)
-   (setq @@ (max 1 (- (: posY) N)))
-   (min1 (: posX) (length (get (: buffer text) @@))) )
+   (setq *@@ (max 1 (- (: posY) N)))
+   (min1 (: posX) (length (get (: buffer text) *@@))) )
 
 (de goDown (N I)
-   (setq @@
+   (setq *@@
       (min1
          (or (=T N) (+ (: posY) N))
          (+ (or I 0) (length (: buffer text))) ) )
-   (min1 (: posX) (length (get (: buffer text) @@))) )
+   (min1 (: posX) (length (get (: buffer text) *@@))) )
 
 (de goAbs (X Y I)
    (jmp@@
       (min1 Y
          (+ (or I 0) (length (: buffer text))) ) )
-   (min1 X (length (get (: buffer text) @@))) )
+   (min1 X (length (get (: buffer text) *@@))) )
 
 (de goFind (C D N I)
-   (setq @@ (: posY))
+   (setq *@@ (: posY))
    (let (Lst (get (: buffer text) (: posY))  L (nth Lst (: posX)))
       (do N (setq L (member C (cdr L))))
       (if L
@@ -792,7 +792,7 @@ s-expr command vi)
 
 (de cutX (X Flg)
    (when X
-      (let Y @@
+      (let Y *@@
          (unless (> (list Y X) (list (: posY) (: posX)))
             (xchg 'X (:: posX)  'Y (:: posY)) )
          (change
@@ -815,13 +815,13 @@ s-expr command vi)
                            (when Flg
                               (set Pos (conc (car Pos) L))
                               (=: posX (min1 (: posX) (length (car Pos)))) )
-                           (setq @@ (unless L 1)) ) )
+                           (setq *@@ (unless L 1)) ) )
                      Flg ) ) ) ) ) ) )
 
 (de cutN (N)
    (change
       (when Pos
-         (off @@)
+         (off *@@)
          (set *Clip
             (cons T
                (if (setq Pos (prior Pos (: buffer text)))
@@ -830,7 +830,7 @@ s-expr command vi)
                      (do N
                         (link (cadr Pos))
                         (NIL (con Pos (cddr Pos))
-                           (one @@)
+                           (one *@@)
                            (dec (:: posY)) ) )
                      (=: posX 1) )
                   (cut N (:: buffer text)) ) ) ) ) ) )
@@ -1059,20 +1059,20 @@ s-expr command vi)
 (de move @
    (let M (conc (rest) (1))
       (case *Change
-         (NIL (and (eval (rest)) (goto @ @@ T)))
+         (NIL (and (eval (rest)) (goto @ *@@ T)))
          ("!" (eval (rest)) (cmdPipe (cnt@@)))  # External filter
          (">" (evRpt (list 'shiftY M T)))  # Shift right
          ("<" (evRpt (list 'shiftY M)))  # Shift left
          ("c"  # Change
             (when (cutX (eval M) T)
-               (and @@
+               (and *@@
                   (get (: buffer text) (: posY) 1)
                   (inc (:: posX)) )
-               (let L (insMode @@)
+               (let L (insMode *@@)
                   (setq *Repeat
                      (list 'prog
                         (list 'cutX M T)
-                        (list 'paste (lit L) '@@)) ) ) ) )
+                        (list 'paste (lit L) '*@@)) ) ) ) )
          ("d" (evRpt (list 'cutX M T)))  # Delete
          ("y" (cutX (eval M)))  # Yank
          (T (beep)) ) ) )
@@ -1176,7 +1176,7 @@ s-expr command vi)
       (fill
          '(when (cdr (cutN Cnt))
             (pipe (out (list *Shell "-c" Line) (mapc prinl @))
-               (paste (cons T (rdLines)) @@) ) )
+               (paste (cons T (rdLines)) *@@) ) )
          '(Line Cnt) ) ) )
 
 (de nextBuf (B)

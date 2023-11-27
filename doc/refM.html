@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 26nov23 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -123,9 +123,10 @@ href="refC.html#connect">connect</a></code>.
 href="refM.html#made">made</a></code>, <code><a
 href="refC.html#chain">chain</a></code>, <code><a
 href="refL.html#link">link</a></code> and <code><a
-href="refY.html#yoke">yoke</a></code> functions, and returns the result list.
-For efficiency, pointers to the head and the tail of the list are maintained
-internally.
+href="refY.html#yoke">yoke</a></code> functions, and returns the resulting list.
+The final linkage cell is stored in the global variable <code><a
+href="ref_.html#@@">@@</a></code>. For efficiency, pointers to the head and the
+tail of the list are maintained internally.
 
 <pre>
 : (make (link 1) (link 2 3) (link 4))

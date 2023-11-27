@@ -1,4 +1,4 @@
-# 22nov23 Software Lab. Alexander Burger
+# 27nov23 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -135,7 +135,15 @@
                   (fifo '*Keys @)
                   (run Prg) ) ) )
          (setq *Time Time)
-         (yield 0 This) ) ) )
+         (yield 0 This)
+         (while (lup *Next Time)
+            (let X @
+               (with (cdr X)
+                  (idx '*Next X (=: n NIL))
+                  (for S (: e)
+                     (rid (prop S 's) This) )
+                  (=: e NIL)
+                  (yield 0 This) ) ) ) ) ) )
 
 # Wait for time and/or events
 (de pause @

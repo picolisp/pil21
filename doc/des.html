@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 27nov23 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -97,8 +97,8 @@ speed etc.</dd>
 <dt><code>(des [. prg])</code></dt>
 <dd>Performs one discrete-event simulation step. It first runs all coroutines in
 <code>*Ready</code> until that queue is empty. Then - if <code>*Next</code> is
-not empty - advances the simulation to the next point in time, and resumes the
-corresponding coroutine. In that case, if in realtime mode, it delays execution
+not empty - advances the simulation to the next point in time, and resumes all
+corresponding coroutines. In that case, if in realtime mode, it delays execution
 as necessary, handles possible key presses, and runs <code>prg</code> after each
 key.</dd>
 
@@ -255,8 +255,8 @@ dining: (more (stack))
 -> NIL
 dining: *Ready
 -> NIL
-dining: *Next
--> ((229 . Kant) ((201 . Spinoza) ((198 . Russell) ((194 . Marx) ((180 . Aristotle))))))
+dining: (idx '*Next)
+-> ((180 . Aristotle) (194 . Marx) (198 . Russell) (201 . Spinoza) (229 . Kant))
 dining: (des)
 03:00 Aristotle hungry
 03:00 Aristotle eating
@@ -269,7 +269,7 @@ dining: (des)
 03:18 Russell hungry
 03:18 Russell waiting
 -> NIL
-dining: (do 40 (des))
+dining: (do 10 (des))
 03:20 Aristotle thinking
 03:20 Russell waiting
 03:21 Spinoza hungry
@@ -291,51 +291,6 @@ dining: (do 40 (des))
 07:07 Marx thinking
 07:40 Russell hungry
 07:40 Russell eating
-07:41 Kant hungry
-07:41 Kant eating
-07:47 Spinoza hungry
-07:47 Spinoza waiting
-08:00 Russell thinking
-08:01 Kant thinking
-08:01 Spinoza eating
-08:21 Spinoza thinking
-09:57 Aristotle hungry
-09:57 Aristotle eating
-10:17 Aristotle thinking
-10:41 Marx hungry
-10:41 Marx eating
-11:01 Marx thinking
-11:45 Spinoza hungry
-11:45 Spinoza eating
-11:50 Russell hungry
-11:50 Russell eating
-11:52 Kant hungry
-11:52 Kant waiting
-12:05 Spinoza thinking
-12:05 Kant eating
-12:10 Russell thinking
-12:25 Kant thinking
-13:57 Aristotle hungry
-13:57 Aristotle eating
-14:02 Marx hungry
-14:02 Marx eating
-14:17 Aristotle thinking
-14:22 Marx thinking
-15:40 Russell hungry
-15:40 Russell eating
-15:46 Spinoza hungry
-15:46 Spinoza eating
-15:52 Kant hungry
-15:52 Kant waiting
-16:00 Russell thinking
-16:06 Spinoza thinking
-16:06 Kant eating
-16:26 Kant thinking
-17:52 Aristotle hungry
-17:52 Aristotle eating
-18:12 Aristotle thinking
-18:22 Marx hungry
-18:22 Marx eating
 -> NIL
 dining:
 </pre>
