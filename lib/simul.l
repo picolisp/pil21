@@ -124,10 +124,6 @@
       (yield (cdr @) (car @)) )
    (when (idx '*Next NIL)
       (let (X (car @)  (Time . This) X)
-         (idx '*Next X (=: n NIL))
-         (for S (: e)
-            (rid (prop S 's) This) )
-         (=: e NIL)
          (when *Rt
             (off *Keys)
             (let Dly (*/ (- Time *Time) *Rt)
@@ -135,15 +131,14 @@
                   (fifo '*Keys @)
                   (run Prg) ) ) )
          (setq *Time Time)
-         (yield 0 This)
-         (while (lup *Next Time)
-            (let X @
-               (with (cdr X)
-                  (idx '*Next X (=: n NIL))
-                  (for S (: e)
-                     (rid (prop S 's) This) )
-                  (=: e NIL)
-                  (yield 0 This) ) ) ) ) ) )
+         (loop
+            (idx '*Next X (=: n NIL))
+            (for S (: e)
+               (rid (prop S 's) This) )
+            (=: e NIL)
+            (yield 0 This)
+            (NIL (setq X (lup *Next Time)))
+            (setq This (cdr X)) ) ) ) )
 
 # Wait for time and/or events
 (de pause @
