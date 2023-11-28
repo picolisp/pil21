@@ -1,3 +1,7 @@
+23.11.28
+   Transient "U" in 'bench'
+      lib/debug.l
+
 23.11.27
    Resume all coroutines waiting for the same point in time
       lib/simul.l

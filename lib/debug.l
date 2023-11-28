@@ -1,4 +1,4 @@
-# 19nov23 Software Lab. Alexander Burger
+# 28nov23 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -422,12 +422,12 @@
 
 # Benchmarking
 (de bench Prg
-   (let U (usec)
+   (let "U" (usec)
       (prog1
          (run Prg 1)
          (out 2
             (prinl
-               (format (*/ (- (usec) U) 1000) 3)
+               (format (*/ (- (usec) "U") 1000) 3)
                " sec" ) ) ) ) )
 
 # Backtrace
