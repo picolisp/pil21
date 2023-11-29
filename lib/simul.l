@@ -1,4 +1,4 @@
-# 27nov23 Software Lab. Alexander Burger
+# 29nov23 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -116,7 +116,6 @@
 (local) (*Rt *Keys *Time *Ready *Next des pause event wake)
 (private) (Prg X Time Dly n e s)
 
-(one *Rt)  # Realtime
 (zero *Time)  # Current simulation time
 
 (de des Prg

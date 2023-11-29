@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 27nov23 Software Lab. Alexander Burger
+# 29nov23 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -80,8 +80,8 @@ unit, but should be in milliseconds if in realtime mode.</dd>
 coroutines pausing for a given time.</dd>
 
 <dt><code>*Rt</code></dt>
-<dd>Realtime: Either <code>NIL</code>, or 1 for wall clock speed, 2 for double
-speed etc.</dd>
+<dd>Realtime: Either <code>NIL</code> (default), or 1 for wall clock speed, 2
+for double speed etc.</dd>
 
 <dt><code>*Keys</code></dt>
 <dd>Holds possibly queued key presses (only in realtime mode).</dd>
@@ -175,8 +175,6 @@ Philosophers Problem</a>.
 (load "@lib/simul.l")
 
 (symbols 'dining 'simul 'pico)
-
-(off *Rt)  # Realtime mode off
 
 (local) (*ForkA *ForkB *ForkC *ForkD *ForkE now think)
 
