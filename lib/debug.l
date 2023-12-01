@@ -1,4 +1,4 @@
-# 28nov23 Software Lab. Alexander Burger
+# 01dec23 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -244,7 +244,7 @@
                      (link (cons (car X) Obj))
                      (push 'Mark (car X)) ) ) ) ) ) ) )
 
-(private) (_dbg _dbg2 dbg ubg traced?)
+(private) (_dbg _dbg2 dbg ubg traced? U)
 
 # Single-Stepping
 (de _dbg (Lst)
@@ -422,12 +422,12 @@
 
 # Benchmarking
 (de bench Prg
-   (let "U" (usec)
+   (let U (usec)
       (prog1
          (run Prg 1)
          (out 2
             (prinl
-               (format (*/ (- (usec) "U") 1000) 3)
+               (format (*/ (- (usec) U) 1000) 3)
                " sec" ) ) ) ) )
 
 # Backtrace

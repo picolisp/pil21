@@ -1,3 +1,7 @@
+23.12.1
+   Change transient "U" in 'bench' to private
+      lib/debug.l
+
 23.11.30
    Typo
       doc/refN.html
