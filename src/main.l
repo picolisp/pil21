@@ -1,4 +1,4 @@
-# 31oct23 Software Lab. Alexander Burger
+# 03dec23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1804,7 +1804,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (set
       $AV0 (val Av)  # Save command
       $AV (setq Av (ofs Av 1))  # and argument vector
-      $StkLimit (set $StkBrk (ulimStk)) )
+      $StkLimit (ulimStk) )
    # Check debug mode
    (let P (ofs Av (- Ac 2))
       (unless (strcmp (val P) ($ "+"))

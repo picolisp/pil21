@@ -1,4 +1,4 @@
-# 28aug23 Software Lab. Alexander Burger
+# 03dec23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -15,7 +15,6 @@
 (var $ExtSkip i64 0)                   # External tree skip
 (var $Current i8* null)                # Current coroutine
 (var $Coroutines i8* null)             # Coroutines
-(var $StkBrk i8* null)                 # Stack break
 (var $StkLimit i8* null)               # Stack limit: StackN-Size+1024
 (var $StkSizeT i64 (* 4 STACK))        # Coroutine main stack segment size
 (var $StkSize i64 STACK)               # Coroutine stack segment size

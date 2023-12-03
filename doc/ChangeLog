@@ -1,3 +1,8 @@
+23.12.3
+   Global '$StkBrk' not needed
+      src/glob.l
+      src/main.l
+
 23.12.1
    Change transient "U" in 'bench' to private
       lib/debug.l

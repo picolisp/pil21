@@ -22,7 +22,6 @@ declare void @llvm.stackrestore(i8*)
 @$ExtSkip = global i64 0
 @$Current = global i8* null
 @$Coroutines = global i8* null
-@$StkBrk = global i8* null
 @$StkLimit = global i8* null
 @$StkSizeT = global i64 262144
 @$StkSize = global i64 65536
@@ -1518,7 +1517,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 370,
   i64 194,
-  i64 18
+  i64 50
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -110156,17 +110155,15 @@ $8:
 
 define i32 @main(i32, i8**) align 8 {
 $1:
-; # (set $AV0 (val Av) $AV (setq Av (ofs Av 1)) $StkLimit (set $StkBr...
+; # (set $AV0 (val Av) $AV (setq Av (ofs Av 1)) $StkLimit (ulimStk))
 ; # (val Av)
   %2 = load i8*, i8** %1
   store i8* %2, i8** @$AV0
 ; # (ofs Av 1)
   %3 = getelementptr i8*, i8** %1, i32 1
   store i8** %3, i8*** @$AV
-; # (set $StkBrk (ulimStk))
 ; # (ulimStk)
   %4 = call i8* @ulimStk()
-  store i8* %4, i8** @$StkBrk
   store i8* %4, i8** @$StkLimit
 ; # (let P (ofs Av (- Ac 2)) (unless (strcmp (val P) ($ "+")) (set $D...
 ; # (- Ac 2)
