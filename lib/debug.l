@@ -1,4 +1,4 @@
-# 01dec23 Software Lab. Alexander Burger
+# 04dec23 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -81,16 +81,14 @@
 (de more (M Fun)
    (let *Dbg NIL
       (if (pair M)
-         ((default Fun print) (++ M))
+         ((default Fun println) (++ M))
          (println (type M))
          (setq
             Fun (list '(X) (list 'pp 'X (lit M)))
             M (mapcar car (filter pair (val M))) ) )
       (loop
-         (flush)
-         (T (atom M) (prinl))
-         (T (line) T)
-         (prinl)
+         (T (atom M))
+         (T (= "\e" (key)) T)
          (Fun (++ M)) ) ) )
 
 (de what (S)
@@ -464,7 +462,7 @@
          (while L
             (space 3)
             (println (caar L) (less (cdr (++ L)))) )
-         (T (and (not Flg) (line)) T) ) ) )
+         (NIL (or Flg (<> "\e" (key))) T) ) ) )
 
 # Source code
 `(info "@lib/map")

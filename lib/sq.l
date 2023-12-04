@@ -1,4 +1,4 @@
-# 03nov23 Software Lab. Alexander Burger
+# 04dec23 Software Lab. Alexander Burger
 
 # (select [var ..] cls [hook] [var val ..])
 (de select Lst
@@ -51,8 +51,8 @@
                            (print> @ (get This X))
                            (space) )
                         (T (printsp (get This X))) ) )
-                  (print This) )
-               (or (line) (prinl)) )
+                  (println This) )
+               (= "\e" (key)) )
             This ) ) ) )
 
 (dm (print> . +relation) (Val)

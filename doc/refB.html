@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 04dec23 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -368,8 +368,8 @@ execution. For each bind frame, the function call (reduced with <code><a
 href="refL.html#less">less</a></code>) is <code><a
 href="refP.html#pretty">pretty</a></code>-printed, followed by indented
 variable-value-pairs. If <code>flg</code> is <code>NIL</code>, <code>bt</code>
-then waits for console input, and terminates when Ctrl-D or a non-empty line is
-entered (like <code><a href="refM.html#more">more</a></code>). See also <code><a
+then waits for a key, and terminates when ESC is pressed (like <code><a
+href="refM.html#more">more</a></code>). See also <code><a
 href="refU.html#up">up</a></code> and <code><a
 href="refE.html#env">env</a></code>.
 
@@ -396,6 +396,7 @@ Div/0
    B 1
    F 7
 -> NIL
+?
 </pre></dd>
 
 <dt><a id="buf"><code>(buf sym 'cnt . prg) -> any</code></a></dt>

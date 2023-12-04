@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 03nov23 Software Lab. Alexander Burger
+# 04dec23 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -336,29 +336,26 @@ values (this is analog to 'SELECT * from CLS where VAR = VAL'). If before
 <code>cls</code> one or several attribute names are supplied, only these
 attribute (instead of the full <code>show</code>) are printed. These attribute
 specifications may also be lists, then those will be evaluated to retrieve
-related data. After each step, <code>select</code> waits for console input, and
-terminates when Ctrl-D or a non-empty line is entered. The global variable
-<code><a href="refT.html#This">This</a></code> is set to the last result. See
-also <a href="ref.html#dbase">Database</a> and <a
-href="ref.html#pilog">Pilog</a>.
+related data. After each step, <code>select</code> waits for a key, and
+terminates when ESC is pressed. The global variable <code><a
+href="refT.html#This">This</a></code> is set to the last result. See also <a
+href="ref.html#dbase">Database</a> and <a href="ref.html#pilog">Pilog</a>.
 
 <pre>
 : (select +Item)                       # Show all items
 {B1} (+Item)
    nr 1
+   nm "Main Part"
    pr 29900
    inv 100
    sup {C1}
-   nm "Main Part"
-
 {B2} (+Item)
    nr 2
+   nm "Spare Part"
    pr 1250
    inv 100
    sup {C2}
-   nm "Spare Part"
-.                                      # Stop
--> {B2}
+-> {B2}                                # ESC was pressed
 
 : (select +Item nr 3)                  # Show only item 3
 {B3} (+Item)
@@ -367,8 +364,7 @@ href="ref.html#pilog">Pilog</a>.
    pr 15700
    nm "Auxiliary Construction"
    inv 100
-.                                      # Stop
--> {B3}
+-> NIL
 
 # Show selected attributes for items 3 through 3
 : (select nr nm pr (: sup nm) +Item nr (3 . 5))

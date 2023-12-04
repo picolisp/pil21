@@ -1,3 +1,17 @@
+23.12.4
+   Use 'key' instead of 'line' (because of GNU readline behaviour change)
+   in 'more' and 'bt'
+      lib/debug.l
+      doc/refM.html
+      doc/refB.html
+   in 'select'
+      lib/sq.l
+      doc/refS.html
+   and in 'query' (and thus also '?')
+      lib/pilog.l
+      doc/refQ.html
+      doc/ref_.html
+
 23.12.3
    Global '$StkBrk' not needed
       src/glob.l

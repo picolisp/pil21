@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26nov23 Software Lab. Alexander Burger
+# 04dec23 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -599,55 +599,51 @@ href="refF.html#format">format</a></code>.
 <dt><code>(more 'cls) -> any</code></dt>
 <dd>(Debug mode only) Displays the elements of <code>lst</code> (first form), or
 the type and methods of <code>cls</code> (second form). <code>fun</code>
-defaults to <code><a href="refP.html#print">print</a></code>. In the second
+defaults to <code><a href="refP.html#println">println</a></code>. In the second
 form, the method definitions of <code>cls</code> are pretty-printed with
 <code><a href="refP.html#pp">pp</a></code>. After each step, <code>more</code>
-waits for console input, and terminates when Ctrl-D or a non-empty line is
-entered. In that case, <code>T</code> is returned, otherwise (when end of data
-is reached) <code>NIL</code>. See also <code><a
-href="refQ.html#query">query</a></code> and <code><a
-href="refS.html#show">show</a></code>.
+waits for a key, and terminates when ESC is pressed. In that case,
+<code>T</code> is returned, otherwise (when end of data is reached)
+<code>NIL</code>. See also <code><a href="refQ.html#query">query</a></code> and
+<code><a href="refS.html#show">show</a></code>.
 
 <pre>
 : (more (all))                         # Display all internal symbols
-inc>
-leaf
-nil
-inc!
-accept.                                # Stop
+!
+$
+%
+&
+*
 -> T
 
 : (more (all) show)                    # 'show' all internal symbols
-! 25502044215
+! 27131845007
    doc "@doc/ref_.html"
-   *Dbg ((1384 "@src/flow.l" llvm pico))
-
-$ 25502044259
+   *Dbg ((1458 "@src/flow.l" llvm pico))
+$ 27131845049
    doc "@doc/ref_.html"
-   *Dbg ((1432 "@src/flow.l" llvm pico))
-
-% 25502038597
+   *Dbg ((1508 "@src/flow.l" llvm pico))
+% -27131839417
    doc "@doc/ref_.html"
    *Dbg ((1245 "@src/big.l" llvm pico))
-
-& -25502038717
+& -27131839537
    doc "@doc/ref_.html"
    *Dbg ((1380 "@src/big.l" llvm pico))
+* -27131839339
+   doc "@doc/ref_.html"
+   *Dbg ((1174 "@src/big.l" llvm pico))
 ...
 
 : (more '+Link)                        # Display a class
 (+relation)
-
 (dm mis> (Val Obj)
    (and
       Val
-      (nor (isa (: type) Val) (canQuery Val))
+      (nor (isa (: type) Val) ("canQuery" Val))
       "Type error" ) )
-
 (dm T (Var Lst)
    (unless (=: type (car Lst)) (quit "No Link" Var))
-   (super Var (cdr Lst)) )
-
+   (super Var) )
 -> NIL
 </pre></dd>
 

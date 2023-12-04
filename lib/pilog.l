@@ -1,4 +1,4 @@
-# 29oct23 Software Lab. Alexander Burger
+# 04dec23 Software Lab. Alexander Burger
 
 (private) (CL Q R L Prg)
 
@@ -83,10 +83,9 @@
             (space)
             (print (car X))
             (print '=)
-            (print (cdr X))
-            (flush) )
-         (T (line))
-         (prinl) ) ) )
+            (print (cdr X)) )
+         (prinl)
+         (T (= "\e" (key)) T) ) ) )
 
 (de ? CL
    (let L
