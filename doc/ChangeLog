@@ -1,3 +1,7 @@
+23.12.5
+   Return 1 from ulimStk() for minimal stack address
+      src/lib.c
+
 23.12.4
    Use 'key' instead of 'line' (because of GNU readline behaviour change)
    in 'more' and 'bt'
