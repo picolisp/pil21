@@ -1,4 +1,4 @@
-# 18nov23 Software Lab. Alexander Burger
+# 06dec23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1146,7 +1146,7 @@
                ((pair X)  # 'prg'
                   (unless (val $Coroutines)  # First call
                      (let Main: (coroutine (alloc null (+ (val JmpBufSize) (coroutine T))))
-                        (put (Main: tag $T) ZERO (| (i64 (Main:)) 2))  # Tag 'T'
+                        (Main: tag $T)  # Tag 'T'
                         (Main: prv null)
                         (Main: nxt null)
                         (Main: org null)
@@ -1191,8 +1191,6 @@
                         ((coroutine P) nxt null) )
                      (let Dst: (coroutine P)
                         (Dst: tag Tag)
-                        (when (symb? Tag)
-                           (put Tag ZERO (| (i64 (Dst:)) 2)) )
                         (Dst: org (Src:))
                         (Dst: otg (Src: tag))
                         (Dst: prg X)
@@ -1218,6 +1216,8 @@
                            $Yoke 0
                            $Current (Dst:)
                            $StkLimit (+ (Dst: lim) 1024) )
+                        (when (symb? Tag)
+                           (put Tag ZERO (| (i64 (Dst:)) 2)) )
                         (set $Ret (run X))
                         (unless (== (hex "0707070707070707") (val (i64* (Dst: lim))))
                            (stkOverErr (Dst: tag)) )
@@ -1283,20 +1283,20 @@
             (coroutine
                (cond
                   ((not (nil? Tag))
-                     (nond
-                        ((symb? Tag)
+                     (cond
+                        ((t? Tag) (val $Coroutines))
+                        ((not (symb? Tag))
                            (loop
                               (let Crt: (coroutine Crt)
                                  (? (== Tag (Crt: tag)) Crt)
                                  (unless (setq Crt (Crt: nxt))
                                     (coErr Exe Tag) ) ) ) )
                         ((cnt? (get Tag ZERO))
-                           (coErr Exe Tag) )
-                        (NIL
                            (prog1
                               (i8* (& @ -3))
                               (unless (== Tag ((coroutine @) tag))
-                                 (coErr Exe Tag) ) ) ) ) )
+                                 (coErr Exe Tag) ) ) )
+                        (T (coErr Exe Tag)) ) )
                   ((Org:)
                      (prog1
                         @
