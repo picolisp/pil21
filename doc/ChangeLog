@@ -1,3 +1,11 @@
+23.12.8
+   ZERO-cache and free-list for 'co' speedup
+      src/glob.l
+      src/dec.l
+      src/main.l
+      src/flow.l
+      doc/ref.html
+
 23.12.6
    'co' crashes when gc() runs in put()
       src/flow.l

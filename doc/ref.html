@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 08dec23 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -1297,11 +1297,17 @@ symbol itself and not just the value:
 
 <p>Coroutines are independent execution contexts. They may have multiple entry
 and exit points, and preserve their environment (stack, symbol bindings,
-catch/throw and I/O frames) between invocations.
+namespaces, catch/throw and I/O frames) between invocations.
 
 <p>A coroutine is identified by a tag. This tag can be passed to other
 functions, and (re)invoked as needed. In this regard coroutines are similar to
 "continuations" in other languages.
+
+<p>Tags may be of any type (pointer equality is used for comparison), but
+symbolic tags are more efficient for large numbers of coroutines. They cache a
+pointer to the internal data structure in a property with key zero (which is
+inaccessible with the <a href="refP.html#put">put</a> and <a
+href="refG.html#get">get</a> functions).
 
 <p>A coroutine is created by calling <code><a href="refC.html#co">co</a></code>.
 Its <code>prg</code> body will be executed, and unless <code><a

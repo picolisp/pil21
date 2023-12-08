@@ -1,4 +1,4 @@
-# 03dec23 Software Lab. Alexander Burger
+# 07dec23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -49,14 +49,12 @@ popCtlFiles)
 
 # Stop coroutine
 (de void stop ((i8* . Crt))
-   (when (symb? ((coroutine Crt) tag))
-      (put @ ZERO $Nil) )
-   ((coroutine Crt) tag 0)  # Set unused
-   (while ((coroutine Crt) nxt)  # Find bottom
-      (setq Crt @) )
-   (until ((coroutine Crt) tag)  # Free stack space
-      (setq Crt ((coroutine Crt) prv))
-      ((coroutine Crt) nxt null) ) )
+   (let Crt: (coroutine Crt)
+      (when (symb? (Crt: tag))
+         (put @ ZERO $Nil) )
+      (Crt: tag 0)  # Set unused
+      (Crt: lim (val $CrtFree))  # Link into free list
+      (set $CrtFree Crt) ) )
 
 # Unwind stack
 (de void unwind ((i8* . Catch))

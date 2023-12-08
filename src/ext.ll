@@ -20,9 +20,10 @@ declare void @llvm.stackrestore(i8*)
 @$Extern = external global i64
 @$ExtCnt = external global i64
 @$ExtSkip = external global i64
-@$Current = external global i8*
 @$Coroutines = external global i8*
-@$StkBrk = external global i8*
+@$Current = external global i8*
+@$CrtLast = external global i8*
+@$CrtFree = external global i8*
 @$StkLimit = external global i8*
 @$StkSizeT = external global i64
 @$StkSize = external global i64

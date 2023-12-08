@@ -1,4 +1,4 @@
-# 06dec23 Software Lab. Alexander Burger
+# 08dec23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1147,7 +1147,6 @@
                   (unless (val $Coroutines)  # First call
                      (let Main: (coroutine (alloc null (+ (val JmpBufSize) (coroutine T))))
                         (Main: tag $T)  # Tag 'T'
-                        (Main: prv null)
                         (Main: nxt null)
                         (Main: org null)
                         (Main: otg $Nil)
@@ -1158,36 +1157,51 @@
                               7 (- Siz 256) T )
                            (stack Stk) )
                         (Main: at 0)
-                        (set $Coroutines (set $Current (Main:))) ) )
+                        (set $Coroutines (set $Current (set $CrtLast (Main:)))) ) )
                   (let
                      (Src: (coroutine (val $Current))
                         Crt (val $Coroutines)
                         P (i8* null) )
                      (saveCoIO)
                      (saveCoEnv (Src:))
-                     (loop
-                        (let Crt: (coroutine Crt)
-                           (when (== Tag (Crt: tag))  # Found running coroutine
+                     (cond
+                        ((not (symb? Tag))
+                           (loop
+                              (let Crt: (coroutine Crt)
+                                 (when (== Tag (Crt: tag))  # Found running coroutine
+                                    (when (setjmp (Src: (rst)))
+                                       (ret (loadCoEnv (Src:))) )
+                                    (set $Ret $Nil)
+                                    (Crt: org (Src:))
+                                    (Crt: otg (Src: tag))
+                                    (longjmp (Crt: (rst)) 1) )
+                                 (or P
+                                    (Crt: tag)  # Unused
+                                    (setq P Crt) )  # Remember next free slot
+                                 (? (=0 (Crt: nxt)))
+                                 (setq Crt @) ) ) )
+                        ((cnt? (get Tag ZERO))  # Already running
+                           (let Crt: (coroutine (i8* (& @ -3)))
+                              (unless (== Tag (Crt: tag))
+                                 (coErr Exe Tag) )
                               (when (setjmp (Src: (rst)))
                                  (ret (loadCoEnv (Src:))) )
                               (set $Ret $Nil)
                               (Crt: org (Src:))
                               (Crt: otg (Src: tag))
-                              (longjmp (Crt: (rst)) 1) )
-                           (or P
-                              (Crt: tag)  # Unused
-                              (setq P Crt) )  # Remember next free slot
-                           (? (=0 (Crt: nxt)))
-                           (setq Crt @) ) )
+                              (longjmp (Crt: (rst)) 1) ) )
+                        ((val $CrtFree)
+                           (set $CrtFree ((coroutine (setq P @)) lim)) )
+                        (T (setq Crt (val $CrtLast))) )
                      # Start new coroutine
                      (when (setjmp (Src: (rst)))
                         (ret (loadCoEnv (Src:))) )
                      (if P
                         (stack P)  # Use free slot
                         (stack ((coroutine Crt) lim)) # Found no free slot
-                        (setq P (b8+ (+ (val JmpBufSize) (coroutine T))))
+                        (set $CrtLast
+                           (setq P (b8+ (+ (val JmpBufSize) (coroutine T)))) )
                         ((coroutine Crt) nxt P)
-                        ((coroutine P) prv Crt)
                         ((coroutine P) nxt null) )
                      (let Dst: (coroutine P)
                         (Dst: tag Tag)
