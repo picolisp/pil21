@@ -1,4 +1,4 @@
-# 08dec23 Software Lab. Alexander Burger
+# 09dec23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1242,18 +1242,21 @@
                            (longjmp (Org: (rst)) 1) ) ) ) )
                ((t? Tag)
                   (err Exe 0 ($ "Can't stop main routine") null) )
-               ((val $Coroutines)
-                  (let Crt @  # Stop coroutine
-                     (loop
-                        (let Crt: (coroutine Crt)
-                           (? (== Tag (Crt: tag))  # Found coroutine
-                              (let P (Crt: (env $ErrFrames i8*))  # Close ErrFrames
+               ((val $Coroutines)  # Stop coroutine
+                  (let Crt @
+                     (if (symb? Tag)
+                        (when (cnt? (get Tag ZERO))
+                           (setq Crt (i8* (& @ -3)))
+                           (unless (== Tag ((coroutine Crt) tag))
+                              (coErr Exe Tag) )
+                           (: 1
+                              (let P ((coroutine Crt) (env $ErrFrames i8*))  # Close ErrFrames
                                  (while P
                                     (let Err: (ctFrame P)
                                        (when (ge0 (Err: fd))
                                           (close @) )
                                        (setq P (Err: link)) ) ) )
-                              (let P (Crt: (env $OutFrames i8*))  # Close OutFrames
+                              (let P ((coroutine Crt) (env $OutFrames i8*))  # Close OutFrames
                                  (until (== P (val $Stdout))
                                     (let Io: (ioFrame P)
                                        (when (Io: file)
@@ -1265,7 +1268,7 @@
                                                 (when (> (Io: pid) 1)
                                                    (waitFile @) ) ) ) )
                                        (setq P (Io: link)) ) ) )
-                              (let P (Crt: (env $InFrames i8*))  # Close InFrames
+                              (let P ((coroutine Crt) (env $InFrames i8*))  # Close InFrames
                                  (until (== P (val $Stdin))
                                     (let Io: (ioFrame P)
                                        (when (Io: file)
@@ -1276,9 +1279,12 @@
                                                 (when (> (Io: pid) 1)
                                                    (waitFile @) ) ) ) )
                                        (setq P (Io: link)) ) ) )
-                              (stop (Crt:)) )  # Stop it
-                           (? (=0 (setq Crt (Crt: nxt)))) ) )
-                     Tag ) )
+                              (stop Crt) ) )  # Stop it
+                        (loop
+                           (when (== Tag ((coroutine Crt) tag))  # Found coroutine
+                              (goto 1) )
+                           (? (=0 (setq Crt ((coroutine Crt) nxt)))) ) ) )
+                  Tag )
                (T $Nil) ) ) ) ) )
 
 # (yield 'any ['any2]) -> any
