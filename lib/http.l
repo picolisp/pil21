@@ -1,4 +1,4 @@
-# 08sep23 Software Lab. Alexander Burger
+# 12dec23 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -98,16 +98,20 @@
 (de -server ()
    (server (format (opt)) (opt)) )
 
-(de server (P H)
+(de server (Port Home Flg)
    (setq
-      *Port P
-      *Port1 (or (sys "NAME") P)
-      *Home (cons H (chop H))
-      P (port *Port) )
+      *Port Port
+      *Port1 (or (sys "NAME") Port)
+      *Home (cons Home (chop Home))
+      Port (port *Port) )
    (gc)
    (loop
-      (setq *Sock (listen P))
-      (NIL (fork) (close P))
+      (setq *Sock (listen Port))
+      (T Flg
+         (task Port
+            (when (accept @)
+               (task @ (let *SesId NIL (http @))) ) ) )
+      (NIL (fork) (close Port))
       (close *Sock) )
    (task *Sock (http @))
    (http *Sock)

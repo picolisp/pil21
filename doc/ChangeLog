@@ -1,3 +1,7 @@
+23.12.12
+   'server' single-shot (non-forking) mode with 'Flg' argument
+      lib/http.l
+
 23.12.9
     ZERO-cache also for 'co' stopping
       src/flow.l
