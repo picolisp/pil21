@@ -1,3 +1,13 @@
+23.12.13
+   'P' instead of 'N' in native call (malloc() returns pointer)
+      test/src/main.l
+   '*DB' is 'NIL' while no database is open
+      src/glob.l
+      src/main.l
+      src/gc.l
+      src/db.l
+      doc/refD.html
+
 23.12.12
    'server' single-shot (non-forking) mode with 'Flg' argument
       lib/http.l

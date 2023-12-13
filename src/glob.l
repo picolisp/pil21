@@ -1,4 +1,4 @@
-# 07dec23 Software Lab. Alexander Burger
+# 13dec23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -107,13 +107,13 @@
    ($PrivT $Nil $Nil 0)       # Private trees
    ($Priv $Tilde $PrivT 0)    # Private namespace
    ($priv "priv" $Priv)
-   ($OS "*OS" 0)
-   ($CPU "*CPU" 0)
-   ($Pid "*Pid" 0)
-   ($PPid "*PPid" $Nil)
-   ($DB "*DB" 0)              # Database root constant
-   ($Meth "meth" __Meth)
-   ($Quote "quote" _Quote)
+   ($OS "*OS" 0)              # Operating system
+   ($CPU "*CPU" 0)            # Processor
+   ($Pid "*Pid" 0)            # Process ID
+   ($PPid "*PPid" $Nil)       # Parent Process ID
+   ($DB "*DB" $Nil)           # Database root
+   ($Meth "meth" __Meth)      # Method template
+   ($Quote "quote" _Quote)    # 'quote' function
    ($T "T" $T)  ### Sync src/pico.h 'T' (17*2+1) ###
    ($N "N" $Nil)
    ($C "C" $Nil)

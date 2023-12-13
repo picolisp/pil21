@@ -1,4 +1,4 @@
-# 04sep23 Software Lab. Alexander Burger
+# 13dec23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -35,7 +35,7 @@
                   (setq E X) ) ) ) ) ) )  # Go up
 
 (de void gc ()
-   (set $DB -ZERO)  # Cut off DB root
+   (set $DB $Nil)  # Cut off DB root
    # Prepare
    (let P $Nil  # Symbol table
       (set P (| (val P) 1))  # Set mark bit
@@ -158,7 +158,8 @@
                   (set Y P)
                   (setq P X) ) ) ) ) )
    (: 1
-      (set $DB $Db1)  # Restore DB root
+      (when (val $DBs)
+         (set $DB $Db1) )  # Restore DB root
       (when (& (val $Db1) 1)  # Not marked
          (set
             $Db1 $Nil  # Clear

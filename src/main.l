@@ -1,4 +1,4 @@
-# 07dec23 Software Lab. Alexander Burger
+# 13dec23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1838,7 +1838,6 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       $OS (mkStr TgOS)
       $CPU (mkStr TgCPU)
       $Pid (cnt (i64 (getpid)))
-      $DB $Db1  # Database root constant
       (tail $Db1) DB1  # Name of external root symbol '{1}'
       $Extern (cons $Db1 $Nil) )  # External symbol tree root node
    (pushOutFile (b8+ (ioFrame T)) (initOutFile 2) 0)  # Standard error

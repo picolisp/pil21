@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 13dec23 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -17,13 +17,14 @@
 <dl>
 
 <dt><a id="*DB"><code>*DB</code></a></dt>
-<dd>A global constant holding the external symbol <code>{1}</code>, the <a
-href="ref.html#dbase">database</a> root. All transient symbols in a database can
-be reached from that root. Except during debugging, any explicit literal access
-to symbols in the database should be avoided, because otherwise a memory leak
-might occur (The garbage collector temporarily sets <code>*DB</code> to
-<code>NIL</code> and restores its value after collection, thus disposing of all
-external symbols not currently used in the program).
+<dd>A global variable holding the external symbol <code>{1}</code> (the <a
+href="ref.html#dbase">database</a> root) while a database is open, otherwise
+<code>NIL</code>. All external symbols in a database can be reached from that
+root. Except during debugging, any explicit literal access to symbols in the
+database should be avoided, because otherwise a memory leak might occur (The
+garbage collector temporarily sets <code>*DB</code> to <code>NIL</code> and
+restores its value after collection, thus disposing of all external symbols not
+currently used in the program).
 
 <pre>
 : (show *DB)

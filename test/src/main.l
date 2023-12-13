@@ -1,4 +1,4 @@
-# 18aug22 Software Lab. Alexander Burger
+# 13dec23 Software Lab. Alexander Burger
 
 ### Evaluation ###
 (test 2
@@ -47,7 +47,7 @@
       (list (byte A) (byte (+ A 7))) ) )
 
 (test "ABC"
-   (let P (native "@" "malloc" 'N 8)
+   (let P (native "@" "malloc" 'P 8)
       (byte P (char "A"))
       (byte (inc P) (char "B"))
       (byte (+ P 2) (char "C"))

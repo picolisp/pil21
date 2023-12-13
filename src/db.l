@@ -1,4 +1,4 @@
-# 31oct23 Software Lab. Alexander Burger
+# 13dec23 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -469,7 +469,7 @@
                   (free (Db: mark)) )
                (? (=0 (dec 'C)))
                (setq Db (ofs Db (dbFile T))) ) )
-         (set $DBs 0)
+         (set $DBs 0  $DB $Nil)
          (when (val $DbJnl)
             (fclose @)
             (set $DbJnl null) )
@@ -540,6 +540,7 @@
                      (? (atom Dbs))
                      (setq Db (ofs Db (dbFile T))) ) )
                (set
+                  $DB $Db1
                   $DBs Fnr
                   $MaxBlkSize Max
                   $DbBlock (alloc (val $DbBlock) (i64 Max)) ) ) )
