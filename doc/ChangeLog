@@ -1,3 +1,7 @@
+23.12.18
+   requestAnimationFrame() not helpful
+      lib/canvas.js
+
 23.12.13
    'P' instead of 'N' in native call (malloc() returns pointer)
       test/src/main.l
