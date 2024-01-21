@@ -1,4 +1,4 @@
-# 29nov23 Software Lab. Alexander Burger
+# 29dec23 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -262,7 +262,7 @@
          (prin (if (and (nT How) (Dir (car L))) "   +" "---+")) )
       (prinl) ) )
 
-### Tracks network ###
+### Track network ###
 (local) (connectors crossing linkFromTo linkFrom linkTo tracks)
 (private) Var
 

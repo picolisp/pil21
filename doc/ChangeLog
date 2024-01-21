@@ -1,3 +1,11 @@
+24.1.21
+   Add "apk" to '*Mimes'
+      lib/http.l
+
+23.12.29
+   Minor comment
+      lib/simul.l
+
 ####### 23.12 #######
 23.12.18
    requestAnimationFrame() not helpful
@@ -514,7 +522,7 @@
       lib/form.l
 
 23.5.25
-   Tracks network functions
+   Track network functions
       lib/simul.l
    New file
       doc/Tracks

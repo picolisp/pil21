@@ -1517,9 +1517,9 @@ declare void @llvm.stackrestore(i8*)
   i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64)
 ]
 @$Version = global [3 x i64] [
-  i64 370,
-  i64 194,
-  i64 402
+  i64 386,
+  i64 18,
+  i64 338
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
