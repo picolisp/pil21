@@ -1,4 +1,4 @@
-# 20nov23 Software Lab. Alexander Burger
+# 29jan24 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
 # *Lock *Spans *AlwaysAsk
@@ -2145,6 +2145,13 @@
       (and
          (eval (: erObj))
          (mis> @ (: erVar) (val> This)) ) ) )
+
+# Runtime relations
+(de erVar (Var Exe . @)
+   (let *Class (last (type (eval Exe)))
+      (unless (get *Class Var)
+         (put *Class Var (new (next) Cur (rest))) ) )  # rel
+   (cons Var Exe) )
 
 
 # +Swap relations
