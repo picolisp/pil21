@@ -1,4 +1,4 @@
-# 05mar23 Software Lab. Alexander Burger
+# 05mar24 Software Lab. Alexander Burger
 # Copy to ~/.pil/viprc
 
 (map+q "d" ":bd\r")
@@ -38,7 +38,7 @@
    (xchg 'delimNs
       (quote
          ((C)
-            (not
+            (nand C
                (sub? C
                   "0123456789\
                   ABCDEFGHIJKLMNOPQRSTUVWXYZ\
