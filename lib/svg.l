@@ -1,4 +1,4 @@
-# 27oct23 Software Lab. Alexander Burger
+# 10mar24 Software Lab. Alexander Burger
 
 (symbols 'svg 'pico)
 
@@ -96,7 +96,7 @@
    (prinl "</a>") )
 
 # Text
-(local) (<faces> <text> font width italic bold indent rotate window ps height)
+(local) (<faces> <text> font width italic bold indent rotate scale window ps height)
 (private) (A N X Y Prg)
 
 (de <faces> (Lst)
@@ -161,6 +161,12 @@
 
 (de rotate (A . Prg)
    (prinl "<g transform=\"rotate(" A ")\">")
+   (prog1
+      (run Prg)
+      (prinl "</g>") ) )
+
+(de scale (X Y . Prg)
+   (prinl "<g transform=\"scale(" X "," Y ")\">")
    (prog1
       (run Prg)
       (prinl "</g>") ) )
