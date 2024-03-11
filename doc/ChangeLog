@@ -1,3 +1,7 @@
+24.3.11
+   Call (raw T) at start and (raw NIL) when done
+      lib/vip.l
+
 24.3.10
    'scale' function
       lib/svg.l

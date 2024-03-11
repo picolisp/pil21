@@ -1,4 +1,4 @@
-# 26nov23 Software Lab. Alexander Burger
+# 11mar24 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -22,7 +22,7 @@ _forward goForward _backward goBackward goPFore goPBack shift shiftY indent cutX
 cutN paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe
 evRpt move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN
 nextBuf shell shFile prCmd cmd _map map+ map+g map+q reset posChar getText
-s-expr command vi)
+s-expr command vipA vipZ vi)
 
 
 (class +Buffer)
@@ -1197,14 +1197,14 @@ s-expr command vi)
       (goto (: buffer posX) (: buffer posY)) ) )
 
 (de shell (S)
-   (screen1)
+   (vipZ)
    (do *Columns (prin "#"))
    (call *Shell "-c" S)
    (prin "[====] ")
    (flush)
    (getch)
    (prinl)
-   (screen2)
+   (vipA)
    (repaint) )
 
 (de shFile (S)
@@ -1401,6 +1401,14 @@ s-expr command vi)
       (tmp "syms")
       (syms> (fileBuffer @) Lst) ) )
 
+(de vipA ()
+   (screen2)
+   (raw T) )
+
+(de vipZ ()
+   (raw NIL)
+   (screen1) )
+
 ### VIP Entry Point ###
 (de vi (Lst Ns)  # (file (pat . file) (99 . file) (T . file) (sym [sym ..])
    (getSize)
@@ -1425,11 +1433,11 @@ s-expr command vi)
             (T (syms X)) ) )  # List of symbols
       (unless *Buffers
          (fileBuffer (tmp "empty")) )
-      (screen2)
+      (vipA)
       (let
          (*Winch '((getSize) (eqwin) (flush))
-            *TStp1 '((screen1))
-            *TStp2 '((screen2) (repaint) (cursor) (flush)) )
+            *TStp1 '((vipZ))
+            *TStp2 '((vipA) (repaint) (cursor) (flush)) )
          (reset)
          (setq *CmdWin
             (new '(+Window) (new '(+Buffer)) (dec *Lines) 1 1 1 1 1) )
@@ -1445,7 +1453,7 @@ s-expr command vi)
                   1 (: posY)
                   *CmdWin ) ) )
          (with *Window (redraw))
-         (finally (prog (rollback) (screen1))
+         (finally (prog (rollback) (vipZ))
             (catch 'done
                (loop
                   (setq *Cnt (max 1 (format *Count)))
@@ -1615,9 +1623,9 @@ s-expr command vi)
                                                 (in (list "w3m" "-dump_both" (getWord))
                                                    (rdLines) ) ) )
                                           ("b"  # [gb] Browser
-                                             (screen1)
+                                             (vipZ)
                                              (call (or (sys "BROWSER") "w3m") (getWord))
-                                             (screen2)
+                                             (vipA)
                                              (repaint) )
                                           ("g" (move 'goAbs 1 (or (format *Count) 1)))  # [gg] Go to beginning of text
                                           ("s" (spell))
