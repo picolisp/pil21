@@ -1,5 +1,7 @@
 # 04aug23 Software Lab. Alexander Burger
 
+(load "@lib/http.l") # httpHead
+
 (de xhtml (Path)
    (for X
       (quote
