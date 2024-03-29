@@ -1,4 +1,4 @@
-# 05sep23 Software Lab. Alexander Burger
+# 29mar24 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -93,4 +93,4 @@ clean:
 	rm -f *.ll *.bc *.s
 
 clean2: clean
-	rm -f $(BIN)/balance $(BIN)/ssl $(BIN)/httpGate
+	rm -f $(BIN)/balance $(BIN)/ssl $(BIN)/httpGate $(LIB)/sysdefs
