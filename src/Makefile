@@ -93,4 +93,4 @@ clean:
 	rm -f *.ll *.bc *.s
 
 clean2: clean
-	rm -f $(BIN)/balance $(BIN)/ssl $(BIN)/httpGate $(LIB)/sysdefs
+	rm -f $(LIB)/sysdefs $(BIN)/balance $(BIN)/ssl $(BIN)/httpGate
