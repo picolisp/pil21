@@ -1,3 +1,11 @@
+24.4.1
+   'for' instead of 'while' in 'des'
+      lib/simul.l
+
+24.3.31
+   Change 'sendCmd' protocol to UDP -> background task
+      bin/pty
+
 ####### 24.3 #######
 24.3.29
    Include lib/sysdefs in "clean2"

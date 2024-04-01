@@ -1,21 +1,27 @@
 #!/usr/bin/pil
-# 18jun23abu
+# 31mar24abu
 # Pseudo Terminal (PilBox)
 # pty [host] [flg]
 
 (load "@lib/term.l")
 
-(setq *Port 8081)  # Sync with ~/Port in PilBox
+(setq
+   *Host (or (opt) "localhost")
+   *Port 8081 )  # Sync with ~/Port in PilBox
 
-(unless (setq *Sock (connect (or (opt) "localhost") (inc *Port)))
+(unless (setq *Sock (connect *Host (inc *Port)))
    (bye) )
-(out *Sock (in "~/.pty" (echo)))  # Sync with ~/.pty in PilBox
+
+(out *Sock
+   (in "~/.pty" (echo))  # Sync with ~/.pty in PilBox
+   (prinl) )
+(in *Sock (rd 2))  # Skip "\r\n"
 
 (finish (prinl))
 
 (de sendCmd @
-   (out *Sock (space) (pass println))
-   (in *Sock (till "-") (till "\n")) )
+   (udp *Host `(inc *Port)
+      (cons (in "~/.pty" (line T)) (rest)) ) )
 
 (unless (opt)
    (task (port (+ *Port 2))

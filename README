@@ -1,13 +1,13 @@
-# 26oct20 Software Lab. Alexander Burger
+# 31mar24 Software Lab. Alexander Burger
 
                                                           Perfection is attained
                                            not when there is nothing left to add
                                      but when there is nothing left to take away
                                                      (Antoine de Saint-Exupery)
-         The PicoLisp System
-         ===================
+      The PicoLisp System
+      ===================
 
-     _PI_co Lisp is not _CO_mmon Lisp
+      _PI_co Lisp is not _CO_mmon Lisp
 
 PicoLisp can be viewed from two different aspects: As a general purpose
 programming language, and a dedicated application server framework.
