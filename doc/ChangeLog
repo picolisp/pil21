@@ -1,3 +1,12 @@
+24.4.4
+   TAB-completion also for search commands
+      lib/vip.l
+
+24.4.3
+   No 'flushAll' in child process 'bye'
+      src/main.l
+      src/lib.c
+
 24.4.1
    'for' instead of 'while' in 'des'
       lib/simul.l

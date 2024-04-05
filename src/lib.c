@@ -1,4 +1,4 @@
-// 05dec23 Software Lab. Alexander Burger
+// 03apr24 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -290,7 +290,6 @@ void setRaw(void) {
 }
 
 void setCooked(void) {
-   rl_deprep_terminal();
    if (Termio) {
       tcSet(&OrgTermio);
       free(Termio),  Termio = NULL;

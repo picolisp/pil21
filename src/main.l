@@ -1,4 +1,4 @@
-# 13dec23 Software Lab. Alexander Burger
+# 03apr24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -114,23 +114,22 @@ popCtlFiles)
                (set $At (Crt: at)) ) ) ) ) )
 
 # Exit
-(local) (finish giveup bye execErr)
-
-(de NIL finish ((i32 . N))
-   (setCooked)
-   (exit N) )
+(local) (giveup bye execErr)
 
 (de NIL giveup ((i8* . Msg))
    (stderrMsg ($ "Give up: %s\n") Msg)
-   (finish 1) )
+   (setCooked)
+   (exit 1) )
 
 (de NIL bye ((i32 . N))
    (unless (val $InBye)
       (set $InBye YES)
       (unwind null)
       (exec (val $Bye)) )
-   (flushAll)
-   (finish N) )
+   (when (nil? (val $PPid))
+      (flushAll) )
+   (setCooked)
+   (exit N) )
 
 (de NIL execErr ((i8* . Cmd))
    (stderrMsg ($ "%s: Can't exec\n") Cmd)

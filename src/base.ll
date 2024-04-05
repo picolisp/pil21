@@ -1519,7 +1519,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 386,
   i64 66,
-  i64 18
+  i64 82
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -2481,21 +2481,14 @@ $57:
   ret void
 }
 
-define void @finish(i32) align 8 {
-$1:
-; # (setCooked)
-  call void @setCooked()
-; # (exit N)
-  call void @exit(i32 %0)
-  unreachable
-}
-
 define void @giveup(i8*) align 8 {
 $1:
 ; # (stderrMsg ($ "Give up: %s^J") Msg)
   %1 = call i8* @stderrMsg(i8* bitcast ([13 x i8]* @$2 to i8*), i8* %0)
-; # (finish 1)
-  call void @finish(i32 1)
+; # (setCooked)
+  call void @setCooked()
+; # (exit 1)
+  call void @exit(i32 1)
   unreachable
 }
 
@@ -2541,10 +2534,22 @@ $8:
   %18 = phi i64 [0, %$6] ; # ->
   br label %$3
 $3:
+; # (when (nil? (val $PPid)) (flushAll))
+; # (val $PPid)
+  %19 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 216) to i64) to i64*
+  %20 = load i64, i64* %19
+; # (nil? (val $PPid))
+  %21 = icmp eq i64 %20, ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64)
+  br i1 %21, label %$9, label %$10
+$9:
 ; # (flushAll)
   call void @flushAll()
-; # (finish N)
-  call void @finish(i32 %0)
+  br label %$10
+$10:
+; # (setCooked)
+  call void @setCooked()
+; # (exit N)
+  call void @exit(i32 %0)
   unreachable
 }
 

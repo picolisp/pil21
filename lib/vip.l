@@ -1,4 +1,4 @@
-# 28mar24 Software Lab. Alexander Burger
+# 04apr24 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -981,7 +981,9 @@ s-expr command vipA vipZ vi)
                   (let (S (list @)  L (get (: buffer text) (: posY)))
                      (cond
                         ((<> @ "\t") (off *Complete))
-                        ((and (== This *CmdWin) (member L '((":") (":" " "))))
+                        ((and
+                              (== This *CmdWin)
+                              (member L '(("/") ("?") ("&") (":") (":" " "))) )
                            (setq S
                               (chop
                                  (car
