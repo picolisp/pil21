@@ -1,4 +1,4 @@
-# 29jan24 Software Lab. Alexander Burger
+# 30may24 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
 # *Lock *Spans *AlwaysAsk
@@ -390,9 +390,8 @@
                            (up 99 @@ "@2")
                            (up 99 @ "@1")
                            (setq  "@3" "@2"  "@2" "@1"  "@1" (run (str Str) 99)) )
-                        (off *Msg)
                         (println '-> "@1") ) )
-                  (when *Msg
+                  (when @@
                      (prin "!? ")
                      (println ^)
                      (prinl *Msg) ) ) )

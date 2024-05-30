@@ -1519,7 +1519,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 386,
   i64 82,
-  i64 386
+  i64 482
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -81822,80 +81822,87 @@ $4:
   %60 = load i64, i64* %59
   %61 = inttoptr i64 %57 to i64*
   store i64 %60, i64* %61
-; # (prog1 (if (setjmp (Ca: (rst))) (val $Ret) (run X)) (set $Catch (...
-; # (if (setjmp (Ca: (rst))) (val $Ret) (run X))
+; # (prog1 (ifn (setjmp (Ca: (rst))) (prog1 (run X) (set $At2 $Nil)) ...
+; # (ifn (setjmp (Ca: (rst))) (prog1 (run X) (set $At2 $Nil)) (set $A...
 ; # (Ca: (rst))
   %62 = getelementptr i8, i8* %6, i32 240
 ; # (setjmp (Ca: (rst)))
   %63 = call i32 @setjmp(i8* %62)
   %64 = icmp ne i32 %63, 0
-  br i1 %64, label %$9, label %$10
+  br i1 %64, label %$10, label %$9
 $9:
   %65 = phi i64 [%15, %$4] ; # X
-; # (val $Ret)
-  %66 = load i64, i64* @$Ret
-  br label %$11
-$10:
-  %67 = phi i64 [%15, %$4] ; # X
+; # (prog1 (run X) (set $At2 $Nil))
 ; # (run X)
   br label %$12
 $12:
-  %68 = phi i64 [%67, %$10], [%90, %$21] ; # Prg
-  %69 = inttoptr i64 %68 to i64*
+  %66 = phi i64 [%65, %$9], [%88, %$21] ; # Prg
+  %67 = inttoptr i64 %66 to i64*
+  %68 = load i64, i64* %67
+  %69 = getelementptr i64, i64* %67, i32 1
   %70 = load i64, i64* %69
-  %71 = getelementptr i64, i64* %69, i32 1
-  %72 = load i64, i64* %71
-  %73 = and i64 %72, 15
-  %74 = icmp ne i64 %73, 0
-  br i1 %74, label %$15, label %$13
+  %71 = and i64 %70, 15
+  %72 = icmp ne i64 %71, 0
+  br i1 %72, label %$15, label %$13
 $15:
-  %75 = phi i64 [%72, %$12] ; # Prg
-  %76 = and i64 %70, 6
-  %77 = icmp ne i64 %76, 0
-  br i1 %77, label %$18, label %$17
+  %73 = phi i64 [%70, %$12] ; # Prg
+  %74 = and i64 %68, 6
+  %75 = icmp ne i64 %74, 0
+  br i1 %75, label %$18, label %$17
 $18:
   br label %$16
 $17:
-  %78 = and i64 %70, 8
-  %79 = icmp ne i64 %78, 0
-  br i1 %79, label %$20, label %$19
+  %76 = and i64 %68, 8
+  %77 = icmp ne i64 %76, 0
+  br i1 %77, label %$20, label %$19
 $20:
-  %80 = inttoptr i64 %70 to i64*
-  %81 = load i64, i64* %80
+  %78 = inttoptr i64 %68 to i64*
+  %79 = load i64, i64* %78
   br label %$16
 $19:
-  %82 = call i64 @evList(i64 %70)
+  %80 = call i64 @evList(i64 %68)
   br label %$16
 $16:
-  %83 = phi i64 [%70, %$18], [%81, %$20], [%82, %$19] ; # ->
+  %81 = phi i64 [%68, %$18], [%79, %$20], [%80, %$19] ; # ->
   br label %$14
 $13:
-  %84 = phi i64 [%72, %$12] ; # Prg
-  %85 = and i64 %70, 15
-  %86 = icmp eq i64 %85, 0
-  br i1 %86, label %$22, label %$21
+  %82 = phi i64 [%70, %$12] ; # Prg
+  %83 = and i64 %68, 15
+  %84 = icmp eq i64 %83, 0
+  br i1 %84, label %$22, label %$21
 $22:
-  %87 = phi i64 [%84, %$13] ; # Prg
-  %88 = call i64 @evList(i64 %70)
-  %89 = icmp ne i64 %88, 0
+  %85 = phi i64 [%82, %$13] ; # Prg
+  %86 = call i64 @evList(i64 %68)
+  %87 = icmp ne i64 %86, 0
   br label %$21
 $21:
-  %90 = phi i64 [%84, %$13], [%87, %$22] ; # Prg
-  %91 = phi i1 [0, %$13], [%89, %$22] ; # ->
+  %88 = phi i64 [%82, %$13], [%85, %$22] ; # Prg
+  %89 = phi i1 [0, %$13], [%87, %$22] ; # ->
   br label %$12
 $14:
-  %92 = phi i64 [%75, %$16] ; # Prg
-  %93 = phi i64 [%83, %$16] ; # ->
+  %90 = phi i64 [%73, %$16] ; # Prg
+  %91 = phi i64 [%81, %$16] ; # ->
+; # (set $At2 $Nil)
+  %92 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 456) to i64) to i64*
+  store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64), i64* %92
+  br label %$11
+$10:
+  %93 = phi i64 [%15, %$4] ; # X
+; # (set $At2 $T)
+  %94 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 456) to i64) to i64*
+  store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 280) to i64), i64* %94
+; # (val $Ret)
+  %95 = load i64, i64* @$Ret
   br label %$11
 $11:
-  %94 = phi i64 [%65, %$9], [%67, %$14] ; # X
-  %95 = phi i64 [%66, %$9], [%93, %$14] ; # ->
+  %96 = phi i64 [%65, %$14], [%93, %$10] ; # X
+  %97 = phi i64 [%91, %$14], [%95, %$10] ; # ->
 ; # (set $Catch (Ca: link))
 ; # (Ca: link)
-  %96 = bitcast i8* %6 to i8**
-  %97 = load i8*, i8** %96
-  store i8* %97, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 24) to i8**)
-  ret i64 %95
+  %98 = bitcast i8* %6 to i8**
+  %99 = load i8*, i8** %98
+  store i8* %99, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 24) to i8**)
+  ret i64 %97
 }
 
 define i64 @_Throw(i64) align 8 {

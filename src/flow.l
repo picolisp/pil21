@@ -1,4 +1,4 @@
-# 09dec23 Software Lab. Alexander Burger
+# 30may24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1057,9 +1057,10 @@
       (Ca: co (val $Current))
       (putCaEnv (Ca:))
       (prog1
-         (if (setjmp (Ca: (rst)))
-            (val $Ret)
-            (run X) )
+         (ifn (setjmp (Ca: (rst)))
+            (prog1 (run X) (set $At2 $Nil))
+            (set $At2 $T)
+            (val $Ret) )
          (set $Catch (Ca: link)) ) ) )
 
 # (throw 'sym 'any)

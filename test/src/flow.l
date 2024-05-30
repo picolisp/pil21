@@ -1,4 +1,4 @@
-# 14dec20 Software Lab. Alexander Burger
+# 30may24 Software Lab. Alexander Burger
 
 ### quote ###
 (test (1 2 3) (quote 1 2 3))
@@ -402,10 +402,14 @@
 
 ### catch throw ###
 (test NIL (catch NIL (throw)))
+(test 'b (catch 'a 'b))
+(test NIL @@)
 (test 'b (catch 'a (throw 'a 'b)))
+(test T @@)
 (test 123 (catch T (throw 'a 123)))
 (test "Undefined"
    (catch '("Undefined") (mist)) )
+(test T @@)
 (test "No such file"
    (catch '("No such file")
       (in "doesntExist" (foo)) ) )

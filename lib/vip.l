@@ -1,4 +1,4 @@
-# 04apr24 Software Lab. Alexander Burger
+# 30may24 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1224,7 +1224,7 @@ s-expr command vipA vipZ vi)
          (catch '(NIL)
             (setq *@ (run Prg 1)  *Msg)
             (println '-> *@) ) )
-      (when *Msg
+      (when @@
          (prin "!? ")
          (println ^)
          (prinl *Msg) ) )

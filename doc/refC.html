@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 30may24 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -238,12 +238,14 @@ href="refT.html#throw">throw</a></code> or by a runtime error. If
 (with <code>T</code> being a catch-all for any label), and a <code>throw</code>
 called during the execution of <code>prg</code> will immediately return the
 thrown value. Otherwise, <code>any</code> should be a list of strings, to catch
-any error whose message contains one of these strings, and this will immediately
-return the matching string. If neither <code>throw</code> nor an error occurs,
-the result of <code>prg</code> is returned. See also <code><a
-href="refF.html#finally">finally</a></code>, <code><a
-href="refQ.html#quit">quit</a></code> and
-<code><a href="ref.html#errors">Error Handling</a></code>.
+any error whose message contains one of these strings, and <code>catch</code>
+will immediately return the matching string. If neither <code>throw</code> nor
+an error occurred, the result of <code>prg</code> is returned. The global
+variable <code><a href="ref_.html#@@">@@</a></code> is set to <code>T</code> if
+a <code>throw</code> or error occurred, otherwise <code>NIL</code>. See also
+<code><a href="refF.html#finally">finally</a></code>, <code><a
+href="refQ.html#quit">quit</a></code> and <code><a href="ref.html#errors">Error
+Handling</a></code>.
 
 <pre>
 : (catch 'OK (println 1) (throw 'OK 999) (println 2))
