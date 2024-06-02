@@ -1,3 +1,7 @@
+24.6.2
+   Make 'dirname' and 'basename' non-destructive
+      lib/misc.l
+
 24.5.30
    'catch' stores throw/error-flag in '@@'
       src/flow.l

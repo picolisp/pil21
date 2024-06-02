@@ -1,4 +1,4 @@
-# 12aug23 Software Lab. Alexander Burger
+# 02jun24 Software Lab. Alexander Burger
 
 # *Allow
 
@@ -345,16 +345,13 @@
          (run "Prg") ) ) )
 
 (de dirname (F)
-   (let L (flip (chop F))
-      (while (= "/" (car L))
-         (++ L) )
-      (pack (flip (member "/" L))) ) )
+   (glue "/"
+      (prog1
+         (trim (split (chop F) "/"))
+         (set (tail 1 @)) ) ) )
 
 (de basename (F)
-   (let L (flip (chop F))
-      (while (= "/" (car L))
-         (++ L) )
-      (pack (stem (flip L) "/")) ) )
+   (pack (last (trim (split (chop F) "/")))) )
 
 (de ssl ("Host" "Path" . "Prg")
    (in (list "@bin/ssl" "Host" 443 "Path")
