@@ -1,3 +1,7 @@
+24.6.5
+   Handle thread exceptions in 'java1'
+      lib/android.l
+
 24.6.2
    Make 'dirname' and 'basename' non-destructive
       lib/misc.l
