@@ -1,3 +1,11 @@
+24.6.9
+   Default format 72 columns
+      lib/vip.l
+      COPYING
+      README
+      INSTALL
+      doc/microTemplates
+
 24.6.5
    Handle thread exceptions in 'java1'
       lib/android.l

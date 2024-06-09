@@ -1,4 +1,4 @@
-# 14oct23 Software Lab. Alexander Burger
+# 09jun24 Software Lab. Alexander Burger
 
 
          PicoLisp Installation
@@ -8,20 +8,20 @@
 PicoLisp needs a POSIX compatible system and the LLVM infrastructure. It
 supports two installation strategies: Local and Global.
 
-For a global installation, allowing system-wide access to the executable and
-library/documentation files, you can either install it from a ready-made
-distribution, or set some symbolic links to one of the local installation
-directories as described below.
+For a global installation, allowing system-wide access to the executable
+and library/documentation files, you can either install it from a
+ready-made distribution, or set some symbolic links to one of the local
+installation directories as described below.
 
-Note that you are still free to have local installations along with a global
-installation, and invoke them explicitly as desired.
+Note that you are still free to have local installations along with a
+global installation, and invoke them explicitly as desired.
 
 
       Local Installation
       ------------------
 
-The following instructions work on Debian Linux. They should be similar on other
-systems.
+The following instructions work on Debian Linux. They should be similar
+on other systems.
 
 1. Install required packages
 
@@ -44,11 +44,11 @@ systems.
       Global Installation
       -------------------
 
-The recommended way for a global installation is to use a picolisp package from
-the OS distribution.
+The recommended way for a global installation is to use a picolisp
+package from the OS distribution.
 
-If that is not available, you can (as root) create symbolic links from /usr/lib
-and /usr/bin to a local installation directory:
+If that is not available, you can (as root) create symbolic links from
+/usr/lib and /usr/bin to a local installation directory:
 
    # ln -s /<path>/pil21 /usr/lib/picolisp
    # ln -s /usr/lib/picolisp/bin/picolisp /usr/bin
@@ -65,10 +65,10 @@ For additional access to the man pages, utilities and bash completion:
       Invocation
       ----------
 
-In a global installation, the 'pil' command should be used. You can either start
-in plain or in debug mode. The difference is that for debug mode the command is
-followed by single plus ('+') sign. The '+' must be the very last argument on
-the command line.
+In a global installation, the 'pil' command should be used. You can
+either start in plain or in debug mode. The difference is that for debug
+mode the command is followed by single plus ('+') sign. The '+' must be
+the very last argument on the command line.
 
    $ pil       # Plain mode
    :
@@ -76,8 +76,8 @@ the command line.
    $ pil +     # Debug mode
    :
 
-In both cases, the colon ':' is PicoLisp's prompt. You may enter some Lisp
-expression,
+In both cases, the colon ':' is PicoLisp's prompt. You may enter some
+Lisp expression,
 
    : (+ 1 2 3)
    -> 6
@@ -101,17 +101,19 @@ or
 
    $ /home/app/pil  # Invoking a local installation from some other directory
 
-Note that 'pil' can also serve as a template for your own stand-alone scripts.
+Note that 'pil' can also serve as a template for your own stand-alone
+scripts.
 
 
       Documentation
       -------------
 
-For further information, please look at "doc/index.html". There you find the
-PicoLisp Reference Manual ("doc/ref.html"), the PicoLisp tutorial
+For further information, please look at "doc/index.html". There you find
+the PicoLisp Reference Manual ("doc/ref.html"), the PicoLisp tutorial
 ("doc/tut.html"), and the frequently asked questions ("doc/faq.html").
 
-As always, the most accurate and complete documentation is the source code ;-)
+As always, the most accurate and complete documentation is the source
+code ;-)
 
 Any feedback is welcome!
 Hope you enjoy :-)

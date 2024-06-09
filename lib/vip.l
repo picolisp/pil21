@@ -1,4 +1,4 @@
-# 30may24 Software Lab. Alexander Burger
+# 09jun24 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -35,7 +35,7 @@ s-expr command vipA vipZ vi)
    (=: posX 1)
    (=: posY (or Y 1))
    (=: lastX (=: lastY 1))
-   (=: fmt 80) )
+   (=: fmt 72) )
 
 (de mkLoc (File)
    (let P (conc (chop (pwd)) '("/"))

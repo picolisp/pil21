@@ -5,14 +5,14 @@
 
 * The template files are line oriented. One micro-template per line.
 
-* A micro-template can be continued on the following line(s) by indenting these
-  lines with space(s).
+* A micro-template can be continued on the following line(s) by
+  indenting these lines with space(s).
 
-* Each line has a defined meaning. Except for indented lines, no lines can be
-  added or removed.
+* Each line has a defined meaning. Except for indented lines, no lines
+  can be added or removed.
 
-* A micro-template may contain either variables or expressions enclosed by "¦"
-  (broken bar character, hex "00A6").
+* A micro-template may contain either variables or expressions enclosed
+  by "¦" (broken bar character, hex "00A6").
 
 * An empty line is denoted by "<>".
 
