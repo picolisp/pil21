@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 30may24 Software Lab. Alexander Burger
+# 11jun24 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -685,8 +685,8 @@ resumed. Else a new coroutine with that tag is initialized and started.
 <code>prg</code> will be executed until it either terminates normally, or until
 <code><a href="refY.html#yield">yield</a></code> is called. In the latter case
 <code>co</code> returns, or transfers control to some other, already running,
-coroutine. A coroutine cannot resume itself directly or indirectly. See also
-<code><a href="refS.html#stack">stack</a></code>, <code><a
+coroutine. A coroutine cannot stop itself, or resume itself directly or
+indirectly. See also <code><a href="refS.html#stack">stack</a></code>, <code><a
 href="refC.html#catch">catch</a></code> and <code><a
 href="refT.html#throw">throw</a></code>.
 

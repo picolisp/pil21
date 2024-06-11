@@ -1,3 +1,8 @@
+24.6.11
+   Coroutine cannot stop itself
+      src/flow.l
+      doc/refC.html
+
 24.6.9
    Default format 72 columns
       lib/vip.l

@@ -1,4 +1,4 @@
-# 30may24 Software Lab. Alexander Burger
+# 11jun24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1245,6 +1245,8 @@
                   (err Exe 0 ($ "Can't stop main routine") null) )
                ((val $Coroutines)  # Stop coroutine
                   (let Crt @
+                     (when (== Tag ((coroutine (val $Current)) tag))
+                        (err Exe 0 ($ "Can't stop itself") null) )
                      (if (symb? Tag)
                         (when (cnt? (get Tag ZERO))
                            (setq Crt (i8* (& @ -3)))
