@@ -1,4 +1,4 @@
-# 19jul23 Software Lab. Alexander Burger
+# 12jun24 Software Lab. Alexander Burger
 
 (sysdefs "errno")
 (sysdefs "networking")
@@ -76,7 +76,8 @@
                      '(NIL (4 . I) (`sockaddr_in6 . 4)) ) )
                (let Sd2 @
                   (%@ "fcntlSetFl" 'I Sd Flg)
-                  ## (%@ "fcntlSetFl" 'I Sd2 0)  # Non-Linux?
+                  ~(as (= *OS "FreeBSD")
+                     (%@ "fcntlSetFl" 'I Sd2 0) )
                   (buf Str INET6_ADDRSTRLEN
                      (setq *Adr
                         (%@ "inet_ntop" 'S AF_INET6 (+ Addr sin6_addr) Str INET6_ADDRSTRLEN) ) )

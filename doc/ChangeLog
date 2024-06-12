@@ -1,4 +1,6 @@
 24.6.12
+   Call fcntlSetFl() in 'accept' if FreeBSD
+      lib/net.l
    Disallow reentrant 'co' calls
       src/flow.l
       doc/ref.html
