@@ -1,6 +1,7 @@
-24.6.11
-   Coroutine cannot stop itself
+24.6.12
+   Disallow reentrant 'co' calls
       src/flow.l
+      doc/ref.html
       doc/refC.html
 
 24.6.9

@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 08dec23 Software Lab. Alexander Burger
+# 12jun24 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -1335,6 +1335,9 @@ environment is executed
 <li>an error occurred, and <a href="#errors">error handling</a> was entered
 
 </ul>
+
+<p>Reentrant coroutines are not supported: A coroutine cannot resume itself
+directly or indirectly.
 
 <p>Before using many coroutines, make sure you have sufficient stack space, e.g.
 by calling

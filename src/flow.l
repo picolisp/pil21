@@ -1,4 +1,4 @@
-# 11jun24 Software Lab. Alexander Burger
+# 12jun24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1142,6 +1142,12 @@
             ((coroutine @) tag)
             $Nil )
          (let Tag (eval (++ X))
+            (let Crt (val $Current)
+               (loop
+                  (? (=0 Crt))
+                  (when (== Tag ((coroutine Crt) tag))  # Found coroutine
+                     (err Exe Tag ($ "Reentrant coroutine") null) )
+                  (setq Crt ((coroutine Crt) org)) ) )
             (cond
                ((nil? Tag) (tagErr Exe))
                ((pair X)  # 'prg'
@@ -1245,8 +1251,6 @@
                   (err Exe 0 ($ "Can't stop main routine") null) )
                ((val $Coroutines)  # Stop coroutine
                   (let Crt @
-                     (when (== Tag ((coroutine (val $Current)) tag))
-                        (err Exe 0 ($ "Can't stop itself") null) )
                      (if (symb? Tag)
                         (when (cnt? (get Tag ZERO))
                            (setq Crt (i8* (& @ -3)))
