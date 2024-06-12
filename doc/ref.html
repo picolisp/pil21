@@ -1336,8 +1336,8 @@ environment is executed
 
 </ul>
 
-<p>Reentrant coroutines are not supported: A coroutine cannot resume itself
-directly or indirectly.
+<p>Reentrant <code><a href="refC.html#co">co</a></code> calls are not allowed: A
+coroutine cannot call or stop itself directly or indirectly.
 
 <p>Before using many coroutines, make sure you have sufficient stack space, e.g.
 by calling
