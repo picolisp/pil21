@@ -1,6 +1,8 @@
-24.6.12
-   Call fcntlSetFl() in 'accept' if FreeBSD
+24.6.13
+   Call fcntlSetFl() in 'accept' if OpenBSD or FreeBSD
       lib/net.l
+
+24.6.12
    Disallow reentrant 'co' calls
       src/flow.l
       doc/ref.html
