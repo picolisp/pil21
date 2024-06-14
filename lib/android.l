@@ -1,4 +1,4 @@
-# 05jun24 Software Lab. Alexander Burger
+# 14jun24 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -157,14 +157,12 @@
       (java "java.io.File" T File) ) )
 
 # Update APK
-(local) update?
+(local) (update? update)
 
 (de update? ()
    (gt0  # (java (java CONTEXT 'getPackageManager) 'canRequestPackageInstalls)
       (java "android.provider.Settings$Secure" 'getInt
          (java CONTEXT 'getContentResolver) "install_non_market_apps" ) ) )
-
-(local) update
 
 (de update (File)
    (java (; CONTEXT GUI) 'startActivity
@@ -282,7 +280,7 @@
          (+ (java @ 'getLongitude) 180000000) ) ) )
 
 # Camera access
-(local) camera?
+(local) (camera? takePicture)
 
 (de camera? ()
    (and
@@ -292,8 +290,6 @@
 ## '((Intent)
 ##    (setq *Picture (tmp "img"))
 ##    (loadUrl (baseHRef) *SesId "app/camera.l") )
-(local) takePicture
-
 (de takePicture (Dst Fun)
    (out Dst)
    (startActivityForResult Fun
@@ -312,7 +308,10 @@
       "SCAN_MODE" "QR_CODE_MODE" ) )
 
 # Alarm
-(local) alarm
+(local) (alarm? alarm)
+
+(de alarm? ()
+   (java (java CONTEXT 'getSystemService "alarm") 'canScheduleExactAlarms) )  # AlarmManager
 
 (de alarm (N When File Url)
    (let
