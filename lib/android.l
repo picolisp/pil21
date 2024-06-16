@@ -1,4 +1,4 @@
-# 14jun24 Software Lab. Alexander Burger
+# 16jun24 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -47,13 +47,15 @@
          (task (open "RQST")  Rply Rply
             (ext 32768
                (in @
-                  (let (X (rd)  Obj (rd))
-                     (if (=0 X)
-                        (and *Dbg (tty (prinl Obj)))  # 0: Exception
-                        (let Lst (rd)
+                  (let (X (rd)  Obj (rd)  Lst (rd))
+                     (nond
+                        ((num? X)
                            (out Rply
                               (pr
-                                 (and (get X Obj) (ext 0 (apply @ Lst))) ) ) ) ) ) ) ) )
+                                 (and (get X Obj) (ext 0 (apply @ Lst))) ) ) )
+                        ((get Obj 'catch)
+                           (and *Dbg (tty (println Obj X Lst))) )
+                        (NIL (ext 0 (apply @ Lst X))) ) ) ) ) )
          (push '*Fork
             '(off *Java *Lisp)
             (list 'mapc 'close (list Rply *Java *Lisp)) ) )
