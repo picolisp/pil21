@@ -1,4 +1,4 @@
-# 12jun24 Software Lab. Alexander Burger
+# 17jun24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1097,10 +1097,13 @@
          (set $Catch (Ca: link)) ) ) )
 
 # Coroutines
-(local) (coErr tagErr stkOverErr saveCoIO saveCoEnv loadCoEnv)
+(local) (coErr reentErr tagErr stkOverErr saveCoIO saveCoEnv loadCoEnv)
 
 (de NIL coErr (Exe Tag)
    (err Exe Tag ($ "Coroutine not found") null) )
+
+(de NIL reentErr (Exe Tag)
+   (err Exe Tag ($ "Reentrant coroutine") null) )
 
 (de NIL tagErr (Exe)
    (err Exe 0 ($ "Tag expected") null) )
@@ -1146,10 +1149,11 @@
                (loop
                   (? (=0 Crt))
                   (when (== Tag ((coroutine Crt) tag))  # Found coroutine
-                     (err Exe Tag ($ "Reentrant coroutine") null) )
+                     (reentErr Exe Tag) )
                   (setq Crt ((coroutine Crt) org)) ) )
             (cond
                ((nil? Tag) (tagErr Exe))
+               ((t? Tag) (reentErr Exe Tag))
                ((pair X)  # 'prg'
                   (unless (val $Coroutines)  # First call
                      (let Main: (coroutine (alloc null (+ (val JmpBufSize) (coroutine T))))
@@ -1247,8 +1251,6 @@
                            (unless (== (Org: tag) (Dst: otg))
                               (coErr Exe (Dst: otg)) )
                            (longjmp (Org: (rst)) 1) ) ) ) )
-               ((t? Tag)
-                  (err Exe 0 ($ "Can't stop main routine") null) )
                ((val $Coroutines)  # Stop coroutine
                   (let Crt @
                      (if (symb? Tag)
