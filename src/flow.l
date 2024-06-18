@@ -1,4 +1,4 @@
-# 17jun24 Software Lab. Alexander Burger
+# 18jun24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1126,7 +1126,7 @@
       (unless (== (hex "0707070707070707") (val (i64* (Crt: lim))))
          (stkOverErr (Crt: tag)) )
       (Crt: at (val $At))  # Not running
-      (putCrtEnv (Crt:) YES) ) )
+      (putCrtEnv (Crt:)) ) )
 
 (de loadCoEnv ((i8* . Crt))
    (let Crt: (coroutine (set $Current Crt))
@@ -1234,7 +1234,7 @@
                         (Dst: out (val $OutFrames))
                         (Dst: err (val $ErrFrames))
                         (Dst: ctl (val $CtlFrames))
-                        (putCrtEnv (Dst:) YES)
+                        (putCrtEnv (Dst:))
                         (set  # Init local env
                            $Next $Nil
                            $Make 0

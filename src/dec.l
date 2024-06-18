@@ -1,4 +1,4 @@
-# 07dec23 Software Lab. Alexander Burger
+# 18jun24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -540,10 +540,9 @@ box64 eval run)
       (set $PrivT (Ca: priv1))
       (set 2 $PrivT (Ca: priv2)) ) )
 
-(inline putCrtEnv (Crt Cpy)
+(inline putCrtEnv (Crt)
    (let Crt: (coroutine Crt)
-      (when Cpy
-         (memcpy (Crt: (env)) (env) (env T) T) )
+      (memcpy (Crt: (env)) (env) (env T) T)
       (Crt: intrn (val $Intern))
       (Crt: trns1 (val $Transient))
       (Crt: trns2 (val 2 $Transient))
