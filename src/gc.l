@@ -1,4 +1,4 @@
-# 13dec23 Software Lab. Alexander Burger
+# 20jun24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -85,6 +85,7 @@
          (let Crt: (coroutine Crt)
             (when (Crt: tag)
                (mark (Crt: tag))
+               (mark (Crt: otg))
                (mark (Crt: prg))
                (when (Crt: at)
                   (mark (Crt: at))

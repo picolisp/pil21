@@ -1,6 +1,7 @@
 24.6.20
    Generalize output in 'tty'
       src/main.l
+      src/gc.l
    Check for terminated originator in 'yield'
       src/flow.l
 
