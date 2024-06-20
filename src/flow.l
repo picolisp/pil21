@@ -1395,10 +1395,10 @@
          (unless (setjmp (Src: (rst)))
             (set $Ret Val)
             (longjmp (Dst: (rst)) 1) )
-         (unless (Org: tag)  # Originator terminated
-            (loadCoEnv (Src:))
-            (coErr Exe 0) )
          (unless (t? (Src: tag))
+            (unless (Org: tag)  # Originator terminated
+               (loadCoEnv (Src:))
+               (coErr Exe 0) )
             (let P (Org: (env $CtlFrames i8*))  # Restore CtlFrames
                (Src: ctl P)
                (while Ctl
