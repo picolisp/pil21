@@ -1,4 +1,4 @@
-# 18jun24 Software Lab. Alexander Burger
+# 20jun24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1395,6 +1395,9 @@
          (unless (setjmp (Src: (rst)))
             (set $Ret Val)
             (longjmp (Dst: (rst)) 1) )
+         (unless (Org: tag)  # Originator terminated
+            (loadCoEnv (Src:))
+            (coErr Exe 0) )
          (unless (t? (Src: tag))
             (let P (Org: (env $CtlFrames i8*))  # Restore CtlFrames
                (Src: ctl P)

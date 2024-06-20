@@ -1,3 +1,7 @@
+24.6.20
+   Check for terminated originator in 'yield'
+      src/flow.l
+
 24.6.18
    Clear 'at' in coroutine 'unwind'
       src/main.l
