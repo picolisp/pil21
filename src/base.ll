@@ -4448,90 +4448,76 @@ $2:
 
 define i64 @_Tty(i64) align 8 {
 $1:
-; # (let (Out (val $OutFile) Put (val (i8** $Put))) (set $OutFile (va...
-; # (val $OutFile)
-  %1 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 80) to i8**)
-; # (i8** $Put)
-  %2 = bitcast void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 88) to void(i8)**) to i8**
-; # (val (i8** $Put))
-  %3 = load i8*, i8** %2
-; # (set $OutFile (val 3 (val $OutFiles)) $Put (fun (void i8) _putStd...
+; # (b8+ (ioFrame T))
+  %1 = alloca i8, i64 28, align 8
 ; # (val $OutFiles)
-  %4 = load i8**, i8*** @$OutFiles
+  %2 = load i8**, i8*** @$OutFiles
 ; # (val 3 (val $OutFiles))
-  %5 = getelementptr i8*, i8** %4, i32 2
-  %6 = load i8*, i8** %5
-  store i8* %6, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 80) to i8**)
-; # (fun (void i8) _putStdout)
-  store void(i8)* @_putStdout, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 88) to void(i8)**)
+  %3 = getelementptr i8*, i8** %2, i32 2
+  %4 = load i8*, i8** %3
+; # (pushOutFile (b8+ (ioFrame T)) (val 3 (val $OutFiles)) 0)
+  call void @pushOutFile(i8* %1, i8* %4, i32 0)
+; # (prog2 (rlHide) (run (cdr Exe)) (rlShow) (popOutFiles))
 ; # (rlHide)
   call void @rlHide()
-; # (prog1 (run (cdr Exe)) (flush (val $OutFile)) (rlShow) (set (i8**...
 ; # (cdr Exe)
-  %7 = inttoptr i64 %0 to i64*
-  %8 = getelementptr i64, i64* %7, i32 1
-  %9 = load i64, i64* %8
+  %5 = inttoptr i64 %0 to i64*
+  %6 = getelementptr i64, i64* %5, i32 1
+  %7 = load i64, i64* %6
 ; # (run (cdr Exe))
   br label %$2
 $2:
-  %10 = phi i64 [%9, %$1], [%32, %$11] ; # Prg
-  %11 = inttoptr i64 %10 to i64*
+  %8 = phi i64 [%7, %$1], [%30, %$11] ; # Prg
+  %9 = inttoptr i64 %8 to i64*
+  %10 = load i64, i64* %9
+  %11 = getelementptr i64, i64* %9, i32 1
   %12 = load i64, i64* %11
-  %13 = getelementptr i64, i64* %11, i32 1
-  %14 = load i64, i64* %13
-  %15 = and i64 %14, 15
-  %16 = icmp ne i64 %15, 0
-  br i1 %16, label %$5, label %$3
+  %13 = and i64 %12, 15
+  %14 = icmp ne i64 %13, 0
+  br i1 %14, label %$5, label %$3
 $5:
-  %17 = phi i64 [%14, %$2] ; # Prg
-  %18 = and i64 %12, 6
-  %19 = icmp ne i64 %18, 0
-  br i1 %19, label %$8, label %$7
+  %15 = phi i64 [%12, %$2] ; # Prg
+  %16 = and i64 %10, 6
+  %17 = icmp ne i64 %16, 0
+  br i1 %17, label %$8, label %$7
 $8:
   br label %$6
 $7:
-  %20 = and i64 %12, 8
-  %21 = icmp ne i64 %20, 0
-  br i1 %21, label %$10, label %$9
+  %18 = and i64 %10, 8
+  %19 = icmp ne i64 %18, 0
+  br i1 %19, label %$10, label %$9
 $10:
-  %22 = inttoptr i64 %12 to i64*
-  %23 = load i64, i64* %22
+  %20 = inttoptr i64 %10 to i64*
+  %21 = load i64, i64* %20
   br label %$6
 $9:
-  %24 = call i64 @evList(i64 %12)
+  %22 = call i64 @evList(i64 %10)
   br label %$6
 $6:
-  %25 = phi i64 [%12, %$8], [%23, %$10], [%24, %$9] ; # ->
+  %23 = phi i64 [%10, %$8], [%21, %$10], [%22, %$9] ; # ->
   br label %$4
 $3:
-  %26 = phi i64 [%14, %$2] ; # Prg
-  %27 = and i64 %12, 15
-  %28 = icmp eq i64 %27, 0
-  br i1 %28, label %$12, label %$11
+  %24 = phi i64 [%12, %$2] ; # Prg
+  %25 = and i64 %10, 15
+  %26 = icmp eq i64 %25, 0
+  br i1 %26, label %$12, label %$11
 $12:
-  %29 = phi i64 [%26, %$3] ; # Prg
-  %30 = call i64 @evList(i64 %12)
-  %31 = icmp ne i64 %30, 0
+  %27 = phi i64 [%24, %$3] ; # Prg
+  %28 = call i64 @evList(i64 %10)
+  %29 = icmp ne i64 %28, 0
   br label %$11
 $11:
-  %32 = phi i64 [%26, %$3], [%29, %$12] ; # Prg
-  %33 = phi i1 [0, %$3], [%31, %$12] ; # ->
+  %30 = phi i64 [%24, %$3], [%27, %$12] ; # Prg
+  %31 = phi i1 [0, %$3], [%29, %$12] ; # ->
   br label %$2
 $4:
-  %34 = phi i64 [%17, %$6] ; # Prg
-  %35 = phi i64 [%25, %$6] ; # ->
-; # (val $OutFile)
-  %36 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 80) to i8**)
-; # (flush (val $OutFile))
-  %37 = call i1 @flush(i8* %36)
+  %32 = phi i64 [%15, %$6] ; # Prg
+  %33 = phi i64 [%23, %$6] ; # ->
 ; # (rlShow)
   call void @rlShow()
-; # (set (i8** $Put) Put $OutFile Out)
-; # (i8** $Put)
-  %38 = bitcast void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 88) to void(i8)**) to i8**
-  store i8* %3, i8** %38
-  store i8* %1, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 80) to i8**)
-  ret i64 %35
+; # (popOutFiles)
+  call void @popOutFiles()
+  ret i64 %33
 }
 
 define i64 @_Raw(i64) align 8 {
