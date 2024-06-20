@@ -1248,7 +1248,7 @@
                            (stkOverErr (Dst: tag)) )
                         (stop (Dst:))  # Stop coroutine
                         (let Org: (coroutine (Dst: org))
-                           (unless (== (Org: tag) (Dst: otg))
+                           (unless (and (Org:) (== (Org: tag) (Dst: otg)))
                               (coErr Exe (Dst: otg)) )
                            (longjmp (Org: (rst)) 1) ) ) ) )
                ((val $Coroutines)  # Stop coroutine
@@ -1396,7 +1396,7 @@
             (set $Ret Val)
             (longjmp (Dst: (rst)) 1) )
          (unless (t? (Src: tag))
-            (unless (Org: tag)  # Originator terminated
+            (unless (and (Org:) (Org: tag))  # Originator terminated
                (loadCoEnv (Src:))
                (coErr Exe 0) )
             (let P (Org: (env $CtlFrames i8*))  # Restore CtlFrames
