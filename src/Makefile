@@ -4,7 +4,7 @@
 
 CC = clang
 PIL = ../pil  # pil
-ASM = opt -O1  # llvm-as
+ASM = opt -O2  # llvm-as
 LLC = llc
 LINK = llvm-link
 MAIN = -rdynamic -lc -lutil -lm -ldl -lreadline -lffi

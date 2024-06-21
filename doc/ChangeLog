@@ -1,5 +1,5 @@
 24.6.21
-   Change 'opt' from "-O3" to "-O1"
+   Change 'opt' from "-O3" to "-O2"
       src/Makefile
    Generalize 'all*'
       lib.l
