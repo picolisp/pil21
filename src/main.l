@@ -1,4 +1,4 @@
-# 20jun24 Software Lab. Alexander Burger
+# 21jun24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -741,6 +741,12 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (load "gc.l" "big.l" "sym.l")
 
+(local) dirString
+
+(de i8* dirString (Nm (i8* . P))
+   (let S (pathString Nm P)
+      (if (val P) P ($ ".")) ) )
+
 # Comparisons
 (local) (equalBig equal compare)
 
@@ -1036,7 +1042,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          P (getcwd null 0) )
       (if P
          (prog1
-            (if (lt0 (chdir (pathString Nm (b8 (pathSize Nm)))))
+            (if (lt0 (chdir (dirString Nm (b8 (pathSize Nm)))))
                $Nil
                (mkStr P) )
             (free P) )
@@ -1110,10 +1116,8 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (let X (cdr Exe)
       (if
          (getDir
-            (if (nil? (evSym X))
-               ($ ".")
-               (let Nm (xName Exe @)
-                  (pathString Nm (b8 (pathSize Nm))) ) ) )
+            (let Nm (xName Exe (evSym X))
+               (dirString Nm (b8 (pathSize Nm))) ) )
          (let (P @  F (eval (car (shift X))))
             (when (nil? F)
                (while (== (val P) (char "."))
@@ -1137,7 +1141,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (fileInfo
                (nil? (eval (car (shift X))))
                (== ZERO @)
-               (pathString Nm (b8 (pathSize Nm)))
+               (dirString Nm (b8 (pathSize Nm)))
                Size ) )
          $Nil
          (let N @

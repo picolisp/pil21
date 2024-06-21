@@ -1175,23 +1175,22 @@
                         P (i8* null) )
                      (saveCoIO)
                      (saveCoEnv (Src:))
-                     (cond
-                        ((not (symb? Tag))
-                           (loop
-                              (let Crt: (coroutine Crt)
-                                 (when (== Tag (Crt: tag))  # Found running coroutine
-                                    (when (setjmp (Src: (rst)))
-                                       (ret (loadCoEnv (Src:))) )
-                                    (set $Ret $Nil)
-                                    (Crt: org (Src:))
-                                    (Crt: otg (Src: tag))
-                                    (longjmp (Crt: (rst)) 1) )
-                                 (or P
-                                    (Crt: tag)  # Unused
-                                    (setq P Crt) )  # Remember next free slot
-                                 (? (=0 (Crt: nxt)))
-                                 (setq Crt @) ) ) )
-                        ((cnt? (get Tag ZERO))  # Already running
+                     (ifn (symb? Tag)
+                        (loop
+                           (let Crt: (coroutine Crt)
+                              (when (== Tag (Crt: tag))  # Found running coroutine
+                                 (when (setjmp (Src: (rst)))
+                                    (ret (loadCoEnv (Src:))) )
+                                 (set $Ret $Nil)
+                                 (Crt: org (Src:))
+                                 (Crt: otg (Src: tag))
+                                 (longjmp (Crt: (rst)) 1) )
+                              (or P
+                                 (Crt: tag)  # Unused
+                                 (setq P Crt) )  # Remember next free slot
+                              (? (=0 (Crt: nxt)))
+                              (setq Crt @) ) )
+                        (when (cnt? (get Tag ZERO))  # Already running
                            (let Crt: (coroutine (i8* (& @ -3)))
                               (unless (== Tag (Crt: tag))
                                  (coErr Exe Tag) )
