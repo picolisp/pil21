@@ -1,3 +1,7 @@
+24.6.21
+   Bug in coroutine free-list management
+      src/flow.l
+
 24.6.20
    Generalize output in 'tty'
       src/main.l
