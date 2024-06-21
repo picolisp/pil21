@@ -1175,22 +1175,23 @@
                         P (i8* null) )
                      (saveCoIO)
                      (saveCoEnv (Src:))
-                     (ifn (symb? Tag)
-                        (loop
-                           (let Crt: (coroutine Crt)
-                              (when (== Tag (Crt: tag))  # Found running coroutine
-                                 (when (setjmp (Src: (rst)))
-                                    (ret (loadCoEnv (Src:))) )
-                                 (set $Ret $Nil)
-                                 (Crt: org (Src:))
-                                 (Crt: otg (Src: tag))
-                                 (longjmp (Crt: (rst)) 1) )
-                              (or P
-                                 (Crt: tag)  # Unused
-                                 (setq P Crt) )  # Remember next free slot
-                              (? (=0 (Crt: nxt)))
-                              (setq Crt @) ) )
-                        (when (cnt? (get Tag ZERO))  # Already running
+                     (cond
+                        ((not (symb? Tag))
+                           (loop
+                              (let Crt: (coroutine Crt)
+                                 (when (== Tag (Crt: tag))  # Found running coroutine
+                                    (when (setjmp (Src: (rst)))
+                                       (ret (loadCoEnv (Src:))) )
+                                    (set $Ret $Nil)
+                                    (Crt: org (Src:))
+                                    (Crt: otg (Src: tag))
+                                    (longjmp (Crt: (rst)) 1) )
+                                 (or P
+                                    (Crt: tag)  # Unused
+                                    (setq P Crt) )  # Remember next free slot
+                                 (? (=0 (Crt: nxt)))
+                                 (setq Crt @) ) ) )
+                        ((cnt? (get Tag ZERO))  # Already running
                            (let Crt: (coroutine (i8* (& @ -3)))
                               (unless (== Tag (Crt: tag))
                                  (coErr Exe Tag) )
@@ -1199,10 +1200,10 @@
                               (set $Ret $Nil)
                               (Crt: org (Src:))
                               (Crt: otg (Src: tag))
-                              (longjmp (Crt: (rst)) 1) ) ) )
-                     (if (val $CrtFree)
-                        (set $CrtFree ((coroutine (setq P @)) lim))
-                        (setq Crt (val $CrtLast)) )
+                              (longjmp (Crt: (rst)) 1) ) )
+                        ((val $CrtFree)
+                           (set $CrtFree ((coroutine (setq P @)) lim)) )
+                        (T (setq Crt (val $CrtLast))) )
                      # Start new coroutine
                      (when (setjmp (Src: (rst)))
                         (ret (loadCoEnv (Src:))) )

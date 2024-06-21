@@ -82658,1008 +82658,1002 @@ $26:
 ; # (Src:)
 ; # (saveCoEnv (Src:))
   call void @saveCoEnv(i8* %87)
-; # (ifn (symb? Tag) (loop (let Crt: (coroutine Crt) (when (== Tag (C...
+; # (cond ((not (symb? Tag)) (loop (let Crt: (coroutine Crt) (when (=...
 ; # (symb? Tag)
   %90 = xor i64 %28, 8
   %91 = and i64 %90, 14
   %92 = icmp eq i64 %91, 0
-  br i1 %92, label %$28, label %$27
-$27:
-  %93 = phi i64 [%86, %$26] ; # X
-  %94 = phi i8* [%88, %$26] ; # Crt
-  %95 = phi i8* [%89, %$26] ; # P
+; # (not (symb? Tag))
+  %93 = icmp eq i1 %92, 0
+  br i1 %93, label %$29, label %$28
+$29:
+  %94 = phi i64 [%86, %$26] ; # X
+  %95 = phi i8* [%88, %$26] ; # Crt
+  %96 = phi i8* [%89, %$26] ; # P
 ; # (loop (let Crt: (coroutine Crt) (when (== Tag (Crt: tag)) (when (...
   br label %$30
 $30:
-  %96 = phi i64 [%93, %$27], [%148, %$38] ; # X
-  %97 = phi i8* [%94, %$27], [%146, %$38] ; # Crt
-  %98 = phi i8* [%95, %$27], [%150, %$38] ; # P
+  %97 = phi i64 [%94, %$29], [%149, %$38] ; # X
+  %98 = phi i8* [%95, %$29], [%147, %$38] ; # Crt
+  %99 = phi i8* [%96, %$29], [%151, %$38] ; # P
 ; # (let Crt: (coroutine Crt) (when (== Tag (Crt: tag)) (when (setjmp...
 ; # (when (== Tag (Crt: tag)) (when (setjmp (Src: (rst))) (ret (loadC...
 ; # (Crt: tag)
-  %99 = ptrtoint i8* %97 to i64
-  %100 = inttoptr i64 %99 to i64*
-  %101 = load i64, i64* %100
+  %100 = ptrtoint i8* %98 to i64
+  %101 = inttoptr i64 %100 to i64*
+  %102 = load i64, i64* %101
 ; # (== Tag (Crt: tag))
-  %102 = icmp eq i64 %28, %101
-  br i1 %102, label %$31, label %$32
+  %103 = icmp eq i64 %28, %102
+  br i1 %103, label %$31, label %$32
 $31:
-  %103 = phi i64 [%96, %$30] ; # X
-  %104 = phi i8* [%97, %$30] ; # Crt
-  %105 = phi i8* [%98, %$30] ; # P
+  %104 = phi i64 [%97, %$30] ; # X
+  %105 = phi i8* [%98, %$30] ; # Crt
+  %106 = phi i8* [%99, %$30] ; # P
 ; # (when (setjmp (Src: (rst))) (ret (loadCoEnv (Src:))))
 ; # (Src: (rst))
-  %106 = getelementptr i8, i8* %87, i32 320
+  %107 = getelementptr i8, i8* %87, i32 320
 ; # (setjmp (Src: (rst)))
-  %107 = call i32 @setjmp(i8* %106)
-  %108 = icmp ne i32 %107, 0
-  br i1 %108, label %$33, label %$34
+  %108 = call i32 @setjmp(i8* %107)
+  %109 = icmp ne i32 %108, 0
+  br i1 %109, label %$33, label %$34
 $33:
-  %109 = phi i64 [%103, %$31] ; # X
-  %110 = phi i8* [%104, %$31] ; # Crt
-  %111 = phi i8* [%105, %$31] ; # P
+  %110 = phi i64 [%104, %$31] ; # X
+  %111 = phi i8* [%105, %$31] ; # Crt
+  %112 = phi i8* [%106, %$31] ; # P
 ; # (Src:)
 ; # (loadCoEnv (Src:))
-  %112 = call i64 @loadCoEnv(i8* %87)
+  %113 = call i64 @loadCoEnv(i8* %87)
 ; # (ret (loadCoEnv (Src:)))
-  ret i64 %112
+  ret i64 %113
 $34:
-  %113 = phi i64 [%103, %$31] ; # X
-  %114 = phi i8* [%104, %$31] ; # Crt
-  %115 = phi i8* [%105, %$31] ; # P
+  %114 = phi i64 [%104, %$31] ; # X
+  %115 = phi i8* [%105, %$31] ; # Crt
+  %116 = phi i8* [%106, %$31] ; # P
 ; # (set $Ret $Nil)
   store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64), i64* @$Ret
 ; # (Crt: org (Src:))
-  %116 = getelementptr i8, i8* %97, i32 16
-  %117 = bitcast i8* %116 to i8**
-  store i8* %87, i8** %117
+  %117 = getelementptr i8, i8* %98, i32 16
+  %118 = bitcast i8* %117 to i8**
+  store i8* %87, i8** %118
 ; # (Crt: otg (Src: tag))
-  %118 = getelementptr i8, i8* %97, i32 24
-  %119 = ptrtoint i8* %118 to i64
-  %120 = ptrtoint i8* %87 to i64
-  %121 = inttoptr i64 %120 to i64*
-  %122 = load i64, i64* %121
-  %123 = inttoptr i64 %119 to i64*
-  store i64 %122, i64* %123
+  %119 = getelementptr i8, i8* %98, i32 24
+  %120 = ptrtoint i8* %119 to i64
+  %121 = ptrtoint i8* %87 to i64
+  %122 = inttoptr i64 %121 to i64*
+  %123 = load i64, i64* %122
+  %124 = inttoptr i64 %120 to i64*
+  store i64 %123, i64* %124
 ; # (Crt: (rst))
-  %124 = getelementptr i8, i8* %97, i32 320
+  %125 = getelementptr i8, i8* %98, i32 320
 ; # (longjmp (Crt: (rst)) 1)
-  call void @longjmp(i8* %124, i32 1)
+  call void @longjmp(i8* %125, i32 1)
   unreachable
 $32:
-  %125 = phi i64 [%96, %$30] ; # X
-  %126 = phi i8* [%97, %$30] ; # Crt
-  %127 = phi i8* [%98, %$30] ; # P
+  %126 = phi i64 [%97, %$30] ; # X
+  %127 = phi i8* [%98, %$30] ; # Crt
+  %128 = phi i8* [%99, %$30] ; # P
 ; # (or P (Crt: tag) (setq P Crt))
-  %128 = icmp ne i8* %127, null
-  br i1 %128, label %$35, label %$36
+  %129 = icmp ne i8* %128, null
+  br i1 %129, label %$35, label %$36
 $36:
-  %129 = phi i64 [%125, %$32] ; # X
-  %130 = phi i8* [%126, %$32] ; # Crt
-  %131 = phi i8* [%127, %$32] ; # P
+  %130 = phi i64 [%126, %$32] ; # X
+  %131 = phi i8* [%127, %$32] ; # Crt
+  %132 = phi i8* [%128, %$32] ; # P
 ; # (Crt: tag)
-  %132 = ptrtoint i8* %97 to i64
-  %133 = inttoptr i64 %132 to i64*
-  %134 = load i64, i64* %133
-  %135 = icmp ne i64 %134, 0
-  br i1 %135, label %$35, label %$37
+  %133 = ptrtoint i8* %98 to i64
+  %134 = inttoptr i64 %133 to i64*
+  %135 = load i64, i64* %134
+  %136 = icmp ne i64 %135, 0
+  br i1 %136, label %$35, label %$37
 $37:
-  %136 = phi i64 [%129, %$36] ; # X
-  %137 = phi i8* [%130, %$36] ; # Crt
-  %138 = phi i8* [%131, %$36] ; # P
-  %139 = icmp ne i8* %137, null
+  %137 = phi i64 [%130, %$36] ; # X
+  %138 = phi i8* [%131, %$36] ; # Crt
+  %139 = phi i8* [%132, %$36] ; # P
+  %140 = icmp ne i8* %138, null
   br label %$35
 $35:
-  %140 = phi i64 [%125, %$32], [%129, %$36], [%136, %$37] ; # X
-  %141 = phi i8* [%126, %$32], [%130, %$36], [%137, %$37] ; # Crt
-  %142 = phi i8* [%127, %$32], [%131, %$36], [%137, %$37] ; # P
-  %143 = phi i1 [1, %$32], [1, %$36], [%139, %$37] ; # ->
+  %141 = phi i64 [%126, %$32], [%130, %$36], [%137, %$37] ; # X
+  %142 = phi i8* [%127, %$32], [%131, %$36], [%138, %$37] ; # Crt
+  %143 = phi i8* [%128, %$32], [%132, %$36], [%138, %$37] ; # P
+  %144 = phi i1 [1, %$32], [1, %$36], [%140, %$37] ; # ->
 ; # (? (=0 (Crt: nxt)))
 ; # (Crt: nxt)
-  %144 = getelementptr i8, i8* %97, i32 8
-  %145 = bitcast i8* %144 to i8**
-  %146 = load i8*, i8** %145
+  %145 = getelementptr i8, i8* %98, i32 8
+  %146 = bitcast i8* %145 to i8**
+  %147 = load i8*, i8** %146
 ; # (=0 (Crt: nxt))
-  %147 = icmp eq i8* %146, null
-  br i1 %147, label %$39, label %$38
+  %148 = icmp eq i8* %147, null
+  br i1 %148, label %$39, label %$38
 $38:
-  %148 = phi i64 [%140, %$35] ; # X
-  %149 = phi i8* [%141, %$35] ; # Crt
-  %150 = phi i8* [%142, %$35] ; # P
+  %149 = phi i64 [%141, %$35] ; # X
+  %150 = phi i8* [%142, %$35] ; # Crt
+  %151 = phi i8* [%143, %$35] ; # P
   br label %$30
 $39:
-  %151 = phi i64 [%140, %$35] ; # X
-  %152 = phi i8* [%141, %$35] ; # Crt
-  %153 = phi i8* [%142, %$35] ; # P
-  %154 = phi i64 [0, %$35] ; # ->
-  br label %$29
+  %152 = phi i64 [%141, %$35] ; # X
+  %153 = phi i8* [%142, %$35] ; # Crt
+  %154 = phi i8* [%143, %$35] ; # P
+  %155 = phi i64 [0, %$35] ; # ->
+  br label %$27
 $28:
-  %155 = phi i64 [%86, %$26] ; # X
-  %156 = phi i8* [%88, %$26] ; # Crt
-  %157 = phi i8* [%89, %$26] ; # P
-; # (when (cnt? (get Tag ZERO)) (let Crt: (coroutine (i8* (& @ -3))) ...
+  %156 = phi i64 [%86, %$26] ; # X
+  %157 = phi i8* [%88, %$26] ; # Crt
+  %158 = phi i8* [%89, %$26] ; # P
 ; # (get Tag ZERO)
-  %158 = call i64 @get(i64 %28, i64 2)
+  %159 = call i64 @get(i64 %28, i64 2)
 ; # (cnt? (get Tag ZERO))
-  %159 = and i64 %158, 2
-  %160 = icmp ne i64 %159, 0
-  br i1 %160, label %$40, label %$41
-$40:
-  %161 = phi i64 [%155, %$28] ; # X
-  %162 = phi i8* [%156, %$28] ; # Crt
-  %163 = phi i8* [%157, %$28] ; # P
+  %160 = and i64 %159, 2
+  %161 = icmp ne i64 %160, 0
+  br i1 %161, label %$41, label %$40
+$41:
+  %162 = phi i64 [%156, %$28] ; # X
+  %163 = phi i8* [%157, %$28] ; # Crt
+  %164 = phi i8* [%158, %$28] ; # P
 ; # (let Crt: (coroutine (i8* (& @ -3))) (unless (== Tag (Crt: tag)) ...
 ; # (& @ -3)
-  %164 = and i64 %158, -3
+  %165 = and i64 %159, -3
 ; # (i8* (& @ -3))
-  %165 = inttoptr i64 %164 to i8*
+  %166 = inttoptr i64 %165 to i8*
 ; # (unless (== Tag (Crt: tag)) (coErr Exe Tag))
 ; # (Crt: tag)
-  %166 = ptrtoint i8* %165 to i64
-  %167 = inttoptr i64 %166 to i64*
-  %168 = load i64, i64* %167
+  %167 = ptrtoint i8* %166 to i64
+  %168 = inttoptr i64 %167 to i64*
+  %169 = load i64, i64* %168
 ; # (== Tag (Crt: tag))
-  %169 = icmp eq i64 %28, %168
-  br i1 %169, label %$43, label %$42
+  %170 = icmp eq i64 %28, %169
+  br i1 %170, label %$43, label %$42
 $42:
-  %170 = phi i64 [%161, %$40] ; # X
-  %171 = phi i8* [%162, %$40] ; # Crt
-  %172 = phi i8* [%163, %$40] ; # P
+  %171 = phi i64 [%162, %$41] ; # X
+  %172 = phi i8* [%163, %$41] ; # Crt
+  %173 = phi i8* [%164, %$41] ; # P
 ; # (coErr Exe Tag)
   call void @coErr(i64 %0, i64 %28)
   unreachable
 $43:
-  %173 = phi i64 [%161, %$40] ; # X
-  %174 = phi i8* [%162, %$40] ; # Crt
-  %175 = phi i8* [%163, %$40] ; # P
+  %174 = phi i64 [%162, %$41] ; # X
+  %175 = phi i8* [%163, %$41] ; # Crt
+  %176 = phi i8* [%164, %$41] ; # P
 ; # (when (setjmp (Src: (rst))) (ret (loadCoEnv (Src:))))
 ; # (Src: (rst))
-  %176 = getelementptr i8, i8* %87, i32 320
+  %177 = getelementptr i8, i8* %87, i32 320
 ; # (setjmp (Src: (rst)))
-  %177 = call i32 @setjmp(i8* %176)
-  %178 = icmp ne i32 %177, 0
-  br i1 %178, label %$44, label %$45
+  %178 = call i32 @setjmp(i8* %177)
+  %179 = icmp ne i32 %178, 0
+  br i1 %179, label %$44, label %$45
 $44:
-  %179 = phi i64 [%173, %$43] ; # X
-  %180 = phi i8* [%174, %$43] ; # Crt
-  %181 = phi i8* [%175, %$43] ; # P
+  %180 = phi i64 [%174, %$43] ; # X
+  %181 = phi i8* [%175, %$43] ; # Crt
+  %182 = phi i8* [%176, %$43] ; # P
 ; # (Src:)
 ; # (loadCoEnv (Src:))
-  %182 = call i64 @loadCoEnv(i8* %87)
+  %183 = call i64 @loadCoEnv(i8* %87)
 ; # (ret (loadCoEnv (Src:)))
-  ret i64 %182
+  ret i64 %183
 $45:
-  %183 = phi i64 [%173, %$43] ; # X
-  %184 = phi i8* [%174, %$43] ; # Crt
-  %185 = phi i8* [%175, %$43] ; # P
+  %184 = phi i64 [%174, %$43] ; # X
+  %185 = phi i8* [%175, %$43] ; # Crt
+  %186 = phi i8* [%176, %$43] ; # P
 ; # (set $Ret $Nil)
   store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64), i64* @$Ret
 ; # (Crt: org (Src:))
-  %186 = getelementptr i8, i8* %165, i32 16
-  %187 = bitcast i8* %186 to i8**
-  store i8* %87, i8** %187
+  %187 = getelementptr i8, i8* %166, i32 16
+  %188 = bitcast i8* %187 to i8**
+  store i8* %87, i8** %188
 ; # (Crt: otg (Src: tag))
-  %188 = getelementptr i8, i8* %165, i32 24
-  %189 = ptrtoint i8* %188 to i64
-  %190 = ptrtoint i8* %87 to i64
-  %191 = inttoptr i64 %190 to i64*
-  %192 = load i64, i64* %191
-  %193 = inttoptr i64 %189 to i64*
-  store i64 %192, i64* %193
+  %189 = getelementptr i8, i8* %166, i32 24
+  %190 = ptrtoint i8* %189 to i64
+  %191 = ptrtoint i8* %87 to i64
+  %192 = inttoptr i64 %191 to i64*
+  %193 = load i64, i64* %192
+  %194 = inttoptr i64 %190 to i64*
+  store i64 %193, i64* %194
 ; # (Crt: (rst))
-  %194 = getelementptr i8, i8* %165, i32 320
+  %195 = getelementptr i8, i8* %166, i32 320
 ; # (longjmp (Crt: (rst)) 1)
-  call void @longjmp(i8* %194, i32 1)
+  call void @longjmp(i8* %195, i32 1)
   unreachable
-$41:
-  %195 = phi i64 [%155, %$28] ; # X
-  %196 = phi i8* [%156, %$28] ; # Crt
-  %197 = phi i8* [%157, %$28] ; # P
-  br label %$29
-$29:
-  %198 = phi i64 [%151, %$39], [%195, %$41] ; # X
-  %199 = phi i8* [%152, %$39], [%196, %$41] ; # Crt
-  %200 = phi i8* [%153, %$39], [%197, %$41] ; # P
-; # (if (val $CrtFree) (set $CrtFree ((coroutine (setq P @)) lim)) (s...
+$40:
+  %196 = phi i64 [%156, %$28] ; # X
+  %197 = phi i8* [%157, %$28] ; # Crt
+  %198 = phi i8* [%158, %$28] ; # P
 ; # (val $CrtFree)
-  %201 = load i8*, i8** @$CrtFree
-  %202 = icmp ne i8* %201, null
-  br i1 %202, label %$46, label %$47
-$46:
-  %203 = phi i64 [%198, %$29] ; # X
-  %204 = phi i8* [%199, %$29] ; # Crt
-  %205 = phi i8* [%200, %$29] ; # P
+  %199 = load i8*, i8** @$CrtFree
+  %200 = icmp ne i8* %199, null
+  br i1 %200, label %$47, label %$46
+$47:
+  %201 = phi i64 [%196, %$40] ; # X
+  %202 = phi i8* [%197, %$40] ; # Crt
+  %203 = phi i8* [%198, %$40] ; # P
 ; # (set $CrtFree ((coroutine (setq P @)) lim))
 ; # ((coroutine (setq P @)) lim)
-  %206 = getelementptr i8, i8* %201, i32 40
-  %207 = bitcast i8* %206 to i8**
-  %208 = load i8*, i8** %207
-  store i8* %208, i8** @$CrtFree
-  br label %$48
-$47:
-  %209 = phi i64 [%198, %$29] ; # X
-  %210 = phi i8* [%199, %$29] ; # Crt
-  %211 = phi i8* [%200, %$29] ; # P
+  %204 = getelementptr i8, i8* %199, i32 40
+  %205 = bitcast i8* %204 to i8**
+  %206 = load i8*, i8** %205
+  store i8* %206, i8** @$CrtFree
+  br label %$27
+$46:
+  %207 = phi i64 [%196, %$40] ; # X
+  %208 = phi i8* [%197, %$40] ; # Crt
+  %209 = phi i8* [%198, %$40] ; # P
 ; # (val $CrtLast)
-  %212 = load i8*, i8** @$CrtLast
-  br label %$48
-$48:
-  %213 = phi i64 [%203, %$46], [%209, %$47] ; # X
-  %214 = phi i8* [%204, %$46], [%212, %$47] ; # Crt
-  %215 = phi i8* [%201, %$46], [%211, %$47] ; # P
-  %216 = phi i8* [%208, %$46], [%212, %$47] ; # ->
+  %210 = load i8*, i8** @$CrtLast
+  br label %$27
+$27:
+  %211 = phi i64 [%152, %$39], [%201, %$47], [%207, %$46] ; # X
+  %212 = phi i8* [%153, %$39], [%202, %$47], [%210, %$46] ; # Crt
+  %213 = phi i8* [%154, %$39], [%199, %$47], [%209, %$46] ; # P
 ; # (when (setjmp (Src: (rst))) (ret (loadCoEnv (Src:))))
 ; # (Src: (rst))
-  %217 = getelementptr i8, i8* %87, i32 320
+  %214 = getelementptr i8, i8* %87, i32 320
 ; # (setjmp (Src: (rst)))
-  %218 = call i32 @setjmp(i8* %217)
-  %219 = icmp ne i32 %218, 0
-  br i1 %219, label %$49, label %$50
-$49:
-  %220 = phi i64 [%213, %$48] ; # X
-  %221 = phi i8* [%214, %$48] ; # Crt
-  %222 = phi i8* [%215, %$48] ; # P
+  %215 = call i32 @setjmp(i8* %214)
+  %216 = icmp ne i32 %215, 0
+  br i1 %216, label %$48, label %$49
+$48:
+  %217 = phi i64 [%211, %$27] ; # X
+  %218 = phi i8* [%212, %$27] ; # Crt
+  %219 = phi i8* [%213, %$27] ; # P
 ; # (Src:)
 ; # (loadCoEnv (Src:))
-  %223 = call i64 @loadCoEnv(i8* %87)
+  %220 = call i64 @loadCoEnv(i8* %87)
 ; # (ret (loadCoEnv (Src:)))
-  ret i64 %223
-$50:
-  %224 = phi i64 [%213, %$48] ; # X
-  %225 = phi i8* [%214, %$48] ; # Crt
-  %226 = phi i8* [%215, %$48] ; # P
+  ret i64 %220
+$49:
+  %221 = phi i64 [%211, %$27] ; # X
+  %222 = phi i8* [%212, %$27] ; # Crt
+  %223 = phi i8* [%213, %$27] ; # P
 ; # (if P (stack P) (stack ((coroutine Crt) lim)) (set $CrtLast (setq...
-  %227 = icmp ne i8* %226, null
-  br i1 %227, label %$51, label %$52
-$51:
-  %228 = phi i64 [%224, %$50] ; # X
-  %229 = phi i8* [%225, %$50] ; # Crt
-  %230 = phi i8* [%226, %$50] ; # P
+  %224 = icmp ne i8* %223, null
+  br i1 %224, label %$50, label %$51
+$50:
+  %225 = phi i64 [%221, %$49] ; # X
+  %226 = phi i8* [%222, %$49] ; # Crt
+  %227 = phi i8* [%223, %$49] ; # P
 ; # (stack P)
-  call void @llvm.stackrestore(i8* %230)
-  br label %$53
-$52:
-  %231 = phi i64 [%224, %$50] ; # X
-  %232 = phi i8* [%225, %$50] ; # Crt
-  %233 = phi i8* [%226, %$50] ; # P
+  call void @llvm.stackrestore(i8* %227)
+  br label %$52
+$51:
+  %228 = phi i64 [%221, %$49] ; # X
+  %229 = phi i8* [%222, %$49] ; # Crt
+  %230 = phi i8* [%223, %$49] ; # P
 ; # ((coroutine Crt) lim)
-  %234 = getelementptr i8, i8* %232, i32 40
-  %235 = bitcast i8* %234 to i8**
-  %236 = load i8*, i8** %235
+  %231 = getelementptr i8, i8* %229, i32 40
+  %232 = bitcast i8* %231 to i8**
+  %233 = load i8*, i8** %232
 ; # (stack ((coroutine Crt) lim))
-  call void @llvm.stackrestore(i8* %236)
+  call void @llvm.stackrestore(i8* %233)
 ; # (set $CrtLast (setq P (b8+ (+ (val JmpBufSize) (coroutine T)))))
 ; # (val JmpBufSize)
-  %237 = load i64, i64* @JmpBufSize
+  %234 = load i64, i64* @JmpBufSize
 ; # (+ (val JmpBufSize) (coroutine T))
-  %238 = add i64 %237, 320
+  %235 = add i64 %234, 320
 ; # (b8+ (+ (val JmpBufSize) (coroutine T)))
-  %239 = alloca i8, i64 %238, align 8
-  store i8* %239, i8** @$CrtLast
+  %236 = alloca i8, i64 %235, align 8
+  store i8* %236, i8** @$CrtLast
 ; # ((coroutine Crt) nxt P)
-  %240 = getelementptr i8, i8* %232, i32 8
-  %241 = bitcast i8* %240 to i8**
-  store i8* %239, i8** %241
+  %237 = getelementptr i8, i8* %229, i32 8
+  %238 = bitcast i8* %237 to i8**
+  store i8* %236, i8** %238
 ; # ((coroutine P) nxt null)
-  %242 = getelementptr i8, i8* %239, i32 8
-  %243 = bitcast i8* %242 to i8**
-  store i8* null, i8** %243
-  br label %$53
-$53:
-  %244 = phi i64 [%228, %$51], [%231, %$52] ; # X
-  %245 = phi i8* [%229, %$51], [%232, %$52] ; # Crt
-  %246 = phi i8* [%230, %$51], [%239, %$52] ; # P
-  %247 = phi i8* [%230, %$51], [null, %$52] ; # ->
+  %239 = getelementptr i8, i8* %236, i32 8
+  %240 = bitcast i8* %239 to i8**
+  store i8* null, i8** %240
+  br label %$52
+$52:
+  %241 = phi i64 [%225, %$50], [%228, %$51] ; # X
+  %242 = phi i8* [%226, %$50], [%229, %$51] ; # Crt
+  %243 = phi i8* [%227, %$50], [%236, %$51] ; # P
+  %244 = phi i8* [%227, %$50], [null, %$51] ; # ->
 ; # (let Dst: (coroutine P) (Dst: tag Tag) (Dst: org (Src:)) (Dst: ot...
 ; # (Dst: tag Tag)
-  %248 = ptrtoint i8* %246 to i64
-  %249 = inttoptr i64 %248 to i64*
-  store i64 %28, i64* %249
+  %245 = ptrtoint i8* %243 to i64
+  %246 = inttoptr i64 %245 to i64*
+  store i64 %28, i64* %246
 ; # (Dst: org (Src:))
-  %250 = getelementptr i8, i8* %246, i32 16
-  %251 = bitcast i8* %250 to i8**
-  store i8* %87, i8** %251
+  %247 = getelementptr i8, i8* %243, i32 16
+  %248 = bitcast i8* %247 to i8**
+  store i8* %87, i8** %248
 ; # (Dst: otg (Src: tag))
-  %252 = getelementptr i8, i8* %246, i32 24
-  %253 = ptrtoint i8* %252 to i64
-  %254 = ptrtoint i8* %87 to i64
-  %255 = inttoptr i64 %254 to i64*
-  %256 = load i64, i64* %255
-  %257 = inttoptr i64 %253 to i64*
-  store i64 %256, i64* %257
+  %249 = getelementptr i8, i8* %243, i32 24
+  %250 = ptrtoint i8* %249 to i64
+  %251 = ptrtoint i8* %87 to i64
+  %252 = inttoptr i64 %251 to i64*
+  %253 = load i64, i64* %252
+  %254 = inttoptr i64 %250 to i64*
+  store i64 %253, i64* %254
 ; # (Dst: prg X)
-  %258 = getelementptr i8, i8* %246, i32 32
-  %259 = ptrtoint i8* %258 to i64
-  %260 = inttoptr i64 %259 to i64*
-  store i64 %244, i64* %260
+  %255 = getelementptr i8, i8* %243, i32 32
+  %256 = ptrtoint i8* %255 to i64
+  %257 = inttoptr i64 %256 to i64*
+  store i64 %241, i64* %257
 ; # (let (Siz (val $StkSize) Stk (stack)) (memset (Dst: lim (stack (o...
 ; # (val $StkSize)
-  %261 = load i64, i64* @$StkSize
+  %258 = load i64, i64* @$StkSize
 ; # (stack)
-  %262 = call i8* @llvm.stacksave()
+  %259 = call i8* @llvm.stacksave()
 ; # (Dst: lim (stack (ofs P (- Siz))))
-  %263 = getelementptr i8, i8* %246, i32 40
-  %264 = bitcast i8* %263 to i8**
-  %265 = sub i64 0, %261
-  %266 = getelementptr i8, i8* %246, i64 %265
-  call void @llvm.stackrestore(i8* %266)
-  store i8* %266, i8** %264
+  %260 = getelementptr i8, i8* %243, i32 40
+  %261 = bitcast i8* %260 to i8**
+  %262 = sub i64 0, %258
+  %263 = getelementptr i8, i8* %243, i64 %262
+  call void @llvm.stackrestore(i8* %263)
+  store i8* %263, i8** %261
 ; # (- Siz 256)
-  %267 = sub i64 %261, 256
+  %264 = sub i64 %258, 256
 ; # (memset (Dst: lim (stack (ofs P (- Siz)))) 7 (- Siz 256) T)
-  call void @llvm.memset.p0i8.i64(i8* align 8 %266, i8 7, i64 %267, i1 0)
+  call void @llvm.memset.p0i8.i64(i8* align 8 %263, i8 7, i64 %264, i1 0)
 ; # (stack Stk)
-  call void @llvm.stackrestore(i8* %262)
+  call void @llvm.stackrestore(i8* %259)
 ; # (Dst: at 0)
-  %268 = getelementptr i8, i8* %246, i32 48
-  %269 = ptrtoint i8* %268 to i64
-  %270 = inttoptr i64 %269 to i64*
-  store i64 0, i64* %270
+  %265 = getelementptr i8, i8* %243, i32 48
+  %266 = ptrtoint i8* %265 to i64
+  %267 = inttoptr i64 %266 to i64*
+  store i64 0, i64* %267
 ; # (Dst: lnk (val $Link))
-  %271 = getelementptr i8, i8* %246, i32 56
-  %272 = ptrtoint i8* %271 to i64
-  %273 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 0) to i64) to i64*
-  %274 = load i64, i64* %273
-  %275 = inttoptr i64 %272 to i64*
-  store i64 %274, i64* %275
+  %268 = getelementptr i8, i8* %243, i32 56
+  %269 = ptrtoint i8* %268 to i64
+  %270 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %271 = load i64, i64* %270
+  %272 = inttoptr i64 %269 to i64*
+  store i64 %271, i64* %272
 ; # (set $Bind (push (val $This) $This (Dst: bnd (push ZERO $At (val ...
 ; # (val $This)
-  %276 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 488) to i64) to i64*
-  %277 = load i64, i64* %276
+  %273 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 488) to i64) to i64*
+  %274 = load i64, i64* %273
 ; # (Dst: bnd (push ZERO $At (val $Bind) Exe))
-  %278 = getelementptr i8, i8* %246, i32 64
-  %279 = ptrtoint i8* %278 to i64
-  %280 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 8) to i64) to i64*
-  %281 = load i64, i64* %280
-  %282 = alloca i64, i64 4, align 16
-  %283 = ptrtoint i64* %282 to i64
-  %284 = inttoptr i64 %283 to i64*
-  store i64 2, i64* %284
-  %285 = add i64 %283, 8
-  %286 = inttoptr i64 %285 to i64*
-  store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 440) to i64), i64* %286
-  %287 = add i64 %283, 16
-  %288 = inttoptr i64 %287 to i64*
-  store i64 %281, i64* %288
-  %289 = add i64 %283, 24
-  %290 = inttoptr i64 %289 to i64*
-  store i64 %0, i64* %290
-  %291 = inttoptr i64 %279 to i64*
-  store i64 %283, i64* %291
+  %275 = getelementptr i8, i8* %243, i32 64
+  %276 = ptrtoint i8* %275 to i64
+  %277 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 8) to i64) to i64*
+  %278 = load i64, i64* %277
+  %279 = alloca i64, i64 4, align 16
+  %280 = ptrtoint i64* %279 to i64
+  %281 = inttoptr i64 %280 to i64*
+  store i64 2, i64* %281
+  %282 = add i64 %280, 8
+  %283 = inttoptr i64 %282 to i64*
+  store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 440) to i64), i64* %283
+  %284 = add i64 %280, 16
+  %285 = inttoptr i64 %284 to i64*
+  store i64 %278, i64* %285
+  %286 = add i64 %280, 24
+  %287 = inttoptr i64 %286 to i64*
+  store i64 %0, i64* %287
+  %288 = inttoptr i64 %276 to i64*
+  store i64 %280, i64* %288
 ; # (push (val $This) $This (Dst: bnd (push ZERO $At (val $Bind) Exe)...
-  %292 = alloca i64, i64 3, align 16
-  %293 = ptrtoint i64* %292 to i64
-  %294 = inttoptr i64 %293 to i64*
-  store i64 %277, i64* %294
-  %295 = add i64 %293, 8
-  %296 = inttoptr i64 %295 to i64*
-  store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 488) to i64), i64* %296
-  %297 = add i64 %293, 16
-  %298 = inttoptr i64 %297 to i64*
-  store i64 %283, i64* %298
-  %299 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 8) to i64) to i64*
-  store i64 %293, i64* %299
+  %289 = alloca i64, i64 3, align 16
+  %290 = ptrtoint i64* %289 to i64
+  %291 = inttoptr i64 %290 to i64*
+  store i64 %274, i64* %291
+  %292 = add i64 %290, 8
+  %293 = inttoptr i64 %292 to i64*
+  store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 488) to i64), i64* %293
+  %294 = add i64 %290, 16
+  %295 = inttoptr i64 %294 to i64*
+  store i64 %280, i64* %295
+  %296 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 8) to i64) to i64*
+  store i64 %290, i64* %296
 ; # (Dst: ca (val $Catch))
-  %300 = getelementptr i8, i8* %246, i32 72
-  %301 = bitcast i8* %300 to i8**
-  %302 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 24) to i8**)
-  store i8* %302, i8** %301
+  %297 = getelementptr i8, i8* %243, i32 72
+  %298 = bitcast i8* %297 to i8**
+  %299 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 24) to i8**)
+  store i8* %299, i8** %298
 ; # (Dst: in (val $InFrames))
-  %303 = getelementptr i8, i8* %246, i32 80
-  %304 = bitcast i8* %303 to i8**
-  %305 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 32) to i8**)
-  store i8* %305, i8** %304
+  %300 = getelementptr i8, i8* %243, i32 80
+  %301 = bitcast i8* %300 to i8**
+  %302 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 32) to i8**)
+  store i8* %302, i8** %301
 ; # (Dst: out (val $OutFrames))
-  %306 = getelementptr i8, i8* %246, i32 88
-  %307 = bitcast i8* %306 to i8**
-  %308 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 40) to i8**)
-  store i8* %308, i8** %307
+  %303 = getelementptr i8, i8* %243, i32 88
+  %304 = bitcast i8* %303 to i8**
+  %305 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 40) to i8**)
+  store i8* %305, i8** %304
 ; # (Dst: err (val $ErrFrames))
-  %309 = getelementptr i8, i8* %246, i32 96
-  %310 = bitcast i8* %309 to i8**
-  %311 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 48) to i8**)
-  store i8* %311, i8** %310
+  %306 = getelementptr i8, i8* %243, i32 96
+  %307 = bitcast i8* %306 to i8**
+  %308 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 48) to i8**)
+  store i8* %308, i8** %307
 ; # (Dst: ctl (val $CtlFrames))
-  %312 = getelementptr i8, i8* %246, i32 104
-  %313 = bitcast i8* %312 to i8**
-  %314 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 56) to i8**)
-  store i8* %314, i8** %313
+  %309 = getelementptr i8, i8* %243, i32 104
+  %310 = bitcast i8* %309 to i8**
+  %311 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 56) to i8**)
+  store i8* %311, i8** %310
 ; # (Dst:)
 ; # (putCrtEnv (Dst:))
-  %315 = getelementptr i8, i8* %246, i32 112
-  %316 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 0) to i64) to i8*
-  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 8 %315, i8* %316, i64 168, i1 0)
-  %317 = getelementptr i8, i8* %246, i32 280
-  %318 = ptrtoint i8* %317 to i64
-  %319 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 0) to i64) to i64*
-  %320 = load i64, i64* %319
-  %321 = inttoptr i64 %318 to i64*
-  store i64 %320, i64* %321
-  %322 = getelementptr i8, i8* %246, i32 288
-  %323 = ptrtoint i8* %322 to i64
-  %324 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 8) to i64) to i64*
-  %325 = load i64, i64* %324
-  %326 = inttoptr i64 %323 to i64*
-  store i64 %325, i64* %326
-  %327 = getelementptr i8, i8* %246, i32 296
-  %328 = ptrtoint i8* %327 to i64
-  %329 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 8) to i64) to i64*
-  %330 = getelementptr i64, i64* %329, i32 1
-  %331 = load i64, i64* %330
-  %332 = inttoptr i64 %328 to i64*
-  store i64 %331, i64* %332
-  %333 = getelementptr i8, i8* %246, i32 304
-  %334 = ptrtoint i8* %333 to i64
-  %335 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 112) to i64) to i64*
-  %336 = load i64, i64* %335
-  %337 = inttoptr i64 %334 to i64*
-  store i64 %336, i64* %337
-  %338 = getelementptr i8, i8* %246, i32 312
-  %339 = ptrtoint i8* %338 to i64
-  %340 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 112) to i64) to i64*
-  %341 = getelementptr i64, i64* %340, i32 1
-  %342 = load i64, i64* %341
-  %343 = inttoptr i64 %339 to i64*
-  store i64 %342, i64* %343
+  %312 = getelementptr i8, i8* %243, i32 112
+  %313 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 0) to i64) to i8*
+  call void @llvm.memcpy.p0i8.p0i8.i64(i8* align 8 %312, i8* %313, i64 168, i1 0)
+  %314 = getelementptr i8, i8* %243, i32 280
+  %315 = ptrtoint i8* %314 to i64
+  %316 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 0) to i64) to i64*
+  %317 = load i64, i64* %316
+  %318 = inttoptr i64 %315 to i64*
+  store i64 %317, i64* %318
+  %319 = getelementptr i8, i8* %243, i32 288
+  %320 = ptrtoint i8* %319 to i64
+  %321 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 8) to i64) to i64*
+  %322 = load i64, i64* %321
+  %323 = inttoptr i64 %320 to i64*
+  store i64 %322, i64* %323
+  %324 = getelementptr i8, i8* %243, i32 296
+  %325 = ptrtoint i8* %324 to i64
+  %326 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 8) to i64) to i64*
+  %327 = getelementptr i64, i64* %326, i32 1
+  %328 = load i64, i64* %327
+  %329 = inttoptr i64 %325 to i64*
+  store i64 %328, i64* %329
+  %330 = getelementptr i8, i8* %243, i32 304
+  %331 = ptrtoint i8* %330 to i64
+  %332 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 112) to i64) to i64*
+  %333 = load i64, i64* %332
+  %334 = inttoptr i64 %331 to i64*
+  store i64 %333, i64* %334
+  %335 = getelementptr i8, i8* %243, i32 312
+  %336 = ptrtoint i8* %335 to i64
+  %337 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 112) to i64) to i64*
+  %338 = getelementptr i64, i64* %337, i32 1
+  %339 = load i64, i64* %338
+  %340 = inttoptr i64 %336 to i64*
+  store i64 %339, i64* %340
 ; # (set $Next $Nil $Make 0 $Yoke 0 $Current (Dst:) $StkLimit (+ (Dst...
-  %344 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 112) to i64) to i64*
-  store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64), i64* %344
-  %345 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 136) to i64) to i64*
-  store i64 0, i64* %345
-  %346 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 144) to i64) to i64*
-  store i64 0, i64* %346
+  %341 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 112) to i64) to i64*
+  store i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64), i64* %341
+  %342 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 136) to i64) to i64*
+  store i64 0, i64* %342
+  %343 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([21 x i64]* @env to i8*), i32 144) to i64) to i64*
+  store i64 0, i64* %343
 ; # (Dst:)
-  store i8* %246, i8** @$Current
+  store i8* %243, i8** @$Current
 ; # (Dst: lim)
-  %347 = getelementptr i8, i8* %246, i32 40
-  %348 = bitcast i8* %347 to i8**
-  %349 = load i8*, i8** %348
+  %344 = getelementptr i8, i8* %243, i32 40
+  %345 = bitcast i8* %344 to i8**
+  %346 = load i8*, i8** %345
 ; # (+ (Dst: lim) 1024)
-  %350 = getelementptr i8, i8* %349, i32 1024
-  store i8* %350, i8** @$StkLimit
+  %347 = getelementptr i8, i8* %346, i32 1024
+  store i8* %347, i8** @$StkLimit
 ; # (when (symb? Tag) (put Tag ZERO (| (i64 (Dst:)) 2)))
 ; # (symb? Tag)
-  %351 = xor i64 %28, 8
-  %352 = and i64 %351, 14
-  %353 = icmp eq i64 %352, 0
-  br i1 %353, label %$54, label %$55
-$54:
-  %354 = phi i64 [%244, %$53] ; # X
-  %355 = phi i8* [%245, %$53] ; # Crt
-  %356 = phi i8* [%246, %$53] ; # P
+  %348 = xor i64 %28, 8
+  %349 = and i64 %348, 14
+  %350 = icmp eq i64 %349, 0
+  br i1 %350, label %$53, label %$54
+$53:
+  %351 = phi i64 [%241, %$52] ; # X
+  %352 = phi i8* [%242, %$52] ; # Crt
+  %353 = phi i8* [%243, %$52] ; # P
 ; # (Dst:)
 ; # (i64 (Dst:))
-  %357 = ptrtoint i8* %246 to i64
+  %354 = ptrtoint i8* %243 to i64
 ; # (| (i64 (Dst:)) 2)
-  %358 = or i64 %357, 2
+  %355 = or i64 %354, 2
 ; # (put Tag ZERO (| (i64 (Dst:)) 2))
-  call void @put(i64 %28, i64 2, i64 %358)
-  br label %$55
-$55:
-  %359 = phi i64 [%244, %$53], [%354, %$54] ; # X
-  %360 = phi i8* [%245, %$53], [%355, %$54] ; # Crt
-  %361 = phi i8* [%246, %$53], [%356, %$54] ; # P
+  call void @put(i64 %28, i64 2, i64 %355)
+  br label %$54
+$54:
+  %356 = phi i64 [%241, %$52], [%351, %$53] ; # X
+  %357 = phi i8* [%242, %$52], [%352, %$53] ; # Crt
+  %358 = phi i8* [%243, %$52], [%353, %$53] ; # P
 ; # (set $Ret (run X))
 ; # (run X)
-  br label %$56
-$56:
-  %362 = phi i64 [%359, %$55], [%384, %$65] ; # Prg
-  %363 = inttoptr i64 %362 to i64*
-  %364 = load i64, i64* %363
-  %365 = getelementptr i64, i64* %363, i32 1
-  %366 = load i64, i64* %365
-  %367 = and i64 %366, 15
-  %368 = icmp ne i64 %367, 0
-  br i1 %368, label %$59, label %$57
-$59:
-  %369 = phi i64 [%366, %$56] ; # Prg
-  %370 = and i64 %364, 6
-  %371 = icmp ne i64 %370, 0
-  br i1 %371, label %$62, label %$61
-$62:
-  br label %$60
-$61:
-  %372 = and i64 %364, 8
-  %373 = icmp ne i64 %372, 0
-  br i1 %373, label %$64, label %$63
-$64:
-  %374 = inttoptr i64 %364 to i64*
-  %375 = load i64, i64* %374
-  br label %$60
-$63:
-  %376 = call i64 @evList(i64 %364)
-  br label %$60
-$60:
-  %377 = phi i64 [%364, %$62], [%375, %$64], [%376, %$63] ; # ->
-  br label %$58
-$57:
-  %378 = phi i64 [%366, %$56] ; # Prg
-  %379 = and i64 %364, 15
-  %380 = icmp eq i64 %379, 0
-  br i1 %380, label %$66, label %$65
-$66:
-  %381 = phi i64 [%378, %$57] ; # Prg
-  %382 = call i64 @evList(i64 %364)
-  %383 = icmp ne i64 %382, 0
-  br label %$65
-$65:
-  %384 = phi i64 [%378, %$57], [%381, %$66] ; # Prg
-  %385 = phi i1 [0, %$57], [%383, %$66] ; # ->
-  br label %$56
+  br label %$55
+$55:
+  %359 = phi i64 [%356, %$54], [%381, %$64] ; # Prg
+  %360 = inttoptr i64 %359 to i64*
+  %361 = load i64, i64* %360
+  %362 = getelementptr i64, i64* %360, i32 1
+  %363 = load i64, i64* %362
+  %364 = and i64 %363, 15
+  %365 = icmp ne i64 %364, 0
+  br i1 %365, label %$58, label %$56
 $58:
-  %386 = phi i64 [%369, %$60] ; # Prg
-  %387 = phi i64 [%377, %$60] ; # ->
-  store i64 %387, i64* @$Ret
+  %366 = phi i64 [%363, %$55] ; # Prg
+  %367 = and i64 %361, 6
+  %368 = icmp ne i64 %367, 0
+  br i1 %368, label %$61, label %$60
+$61:
+  br label %$59
+$60:
+  %369 = and i64 %361, 8
+  %370 = icmp ne i64 %369, 0
+  br i1 %370, label %$63, label %$62
+$63:
+  %371 = inttoptr i64 %361 to i64*
+  %372 = load i64, i64* %371
+  br label %$59
+$62:
+  %373 = call i64 @evList(i64 %361)
+  br label %$59
+$59:
+  %374 = phi i64 [%361, %$61], [%372, %$63], [%373, %$62] ; # ->
+  br label %$57
+$56:
+  %375 = phi i64 [%363, %$55] ; # Prg
+  %376 = and i64 %361, 15
+  %377 = icmp eq i64 %376, 0
+  br i1 %377, label %$65, label %$64
+$65:
+  %378 = phi i64 [%375, %$56] ; # Prg
+  %379 = call i64 @evList(i64 %361)
+  %380 = icmp ne i64 %379, 0
+  br label %$64
+$64:
+  %381 = phi i64 [%375, %$56], [%378, %$65] ; # Prg
+  %382 = phi i1 [0, %$56], [%380, %$65] ; # ->
+  br label %$55
+$57:
+  %383 = phi i64 [%366, %$59] ; # Prg
+  %384 = phi i64 [%374, %$59] ; # ->
+  store i64 %384, i64* @$Ret
 ; # (unless (== (hex "0707070707070707") (val (i64* (Dst: lim)))) (st...
 ; # (Dst: lim)
-  %388 = getelementptr i8, i8* %246, i32 40
-  %389 = bitcast i8* %388 to i8**
-  %390 = load i8*, i8** %389
+  %385 = getelementptr i8, i8* %243, i32 40
+  %386 = bitcast i8* %385 to i8**
+  %387 = load i8*, i8** %386
 ; # (i64* (Dst: lim))
-  %391 = bitcast i8* %390 to i64*
+  %388 = bitcast i8* %387 to i64*
 ; # (val (i64* (Dst: lim)))
-  %392 = load i64, i64* %391
+  %389 = load i64, i64* %388
 ; # (== (hex "0707070707070707") (val (i64* (Dst: lim))))
-  %393 = icmp eq i64 506381209866536711, %392
-  br i1 %393, label %$68, label %$67
-$67:
-  %394 = phi i64 [%359, %$58] ; # X
-  %395 = phi i8* [%360, %$58] ; # Crt
-  %396 = phi i8* [%361, %$58] ; # P
+  %390 = icmp eq i64 506381209866536711, %389
+  br i1 %390, label %$67, label %$66
+$66:
+  %391 = phi i64 [%356, %$57] ; # X
+  %392 = phi i8* [%357, %$57] ; # Crt
+  %393 = phi i8* [%358, %$57] ; # P
 ; # (Dst: tag)
-  %397 = ptrtoint i8* %246 to i64
-  %398 = inttoptr i64 %397 to i64*
-  %399 = load i64, i64* %398
+  %394 = ptrtoint i8* %243 to i64
+  %395 = inttoptr i64 %394 to i64*
+  %396 = load i64, i64* %395
 ; # (stkOverErr (Dst: tag))
-  call void @stkOverErr(i64 %399)
+  call void @stkOverErr(i64 %396)
   unreachable
-$68:
-  %400 = phi i64 [%359, %$58] ; # X
-  %401 = phi i8* [%360, %$58] ; # Crt
-  %402 = phi i8* [%361, %$58] ; # P
+$67:
+  %397 = phi i64 [%356, %$57] ; # X
+  %398 = phi i8* [%357, %$57] ; # Crt
+  %399 = phi i8* [%358, %$57] ; # P
 ; # (Dst:)
 ; # (stop (Dst:))
-  call void @stop(i8* %246)
+  call void @stop(i8* %243)
 ; # (let Org: (coroutine (Dst: org)) (unless (and (Org:) (== (Org: ta...
 ; # (Dst: org)
-  %403 = getelementptr i8, i8* %246, i32 16
-  %404 = bitcast i8* %403 to i8**
-  %405 = load i8*, i8** %404
+  %400 = getelementptr i8, i8* %243, i32 16
+  %401 = bitcast i8* %400 to i8**
+  %402 = load i8*, i8** %401
 ; # (unless (and (Org:) (== (Org: tag) (Dst: otg))) (coErr Exe (Dst: ...
 ; # (and (Org:) (== (Org: tag) (Dst: otg)))
 ; # (Org:)
-  %406 = icmp ne i8* %405, null
-  br i1 %406, label %$70, label %$69
-$70:
-  %407 = phi i64 [%400, %$68] ; # X
-  %408 = phi i8* [%401, %$68] ; # Crt
-  %409 = phi i8* [%402, %$68] ; # P
-; # (Org: tag)
-  %410 = ptrtoint i8* %405 to i64
-  %411 = inttoptr i64 %410 to i64*
-  %412 = load i64, i64* %411
-; # (Dst: otg)
-  %413 = getelementptr i8, i8* %246, i32 24
-  %414 = ptrtoint i8* %413 to i64
-  %415 = inttoptr i64 %414 to i64*
-  %416 = load i64, i64* %415
-; # (== (Org: tag) (Dst: otg))
-  %417 = icmp eq i64 %412, %416
-  br label %$69
+  %403 = icmp ne i8* %402, null
+  br i1 %403, label %$69, label %$68
 $69:
-  %418 = phi i64 [%400, %$68], [%407, %$70] ; # X
-  %419 = phi i8* [%401, %$68], [%408, %$70] ; # Crt
-  %420 = phi i8* [%402, %$68], [%409, %$70] ; # P
-  %421 = phi i1 [0, %$68], [%417, %$70] ; # ->
-  br i1 %421, label %$72, label %$71
-$71:
-  %422 = phi i64 [%418, %$69] ; # X
-  %423 = phi i8* [%419, %$69] ; # Crt
-  %424 = phi i8* [%420, %$69] ; # P
+  %404 = phi i64 [%397, %$67] ; # X
+  %405 = phi i8* [%398, %$67] ; # Crt
+  %406 = phi i8* [%399, %$67] ; # P
+; # (Org: tag)
+  %407 = ptrtoint i8* %402 to i64
+  %408 = inttoptr i64 %407 to i64*
+  %409 = load i64, i64* %408
 ; # (Dst: otg)
-  %425 = getelementptr i8, i8* %246, i32 24
-  %426 = ptrtoint i8* %425 to i64
-  %427 = inttoptr i64 %426 to i64*
-  %428 = load i64, i64* %427
+  %410 = getelementptr i8, i8* %243, i32 24
+  %411 = ptrtoint i8* %410 to i64
+  %412 = inttoptr i64 %411 to i64*
+  %413 = load i64, i64* %412
+; # (== (Org: tag) (Dst: otg))
+  %414 = icmp eq i64 %409, %413
+  br label %$68
+$68:
+  %415 = phi i64 [%397, %$67], [%404, %$69] ; # X
+  %416 = phi i8* [%398, %$67], [%405, %$69] ; # Crt
+  %417 = phi i8* [%399, %$67], [%406, %$69] ; # P
+  %418 = phi i1 [0, %$67], [%414, %$69] ; # ->
+  br i1 %418, label %$71, label %$70
+$70:
+  %419 = phi i64 [%415, %$68] ; # X
+  %420 = phi i8* [%416, %$68] ; # Crt
+  %421 = phi i8* [%417, %$68] ; # P
+; # (Dst: otg)
+  %422 = getelementptr i8, i8* %243, i32 24
+  %423 = ptrtoint i8* %422 to i64
+  %424 = inttoptr i64 %423 to i64*
+  %425 = load i64, i64* %424
 ; # (coErr Exe (Dst: otg))
-  call void @coErr(i64 %0, i64 %428)
+  call void @coErr(i64 %0, i64 %425)
   unreachable
-$72:
-  %429 = phi i64 [%418, %$69] ; # X
-  %430 = phi i8* [%419, %$69] ; # Crt
-  %431 = phi i8* [%420, %$69] ; # P
+$71:
+  %426 = phi i64 [%415, %$68] ; # X
+  %427 = phi i8* [%416, %$68] ; # Crt
+  %428 = phi i8* [%417, %$68] ; # P
 ; # (Org: (rst))
-  %432 = getelementptr i8, i8* %405, i32 320
+  %429 = getelementptr i8, i8* %402, i32 320
 ; # (longjmp (Org: (rst)) 1)
-  call void @longjmp(i8* %432, i32 1)
+  call void @longjmp(i8* %429, i32 1)
   unreachable
 $23:
-  %433 = phi i64 [%54, %$21] ; # X
+  %430 = phi i64 [%54, %$21] ; # X
 ; # (val $Coroutines)
-  %434 = load i8*, i8** @$Coroutines
-  %435 = icmp ne i8* %434, null
-  br i1 %435, label %$74, label %$73
-$74:
-  %436 = phi i64 [%433, %$23] ; # X
+  %431 = load i8*, i8** @$Coroutines
+  %432 = icmp ne i8* %431, null
+  br i1 %432, label %$73, label %$72
+$73:
+  %433 = phi i64 [%430, %$23] ; # X
 ; # (let Crt @ (if (symb? Tag) (when (cnt? (get Tag ZERO)) (setq Crt ...
 ; # (if (symb? Tag) (when (cnt? (get Tag ZERO)) (setq Crt (i8* (& @ -...
 ; # (symb? Tag)
-  %437 = xor i64 %28, 8
-  %438 = and i64 %437, 14
-  %439 = icmp eq i64 %438, 0
-  br i1 %439, label %$75, label %$76
-$75:
-  %440 = phi i64 [%436, %$74] ; # X
-  %441 = phi i8* [%434, %$74] ; # Crt
+  %434 = xor i64 %28, 8
+  %435 = and i64 %434, 14
+  %436 = icmp eq i64 %435, 0
+  br i1 %436, label %$74, label %$75
+$74:
+  %437 = phi i64 [%433, %$73] ; # X
+  %438 = phi i8* [%431, %$73] ; # Crt
 ; # (when (cnt? (get Tag ZERO)) (setq Crt (i8* (& @ -3))) (unless (==...
 ; # (get Tag ZERO)
-  %442 = call i64 @get(i64 %28, i64 2)
+  %439 = call i64 @get(i64 %28, i64 2)
 ; # (cnt? (get Tag ZERO))
-  %443 = and i64 %442, 2
-  %444 = icmp ne i64 %443, 0
-  br i1 %444, label %$78, label %$79
-$78:
-  %445 = phi i64 [%440, %$75] ; # X
-  %446 = phi i8* [%441, %$75] ; # Crt
+  %440 = and i64 %439, 2
+  %441 = icmp ne i64 %440, 0
+  br i1 %441, label %$77, label %$78
+$77:
+  %442 = phi i64 [%437, %$74] ; # X
+  %443 = phi i8* [%438, %$74] ; # Crt
 ; # (& @ -3)
-  %447 = and i64 %442, -3
+  %444 = and i64 %439, -3
 ; # (i8* (& @ -3))
-  %448 = inttoptr i64 %447 to i8*
+  %445 = inttoptr i64 %444 to i8*
 ; # (unless (== Tag ((coroutine Crt) tag)) (coErr Exe Tag))
 ; # ((coroutine Crt) tag)
-  %449 = ptrtoint i8* %448 to i64
-  %450 = inttoptr i64 %449 to i64*
-  %451 = load i64, i64* %450
+  %446 = ptrtoint i8* %445 to i64
+  %447 = inttoptr i64 %446 to i64*
+  %448 = load i64, i64* %447
 ; # (== Tag ((coroutine Crt) tag))
-  %452 = icmp eq i64 %28, %451
-  br i1 %452, label %$81, label %$80
-$80:
-  %453 = phi i64 [%445, %$78] ; # X
-  %454 = phi i8* [%448, %$78] ; # Crt
+  %449 = icmp eq i64 %28, %448
+  br i1 %449, label %$80, label %$79
+$79:
+  %450 = phi i64 [%442, %$77] ; # X
+  %451 = phi i8* [%445, %$77] ; # Crt
 ; # (coErr Exe Tag)
   call void @coErr(i64 %0, i64 %28)
   unreachable
-$81:
-  %455 = phi i64 [%445, %$78] ; # X
-  %456 = phi i8* [%448, %$78] ; # Crt
+$80:
+  %452 = phi i64 [%442, %$77] ; # X
+  %453 = phi i8* [%445, %$77] ; # Crt
 ; # (: 1 (let P ((coroutine Crt) (env $ErrFrames i8*)) (while P (let ...
   br label %$-1
 $-1:
-  %457 = phi i64 [%455, %$81], [%624, %$110] ; # X
-  %458 = phi i8* [%456, %$81], [%625, %$110] ; # Crt
+  %454 = phi i64 [%452, %$80], [%621, %$109] ; # X
+  %455 = phi i8* [%453, %$80], [%622, %$109] ; # Crt
 ; # (let P ((coroutine Crt) (env $ErrFrames i8*)) (while P (let Err: ...
 ; # ((coroutine Crt) (env $ErrFrames i8*))
-  %459 = getelementptr i8, i8* %458, i32 112
-  %460 = getelementptr i8, i8* %459, i32 48
-  %461 = bitcast i8* %460 to i8**
-  %462 = load i8*, i8** %461
+  %456 = getelementptr i8, i8* %455, i32 112
+  %457 = getelementptr i8, i8* %456, i32 48
+  %458 = bitcast i8* %457 to i8**
+  %459 = load i8*, i8** %458
 ; # (while P (let Err: (ctFrame P) (when (ge0 (Err: fd)) (close @)) (...
-  br label %$82
+  br label %$81
+$81:
+  %460 = phi i64 [%454, %$-1], [%475, %$85] ; # X
+  %461 = phi i8* [%455, %$-1], [%476, %$85] ; # Crt
+  %462 = phi i8* [%459, %$-1], [%479, %$85] ; # P
+  %463 = icmp ne i8* %462, null
+  br i1 %463, label %$82, label %$83
 $82:
-  %463 = phi i64 [%457, %$-1], [%478, %$86] ; # X
-  %464 = phi i8* [%458, %$-1], [%479, %$86] ; # Crt
-  %465 = phi i8* [%462, %$-1], [%482, %$86] ; # P
-  %466 = icmp ne i8* %465, null
-  br i1 %466, label %$83, label %$84
-$83:
-  %467 = phi i64 [%463, %$82] ; # X
-  %468 = phi i8* [%464, %$82] ; # Crt
-  %469 = phi i8* [%465, %$82] ; # P
+  %464 = phi i64 [%460, %$81] ; # X
+  %465 = phi i8* [%461, %$81] ; # Crt
+  %466 = phi i8* [%462, %$81] ; # P
 ; # (let Err: (ctFrame P) (when (ge0 (Err: fd)) (close @)) (setq P (E...
 ; # (when (ge0 (Err: fd)) (close @))
 ; # (Err: fd)
-  %470 = getelementptr i8, i8* %469, i32 8
-  %471 = bitcast i8* %470 to i32*
-  %472 = load i32, i32* %471
+  %467 = getelementptr i8, i8* %466, i32 8
+  %468 = bitcast i8* %467 to i32*
+  %469 = load i32, i32* %468
 ; # (ge0 (Err: fd))
-  %473 = icmp sge i32 %472, 0
-  br i1 %473, label %$85, label %$86
-$85:
-  %474 = phi i64 [%467, %$83] ; # X
-  %475 = phi i8* [%468, %$83] ; # Crt
-  %476 = phi i8* [%469, %$83] ; # P
-; # (close @)
-  %477 = call i32 @close(i32 %472)
-  br label %$86
-$86:
-  %478 = phi i64 [%467, %$83], [%474, %$85] ; # X
-  %479 = phi i8* [%468, %$83], [%475, %$85] ; # Crt
-  %480 = phi i8* [%469, %$83], [%476, %$85] ; # P
-; # (Err: link)
-  %481 = bitcast i8* %469 to i8**
-  %482 = load i8*, i8** %481
-  br label %$82
+  %470 = icmp sge i32 %469, 0
+  br i1 %470, label %$84, label %$85
 $84:
-  %483 = phi i64 [%463, %$82] ; # X
-  %484 = phi i8* [%464, %$82] ; # Crt
-  %485 = phi i8* [%465, %$82] ; # P
+  %471 = phi i64 [%464, %$82] ; # X
+  %472 = phi i8* [%465, %$82] ; # Crt
+  %473 = phi i8* [%466, %$82] ; # P
+; # (close @)
+  %474 = call i32 @close(i32 %469)
+  br label %$85
+$85:
+  %475 = phi i64 [%464, %$82], [%471, %$84] ; # X
+  %476 = phi i8* [%465, %$82], [%472, %$84] ; # Crt
+  %477 = phi i8* [%466, %$82], [%473, %$84] ; # P
+; # (Err: link)
+  %478 = bitcast i8* %466 to i8**
+  %479 = load i8*, i8** %478
+  br label %$81
+$83:
+  %480 = phi i64 [%460, %$81] ; # X
+  %481 = phi i8* [%461, %$81] ; # Crt
+  %482 = phi i8* [%462, %$81] ; # P
 ; # (let P ((coroutine Crt) (env $OutFrames i8*)) (until (== P (val $...
 ; # ((coroutine Crt) (env $OutFrames i8*))
-  %486 = getelementptr i8, i8* %484, i32 112
-  %487 = getelementptr i8, i8* %486, i32 40
-  %488 = bitcast i8* %487 to i8**
-  %489 = load i8*, i8** %488
+  %483 = getelementptr i8, i8* %481, i32 112
+  %484 = getelementptr i8, i8* %483, i32 40
+  %485 = bitcast i8* %484 to i8**
+  %486 = load i8*, i8** %485
 ; # (until (== P (val $Stdout)) (let Io: (ioFrame P) (when (Io: file)...
-  br label %$87
-$87:
-  %490 = phi i64 [%483, %$84], [%541, %$91] ; # X
-  %491 = phi i8* [%484, %$84], [%542, %$91] ; # Crt
-  %492 = phi i8* [%489, %$84], [%545, %$91] ; # P
+  br label %$86
+$86:
+  %487 = phi i64 [%480, %$83], [%538, %$90] ; # X
+  %488 = phi i8* [%481, %$83], [%539, %$90] ; # Crt
+  %489 = phi i8* [%486, %$83], [%542, %$90] ; # P
 ; # (val $Stdout)
-  %493 = load i8*, i8** @$Stdout
+  %490 = load i8*, i8** @$Stdout
 ; # (== P (val $Stdout))
-  %494 = icmp eq i8* %492, %493
-  br i1 %494, label %$89, label %$88
-$88:
-  %495 = phi i64 [%490, %$87] ; # X
-  %496 = phi i8* [%491, %$87] ; # Crt
-  %497 = phi i8* [%492, %$87] ; # P
+  %491 = icmp eq i8* %489, %490
+  br i1 %491, label %$88, label %$87
+$87:
+  %492 = phi i64 [%487, %$86] ; # X
+  %493 = phi i8* [%488, %$86] ; # Crt
+  %494 = phi i8* [%489, %$86] ; # P
 ; # (let Io: (ioFrame P) (when (Io: file) (let Out: (outFile @) (flus...
 ; # (when (Io: file) (let Out: (outFile @) (flush (Out:)) (when (and ...
 ; # (Io: file)
-  %498 = getelementptr i8, i8* %497, i32 8
-  %499 = bitcast i8* %498 to i8**
-  %500 = load i8*, i8** %499
-  %501 = icmp ne i8* %500, null
-  br i1 %501, label %$90, label %$91
-$90:
-  %502 = phi i64 [%495, %$88] ; # X
-  %503 = phi i8* [%496, %$88] ; # Crt
-  %504 = phi i8* [%497, %$88] ; # P
+  %495 = getelementptr i8, i8* %494, i32 8
+  %496 = bitcast i8* %495 to i8**
+  %497 = load i8*, i8** %496
+  %498 = icmp ne i8* %497, null
+  br i1 %498, label %$89, label %$90
+$89:
+  %499 = phi i64 [%492, %$87] ; # X
+  %500 = phi i8* [%493, %$87] ; # Crt
+  %501 = phi i8* [%494, %$87] ; # P
 ; # (let Out: (outFile @) (flush (Out:)) (when (and (ge0 (Out: fd)) (...
 ; # (Out:)
 ; # (flush (Out:))
-  %505 = call i1 @flush(i8* %500)
+  %502 = call i1 @flush(i8* %497)
 ; # (when (and (ge0 (Out: fd)) (Io: pid)) (close (Out: fd)) (closeOut...
 ; # (and (ge0 (Out: fd)) (Io: pid))
 ; # (Out: fd)
-  %506 = bitcast i8* %500 to i32*
-  %507 = load i32, i32* %506
+  %503 = bitcast i8* %497 to i32*
+  %504 = load i32, i32* %503
 ; # (ge0 (Out: fd))
-  %508 = icmp sge i32 %507, 0
-  br i1 %508, label %$93, label %$92
-$93:
-  %509 = phi i64 [%502, %$90] ; # X
-  %510 = phi i8* [%503, %$90] ; # Crt
-  %511 = phi i8* [%504, %$90] ; # P
-; # (Io: pid)
-  %512 = getelementptr i8, i8* %497, i32 24
-  %513 = bitcast i8* %512 to i32*
-  %514 = load i32, i32* %513
-  %515 = icmp ne i32 %514, 0
-  br label %$92
+  %505 = icmp sge i32 %504, 0
+  br i1 %505, label %$92, label %$91
 $92:
-  %516 = phi i64 [%502, %$90], [%509, %$93] ; # X
-  %517 = phi i8* [%503, %$90], [%510, %$93] ; # Crt
-  %518 = phi i8* [%504, %$90], [%511, %$93] ; # P
-  %519 = phi i1 [0, %$90], [%515, %$93] ; # ->
-  br i1 %519, label %$94, label %$95
-$94:
-  %520 = phi i64 [%516, %$92] ; # X
-  %521 = phi i8* [%517, %$92] ; # Crt
-  %522 = phi i8* [%518, %$92] ; # P
-; # (Out: fd)
-  %523 = bitcast i8* %500 to i32*
-  %524 = load i32, i32* %523
-; # (close (Out: fd))
-  %525 = call i32 @close(i32 %524)
-; # (Out: fd)
-  %526 = bitcast i8* %500 to i32*
-  %527 = load i32, i32* %526
-; # (closeOutFile (Out: fd))
-  call void @closeOutFile(i32 %527)
-; # (when (> (Io: pid) 1) (waitFile @))
+  %506 = phi i64 [%499, %$89] ; # X
+  %507 = phi i8* [%500, %$89] ; # Crt
+  %508 = phi i8* [%501, %$89] ; # P
 ; # (Io: pid)
-  %528 = getelementptr i8, i8* %497, i32 24
-  %529 = bitcast i8* %528 to i32*
-  %530 = load i32, i32* %529
-; # (> (Io: pid) 1)
-  %531 = icmp sgt i32 %530, 1
-  br i1 %531, label %$96, label %$97
-$96:
-  %532 = phi i64 [%520, %$94] ; # X
-  %533 = phi i8* [%521, %$94] ; # Crt
-  %534 = phi i8* [%522, %$94] ; # P
-; # (waitFile @)
-  call void @waitFile(i32 %530)
-  br label %$97
-$97:
-  %535 = phi i64 [%520, %$94], [%532, %$96] ; # X
-  %536 = phi i8* [%521, %$94], [%533, %$96] ; # Crt
-  %537 = phi i8* [%522, %$94], [%534, %$96] ; # P
-  br label %$95
-$95:
-  %538 = phi i64 [%516, %$92], [%535, %$97] ; # X
-  %539 = phi i8* [%517, %$92], [%536, %$97] ; # Crt
-  %540 = phi i8* [%518, %$92], [%537, %$97] ; # P
+  %509 = getelementptr i8, i8* %494, i32 24
+  %510 = bitcast i8* %509 to i32*
+  %511 = load i32, i32* %510
+  %512 = icmp ne i32 %511, 0
   br label %$91
 $91:
-  %541 = phi i64 [%495, %$88], [%538, %$95] ; # X
-  %542 = phi i8* [%496, %$88], [%539, %$95] ; # Crt
-  %543 = phi i8* [%497, %$88], [%540, %$95] ; # P
+  %513 = phi i64 [%499, %$89], [%506, %$92] ; # X
+  %514 = phi i8* [%500, %$89], [%507, %$92] ; # Crt
+  %515 = phi i8* [%501, %$89], [%508, %$92] ; # P
+  %516 = phi i1 [0, %$89], [%512, %$92] ; # ->
+  br i1 %516, label %$93, label %$94
+$93:
+  %517 = phi i64 [%513, %$91] ; # X
+  %518 = phi i8* [%514, %$91] ; # Crt
+  %519 = phi i8* [%515, %$91] ; # P
+; # (Out: fd)
+  %520 = bitcast i8* %497 to i32*
+  %521 = load i32, i32* %520
+; # (close (Out: fd))
+  %522 = call i32 @close(i32 %521)
+; # (Out: fd)
+  %523 = bitcast i8* %497 to i32*
+  %524 = load i32, i32* %523
+; # (closeOutFile (Out: fd))
+  call void @closeOutFile(i32 %524)
+; # (when (> (Io: pid) 1) (waitFile @))
+; # (Io: pid)
+  %525 = getelementptr i8, i8* %494, i32 24
+  %526 = bitcast i8* %525 to i32*
+  %527 = load i32, i32* %526
+; # (> (Io: pid) 1)
+  %528 = icmp sgt i32 %527, 1
+  br i1 %528, label %$95, label %$96
+$95:
+  %529 = phi i64 [%517, %$93] ; # X
+  %530 = phi i8* [%518, %$93] ; # Crt
+  %531 = phi i8* [%519, %$93] ; # P
+; # (waitFile @)
+  call void @waitFile(i32 %527)
+  br label %$96
+$96:
+  %532 = phi i64 [%517, %$93], [%529, %$95] ; # X
+  %533 = phi i8* [%518, %$93], [%530, %$95] ; # Crt
+  %534 = phi i8* [%519, %$93], [%531, %$95] ; # P
+  br label %$94
+$94:
+  %535 = phi i64 [%513, %$91], [%532, %$96] ; # X
+  %536 = phi i8* [%514, %$91], [%533, %$96] ; # Crt
+  %537 = phi i8* [%515, %$91], [%534, %$96] ; # P
+  br label %$90
+$90:
+  %538 = phi i64 [%492, %$87], [%535, %$94] ; # X
+  %539 = phi i8* [%493, %$87], [%536, %$94] ; # Crt
+  %540 = phi i8* [%494, %$87], [%537, %$94] ; # P
 ; # (Io: link)
-  %544 = bitcast i8* %497 to i8**
-  %545 = load i8*, i8** %544
-  br label %$87
-$89:
-  %546 = phi i64 [%490, %$87] ; # X
-  %547 = phi i8* [%491, %$87] ; # Crt
-  %548 = phi i8* [%492, %$87] ; # P
+  %541 = bitcast i8* %494 to i8**
+  %542 = load i8*, i8** %541
+  br label %$86
+$88:
+  %543 = phi i64 [%487, %$86] ; # X
+  %544 = phi i8* [%488, %$86] ; # Crt
+  %545 = phi i8* [%489, %$86] ; # P
 ; # (let P ((coroutine Crt) (env $InFrames i8*)) (until (== P (val $S...
 ; # ((coroutine Crt) (env $InFrames i8*))
-  %549 = getelementptr i8, i8* %547, i32 112
-  %550 = getelementptr i8, i8* %549, i32 32
-  %551 = bitcast i8* %550 to i8**
-  %552 = load i8*, i8** %551
+  %546 = getelementptr i8, i8* %544, i32 112
+  %547 = getelementptr i8, i8* %546, i32 32
+  %548 = bitcast i8* %547 to i8**
+  %549 = load i8*, i8** %548
 ; # (until (== P (val $Stdin)) (let Io: (ioFrame P) (when (Io: file) ...
-  br label %$98
-$98:
-  %553 = phi i64 [%546, %$89], [%606, %$102] ; # X
-  %554 = phi i8* [%547, %$89], [%607, %$102] ; # Crt
-  %555 = phi i8* [%552, %$89], [%610, %$102] ; # P
+  br label %$97
+$97:
+  %550 = phi i64 [%543, %$88], [%603, %$101] ; # X
+  %551 = phi i8* [%544, %$88], [%604, %$101] ; # Crt
+  %552 = phi i8* [%549, %$88], [%607, %$101] ; # P
 ; # (val $Stdin)
-  %556 = load i8*, i8** @$Stdin
+  %553 = load i8*, i8** @$Stdin
 ; # (== P (val $Stdin))
-  %557 = icmp eq i8* %555, %556
-  br i1 %557, label %$100, label %$99
-$99:
-  %558 = phi i64 [%553, %$98] ; # X
-  %559 = phi i8* [%554, %$98] ; # Crt
-  %560 = phi i8* [%555, %$98] ; # P
+  %554 = icmp eq i8* %552, %553
+  br i1 %554, label %$99, label %$98
+$98:
+  %555 = phi i64 [%550, %$97] ; # X
+  %556 = phi i8* [%551, %$97] ; # Crt
+  %557 = phi i8* [%552, %$97] ; # P
 ; # (let Io: (ioFrame P) (when (Io: file) (let In: (inFile @) (when (...
 ; # (when (Io: file) (let In: (inFile @) (when (and (ge0 (In: fd)) (I...
 ; # (Io: file)
-  %561 = getelementptr i8, i8* %560, i32 8
-  %562 = bitcast i8* %561 to i8**
-  %563 = load i8*, i8** %562
-  %564 = icmp ne i8* %563, null
-  br i1 %564, label %$101, label %$102
-$101:
-  %565 = phi i64 [%558, %$99] ; # X
-  %566 = phi i8* [%559, %$99] ; # Crt
-  %567 = phi i8* [%560, %$99] ; # P
+  %558 = getelementptr i8, i8* %557, i32 8
+  %559 = bitcast i8* %558 to i8**
+  %560 = load i8*, i8** %559
+  %561 = icmp ne i8* %560, null
+  br i1 %561, label %$100, label %$101
+$100:
+  %562 = phi i64 [%555, %$98] ; # X
+  %563 = phi i8* [%556, %$98] ; # Crt
+  %564 = phi i8* [%557, %$98] ; # P
 ; # (let In: (inFile @) (when (and (ge0 (In: fd)) (Io: pid)) (close (...
 ; # (when (and (ge0 (In: fd)) (Io: pid)) (close (In: fd)) (closeInFil...
 ; # (and (ge0 (In: fd)) (Io: pid))
 ; # (In: fd)
-  %568 = getelementptr i8, i8* %563, i32 8
-  %569 = bitcast i8* %568 to i32*
-  %570 = load i32, i32* %569
+  %565 = getelementptr i8, i8* %560, i32 8
+  %566 = bitcast i8* %565 to i32*
+  %567 = load i32, i32* %566
 ; # (ge0 (In: fd))
-  %571 = icmp sge i32 %570, 0
-  br i1 %571, label %$104, label %$103
-$104:
-  %572 = phi i64 [%565, %$101] ; # X
-  %573 = phi i8* [%566, %$101] ; # Crt
-  %574 = phi i8* [%567, %$101] ; # P
-; # (Io: pid)
-  %575 = getelementptr i8, i8* %560, i32 24
-  %576 = bitcast i8* %575 to i32*
-  %577 = load i32, i32* %576
-  %578 = icmp ne i32 %577, 0
-  br label %$103
+  %568 = icmp sge i32 %567, 0
+  br i1 %568, label %$103, label %$102
 $103:
-  %579 = phi i64 [%565, %$101], [%572, %$104] ; # X
-  %580 = phi i8* [%566, %$101], [%573, %$104] ; # Crt
-  %581 = phi i8* [%567, %$101], [%574, %$104] ; # P
-  %582 = phi i1 [0, %$101], [%578, %$104] ; # ->
-  br i1 %582, label %$105, label %$106
-$105:
-  %583 = phi i64 [%579, %$103] ; # X
-  %584 = phi i8* [%580, %$103] ; # Crt
-  %585 = phi i8* [%581, %$103] ; # P
-; # (In: fd)
-  %586 = getelementptr i8, i8* %563, i32 8
-  %587 = bitcast i8* %586 to i32*
-  %588 = load i32, i32* %587
-; # (close (In: fd))
-  %589 = call i32 @close(i32 %588)
-; # (In: fd)
-  %590 = getelementptr i8, i8* %563, i32 8
-  %591 = bitcast i8* %590 to i32*
-  %592 = load i32, i32* %591
-; # (closeInFile (In: fd))
-  call void @closeInFile(i32 %592)
-; # (when (> (Io: pid) 1) (waitFile @))
+  %569 = phi i64 [%562, %$100] ; # X
+  %570 = phi i8* [%563, %$100] ; # Crt
+  %571 = phi i8* [%564, %$100] ; # P
 ; # (Io: pid)
-  %593 = getelementptr i8, i8* %560, i32 24
-  %594 = bitcast i8* %593 to i32*
-  %595 = load i32, i32* %594
-; # (> (Io: pid) 1)
-  %596 = icmp sgt i32 %595, 1
-  br i1 %596, label %$107, label %$108
-$107:
-  %597 = phi i64 [%583, %$105] ; # X
-  %598 = phi i8* [%584, %$105] ; # Crt
-  %599 = phi i8* [%585, %$105] ; # P
-; # (waitFile @)
-  call void @waitFile(i32 %595)
-  br label %$108
-$108:
-  %600 = phi i64 [%583, %$105], [%597, %$107] ; # X
-  %601 = phi i8* [%584, %$105], [%598, %$107] ; # Crt
-  %602 = phi i8* [%585, %$105], [%599, %$107] ; # P
-  br label %$106
-$106:
-  %603 = phi i64 [%579, %$103], [%600, %$108] ; # X
-  %604 = phi i8* [%580, %$103], [%601, %$108] ; # Crt
-  %605 = phi i8* [%581, %$103], [%602, %$108] ; # P
+  %572 = getelementptr i8, i8* %557, i32 24
+  %573 = bitcast i8* %572 to i32*
+  %574 = load i32, i32* %573
+  %575 = icmp ne i32 %574, 0
   br label %$102
 $102:
-  %606 = phi i64 [%558, %$99], [%603, %$106] ; # X
-  %607 = phi i8* [%559, %$99], [%604, %$106] ; # Crt
-  %608 = phi i8* [%560, %$99], [%605, %$106] ; # P
+  %576 = phi i64 [%562, %$100], [%569, %$103] ; # X
+  %577 = phi i8* [%563, %$100], [%570, %$103] ; # Crt
+  %578 = phi i8* [%564, %$100], [%571, %$103] ; # P
+  %579 = phi i1 [0, %$100], [%575, %$103] ; # ->
+  br i1 %579, label %$104, label %$105
+$104:
+  %580 = phi i64 [%576, %$102] ; # X
+  %581 = phi i8* [%577, %$102] ; # Crt
+  %582 = phi i8* [%578, %$102] ; # P
+; # (In: fd)
+  %583 = getelementptr i8, i8* %560, i32 8
+  %584 = bitcast i8* %583 to i32*
+  %585 = load i32, i32* %584
+; # (close (In: fd))
+  %586 = call i32 @close(i32 %585)
+; # (In: fd)
+  %587 = getelementptr i8, i8* %560, i32 8
+  %588 = bitcast i8* %587 to i32*
+  %589 = load i32, i32* %588
+; # (closeInFile (In: fd))
+  call void @closeInFile(i32 %589)
+; # (when (> (Io: pid) 1) (waitFile @))
+; # (Io: pid)
+  %590 = getelementptr i8, i8* %557, i32 24
+  %591 = bitcast i8* %590 to i32*
+  %592 = load i32, i32* %591
+; # (> (Io: pid) 1)
+  %593 = icmp sgt i32 %592, 1
+  br i1 %593, label %$106, label %$107
+$106:
+  %594 = phi i64 [%580, %$104] ; # X
+  %595 = phi i8* [%581, %$104] ; # Crt
+  %596 = phi i8* [%582, %$104] ; # P
+; # (waitFile @)
+  call void @waitFile(i32 %592)
+  br label %$107
+$107:
+  %597 = phi i64 [%580, %$104], [%594, %$106] ; # X
+  %598 = phi i8* [%581, %$104], [%595, %$106] ; # Crt
+  %599 = phi i8* [%582, %$104], [%596, %$106] ; # P
+  br label %$105
+$105:
+  %600 = phi i64 [%576, %$102], [%597, %$107] ; # X
+  %601 = phi i8* [%577, %$102], [%598, %$107] ; # Crt
+  %602 = phi i8* [%578, %$102], [%599, %$107] ; # P
+  br label %$101
+$101:
+  %603 = phi i64 [%555, %$98], [%600, %$105] ; # X
+  %604 = phi i8* [%556, %$98], [%601, %$105] ; # Crt
+  %605 = phi i8* [%557, %$98], [%602, %$105] ; # P
 ; # (Io: link)
-  %609 = bitcast i8* %560 to i8**
-  %610 = load i8*, i8** %609
-  br label %$98
-$100:
-  %611 = phi i64 [%553, %$98] ; # X
-  %612 = phi i8* [%554, %$98] ; # Crt
-  %613 = phi i8* [%555, %$98] ; # P
+  %606 = bitcast i8* %557 to i8**
+  %607 = load i8*, i8** %606
+  br label %$97
+$99:
+  %608 = phi i64 [%550, %$97] ; # X
+  %609 = phi i8* [%551, %$97] ; # Crt
+  %610 = phi i8* [%552, %$97] ; # P
 ; # (stop Crt)
-  call void @stop(i8* %612)
-  br label %$79
-$79:
-  %614 = phi i64 [%440, %$75], [%611, %$100] ; # X
-  %615 = phi i8* [%441, %$75], [%612, %$100] ; # Crt
-  br label %$77
-$76:
-  %616 = phi i64 [%436, %$74] ; # X
-  %617 = phi i8* [%434, %$74] ; # Crt
+  call void @stop(i8* %609)
+  br label %$78
+$78:
+  %611 = phi i64 [%437, %$74], [%608, %$99] ; # X
+  %612 = phi i8* [%438, %$74], [%609, %$99] ; # Crt
+  br label %$76
+$75:
+  %613 = phi i64 [%433, %$73] ; # X
+  %614 = phi i8* [%431, %$73] ; # Crt
 ; # (loop (when (== Tag ((coroutine Crt) tag)) (goto 1)) (? (=0 (setq...
-  br label %$109
-$109:
-  %618 = phi i64 [%616, %$76], [%632, %$112] ; # X
-  %619 = phi i8* [%617, %$76], [%633, %$112] ; # Crt
+  br label %$108
+$108:
+  %615 = phi i64 [%613, %$75], [%629, %$111] ; # X
+  %616 = phi i8* [%614, %$75], [%630, %$111] ; # Crt
 ; # (when (== Tag ((coroutine Crt) tag)) (goto 1))
 ; # ((coroutine Crt) tag)
-  %620 = ptrtoint i8* %619 to i64
-  %621 = inttoptr i64 %620 to i64*
-  %622 = load i64, i64* %621
+  %617 = ptrtoint i8* %616 to i64
+  %618 = inttoptr i64 %617 to i64*
+  %619 = load i64, i64* %618
 ; # (== Tag ((coroutine Crt) tag))
-  %623 = icmp eq i64 %28, %622
-  br i1 %623, label %$110, label %$111
-$110:
-  %624 = phi i64 [%618, %$109] ; # X
-  %625 = phi i8* [%619, %$109] ; # Crt
+  %620 = icmp eq i64 %28, %619
+  br i1 %620, label %$109, label %$110
+$109:
+  %621 = phi i64 [%615, %$108] ; # X
+  %622 = phi i8* [%616, %$108] ; # Crt
 ; # (goto 1)
   br label %$-1
-$111:
-  %626 = phi i64 [%618, %$109] ; # X
-  %627 = phi i8* [%619, %$109] ; # Crt
+$110:
+  %623 = phi i64 [%615, %$108] ; # X
+  %624 = phi i8* [%616, %$108] ; # Crt
 ; # (? (=0 (setq Crt ((coroutine Crt) nxt))))
 ; # ((coroutine Crt) nxt)
-  %628 = getelementptr i8, i8* %627, i32 8
-  %629 = bitcast i8* %628 to i8**
-  %630 = load i8*, i8** %629
+  %625 = getelementptr i8, i8* %624, i32 8
+  %626 = bitcast i8* %625 to i8**
+  %627 = load i8*, i8** %626
 ; # (=0 (setq Crt ((coroutine Crt) nxt)))
-  %631 = icmp eq i8* %630, null
-  br i1 %631, label %$113, label %$112
+  %628 = icmp eq i8* %627, null
+  br i1 %628, label %$112, label %$111
+$111:
+  %629 = phi i64 [%623, %$110] ; # X
+  %630 = phi i8* [%627, %$110] ; # Crt
+  br label %$108
 $112:
-  %632 = phi i64 [%626, %$111] ; # X
-  %633 = phi i8* [%630, %$111] ; # Crt
-  br label %$109
-$113:
-  %634 = phi i64 [%626, %$111] ; # X
-  %635 = phi i8* [%630, %$111] ; # Crt
-  %636 = phi i64 [0, %$111] ; # ->
-  br label %$77
-$77:
-  %637 = phi i64 [%614, %$79], [%634, %$113] ; # X
-  %638 = phi i8* [%615, %$79], [%635, %$113] ; # Crt
+  %631 = phi i64 [%623, %$110] ; # X
+  %632 = phi i8* [%627, %$110] ; # Crt
+  %633 = phi i64 [0, %$110] ; # ->
+  br label %$76
+$76:
+  %634 = phi i64 [%611, %$78], [%631, %$112] ; # X
+  %635 = phi i8* [%612, %$78], [%632, %$112] ; # Crt
   br label %$18
-$73:
-  %639 = phi i64 [%433, %$23] ; # X
+$72:
+  %636 = phi i64 [%430, %$23] ; # X
   br label %$18
 $18:
-  %640 = phi i64 [%637, %$77], [%639, %$73] ; # X
-  %641 = phi i64 [%28, %$77], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64), %$73] ; # ->
+  %637 = phi i64 [%634, %$76], [%636, %$72] ; # X
+  %638 = phi i64 [%28, %$76], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([876 x i64]* @SymTab to i8*), i32 8) to i64), %$72] ; # ->
   br label %$4
 $4:
-  %642 = phi i64 [%14, %$7], [%640, %$18] ; # X
-  %643 = phi i64 [%15, %$7], [%641, %$18] ; # ->
-  ret i64 %643
+  %639 = phi i64 [%14, %$7], [%637, %$18] ; # X
+  %640 = phi i64 [%15, %$7], [%638, %$18] ; # ->
+  ret i64 %640
 }
 
 define i64 @_Yield(i64) align 8 {
