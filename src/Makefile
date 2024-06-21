@@ -1,10 +1,10 @@
-# 29mar24 Software Lab. Alexander Burger
+# 21jun24 Software Lab. Alexander Burger
 
 .SILENT:
 
 CC = clang
 PIL = ../pil  # pil
-ASM = opt -O3  # llvm-as
+ASM = opt -O1  # llvm-as
 LLC = llc
 LINK = llvm-link
 MAIN = -rdynamic -lc -lutil -lm -ldl -lreadline -lffi

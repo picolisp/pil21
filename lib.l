@@ -1,4 +1,4 @@
-# 12nov23 Software Lab. Alexander Burger
+# 21jun24 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -298,9 +298,13 @@
                      (all N) ) ) ) )
          (unless (=T Flg)
             (let P (rot (split (chop S) "/"))
-               (setq
-                  S (pack (car P))
-                  P (and (cdr P) (pack (glue "/" @) "/")) )
+               (setq S (pack (car P)))
+               (cond
+                  ((cdr P)
+                     (setq P (pack (glue "/" @) "/")) )
+                  ((= "@" (caar P))
+                     (setq S (pack (cdar P))  P "@") )
+                  (T (off P)) )
                (extract
                   '((X)
                      (when (pre? S X)

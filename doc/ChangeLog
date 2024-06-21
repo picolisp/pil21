@@ -1,4 +1,8 @@
 24.6.21
+   Change 'opt' from "-O3" to "-O1"
+      src/Makefile
+   Generalize 'all*'
+      lib.l
    dirString() function
       src/main.l
    Bug in coroutine free-list management
