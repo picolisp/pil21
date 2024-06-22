@@ -1,4 +1,7 @@
 24.6.22
+   'prv' in coroutine structure is obsolete
+      doc/structures
+   Fix 'This' upon coroutine termination
    Bug in coroutines with non-symbolic tags
       src/flow.l
 

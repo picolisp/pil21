@@ -1238,6 +1238,7 @@
                            (set $Ret (run X))
                            (unless (== (hex "0707070707070707") (val (i64* (Dst: lim))))
                               (stkOverErr (Dst: tag)) )
+                           (set $This (val -3 (Dst: bnd)))
                            (stop (Dst:))  # Stop coroutine
                            (let Org: (coroutine (Dst: org))
                               (unless (and (Org:) (== (Org: tag) (Dst: otg)))
