@@ -1,4 +1,4 @@
-# 22jun24 Software Lab. Alexander Burger
+# 23jun24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1220,7 +1220,7 @@
                            (Dst: lnk (val $Link))
                            (set $Bind
                               (push (val $This) $This  # [[This] This LINK]
-                                 (Dst: bnd (push ZERO $At (val $Bind) Exe)) ) )  # [0 @ LINK exe]
+                                 (Dst: bnd (push ZERO $At (val $Bind) Exe)) ) )  # [0 @ LINK Expr]
                            (Dst: ca (val $Catch))
                            (Dst: in (val $InFrames))
                            (Dst: out (val $OutFrames))
@@ -1389,9 +1389,9 @@
             (set $Ret Val)
             (longjmp (Dst: (rst)) 1) )
          (unless (t? (Src: tag))
-            (unless (and (Org:) (Org: tag))  # Originator terminated
+            (unless (and (Org:) (== (Org: tag) (Src: otg)))  # Originator terminated
                (loadCoEnv (Src:))
-               (coErr Exe 0) )
+               (coErr Exe (Src: otg)) )
             (let P (Org: (env $CtlFrames i8*))  # Restore CtlFrames
                (Src: ctl P)
                (while Ctl
