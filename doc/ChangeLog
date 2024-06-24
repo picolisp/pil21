@@ -1,3 +1,7 @@
+24.6.24
+   Change 'opt' from "-O2" to "-O1"
+      src/Makefile
+
 24.6.23
    Show terminated originator in 'yield' error
       src/flow.l
