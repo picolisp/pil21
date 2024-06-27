@@ -1,4 +1,6 @@
 24.6.27
+   Minimal delay time 1 ms in 'des'
+      lib/simul.l
    Force frame buffer register through runCo()
       src/flow.l
    Re-arrange structures for alignment

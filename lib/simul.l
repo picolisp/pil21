@@ -1,4 +1,4 @@
-# 01apr24 Software Lab. Alexander Burger
+# 27jun24 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -127,7 +127,7 @@
             (off *Keys)
             (for
                (Dly (*/ (- Time *Time) *Rt)
-                  (and (gt0 Dly) (key Dly 'Dly)) )
+                  (key (max 1 Dly) 'Dly) )
                (fifo '*Keys @)
                (run Prg) ) )
          (setq *Time Time)
