@@ -1,4 +1,4 @@
-# 18jun24 Software Lab. Alexander Burger
+# 27jun24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -59,12 +59,12 @@
    (tag 8 any)          # Catch tag
    (fin 8 any)          # 'finally' expression
    (co 8 i8*)           # Current coroutine
-   (env (env T) i8)     # Saved environment
    (intrn 8 any)        # Internal symbols
    (trns1 8 any)        # Transient symbols
    (trns2 8 any)
    (priv1 8 any)        # Private symbols
    (priv2 8 any)
+   (env (env T) i8)     # Saved environment
    (rst 0 i8) )         # Restart jmp_buf (JmpBufSize)
 
 # Coroutines
@@ -85,12 +85,12 @@
    (out 8 i8*)          # OutFrames marker
    (err 8 i8*)          # ErrFrames marker
    (ctl 8 i8*)          # CtlFrames marker
-   (env (env T) i8)     # Saved environment
    (intrn 8 any)        # Internal symbols
    (trns1 8 any)        # Transient symbols
    (trns2 8 any)
    (priv1 8 any)        # Private symbols
    (priv2 8 any)
+   (env (env T) i8)     # Saved environment
    (rst 0 i8) )         # Restart jmp_buf (JmpBufSize)
 
 # Family IPC

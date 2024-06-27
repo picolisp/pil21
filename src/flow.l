@@ -1,4 +1,4 @@
-# 23jun24 Software Lab. Alexander Burger
+# 27jun24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1097,7 +1097,7 @@
          (set $Catch (Ca: link)) ) ) )
 
 # Coroutines
-(local) (coErr reentErr tagErr stkOverErr saveCoIO saveCoEnv loadCoEnv)
+(local) (coErr reentErr tagErr stkOverErr saveCoIO saveCoEnv loadCoEnv runCo)
 
 (de NIL coErr (Exe Tag)
    (err Exe Tag ($ "Coroutine not found") null) )
@@ -1136,6 +1136,46 @@
       (set $At (Crt: at))
       (Crt: at 0)  # Running
       (val $Ret) ) )
+
+(de NIL runCo (Exe Tag (i8* . Src) (i8* . Dst) X)
+   (let (Src: (coroutine Src)  Dst: (coroutine Dst))
+      (Dst: tag Tag)
+      (Dst: org (Src:))
+      (Dst: otg (Src: tag))
+      (Dst: prg X)
+      (let (Siz (val $StkSize)  Stk (stack))
+         (memset
+            (Dst: lim (stack (ofs Dst (- Siz))))
+            7 (- Siz 256) T )
+         (stack Stk) )
+      (Dst: at 0)
+      (Dst: lnk (val $Link))
+      (set $Bind
+         (push (val $This) $This  # [[This] This LINK]
+            (Dst: bnd (push ZERO $At (val $Bind) Exe)) ) )  # [0 @ LINK Expr]
+      (Dst: ca (val $Catch))
+      (Dst: in (val $InFrames))
+      (Dst: out (val $OutFrames))
+      (Dst: err (val $ErrFrames))
+      (Dst: ctl (val $CtlFrames))
+      (putCrtEnv (Dst:))
+      (set  # Init local env
+         $Next $Nil
+         $Make 0
+         $Yoke 0
+         $Current (Dst:)
+         $StkLimit (+ (Dst: lim) 1024) )
+      (when (symb? Tag)
+         (put Tag ZERO (| (i64 (Dst:)) 2)) )
+      (set $Ret (run X))
+      (unless (== (hex "0707070707070707") (val (i64* (Dst: lim))))
+         (stkOverErr (Dst: tag)) )
+      (set $This (val -3 (Dst: bnd)))
+      (stop (Dst:))  # Stop coroutine
+      (let Org: (coroutine (Dst: org))
+         (unless (and (Org:) (== (Org: tag) (Dst: otg)))
+            (coErr Exe (Dst: otg)) )
+         (longjmp (Org: (rst)) 1) ) ) )
 
 # (co ['any [. prg]]) -> any
 (de _Co (Exe)
@@ -1201,49 +1241,12 @@
                      (let P (val $CrtFree)
                         (if P
                            (set $CrtFree ((coroutine (stack P)) lim))  # Use free slot
-                           (stack ((coroutine (setq Crt (val $CrtLast))) lim)) # Found no free slot
+                           (stack ((coroutine (setq Crt (val $CrtLast))) lim))  # Allocate new slot
                            (set $CrtLast
                               (setq P (b8+ (+ (val JmpBufSize) (coroutine T)))) )
                            ((coroutine Crt) nxt P)
                            ((coroutine P) nxt null) )
-                        (let Dst: (coroutine P)
-                           (Dst: tag Tag)
-                           (Dst: org (Src:))
-                           (Dst: otg (Src: tag))
-                           (Dst: prg X)
-                           (let (Siz (val $StkSize)  Stk (stack))
-                              (memset
-                                 (Dst: lim (stack (ofs P (- Siz))))
-                                 7 (- Siz 256) T )
-                              (stack Stk) )
-                           (Dst: at 0)
-                           (Dst: lnk (val $Link))
-                           (set $Bind
-                              (push (val $This) $This  # [[This] This LINK]
-                                 (Dst: bnd (push ZERO $At (val $Bind) Exe)) ) )  # [0 @ LINK Expr]
-                           (Dst: ca (val $Catch))
-                           (Dst: in (val $InFrames))
-                           (Dst: out (val $OutFrames))
-                           (Dst: err (val $ErrFrames))
-                           (Dst: ctl (val $CtlFrames))
-                           (putCrtEnv (Dst:))
-                           (set  # Init local env
-                              $Next $Nil
-                              $Make 0
-                              $Yoke 0
-                              $Current (Dst:)
-                              $StkLimit (+ (Dst: lim) 1024) )
-                           (when (symb? Tag)
-                              (put Tag ZERO (| (i64 (Dst:)) 2)) )
-                           (set $Ret (run X))
-                           (unless (== (hex "0707070707070707") (val (i64* (Dst: lim))))
-                              (stkOverErr (Dst: tag)) )
-                           (set $This (val -3 (Dst: bnd)))
-                           (stop (Dst:))  # Stop coroutine
-                           (let Org: (coroutine (Dst: org))
-                              (unless (and (Org:) (== (Org: tag) (Dst: otg)))
-                                 (coErr Exe (Dst: otg)) )
-                              (longjmp (Org: (rst)) 1) ) ) ) ) )
+                        (runCo Exe Tag (Src:) P X) ) ) )
                ((val $Coroutines)  # Stop coroutine
                   (let Crt @
                      (if (symb? Tag)

@@ -1,6 +1,13 @@
-24.6.24
-   Change 'opt' from "-O2" to "-O1"
-      src/Makefile
+24.6.27
+   Force frame buffer register through runCo()
+      src/flow.l
+   Re-arrange structures for alignment
+      src/glob.l
+      src/dec.l
+
+24.6.26
+   'otg' in coroutine structure missing
+      doc/structures
 
 24.6.23
    Show terminated originator in 'yield' error

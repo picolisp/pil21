@@ -1,4 +1,4 @@
-# 13dec23 Software Lab. Alexander Burger
+# 27jun24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -639,7 +639,6 @@
    ($OutFrames i8* null)         # Output frames
    ($ErrFrames i8* null)         # Error frames
    ($CtlFrames i8* null)         # Control frames
-   ($Chr i32 0)                  # Single-char look ahead
    ($InFile i8* null)            # Input file
    ($OutFile i8* null)           # Output file
    ($Put (void i8) null)         # Character output function
@@ -650,8 +649,10 @@
    ($Key 0)                      # Method key
    ($Make 0)                     # 'make' environment
    ($Yoke 0)
+   ($Chr i32 0)                  # Single-char look ahead
    ($Protect i32 0)              # Signal protection
-   ($Trace i32 0) )              # Trace level
+   ($Trace i32 0)                # Trace level
+   ($EnvPad i32 0) )
 
 # Temporary cell
 (array $Cell any
