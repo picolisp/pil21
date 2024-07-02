@@ -1,4 +1,4 @@
-# 16jun24 Software Lab. Alexander Burger
+# 02jul24 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -267,8 +267,8 @@
       ##    '((Prov)) )
       ## (def 'onStatusChanged *LocLsn
       ##    '((Prov Stat Extras)) )
-      #? (java *LocMan 'requestLocationUpdates "network" '(L . 10000) (-3 . 100) *LocLsn)
-      (java *LocMan 'requestLocationUpdates "gps" '(L . 20000) (-3 . 100) *LocLsn) )
+      #? (java *LocMan 'requestLocationUpdates "network" (10000 . L) (100 . -1000) *LocLsn)
+      (java *LocMan 'requestLocationUpdates "gps" (20000 . L) (100 . -1000) *LocLsn) )
    (and
       (or
          (and
@@ -329,7 +329,7 @@
          (java Intent 'putExtra "URL" Url)
          (java Alarm 'setExactAndAllowWhileIdle
             (if (atom When) 2 0)  # ELAPSED_REALTIME_WAKEUP RTC_WAKEUP
-            (cons 'L
+            (cons
                (if (atom When)
                   (+
                      (* 1000 When)
@@ -341,7 +341,8 @@
                      (java C 'set
                         (car Dat) (dec (cadr Dat)) (caddr Dat)
                         (car Tim) (cadr Tim) (caddr Tim) )
-                     (java C 'getTimeInMillis) ) ) )
+                     (java C 'getTimeInMillis) ) )
+               'L )
             (java "android.app.PendingIntent" 'getBroadcast
                CONTEXT N Intent `(hex "1C000000") ) ) ) ) )  # FLAG_ACTIVITY_NEW_TASK | FLAG_UPDATE_CURRENT | FLAG_IMMUTABLE
 
