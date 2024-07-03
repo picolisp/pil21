@@ -1,4 +1,4 @@
-# 02jul24 Software Lab. Alexander Burger
+# 03jul24 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -313,7 +313,9 @@
 (local) (alarm? alarm)
 
 (de alarm? ()
-   (java (java CONTEXT 'getSystemService "alarm") 'canScheduleExactAlarms) )  # AlarmManager
+   ~(as (>= (format (sys "SDK_INT")) 31)
+      (java (java CONTEXT 'getSystemService "alarm") 'canScheduleExactAlarms) )  # AlarmManager
+   ~(as (> 31 (format (sys "SDK_INT"))) T) )
 
 (de alarm (N When File Url)
    (let
