@@ -1,3 +1,7 @@
+24.7.4
+   Mention '~' in the 'pico' reference
+      doc/refP.html
+
 24.7.3
    Check for SDK_INT >= 31 in 'alarm?'
       lib/android.l

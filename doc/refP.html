@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 04jul24 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -268,10 +268,10 @@ href="refE.html#extract">extract</a></code>.
 
 <dt><a id="pico"><code>pico</code></a></dt>
 <dd>A global constant holding the initial (default) namespace of internal
-symbols. Its value is a cons pair of two '<code><a
-href="refI.html#idx">idx</a></code>' trees, one for symbols with short names and
-one for symbols with long names (more than 7 bytes in the name). See also
-<code><a href="refS.html#symbols">symbols</a></code>, <code><a
+symbols. Its value is two cons pairs of the symbol <code>~</code> (as a marker)
+and two '<code><a href="refI.html#idx">idx</a></code>' trees, one for symbols
+with short names and one for symbols with long names (more than 7 bytes in the
+name). See also <code><a href="refS.html#symbols">symbols</a></code>, <code><a
 href="refN.html#nsp">nsp</a></code>, <code><a
 href="refI.html#import">import</a></code> and <code><a
 href="refI.html#intern">intern</a></code>.
