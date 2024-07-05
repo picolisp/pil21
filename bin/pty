@@ -1,5 +1,5 @@
 #!/usr/bin/pil
-# 31mar24abu
+# 05jul24abu
 # Pseudo Terminal (PilBox)
 # pty [host] [flg]
 
@@ -29,9 +29,14 @@
          (catch '(NIL)
             (in S
                (when (= (rd) (in "~/.pty" (line T)))
-                  (casq (rd)
-                     (+ (in (rd) (out S (echo))))
-                     (- (out (rd) (echo))) ) ) )
+                  (let Z (tmp "pty.zip")
+                     (casq (rd)
+                        (+
+                           (apply call (rd) "zip" "-r" Z)
+                           (in Z (out S (echo))) )
+                        (-
+                           (out Z (echo))
+                           (call "unzip" "-o" Z) ) ) ) ) )
             (off *Msg) )
          (close S)
          (and *Msg (prinl @)) ) ) )

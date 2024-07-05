@@ -1,4 +1,6 @@
 24.7.5
+   Change pbPut/pbGet to Zip transfers
+      bin/pty
    Bug in 'erVar'
       lib/form.l
    Typo
