@@ -1,4 +1,4 @@
-# 30may24 Software Lab. Alexander Burger
+# 05jul24 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
 # *Lock *Spans *AlwaysAsk
@@ -2149,7 +2149,7 @@
 (de erVar (Var Exe . @)
    (let *Class (last (type (eval Exe)))
       (unless (get *Class Var)
-         (put *Class Var (new (next) Cur (rest))) ) )  # rel
+         (put *Class Var (new (next) Var (rest))) ) )  # rel
    (cons Var Exe) )
 
 

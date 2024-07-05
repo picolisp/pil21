@@ -1,3 +1,9 @@
+24.7.5
+   Bug in 'erVar'
+      lib/form.l
+   Typo
+      doc/refD.html
+
 24.7.4
    Mention '~' in the 'pico' reference
       doc/refP.html
