@@ -1,4 +1,4 @@
-# 21jun24 Software Lab. Alexander Burger
+# 07jul24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -64,18 +64,26 @@ popCtlFiles)
             (while (and Bnd (<> Bnd (Ca: (env $Bind any))))
                (set (val 2 Bnd) (val Bnd))  # Restore values
                (setq Bnd (val 3 Bnd)) )
-            (until (== (val $CtlFrames) (Ca: (env $CtlFrames i8*)))
+            (while
+               (and
+                  (val $CtlFrames)
+                  (<> @ (Ca: (env $CtlFrames i8*))) )
                (popCtlFiles) )
-            (until (== (val $ErrFrames) (Ca: (env $ErrFrames i8*)))
+            (while
+               (and
+                  (val $ErrFrames)
+                  (<> @ (Ca: (env $ErrFrames i8*))) )
                (popErrFiles) )
-            (unless (== (val $OutFrames) (Ca: (env $OutFrames i8*)))
-               (loop
-                  (popOutFiles)
-                  (? (== (val $OutFrames) (Ca: (env $OutFrames i8*)))) ) )
-            (unless (== (val $InFrames) (Ca: (env $InFrames i8*)))
-               (loop
-                  (popInFiles)
-                  (? (== (val $InFrames) (Ca: (env $InFrames i8*)))) ) )
+            (until
+               (or
+                  (== (val $OutFrames) (val $Stdout))
+                  (== (val $OutFrames) (Ca: (env $OutFrames i8*))) )
+               (popOutFiles) )
+            (until
+               (or
+                  (== (val $InFrames) (val $Stdin))
+                  (== (val $InFrames) (Ca: (env $InFrames i8*))) )
+               (popInFiles) )
             (let (Src (val $Current)  Dst (Ca: co))
                (unless Dst
                   (setq Dst (val $Coroutines)) )
@@ -99,14 +107,10 @@ popCtlFiles)
          (popCtlFiles) )
       (while (val $ErrFrames)
          (popErrFiles) )
-      (unless (== (val $OutFrames) (val $Stdout))
-         (loop
-            (popOutFiles)
-            (? (== (val $OutFrames) (val $Stdout))) ) )
-      (unless (== (val $InFrames) (val $Stdin))
-         (loop
-            (popInFiles)
-            (? (== (val $InFrames) (val $Stdin))) ) )
+      (until (== (val $OutFrames) (val $Stdout))
+         (popOutFiles) )
+      (until (== (val $InFrames) (val $Stdin))
+         (popInFiles) )
       (let (Src (val $Current)  Dst (val $Coroutines))
          (unless (== Src Dst)
             (stop Src)

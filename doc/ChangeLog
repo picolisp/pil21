@@ -1,3 +1,7 @@
+24.7.7
+   Check for stale I/O frames in 'unwind'
+      src/main.l
+
 24.7.5
    Change pbPut/pbGet to Zip transfers
       bin/pty
