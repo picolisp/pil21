@@ -1,4 +1,4 @@
-# 08aug23 Software Lab. Alexander Burger
+# 09jul24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -782,7 +782,7 @@
       (if (nil? Y)
          Y
          (let
-            (P (push 0 (xName Exe Y) NIL)  # [cnt name link]
+            (P (push 0 (xName Y) NIL)  # [cnt name link]
                Q (link (ofs P 1) T)
                R (push 4 NIL ZERO NIL)  # [cnt last name link]
                A (link (ofs R 2))
@@ -819,8 +819,8 @@
 (de i1 subStr (X Y)
    (or
       (nil? X)
-      (== ZERO (setq X (xName 0 X)))
-      (let (P (push 0 (xName 0 Y))  B T)
+      (== ZERO (setq X (xName X)))
+      (let (P (push 0 (xName Y))  B T)
          (loop
             (? (=0 (setq B (symByte P))) NO)
             (let (Cnt (val P)  Nm (val 2 P))
@@ -832,10 +832,10 @@
    (let (X (cdr Exe)  Y (save (evSym X))  Z (evSym (shift X)))
       (cond
          ((nil? Y) Z)
-         ((== ZERO (setq Y (xName Exe Y)))
+         ((== ZERO (setq Y (xName Y)))
             Z )
          (T
-            (let P (push 0 (xName Exe Z))
+            (let P (push 0 (xName Z))
                (cond
                   ((=0 (symByte P)) $Nil)
                   ((preStr Y @ P) Z)
@@ -1851,7 +1851,7 @@
       (if (or (not (symb? X)) (nil? X))
          X
          (let
-            (P (push 0 (xName Exe X) NIL)  # [cnt name link]
+            (P (push 0 (xName X) NIL)  # [cnt name link]
                Q (link (ofs P 1) T)
                R (push 4 NIL ZERO NIL)  # [cnt last name link]
                C T )
@@ -1866,7 +1866,7 @@
       (if (or (not (symb? X)) (nil? X))
          X
          (let
-            (P (push 0 (xName Exe X) NIL)  # [cnt name link]
+            (P (push 0 (xName X) NIL)  # [cnt name link]
                Q (link (ofs P 1) T)
                R (push 4 NIL ZERO NIL)  # [cnt last name link]
                C T )
@@ -1885,7 +1885,7 @@
          Y
          (let
             (N (if (atom X) 0 (evCnt Exe X))
-               P (push 0 (xName Exe Y) NIL)  # [cnt name link]
+               P (push 0 (xName Y) NIL)  # [cnt name link]
                Q (link (ofs P 1) T)
                R (push 4 NIL ZERO NIL)  # [cnt last name link]
                C T )

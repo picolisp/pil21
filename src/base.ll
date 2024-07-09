@@ -3784,91 +3784,91 @@ $2:
   ret i64 %11
 }
 
-define i64 @xName(i64, i64) align 8 {
+define i64 @xName(i64) align 8 {
 $1:
 ; # (cond ((nil? Sym) ZERO) ((sym? (val (tail Sym))) (let P (push 4 N...
 ; # (nil? Sym)
-  %2 = icmp eq i64 %1, ptrtoint (i8* getelementptr (i8, i8* bitcast ([878 x i64]* @SymTab to i8*), i32 8) to i64)
-  br i1 %2, label %$4, label %$3
+  %1 = icmp eq i64 %0, ptrtoint (i8* getelementptr (i8, i8* bitcast ([878 x i64]* @SymTab to i8*), i32 8) to i64)
+  br i1 %1, label %$4, label %$3
 $4:
   br label %$2
 $3:
 ; # (tail Sym)
-  %3 = add i64 %1, -8
+  %2 = add i64 %0, -8
 ; # (val (tail Sym))
-  %4 = inttoptr i64 %3 to i64*
-  %5 = load i64, i64* %4
+  %3 = inttoptr i64 %2 to i64*
+  %4 = load i64, i64* %3
 ; # (sym? (val (tail Sym)))
-  %6 = and i64 %5, 8
-  %7 = icmp ne i64 %6, 0
-  br i1 %7, label %$6, label %$5
+  %5 = and i64 %4, 8
+  %6 = icmp ne i64 %5, 0
+  br i1 %6, label %$6, label %$5
 $6:
 ; # (let P (push 4 NIL ZERO NIL) (link (ofs P 2) T) (packExtNm (name ...
 ; # (push 4 NIL ZERO NIL)
-  %8 = alloca i64, i64 4, align 16
-  store i64 4, i64* %8
-  %9 = getelementptr i64, i64* %8, i32 2
-  store i64 2, i64* %9
+  %7 = alloca i64, i64 4, align 16
+  store i64 4, i64* %7
+  %8 = getelementptr i64, i64* %7, i32 2
+  store i64 2, i64* %8
 ; # (ofs P 2)
-  %10 = getelementptr i64, i64* %8, i32 2
+  %9 = getelementptr i64, i64* %7, i32 2
 ; # (link (ofs P 2) T)
-  %11 = ptrtoint i64* %10 to i64
-  %12 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 0) to i64) to i64*
-  %13 = load i64, i64* %12
-  %14 = inttoptr i64 %11 to i64*
-  %15 = getelementptr i64, i64* %14, i32 1
-  store i64 %13, i64* %15
-  %16 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %11, i64* %16
+  %10 = ptrtoint i64* %9 to i64
+  %11 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %12 = load i64, i64* %11
+  %13 = inttoptr i64 %10 to i64*
+  %14 = getelementptr i64, i64* %13, i32 1
+  store i64 %12, i64* %14
+  %15 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %10, i64* %15
 ; # (& @ -9)
-  %17 = and i64 %5, -9
+  %16 = and i64 %4, -9
 ; # (name (& @ -9))
   br label %$7
 $7:
-  %18 = phi i64 [%17, %$6], [%24, %$8] ; # Tail
-  %19 = and i64 %18, 6
-  %20 = icmp ne i64 %19, 0
-  br i1 %20, label %$9, label %$8
+  %17 = phi i64 [%16, %$6], [%23, %$8] ; # Tail
+  %18 = and i64 %17, 6
+  %19 = icmp ne i64 %18, 0
+  br i1 %19, label %$9, label %$8
 $8:
-  %21 = phi i64 [%18, %$7] ; # Tail
-  %22 = inttoptr i64 %21 to i64*
-  %23 = getelementptr i64, i64* %22, i32 1
-  %24 = load i64, i64* %23
+  %20 = phi i64 [%17, %$7] ; # Tail
+  %21 = inttoptr i64 %20 to i64*
+  %22 = getelementptr i64, i64* %21, i32 1
+  %23 = load i64, i64* %22
   br label %$7
 $9:
-  %25 = phi i64 [%18, %$7] ; # Tail
+  %24 = phi i64 [%17, %$7] ; # Tail
 ; # (packExtNm (name (& @ -9)) P)
-  call void @packExtNm(i64 %25, i64* %8)
+  call void @packExtNm(i64 %24, i64* %7)
 ; # (val 3 P)
-  %26 = getelementptr i64, i64* %8, i32 2
-  %27 = load i64, i64* %26
+  %25 = getelementptr i64, i64* %7, i32 2
+  %26 = load i64, i64* %25
 ; # (drop *Safe)
-  %28 = inttoptr i64 %11 to i64*
-  %29 = getelementptr i64, i64* %28, i32 1
-  %30 = load i64, i64* %29
-  %31 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %30, i64* %31
+  %27 = inttoptr i64 %10 to i64*
+  %28 = getelementptr i64, i64* %27, i32 1
+  %29 = load i64, i64* %28
+  %30 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %29, i64* %30
   br label %$2
 $5:
 ; # (name @)
   br label %$10
 $10:
-  %32 = phi i64 [%5, %$5], [%38, %$11] ; # Tail
-  %33 = and i64 %32, 6
-  %34 = icmp ne i64 %33, 0
-  br i1 %34, label %$12, label %$11
+  %31 = phi i64 [%4, %$5], [%37, %$11] ; # Tail
+  %32 = and i64 %31, 6
+  %33 = icmp ne i64 %32, 0
+  br i1 %33, label %$12, label %$11
 $11:
-  %35 = phi i64 [%32, %$10] ; # Tail
-  %36 = inttoptr i64 %35 to i64*
-  %37 = getelementptr i64, i64* %36, i32 1
-  %38 = load i64, i64* %37
+  %34 = phi i64 [%31, %$10] ; # Tail
+  %35 = inttoptr i64 %34 to i64*
+  %36 = getelementptr i64, i64* %35, i32 1
+  %37 = load i64, i64* %36
   br label %$10
 $12:
-  %39 = phi i64 [%32, %$10] ; # Tail
+  %38 = phi i64 [%31, %$10] ; # Tail
   br label %$2
 $2:
-  %40 = phi i64 [2, %$4], [%27, %$9], [%39, %$12] ; # ->
-  ret i64 %40
+  %39 = phi i64 [2, %$4], [%26, %$9], [%38, %$12] ; # ->
+  ret i64 %39
 }
 
 define i64 @circ(i64) align 8 {
@@ -4506,15 +4506,15 @@ $4:
 
 define i64 @_Prompt(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) Nm (xName Exe (evSym X))) (prog2 (set $LinePrmt...
+; # (let (X (cdr Exe) Nm (xName (evSym X))) (prog2 (set $LinePrmt (se...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
 ; # (evSym X)
   %4 = call i64 @evSym(i64 %3)
-; # (xName Exe (evSym X))
-  %5 = call i64 @xName(i64 %0, i64 %4)
+; # (xName (evSym X))
+  %5 = call i64 @xName(i64 %4)
 ; # (prog2 (set $LinePrmt (set $ContPrmt (bufString Nm (b8 (bufSize N...
 ; # (set $LinePrmt (set $ContPrmt (bufString Nm (b8 (bufSize Nm)))))
 ; # (set $ContPrmt (bufString Nm (b8 (bufSize Nm))))
@@ -5822,9 +5822,9 @@ $9:
 
 define i1 @sharedLib(i64) align 8 {
 $1:
-; # (let (Nm (xName 0 Sym) S (bufString Nm (b8 (bufSize Nm))) P (strc...
-; # (xName 0 Sym)
-  %1 = call i64 @xName(i64 0, i64 %0)
+; # (let (Nm (xName Sym) S (bufString Nm (b8 (bufSize Nm))) P (strchr...
+; # (xName Sym)
+  %1 = call i64 @xName(i64 %0)
 ; # (bufSize Nm)
   %2 = call i64 @bufSize(i64 %1)
 ; # (b8 (bufSize Nm))
@@ -25944,7 +25944,7 @@ $1:
   %3 = load i64, i64* %2
 ; # (evSym X)
   %4 = call i64 @evSym(i64 %3)
-; # (if (nil? Y) Y (let (P (push 0 (xName Exe Y) NIL) Q (link (ofs P ...
+; # (if (nil? Y) Y (let (P (push 0 (xName Y) NIL) Q (link (ofs P 1) T...
 ; # (nil? Y)
   %5 = icmp eq i64 %4, ptrtoint (i8* getelementptr (i8, i8* bitcast ([878 x i64]* @SymTab to i8*), i32 8) to i64)
   br i1 %5, label %$2, label %$3
@@ -25953,10 +25953,10 @@ $2:
   br label %$4
 $3:
   %7 = phi i64 [%3, %$1] ; # X
-; # (let (P (push 0 (xName Exe Y) NIL) Q (link (ofs P 1) T) R (push 4...
-; # (xName Exe Y)
-  %8 = call i64 @xName(i64 %0, i64 %4)
-; # (push 0 (xName Exe Y) NIL)
+; # (let (P (push 0 (xName Y) NIL) Q (link (ofs P 1) T) R (push 4 NIL...
+; # (xName Y)
+  %8 = call i64 @xName(i64 %4)
+; # (push 0 (xName Y) NIL)
   %9 = alloca i64, i64 3, align 16
   store i64 0, i64* %9
   %10 = getelementptr i64, i64* %9, i32 1
@@ -26278,23 +26278,23 @@ $4:
 
 define i1 @subStr(i64, i64) align 8 {
 $1:
-; # (or (nil? X) (== ZERO (setq X (xName 0 X))) (let (P (push 0 (xNam...
+; # (or (nil? X) (== ZERO (setq X (xName X))) (let (P (push 0 (xName ...
 ; # (nil? X)
   %2 = icmp eq i64 %0, ptrtoint (i8* getelementptr (i8, i8* bitcast ([878 x i64]* @SymTab to i8*), i32 8) to i64)
   br i1 %2, label %$2, label %$3
 $3:
   %3 = phi i64 [%0, %$1] ; # X
-; # (xName 0 X)
-  %4 = call i64 @xName(i64 0, i64 %3)
-; # (== ZERO (setq X (xName 0 X)))
+; # (xName X)
+  %4 = call i64 @xName(i64 %3)
+; # (== ZERO (setq X (xName X)))
   %5 = icmp eq i64 2, %4
   br i1 %5, label %$2, label %$4
 $4:
   %6 = phi i64 [%4, %$3] ; # X
-; # (let (P (push 0 (xName 0 Y)) B T) (loop (? (=0 (setq B (symByte P...
-; # (xName 0 Y)
-  %7 = call i64 @xName(i64 0, i64 %1)
-; # (push 0 (xName 0 Y))
+; # (let (P (push 0 (xName Y)) B T) (loop (? (=0 (setq B (symByte P))...
+; # (xName Y)
+  %7 = call i64 @xName(i64 %1)
+; # (push 0 (xName Y))
   %8 = alloca i64, i64 2, align 16
   store i64 0, i64* %8
   %9 = getelementptr i64, i64* %8, i32 1
@@ -26376,7 +26376,7 @@ $1:
   %15 = load i64, i64* %14
 ; # (evSym (shift X))
   %16 = call i64 @evSym(i64 %15)
-; # (cond ((nil? Y) Z) ((== ZERO (setq Y (xName Exe Y))) Z) (T (let P...
+; # (cond ((nil? Y) Z) ((== ZERO (setq Y (xName Y))) Z) (T (let P (pu...
 ; # (nil? Y)
   %17 = icmp eq i64 %4, ptrtoint (i8* getelementptr (i8, i8* bitcast ([878 x i64]* @SymTab to i8*), i32 8) to i64)
   br i1 %17, label %$4, label %$3
@@ -26385,9 +26385,9 @@ $4:
   br label %$2
 $3:
   %19 = phi i64 [%4, %$1] ; # Y
-; # (xName Exe Y)
-  %20 = call i64 @xName(i64 %0, i64 %19)
-; # (== ZERO (setq Y (xName Exe Y)))
+; # (xName Y)
+  %20 = call i64 @xName(i64 %19)
+; # (== ZERO (setq Y (xName Y)))
   %21 = icmp eq i64 2, %20
   br i1 %21, label %$6, label %$5
 $6:
@@ -26395,10 +26395,10 @@ $6:
   br label %$2
 $5:
   %23 = phi i64 [%20, %$3] ; # Y
-; # (let P (push 0 (xName Exe Z)) (cond ((=0 (symByte P)) $Nil) ((pre...
-; # (xName Exe Z)
-  %24 = call i64 @xName(i64 %0, i64 %16)
-; # (push 0 (xName Exe Z))
+; # (let P (push 0 (xName Z)) (cond ((=0 (symByte P)) $Nil) ((preStr ...
+; # (xName Z)
+  %24 = call i64 @xName(i64 %16)
+; # (push 0 (xName Z))
   %25 = alloca i64, i64 2, align 16
   store i64 0, i64* %25
   %26 = getelementptr i64, i64* %25, i32 1
@@ -35378,7 +35378,7 @@ $5:
   br label %$2
 $2:
   %13 = phi i64 [%5, %$4], [%11, %$6], [%12, %$5] ; # ->
-; # (if (or (not (symb? X)) (nil? X)) X (let (P (push 0 (xName Exe X)...
+; # (if (or (not (symb? X)) (nil? X)) X (let (P (push 0 (xName X) NIL...
 ; # (or (not (symb? X)) (nil? X))
 ; # (symb? X)
   %14 = xor i64 %13, 8
@@ -35397,10 +35397,10 @@ $7:
 $9:
   br label %$11
 $10:
-; # (let (P (push 0 (xName Exe X) NIL) Q (link (ofs P 1) T) R (push 4...
-; # (xName Exe X)
-  %20 = call i64 @xName(i64 %0, i64 %13)
-; # (push 0 (xName Exe X) NIL)
+; # (let (P (push 0 (xName X) NIL) Q (link (ofs P 1) T) R (push 4 NIL...
+; # (xName X)
+  %20 = call i64 @xName(i64 %13)
+; # (push 0 (xName X) NIL)
   %21 = alloca i64, i64 3, align 16
   store i64 0, i64* %21
   %22 = getelementptr i64, i64* %21, i32 1
@@ -35493,7 +35493,7 @@ $5:
   br label %$2
 $2:
   %13 = phi i64 [%5, %$4], [%11, %$6], [%12, %$5] ; # ->
-; # (if (or (not (symb? X)) (nil? X)) X (let (P (push 0 (xName Exe X)...
+; # (if (or (not (symb? X)) (nil? X)) X (let (P (push 0 (xName X) NIL...
 ; # (or (not (symb? X)) (nil? X))
 ; # (symb? X)
   %14 = xor i64 %13, 8
@@ -35512,10 +35512,10 @@ $7:
 $9:
   br label %$11
 $10:
-; # (let (P (push 0 (xName Exe X) NIL) Q (link (ofs P 1) T) R (push 4...
-; # (xName Exe X)
-  %20 = call i64 @xName(i64 %0, i64 %13)
-; # (push 0 (xName Exe X) NIL)
+; # (let (P (push 0 (xName X) NIL) Q (link (ofs P 1) T) R (push 4 NIL...
+; # (xName X)
+  %20 = call i64 @xName(i64 %13)
+; # (push 0 (xName X) NIL)
   %21 = alloca i64, i64 3, align 16
   store i64 0, i64* %21
   %22 = getelementptr i64, i64* %21, i32 1
@@ -35646,7 +35646,7 @@ $7:
 $9:
   br label %$11
 $10:
-; # (let (N (if (atom X) 0 (evCnt Exe X)) P (push 0 (xName Exe Y) NIL...
+; # (let (N (if (atom X) 0 (evCnt Exe X)) P (push 0 (xName Y) NIL) Q ...
 ; # (if (atom X) 0 (evCnt Exe X))
 ; # (atom X)
   %22 = and i64 %7, 15
@@ -35660,9 +35660,9 @@ $13:
   br label %$14
 $14:
   %25 = phi i64 [0, %$12], [%24, %$13] ; # ->
-; # (xName Exe Y)
-  %26 = call i64 @xName(i64 %0, i64 %15)
-; # (push 0 (xName Exe Y) NIL)
+; # (xName Y)
+  %26 = call i64 @xName(i64 %15)
+; # (push 0 (xName Y) NIL)
   %27 = alloca i64, i64 3, align 16
   store i64 0, i64* %27
   %28 = getelementptr i64, i64* %27, i32 1
@@ -42302,15 +42302,15 @@ $4:
 
 define i64 @_Path(i64) align 8 {
 $1:
-; # (let Nm (xName Exe (evSym (cdr Exe))) (mkStr (pathString Nm (b8 (...
+; # (let Nm (xName (evSym (cdr Exe))) (mkStr (pathString Nm (b8 (path...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
 ; # (evSym (cdr Exe))
   %4 = call i64 @evSym(i64 %3)
-; # (xName Exe (evSym (cdr Exe)))
-  %5 = call i64 @xName(i64 %0, i64 %4)
+; # (xName (evSym (cdr Exe)))
+  %5 = call i64 @xName(i64 %4)
 ; # (pathSize Nm)
   %6 = call i64 @pathSize(i64 %5)
 ; # (b8 (pathSize Nm))
@@ -44939,9 +44939,9 @@ $5:
   br i1 %63, label %$20, label %$19
 $20:
   %64 = phi i64 [%61, %$5] ; # X
-; # (let (Nm (xName Exe X) S (pathString Nm (b8 (pathSize Nm))) Fd T)...
-; # (xName Exe X)
-  %65 = call i64 @xName(i64 %0, i64 %64)
+; # (let (Nm (xName X) S (pathString Nm (b8 (pathSize Nm))) Fd T) (wh...
+; # (xName X)
+  %65 = call i64 @xName(i64 %64)
 ; # (pathSize Nm)
   %66 = call i64 @pathSize(i64 %65)
 ; # (b8 (pathSize Nm))
@@ -44998,7 +44998,7 @@ $23:
   br label %$2
 $19:
   %86 = phi i64 [%61, %$5] ; # X
-; # (let (Pfd (b32 2) Av (b8* (inc (length X))) Cmd (xName Exe (xSym ...
+; # (let (Pfd (b32 2) Av (b8* (inc (length X))) Cmd (xName (xSym (car...
 ; # (b32 2)
   %87 = alloca i32, i64 2
 ; # (length X)
@@ -45029,8 +45029,8 @@ $30:
   %103 = load i64, i64* %102
 ; # (xSym (car X))
   %104 = call i64 @xSym(i64 %103)
-; # (xName Exe (xSym (car X)))
-  %105 = call i64 @xName(i64 %0, i64 %104)
+; # (xName (xSym (car X)))
+  %105 = call i64 @xName(i64 %104)
 ; # (when (lt0 (pipe Pfd)) (pipeErr Exe))
 ; # (pipe Pfd)
   %106 = call i32 @pipe(i32* %87)
@@ -45052,8 +45052,8 @@ $32:
 ; # (pathString Cmd (b8 (pathSize Cmd)))
   %112 = call i8* @pathString(i64 %105, i8* %111)
   store i8* %112, i8** %101
-; # (let A Av (while (pair (shift X)) (let Nm (xName Exe (xSym (car X...
-; # (while (pair (shift X)) (let Nm (xName Exe (xSym (car X))) (set (...
+; # (let A Av (while (pair (shift X)) (let Nm (xName (xSym (car X))) ...
+; # (while (pair (shift X)) (let Nm (xName (xSym (car X))) (set (inc ...
   br label %$33
 $33:
   %113 = phi i64 [%109, %$32], [%120, %$34] ; # X
@@ -45069,14 +45069,14 @@ $33:
 $34:
   %120 = phi i64 [%117, %$33] ; # X
   %121 = phi i8** [%114, %$33] ; # A
-; # (let Nm (xName Exe (xSym (car X))) (set (inc 'A) (bufString Nm (b...
+; # (let Nm (xName (xSym (car X))) (set (inc 'A) (bufString Nm (b8 (b...
 ; # (car X)
   %122 = inttoptr i64 %120 to i64*
   %123 = load i64, i64* %122
 ; # (xSym (car X))
   %124 = call i64 @xSym(i64 %123)
-; # (xName Exe (xSym (car X)))
-  %125 = call i64 @xName(i64 %0, i64 %124)
+; # (xName (xSym (car X)))
+  %125 = call i64 @xName(i64 %124)
 ; # (set (inc 'A) (bufString Nm (b8 (bufSize Nm))))
 ; # (inc 'A)
   %126 = getelementptr i8*, i8** %121, i32 1
@@ -45314,9 +45314,9 @@ $5:
   br i1 %64, label %$20, label %$19
 $20:
   %65 = phi i64 [%62, %$5] ; # X
-; # (let (Nm (xName Exe X) S (pathString Nm (b8 (pathSize Nm))) Flg (...
-; # (xName Exe X)
-  %66 = call i64 @xName(i64 %0, i64 %65)
+; # (let (Nm (xName X) S (pathString Nm (b8 (pathSize Nm))) Flg (== (...
+; # (xName X)
+  %66 = call i64 @xName(i64 %65)
 ; # (pathSize Nm)
   %67 = call i64 @pathSize(i64 %66)
 ; # (b8 (pathSize Nm))
@@ -45407,7 +45407,7 @@ $28:
   br label %$2
 $19:
   %106 = phi i64 [%62, %$5] ; # X
-; # (let (Pfd (b32 2) Av (b8* (inc (length X))) Cmd (xName Exe (xSym ...
+; # (let (Pfd (b32 2) Av (b8* (inc (length X))) Cmd (xName (xSym (car...
 ; # (b32 2)
   %107 = alloca i32, i64 2
 ; # (length X)
@@ -45438,8 +45438,8 @@ $35:
   %123 = load i64, i64* %122
 ; # (xSym (car X))
   %124 = call i64 @xSym(i64 %123)
-; # (xName Exe (xSym (car X)))
-  %125 = call i64 @xName(i64 %0, i64 %124)
+; # (xName (xSym (car X)))
+  %125 = call i64 @xName(i64 %124)
 ; # (when (lt0 (pipe Pfd)) (pipeErr Exe))
 ; # (pipe Pfd)
   %126 = call i32 @pipe(i32* %107)
@@ -45461,8 +45461,8 @@ $37:
 ; # (pathString Cmd (b8 (pathSize Cmd)))
   %132 = call i8* @pathString(i64 %125, i8* %131)
   store i8* %132, i8** %121
-; # (let A Av (while (pair (shift X)) (let Nm (xName Exe (xSym (car X...
-; # (while (pair (shift X)) (let Nm (xName Exe (xSym (car X))) (set (...
+; # (let A Av (while (pair (shift X)) (let Nm (xName (xSym (car X))) ...
+; # (while (pair (shift X)) (let Nm (xName (xSym (car X))) (set (inc ...
   br label %$38
 $38:
   %133 = phi i64 [%129, %$37], [%140, %$39] ; # X
@@ -45478,14 +45478,14 @@ $38:
 $39:
   %140 = phi i64 [%137, %$38] ; # X
   %141 = phi i8** [%134, %$38] ; # A
-; # (let Nm (xName Exe (xSym (car X))) (set (inc 'A) (bufString Nm (b...
+; # (let Nm (xName (xSym (car X))) (set (inc 'A) (bufString Nm (b8 (b...
 ; # (car X)
   %142 = inttoptr i64 %140 to i64*
   %143 = load i64, i64* %142
 ; # (xSym (car X))
   %144 = call i64 @xSym(i64 %143)
-; # (xName Exe (xSym (car X)))
-  %145 = call i64 @xName(i64 %0, i64 %144)
+; # (xName (xSym (car X)))
+  %145 = call i64 @xName(i64 %144)
 ; # (set (inc 'A) (bufString Nm (b8 (bufSize Nm))))
 ; # (inc 'A)
   %146 = getelementptr i8*, i8** %141, i32 1
@@ -45612,9 +45612,9 @@ $4:
   %13 = call i32 @dup(i32 %12)
   br label %$6
 $5:
-; # (let (Nm (xName Exe X) S (pathString Nm (b8 (pathSize Nm))) Flg (...
-; # (xName Exe X)
-  %14 = call i64 @xName(i64 %0, i64 %1)
+; # (let (Nm (xName X) S (pathString Nm (b8 (pathSize Nm))) Flg (== (...
+; # (xName X)
+  %14 = call i64 @xName(i64 %1)
 ; # (pathSize Nm)
   %15 = call i64 @pathSize(i64 %14)
 ; # (b8 (pathSize Nm))
@@ -45737,9 +45737,9 @@ $8:
   call void @wrLockWait(i32 %13, i64 0)
   br label %$2
 $7:
-; # (let (Nm (xName Exe X) S (pathString Nm (b8 (pathSize Nm))) Flg (...
-; # (xName Exe X)
-  %14 = call i64 @xName(i64 %0, i64 %1)
+; # (let (Nm (xName X) S (pathString Nm (b8 (pathSize Nm))) Flg (== (...
+; # (xName X)
+  %14 = call i64 @xName(i64 %1)
 ; # (pathSize Nm)
   %15 = call i64 @pathSize(i64 %14)
 ; # (b8 (pathSize Nm))
@@ -48302,9 +48302,9 @@ $29:
   br label %$4
 $21:
   %107 = phi i32 [%69, %$19] ; # C
-; # (let (Nm (xName 0 Set) S (bufString Nm (b8 (bufSize Nm)))) (if (o...
-; # (xName 0 Set)
-  %108 = call i64 @xName(i64 0, i64 %0)
+; # (let (Nm (xName Set) S (bufString Nm (b8 (bufSize Nm)))) (if (or ...
+; # (xName Set)
+  %108 = call i64 @xName(i64 %0)
 ; # (bufSize Nm)
   %109 = call i64 @bufSize(i64 %108)
 ; # (b8 (bufSize Nm))
@@ -49181,15 +49181,15 @@ $2:
 
 define i64 @_From(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) N 1 Y (evSym X) Nm (xName Exe Y) L (link (push ...
+; # (let (X (cdr Exe) N 1 Y (evSym X) Nm (xName Y) L (link (push Y NI...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
 ; # (evSym X)
   %4 = call i64 @evSym(i64 %3)
-; # (xName Exe Y)
-  %5 = call i64 @xName(i64 %0, i64 %4)
+; # (xName Y)
+  %5 = call i64 @xName(i64 %4)
 ; # (bufSize Nm)
   %6 = call i64 @bufSize(i64 %5)
 ; # (b8 (bufSize Nm))
@@ -49217,7 +49217,7 @@ $1:
   store i64 %18, i64* %20
   %21 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 0) to i64) to i64*
   store i64 %11, i64* %21
-; # (while (pair (shift X)) (setq Y (evSym X) Nm (xName Exe Y) L (lin...
+; # (while (pair (shift X)) (setq Y (evSym X) Nm (xName Y) L (link (p...
   br label %$2
 $2:
   %22 = phi i64 [%3, %$1], [%32, %$3] ; # X
@@ -49241,8 +49241,8 @@ $3:
   %36 = phi i64 [%26, %$2] ; # L
 ; # (evSym X)
   %37 = call i64 @evSym(i64 %32)
-; # (xName Exe Y)
-  %38 = call i64 @xName(i64 %0, i64 %37)
+; # (xName Y)
+  %38 = call i64 @xName(i64 %37)
 ; # (bufSize Nm)
   %39 = call i64 @bufSize(i64 %38)
 ; # (b8 (bufSize Nm))
@@ -49557,15 +49557,15 @@ $9:
 
 define i64 @_Till(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) Nm (xName Exe (evSym X)) S (bufString Nm (b8 (b...
+; # (let (X (cdr Exe) Nm (xName (evSym X)) S (bufString Nm (b8 (bufSi...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
 ; # (evSym X)
   %4 = call i64 @evSym(i64 %3)
-; # (xName Exe (evSym X))
-  %5 = call i64 @xName(i64 %0, i64 %4)
+; # (xName (evSym X))
+  %5 = call i64 @xName(i64 %4)
 ; # (bufSize Nm)
   %6 = call i64 @bufSize(i64 %5)
 ; # (b8 (bufSize Nm))
@@ -51866,15 +51866,15 @@ $11:
 
 define i64 @_Open(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) Nm (xName Exe (evSym X)) S (pathString Nm (b8 (...
+; # (let (X (cdr Exe) Nm (xName (evSym X)) S (pathString Nm (b8 (path...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
 ; # (evSym X)
   %4 = call i64 @evSym(i64 %3)
-; # (xName Exe (evSym X))
-  %5 = call i64 @xName(i64 %0, i64 %4)
+; # (xName (evSym X))
+  %5 = call i64 @xName(i64 %4)
 ; # (pathSize Nm)
   %6 = call i64 @pathSize(i64 %5)
 ; # (b8 (pathSize Nm))
@@ -52264,11 +52264,11 @@ $33:
 $32:
   %115 = phi i64 [%109, %$18] ; # X
   %116 = phi i64 [%110, %$18] ; # Y
-; # (let (M (i64* null) N 1 Nm (xName Exe Y) L (link (push Y NIL 0 (a...
+; # (let (M (i64* null) N 1 Nm (xName Y) L (link (push Y NIL 0 (any (...
 ; # (i64* null)
   %117 = inttoptr i64 0 to i64*
-; # (xName Exe Y)
-  %118 = call i64 @xName(i64 %0, i64 %116)
+; # (xName Y)
+  %118 = call i64 @xName(i64 %116)
 ; # (bufSize Nm)
   %119 = call i64 @bufSize(i64 %118)
 ; # (b8 (bufSize Nm))
@@ -52296,7 +52296,7 @@ $32:
   store i64 %131, i64* %133
   %134 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 0) to i64) to i64*
   store i64 %124, i64* %134
-; # (while (pair X) (setq Y (evSym (++ X)) Nm (xName Exe Y) L (link (...
+; # (while (pair X) (setq Y (evSym (++ X)) Nm (xName Y) L (link (push...
   br label %$34
 $34:
   %135 = phi i64 [%115, %$32], [%152, %$35] ; # X
@@ -52323,8 +52323,8 @@ $35:
   %152 = load i64, i64* %151
 ; # (evSym (++ X))
   %153 = call i64 @evSym(i64 %150)
-; # (xName Exe Y)
-  %154 = call i64 @xName(i64 %0, i64 %153)
+; # (xName Y)
+  %154 = call i64 @xName(i64 %153)
 ; # (bufSize Nm)
   %155 = call i64 @bufSize(i64 %154)
 ; # (b8 (bufSize Nm))
@@ -56063,12 +56063,12 @@ $2:
   br i1 %10, label %$4, label %$5
 $4:
   %11 = phi i64 [%9, %$2] ; # X
-; # (let E (save (parse (xName Exe X) YES (hex "5D0A") 0)) (evList E)...
-; # (xName Exe X)
-  %12 = call i64 @xName(i64 %0, i64 %11)
-; # (parse (xName Exe X) YES (hex "5D0A") 0)
+; # (let E (save (parse (xName X) YES (hex "5D0A") 0)) (evList E))
+; # (xName X)
+  %12 = call i64 @xName(i64 %11)
+; # (parse (xName X) YES (hex "5D0A") 0)
   %13 = call i64 @parse(i64 %12, i1 1, i64 23818, i64 0)
-; # (save (parse (xName Exe X) YES (hex "5D0A") 0))
+; # (save (parse (xName X) YES (hex "5D0A") 0))
   %14 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 0) to i64) to i64*
   %15 = load i64, i64* %14
   %16 = alloca i64, i64 2, align 16
@@ -58857,15 +58857,15 @@ $10:
   br label %$3
 $3:
   %85 = phi i64 [%16, %$1], [%84, %$10] ; # Dbs
-; # (unless (nil? Sym1) (let (Nm (xName Exe Sym1) Len (pathSize Nm) B...
+; # (unless (nil? Sym1) (let (Nm (xName Sym1) Len (pathSize Nm) Buf (...
 ; # (nil? Sym1)
   %86 = icmp eq i64 %4, ptrtoint (i8* getelementptr (i8, i8* bitcast ([878 x i64]* @SymTab to i8*), i32 8) to i64)
   br i1 %86, label %$12, label %$11
 $11:
   %87 = phi i64 [%85, %$3] ; # Dbs
-; # (let (Nm (xName Exe Sym1) Len (pathSize Nm) Buf (pathString Nm (b...
-; # (xName Exe Sym1)
-  %88 = call i64 @xName(i64 %0, i64 %4)
+; # (let (Nm (xName Sym1) Len (pathSize Nm) Buf (pathString Nm (b8 (+...
+; # (xName Sym1)
+  %88 = call i64 @xName(i64 %4)
 ; # (pathSize Nm)
   %89 = call i64 @pathSize(i64 %88)
 ; # (+ Len 4)
@@ -59251,15 +59251,15 @@ $37:
 ; # (alloc (val $DbBlock) (i64 Max))
   %300 = call i8* @alloc(i8* %298, i64 %299)
   store i8* %300, i8** @$DbBlock
-; # (unless (nil? Sym2) (let Nm (xName Exe Sym2) (unless (fopen (path...
+; # (unless (nil? Sym2) (let Nm (xName Sym2) (unless (fopen (pathStri...
 ; # (nil? Sym2)
   %301 = icmp eq i64 %28, ptrtoint (i8* getelementptr (i8, i8* bitcast ([878 x i64]* @SymTab to i8*), i32 8) to i64)
   br i1 %301, label %$39, label %$38
 $38:
   %302 = phi i64 [%291, %$37] ; # Dbs
-; # (let Nm (xName Exe Sym2) (unless (fopen (pathString Nm (b8 (pathS...
-; # (xName Exe Sym2)
-  %303 = call i64 @xName(i64 %0, i64 %28)
+; # (let Nm (xName Sym2) (unless (fopen (pathString Nm (b8 (pathSize ...
+; # (xName Sym2)
+  %303 = call i64 @xName(i64 %28)
 ; # (unless (fopen (pathString Nm (b8 (pathSize Nm))) ($ "a")) (openE...
 ; # (pathSize Nm)
   %304 = call i64 @pathSize(i64 %303)
@@ -59287,15 +59287,15 @@ $41:
   br label %$39
 $39:
   %312 = phi i64 [%291, %$37], [%310, %$41] ; # Dbs
-; # (unless (nil? Sym3) (let Nm (xName Exe Sym3) (unless (fopen (path...
+; # (unless (nil? Sym3) (let Nm (xName Sym3) (unless (fopen (pathStri...
 ; # (nil? Sym3)
   %313 = icmp eq i64 %40, ptrtoint (i8* getelementptr (i8, i8* bitcast ([878 x i64]* @SymTab to i8*), i32 8) to i64)
   br i1 %313, label %$43, label %$42
 $42:
   %314 = phi i64 [%312, %$39] ; # Dbs
-; # (let Nm (xName Exe Sym3) (unless (fopen (pathString Nm (b8 (pathS...
-; # (xName Exe Sym3)
-  %315 = call i64 @xName(i64 %0, i64 %40)
+; # (let Nm (xName Sym3) (unless (fopen (pathString Nm (b8 (pathSize ...
+; # (xName Sym3)
+  %315 = call i64 @xName(i64 %40)
 ; # (unless (fopen (pathString Nm (b8 (pathSize Nm))) ($ "a+")) (open...
 ; # (pathSize Nm)
   %316 = call i64 @pathSize(i64 %315)
@@ -59350,15 +59350,15 @@ $12:
 
 define i64 @_Pool2(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) Sym (evSym X) Nm (xName Exe Sym) Jnl (val $DbJn...
+; # (let (X (cdr Exe) Sym (evSym X) Nm (xName Sym) Jnl (val $DbJnl) L...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
 ; # (evSym X)
   %4 = call i64 @evSym(i64 %3)
-; # (xName Exe Sym)
-  %5 = call i64 @xName(i64 %0, i64 %4)
+; # (xName Sym)
+  %5 = call i64 @xName(i64 %4)
 ; # (val $DbJnl)
   %6 = load i8*, i8** @$DbJnl
 ; # (val $DbLog)
@@ -59574,14 +59574,14 @@ $4:
 $5:
   %20 = phi i64 [%3, %$3], [%18, %$4] ; # X
   %21 = phi i64 [%4, %$3], [%19, %$4] ; # Sym
-; # (loop (let (Nm (xName Exe Sym) Fp (fopen (pathString Nm (b8 (path...
+; # (loop (let (Nm (xName Sym) Fp (fopen (pathString Nm (b8 (pathSize...
   br label %$6
 $6:
   %22 = phi i64 [%20, %$5], [%111, %$25] ; # X
   %23 = phi i64 [%21, %$5], [%113, %$25] ; # Sym
-; # (let (Nm (xName Exe Sym) Fp (fopen (pathString Nm (b8 (pathSize N...
-; # (xName Exe Sym)
-  %24 = call i64 @xName(i64 %0, i64 %23)
+; # (let (Nm (xName Sym) Fp (fopen (pathString Nm (b8 (pathSize Nm)))...
+; # (xName Sym)
+  %24 = call i64 @xName(i64 %23)
 ; # (pathSize Nm)
   %25 = call i64 @pathSize(i64 %24)
 ; # (b8 (pathSize Nm))
@@ -62737,7 +62737,7 @@ $119:
 $120:
   %791 = phi i64 [%775, %$114], [%789, %$119] ; # Args
   %792 = phi i1 [%776, %$114], [%790, %$119] ; # Notify
-; # (when (pair (val $Zap)) (let (Z @ Out (val $OutFile) Nm (xName Ex...
+; # (when (pair (val $Zap)) (let (Z @ Out (val $OutFile) Nm (xName (c...
 ; # (val $Zap)
   %793 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([878 x i64]* @SymTab to i8*), i32 520) to i64) to i64*
   %794 = load i64, i64* %793
@@ -62748,15 +62748,15 @@ $120:
 $121:
   %797 = phi i64 [%791, %$120] ; # Args
   %798 = phi i1 [%792, %$120] ; # Notify
-; # (let (Z @ Out (val $OutFile) Nm (xName Exe (cdr Z)) S (pathString...
+; # (let (Z @ Out (val $OutFile) Nm (xName (cdr Z)) S (pathString Nm ...
 ; # (val $OutFile)
   %799 = load i8*, i8** bitcast (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 72) to i8**)
 ; # (cdr Z)
   %800 = inttoptr i64 %794 to i64*
   %801 = getelementptr i64, i64* %800, i32 1
   %802 = load i64, i64* %801
-; # (xName Exe (cdr Z))
-  %803 = call i64 @xName(i64 %0, i64 %802)
+; # (xName (cdr Z))
+  %803 = call i64 @xName(i64 %802)
 ; # (pathSize Nm)
   %804 = call i64 @pathSize(i64 %803)
 ; # (b8 (pathSize Nm))
@@ -85739,7 +85739,7 @@ $4:
 
 define i64 @_Exec(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) Av (b8* (inc (length X))) Cmd (xName Exe (evSym...
+; # (let (X (cdr Exe) Av (b8* (inc (length X))) Cmd (xName (evSym X))...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
@@ -85769,8 +85769,8 @@ $4:
   %17 = alloca i8*, i64 %16
 ; # (evSym X)
   %18 = call i64 @evSym(i64 %3)
-; # (xName Exe (evSym X))
-  %19 = call i64 @xName(i64 %0, i64 %18)
+; # (xName (evSym X))
+  %19 = call i64 @xName(i64 %18)
 ; # (set Av (pathString Cmd (b8 (pathSize Cmd))))
 ; # (pathSize Cmd)
   %20 = call i64 @pathSize(i64 %19)
@@ -85788,8 +85788,8 @@ $5:
   call void @stkErr(i64 %0)
   unreachable
 $6:
-; # (let A Av (while (pair (shift X)) (let Nm (xName Exe (evSym X)) (...
-; # (while (pair (shift X)) (let Nm (xName Exe (evSym X)) (set (inc '...
+; # (let A Av (while (pair (shift X)) (let Nm (xName (evSym X)) (set ...
+; # (while (pair (shift X)) (let Nm (xName (evSym X)) (set (inc 'A) (...
   br label %$7
 $7:
   %26 = phi i64 [%3, %$6], [%33, %$11] ; # X
@@ -85805,11 +85805,11 @@ $7:
 $8:
   %33 = phi i64 [%30, %$7] ; # X
   %34 = phi i8** [%27, %$7] ; # A
-; # (let Nm (xName Exe (evSym X)) (set (inc 'A) (bufString Nm (b8 (bu...
+; # (let Nm (xName (evSym X)) (set (inc 'A) (bufString Nm (b8 (bufSiz...
 ; # (evSym X)
   %35 = call i64 @evSym(i64 %33)
-; # (xName Exe (evSym X))
-  %36 = call i64 @xName(i64 %0, i64 %35)
+; # (xName (evSym X))
+  %36 = call i64 @xName(i64 %35)
 ; # (set (inc 'A) (bufString Nm (b8 (bufSize Nm))))
 ; # (inc 'A)
   %37 = getelementptr i8*, i8** %34, i32 1
@@ -85852,7 +85852,7 @@ $9:
 
 define i64 @_Call(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) Av (b8* (inc (length X))) Cmd (xName Exe (evSym...
+; # (let (X (cdr Exe) Av (b8* (inc (length X))) Cmd (xName (evSym X))...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
@@ -85882,8 +85882,8 @@ $4:
   %17 = alloca i8*, i64 %16
 ; # (evSym X)
   %18 = call i64 @evSym(i64 %3)
-; # (xName Exe (evSym X))
-  %19 = call i64 @xName(i64 %0, i64 %18)
+; # (xName (evSym X))
+  %19 = call i64 @xName(i64 %18)
 ; # (set Av (pathString Cmd (b8 (pathSize Cmd))))
 ; # (pathSize Cmd)
   %20 = call i64 @pathSize(i64 %19)
@@ -85901,8 +85901,8 @@ $5:
   call void @stkErr(i64 %0)
   unreachable
 $6:
-; # (let A Av (while (pair (shift X)) (let Nm (xName Exe (evSym X)) (...
-; # (while (pair (shift X)) (let Nm (xName Exe (evSym X)) (set (inc '...
+; # (let A Av (while (pair (shift X)) (let Nm (xName (evSym X)) (set ...
+; # (while (pair (shift X)) (let Nm (xName (evSym X)) (set (inc 'A) (...
   br label %$7
 $7:
   %26 = phi i64 [%3, %$6], [%33, %$11] ; # X
@@ -85918,11 +85918,11 @@ $7:
 $8:
   %33 = phi i64 [%30, %$7] ; # X
   %34 = phi i8** [%27, %$7] ; # A
-; # (let Nm (xName Exe (evSym X)) (set (inc 'A) (bufString Nm (b8 (bu...
+; # (let Nm (xName (evSym X)) (set (inc 'A) (bufString Nm (b8 (bufSiz...
 ; # (evSym X)
   %35 = call i64 @evSym(i64 %33)
-; # (xName Exe (evSym X))
-  %36 = call i64 @xName(i64 %0, i64 %35)
+; # (xName (evSym X))
+  %36 = call i64 @xName(i64 %35)
 ; # (set (inc 'A) (bufString Nm (b8 (bufSize Nm))))
 ; # (inc 'A)
   %37 = getelementptr i8*, i8** %34, i32 1
@@ -104860,15 +104860,15 @@ $7:
 
 define i64 @_Quit(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) Nm (xName Exe (evSym X)) Msg (bufString Nm (b8 ...
+; # (let (X (cdr Exe) Nm (xName (evSym X)) Msg (bufString Nm (b8 (buf...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
 ; # (evSym X)
   %4 = call i64 @evSym(i64 %3)
-; # (xName Exe (evSym X))
-  %5 = call i64 @xName(i64 %0, i64 %4)
+; # (xName (evSym X))
+  %5 = call i64 @xName(i64 %4)
 ; # (bufSize Nm)
   %6 = call i64 @bufSize(i64 %5)
 ; # (b8 (bufSize Nm))
@@ -104922,15 +104922,15 @@ $4:
 
 define i64 @_Sys(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) Nm (xName Exe (evSym X)) S (bufString Nm (b8 (b...
+; # (let (X (cdr Exe) Nm (xName (evSym X)) S (bufString Nm (b8 (bufSi...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
 ; # (evSym X)
   %4 = call i64 @evSym(i64 %3)
-; # (xName Exe (evSym X))
-  %5 = call i64 @xName(i64 %0, i64 %4)
+; # (xName (evSym X))
+  %5 = call i64 @xName(i64 %4)
 ; # (bufSize Nm)
   %6 = call i64 @bufSize(i64 %5)
 ; # (b8 (bufSize Nm))
@@ -104955,11 +104955,11 @@ $2:
   br label %$4
 $3:
   %17 = phi i64 [%11, %$1] ; # X
-; # (let (Y (evSym X) Nm2 (xName Exe Y)) (if (setenv S (bufString Nm2...
+; # (let (Y (evSym X) Nm2 (xName Y)) (if (setenv S (bufString Nm2 (b8...
 ; # (evSym X)
   %18 = call i64 @evSym(i64 %17)
-; # (xName Exe Y)
-  %19 = call i64 @xName(i64 %0, i64 %18)
+; # (xName Y)
+  %19 = call i64 @xName(i64 %18)
 ; # (if (setenv S (bufString Nm2 (b8 (bufSize Nm2))) 1) $Nil Y)
 ; # (bufSize Nm2)
   %20 = call i64 @bufSize(i64 %19)
@@ -105011,15 +105011,15 @@ $4:
 
 define i64 @_Cd(i64) align 8 {
 $1:
-; # (let (Nm (xName Exe (evSym (cdr Exe))) P (getcwd null 0)) (if P (...
+; # (let (Nm (xName (evSym (cdr Exe))) P (getcwd null 0)) (if P (prog...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
 ; # (evSym (cdr Exe))
   %4 = call i64 @evSym(i64 %3)
-; # (xName Exe (evSym (cdr Exe)))
-  %5 = call i64 @xName(i64 %0, i64 %4)
+; # (xName (evSym (cdr Exe)))
+  %5 = call i64 @xName(i64 %4)
 ; # (getcwd null 0)
   %6 = call i8* @getcwd(i8* null, i64 0)
 ; # (if P (prog1 (if (lt0 (chdir (dirString Nm (b8 (pathSize Nm))))) ...
@@ -105271,11 +105271,11 @@ $14:
   store i1 %73, i1* @Tio
   br label %$7
 $10:
-; # (let Nm (xName Exe (xSym X)) (if (reopenTty (bufString Nm (b8 (bu...
+; # (let Nm (xName (xSym X)) (if (reopenTty (bufString Nm (b8 (bufSiz...
 ; # (xSym X)
   %74 = call i64 @xSym(i64 %13)
-; # (xName Exe (xSym X))
-  %75 = call i64 @xName(i64 %0, i64 %74)
+; # (xName (xSym X))
+  %75 = call i64 @xName(i64 %74)
 ; # (if (reopenTty (bufString Nm (b8 (bufSize Nm)))) (let (In: (inFil...
 ; # (bufSize Nm)
   %76 = call i64 @bufSize(i64 %75)
@@ -105365,11 +105365,11 @@ $2:
   %7 = call i64 @mkStr(i8* %6)
   br label %$4
 $3:
-; # (xName Exe @)
-  %8 = call i64 @xName(i64 %0, i64 %4)
+; # (xName @)
+  %8 = call i64 @xName(i64 %4)
 ; # (val $AV0)
   %9 = load i8*, i8** @$AV0
-; # (bufString (xName Exe @) (val $AV0))
+; # (bufString (xName @) (val $AV0))
   %10 = call i8* @bufString(i64 %8, i8* %9)
   br label %$4
 $4:
@@ -105379,24 +105379,24 @@ $4:
 
 define i64 @_Dir(i64) align 8 {
 $1:
-; # (let X (cdr Exe) (if (getDir (let Nm (xName Exe (evSym X)) (dirSt...
+; # (let X (cdr Exe) (if (getDir (let Nm (xName (evSym X)) (dirString...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
-; # (if (getDir (let Nm (xName Exe (evSym X)) (dirString Nm (b8 (path...
-; # (let Nm (xName Exe (evSym X)) (dirString Nm (b8 (pathSize Nm))))
+; # (if (getDir (let Nm (xName (evSym X)) (dirString Nm (b8 (pathSize...
+; # (let Nm (xName (evSym X)) (dirString Nm (b8 (pathSize Nm))))
 ; # (evSym X)
   %4 = call i64 @evSym(i64 %3)
-; # (xName Exe (evSym X))
-  %5 = call i64 @xName(i64 %0, i64 %4)
+; # (xName (evSym X))
+  %5 = call i64 @xName(i64 %4)
 ; # (pathSize Nm)
   %6 = call i64 @pathSize(i64 %5)
 ; # (b8 (pathSize Nm))
   %7 = alloca i8, i64 %6
 ; # (dirString Nm (b8 (pathSize Nm)))
   %8 = call i8* @dirString(i64 %5, i8* %7)
-; # (getDir (let Nm (xName Exe (evSym X)) (dirString Nm (b8 (pathSize...
+; # (getDir (let Nm (xName (evSym X)) (dirString Nm (b8 (pathSize Nm)...
   %9 = call i8* @getDir(i8* %8)
   %10 = icmp ne i8* %9, null
   br i1 %10, label %$2, label %$3
@@ -105561,7 +105561,7 @@ $4:
 
 define i64 @_Info(i64) align 8 {
 $1:
-; # (let (X (cdr Exe) Nm (xName Exe (set $At2 (evSym X))) Size (b64 1...
+; # (let (X (cdr Exe) Nm (xName (set $At2 (evSym X))) Size (b64 1)) (...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
@@ -105571,8 +105571,8 @@ $1:
   %4 = call i64 @evSym(i64 %3)
   %5 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([878 x i64]* @SymTab to i8*), i32 456) to i64) to i64*
   store i64 %4, i64* %5
-; # (xName Exe (set $At2 (evSym X)))
-  %6 = call i64 @xName(i64 %0, i64 %4)
+; # (xName (set $At2 (evSym X)))
+  %6 = call i64 @xName(i64 %4)
 ; # (b64 1)
   %7 = alloca i64, i64 1
 ; # (if (lt0 (fileInfo (nil? (eval (car (shift X)))) (== ZERO @) (dir...
@@ -107392,9 +107392,9 @@ $8:
   unreachable
 $7:
   %23 = phi i64 [%19, %$5] ; # Spec
-; # (let Nm (xName Exe Fun) (unless (ffiPrep Lib (bufString Nm (b8 (b...
-; # (xName Exe Fun)
-  %24 = call i64 @xName(i64 %0, i64 %2)
+; # (let Nm (xName Fun) (unless (ffiPrep Lib (bufString Nm (b8 (bufSi...
+; # (xName Fun)
+  %24 = call i64 @xName(i64 %2)
 ; # (unless (ffiPrep Lib (bufString Nm (b8 (bufSize Nm))) Args) (err ...
 ; # (bufSize Nm)
   %25 = call i64 @bufSize(i64 %24)
@@ -108107,10 +108107,10 @@ $13:
   unreachable
 $12:
   %33 = phi i64 [%29, %$10] ; # X
-; # (xName Exe Y)
-  %34 = call i64 @xName(i64 %0, i64 %15)
+; # (xName Y)
+  %34 = call i64 @xName(i64 %15)
 ; # (| 2 (>> -4 (char "@")))
-; # (== (xName Exe Y) (| 2 (>> -4 (char "@"))))
+; # (== (xName Y) (| 2 (>> -4 (char "@"))))
   %35 = icmp eq i64 %34, 1026
   br i1 %35, label %$15, label %$14
 $15:
@@ -110327,7 +110327,7 @@ $20:
 $21:
 ; # (clear_history)
   call void @clear_history()
-; # (while (pair Z) (let (Nm (xName Exe (xSym (++ Z))) Stk (stack)) (...
+; # (while (pair Z) (let (Nm (xName (xSym (++ Z))) Stk (stack)) (add_...
   br label %$22
 $22:
   %57 = phi i64 [%52, %$21], [%64, %$23] ; # Z
@@ -110337,7 +110337,7 @@ $22:
   br i1 %59, label %$23, label %$24
 $23:
   %60 = phi i64 [%57, %$22] ; # Z
-; # (let (Nm (xName Exe (xSym (++ Z))) Stk (stack)) (add_history (buf...
+; # (let (Nm (xName (xSym (++ Z))) Stk (stack)) (add_history (bufStri...
 ; # (++ Z)
   %61 = inttoptr i64 %60 to i64*
   %62 = load i64, i64* %61
@@ -110345,8 +110345,8 @@ $23:
   %64 = load i64, i64* %63
 ; # (xSym (++ Z))
   %65 = call i64 @xSym(i64 %62)
-; # (xName Exe (xSym (++ Z)))
-  %66 = call i64 @xName(i64 %0, i64 %65)
+; # (xName (xSym (++ Z)))
+  %66 = call i64 @xName(i64 %65)
 ; # (stack)
   %67 = call i8* @llvm.stacksave()
 ; # (bufSize Nm)

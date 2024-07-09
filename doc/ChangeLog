@@ -1,4 +1,11 @@
 24.7.9
+   'Exe' argument to 'xName' not used
+      src/main.l
+      src/sym.l
+      src/io.l
+      src/db.l
+      src/flow.l
+      src/ext.l
    'prompt' function
       src/glob.l
       src/main.l

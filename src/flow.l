@@ -1,4 +1,4 @@
-# 27jun24 Software Lab. Alexander Burger
+# 09jul24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1580,12 +1580,12 @@
    (let
       (X (cdr Exe)
          Av (b8* (inc (length X)))
-         Cmd (xName Exe (evSym X)) )
+         Cmd (xName (evSym X)) )
       (set Av (pathString Cmd (b8 (pathSize Cmd))))
       (stkChk Exe)
       (let A Av
          (while (pair (shift X))
-            (let Nm (xName Exe (evSym X))
+            (let Nm (xName (evSym X))
                (set (inc 'A)
                   (bufString Nm (b8 (bufSize Nm))) ) )
             (stkChk Exe) )
@@ -1599,12 +1599,12 @@
    (let
       (X (cdr Exe)
          Av (b8* (inc (length X)))
-         Cmd (xName Exe (evSym X)) )
+         Cmd (xName (evSym X)) )
       (set Av (pathString Cmd (b8 (pathSize Cmd))))
       (stkChk Exe)
       (let A Av
          (while (pair (shift X))
-            (let Nm (xName Exe (evSym X))
+            (let Nm (xName (evSym X))
                (set (inc 'A)
                   (bufString Nm (b8 (bufSize Nm))) ) )
             (stkChk Exe) )

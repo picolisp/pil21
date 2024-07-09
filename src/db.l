@@ -1,4 +1,4 @@
-# 13dec23 Software Lab. Alexander Burger
+# 09jul24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -478,7 +478,7 @@
             (set $DbLog null) ) )
       (unless (nil? Sym1)
          (let
-            (Nm (xName Exe Sym1)  # DB name
+            (Nm (xName Sym1)  # DB name
                Len (pathSize Nm)
                Buf (pathString Nm (b8 (+ Len 4)))  # 4 bytes for AO file number
                End (ofs Buf (dec Len))
@@ -545,13 +545,13 @@
                   $MaxBlkSize Max
                   $DbBlock (alloc (val $DbBlock) (i64 Max)) ) ) )
          (unless (nil? Sym2)  # Replication journal
-            (let Nm (xName Exe Sym2)  # Journal name
+            (let Nm (xName Sym2)  # Journal name
                (unless (fopen (pathString Nm (b8 (pathSize Nm))) ($ "a"))
                   (openErr Exe Sym2) )
                (set $DbJnl @)
                (closeOnExec Exe (fileno @)) ) )
          (unless (nil? Sym3)  # Transaction log
-            (let Nm (xName Exe Sym3)  # Transaction log name
+            (let Nm (xName Sym3)  # Transaction log name
                (unless (fopen (pathString Nm (b8 (pathSize Nm))) ($ "a+"))
                   (openErr Exe Sym3) )
                (set $DbLog @)
@@ -566,7 +566,7 @@
    (let
       (X (cdr Exe)
          Sym (evSym X)
-         Nm (xName Exe Sym)
+         Nm (xName Sym)
          Jnl (val $DbJnl)
          Log (val $DbLog)
          C (val $DBs)
@@ -617,7 +617,7 @@
          (setq Sym (evSym (shift X))) )
       (loop
          (let
-            (Nm (xName Exe Sym)  # Journal name
+            (Nm (xName Sym)  # Journal name
                Fp (fopen (pathString Nm (b8 (pathSize Nm))) ($ "r")) )
             (unless Fp
                (openErr Exe Sym) )
@@ -1086,7 +1086,7 @@
          (let
             (Z @
                Out (val $OutFile)
-               Nm (xName Exe (cdr Z))
+               Nm (xName (cdr Z))
                S (pathString Nm (b8 (pathSize Nm)))
                Out: (outFile (b8+ (outFile T))) )
             (when (lt0 (openWrAppend S))

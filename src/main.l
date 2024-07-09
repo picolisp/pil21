@@ -408,7 +408,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de void packExtNm (any i64*))
 
-(de xName (Exe Sym)
+(de xName (Sym)
    (cond
       ((nil? Sym) ZERO)
       ((sym? (val (tail Sym)))
@@ -495,7 +495,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 # (prompt 'any . prg) -> any
 (de _Prompt (Exe)
-   (let (X (cdr Exe)  Nm (xName Exe (evSym X)))
+   (let (X (cdr Exe)  Nm (xName (evSym X)))
       (prog2
          (set $LinePrmt (set $ContPrmt (bufString Nm (b8 (bufSize Nm)))))
          (run (cdr X))
@@ -726,7 +726,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de i1 sharedLib (Sym)
    (let
-      (Nm (xName 0 Sym)
+      (Nm (xName Sym)
          S (bufString Nm (b8 (bufSize Nm)))
          P (strchr S (char ":")) )
       (and
@@ -1015,7 +1015,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de _Quit (Exe)
    (let
       (X (cdr Exe)
-         Nm (xName Exe (evSym X))
+         Nm (xName (evSym X))
          Msg (bufString Nm (b8 (bufSize Nm))) )
       (err 0
          (if (atom (shift X))
@@ -1028,11 +1028,11 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de _Sys (Exe)
    (let
       (X (cdr Exe)
-         Nm (xName Exe (evSym X))
+         Nm (xName (evSym X))
          S (bufString Nm (b8 (bufSize Nm))) )
       (if (atom (shift X))
          (mkStr (getenv S))
-         (let (Y (evSym X)  Nm2 (xName Exe Y))
+         (let (Y (evSym X)  Nm2 (xName Y))
             (if
                (setenv S
                   (bufString Nm2 (b8 (bufSize Nm2)))
@@ -1050,7 +1050,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 # (cd 'any) -> sym
 (de _Cd (Exe)
    (let
-      (Nm (xName Exe (evSym (cdr Exe)))
+      (Nm (xName (evSym (cdr Exe)))
          P (getcwd null 0) )
       (if P
          (prog1
@@ -1101,7 +1101,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (set Tio (=0 (tcgetattr 0 OrgTermio)))  # Init terminal I/O
             $T )
          (T
-            (let Nm (xName Exe (xSym X))
+            (let Nm (xName (xSym X))
                (if (reopenTty (bufString Nm (b8 (bufSize Nm))))
                   (let
                      (In: (inFile (val (val $InFiles)))  # Stdin
@@ -1120,7 +1120,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de _Cmd (Exe)
    (if (nil? (evSym (cdr Exe)))
       (mkStr (val $AV0))
-      (bufString (xName Exe @) (val $AV0))
+      (bufString (xName @) (val $AV0))
       @ ) )
 
 # (dir ['any] ['flg]) -> lst
@@ -1128,7 +1128,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (let X (cdr Exe)
       (if
          (getDir
-            (let Nm (xName Exe (evSym X))
+            (let Nm (xName (evSym X))
                (dirString Nm (b8 (pathSize Nm))) ) )
          (let (P @  F (eval (car (shift X))))
             (when (nil? F)
@@ -1146,7 +1146,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de _Info (Exe)
    (let
       (X (cdr Exe)
-         Nm (xName Exe (set $At2 (evSym X)))
+         Nm (xName (set $At2 (evSym X)))
          Size (b64 1) )
       (if
          (lt0
@@ -1410,7 +1410,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                ((big? Fun) (i8* (val (dig Fun))))
                ((pair Fun) (argErr Exe Fun))
                (T
-                  (let Nm (xName Exe Fun)
+                  (let Nm (xName Fun)
                      (unless (ffiPrep Lib (bufString Nm (b8 (bufSize Nm))) Args)
                         (err Exe 0 ($ "Bad ffi") null) )
                      (set Fun (box64 (i64 @)))
@@ -1483,7 +1483,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             ((cnt? Y) (i8* (int Y)))
             ((big? Y) (i8* (val (dig Y))))
             ((pair Y) (argErr Exe Y))
-            ((== (xName Exe Y) (| 2 (>> -4 (char "@"))))
+            ((== (xName Y) (| 2 (>> -4 (char "@"))))
                (set Y ZERO)
                null )  # RTLD_DEFAULT
             (T
@@ -1794,7 +1794,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (let (Y (needLst Exe (eval (car X)))  Z Y)
             (clear_history)
             (while (pair Z)
-               (let (Nm (xName Exe (xSym (++ Z)))  Stk (stack))
+               (let (Nm (xName (xSym (++ Z)))  Stk (stack))
                   (add_history (bufString Nm (b8 (bufSize Nm))) )
                   (stack Stk) ) )
             Y ) ) ) )

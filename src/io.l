@@ -1,4 +1,4 @@
-# 08sep23 Software Lab. Alexander Burger
+# 09jul24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -736,7 +736,7 @@ selectErr)
 
 # (path 'any) -> sym
 (de _Path (Exe)
-   (let Nm (xName Exe (evSym (cdr Exe)))
+   (let Nm (xName (evSym (cdr Exe)))
       (mkStr (pathString Nm (b8 (pathSize Nm)))) ) )
 
 (local) (pollfd hasData inReady getBlk waitFd)
@@ -1080,7 +1080,7 @@ selectErr)
                0 ) ) )
       ((sym? X)
          (let
-            (Nm (xName Exe X)
+            (Nm (xName X)
                S (pathString Nm (b8 (pathSize Nm)))
                Fd T )
             (while (lt0 (setq Fd (openRd S)))
@@ -1093,13 +1093,13 @@ selectErr)
          (let
             (Pfd (b32 2)
                Av (b8* (inc (length X)))
-               Cmd (xName Exe (xSym (car X))) )
+               Cmd (xName (xSym (car X))) )
             (when (lt0 (pipe Pfd))
                (pipeErr Exe) )
             (set Av (pathString Cmd (b8 (pathSize Cmd))))
             (let A Av
                (while (pair (shift X))
-                  (let Nm (xName Exe (xSym (car X)))
+                  (let Nm (xName (xSym (car X)))
                      (set (inc 'A)
                         (bufString Nm (b8 (bufSize Nm))) ) ) )
                (set (inc 'A) null) )
@@ -1144,7 +1144,7 @@ selectErr)
                0 ) ) )
       ((sym? X)
          (let
-            (Nm (xName Exe X)
+            (Nm (xName X)
                S (pathString Nm (b8 (pathSize Nm)))
                Flg (== (val S) (char "+"))
                Fd T )
@@ -1160,13 +1160,13 @@ selectErr)
          (let
             (Pfd (b32 2)
                Av (b8* (inc (length X)))
-               Cmd (xName Exe (xSym (car X))) )
+               Cmd (xName (xSym (car X))) )
             (when (lt0 (pipe Pfd))
                (pipeErr Exe) )
             (set Av (pathString Cmd (b8 (pathSize Cmd))))
             (let A Av
                (while (pair (shift X))
-                  (let Nm (xName Exe (xSym (car X)))
+                  (let Nm (xName (xSym (car X)))
                      (set (inc 'A)
                         (bufString Nm (b8 (bufSize Nm))) ) ) )
                (set (inc 'A) null) )
@@ -1194,7 +1194,7 @@ selectErr)
          (if (nil? (needSymb Exe X))
             (dup ((outFile (val $OutFile)) fd))
             (let
-               (Nm (xName Exe X)
+               (Nm (xName X)
                   S (pathString Nm (b8 (pathSize Nm)))
                   Flg (== (val S) (char "+")) )
                (when Flg
@@ -1220,7 +1220,7 @@ selectErr)
             (wrLockWait (currFd Exe) 0) )
          (T
             (let
-               (Nm (xName Exe X)
+               (Nm (xName X)
                   S (pathString Nm (b8 (pathSize Nm)))
                   Flg (== (val S) (char "+")) )
                (when Flg
@@ -1664,7 +1664,7 @@ selectErr)
                   0 ) ) )
          (T
             (let
-               (Nm (xName 0 Set)
+               (Nm (xName Set)
                   S (bufString Nm (b8 (bufSize Nm))) )
                (if
                   (or
@@ -1805,7 +1805,7 @@ selectErr)
       (X (cdr Exe)
          N 1
          Y (evSym X)
-         Nm (xName Exe Y)
+         Nm (xName Y)
          L
          (link
             (push Y NIL 0  # [sym link ix str]
@@ -1814,7 +1814,7 @@ selectErr)
       (while (pair (shift X))
          (setq
             Y (evSym X)
-            Nm (xName Exe Y)
+            Nm (xName Y)
             L
             (link
                (push Y NIL 0  # [sym link ix str]
@@ -1848,7 +1848,7 @@ selectErr)
 (de _Till (Exe)
    (let
       (X (cdr Exe)
-         Nm (xName Exe (evSym X))
+         Nm (xName (evSym X))
          S (bufString Nm (b8 (bufSize Nm))) )
       (let C (if (val $Chr) @ (call $Get))
          (cond
@@ -2203,7 +2203,7 @@ selectErr)
 (de _Open (Exe)
    (let
       (X (cdr Exe)
-         Nm (xName Exe (evSym X))
+         Nm (xName (evSym X))
          S (pathString Nm (b8 (pathSize Nm)))
          Flg (nil? (eval (cadr X))) )
       (loop
@@ -2257,7 +2257,7 @@ selectErr)
             (let
                (M (i64* null)
                   N 1
-                  Nm (xName Exe Y)
+                  Nm (xName Y)
                   L
                   (link
                      (push Y NIL 0  # [sym link ix str]
@@ -2266,7 +2266,7 @@ selectErr)
                (while (pair X)
                   (setq
                      Y (evSym (++ X))
-                     Nm (xName Exe Y)
+                     Nm (xName Y)
                      L
                      (link
                         (push Y NIL 0  # [sym link ix str]
@@ -2826,7 +2826,7 @@ selectErr)
 
 (de repl (Exe (i8* . Prmt) X)
    (if (and (symb? X) (== (firstByte X) (char "-")))
-      (let E (save (parse (xName Exe X) YES (hex "5D0A") 0))  # '\n', ']', EOF
+      (let E (save (parse (xName X) YES (hex "5D0A") 0))  # '\n', ']', EOF
          (evList E) )
       (let
          (Int (save (val $Intern))

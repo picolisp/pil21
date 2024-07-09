@@ -1,4 +1,4 @@
-# 10sep20 Software Lab. Alexander Burger
+# 09jul24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -13,7 +13,7 @@
 (de T i64 xCnt (any any))
 (de T i64 evCnt (any any))
 (de T evSym (any))
-(de T xName (any any))
+(de T xName (any))
 (de T i32 symChar (i64*))
 (de T void charSym (i32 i64*))
 (de T i8* initInFile (i32 i8*))
@@ -57,7 +57,7 @@
       (if (nil? (evSym X))
          @
          (let
-            (P (push 0 (xName Exe @) NIL)  # [cnt name link]
+            (P (push 0 (xName @) NIL)  # [cnt name link]
                C (symChar P) )
             (while (> SNXBASE C)
                (unless (setq C (symChar P))

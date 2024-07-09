@@ -268,7 +268,7 @@ declare i64 @brkLoad(i64)
 declare i64 @xCnt(i64, i64)
 declare i64 @evCnt(i64, i64)
 declare i64 @evSym(i64)
-declare i64 @xName(i64, i64)
+declare i64 @xName(i64)
 declare i32 @symChar(i64*)
 declare void @charSym(i32, i64*)
 declare i8* @initInFile(i32, i8*)
@@ -472,12 +472,12 @@ declare i8* @initOutFile(i32)
 
 define i64 @Snx(i64) align 8 {
 $1:
-; # (let X (cdr Exe) (if (nil? (evSym X)) @ (let (P (push 0 (xName Ex...
+; # (let X (cdr Exe) (if (nil? (evSym X)) @ (let (P (push 0 (xName @)...
 ; # (cdr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
   %3 = load i64, i64* %2
-; # (if (nil? (evSym X)) @ (let (P (push 0 (xName Exe @) NIL) C (symC...
+; # (if (nil? (evSym X)) @ (let (P (push 0 (xName @) NIL) C (symChar ...
 ; # (evSym X)
   %4 = call i64 @evSym(i64 %3)
 ; # (nil? (evSym X))
@@ -488,10 +488,10 @@ $2:
   br label %$4
 $3:
   %7 = phi i64 [%3, %$1] ; # X
-; # (let (P (push 0 (xName Exe @) NIL) C (symChar P)) (while (> SNXBA...
-; # (xName Exe @)
-  %8 = call i64 @xName(i64 %0, i64 %4)
-; # (push 0 (xName Exe @) NIL)
+; # (let (P (push 0 (xName @) NIL) C (symChar P)) (while (> SNXBASE C...
+; # (xName @)
+  %8 = call i64 @xName(i64 %4)
+; # (push 0 (xName @) NIL)
   %9 = alloca i64, i64 3, align 16
   store i64 0, i64* %9
   %10 = getelementptr i64, i64* %9, i32 1
