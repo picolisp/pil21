@@ -1,4 +1,4 @@
-# 27jun24 Software Lab. Alexander Burger
+# 09jul24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -505,6 +505,7 @@
    (NIL "sort" _Sort)
    # System functions
    (NIL "tty" _Tty)
+   (NIL "prompt" _Prompt)
    (NIL "raw" _Raw)
    (NIL "alarm" _Alarm)
    (NIL "sigio" _Sigio)

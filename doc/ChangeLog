@@ -1,4 +1,9 @@
 24.7.9
+   'prompt' function
+      src/glob.l
+      src/main.l
+      doc/ref.html
+      doc/refP.html
    Typo
       doc/structures
 

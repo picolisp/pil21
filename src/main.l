@@ -1,4 +1,4 @@
-# 07jul24 Software Lab. Alexander Burger
+# 09jul24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -492,6 +492,14 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (run (cdr Exe))
       (rlShow)
       (popOutFiles) ) )
+
+# (prompt 'any . prg) -> any
+(de _Prompt (Exe)
+   (let (X (cdr Exe)  Nm (xName Exe (evSym X)))
+      (prog2
+         (set $LinePrmt (set $ContPrmt (bufString Nm (b8 (bufSize Nm)))))
+         (run (cdr X))
+         (set $LinePrmt (set $ContPrmt null)) ) ) )
 
 # (raw ['flg]) -> flg
 (de _Raw (Exe)

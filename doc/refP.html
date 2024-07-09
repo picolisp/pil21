@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 04jul24 Software Lab. Alexander Burger
+# 09jul24 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -786,6 +786,17 @@ href="refP.html#prog1">prog1</a></code>.
 <pre>
 : (prog2 (print 1) (print 2) (print 3))
 123-> 2
+</pre></dd>
+
+<dt><a id="prompt"><code>(prompt 'any . prg) -> any</code></a></dt>
+<dd>Sets the prompt for non-REPL <code>readline(3)</code> calls to
+<code>any</code> during the execution of prg. See also <code><a
+href="refT.html#tty">tty</a></code>.
+
+<pre>
+: (prompt "== " (line))
+== abc
+-> ("a" "b" "c")
 </pre></dd>
 
 <dt><a id="prop"><code>(prop 'sym1|lst ['sym2|cnt ..] 'sym) -> var</code></a></dt>
