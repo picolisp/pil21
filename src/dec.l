@@ -1,4 +1,4 @@
-# 27jun24 Software Lab. Alexander Burger
+# 10jul24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -469,7 +469,7 @@ box64 eval run)
       (stkErr Exe) ) )
 
 (inline sigChk (Exe)
-   (when (val $Signal)
+   (when (volatile $Signal)
       (sighandler Exe) ) )
 
 # Argument checks

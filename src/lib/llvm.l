@@ -1,4 +1,4 @@
-# 17nov23 Software Lab. Alexander Burger
+# 10jul24 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -1111,6 +1111,13 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
                   (def (pack "%" *Ssa) Typ) ) )
             (T (quit "Bad type" (val X))) ) ) )
    (llvm~val) )
+
+(asm ()
+   ((X)
+      (let Typ (pointee (val X))
+         (ssa (inc '*Ssa) "load volatile " Typ ", " (val X) " " X)
+         (def (pack "%" *Ssa) Typ) ) )
+   (llvm~volatile) )
 
 (asm ()
    (Args

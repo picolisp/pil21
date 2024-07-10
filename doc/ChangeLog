@@ -1,3 +1,8 @@
+24.7.10
+   'volatile' access to '$Signal'
+      src/lib/llvm.l
+      src/dec.l
+
 24.7.9
    'Exe' argument to 'xName' not used
       src/main.l

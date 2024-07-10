@@ -1523,7 +1523,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 386,
   i64 114,
-  i64 146
+  i64 162
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -37182,7 +37182,7 @@ $99:
   %421 = phi i64 [%416, %$94] ; # X
   %422 = phi i64 [%417, %$94] ; # Y
 ; # (sigChk 0)
-  %423 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %423 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %424 = icmp ne i32 %423, 0
   br i1 %424, label %$101, label %$102
 $101:
@@ -38082,7 +38082,7 @@ $6:
 $7:
   %10 = phi i64 [%9, %$6], [%14, %$15] ; # Fun
 ; # (sigChk Exe)
-  %11 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %11 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %12 = icmp ne i32 %11, 0
   br i1 %12, label %$8, label %$9
 $8:
@@ -38190,7 +38190,7 @@ $22:
   %57 = phi i64 [%44, %$21], [%98, %$30] ; # Fun
   %58 = phi i64 [%48, %$21], [%78, %$30] ; # F
 ; # (sigChk Exe)
-  %59 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %59 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %60 = icmp ne i32 %59, 0
   br i1 %60, label %$23, label %$24
 $23:
@@ -38758,7 +38758,7 @@ $7:
   br label %$4
 $6:
 ; # (sigChk 0)
-  %16 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %16 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %17 = icmp ne i32 %16, 0
   br i1 %17, label %$8, label %$9
 $8:
@@ -38853,7 +38853,7 @@ $11:
   br label %$4
 $10:
 ; # (sigChk 0)
-  %31 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %31 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %32 = icmp ne i32 %31, 0
   br i1 %32, label %$12, label %$13
 $12:
@@ -38925,7 +38925,7 @@ $10:
   %27 = phi i8* [%22, %$7] ; # P
   %28 = phi i32 [%23, %$7] ; # Cnt
 ; # (sigChk 0)
-  %29 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %29 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %30 = icmp ne i32 %29, 0
   br i1 %30, label %$11, label %$12
 $11:
@@ -39054,7 +39054,7 @@ $14:
   %49 = phi i32 [%42, %$11] ; # Cnt
   %50 = phi i32 [%43, %$11] ; # N
 ; # (sigChk 0)
-  %51 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %51 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %52 = icmp ne i32 %51, 0
   br i1 %52, label %$15, label %$16
 $15:
@@ -39109,7 +39109,7 @@ $22:
   %75 = phi i8* [%70, %$20] ; # P
   %76 = phi i32 [%71, %$20] ; # Cnt
 ; # (sigChk 0)
-  %77 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %77 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %78 = icmp ne i32 %77, 0
   br i1 %78, label %$24, label %$25
 $24:
@@ -39219,7 +39219,7 @@ $16:
   %40 = phi i8* [%30, %$13] ; # P
   %41 = phi i32 [%31, %$13] ; # Cnt
 ; # (sigChk 0)
-  %42 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %42 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %43 = icmp ne i32 %42, 0
   br i1 %43, label %$19, label %$20
 $19:
@@ -41364,7 +41364,7 @@ $5:
   unreachable
 $6:
 ; # (sigChk 0)
-  %6 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %6 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %7 = icmp ne i32 %6, 0
   br i1 %7, label %$7, label %$8
 $7:
@@ -42987,7 +42987,7 @@ $43:
   %272 = phi i64 [%261, %$40] ; # Tim
   %273 = phi i64 [%262, %$40] ; # Dly
 ; # (sigChk Exe)
-  %274 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %274 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %275 = icmp ne i32 %274, 0
   br i1 %275, label %$44, label %$45
 $44:
@@ -43992,7 +43992,7 @@ $131:
   %852 = phi i64 [%835, %$110], [%840, %$132], [%844, %$133], [%849, %$134] ; # Tim
   %853 = phi i1 [0, %$110], [0, %$132], [0, %$133], [0, %$134] ; # ->
 ; # (sigChk Exe)
-  %854 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %854 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %855 = icmp ne i32 %854, 0
   br i1 %855, label %$135, label %$136
 $135:
@@ -44339,7 +44339,7 @@ $16:
   %24 = phi i8* [%20, %$11] ; # P
   %25 = phi i64 [%21, %$11] ; # Cnt
 ; # (sigChk Exe)
-  %26 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %26 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %27 = icmp ne i32 %26, 0
   br i1 %27, label %$17, label %$18
 $17:
@@ -44976,7 +44976,7 @@ $25:
   %78 = phi i64 [%72, %$22] ; # X
   %79 = phi i32 [%73, %$22] ; # Fd
 ; # (sigChk Exe)
-  %80 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %80 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %81 = icmp ne i32 %80, 0
   br i1 %81, label %$26, label %$27
 $26:
@@ -45386,7 +45386,7 @@ $30:
   %98 = phi i8* [%90, %$27] ; # S
   %99 = phi i32 [%91, %$27] ; # Fd
 ; # (sigChk Exe)
-  %100 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %100 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %101 = icmp ne i32 %100, 0
   br i1 %101, label %$31, label %$32
 $31:
@@ -45672,7 +45672,7 @@ $15:
 $16:
   %35 = phi i8* [%31, %$13] ; # S
 ; # (sigChk Exe)
-  %36 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %36 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %37 = icmp ne i32 %36, 0
   br i1 %37, label %$17, label %$18
 $17:
@@ -45784,7 +45784,7 @@ $14:
 $15:
   %30 = phi i8* [%26, %$12] ; # S
 ; # (sigChk Exe)
-  %31 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %31 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %32 = icmp ne i32 %31, 0
   br i1 %32, label %$16, label %$17
 $16:
@@ -51953,7 +51953,7 @@ $15:
   br label %$12
 $14:
 ; # (sigChk Exe)
-  %35 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %35 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %36 = icmp ne i32 %35, 0
   br i1 %36, label %$16, label %$17
 $16:
@@ -52024,7 +52024,7 @@ $12:
   br label %$9
 $11:
 ; # (sigChk Exe)
-  %20 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %20 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %21 = icmp ne i32 %20, 0
   br i1 %21, label %$13, label %$14
 $13:
@@ -53685,7 +53685,7 @@ $4:
 define void @print(i64) align 8 {
 $1:
 ; # (sigChk 0)
-  %1 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %1 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %2 = icmp ne i32 %1, 0
   br i1 %2, label %$2, label %$3
 $2:
@@ -54198,7 +54198,7 @@ $4:
 define void @prin(i64) align 8 {
 $1:
 ; # (sigChk 0)
-  %1 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %1 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %2 = icmp ne i32 %1, 0
   br i1 %2, label %$2, label %$3
 $2:
@@ -86058,7 +86058,7 @@ $27:
 $28:
   %84 = phi i64 [%80, %$25] ; # X
 ; # (sigChk Exe)
-  %85 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %85 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %86 = icmp ne i32 %85, 0
   br i1 %86, label %$29, label %$30
 $29:
@@ -101983,7 +101983,7 @@ $21:
   %161 = phi i64 [%157, %$19] ; # P
   %162 = phi i64 [%158, %$19] ; # N
 ; # (sigChk Exe)
-  %163 = load i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
+  %163 = load volatile i32, i32* bitcast ([16 x i32]* @$Signal to i32*)
   %164 = icmp ne i32 %163, 0
   br i1 %164, label %$23, label %$24
 $23:
