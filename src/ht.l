@@ -1,4 +1,4 @@
-# 05may22 Software Lab. Alexander Burger
+# 15jul24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -260,9 +260,7 @@ mkChar evCnt getChar)
       (T -1) ) )
 
 (de void chunkSize ()
-   (let C (val $Chr)
-      (unless C
-         (setq C (call $SvGet)) )
+   (let C (if (val $Chr) @ (call $SvGet))
       (when (ge0 (set $CnkCnt (chrHex C)))
          (while (ge0 (chrHex (setq C (call $SvGet))))
             (set $CnkCnt (| @ (shl (val $CnkCnt) 4))) )

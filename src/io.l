@@ -1,4 +1,4 @@
-# 09jul24 Software Lab. Alexander Burger
+# 15jul24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1626,9 +1626,7 @@ selectErr)
          (strchr Set C) ) ) )
 
 (de token (Set (i32 . Cmt))
-   (let C (val $Chr)
-      (unless C
-         (setq C (call $Get)) )
+   (let C (if (val $Chr) @ (call $Get))
       (cond
          ((lt0 (skipc Cmt)) 0)  # Skip white space and comments
          ((== (setq C @) (char "\""))
@@ -1746,10 +1744,8 @@ selectErr)
 
 # (peek) -> sym
 (de _Peek (Exe)
-   (let Chr (val $Chr)
-      (unless Chr
-         (setq Chr (call $Get)) )
-      (if (lt0 Chr) $Nil (mkChar Chr)) ) )
+   (let C (if (val $Chr) @ (call $Get))
+      (if (lt0 C) $Nil (mkChar C)) ) )
 
 # (char) -> sym
 # (char 'cnt) -> sym
@@ -1759,9 +1755,7 @@ selectErr)
    (let X (cdr Exe)
       (cond
          ((atom X)
-            (let Chr (val $Chr)
-               (unless Chr
-                  (setq Chr (call $Get)) )
+            (let Chr (if (val $Chr) @ (call $Get))
                (prog1
                   (if (lt0 Chr)
                      $Nil
@@ -1892,9 +1886,7 @@ selectErr)
 
 # (line 'flg ['cnt ..]) -> lst|sym
 (de _Line (Exe)
-   (let C (val $Chr)
-      (unless C
-         (setq C (call $Get)) )
+   (let C (if (val $Chr) @ (call $Get))
       (if (eol C)
          $Nil
          (let X (cdr Exe)

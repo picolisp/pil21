@@ -1619,102 +1619,103 @@ $2:
 
 define void @chunkSize() align 8 {
 $1:
-; # (let C (val $Chr) (unless C (setq C (call $SvGet))) (when (ge0 (s...
+; # (let C (if (val $Chr) @ (call $SvGet)) (when (ge0 (set $CnkCnt (c...
+; # (if (val $Chr) @ (call $SvGet))
 ; # (val $Chr)
   %0 = load i32, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 144) to i32*)
-; # (unless C (setq C (call $SvGet)))
   %1 = icmp ne i32 %0, 0
-  br i1 %1, label %$3, label %$2
+  br i1 %1, label %$2, label %$3
 $2:
-  %2 = phi i32 [%0, %$1] ; # C
-; # (call $SvGet)
-  %3 = load i32()*, i32()** @$SvGet
-  %4 = call i32 %3()
-  br label %$3
+  br label %$4
 $3:
-  %5 = phi i32 [%0, %$1], [%4, %$2] ; # C
+; # (call $SvGet)
+  %2 = load i32()*, i32()** @$SvGet
+  %3 = call i32 %2()
+  br label %$4
+$4:
+  %4 = phi i32 [%0, %$2], [%3, %$3] ; # ->
 ; # (when (ge0 (set $CnkCnt (chrHex C))) (while (ge0 (chrHex (setq C ...
 ; # (set $CnkCnt (chrHex C))
 ; # (chrHex C)
-  %6 = call i32 @chrHex(i32 %5)
-  store i32 %6, i32* @$CnkCnt
+  %5 = call i32 @chrHex(i32 %4)
+  store i32 %5, i32* @$CnkCnt
 ; # (ge0 (set $CnkCnt (chrHex C)))
-  %7 = icmp sge i32 %6, 0
-  br i1 %7, label %$4, label %$5
-$4:
-  %8 = phi i32 [%5, %$3] ; # C
+  %6 = icmp sge i32 %5, 0
+  br i1 %6, label %$5, label %$6
+$5:
+  %7 = phi i32 [%4, %$4] ; # C
 ; # (while (ge0 (chrHex (setq C (call $SvGet)))) (set $CnkCnt (| @ (s...
-  br label %$6
-$6:
-  %9 = phi i32 [%8, %$4], [%14, %$7] ; # C
-; # (call $SvGet)
-  %10 = load i32()*, i32()** @$SvGet
-  %11 = call i32 %10()
-; # (chrHex (setq C (call $SvGet)))
-  %12 = call i32 @chrHex(i32 %11)
-; # (ge0 (chrHex (setq C (call $SvGet))))
-  %13 = icmp sge i32 %12, 0
-  br i1 %13, label %$7, label %$8
+  br label %$7
 $7:
-  %14 = phi i32 [%11, %$6] ; # C
+  %8 = phi i32 [%7, %$5], [%13, %$8] ; # C
+; # (call $SvGet)
+  %9 = load i32()*, i32()** @$SvGet
+  %10 = call i32 %9()
+; # (chrHex (setq C (call $SvGet)))
+  %11 = call i32 @chrHex(i32 %10)
+; # (ge0 (chrHex (setq C (call $SvGet))))
+  %12 = icmp sge i32 %11, 0
+  br i1 %12, label %$8, label %$9
+$8:
+  %13 = phi i32 [%10, %$7] ; # C
 ; # (set $CnkCnt (| @ (shl (val $CnkCnt) 4)))
 ; # (val $CnkCnt)
-  %15 = load i32, i32* @$CnkCnt
+  %14 = load i32, i32* @$CnkCnt
 ; # (shl (val $CnkCnt) 4)
-  %16 = shl i32 %15, 4
+  %15 = shl i32 %14, 4
 ; # (| @ (shl (val $CnkCnt) 4))
-  %17 = or i32 %12, %16
-  store i32 %17, i32* @$CnkCnt
-  br label %$6
-$8:
-  %18 = phi i32 [%11, %$6] ; # C
-; # (loop (? (== C (char "^J")) (call $SvGet) (when (=0 (val $CnkCnt)...
-  br label %$9
+  %16 = or i32 %11, %15
+  store i32 %16, i32* @$CnkCnt
+  br label %$7
 $9:
-  %19 = phi i32 [%18, %$8], [%34, %$15] ; # C
+  %17 = phi i32 [%10, %$7] ; # C
+; # (loop (? (== C (char "^J")) (call $SvGet) (when (=0 (val $CnkCnt)...
+  br label %$10
+$10:
+  %18 = phi i32 [%17, %$9], [%33, %$16] ; # C
 ; # (? (== C (char "^J")) (call $SvGet) (when (=0 (val $CnkCnt)) (cal...
 ; # (== C (char "^J"))
-  %20 = icmp eq i32 %19, 10
-  br i1 %20, label %$12, label %$10
-$12:
-  %21 = phi i32 [%19, %$9] ; # C
+  %19 = icmp eq i32 %18, 10
+  br i1 %19, label %$13, label %$11
+$13:
+  %20 = phi i32 [%18, %$10] ; # C
 ; # (call $SvGet)
-  %22 = load i32()*, i32()** @$SvGet
-  %23 = call i32 %22()
+  %21 = load i32()*, i32()** @$SvGet
+  %22 = call i32 %21()
 ; # (when (=0 (val $CnkCnt)) (call $SvGet) (set $Chr 0))
 ; # (val $CnkCnt)
-  %24 = load i32, i32* @$CnkCnt
+  %23 = load i32, i32* @$CnkCnt
 ; # (=0 (val $CnkCnt))
-  %25 = icmp eq i32 %24, 0
-  br i1 %25, label %$13, label %$14
-$13:
-  %26 = phi i32 [%21, %$12] ; # C
+  %24 = icmp eq i32 %23, 0
+  br i1 %24, label %$14, label %$15
+$14:
+  %25 = phi i32 [%20, %$13] ; # C
 ; # (call $SvGet)
-  %27 = load i32()*, i32()** @$SvGet
-  %28 = call i32 %27()
+  %26 = load i32()*, i32()** @$SvGet
+  %27 = call i32 %26()
 ; # (set $Chr 0)
   store i32 0, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 144) to i32*)
-  br label %$14
-$14:
-  %29 = phi i32 [%21, %$12], [%26, %$13] ; # C
-  br label %$11
-$10:
-  %30 = phi i32 [%19, %$9] ; # C
+  br label %$15
+$15:
+  %28 = phi i32 [%20, %$13], [%25, %$14] ; # C
+  br label %$12
+$11:
+  %29 = phi i32 [%18, %$10] ; # C
 ; # (? (lt0 C))
 ; # (lt0 C)
-  %31 = icmp slt i32 %30, 0
-  br i1 %31, label %$11, label %$15
-$15:
-  %32 = phi i32 [%30, %$10] ; # C
+  %30 = icmp slt i32 %29, 0
+  br i1 %30, label %$12, label %$16
+$16:
+  %31 = phi i32 [%29, %$11] ; # C
 ; # (call $SvGet)
-  %33 = load i32()*, i32()** @$SvGet
-  %34 = call i32 %33()
-  br label %$9
-$11:
-  %35 = phi i32 [%29, %$14], [%30, %$10] ; # C
-  br label %$5
-$5:
-  %36 = phi i32 [%5, %$3], [%35, %$11] ; # C
+  %32 = load i32()*, i32()** @$SvGet
+  %33 = call i32 %32()
+  br label %$10
+$12:
+  %34 = phi i32 [%28, %$15], [%29, %$11] ; # C
+  br label %$6
+$6:
+  %35 = phi i32 [%4, %$4], [%34, %$12] ; # C
   ret void
 }
 
