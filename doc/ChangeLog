@@ -1,7 +1,3 @@
-24.7.19
-   Exit current process in 'restart'
-      lib/android.l
-
 24.7.15
    Cosmetics
       src/io.l
