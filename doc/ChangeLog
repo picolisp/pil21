@@ -1,3 +1,7 @@
+24.7.23
+   Call 'restart' as a UI thread (avoid 'java' reentrancy)
+      lib/android.l
+
 24.7.15
    Cosmetics
       src/io.l
