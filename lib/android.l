@@ -1,4 +1,4 @@
-# 23jul24 Software Lab. Alexander Burger
+# 03aug24 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -249,7 +249,7 @@
             (java (; CONTEXT GUI) 'startActivityForResult Intent Req) ) ) ) )
 
 # GPS access
-(local) (*LocMan *LocLsn location? gps)
+(local) (*LocMan *GpsLsn *NetLsn location? gps)
 
 (de location? ()
    (permit "android.permission.ACCESS_FINE_LOCATION") )
@@ -258,17 +258,10 @@
    (unless *LocMan
       (setq
          *LocMan (java CONTEXT 'getSystemService "location")
-         *LocLsn (java T "android.location.LocationListener") )
-      ## (def 'onLocationChanged *LocLsn
-      ##    '((Loc)) )
-      ## (def 'onProviderDisabled *LocLsn
-      ##    '((Prov)) )
-      ## (def 'onProviderEnabled *LocLsn
-      ##    '((Prov)) )
-      ## (def 'onStatusChanged *LocLsn
-      ##    '((Prov Stat Extras)) )
-      #? (java *LocMan 'requestLocationUpdates "network" (10000 . L) (100 . -1000) *LocLsn)
-      (java *LocMan 'requestLocationUpdates "gps" (20000 . L) (100 . -1000) *LocLsn) )
+         *GpsLsn (java T "android.location.LocationListener")
+         *NetLsn (java T "android.location.LocationListener") )
+      (java *LocMan 'requestLocationUpdates "gps" (20000 . L) (100 . -1000) *GpsLsn)
+      (java *LocMan 'requestLocationUpdates "network" (20000 . L) (100 . -1000) *NetLsn) )
    (and
       (or
          (and

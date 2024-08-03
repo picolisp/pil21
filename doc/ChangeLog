@@ -1,3 +1,7 @@
+24.8.3
+   Fix 'gps' with two Location Listeners
+      lib/android.l
+
 24.7.30
    Typo
       doc/refN.html
