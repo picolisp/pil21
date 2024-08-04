@@ -1,4 +1,4 @@
-# 03aug24 Software Lab. Alexander Burger
+# 04aug24 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -130,15 +130,16 @@
 # Wake lock
 (local) (*Wake wake)
 
-(de wake @
+(de wake @  # (wake ['flg])
    (default *Wake  # PowerManager.WakeLock
       (java
          (java CONTEXT 'getSystemService "power")  # PowerManager
          'newWakeLock 1 "PilWake" ) )              # PARTIAL_WAKE_LOCK = 1
-   (when (args)  # (wake 'flg)
+   (when (args)
       (cond
          ((next) (java *Wake 'acquire))
-         ((java *Wake 'isHeld) (java *Wake 'release)) ) ) )
+         ((java *Wake 'isHeld) (java *Wake 'release)) ) )
+   (java *Wake 'isHeld) )
 
 # Check if WIFI is active
 (local) wifi?
