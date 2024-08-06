@@ -1,4 +1,4 @@
-# 21jan24 Software Lab. Alexander Burger
+# 06aug24 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -77,11 +77,12 @@
          (line T) ) ) )
 
 # PicoLisp Shell
-(de psh (Pw Tty)
+(de psh (Pw Tty Term)
    (cond
       ((not Pw) (println *Port) (bye))
       ((<> Pw (pw)) (quit "Bad pw"))
       ((ctty Tty)
+         (sys "TERM" Term)
          (if *SesId
             (setq *Adr *SesAdr)
             (off *Run) )

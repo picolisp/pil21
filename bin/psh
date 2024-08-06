@@ -1,5 +1,5 @@
 #!/usr/bin/pil
-# 22feb23 Software Lab. Alexander Burger
+# 06aug24 Software Lab. Alexander Burger
 
 (load "@lib/net.l" "@lib/misc.l" "@lib/http.l")
 
@@ -8,7 +8,10 @@
       (or
          (format Arg)
          (client "localhost" 80 (pack Arg "/!psh") (read)) )
-      (pack (opt) "!psh?" (pw) "&" (in '("tty") (line T)))
+      (pack (opt) "!psh?"
+         (pw) "&"
+         (in '("tty") (line T)) "&"
+         (sys "TERM") )
       (ctty (read))
       (line)
       (line) ) )
