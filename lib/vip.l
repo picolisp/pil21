@@ -1,4 +1,4 @@
-# 09jun24 Software Lab. Alexander Burger
+# 07aug24 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1276,6 +1276,8 @@ s-expr command vipA vipZ vi)
    (off *Count *Change)
    (setq *Clip '\"\") )
 
+(private) (Lst Ns L C S X)
+
 ### Commands ###
 (de command (This Line)
    (case (++ Line)
@@ -1395,8 +1397,6 @@ s-expr command vipA vipZ vi)
          (with *CmdWin
             (redraw) ) )
       (T (beep)) ) )
-
-(private) (Lst Ns X C)
 
 (de syms (Lst)
    (prog1

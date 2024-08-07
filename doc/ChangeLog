@@ -1,3 +1,7 @@
+24.8.7
+   Add 'L' and 'S' to private symbols
+      lib/vip.l
+
 24.8.6
    Pass TERM environment variable to 'psh'
       lib/http.l

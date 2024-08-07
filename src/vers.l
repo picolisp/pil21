@@ -1,7 +1,7 @@
-# 06aug24 Software Lab. Alexander Burger
+# 07aug24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
 (local) *Version
 
-(pico~de *Version 24 8 6)
+(pico~de *Version 24 8 7)
