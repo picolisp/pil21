@@ -1,3 +1,7 @@
+24.8.16
+   'pil' is obsolete
+      doc/refT.html
+
 24.8.7
    Add 'L' and 'S' to private symbols
       lib/vip.l
