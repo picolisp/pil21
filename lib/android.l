@@ -1,4 +1,4 @@
-# 04aug24 Software Lab. Alexander Burger
+# 19aug24 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -255,25 +255,30 @@
 (de location? ()
    (permit "android.permission.ACCESS_FINE_LOCATION") )
 
-(de gps ()
-   (unless *LocMan
-      (setq
-         *LocMan (java CONTEXT 'getSystemService "location")
-         *GpsLsn (java T "android.location.LocationListener")
-         *NetLsn (java T "android.location.LocationListener") )
-      (java *LocMan 'requestLocationUpdates "gps" (20000 . L) (100 . -1000) *GpsLsn)
-      (java *LocMan 'requestLocationUpdates "network" (20000 . L) (100 . -1000) *NetLsn) )
-   (and
-      (or
-         (and
-            (java *LocMan 'isProviderEnabled "gps")
-            (java *LocMan 'getLastKnownLocation "gps") )
-         (and
-            (java *LocMan 'isProviderEnabled "network")
-            (java *LocMan 'getLastKnownLocation "network") ) )
-      (cons
-         (+ (java @ 'getLatitude) 90000000)
-         (+ (java @ 'getLongitude) 180000000) ) ) )
+(de gps (Flg)
+   (if Flg
+      (when *LocMan
+         (java *LocMan 'removeUpdates *GpsLsn)
+         (java *LocMan 'removeUpdates *NetLsn)
+         (off *LocMan) )
+      (unless *LocMan
+         (setq
+            *LocMan (java CONTEXT 'getSystemService "location")
+            *GpsLsn (java T "android.location.LocationListener")
+            *NetLsn (java T "android.location.LocationListener") )
+         (java *LocMan 'requestLocationUpdates "gps" (20000 . L) (100 . -1000) *GpsLsn)
+         (java *LocMan 'requestLocationUpdates "network" (20000 . L) (100 . -1000) *NetLsn) )
+      (and
+         (or
+            (and
+               (java *LocMan 'isProviderEnabled "gps")
+               (java *LocMan 'getLastKnownLocation "gps") )
+            (and
+               (java *LocMan 'isProviderEnabled "network")
+               (java *LocMan 'getLastKnownLocation "network") ) )
+         (cons
+            (+ (java @ 'getLatitude) 90000000)
+            (+ (java @ 'getLongitude) 180000000) ) ) ) )
 
 # Camera access
 (local) (camera? takePicture)

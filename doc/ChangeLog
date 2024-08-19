@@ -1,3 +1,7 @@
+24.8.19
+   Stop 'gps' via 'Flg' argument
+      lib/android.l
+
 24.8.16
    'pil' is obsolete
       doc/refT.html
