@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 09jul24 Software Lab. Alexander Burger
+# 07sep24 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -302,12 +302,12 @@ a symbol consists of a single cell, and has no name or properties:
             |
             V
       +-----+-----+
-      |  /  | VAL |
+      | '0' | VAL |
       +-----+-----+
 </pre>
 
-<p>That is, the symbol's tail is empty (<code>ZERO</code>, as indicated by the
-'<code>/</code>' character).
+<p>That is, the symbol's tail is empty (<code>ZERO</code>, as indicated by
+'<code>0</code>').
 
 <p>The pointer to a symbol points to the CDR of the cell, with an offset of 8
 bytes from the cell's start address. Therefore, the bit pattern of a symbol will
