@@ -1,3 +1,7 @@
+24.10.15
+   Support also HOME and END keys
+      lib/vip.l
+
 ####### 24.9 #######
 24.9.7
    '0' for empty name in minimal symbol diagram

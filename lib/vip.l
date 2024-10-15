@@ -1,4 +1,4 @@
-# 07aug24 Software Lab. Alexander Burger
+# 15oct24 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1524,7 +1524,9 @@ s-expr command vipA vipZ vi)
                                  ("Z" (do 3 (scLeft)) (redraw))  # Scroll left 3 columns
                                  ("|" (move 'goCol *Cnt))  # Go to column
                                  ("$" (move 'goRight T))  # Go to end of line
-                                 ("G" (move 'goAbs 1 (or (format *Count) T)))  # Go to end of text
+                                 ("\e[1~" (move 'goAbs 1 1))  # [HOME] Go to beginning of text
+                                 ("\e[4~" (move 'goAbs 1 T))  # [END] Go to end of text
+                                 ("G" (move 'goAbs 1 (or (format *Count) T)))  # [G] Go to end of text or line number
                                  ("f" (and (getch2 (getch)) (move 'goFind @ 0 *Cnt)))  # Find character
                                  ("t" (and (getch2 (getch)) (move 'goFind @ -1 *Cnt)))  # Till character
                                  ("\t" (move 'goForward 'tword *Cnt))  # TAB word forward
