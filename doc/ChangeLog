@@ -1,3 +1,8 @@
+24.11.7
+   Remove obsolete C-level 'lisp' descriptions
+      doc/refN.html
+      doc/native.html
+
 24.10.16
    Support also HOME and END keys
       lib/vip.l

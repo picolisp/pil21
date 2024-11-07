@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 30jul24 Software Lab. Alexander Burger
+# 07nov24 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -234,17 +234,7 @@ structures, and frees that memory when done.
 <p>For NaN or negative infinity fixpoint values <code>NIL</code>, and for
 positive infinity <code>T</code> is returned.
 
-<p>A C function may in turn call a function
-
-<pre>
-   long lisp(char*, long, long, long, long, long);
-</pre>
-
-<p>which accepts a symbol name as the first argument, and up to 5 numbers.
-<code>lisp()</code> calls that symbol with the five numbers, and expects a
-numeric return value. "Numbers" in this context are 64-bit scalars, and may not
-only represent integers, but also pointers or other encoded data. See also
-<code><a href="ref_.html#%25@">%@</a></code>, <code><a
+<p>See also <code><a href="ref_.html#%25@">%@</a></code>, <code><a
 href="refS.html#struct">struct</a></code>, <code><a
 href="refA.html#adr">adr</a></code>, <code><a
 href="refL.html#lisp">lisp</a></code> and <code><a

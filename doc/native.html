@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 07nov24 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -666,61 +666,19 @@ prints a floating point number in scientific notation:
 <p><hr>
 <h2><a id="callbacks">Callbacks</a></h2>
 
-<p>Sometimes it is necessary to do the reverse: Call Lisp code from C code. This
-can be done in two ways - with certain limitations.
+<p>Sometimes it is necessary to do the reverse: Call Lisp code from C code.
 
-
-<h4><a id="byName">Call by Name</a></h4>
-
-<p>The first way is actually not a <a
-href="http://en.wikipedia.org/wiki/Callback_(computer_programming)">callback</a>
-in the strict sense. It just allows to call a Lisp function with a given name.
-
-<p>The limitation is that this function can accept only maximally five numeric
-arguments, and must return a number.
-
-<p>The prerequisite is, of course, that you have access to the C source code. To
-use it from C, insert the following prototype somewhere before the first call:
-
-<pre>
-long lisp(char*,long,long,long,long,long);
-</pre>
-
-<p>Then you can call <code>lisp</code> from C:
-
-<pre>
-long n = lisp("myLispFun", a, b, 0, 0, 0);
-</pre>
-
-<p>The first argument should be the name of a Lisp function (built-in, or
-defined in Lisp). It is searched for at runtime, so it doesn't need to exist at
-the time the C library is compiled or loaded.
-
-<p>Be sure to pass dummy arguments (e.g. zero) if your function expects less
-than five arguments, to keep the C compiler happy.
-
-<p>This mechanism can generally be used for any type of argument and return
-value (not only <code>long</code>). On the C side, appropriate casts or an
-adapted prototype should be used. It is then up to the called Lisp function to
-prepare and/or extract the proper data with <code><a
-href="refS.html#struct">struct</a></code> and memory management operations.
-
-
-<h4><a id="funptr">Function Pointer</a></h4>
-
-<p>This is a true <a
-href="http://en.wikipedia.org/wiki/Callback_(computer_programming)">callback</a>
-mechanism. It uses the Lisp-level function <code><a
-href="refL.html#lisp">lisp</a></code> (not to confuse with the C-level function
-with the same name in the previous section). No C source code access is
+<p>This mechanism uses the Lisp-level function <code><a
+href="refL.html#lisp">lisp</a></code>. No C source code access is
 required.
 
-<p><code>lisp</code> returns a function pointer, which can be passed to C
-functions via <code>native</code>. When this function pointer is dereferenced
-and called from the C code, the corresponding Lisp function is invoked. Here,
-too, only five numeric arguments and a numeric return value can be used, and
-other data types must be handled by the Lisp function with <code><a
-href="refS.html#struct">struct</a></code> and memory management operations.
+<p><code>lisp</code> returns a function pointer, which can be passed to
+C functions via <code>native</code>. When this function pointer is
+dereferenced and called from the C code, the corresponding Lisp function
+is invoked. Only five numeric arguments and a numeric return value can
+be used, and other data types must be handled by the Lisp function with
+<code><a href="refS.html#struct">struct</a></code> and memory management
+operations.
 
 <p>Callbacks are often used in user interface libraries, to handle key-, mouse-
 and other events. Examples can be found in <code>"@lib/openGl.l"</code>. The
