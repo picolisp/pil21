@@ -1,4 +1,4 @@
-# 15jul24 Software Lab. Alexander Burger
+# 20nov24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2432,7 +2432,7 @@ selectErr)
    (sigChk 0)
    (cond
       ((cnt? X) (outNum X))
-      ((big? X) (fmtNum X -1 0 0 null))
+      ((big? X) (fmtNum X 0 0 0 null))
       ((sym? X)
          (cond
             ((sym? (val (tail X)))  # External
@@ -2505,7 +2505,7 @@ selectErr)
    (unless (nil? X)
       (cond
          ((cnt? X) (outNum X))
-         ((big? X) (fmtNum X -1 0 0 null))
+         ((big? X) (fmtNum X 0 0 0 null))
          ((pair X)
             (stkChk 0)
             (loop

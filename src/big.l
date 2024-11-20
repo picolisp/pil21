@@ -1,4 +1,4 @@
-# 08aug23 Software Lab. Alexander Burger
+# 20nov24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1014,7 +1014,7 @@
                (? (cnt? Num))
                (setq Num (val (big Num))) ) )
          (cond
-            ((ge0 Scl)  # Build symbol
+            (P  # Build symbol
                (when Sign
                   (byteSym (char "-") P) )
                (let N (* (shr (- TopA Acc) 3) 18)  # Calculate length~1
@@ -1041,7 +1041,15 @@
                         (setq N (% N D)  D (/ D 10)) )
                      (byteSym (+ (i8 N) (char "0")) P) ) )
                0 )
-            ((== Scl -1)  # Direct print
+            ((== Scl -1)  # Calculate length
+               (let (N (* (shr (- TopA Acc) 3) 18)  D (val TopA))
+                  (loop
+                     (inc 'N)
+                     (? (=0 (setq D (/ D 10)))) )
+                  (when Sign
+                     (inc 'N) )
+                  (cnt N) ) )
+            (T  # Direct print
                (when Sign
                   (call $Put (char "-")) )  # Output sign
                (outWord (val TopA))  # Output highest word
@@ -1052,15 +1060,7 @@
                         (setq N (% N D))
                         (? (== 1 (setq D (/ D 10)))) )
                      (call $Put (+ (i8 N) (char "0"))) ) )  # Output last digit
-               0 )
-            (T  # Calculate length
-               (let (N (* (shr (- TopA Acc) 3) 18)  D (val TopA))
-                  (loop
-                     (inc 'N)
-                     (? (=0 (setq D (/ D 10)))) )
-                  (when Sign
-                     (inc 'N) )
-                  (cnt N) ) ) ) ) ) )
+               0 ) ) ) ) )
 
 # (format 'num ['cnt ['sym1 ['sym2]]]) -> sym
 # (format 'sym|lst ['cnt ['sym1 ['sym2]]]) -> num

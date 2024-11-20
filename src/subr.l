@@ -1,4 +1,4 @@
-# 26nov23 Software Lab. Alexander Burger
+# 20nov24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -974,7 +974,7 @@
 (de _Length (Exe)
    (let X (eval (cadr Exe))
       (cond
-         ((num? X) (fmtNum X -2 0 0 null))
+         ((num? X) (fmtNum X -1 0 0 null))
          ((pair X)
             (let (C ONE  Y X)
                (loop

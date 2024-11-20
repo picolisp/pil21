@@ -1523,7 +1523,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 386,
   i64 178,
-  i64 114
+  i64 322
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -15841,9 +15841,8 @@ $32:
   %310 = phi i64* [%292, %$30] ; # TopA
   %311 = phi i64* [%293, %$30] ; # TopI
   %312 = phi i64 [0, %$30] ; # ->
-; # (cond ((ge0 Scl) (when Sign (byteSym (char "-") P)) (let N (* (sh...
-; # (ge0 Scl)
-  %313 = icmp sge i64 %308, 0
+; # (cond (P (when Sign (byteSym (char "-") P)) (let N (* (shr (- Top...
+  %313 = icmp ne i64* %4, null
   br i1 %313, label %$35, label %$34
 $35:
   %314 = phi i64 [%307, %$32] ; # Num
@@ -16131,180 +16130,180 @@ $61:
   %487 = phi i64 [%482, %$34] ; # Scl
   %488 = phi i64 [%483, %$34] ; # Len
   %489 = phi i64* [%484, %$34] ; # TopA
-; # (when Sign (call $Put (char "-")))
-  br i1 %6, label %$62, label %$63
-$62:
-  %490 = phi i64 [%486, %$61] ; # Num
-  %491 = phi i64 [%487, %$61] ; # Scl
-  %492 = phi i64 [%488, %$61] ; # Len
-  %493 = phi i64* [%489, %$61] ; # TopA
-; # (call $Put (char "-"))
-  %494 = load void(i8)*, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 80) to void(i8)**)
-  call void %494(i8 45)
-  br label %$63
-$63:
-  %495 = phi i64 [%486, %$61], [%490, %$62] ; # Num
-  %496 = phi i64 [%487, %$61], [%491, %$62] ; # Scl
-  %497 = phi i64 [%488, %$61], [%492, %$62] ; # Len
-  %498 = phi i64* [%489, %$61], [%493, %$62] ; # TopA
-; # (val TopA)
-  %499 = load i64, i64* %498
-; # (outWord (val TopA))
-  call void @outWord(i64 %499)
-; # (while (>= (dec 'TopA) Acc) (let (N (val TopA) D 1000000000000000...
-  br label %$64
-$64:
-  %500 = phi i64 [%495, %$63], [%530, %$69] ; # Num
-  %501 = phi i64 [%496, %$63], [%531, %$69] ; # Scl
-  %502 = phi i64 [%497, %$63], [%532, %$69] ; # Len
-  %503 = phi i64* [%498, %$63], [%533, %$69] ; # TopA
-; # (dec 'TopA)
-  %504 = getelementptr i64, i64* %503, i32 -1
-; # (>= (dec 'TopA) Acc)
-  %505 = icmp uge i64* %504, %27
-  br i1 %505, label %$65, label %$66
-$65:
-  %506 = phi i64 [%500, %$64] ; # Num
-  %507 = phi i64 [%501, %$64] ; # Scl
-  %508 = phi i64 [%502, %$64] ; # Len
-  %509 = phi i64* [%504, %$64] ; # TopA
-; # (let (N (val TopA) D 100000000000000000) (loop (call $Put (+ (i8 ...
-; # (val TopA)
-  %510 = load i64, i64* %509
-; # (loop (call $Put (+ (i8 (/ N D)) (char "0"))) (setq N (% N D)) (?...
-  br label %$67
-$67:
-  %511 = phi i64 [%506, %$65], [%524, %$68] ; # Num
-  %512 = phi i64 [%507, %$65], [%525, %$68] ; # Scl
-  %513 = phi i64 [%508, %$65], [%526, %$68] ; # Len
-  %514 = phi i64* [%509, %$65], [%527, %$68] ; # TopA
-  %515 = phi i64 [%510, %$65], [%528, %$68] ; # N
-  %516 = phi i64 [100000000000000000, %$65], [%529, %$68] ; # D
-; # (/ N D)
-  %517 = udiv i64 %515, %516
-; # (i8 (/ N D))
-  %518 = trunc i64 %517 to i8
-; # (+ (i8 (/ N D)) (char "0"))
-  %519 = add i8 %518, 48
-; # (call $Put (+ (i8 (/ N D)) (char "0")))
-  %520 = load void(i8)*, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 80) to void(i8)**)
-  call void %520(i8 %519)
-; # (% N D)
-  %521 = urem i64 %515, %516
-; # (? (== 1 (setq D (/ D 10))))
-; # (/ D 10)
-  %522 = udiv i64 %516, 10
-; # (== 1 (setq D (/ D 10)))
-  %523 = icmp eq i64 1, %522
-  br i1 %523, label %$69, label %$68
-$68:
-  %524 = phi i64 [%511, %$67] ; # Num
-  %525 = phi i64 [%512, %$67] ; # Scl
-  %526 = phi i64 [%513, %$67] ; # Len
-  %527 = phi i64* [%514, %$67] ; # TopA
-  %528 = phi i64 [%521, %$67] ; # N
-  %529 = phi i64 [%522, %$67] ; # D
-  br label %$67
-$69:
-  %530 = phi i64 [%511, %$67] ; # Num
-  %531 = phi i64 [%512, %$67] ; # Scl
-  %532 = phi i64 [%513, %$67] ; # Len
-  %533 = phi i64* [%514, %$67] ; # TopA
-  %534 = phi i64 [%521, %$67] ; # N
-  %535 = phi i64 [%522, %$67] ; # D
-  %536 = phi i64 [0, %$67] ; # ->
-; # (i8 N)
-  %537 = trunc i64 %534 to i8
-; # (+ (i8 N) (char "0"))
-  %538 = add i8 %537, 48
-; # (call $Put (+ (i8 N) (char "0")))
-  %539 = load void(i8)*, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 80) to void(i8)**)
-  call void %539(i8 %538)
-  br label %$64
-$66:
-  %540 = phi i64 [%500, %$64] ; # Num
-  %541 = phi i64 [%501, %$64] ; # Scl
-  %542 = phi i64 [%502, %$64] ; # Len
-  %543 = phi i64* [%504, %$64] ; # TopA
-  br label %$33
-$60:
-  %544 = phi i64 [%481, %$34] ; # Num
-  %545 = phi i64 [%482, %$34] ; # Scl
-  %546 = phi i64 [%483, %$34] ; # Len
-  %547 = phi i64* [%484, %$34] ; # TopA
 ; # (let (N (* (shr (- TopA Acc) 3) 18) D (val TopA)) (loop (inc 'N) ...
 ; # (- TopA Acc)
-  %548 = ptrtoint i64* %547 to i64
-  %549 = ptrtoint i64* %27 to i64
-  %550 = sub i64 %548, %549
+  %490 = ptrtoint i64* %489 to i64
+  %491 = ptrtoint i64* %27 to i64
+  %492 = sub i64 %490, %491
 ; # (shr (- TopA Acc) 3)
-  %551 = lshr i64 %550, 3
+  %493 = lshr i64 %492, 3
 ; # (* (shr (- TopA Acc) 3) 18)
-  %552 = mul i64 %551, 18
+  %494 = mul i64 %493, 18
 ; # (val TopA)
-  %553 = load i64, i64* %547
+  %495 = load i64, i64* %489
 ; # (loop (inc 'N) (? (=0 (setq D (/ D 10)))))
-  br label %$70
-$70:
-  %554 = phi i64 [%544, %$60], [%563, %$71] ; # Num
-  %555 = phi i64 [%545, %$60], [%564, %$71] ; # Scl
-  %556 = phi i64 [%546, %$60], [%565, %$71] ; # Len
-  %557 = phi i64* [%547, %$60], [%566, %$71] ; # TopA
-  %558 = phi i64 [%552, %$60], [%567, %$71] ; # N
-  %559 = phi i64 [%553, %$60], [%568, %$71] ; # D
+  br label %$62
+$62:
+  %496 = phi i64 [%486, %$61], [%505, %$63] ; # Num
+  %497 = phi i64 [%487, %$61], [%506, %$63] ; # Scl
+  %498 = phi i64 [%488, %$61], [%507, %$63] ; # Len
+  %499 = phi i64* [%489, %$61], [%508, %$63] ; # TopA
+  %500 = phi i64 [%494, %$61], [%509, %$63] ; # N
+  %501 = phi i64 [%495, %$61], [%510, %$63] ; # D
 ; # (inc 'N)
-  %560 = add i64 %558, 1
+  %502 = add i64 %500, 1
 ; # (? (=0 (setq D (/ D 10))))
 ; # (/ D 10)
-  %561 = udiv i64 %559, 10
+  %503 = udiv i64 %501, 10
 ; # (=0 (setq D (/ D 10)))
-  %562 = icmp eq i64 %561, 0
-  br i1 %562, label %$72, label %$71
-$71:
-  %563 = phi i64 [%554, %$70] ; # Num
-  %564 = phi i64 [%555, %$70] ; # Scl
-  %565 = phi i64 [%556, %$70] ; # Len
-  %566 = phi i64* [%557, %$70] ; # TopA
-  %567 = phi i64 [%560, %$70] ; # N
-  %568 = phi i64 [%561, %$70] ; # D
-  br label %$70
-$72:
-  %569 = phi i64 [%554, %$70] ; # Num
-  %570 = phi i64 [%555, %$70] ; # Scl
-  %571 = phi i64 [%556, %$70] ; # Len
-  %572 = phi i64* [%557, %$70] ; # TopA
-  %573 = phi i64 [%560, %$70] ; # N
-  %574 = phi i64 [%561, %$70] ; # D
-  %575 = phi i64 [0, %$70] ; # ->
+  %504 = icmp eq i64 %503, 0
+  br i1 %504, label %$64, label %$63
+$63:
+  %505 = phi i64 [%496, %$62] ; # Num
+  %506 = phi i64 [%497, %$62] ; # Scl
+  %507 = phi i64 [%498, %$62] ; # Len
+  %508 = phi i64* [%499, %$62] ; # TopA
+  %509 = phi i64 [%502, %$62] ; # N
+  %510 = phi i64 [%503, %$62] ; # D
+  br label %$62
+$64:
+  %511 = phi i64 [%496, %$62] ; # Num
+  %512 = phi i64 [%497, %$62] ; # Scl
+  %513 = phi i64 [%498, %$62] ; # Len
+  %514 = phi i64* [%499, %$62] ; # TopA
+  %515 = phi i64 [%502, %$62] ; # N
+  %516 = phi i64 [%503, %$62] ; # D
+  %517 = phi i64 [0, %$62] ; # ->
 ; # (when Sign (inc 'N))
-  br i1 %6, label %$73, label %$74
-$73:
-  %576 = phi i64 [%569, %$72] ; # Num
-  %577 = phi i64 [%570, %$72] ; # Scl
-  %578 = phi i64 [%571, %$72] ; # Len
-  %579 = phi i64* [%572, %$72] ; # TopA
-  %580 = phi i64 [%573, %$72] ; # N
-  %581 = phi i64 [%574, %$72] ; # D
+  br i1 %6, label %$65, label %$66
+$65:
+  %518 = phi i64 [%511, %$64] ; # Num
+  %519 = phi i64 [%512, %$64] ; # Scl
+  %520 = phi i64 [%513, %$64] ; # Len
+  %521 = phi i64* [%514, %$64] ; # TopA
+  %522 = phi i64 [%515, %$64] ; # N
+  %523 = phi i64 [%516, %$64] ; # D
 ; # (inc 'N)
-  %582 = add i64 %580, 1
-  br label %$74
-$74:
-  %583 = phi i64 [%569, %$72], [%576, %$73] ; # Num
-  %584 = phi i64 [%570, %$72], [%577, %$73] ; # Scl
-  %585 = phi i64 [%571, %$72], [%578, %$73] ; # Len
-  %586 = phi i64* [%572, %$72], [%579, %$73] ; # TopA
-  %587 = phi i64 [%573, %$72], [%582, %$73] ; # N
-  %588 = phi i64 [%574, %$72], [%581, %$73] ; # D
+  %524 = add i64 %522, 1
+  br label %$66
+$66:
+  %525 = phi i64 [%511, %$64], [%518, %$65] ; # Num
+  %526 = phi i64 [%512, %$64], [%519, %$65] ; # Scl
+  %527 = phi i64 [%513, %$64], [%520, %$65] ; # Len
+  %528 = phi i64* [%514, %$64], [%521, %$65] ; # TopA
+  %529 = phi i64 [%515, %$64], [%524, %$65] ; # N
+  %530 = phi i64 [%516, %$64], [%523, %$65] ; # D
 ; # (cnt N)
-  %589 = shl i64 %587, 4
-  %590 = or i64 %589, 2
+  %531 = shl i64 %529, 4
+  %532 = or i64 %531, 2
+  br label %$33
+$60:
+  %533 = phi i64 [%481, %$34] ; # Num
+  %534 = phi i64 [%482, %$34] ; # Scl
+  %535 = phi i64 [%483, %$34] ; # Len
+  %536 = phi i64* [%484, %$34] ; # TopA
+; # (when Sign (call $Put (char "-")))
+  br i1 %6, label %$67, label %$68
+$67:
+  %537 = phi i64 [%533, %$60] ; # Num
+  %538 = phi i64 [%534, %$60] ; # Scl
+  %539 = phi i64 [%535, %$60] ; # Len
+  %540 = phi i64* [%536, %$60] ; # TopA
+; # (call $Put (char "-"))
+  %541 = load void(i8)*, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 80) to void(i8)**)
+  call void %541(i8 45)
+  br label %$68
+$68:
+  %542 = phi i64 [%533, %$60], [%537, %$67] ; # Num
+  %543 = phi i64 [%534, %$60], [%538, %$67] ; # Scl
+  %544 = phi i64 [%535, %$60], [%539, %$67] ; # Len
+  %545 = phi i64* [%536, %$60], [%540, %$67] ; # TopA
+; # (val TopA)
+  %546 = load i64, i64* %545
+; # (outWord (val TopA))
+  call void @outWord(i64 %546)
+; # (while (>= (dec 'TopA) Acc) (let (N (val TopA) D 1000000000000000...
+  br label %$69
+$69:
+  %547 = phi i64 [%542, %$68], [%577, %$74] ; # Num
+  %548 = phi i64 [%543, %$68], [%578, %$74] ; # Scl
+  %549 = phi i64 [%544, %$68], [%579, %$74] ; # Len
+  %550 = phi i64* [%545, %$68], [%580, %$74] ; # TopA
+; # (dec 'TopA)
+  %551 = getelementptr i64, i64* %550, i32 -1
+; # (>= (dec 'TopA) Acc)
+  %552 = icmp uge i64* %551, %27
+  br i1 %552, label %$70, label %$71
+$70:
+  %553 = phi i64 [%547, %$69] ; # Num
+  %554 = phi i64 [%548, %$69] ; # Scl
+  %555 = phi i64 [%549, %$69] ; # Len
+  %556 = phi i64* [%551, %$69] ; # TopA
+; # (let (N (val TopA) D 100000000000000000) (loop (call $Put (+ (i8 ...
+; # (val TopA)
+  %557 = load i64, i64* %556
+; # (loop (call $Put (+ (i8 (/ N D)) (char "0"))) (setq N (% N D)) (?...
+  br label %$72
+$72:
+  %558 = phi i64 [%553, %$70], [%571, %$73] ; # Num
+  %559 = phi i64 [%554, %$70], [%572, %$73] ; # Scl
+  %560 = phi i64 [%555, %$70], [%573, %$73] ; # Len
+  %561 = phi i64* [%556, %$70], [%574, %$73] ; # TopA
+  %562 = phi i64 [%557, %$70], [%575, %$73] ; # N
+  %563 = phi i64 [100000000000000000, %$70], [%576, %$73] ; # D
+; # (/ N D)
+  %564 = udiv i64 %562, %563
+; # (i8 (/ N D))
+  %565 = trunc i64 %564 to i8
+; # (+ (i8 (/ N D)) (char "0"))
+  %566 = add i8 %565, 48
+; # (call $Put (+ (i8 (/ N D)) (char "0")))
+  %567 = load void(i8)*, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 80) to void(i8)**)
+  call void %567(i8 %566)
+; # (% N D)
+  %568 = urem i64 %562, %563
+; # (? (== 1 (setq D (/ D 10))))
+; # (/ D 10)
+  %569 = udiv i64 %563, 10
+; # (== 1 (setq D (/ D 10)))
+  %570 = icmp eq i64 1, %569
+  br i1 %570, label %$74, label %$73
+$73:
+  %571 = phi i64 [%558, %$72] ; # Num
+  %572 = phi i64 [%559, %$72] ; # Scl
+  %573 = phi i64 [%560, %$72] ; # Len
+  %574 = phi i64* [%561, %$72] ; # TopA
+  %575 = phi i64 [%568, %$72] ; # N
+  %576 = phi i64 [%569, %$72] ; # D
+  br label %$72
+$74:
+  %577 = phi i64 [%558, %$72] ; # Num
+  %578 = phi i64 [%559, %$72] ; # Scl
+  %579 = phi i64 [%560, %$72] ; # Len
+  %580 = phi i64* [%561, %$72] ; # TopA
+  %581 = phi i64 [%568, %$72] ; # N
+  %582 = phi i64 [%569, %$72] ; # D
+  %583 = phi i64 [0, %$72] ; # ->
+; # (i8 N)
+  %584 = trunc i64 %581 to i8
+; # (+ (i8 N) (char "0"))
+  %585 = add i8 %584, 48
+; # (call $Put (+ (i8 N) (char "0")))
+  %586 = load void(i8)*, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 80) to void(i8)**)
+  call void %586(i8 %585)
+  br label %$69
+$71:
+  %587 = phi i64 [%547, %$69] ; # Num
+  %588 = phi i64 [%548, %$69] ; # Scl
+  %589 = phi i64 [%549, %$69] ; # Len
+  %590 = phi i64* [%551, %$69] ; # TopA
   br label %$33
 $33:
-  %591 = phi i64 [%477, %$48], [%540, %$66], [%583, %$74] ; # Num
-  %592 = phi i64 [%478, %$48], [%541, %$66], [%584, %$74] ; # Scl
-  %593 = phi i64 [%479, %$48], [%542, %$66], [%585, %$74] ; # Len
-  %594 = phi i64* [%480, %$48], [%543, %$66], [%586, %$74] ; # TopA
-  %595 = phi i64 [0, %$48], [0, %$66], [%590, %$74] ; # ->
+  %591 = phi i64 [%477, %$48], [%525, %$66], [%587, %$71] ; # Num
+  %592 = phi i64 [%478, %$48], [%526, %$66], [%588, %$71] ; # Scl
+  %593 = phi i64 [%479, %$48], [%527, %$66], [%589, %$71] ; # Len
+  %594 = phi i64* [%480, %$48], [%528, %$66], [%590, %$71] ; # TopA
+  %595 = phi i64 [0, %$48], [%532, %$66], [0, %$71] ; # ->
   ret i64 %595
 }
 
@@ -53690,7 +53689,7 @@ $2:
   call void @sighandler(i64 0)
   br label %$3
 $3:
-; # (cond ((cnt? X) (outNum X)) ((big? X) (fmtNum X -1 0 0 null)) ((s...
+; # (cond ((cnt? X) (outNum X)) ((big? X) (fmtNum X 0 0 0 null)) ((sy...
 ; # (cnt? X)
   %3 = and i64 %0, 2
   %4 = icmp ne i64 %3, 0
@@ -53708,8 +53707,8 @@ $5:
   br i1 %8, label %$8, label %$7
 $8:
   %9 = phi i64 [%6, %$5] ; # X
-; # (fmtNum X -1 0 0 null)
-  %10 = call i64 @fmtNum(i64 %9, i64 -1, i8 0, i8 0, i64* null)
+; # (fmtNum X 0 0 0 null)
+  %10 = call i64 @fmtNum(i64 %9, i64 0, i8 0, i8 0, i64* null)
   br label %$4
 $7:
   %11 = phi i64 [%6, %$5] ; # X
@@ -54209,7 +54208,7 @@ $3:
   br i1 %3, label %$5, label %$4
 $4:
   %4 = phi i64 [%0, %$3] ; # X
-; # (cond ((cnt? X) (outNum X)) ((big? X) (fmtNum X -1 0 0 null)) ((p...
+; # (cond ((cnt? X) (outNum X)) ((big? X) (fmtNum X 0 0 0 null)) ((pa...
 ; # (cnt? X)
   %5 = and i64 %4, 2
   %6 = icmp ne i64 %5, 0
@@ -54227,8 +54226,8 @@ $7:
   br i1 %10, label %$10, label %$9
 $10:
   %11 = phi i64 [%8, %$7] ; # X
-; # (fmtNum X -1 0 0 null)
-  %12 = call i64 @fmtNum(i64 %11, i64 -1, i8 0, i8 0, i64* null)
+; # (fmtNum X 0 0 0 null)
+  %12 = call i64 @fmtNum(i64 %11, i64 0, i8 0, i8 0, i64* null)
   br label %$6
 $9:
   %13 = phi i64 [%8, %$7] ; # X
@@ -97502,7 +97501,7 @@ $15:
 
 define i64 @_Length(i64) align 8 {
 $1:
-; # (let X (eval (cadr Exe)) (cond ((num? X) (fmtNum X -2 0 0 null)) ...
+; # (let X (eval (cadr Exe)) (cond ((num? X) (fmtNum X -1 0 0 null)) ...
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
@@ -97528,15 +97527,15 @@ $5:
   br label %$2
 $2:
   %13 = phi i64 [%5, %$4], [%11, %$6], [%12, %$5] ; # ->
-; # (cond ((num? X) (fmtNum X -2 0 0 null)) ((pair X) (let (C ONE Y X...
+; # (cond ((num? X) (fmtNum X -1 0 0 null)) ((pair X) (let (C ONE Y X...
 ; # (num? X)
   %14 = and i64 %13, 6
   %15 = icmp ne i64 %14, 0
   br i1 %15, label %$9, label %$8
 $9:
   %16 = phi i64 [%13, %$2] ; # X
-; # (fmtNum X -2 0 0 null)
-  %17 = call i64 @fmtNum(i64 %16, i64 -2, i8 0, i8 0, i64* null)
+; # (fmtNum X -1 0 0 null)
+  %17 = call i64 @fmtNum(i64 %16, i64 -1, i8 0, i8 0, i64* null)
   br label %$7
 $8:
   %18 = phi i64 [%13, %$2] ; # X

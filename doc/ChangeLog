@@ -1,3 +1,9 @@
+24.11.20
+   Generalize 'llvm~fmtNum'
+      src/big.l
+      src/io.l
+      src/subr.l
+
 24.11.7
    Remove obsolete C-level 'lisp' descriptions
       doc/refN.html
