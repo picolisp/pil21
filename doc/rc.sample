@@ -1,4 +1,4 @@
-# 20aug22 Software Lab. Alexander Burger
+# 20nov24 Software Lab. Alexander Burger
 # Copy to ~/.pil/rc
 
 (history
@@ -20,7 +20,5 @@
 (show (; *FormLst 1 2 obj))
 
 # Initial commands
-(scl 2)
-
 (de x ()
    (load "x.l") )

@@ -1,8 +1,13 @@
 24.11.20
    Generalize 'llvm~fmtNum'
+   Print numbers as fixnum-comments in REPL
       src/big.l
       src/io.l
       src/subr.l
+      doc/rc.sample
+      doc/refR.html
+      doc/refS.html
+      doc/ref_.html
 
 24.11.7
    Remove obsolete C-level 'lisp' descriptions

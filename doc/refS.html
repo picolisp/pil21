@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 03feb24 Software Lab. Alexander Burger
+# 20nov24 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -202,18 +202,18 @@ href="ref.html#num-io">Numbers</a>.
 : (str "123.45")
 -> (123)
 : (scl 1)
--> 1
+-> 1  # 0.1
 : (read)
 123.45
--> 1235
+-> 1235  # 123.5
 : (scl 3)
--> 3
+-> 3  # 0.003
 : (str "123.45")
 -> (123450)
 : (scl 1 (str "123.45"))
 -> (1235)
 : *Scl
--> 3
+-> 3  # 0.003
 </pre></dd>
 
 <dt><a id="script"><code>(script 'any ..) -> any</code></a></dt>
@@ -729,9 +729,9 @@ href="ref_.html#*/">*/</a></code>.
 -> 100000000000000000000
 
 : (scl 6)
--> 6
+-> 6  # 0.000006
 : (sqrt 2.0 1.0)
--> 1414214
+-> 1414214  # 1.414214
 </pre></dd>
 
 <dt><a id="ssl"><code>(ssl 'host 'path . prg) -> any</code></a></dt>
@@ -968,7 +968,7 @@ Calls</a>.
 
 <pre>
 : (scl 2)
--> 2
+-> 2  # 0.02
 
 ## /* We assume the following C structure */
 ## typedef struct value {

@@ -896,7 +896,7 @@
          (cmpu (pos B) (pos A)) ) ) )
 
 ### Formatting ###
-(local) (symToNum fmtWord fmtNum)
+(local) (symToNum fmtScl outScl fmtNum)
 
 # Make number from symbol
 (de symToNum (Name (i64 . Scl) (i8 . Sep) (i8 . Ign))
@@ -949,9 +949,9 @@
       (setq Num (val Num))
       (if Sign (neg Num) Num) ) )
 
-(de i64 fmtWord ((i64 . N) (i64 . Scl) (i8 . Sep) (i8 . Ign) (i64* . P))
+(de i64 fmtScl ((i64 . N) (i64 . Scl) (i8 . Sep) (i8 . Ign) (i64* . P))
    (when (> N 9)
-      (setq Scl (fmtWord (/ N 10) Scl Sep Ign P))
+      (setq Scl (fmtScl (/ N 10) Scl Sep Ign P))
       (cond
          ((=0 Scl) (byteSym Sep P))
          ((and Ign (gt0 Scl) (=0 (% Scl 3)))
@@ -959,6 +959,16 @@
       (dec 'Scl)
       (setq N (% N 10)) )
    (byteSym (+ (i8 N) (char "0")) P)
+   Scl )
+
+(de i64 outScl ((i64 . N) (i64 . Scl) (i8 . Sep))
+   (when (> N 9)
+      (setq Scl (outScl (/ N 10) Scl Sep))
+      (when (=0 Scl)
+         (call $Put Sep) )
+      (dec 'Scl)
+      (setq N (% N 10)) )
+   (call $Put (+ (i8 N) (char "0")))
    Scl )
 
 # Format number to output, length, or symbol
@@ -1013,54 +1023,65 @@
                      (? (=0 (setq Mask (shl Mask 1)))) ) )
                (? (cnt? Num))
                (setq Num (val (big Num))) ) )
-         (cond
-            (P  # Build symbol
-               (when Sign
-                  (byteSym (char "-") P) )
-               (let N (* (shr (- TopA Acc) 3) 18)  # Calculate length~1
-                  (let D (val TopA)
-                     (while (setq D (/ D 10))
-                        (inc 'N) ) )
+         (let (N (* (shr (- TopA Acc) 3) 18)  D (val TopA))  # Calculate length~1
+            (cond
+               (P  # Build symbol
+                  (when Sign
+                     (byteSym (char "-") P) )
+                  (while (setq D (/ D 10))
+                     (inc 'N) )
                   (when (lt0 (setq Scl (- N Scl)))
                      (byteSym (char "0") P)
                      (byteSym Sep P)
                      (while (> -1 Scl)
                         (inc 'Scl)
-                        (byteSym (char "0") P) ) ) )
-               (setq Scl (fmtWord (val TopA) Scl Sep Ign P))  # Pack highest word
-               (while (>= (dec 'TopA) Acc)
-                  (let (N (val TopA)  D 100000000000000000)
-                     (loop
-                        (cond
-                           ((=0 Scl) (byteSym Sep P))
-                           ((and Ign (gt0 Scl) (=0 (% Scl 3)))
-                              (byteSym Ign P) ) )
-                        (dec 'Scl)
-                        (? (== 1 D))
-                        (byteSym (+ (i8 (/ N D)) (char "0")) P)
-                        (setq N (% N D)  D (/ D 10)) )
-                     (byteSym (+ (i8 N) (char "0")) P) ) )
-               0 )
-            ((== Scl -1)  # Calculate length
-               (let (N (* (shr (- TopA Acc) 3) 18)  D (val TopA))
+                        (byteSym (char "0") P) ) )
+                  (setq Scl (fmtScl (val TopA) Scl Sep Ign P))  # Pack highest word
+                  (while (>= (dec 'TopA) Acc)
+                     (let (N (val TopA)  D 100000000000000000)
+                        (loop
+                           (cond
+                              ((=0 Scl) (byteSym Sep P))
+                              ((and Ign (gt0 Scl) (=0 (% Scl 3)))
+                                 (byteSym Ign P) ) )
+                           (dec 'Scl)
+                           (byteSym (+ (i8 (/ N D)) (char "0")) P)
+                           (setq N (% N D))
+                           (? (== 1 (setq D (/ D 10)))) )
+                        (byteSym (+ (i8 N) (char "0")) P) ) )
+                  0 )
+               ((== Scl -1)  # Calculate length
                   (loop
                      (inc 'N)
                      (? (=0 (setq D (/ D 10)))) )
                   (when Sign
                      (inc 'N) )
-                  (cnt N) ) )
-            (T  # Direct print
-               (when Sign
-                  (call $Put (char "-")) )  # Output sign
-               (outWord (val TopA))  # Output highest word
-               (while (>= (dec 'TopA) Acc)
-                  (let (N (val TopA)  D 100000000000000000)
-                     (loop
-                        (call $Put (+ (i8 (/ N D)) (char "0")))  # Output next digit
-                        (setq N (% N D))
-                        (? (== 1 (setq D (/ D 10)))) )
-                     (call $Put (+ (i8 N) (char "0"))) ) )  # Output last digit
-               0 ) ) ) ) )
+                  (cnt N) )
+               (T  # Direct print
+                  (when Sign
+                     (call $Put (char "-")) )  # Output sign
+                  (if (=0 Sep)
+                     (outWord (val TopA))  # Output highest word
+                     (while (setq D (/ D 10))
+                        (inc 'N) )
+                     (when (lt0 (setq Scl (- N Scl)))
+                        (call $Put (char "0"))
+                        (call $Put Sep)
+                        (while (> -1 Scl)
+                           (inc 'Scl)
+                           (call $Put (char "0")) ) )
+                     (setq Scl (outScl (val TopA) Scl Sep)) )
+                  (while (>= (dec 'TopA) Acc)
+                     (let (N (val TopA)  D 100000000000000000)
+                        (loop
+                           (when (and Sep (=0 Scl))
+                              (call $Put Sep) )
+                           (dec 'Scl)
+                           (call $Put (+ (i8 (/ N D)) (char "0")))  # Output next digit
+                           (setq N (% N D))
+                           (? (== 1 (setq D (/ D 10)))) )
+                        (call $Put (+ (i8 N) (char "0"))) ) )  # Output last digit
+                  0 ) ) ) ) ) )
 
 # (format 'num ['cnt ['sym1 ['sym2]]]) -> sym
 # (format 'sym|lst ['cnt ['sym1 ['sym2]]]) -> num
