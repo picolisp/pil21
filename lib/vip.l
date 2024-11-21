@@ -1,4 +1,4 @@
-# 17oct24 Software Lab. Alexander Burger
+# 21nov24 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1089,7 +1089,7 @@ s-expr command vipA vipZ vi)
          (move 'goAbs
             (or X (: buffer lastX))
             (: buffer lastY) ) )
-      ((get (: buffer) (intern C))
+      ((get (: buffer) (intern C 'vip))
          (move 'goAbs (default X (car @)) (cdr @)) ) ) )
 
 (de wordFun (@W)
@@ -1483,7 +1483,7 @@ s-expr command vipA vipZ vi)
                               (off *Change) ) )
                         (("1" "2" "3" "4" "5" "6" "7" "8" "9")  # ["Count" prefix]
                            (queue '*Count *Chr) )
-                        ("\"" (setq *Clip (intern (pack '"\"" (getch)))))  # "Register" prefix
+                        ("\"" (setq *Clip (intern (pack '"\"" (getch)) 'vip)))  # "Register" prefix
                         (("!" "<" ">" "c" "d" "y")  # ["Change" prefix]
                            (cond
                               ((= *Chr *Change)
@@ -1594,7 +1594,7 @@ s-expr command vipA vipZ vi)
                                  ("P" (evRpt (list 'paste (lit (val *Clip)))))  # Paste before current position
                                  ("J" (evRpt (list 'join *Cnt)))  # Join lines
                                  ("m"  # Set mark
-                                    (put (: buffer) (intern (getch))
+                                    (put (: buffer) (intern (getch) 'vip)
                                        (cons (: posX) (: posY)) ) )
                                  ("M" (=: sc (dec (: winX))))  # Mark horizontal scroll position
                                  ("r"  # Replace character(s)

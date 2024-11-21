@@ -1,3 +1,7 @@
+24.11.21
+   Intern mark names into 'vip'
+      lib/vip.l
+
 24.11.20
    Generalize 'llvm~fmtNum'
    Print numbers as fixnum-comments in REPL
