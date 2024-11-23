@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 12jun24 Software Lab. Alexander Burger
+# 23nov24 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -253,6 +253,17 @@ Handling</a></code>.
 -> 999
 : (catch '("No such file") (in "doesntExist" (foo)))
 -> "No such file"
+</pre>
+
+<p>Pattern for catching and logging errors:
+
+<pre>
+(if2
+   (catch '(NIL)
+      (...) )
+   @@
+   (nil (msg *Msg))  # If an error was thrown, log it and return NIL
+   @ ) ) )  # else return the value returned from catch
 </pre></dd>
 
 <dt><a id="cd"><code>(cd 'any) -> sym</code></a></dt>
