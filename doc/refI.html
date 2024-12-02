@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 24may24 Software Lab. Alexander Burger
+# 02dec24 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -215,12 +215,14 @@ OK
 
 <dt><a id="import"><code>(import . lst) -> lst</code></a></dt>
 <dd>Wrapper function for <code><a href="refI.html#intern">intern</a></code>.
-Typically used to import symbols from other namespaces, as created by <code><a
-href="refS.html#symbols">symbols</a></code>. <code>lst</code> should be a list
-of symbols. See also <code><a href="refP.html#pico">pico</a></code>,
-<code><a href="refP.html#private">private</a></code> and
-<code><a href="refL.html#local">local</a></code> and
-<code><a href="refE.html#export">export</a></code>.
+Typically used to import symbols from other <a
+href="ref.html#namespaces">namespaces</a>, as created by <code><a
+href="refS.html#symbols">symbols</a></code>. <code>lst</code> should be
+a list of symbols. See also <code><a
+href="refP.html#pico">pico</a></code>, <code><a
+href="refP.html#private">private</a></code> and <code><a
+href="refL.html#local">local</a></code> and <code><a
+href="refE.html#export">export</a></code>.
 
 <pre>
 : (import libA~foo libB~bar)
@@ -398,10 +400,11 @@ href="refR.html#replace">replace</a></code>.
 <dt><a id="intern"><code>(intern 'any ['nsp]) -> sym</code></a></dt>
 <dd>Creates or finds an internal symbol. If a symbol with the name
 <code>any</code> is already intern, it is returned. Otherwise, <code>any</code>
-is interned in the current namespace and returned. If <code>nsp</code> is
-non-<code>NIL</code>, <code>any</code> is <i>always</i> interned in the current
-namespace (if <code>nsp</code> is <code>T</code>) or in the given namespace,
-even if it is found in other namespaces. See also <code><a
+is interned in the current <a href="ref.html#namespaces">namespaces</a>
+and returned. If <code>nsp</code> is non-<code>NIL</code>,
+<code>any</code> is <i>always</i> interned in the current namespace (if
+<code>nsp</code> is <code>T</code>) or in the given namespace, even if
+it is found in other namespaces. See also <code><a
 href="refS.html#symbols">symbols</a></code>, <code><a
 href="refZ.html#zap">zap</a></code>, <code><a
 href="refI.html#import">import</a></code> and <code><a

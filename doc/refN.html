@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 07nov24 Software Lab. Alexander Burger
+# 02dec24 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -98,8 +98,9 @@ href="refI.html#intern">intern</a></code>.
 </pre></dd>
 
 <dt><a id="namespaces"><code>(namespaces ['flg]) -> lst</code></a></dt>
-<dd>(Debug mode only) Returns a list of all namespaces nested in the current
-search order. When <code>flg</code> is non-<code>NIL</code>, their nested tree
+<dd>(Debug mode only) Returns a list of all <a
+href="ref.html#namespaces">namespaces</a> nested in the current search
+order. When <code>flg</code> is non-<code>NIL</code>, their nested tree
 is printed as a side effect. See also <code><a
 href="refS.html#symbols">symbols</a></code> and <code><a
 href="refS.html#shadows">shadows</a></code>.
@@ -441,9 +442,10 @@ href="refF.html#fail/0">fail/0</a></code>.
 </pre></dd>
 
 <dt><a id="nsp"><code>(nsp 'sym) -> sym</code></a></dt>
-<dd>Returns the (first) namespace where <code>sym</code> is found in, according
-to the current <code><a href="refS.html#symbols">symbols</a></code> search
-order. See also <code><a href="refP.html#pico">pico</a></code>.
+<dd>Returns the (first) <a href="ref.html#namespaces">namespaces</a>
+where <code>sym</code> is found in, according to the current <code><a
+href="refS.html#symbols">symbols</a></code> search order. See also
+<code><a href="refP.html#pico">pico</a></code>.
 
 <pre>
 (load "@lib/gis.l")

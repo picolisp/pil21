@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 20nov24 Software Lab. Alexander Burger
+# 02dec24 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -476,9 +476,10 @@ href="refD.html#def">def</a></code>.
 
 <dt><a id="shadows"><code>(shadows ['flg]) -> lst</code></a></dt>
 <dd>(Debug mode only) Returns a list of all symbols shadowing other symbols in
-the current namespace search order. When <code>flg</code> non-<code>NIL</code>,
-these and the overshadowed symbols are printed as a side effect. See also
-<code><a href="refS.html#symbols">symbols</a></code> and <code><a
+the current <a href="ref.html#namespaces">namespace</a> search order.
+When <code>flg</code> non-<code>NIL</code>, these and the overshadowed
+symbols are printed as a side effect. See also <code><a
+href="refS.html#symbols">symbols</a></code> and <code><a
 href="refN.html#namespaces">namespaces</a></code>.
 
 <pre>
@@ -1126,19 +1127,21 @@ href="refE.html#ext?">ext?</a></code>.
 <dt><code>(symbols 'lst) -> lst</code></dt>
 <dt><code>(symbols 'lst . prg) -> any</code></dt>
 <dt><code>(symbols 'sym1 'sym2 ..) -> lst</code></dt>
-<dd>Creates and manages namespaces of internal symbols: In the first form, the
-current list of namespaces is returned. In the second form, the current
-namespace list is set to <code>lst</code>, and the previous namespace list is
-returned. In the third form, the current namespace list is set to
-<code>lst</code> during the execution of <code>prg</code>, and the result is
-returned. In the fourth form, <code>sym1</code> is initialized to a new
-namespace if its value is <code>NIL</code> and not modified otherwise,
-<code>sym1</code>, <code>sym2</code> and all following arguments are set as the
-current namespace list, and if the value of the global variable <a
-href="refD.html#*Dbg">*Dbg</a> is non-<code>NIL</code>, the current line number
-and file name (if any) are stored in the <code>*Dbg</code> property of
-<code>sym1</code>. See also <code><a href="refP.html#pico">pico</a></code>,
-<code><a href="refN.html#nsp">nsp</a></code>, <code><a
+<dd>Creates and manages <a href="ref.html#namespaces">namespaces</a> of
+internal symbols: In the first form, the current list of namespaces is
+returned. In the second form, the current namespace list is set to
+<code>lst</code>, and the previous namespace list is returned. In the
+third form, the current namespace list is set to <code>lst</code> during
+the execution of <code>prg</code>, and the result is returned. In the
+fourth form, <code>sym1</code> is initialized to a new namespace if its
+value is <code>NIL</code> and not modified otherwise, <code>sym1</code>,
+<code>sym2</code> and all following arguments are set as the current
+namespace list, and if the value of the global variable <a
+href="refD.html#*Dbg">*Dbg</a> is non-<code>NIL</code>, the current line
+number and file name (if any) are stored in the <code>*Dbg</code>
+property of <code>sym1</code>. See also <code><a
+href="refP.html#pico">pico</a></code>, <code><a
+href="refN.html#nsp">nsp</a></code>, <code><a
 href="refS.html#-symbols">-symbols</a></code>, <code><a
 href="refP.html#private">private</a></code>, <code><a
 href="refL.html#local">local</a></code>, <code><a

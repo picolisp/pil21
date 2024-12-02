@@ -1,6 +1,12 @@
 24.12.2
    Add section about namespaces
       doc/ref.html
+      doc/refE.html
+      doc/refI.html
+      doc/refL.html
+      doc/refN.html
+      doc/refP.html
+      doc/refS.html
 
 24.11.23
    Example for catching errors
