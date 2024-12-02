@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 07sep24 Software Lab. Alexander Burger
+# 02dec24 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -72,6 +72,7 @@ href="faq.html">Frequently Asked Questions (FAQ)</a>.
       <li><a href="#lst-io">Lists</a>
       <li><a href="#macro-io">Read-Macros</a>
       </ul>
+   <li><a href="#namespaces">Namespaces</a>
    <li><a href="#ev">Evaluation</a>
    <li><a href="#libs">Shared Libraries</a>
    <li><a href="#coroutines">Coroutines</a>
@@ -208,6 +209,7 @@ and global variables of the interpreter itself, and
 are not directly accessible by the programmer.
 
 </ul>
+
 
 <p><hr>
 <h3><a id="data">Data Types</a></h3>
@@ -654,6 +656,7 @@ the path to "lib.l" as called by 'pil') is remembered internally as the
 any leading "<code>@</code>" character in file name arguments to I/O functions
 (see <code><a href="refP.html#path">path</a></code>).
 
+
 <p><hr>
 <h3><a id="io">Input/Output</a></h3>
 
@@ -887,6 +890,7 @@ hexadecimal/alpha notation, where '<code>@</code>' is zero, '<code>A</code>' is
 
 <p>The database file is omitted for the first (default) file.
 
+
 <p><hr>
 <h4><a id="lst-io">Lists</a></h4>
 
@@ -1009,6 +1013,52 @@ href="refB.html#box">box</a></code> without arguments.
 : (mapcar val @)
 -> (NIL NIL NIL)
 </pre>
+
+
+<p><hr>
+<h3><a id="namespaces">Namespaces</a></h3>
+
+<p>When the reader encounters an atom that is not a number, it looks for
+it in the current namespace search order. If a symbol with that name is
+found, it is used; otherwise, a new symbol is created and interned in
+the current namespace.
+
+<p>In general, namespaces in PicoLisp have nothing to do with the values
+or definitions of symbols, but only with their scope (visibility).
+Several symbols with the same name may exist in different namespaces,
+and a single symbol may exist in one or many (or none at all)
+namespaces.
+
+<p>At interpreter startup, only the internal <code><a
+href="refP.html#pico">pico</a></code> namespace exists, along with the
+three special built-in namespaces for <a
+href="#transient-io">transient</a>, <a href="#external-io">external</a>,
+and <code><a href="refP.html#private">private</a></code> symbols.
+
+<p>For internal symbols, it may not always be clear which namespace(s)
+they belong to. Depending on the search order, the same name in a given
+code segment might refer to different physical symbols. To avoid
+ambiguity, it is recommended to follow these namespace policies:
+
+<p><dl>
+
+<dt>Invariant namespace order</dt>
+<dd>Across different parts of a program and all loaded libraries the
+search order may be changed as needed, but the position of each
+namespace relative to other namespaces should stay the same. That is,
+namespace A should not overshadow namespace B in one context and be
+overshadowed by B in another context.
+</dd>
+
+<dt>Scope declaration before first usage</dt>
+<dd>Calls to <code><a href="refS.html#symbols">symbols</a></code>,
+<code><a href="refP.html#private">private</a></code>, <code><a
+href="refL.html#local">local</a></code> or <code><a
+href="refI.html#import">import</a></code> should precede any appearance
+(not just definition!) of all involved symbols, because merely reading a
+symbol may already intern it in the wrong namespace. </dd>
+
+</dl>
 
 
 <p><hr>
@@ -1625,6 +1675,7 @@ property</i>, which is held only in memory and not written to disk on
 <code>commit</code>, and discarded by <code>rollback</code>. Volatile properties
 can be used by applications for any kind of temporary data.
 
+
 <p><hr>
 <h4><a id="trans">Transactions</a></h4>
 
@@ -1665,6 +1716,7 @@ processes synchronize with these changes.
 <li>Finally, all locks are released by 'commit'.
 
 </ol>
+
 
 <p><hr>
 <h4><a id="er">Entities / Relations</a></h4>
@@ -1815,6 +1867,7 @@ href="ref_.html#-%3E">-&gt;</a></code> function (the latter is only necessary
 to access non-top-level Pilog environments).
 
 </ul>
+
 
 <p><hr>
 <h3><a id="conv">Naming Conventions</a></h3>
@@ -2856,6 +2909,7 @@ prg)</code> indicates an unevaluated list of further arguments.
 </dd>
 
 </dl>
+
 
 <p><hr>
 <h2><a id="down">Download</a></h2>
