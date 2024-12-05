@@ -1,3 +1,7 @@
+24.12.5
+   Add ":wq" as alias for ":x"
+      lib/vip.l
+
 24.12.2
    Add section about namespaces
       doc/ref.html

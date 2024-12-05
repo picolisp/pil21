@@ -1,4 +1,4 @@
-# 21nov24 Software Lab. Alexander Burger
+# 05dec24 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -1360,7 +1360,7 @@ s-expr command vipA vipZ vi)
                               (when (dirty> (: buffer) This)
                                  (save> (: buffer) This) )
                               (evCmd (load (: buffer file))) ) )
-                        ("x" (done T))  # (Exit) Save buffer and close window
+                        (("x" "wq") (done T))  # (Exit) Save buffer and close window
                         ("q" (done))  # (Quit) Close window
                         ("bx"  # Buffer exchange
                            (let X (memq (: buffer) *Buffers)
