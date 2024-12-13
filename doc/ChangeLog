@@ -1,3 +1,8 @@
+24.12.13
+   'markup' also in 'scratch'
+   Print numbers as fixnum-comments also in Vip REPL
+      lib/vip.l
+
 24.12.10
    New file
       lib/vip/load.l

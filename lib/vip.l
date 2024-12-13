@@ -1,4 +1,4 @@
-# 05dec24 Software Lab. Alexander Burger
+# 13dec24 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -501,14 +501,16 @@ s-expr command vipA vipZ vi)
       (mapc prinl Lst) )
    (if (find '((This) (= File (: file))) *Buffers)
       (with @
-         (=: text Lst)
-         (=: undo (=: redo (=: dirt))) )
+         (markup
+            (=: text Lst)
+            (=: undo (=: redo (=: dirt))) ) )
       (unmark)
       (=: last (: buffer))
       (put
          (=: buffer (new '(+Buffer) File Y))
          'text
          Lst )
+      (markup (: buffer text))
       (goto 1 (: buffer posY)) )
    (repaint) )
 
@@ -1223,7 +1225,12 @@ s-expr command vipA vipZ vi)
       (err NIL
          (catch '(NIL)
             (setq *@ (run Prg 1)  *Msg)
-            (println '-> *@) ) )
+            (print '-> *@)
+            (and
+               (num? *@)
+               (n0 *Scl)
+               (prin "  # " (format *@ *Scl)) )
+            (prinl) ) )
       (when @@
          (prin "!? ")
          (println ^)
