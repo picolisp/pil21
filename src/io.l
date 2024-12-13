@@ -1,4 +1,4 @@
-# 20nov24 Software Lab. Alexander Burger
+# 13dec24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2814,8 +2814,9 @@ selectErr)
       (flushAll)
       (print X)
       (when (and (num? X) (<> ZERO (val $Scl)))
-         (outString ($ "  # "))
-         (fmtNum X (int (val $Scl)) (char ".") 0 null) )
+         (outString ($ "\e[0;36m  # "))
+         (fmtNum X (int (val $Scl)) (char ".") 0 null)
+         (outString ($ "\e[0m")) )
       (newline)
       X ) )
 

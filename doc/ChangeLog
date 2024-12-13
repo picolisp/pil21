@@ -1,4 +1,6 @@
 24.12.13
+   Cyan attribute for Fixnum-comments in REPL
+      src/io.l
    'markup' also in 'scratch'
    Print numbers as fixnum-comments also in Vip REPL
       lib/vip.l
