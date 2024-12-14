@@ -1,4 +1,4 @@
-# 13dec24 Software Lab. Alexander Burger
+# 14dec24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2772,7 +2772,7 @@ selectErr)
             (save Y
                (parse (name Y) NO 0 (save (evSym X))) ) ) ) ) )
 
-(local) (stdRead stdEval repl loadAll)
+(local) (stdRead cmtBeg cmtEnd stdEval repl loadAll)
 
 (de stdRead ((i8* . Prmt))
    (prog2
@@ -2806,6 +2806,12 @@ selectErr)
             (? (> (val $Chr) (char " ")))
             (call $Get) ) ) ) )
 
+(de void cmtBeg ()
+   (outString ($ "\e[0;36m  # ")) )
+
+(de void cmtEnd ()
+   (outString ($ "\e[0m")) )
+
 (de stdEval (Exe)
    (flushAll)
    (let (At (save (val $At))  X (eval Exe))
@@ -2813,10 +2819,24 @@ selectErr)
       (outString ($ "-> "))
       (flushAll)
       (print X)
-      (when (and (num? X) (<> ZERO (val $Scl)))
-         (outString ($ "\e[0;36m  # "))
-         (fmtNum X (int (val $Scl)) (char ".") 0 null)
-         (outString ($ "\e[0m")) )
+      (cond
+         ((num? X)
+            (unless (== ZERO (val $Scl))
+               (cmtBeg)
+               (fmtNum X (int (val $Scl)) (char ".") 0 null)
+               (cmtEnd) ) )
+         ((sym? X)
+            (unless (sym? (val (tail X)))
+               (let (Nm (name @)  Lst (val $Intern))  # Search namespaces
+                  (loop
+                     (? (atom Lst))
+                     (let Nsp (car Lst)
+                        (? (== X (isIntern Nm (cdar Nsp)))
+                           (unless (== $pico Nsp)
+                              (cmtBeg)
+                              (print Nsp)
+                              (cmtEnd) ) ) )
+                     (shift Lst) ) ) ) ) )
       (newline)
       X ) )
 

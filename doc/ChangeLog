@@ -1,5 +1,10 @@
+24.12.14
+   Print namespace of symbols in REPL-comments
+      src/io.l
+      lib/vip.l
+
 24.12.13
-   Cyan attribute for Fixnum-comments in REPL
+   Cyan attribute for REPL-comments
       src/io.l
    'markup' also in 'scratch'
    Print numbers as fixnum-comments also in Vip REPL

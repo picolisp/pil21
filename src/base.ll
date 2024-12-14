@@ -1523,7 +1523,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 386,
   i64 194,
-  i64 210
+  i64 226
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -56203,6 +56203,20 @@ $15:
   ret i64 %36
 }
 
+define void @cmtBeg() align 8 {
+$1:
+; # (outString ($ "^[[0;36m  # "))
+  call void @outString(i8* bitcast ([12 x i8]* @$50 to i8*))
+  ret void
+}
+
+define void @cmtEnd() align 8 {
+$1:
+; # (outString ($ "^[[0m"))
+  call void @outString(i8* bitcast ([5 x i8]* @$51 to i8*))
+  ret void
+}
+
 define i64 @stdEval(i64) align 8 {
 $1:
 ; # (flushAll)
@@ -56253,49 +56267,143 @@ $2:
   %23 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([878 x i64]* @SymTab to i8*), i32 440) to i64) to i64*
   store i64 %18, i64* %23
 ; # (outString ($ "-> "))
-  call void @outString(i8* bitcast ([4 x i8]* @$50 to i8*))
+  call void @outString(i8* bitcast ([4 x i8]* @$52 to i8*))
 ; # (flushAll)
   call void @flushAll()
 ; # (print X)
   call void @print(i64 %18)
-; # (when (and (num? X) (<> ZERO (val $Scl))) (outString ($ "^[[0;36m...
-; # (and (num? X) (<> ZERO (val $Scl)))
+; # (cond ((num? X) (unless (== ZERO (val $Scl)) (cmtBeg) (fmtNum X (...
 ; # (num? X)
   %24 = and i64 %18, 6
   %25 = icmp ne i64 %24, 0
-  br i1 %25, label %$8, label %$7
-$8:
+  br i1 %25, label %$9, label %$8
+$9:
+; # (unless (== ZERO (val $Scl)) (cmtBeg) (fmtNum X (int (val $Scl)) ...
 ; # (val $Scl)
   %26 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([878 x i64]* @SymTab to i8*), i32 552) to i64) to i64*
   %27 = load i64, i64* %26
-; # (<> ZERO (val $Scl))
-  %28 = icmp ne i64 2, %27
+; # (== ZERO (val $Scl))
+  %28 = icmp eq i64 2, %27
+  br i1 %28, label %$11, label %$10
+$10:
+; # (cmtBeg)
+  call void @cmtBeg()
+; # (val $Scl)
+  %29 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([878 x i64]* @SymTab to i8*), i32 552) to i64) to i64*
+  %30 = load i64, i64* %29
+; # (int (val $Scl))
+  %31 = lshr i64 %30, 4
+; # (fmtNum X (int (val $Scl)) (char ".") 0 null)
+  %32 = call i64 @fmtNum(i64 %18, i64 %31, i8 46, i8 0, i64* null)
+; # (cmtEnd)
+  call void @cmtEnd()
+  br label %$11
+$11:
+  br label %$7
+$8:
+; # (sym? X)
+  %33 = and i64 %18, 8
+  %34 = icmp ne i64 %33, 0
+  br i1 %34, label %$13, label %$12
+$13:
+; # (unless (sym? (val (tail X))) (let (Nm (name @) Lst (val $Intern)...
+; # (tail X)
+  %35 = add i64 %18, -8
+; # (val (tail X))
+  %36 = inttoptr i64 %35 to i64*
+  %37 = load i64, i64* %36
+; # (sym? (val (tail X)))
+  %38 = and i64 %37, 8
+  %39 = icmp ne i64 %38, 0
+  br i1 %39, label %$15, label %$14
+$14:
+; # (let (Nm (name @) Lst (val $Intern)) (loop (? (atom Lst)) (let Ns...
+; # (name @)
+  br label %$16
+$16:
+  %40 = phi i64 [%37, %$14], [%46, %$17] ; # Tail
+  %41 = and i64 %40, 6
+  %42 = icmp ne i64 %41, 0
+  br i1 %42, label %$18, label %$17
+$17:
+  %43 = phi i64 [%40, %$16] ; # Tail
+  %44 = inttoptr i64 %43 to i64*
+  %45 = getelementptr i64, i64* %44, i32 1
+  %46 = load i64, i64* %45
+  br label %$16
+$18:
+  %47 = phi i64 [%40, %$16] ; # Tail
+; # (val $Intern)
+  %48 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([53 x i64]* @gcData to i8*), i32 0) to i64) to i64*
+  %49 = load i64, i64* %48
+; # (loop (? (atom Lst)) (let Nsp (car Lst) (? (== X (isIntern Nm (cd...
+  br label %$19
+$19:
+  %50 = phi i64 [%49, %$18], [%70, %$22] ; # Lst
+; # (? (atom Lst))
+; # (atom Lst)
+  %51 = and i64 %50, 15
+  %52 = icmp ne i64 %51, 0
+  br i1 %52, label %$21, label %$20
+$20:
+  %53 = phi i64 [%50, %$19] ; # Lst
+; # (let Nsp (car Lst) (? (== X (isIntern Nm (cdar Nsp))) (unless (==...
+; # (car Lst)
+  %54 = inttoptr i64 %53 to i64*
+  %55 = load i64, i64* %54
+; # (? (== X (isIntern Nm (cdar Nsp))) (unless (== $pico Nsp) (cmtBeg...
+; # (cdar Nsp)
+  %56 = inttoptr i64 %55 to i64*
+  %57 = load i64, i64* %56
+  %58 = inttoptr i64 %57 to i64*
+  %59 = getelementptr i64, i64* %58, i32 1
+  %60 = load i64, i64* %59
+; # (isIntern Nm (cdar Nsp))
+  %61 = call i64 @isIntern(i64 %47, i64 %60)
+; # (== X (isIntern Nm (cdar Nsp)))
+  %62 = icmp eq i64 %18, %61
+  br i1 %62, label %$23, label %$22
+$23:
+  %63 = phi i64 [%53, %$20] ; # Lst
+; # (unless (== $pico Nsp) (cmtBeg) (print Nsp) (cmtEnd))
+; # (== $pico Nsp)
+  %64 = icmp eq i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([878 x i64]* @SymTab to i8*), i32 88) to i64), %55
+  br i1 %64, label %$25, label %$24
+$24:
+  %65 = phi i64 [%63, %$23] ; # Lst
+; # (cmtBeg)
+  call void @cmtBeg()
+; # (print Nsp)
+  call void @print(i64 %55)
+; # (cmtEnd)
+  call void @cmtEnd()
+  br label %$25
+$25:
+  %66 = phi i64 [%63, %$23], [%65, %$24] ; # Lst
+  br label %$21
+$22:
+  %67 = phi i64 [%53, %$20] ; # Lst
+; # (shift Lst)
+  %68 = inttoptr i64 %67 to i64*
+  %69 = getelementptr i64, i64* %68, i32 1
+  %70 = load i64, i64* %69
+  br label %$19
+$21:
+  %71 = phi i64 [%50, %$19], [%66, %$25] ; # Lst
+  br label %$15
+$15:
+  br label %$7
+$12:
   br label %$7
 $7:
-  %29 = phi i1 [0, %$2], [%28, %$8] ; # ->
-  br i1 %29, label %$9, label %$10
-$9:
-; # (outString ($ "^[[0;36m  # "))
-  call void @outString(i8* bitcast ([12 x i8]* @$51 to i8*))
-; # (val $Scl)
-  %30 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([878 x i64]* @SymTab to i8*), i32 552) to i64) to i64*
-  %31 = load i64, i64* %30
-; # (int (val $Scl))
-  %32 = lshr i64 %31, 4
-; # (fmtNum X (int (val $Scl)) (char ".") 0 null)
-  %33 = call i64 @fmtNum(i64 %18, i64 %32, i8 46, i8 0, i64* null)
-; # (outString ($ "^[[0m"))
-  call void @outString(i8* bitcast ([5 x i8]* @$52 to i8*))
-  br label %$10
-$10:
 ; # (newline)
   call void @newline()
 ; # (drop *Safe)
-  %34 = inttoptr i64 %6 to i64*
-  %35 = getelementptr i64, i64* %34, i32 1
-  %36 = load i64, i64* %35
-  %37 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 0) to i64) to i64*
-  store i64 %36, i64* %37
+  %72 = inttoptr i64 %6 to i64*
+  %73 = getelementptr i64, i64* %72, i32 1
+  %74 = load i64, i64* %73
+  %75 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([22 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %74, i64* %75
   ret i64 %18
 }
 
@@ -111233,9 +111341,9 @@ $30:
 @$55 = private constant [12 x i8] c"DB read: %s\00"
 @$54 = private constant [12 x i8] c"Bad DB file\00"
 @$53 = private constant [3 x i8] c"> \00"
-@$52 = private constant [5 x i8] c"\1B[0m\00"
-@$51 = private constant [12 x i8] c"\1B[0;36m  # \00"
-@$50 = private constant [4 x i8] c"-> \00"
+@$52 = private constant [4 x i8] c"-> \00"
+@$51 = private constant [5 x i8] c"\1B[0m\00"
+@$50 = private constant [12 x i8] c"\1B[0;36m  # \00"
 @$49 = private constant [4 x i8] c"   \00"
 @$48 = private constant [4 x i8] c". (\00"
 @$47 = private constant [4 x i8] c" . \00"
