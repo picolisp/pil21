@@ -1,4 +1,10 @@
 24.12.16
+   'remark' function to generalize REPL-comments
+      src/glob.l
+      src/io.l
+      lib.l
+      lib/vip.l
+      doc/refR.html
    'complete' reference
       doc/refC.html
 

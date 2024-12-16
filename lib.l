@@ -1,4 +1,4 @@
-# 21jun24 Software Lab. Alexander Burger
+# 16dec24 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -394,6 +394,32 @@
             (flip (all* S)) ) ) )
    (pop '"*Cmpl") )
 
+(de remark ("X")
+   (let? Lst
+      (make
+         (cond
+            ((num? "X")
+               (when (>= 799999 "X" 700000)
+                  (link (dat$ "X" "-")) )
+               (unless (=0 *Scl)
+                  (link (format "X" *Scl)) ) )
+            ((sym? "X")
+               (let? Nsp (nsp "X")
+                  (or
+                     (== 'pico Nsp)
+                     (== 'priv Nsp)
+                     (link (pack Nsp "~" "X")) ) )
+               (when (type "X")
+                  (link (sym @)) ) ) ) )
+      (prin
+         "  "
+         (and (=1 (%@ "isatty" 'I (fd))) "\e[0;36m")
+         "#" )
+      (for X Lst
+         (prin " " X) )
+      (when (=1 (%@ "isatty" 'I (fd)))
+         (prin "\e[0m") ) ) )
+
 ### Pretty Printing ###
 (de pretty (X N)
    (setq N (abs (space (or N 0))))
@@ -584,8 +610,10 @@
             '((X)
                (space 3)
                (if (atom X)
-                  (println X)
-                  (println (cdr X) (less (car X))) ) )
+                  (prog (print X) (remark X))
+                  (print (cdr X) (less (car X)))
+                  (remark (car X)) )
+               (prinl) )
             "X" ) )
       "X" ) )
 

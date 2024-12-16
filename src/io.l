@@ -1,4 +1,4 @@
-# 14dec24 Software Lab. Alexander Burger
+# 16dec24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2772,7 +2772,7 @@ selectErr)
             (save Y
                (parse (name Y) NO 0 (save (evSym X))) ) ) ) ) )
 
-(local) (stdRead cmtBeg cmtEnd stdEval repl loadAll)
+(local) (stdRead stdEval repl loadAll)
 
 (de stdRead ((i8* . Prmt))
    (prog2
@@ -2806,12 +2806,6 @@ selectErr)
             (? (> (val $Chr) (char " ")))
             (call $Get) ) ) ) )
 
-(de void cmtBeg ()
-   (outString ($ "\e[0;36m  # ")) )
-
-(de void cmtEnd ()
-   (outString ($ "\e[0m")) )
-
 (de stdEval (Exe)
    (flushAll)
    (let (At (save (val $At))  X (eval Exe))
@@ -2819,24 +2813,15 @@ selectErr)
       (outString ($ "-> "))
       (flushAll)
       (print X)
-      (cond
-         ((num? X)
-            (unless (== ZERO (val $Scl))
-               (cmtBeg)
-               (fmtNum X (int (val $Scl)) (char ".") 0 null)
-               (cmtEnd) ) )
-         ((sym? X)
-            (unless (sym? (val (tail X)))
-               (let (Nm (name @)  Lst (val $Intern))  # Search namespaces
-                  (loop
-                     (? (atom Lst))
-                     (let Nsp (car Lst)
-                        (? (== X (isIntern Nm (cdar Nsp)))
-                           (unless (== $pico Nsp)
-                              (cmtBeg)
-                              (print Nsp)
-                              (cmtEnd) ) ) )
-                     (shift Lst) ) ) ) ) )
+      (unless (nil? (val $Remark))
+         (let
+            (V (push NIL $Nil ZERO NIL NIL)  # [car cdr name arg link]
+               E (push NIL V ZERO @ NIL) )  # [car cdr name fun link]
+            (set 4 V X)
+            (set
+               V (link (ofs V 3) T)
+               E (link (ofs E 3)) )
+            (evList E) ) )
       (newline)
       X ) )
 

@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 20nov24 Software Lab. Alexander Burger
+# 16dec24 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -453,6 +453,21 @@ operation of <code><a href="refA.html#acquire">acquire</a></code>.
 : (release "sema1")
 -> NIL
 </pre></dd>
+
+<dt><a id="remark"><code>(remark 'any)</code></a></dt>
+<dd>Global variable holding a (possibly empty) function, which will be called
+when a value is printed in the REPL. It can be used to provide further
+information about that value.
+
+<pre>
+: (date)
+-> 739542  # 2024-12-16
+: (scl 3)
+-> 3  # 0.003
+: 12.3
+-> 12300  # 12.300
+: (date)
+-> 739542  # 2024-12-16 739.542</pre></dd>
 
 <dt><a id="remote/2"><code>remote/2</code></a></dt>
 <dd><a href="ref.html#pilog">Pilog</a> predicate for remote database queries. It

@@ -1,4 +1,4 @@
-# 09jul24 Software Lab. Alexander Burger
+# 16dec24 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -150,6 +150,7 @@
    ($Bye "*Bye" $Nil)
    ($Dbg "*Dbg" $Nil)
    ($Complete "complete" $Nil)
+   ($Remark "remark" $Nil)
    # Garbage collection
    (NIL "gc" _Gc)
    # Arithmetics
