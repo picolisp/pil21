@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 23nov24 Software Lab. Alexander Burger
+# 16dec24 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -585,6 +585,27 @@ href="refR.html#rollback">rollback</a></code>.
 -> "Hello"
 : (commit)
 -> T
+</pre></dd>
+
+<dt><a id="complete"><code>(complete 'any) -> T | lst</code></a></dt>
+<dd>Global variable holding a (possibly empty) function, which will be
+called when TAB is pressed in <code>readline(3)</code> to complete the
+text before the current input point. If it is <code>NIL</code>,
+readline's default filename generator function is used. Otherwise, it
+should be a function which returns the next match (if <code>any</code>
+is <code>NIL</code>), some default value (if <code>any</code> is
+<code>T</code>, meaning there is no partial word to be completed), or
+initializes the generator with the given text and returns the first
+result.
+
+<pre>
+: (pp 'complete)
+(de complete (S)
+   (when S
+      (setq "*Cmpl"
+         (if (=T S) (list "   ") (flip (all* S))) ) )
+   (pop '"*Cmpl") )
+-> complete
 </pre></dd>
 
 <dt><a id="con"><code>(con 'lst 'any) -> any</code></a></dt>
