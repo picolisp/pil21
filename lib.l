@@ -1,4 +1,4 @@
-# 16dec24 Software Lab. Alexander Burger
+# 17dec24 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -410,7 +410,8 @@
                      (== 'priv Nsp)
                      (link (pack Nsp "~" "X")) ) )
                (when (type "X")
-                  (link (sym @)) ) ) ) )
+                  (link (sym @)) ) )
+            (T (remark (car "X"))) ) )
       (prin
          "  "
          (and (=1 (%@ "isatty" 'I (fd))) "\e[0;36m")

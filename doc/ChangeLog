@@ -1,3 +1,10 @@
+24.12.17
+   'remark' continued
+      lib.l
+      lib/vip.l
+   Typo
+      doc/refT.html
+
 24.12.16
    'remark' function to generalize REPL-comments
       src/glob.l

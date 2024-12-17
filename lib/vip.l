@@ -1,4 +1,4 @@
-# 16dec24 Software Lab. Alexander Burger
+# 17dec24 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -278,11 +278,11 @@ s-expr command vipA vipZ vi)
             (for "X" (sort (getl "S"))
                (space 3)
                (if (atom "X")
-                  (println "X" T)
+                  (print "X" T)
                   (printsp (cdr "X"))
-                  (pretty (setq "X" (car "X")) -3)
-                  (remark "X")
-                  (prinl) ) ) )
+                  (pretty (setq "X" (car "X")) -3) )
+               (remark "X")
+               (prinl) ) )
          (prinl)
          (println '(=======))
          (prinl) ) ) )
