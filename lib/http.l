@@ -1,4 +1,4 @@
-# 06aug24 Software Lab. Alexander Burger
+# 22dec24 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -378,7 +378,7 @@
    (when Upd
       (prinl "Cache-Control: max-age=" Upd "\r")
       (when (=0 Upd)
-         (prinl "Cache-Control: private, no-store, no-cache\r") ) )
+         (prinl "Cache-Control: no-store\r") ) )
    (prinl "Content-Type: " (or Typ "text/html; charset=utf-8") "\r")
    (when File
       (prinl

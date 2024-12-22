@@ -1,3 +1,9 @@
+24.12.22
+   Reset form on 'pagehide' event do disable back/forward cache
+      lib/xhtml.l
+   Reduce Cache-Control to 'no-store'
+      lib/http.l
+
 24.12.17
    'remark' continued
       lib.l
