@@ -1,5 +1,5 @@
 24.12.22
-   Reset form on 'pagehide' event do disable back/forward cache
+   Reset form on 'pagehide' event to disable back/forward cache
       lib/xhtml.l
    Reduce Cache-Control to 'no-store'
       lib/http.l
