@@ -1,4 +1,4 @@
-# 22dec24 Software Lab. Alexander Burger
+# 23dec24 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -179,10 +179,9 @@
    (prinl "<link rel=\"stylesheet\" type=\"text/css\" href=\"" (srcUrl Css) "\"/>") )
 
 (de javascript (JS . @)
-   (when *JS
-      (when JS
-         (prinl "<script type=\"text/javascript\" src=\"" (srcUrl JS) "\"></script>") )
-      (and (rest) (<javascript> @)) ) )
+   (when JS
+      (prinl "<script type=\"text/javascript\" src=\"" (srcUrl JS) "\"></script>") )
+   (and (rest) (<javascript> @)) )
 
 (de serverSentEvent (Id Var . Prg)
    (allow "!ssEvt")

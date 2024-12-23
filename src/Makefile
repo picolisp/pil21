@@ -1,4 +1,4 @@
-# 22dec24 Software Lab. Alexander Burger
+# 23dec24 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -7,7 +7,6 @@ PIL = ../pil  # pil
 ASM = opt -O2  # llvm-as
 LLC = llc
 LINK = llvm-link
-MAIN = -rdynamic -lc -lutil -lm -ldl
 SHARED = -shared
 STRIP = strip
 
@@ -35,7 +34,7 @@ $(LIB)/sysdefs: sysdefs.c
 $(BIN)/picolisp: picolisp.bc
 	mkdir -p $(BIN) $(LIB)
 	$(LLC) picolisp.bc -relocation-model=pic -o picolisp.s
-	$(CC) picolisp.s -o $(BIN)/picolisp $(MAIN) `pkg-config --libs readline libffi`
+	$(CC) picolisp.s -o $(BIN)/picolisp -rdynamic -lc -lutil -lm -ldl `pkg-config --libs readline libffi`
 	$(STRIP) $(BIN)/picolisp
 
 picolisp.bc: base.bc lib.bc

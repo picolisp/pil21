@@ -1,8 +1,10 @@
-24.12.22
+24.12.23
    Automatic lib configuration (Mike Pechkin)
       src/Makefile
    Reset form on 'pagehide' event to disable back/forward cache
       lib/xhtml.l
+
+24.12.22
    Reduce Cache-Control to 'no-store'
       lib/http.l
 
