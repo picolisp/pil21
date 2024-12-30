@@ -1,8 +1,8 @@
-# 22dec24 Software Lab. Alexander Burger
+# 30dec24 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
-# *Post *Uri *Url *Timeout *SesAdr *SesId *ConId *Retire
+# *Post *Uri *Url *Timeout *SesId *ConId *Retire
 # *Referer *Cookies "*Cookies"
 
 (default
@@ -83,9 +83,7 @@
       ((<> Pw (pw)) (quit "Bad pw"))
       ((ctty Tty)
          (sys "TERM" Term)
-         (if *SesId
-            (setq *Adr *SesAdr)
-            (off *Run) )
+         (or *SesId (off *Run))
          (println *Pid)
          (unless *Dbg
             (on *Dbg)
@@ -157,11 +155,8 @@
 
 # Application startup
 (de app ()
-   (if *SesId
-      (unless (= *Adr *SesAdr)
-         (forbidden) )
+   (unless *SesId
       (setq
-         *SesAdr *Adr
          *SesId (pack (in "/dev/urandom" (rd 7)) "~")
          *Sock (port *HPorts '*Port)
          *Port% (not *Gate) )
