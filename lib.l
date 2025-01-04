@@ -1,4 +1,4 @@
-# 17dec24 Software Lab. Alexander Burger
+# 04jan25 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -396,22 +396,23 @@
 
 (de remark ("X")
    (let? Lst
-      (make
-         (cond
-            ((num? "X")
-               (when (>= 799999 "X" 700000)
-                  (link (dat$ "X" "-")) )
-               (unless (=0 *Scl)
-                  (link (format "X" *Scl)) ) )
-            ((sym? "X")
-               (let? Nsp (nsp "X")
-                  (or
-                     (== 'pico Nsp)
-                     (== 'priv Nsp)
-                     (link (pack Nsp "~" "X")) ) )
-               (when (type "X")
-                  (link (sym @)) ) )
-            (T (remark (car "X"))) ) )
+      (recur ("X")
+         (make
+            (cond
+               ((num? "X")
+                  (when (>= 799999 "X" 700000)
+                     (link (dat$ "X" "-")) )
+                  (unless (=0 *Scl)
+                     (link (format "X" *Scl)) ) )
+               ((sym? "X")
+                  (let? Nsp (nsp "X")
+                     (or
+                        (== 'pico Nsp)
+                        (== 'priv Nsp)
+                        (link (pack Nsp "~" "X")) ) )
+                  (when (type "X")
+                     (link (sym @)) ) )
+               (T (and (recurse (car "X")) (chain @))) ) ) )
       (prin
          "  "
          (and (=1 (%@ "isatty" 'I (fd))) "\e[0;36m")
