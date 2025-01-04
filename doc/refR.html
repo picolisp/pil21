@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 16dec24 Software Lab. Alexander Burger
+# 04jan25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -857,17 +857,16 @@ See also <code><a href="refU.html#up">up</a></code>.
 OK
 -> OK
 
-: (de f Prg
-   (let A 12
-      (println (cons 'Prg Prg) (cons 'A A))
-      (run Prg 1) ) )
+: (de f (N . Prg)
+   (when (gt0 N)
+      (prinl "1: @ = " @)  # '@' is 4, as 'N' is 4 from the call below
+      (run Prg 1) ) )  # but printed is 3, as it was set by 'and'
 -> f
-: (let (Prg 77  A 99)
-   (f
-      (println (cons 'Prg Prg) (cons 'A A)) ) )
-(Prg (println (cons 'Prg Prg) (cons 'A A))) (A . 12)
-(Prg . 77) (A . 99)
--> (A . 99)
+
+: (and 3 (f 4 (prinl "2: @ = " @)))  # '@' was 3 when 'f' was called
+1: @ = 4
+2: @ = 3
+-> 3
 </pre></dd>
 
 </dl>

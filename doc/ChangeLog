@@ -1,4 +1,7 @@
 25.1.4
+   Wrong examples for 'eval' and 'run' offset
+      doc/refE.html
+      doc/refR.html
    Fix 'remark'
       lib.l
 

@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 02dec24 Software Lab. Alexander Burger
+# 04jan25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -337,20 +337,6 @@ href="refU.html#up">up</a></code>.
 -> 7
 : (eval X)
 -> 7
-
-: (de f (A)
-   (list
-      (eval 'A)
-      (eval 'A 1)
-      (eval 'A 2) ) )
--> f
-: (de g (A)
-   (f (inc A)) )
--> g
-: (one A)
--> 1
-: (g (inc A))
--> (3 2 1)
 </pre></dd>
 
 <dt><a id="exec"><code>(exec 'any ..)</code></a></dt>
