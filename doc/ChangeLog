@@ -3,6 +3,7 @@
       lib/vip.l
    Read and print decimal unicode in symbol names
       src/io.l
+      lib.l
 
 25.1.4
    Wrong examples for 'eval' and 'run' offset

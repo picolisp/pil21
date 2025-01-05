@@ -1,4 +1,4 @@
-# 04jan25 Software Lab. Alexander Burger
+# 05jan25 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -409,7 +409,7 @@
                      (or
                         (== 'pico Nsp)
                         (== 'priv Nsp)
-                        (link (pack Nsp "~" "X")) ) )
+                        (link (pack (sym Nsp) "~" (sym "X"))) ) )
                   (when (type "X")
                      (link (sym @)) ) )
                (T (and (recurse (car "X")) (chain @))) ) ) )
