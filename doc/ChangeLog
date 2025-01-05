@@ -1,3 +1,9 @@
+25.1.5
+   Handle "^?"
+      lib/vip.l
+   Read and print decimal unicode in symbol names
+      src/io.l
+
 25.1.4
    Wrong examples for 'eval' and 'run' offset
       doc/refE.html

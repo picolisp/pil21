@@ -1,4 +1,4 @@
-# 17dec24 Software Lab. Alexander Burger
+# 05jan25 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -331,10 +331,17 @@ s-expr command vipA vipZ vi)
       (cond
          ((: buffer flat))
          ((=T (val C))
-            (ifn (>= "^_" C "^A")
-               (attr NIL T)
-               (setq C (char (+ 64 (char C))))
-               (attr RED T) ) )
+            (cond
+               ((= "^?" C)
+                  (setq C "?")
+                  (attr RED T) )
+               ((>= "^_" C "^A")
+                  (setq C (char (+ 64 (char C))))
+                  (attr RED T) )
+               (T (attr NIL T)) ) )
+         ((= "^?" C)
+            (setq C "?")
+            (attr RED) )
          ((>= "^_" C "^A")
             (setq C (char (+ 64 (char C))))
             (attr RED) )

@@ -1,4 +1,4 @@
-# 16dec24 Software Lab. Alexander Burger
+# 05jan25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1236,7 +1236,7 @@ selectErr)
                   (closeOnExec Exe Fd) ) ) ) )
       (pushCtlFile Ct) ) )
 
-(local) (read0 getChar skipc comment skip testEsc anonymous rdAtom rdl rdList)
+(local) (read0 getChar skipc comment skip)
 
 (de read0 (i1))
 
@@ -1359,6 +1359,21 @@ selectErr)
             (ret Chr) )
          (comment) ) ) )
 
+(local) (uniChr testEsc anonymous rdAtom rdl rdList)
+
+(de i32 uniChr ((i32 . Chr))
+   (when (and (>= Chr (char "0")) (>= (char "9") Chr))
+      (dec 'Chr (char "0"))
+      (until (== (call $Get) (char "\\"))
+         (unless
+            (and
+               (>= (val $Chr) (char "0"))
+               (>= (char "9") (val $Chr)) )
+            (badInput) )
+         (setq Chr
+            (+ (* Chr 10) (- (val $Chr) (char "0"))) ) ) )
+   Chr )
+
 (de i1 testEsc ((i32 . Chr))
    (loop
       (? (lt0 Chr) NO)
@@ -1380,18 +1395,7 @@ selectErr)
             ((char "n") (set $Chr (char "\n")))
             ((char "r") (set $Chr (char "\r")))
             ((char "t") (set $Chr (char "\t")))
-            (T
-               (when (and (>= Chr (char "0")) (>= (char "9") Chr))
-                  (dec 'Chr (char "0"))
-                  (until (== (call $Get) (char "\\"))
-                     (unless
-                        (and
-                           (>= (val $Chr) (char "0"))
-                           (>= (char "9") (val $Chr)) )
-                        (badInput) )
-                     (setq Chr
-                        (+ (* Chr 10) (- (val $Chr) (char "0"))) ) ) )
-               (set $Chr Chr) ) )
+            (T (set $Chr (uniChr Chr))) )
          YES )
       (loop
          (setq Chr (call $Get))
@@ -1438,7 +1442,7 @@ selectErr)
                (set P 4  3 P ZERO) )  # Build new name
             (? (strchr $Delim Chr))
             (when (== Chr (char "\\"))
-               (setq Chr (call $Get)) )
+               (setq Chr (uniChr (call $Get))) )
             (byteSym (i8 Chr) P) )
          (setq Chr (call $Get)) )
       (prog1
@@ -2413,12 +2417,17 @@ selectErr)
          (when (== B (char "#"))
             (call $Put (char "\\")) )  # Escape leading hash
          (loop
-            (when
-               (or
-                  (== B (char "\\"))
-                  (strchr $Delim (i32 B)) )
-               (call $Put (char "\\")) )  # Escape backslash and delimiters
-            (call $Put B)
+            (if (or (== B 127) (> 32 B))  # DEL or Ctrl
+               (prog
+                  (call $Put (char "\\"))  # Unicode
+                  (outWord (i64 B))
+                  (call $Put (char "\\")) )
+               (when
+                  (or
+                     (== B (char "\\"))
+                     (strchr $Delim (i32 B)) )
+                  (call $Put (char "\\")) )  # Escape backslash and delimiters
+               (call $Put B) )
             (? (=0 (setq B (symByte P))) ) ) )
       (call $Put (char "\\"))
       (call $Put (char ".")) ) )
@@ -2460,7 +2469,7 @@ selectErr)
                                        ((== B 127)  # DEL
                                           (call $Put (char "\^"))  # Print ^?
                                           (setq B (char "?")) )
-                                       ((> 32 B)  # White space
+                                       ((> 32 B)  # Ctrl
                                           (call $Put (char "\^"))  # Escape with caret
                                           (setq B (| B 64)) ) )
                                     (call $Put B)
