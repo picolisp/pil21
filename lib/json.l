@@ -1,10 +1,10 @@
-# 07jul23 Software Lab. Alexander Burger
+# 09jan25 Software Lab. Alexander Burger
 
 (de checkJson (X Item)
    (unless (= X Item)
       (quit "Bad JSON" Item) ) )
 
-(de parseJson (Str)
+(de parseJson (Str Arr)
    (let L (str Str "_")
       (recur ()
          (case (++ L)
@@ -17,6 +17,7 @@
                      (checkJson "," X) ) ) )
             ("["
                (make
+                  (and Arr (link T))  # Array marker
                   (for (X (recurse) (not (= "]" X)) (recurse))
                      (link X)
                      (T (= "]" (setq X (recurse))))
@@ -34,20 +35,21 @@
                            ((if (lt0 @) */ *) X (** 10 (abs @))) ) )
                      (T X) ) ) ) ) ) ) )
 
-(de readJson ()
+(de readJson (Arr)
    (case (read "_")
       ("{"
          (make
-            (for (X (readJson) (not (= "}" X)) (readJson))
-               (checkJson ":" (readJson))
-               (link (cons (intern X) (readJson)))
-               (T (= "}" (setq X (readJson))))
+            (for (X (readJson Arr) (not (= "}" X)) (readJson Arr))
+               (checkJson ":" (readJson Arr))
+               (link (cons (intern X) (readJson Arr)))
+               (T (= "}" (setq X (readJson Arr))))
                (checkJson "," X) ) ) )
       ("["
          (make
-            (for (X (readJson) (not (= "]" X)) (readJson))
+            (and Arr (link T))  # Array marker
+            (for (X (readJson Arr) (not (= "]" X)) (readJson Arr))
                (link X)
-               (T (= "]" (setq X (readJson))))
+               (T (= "]" (setq X (readJson Arr))))
                (checkJson "," X) ) ) )
       (T
          (let X @
@@ -63,48 +65,50 @@
 (de packJson (Item)
    (pack
       (make
-         (recur (Item)
+         (recur (Item F)
             (cond
                ((atom Item) (link (if Item (sym @) "{}")))
-               ((atom (car Item))
+               ((=T (car Item))
                   (link "[")
                   (map
                      '((X)
                         (recurse (car X))
                         (and (cdr X) (link ", ")) )
-                     Item )
+                     (cdr Item) )
                   (link "]") )
+               ((and (car Item) (atom @) (not F))
+                  (link "\"" (sym (car Item)) "\": ")
+                  (recurse (cdr Item) T) )
                (T
                   (link "{")
                   (map
                      '((X)
-                        (link "\"")
-                        (link (sym (caar X)))
-                        (link "\": ")
-                        (recurse (cdar X))
+                        (recurse (car X))
                         (and (cdr X) (link ", ")) )
                      Item )
                   (link "}") ) ) ) ) ) )
 
-(de printJson (Item)
+(de printJson (Item F)
    (cond
       ((atom Item) (if Item (print @) (prin "{}")))
-      ((atom (car Item))
+      ((=T (car Item))
          (prin "[")
          (map
             '((X)
                (printJson (car X))
                (and (cdr X) (prin ", ")) )
-            Item )
+            (cdr Item) )
          (prin "]") )
+      ((and (car Item) (atom @) (not F))
+         (prin "\"")
+         (print (car Item))
+         (prin "\": ")
+         (printJson (cdr Item) T) )
       (T
          (prin "{")
          (map
             '((X)
-               (prin "\"")
-               (print (caar X))
-               (prin "\": ")
-               (printJson (cdar X))
+               (printJson (car X))
                (and (cdr X) (prin ", ")) )
             Item )
          (prin "}") ) ) )
