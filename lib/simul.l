@@ -1,19 +1,20 @@
-# 27jun24 Software Lab. Alexander Burger
+# 22jan25 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
 (local) (subsets shuffle samples)
 (import pico~permute)
 
-(de permute (Lst)
-   (ifn (cdr Lst)
-      (cons Lst)
-      (mapcan
-         '((X)
-            (mapcar
-               '((Y) (cons X Y))
-               (permute (delete X Lst)) ) )
-         Lst ) ) )
+(private) (Lst Fun L)
+
+(de permute (Lst Fun)
+   (let L Lst
+      (recur (L)
+         (if (cdr L)
+            (do (length L)
+               (recurse (cdr L))
+               (rot L) )
+            (Fun Lst) ) ) ) )
 
 (de subsets (N Lst)
    (cond

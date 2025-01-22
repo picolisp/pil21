@@ -1,3 +1,7 @@
+25.1.22
+   Change 'permute' to use a callback function
+      lib/simul.l
+
 25.1.21
    Postpone first move event for better double-click detection
       lib/canvas.js
