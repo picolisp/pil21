@@ -1,3 +1,7 @@
+25.2.1
+   Missing 'F' argument to 'packJson'
+      lib/json.l
+
 25.1.22
    Change 'permute' to use a callback function
       lib/simul.l
