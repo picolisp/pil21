@@ -1,4 +1,4 @@
-# 30may24 Software Lab. Alexander Burger
+# 05feb25 Software Lab. Alexander Burger
 
 ### quote ###
 (test (1 2 3) (quote 1 2 3))
@@ -233,6 +233,11 @@
 (test 2 (if (= 3 4) 1 2))
 
 
+### ifn ###
+(test 2 (ifn (= 3 3) 1 2))
+(test 1 (ifn (= 3 4) 1 2))
+
+
 ### if2 ###
 (test 'both
    (if2 T T 'both 'first 'second 'none) )
@@ -248,10 +253,15 @@
 (test 7 (and 7 (if2 NIL @ 1 2 @)))
 
 
-### ifn ###
-(test 2 (ifn (= 3 3) 1 2))
-(test 1 (ifn (= 3 4) 1 2))
-
+### if@@ ###
+(test (1 3 . 4)
+   (if@@ (inc (setq @@ 3))
+      (cons 1 @@ @)
+      (cons 2 @@ @) ) )
+(test (2 NIL)
+   (if@@ (off @@)
+      (cons 1 @@ @)
+      (cons 2 @@ @) ) )
 
 ### when ###
 (test 7 (when (= 3 3) 7))

@@ -1,4 +1,4 @@
-# 09jul24 Software Lab. Alexander Burger
+# 05feb25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -605,6 +605,14 @@
             (eval (cadr X))
             (set $At @)
             (eval (car X)) ) ) ) )
+
+# (if@@ 'any1 any2 . prg) -> any
+(de _IfAt2 (Exe)
+   (let X (cdr Exe)
+      (set $At (eval (++ X)))
+      (if (nil? (val $At2))
+         (run (cdr X))
+         (eval (car X)) ) ) )
 
 # (when 'any . prg) -> any
 (de _When (Exe)

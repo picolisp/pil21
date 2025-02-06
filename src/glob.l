@@ -1,4 +1,4 @@
-# 16dec24 Software Lab. Alexander Burger
+# 05feb25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -357,6 +357,7 @@
    (NIL "if" _If)
    (NIL "ifn" _Ifn)
    (NIL "if2" _If2)
+   (NIL "if@@" _IfAt2)
    (NIL "when" _When)
    (NIL "unless" _Unless)
    (NIL "cond" _Cond)

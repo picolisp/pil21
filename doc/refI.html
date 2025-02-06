@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 02dec24 Software Lab. Alexander Burger
+# 05feb25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -195,6 +195,34 @@ the result returned. See also <code><a href="refI.html#if">if</a></code> and
 -> second
 : (if2 NIL NIL 'both 'first 'second 'none)
 -> none
+</pre></dd>
+
+<dt><a id="if@@"><code>(if@@ 'any1 any2 . prg) -> any</code></a></dt>
+<dd>Conditional execution: If the value of the global variable <a
+href="ref_.html#@@">@@</a></code> is non-<code>NIL</code> after the evaluation
+of <code>any1</code>, <code>any2</code> is evaluated and returned. Otherwise,
+<code>prg</code> is executed and the result returned. In both cases, <a
+href="ref_.html#@">@</a></code> will hold the value of <code>any1</code>. See
+also <code><a href="refI.html#if">if</a></code> and <code><a
+href="refI.html#if2">if2</a></code>.
+
+<pre>
+: (de foo (N)
+   (if (lt0 N)
+      (throw 'lt0 N)
+      (sqrt N) ) )
+-> foo
+
+: (if@@ (catch 'lt0 (foo 64))
+   (msg @ " negative")
+   @ )
+-> 8
+
+: (if@@ (catch 'lt0 (foo -64))
+   (msg @ " negative")
+   @ )
+-64 negative
+-> -64
 </pre></dd>
 
 <dt><a id="ifn"><code>(ifn 'any1 any2 . prg) -> any</code></a></dt>
