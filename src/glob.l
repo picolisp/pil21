@@ -1,4 +1,4 @@
-# 05feb25 Software Lab. Alexander Burger
+# 08feb25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -378,6 +378,8 @@
    (NIL "let?" _LetQ)
    (NIL "use" _Use)
    (NIL "buf" _Buf)
+   (NIL "tco" _Tco)
+   (NIL "tc" _Tc)
    (NIL "catch" _Catch)
    (NIL "throw" _Throw)
    (NIL "finally" _Finally)
@@ -647,6 +649,8 @@
    ($Put (void i8) null)         # Character output function
    ($Get (i32) null)             # Character input function
    ($Parser i64* null)           # String parser
+   ($TcoPar $Nil)                # Tail call parameters
+   ($TcoLnk 0)                   # Tail call link
    ($Next $Nil)                  # Next vararg
    ($Typ 0)                      # Method type
    ($Key 0)                      # Method key
@@ -655,7 +659,7 @@
    ($Chr i32 0)                  # Single-char look ahead
    ($Protect i32 0)              # Signal protection
    ($Trace i32 0)                # Trace level
-   ($EnvPad i32 0) )
+   ($EnvPad i32 0) )             # Pad to 64 bit
 
 # Temporary cell
 (array $Cell any
@@ -680,6 +684,7 @@
 # Booleans
 (var $Repl i1 NO)                # REPL flag
 (var $PRepl i1 NO)               # Parent REPL
+(var $Tc i1 NO)                  # Tail call
 (var $Jam i1 NO)                 # Error jam
 (var $InBye i1 NO)               # Exit status
 (var $Sync i1 NO)                # Family IPC synchronization

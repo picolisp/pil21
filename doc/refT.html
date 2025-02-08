@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 17dec24 Software Lab. Alexander Burger
+# 08feb25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -235,6 +235,54 @@ href="refT.html#timeout">timeout</a></code>.
                   (pipe (exec "sh" "-c" "sleep 2; echo 7")) ) )
             (tty (println (in S (read))))
             (close S) ) ) ) )
+</pre></dd>
+
+<dt><a id="tco"><code>(tco lst . prg) -> any</code></a></dt>
+<dt><a id="tc"><code>(tc ['any ..])</code></a></dt>
+<dd>Tail call optimization. <code>tco</code> implements a loop which is
+restarted whenever <code>tc</code> is called during the execution of
+<code>prg</code>. This is faster and uses much less stack space than a recursive
+function call. <code>lst</code> is a list of parameter symbols. <code>tc</code>
+must be the very last function called in a function body. See also <code><a
+href="refR.html#recur">recur</a></code> and <code><a
+href="refC.html#catch">catch</a></code>.
+
+<pre>
+: (de f (N)
+   (if (=0 N)
+      'OK
+      (printsp N)
+      (f (dec N)) ) )  # Recursive call
+-> f
+: (f 8)
+8 7 6 5 4 3 2 1 -> OK
+
+# Equivalent to
+: (de f (N)
+   (tco (N)
+      (if (=0 N)
+         'OK
+         (printsp N)
+         (tc (dec N)) ) ) )  # Tail call
+-> f
+: (f 8)
+8 7 6 5 4 3 2 1 -> OK
+
+# Mutually recursive functions
+: (de f (N)
+   (tco (N)
+      (if (le0 N)
+         'OK
+         (printsp N)
+         (g (dec N)) ) ) )
+-> f
+: (de g (N)
+   (if (le0 N)
+      'OK
+      (tc (dec N)) ) )  # Tail call
+-> g
+: (f 8)
+8 6 4 2 -> OK
 </pre></dd>
 
 <dt><a id="telStr"><code>(telStr 'sym) -> sym</code></a></dt>

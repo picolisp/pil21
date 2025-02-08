@@ -1,4 +1,4 @@
-# 05feb25 Software Lab. Alexander Burger
+# 08feb25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1051,6 +1051,43 @@
       (prog1
          (run X)
          (set Y (val P)  $Bind (val 3 P)) ) ) )
+
+# (tco lst . prg) -> any
+(de _Tco (Exe)
+   (let
+      (X (cdr Exe)
+         Y (car X)
+         Par (val $TcoPar)
+         Lnk (val $TcoLnk) )
+      (set $TcoPar Y)
+      (while (pair Y)
+         (set $Link (push $Nil (val $Link)))
+         (shift Y) )
+      (set $TcoLnk (val $Link))
+      (loop
+         (setq Y (car X))
+         (let V (run (cdr X))
+            (? (not (prog1 (val $Tc) (set $Tc NO)))
+               (let L (val $Link)
+                  (while (pair Y)
+                     (shift L)
+                     (shift Y) )
+                  (set $Link L) )
+               (set $TcoLnk Lnk  $TcoPar Par)
+               V ) )
+         (let L (val $Link)
+            (while (pair Y)
+               (set (++ Y) (++ L)) ) ) ) ) )
+
+# (tc ['any ..])
+(de _Tc (Exe)
+   (let (X Exe  P (val $TcoPar)  L (val $TcoLnk))
+      (set $Tc YES)
+      (while (pair P)
+         (set L (eval (car (shift X))))
+         (shift L)
+         (shift P) ) )
+   $Nil )
 
 # (catch 'any . prg) -> any
 (de _Catch (Exe)
