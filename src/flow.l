@@ -1,4 +1,4 @@
-# 08feb25 Software Lab. Alexander Burger
+# 09feb25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1057,6 +1057,7 @@
    (let
       (X (cdr Exe)
          Y (car X)
+         Z (val $Link)
          Par (val $TcoPar)
          Lnk (val $TcoLnk) )
       (set $TcoPar Y)
@@ -1068,12 +1069,7 @@
          (setq Y (car X))
          (let V (run (cdr X))
             (? (not (prog1 (val $Tc) (set $Tc NO)))
-               (let L (val $Link)
-                  (while (pair Y)
-                     (shift L)
-                     (shift Y) )
-                  (set $Link L) )
-               (set $TcoLnk Lnk  $TcoPar Par)
+               (set $TcoLnk Lnk  $TcoPar Par  $Link Z)
                V ) )
          (let L (val $Link)
             (while (pair Y)

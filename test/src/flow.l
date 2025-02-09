@@ -1,4 +1,4 @@
-# 05feb25 Software Lab. Alexander Burger
+# 09feb25 Software Lab. Alexander Burger
 
 ### quote ###
 (test (1 2 3) (quote 1 2 3))
@@ -408,6 +408,28 @@
       (for (N 1 T)
          (link N)
          (T (> (inc 'N) 7)) ) ) )
+
+
+### tco tc ###
+(test (8 7 6 5 4 3 2 1 OK)
+   (make
+      (let N 8
+         (tco (N)
+            (if (=0 N)
+               (link 'OK)
+               (link N)
+               (tc (dec N)) ) ) ) ) )
+
+(use Idx
+   (balance 'Idx (range 1 7))
+   (test (4 2 1 3 6 5 7)
+      (make
+         (recur (Idx)
+            (tco (Idx)
+               (when Idx
+                  (link (car Idx))
+                  (recurse (cadr Idx))
+                  (tc (cddr Idx)) ) ) ) ) ) )
 
 
 ### catch throw ###

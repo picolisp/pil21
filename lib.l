@@ -1,4 +1,4 @@
-# 05jan25 Software Lab. Alexander Burger
+# 09feb25 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -481,7 +481,7 @@
                (printsp (++ X))
                (prtty2 X NIL Z) )
             (prin ")") ) )
-      ((memq (car X) '(=: use later recur tab new))
+      ((memq (car X) '(=: use later recur tco tab new))
          (_pretty
             (space)
             (print (++ X))
