@@ -1,4 +1,4 @@
-# 04aug23 Software Lab. Alexander Burger
+# 13feb25 Software Lab. Alexander Burger
 
 # *NoLint
 
@@ -60,6 +60,8 @@ _lintq lintFun A C Lst S X Y *L *X *Var *Dup *Def *Bnd *Use)
             (recur
                (let recurse (cdr X)
                   (lintFun recurse) ) )
+            (tco
+               (lintFun (cdr X)) )
             (task
                (lint1 (cadr X))
                (let Y (cddr X)
