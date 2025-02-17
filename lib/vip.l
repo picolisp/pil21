@@ -1,4 +1,4 @@
-# 05jan25 Software Lab. Alexander Burger
+# 17feb25 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -403,13 +403,13 @@ s-expr command vipA vipZ vi)
    (for (This *CmdWin This (: next))
       (redraw) ) )
 
-(de scLeft (N)
+(de scLeft ()
    (and
       (> (: winX) 1)
       (>= (- (: posX) (dec (:: winX))) *Columns)
       (dec (:: posX)) ) )
 
-(de scRight (N)
+(de scRight ()
    (cond
       ((> (: posX) (: winX))
          (inc (:: winX)) )
@@ -1523,8 +1523,8 @@ s-expr command vipA vipZ vi)
                                  (("^B" "\e[5~") (move 'goUp (: lines)))  # [PGUP] Page up
                                  ("h" (move 'goLeft *Cnt))  # Move left
                                  ("l" (move 'goRight *Cnt))  # Move right
-                                 ("\e[D" (scLeft) (redraw))  # [LEFT] Scroll left
-                                 ("\e[C" (scRight) (redraw))  # [RIGHT] Scroll right
+                                 ("\e[D" (do 2 (scLeft)) (redraw))  # [LEFT] Scroll left
+                                 ("\e[C" (do 2 (scRight)) (redraw))  # [RIGHT] Scroll right
                                  ("z" (do 3 (scRight)) (redraw))  # Scroll right 3 columns
                                  ("Z" (do 3 (scLeft)) (redraw))  # Scroll left 3 columns
                                  ("|" (move 'goCol *Cnt))  # Go to column

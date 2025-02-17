@@ -1,3 +1,7 @@
+25.2.17
+   Scroll two steps with horizontal arrow keys
+      lib/vip.l
+
 25.2.13
    'tco' continued
       lib/lint.l
