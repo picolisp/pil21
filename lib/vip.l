@@ -1,4 +1,4 @@
-# 17feb25 Software Lab. Alexander Burger
+# 21feb25 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -405,8 +405,9 @@ s-expr command vipA vipZ vi)
 
 (de scLeft ()
    (and
-      (> (: winX) 1)
-      (>= (- (: posX) (dec (:: winX))) *Columns)
+      (if (=1 (: winX))
+         (> (: posX) 1)
+         (>= (- (: posX) (dec (:: winX))) *Columns) )
       (dec (:: posX)) ) )
 
 (de scRight ()

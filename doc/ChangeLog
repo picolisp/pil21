@@ -1,3 +1,7 @@
+25.2.21
+   Move cursor left in final left scroll
+      lib/vip.l
+
 25.2.17
    Scroll two steps with horizontal arrow keys
       lib/vip.l
