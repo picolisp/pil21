@@ -1,5 +1,5 @@
 #!/usr/bin/picolisp /usr/lib/picolisp/lib.l
-# 27aug23abu
+# 26feb25abu
 
 (unless *Dbg
    (load "@lib/vip.l") )
@@ -15,7 +15,7 @@
                   (cond
                      ((pre? "+" S)
                         (link
-                           (ifn (get (intern (cdr L)) '*Dbg 1)
+                           (ifn (get (any (cdr L)) '*Dbg 1)
                               (cons
                                  (cond
                                     ((= "+" S) T)

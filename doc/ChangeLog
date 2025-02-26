@@ -1,3 +1,9 @@
+25.2.26
+   Typo
+      doc/refI.html
+   Use 'any' instead of 'intern' for '+<pat>' arguments
+      bin/vip
+
 25.2.21
    Move cursor left in final left scroll
       lib/vip.l
