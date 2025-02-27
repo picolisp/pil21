@@ -1,4 +1,4 @@
-# 08feb25 Software Lab. Alexander Burger
+# 27feb25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -648,6 +648,7 @@
    ($OutFile i8* null)           # Output file
    ($Put (void i8) null)         # Character output function
    ($Get (i32) null)             # Character input function
+   ($NsLink i64* null)           # Namespace list link
    ($Parser i64* null)           # String parser
    ($TcoPar $Nil)                # Tail call parameters
    ($TcoLnk 0)                   # Tail call link

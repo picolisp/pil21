@@ -1,4 +1,4 @@
-# 05jan25 Software Lab. Alexander Burger
+# 27feb25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2839,13 +2839,15 @@ selectErr)
       (let E (save (parse (xName X) YES (hex "5D0A") 0))  # '\n', ']', EOF
          (evList E) )
       (let
-         (Int (save (val $Intern))
+         (Lnk (val $NsLink)
             Tr1 (save (val $Transient))
             Tr2 (save (val 2 $Transient))
             Pr1 (save (val $PrivT))
             Pr2 (save (val 2 $PrivT))
             V (link (push -ZERO NIL))
             Raw (val Termio) )
+         (save (val $Intern))
+         (set $NsLink (val $Link))
          (when (nil? X)
             (setCooked)
             (unless (val $Repl)
@@ -2865,13 +2867,14 @@ selectErr)
             (until (nil? (read1 0))
                (setq X (eval (set V @))) ) )
          (popInFiles)
+         (set $Intern (val (val $NsLink)))
          (when Raw
             (setRaw) )
          (set 2 $PrivT Pr2)
          (set $PrivT Pr1)
          (set 2 $Transient Tr2)
          (set $Transient Tr1)
-         (set $Intern Int)
+         (set $NsLink Lnk)
          X ) ) )
 
 (de loadAll (Exe)

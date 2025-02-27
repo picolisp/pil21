@@ -1,3 +1,10 @@
+25.2.27
+   Export namespace list from 'repl' via 'T' argument to 'symbols'
+      src/glob.l
+      src/sym.l
+      src/io.l
+      doc/refS.html
+
 25.2.26
    Typo
       doc/refI.html

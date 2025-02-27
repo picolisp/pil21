@@ -1,4 +1,4 @@
-# 09jul24 Software Lab. Alexander Burger
+# 27feb25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -639,7 +639,7 @@
 # (symbols) -> lst
 # (symbols 'lst) -> lst
 # (symbols 'lst . prg) -> any
-# (symbols 'sym1 'sym2 ..) -> lst
+# (symbols ['T] 'sym1 'sym2 ..) -> lst
 (de _Symbols (Exe)
    (let X (cdr Exe)
       (if (atom X)  # No args
@@ -659,25 +659,30 @@
                         (prog1
                            (run X)  # Run 'prg'
                            (set $Intern Z) ) ) ) )
-               (if
-                  (or  # New namespace
-                     (nil? (val (needSymb Exe Y)))
-                     (== @ Y) )
-                  (set
-                     (chkVar Exe Y)
-                     (cons $Tilde (cons $Nil $Nil)) )
-                  (needNsp Exe Y) )
-               (let R (setq Y (save (cons Y $Nil)))
-                  (while (pair X)
-                     (setq Y
-                        (set 2 Y
-                           (cons
-                              (needNsp Exe (needSymb Exe (eval (++ X))))
-                              $Nil ) ) ) )
-                  (prog1
-                     (val $Intern)
-                     (set $Intern R)
-                     (putSrc (car R) 0) ) ) ) ) ) ) )
+               (let F (t? Y)
+                  (when F
+                     (setq Y (eval (++ X))) )
+                  (if
+                     (or  # New namespace
+                        (nil? (val (needSymb Exe Y)))
+                        (== @ Y) )
+                     (set
+                        (chkVar Exe Y)
+                        (cons $Tilde (cons $Nil $Nil)) )
+                     (needNsp Exe Y) )
+                  (let R (setq Y (save (cons Y $Nil)))
+                     (while (pair X)
+                        (setq Y
+                           (set 2 Y
+                              (cons
+                                 (needNsp Exe (needSymb Exe (eval (++ X))))
+                                 $Nil ) ) ) )
+                     (prog1
+                        (val $Intern)
+                        (set $Intern R)
+                        (when F
+                           (set (val $NsLink) R) )
+                        (putSrc (car R) 0) ) ) ) ) ) ) ) )
 
 # (intern 'any ['nsp]) -> sym
 (de _Intern (Exe)

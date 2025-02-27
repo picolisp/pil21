@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 02dec24 Software Lab. Alexander Burger
+# 27feb25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -1126,7 +1126,7 @@ href="refE.html#ext?">ext?</a></code>.
 <dt><a id="symbols"><code>(symbols) -> lst</code></a></dt>
 <dt><code>(symbols 'lst) -> lst</code></dt>
 <dt><code>(symbols 'lst . prg) -> any</code></dt>
-<dt><code>(symbols 'sym1 'sym2 ..) -> lst</code></dt>
+<dt><code>(symbols ['T] 'sym1 'sym2 ..) -> lst</code></dt>
 <dd>Creates and manages <a href="ref.html#namespaces">namespaces</a> of
 internal symbols: In the first form, the current list of namespaces is
 returned. In the second form, the current namespace list is set to
@@ -1139,8 +1139,9 @@ value is <code>NIL</code> and not modified otherwise, <code>sym1</code>,
 namespace list, and if the value of the global variable <a
 href="refD.html#*Dbg">*Dbg</a> is non-<code>NIL</code>, the current line
 number and file name (if any) are stored in the <code>*Dbg</code>
-property of <code>sym1</code>. See also <code><a
-href="refP.html#pico">pico</a></code>, <code><a
+property of <code>sym1</code>. If the first argument is <code>T</code>,
+the resulting namespace list is also exported from the current REPL. See
+also <code><a href="refP.html#pico">pico</a></code>, <code><a
 href="refN.html#nsp">nsp</a></code>, <code><a
 href="refS.html#-symbols">-symbols</a></code>, <code><a
 href="refP.html#private">private</a></code>, <code><a
