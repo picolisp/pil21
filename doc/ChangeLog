@@ -1,3 +1,7 @@
+25.3.2
+   Change type of '$NsLink' from 'i64*' to 'any'
+      src/glob.l
+
 25.2.27
    Export namespace list from 'repl' via 'T' argument to 'symbols'
       src/glob.l

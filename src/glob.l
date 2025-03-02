@@ -1,4 +1,4 @@
-# 27feb25 Software Lab. Alexander Burger
+# 02mar25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -639,6 +639,7 @@
    ($Link 0)                     # Link register
    ($Bind 0)                     # Bind frames
    ($Break 0)                    # Breakpoint
+   ($NsLink 0)                   # Namespace list link
    ($Catch i8* null)             # Catch frames
    ($InFrames i8* null)          # Input frames
    ($OutFrames i8* null)         # Output frames
@@ -648,7 +649,6 @@
    ($OutFile i8* null)           # Output file
    ($Put (void i8) null)         # Character output function
    ($Get (i32) null)             # Character input function
-   ($NsLink i64* null)           # Namespace list link
    ($Parser i64* null)           # String parser
    ($TcoPar $Nil)                # Tail call parameters
    ($TcoLnk 0)                   # Tail call link
