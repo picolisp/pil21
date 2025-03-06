@@ -1,3 +1,6 @@
+25.3.6
+   Remove @lib/tinymce.l from distribution
+
 25.3.2
    Change type of '$NsLink' from 'i64*' to 'any'
       src/glob.l
