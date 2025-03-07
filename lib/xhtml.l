@@ -1,4 +1,4 @@
-# 23dec24 Software Lab. Alexander Burger
+# 07mar25 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -168,9 +168,7 @@
                      (prinl @)
                      (prinl "</style>") ) ) )
             (and *SesId (<javascript> "SesId='" @ "'"))
-            (mapc javascript *JS)
-            (when (=0 Upd)
-               (<javascript> "window.addEventListener('pagehide', function(event) {document.forms[0].reset()});") ) )
+            (mapc javascript *JS) )
          (micro Body
             (htPrin Prg 3) )
          (micro End) ) ) )

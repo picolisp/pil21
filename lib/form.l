@@ -1,4 +1,4 @@
-# 05jul24 Software Lab. Alexander Burger
+# 07mar25 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
 # *Lock *Spans *AlwaysAsk
@@ -28,6 +28,8 @@
 
 # Define GUI form
 (de form (Attr . Prg)
+   (when (=1 *Form)
+      (<javascript> "window.addEventListener('pagehide', function(event) {document.forms[0].reset()});") )
    (inc '*Form)
    (let App
       (if *PRG

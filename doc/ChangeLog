@@ -1,3 +1,8 @@
+25.3.7
+   Move 'pagehide' handling (back/forward cache) from 'html' to 'form'
+      lib/xhtml.l
+      lib/form.l
+
 25.3.6
    Remove @lib/tinymce.l from distribution
 
