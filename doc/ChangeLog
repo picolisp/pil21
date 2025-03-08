@@ -1,3 +1,10 @@
+25.3.8
+   Scroll page on horizontal touch movements in tables
+      lib/form.js
+   Cosmetics
+      src/io.l
+      lib/form.l
+
 25.3.7
    Move 'pagehide' handling (back/forward cache) from 'html' to 'form'
       lib/xhtml.l

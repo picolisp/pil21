@@ -1,4 +1,4 @@
-# 07mar25 Software Lab. Alexander Burger
+# 08mar25 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
 # *Lock *Spans *AlwaysAsk
@@ -351,8 +351,8 @@
          (make
             (link
                (cons "chart" (index This (: home chart)))
-               '("ontouchmove" . "return tblMove(this,event)")
                '("ontouchstart" . "return tblTouch(event)")
+               '("ontouchmove" . "return tblMove(this,event)")
                (and ATTR (link @)) ) ) ) ) )
 
 # REPL form
