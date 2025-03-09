@@ -1,3 +1,8 @@
+25.3.9
+   Optional 'flg' argument to 'peek' (returns full char, but may block)
+      src/io.l
+      doc/refP.html
+
 25.3.8
    Scroll page on horizontal touch movements in tables
       lib/form.js

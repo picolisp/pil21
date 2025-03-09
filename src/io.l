@@ -1,4 +1,4 @@
-# 08mar25 Software Lab. Alexander Burger
+# 09mar25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1746,10 +1746,15 @@ selectErr)
          (unless Raw
             (setCooked) ) ) ) )
 
-# (peek) -> sym
+# (peek ['flg]) -> sym
 (de _Peek (Exe)
    (let C (if (val $Chr) @ (call $Get))
-      (if (lt0 C) $Nil (mkChar C)) ) )
+      (if (lt0 C)
+         $Nil
+         (mkChar
+            (if (nil? (eval (cadr Exe)))
+               C
+               (getChar C) ) ) ) ) )
 
 # (char) -> sym
 # (char 'cnt) -> sym

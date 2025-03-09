@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 02dec24 Software Lab. Alexander Burger
+# 09mar25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -215,11 +215,13 @@ $ /usr/bin/picolisp /usr/lib/picolisp/lib.l
 -> "+/usr/lib/picolisp/a/b/c"
 </pre></dd>
 
-<dt><a id="peek"><code>(peek) -> sym</code></a></dt>
+<dt><a id="peek"><code>(peek ['flg]) -> sym</code></a></dt>
 <dd>Single character look-ahead: Returns the same character as the next call to
-<code><a href="refC.html#char">char</a></code> would return. Note that the
-look-ahead covers only the next <i>byte</i>, so a multi-byte character might
-still block. See also <code><a href="refS.html#skip">skip</a></code>.
+<code><a href="refC.html#char">char</a></code> would return. If <code>flg</code>
+is not given or <code>NIL</code>, the look-ahead covers only the next
+<i>byte</i>. If <code>flg</code> is non-<code>NIL</code>, a multi-byte character
+may be returned but the call might block. See also <code><a
+href="refS.html#skip">skip</a></code>.
 
 <pre>
 $ cat a
