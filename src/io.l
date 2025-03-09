@@ -1,4 +1,4 @@
-# 09mar25 Software Lab. Alexander Burger
+# 27feb25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1746,15 +1746,10 @@ selectErr)
          (unless Raw
             (setCooked) ) ) ) )
 
-# (peek ['flg]) -> sym
+# (peek) -> sym
 (de _Peek (Exe)
    (let C (if (val $Chr) @ (call $Get))
-      (if (lt0 C)
-         $Nil
-         (mkChar
-            (if (nil? (eval (cadr Exe)))
-               C
-               (getChar C) ) ) ) ) )
+      (if (lt0 C) $Nil (mkChar C)) ) )
 
 # (char) -> sym
 # (char 'cnt) -> sym
@@ -2461,7 +2456,7 @@ selectErr)
                   (ifn (== X Prv)
                      (let (Lst (val $Intern)  F NO)  # Search namespaces
                         (loop
-                           (? (atom Lst)  # Transient
+                           (? (atom Lst) # Transient
                               (call $Put (char "\""))
                               (let (P (push 0 Nm)  B (symByte P))  # [cnt name]
                                  (loop

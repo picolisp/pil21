@@ -49191,7 +49191,7 @@ $41:
 
 define i64 @_Peek(i64) align 8 {
 $1:
-; # (let C (if (val $Chr) @ (call $Get)) (if (lt0 C) $Nil (mkChar (if...
+; # (let C (if (val $Chr) @ (call $Get)) (if (lt0 C) $Nil (mkChar C))...
 ; # (if (val $Chr) @ (call $Get))
 ; # (val $Chr)
   %1 = load i32, i32* bitcast (i8* getelementptr (i8, i8* bitcast ([25 x i64]* @env to i8*), i32 168) to i32*)
@@ -49206,56 +49206,19 @@ $3:
   br label %$4
 $4:
   %5 = phi i32 [%1, %$2], [%4, %$3] ; # ->
-; # (if (lt0 C) $Nil (mkChar (if (nil? (eval (cadr Exe))) C (getChar ...
+; # (if (lt0 C) $Nil (mkChar C))
 ; # (lt0 C)
   %6 = icmp slt i32 %5, 0
   br i1 %6, label %$5, label %$6
 $5:
   br label %$7
 $6:
-; # (if (nil? (eval (cadr Exe))) C (getChar C))
-; # (cadr Exe)
-  %7 = inttoptr i64 %0 to i64*
-  %8 = getelementptr i64, i64* %7, i32 1
-  %9 = load i64, i64* %8
-  %10 = inttoptr i64 %9 to i64*
-  %11 = load i64, i64* %10
-; # (eval (cadr Exe))
-  %12 = and i64 %11, 6
-  %13 = icmp ne i64 %12, 0
-  br i1 %13, label %$10, label %$9
-$10:
-  br label %$8
-$9:
-  %14 = and i64 %11, 8
-  %15 = icmp ne i64 %14, 0
-  br i1 %15, label %$12, label %$11
-$12:
-  %16 = inttoptr i64 %11 to i64*
-  %17 = load i64, i64* %16
-  br label %$8
-$11:
-  %18 = call i64 @evList(i64 %11)
-  br label %$8
-$8:
-  %19 = phi i64 [%11, %$10], [%17, %$12], [%18, %$11] ; # ->
-; # (nil? (eval (cadr Exe)))
-  %20 = icmp eq i64 %19, ptrtoint (i8* getelementptr (i8, i8* bitcast ([886 x i64]* @SymTab to i8*), i32 8) to i64)
-  br i1 %20, label %$13, label %$14
-$13:
-  br label %$15
-$14:
-; # (getChar C)
-  %21 = call i32 @getChar(i32 %5)
-  br label %$15
-$15:
-  %22 = phi i32 [%5, %$13], [%21, %$14] ; # ->
-; # (mkChar (if (nil? (eval (cadr Exe))) C (getChar C)))
-  %23 = call i64 @mkChar(i32 %22)
+; # (mkChar C)
+  %7 = call i64 @mkChar(i32 %5)
   br label %$7
 $7:
-  %24 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([886 x i64]* @SymTab to i8*), i32 8) to i64), %$5], [%23, %$15] ; # ->
-  ret i64 %24
+  %8 = phi i64 [ptrtoint (i8* getelementptr (i8, i8* bitcast ([886 x i64]* @SymTab to i8*), i32 8) to i64), %$5], [%7, %$6] ; # ->
+  ret i64 %8
 }
 
 define i64 @_Char(i64) align 8 {

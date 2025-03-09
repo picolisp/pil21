@@ -1,6 +1,5 @@
 25.3.9
-   Optional 'flg' argument to 'peek' (returns full char, but may block)
-      src/io.l
+   Fix description of 'peek' (does not block, but returns only the next byte)
       doc/refP.html
 
 25.3.8
