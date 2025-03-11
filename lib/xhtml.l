@@ -1,4 +1,4 @@
-# 07mar25 Software Lab. Alexander Burger
+# 11mar25 Software Lab. Alexander Burger
 
 (de xhtml (Path)
    (for X
@@ -773,7 +773,7 @@
    (prin
       "<form enctype=\"multipart/form-data\" action=\""
       (sesId Url)
-      (and *JS "\" onkeydown=\"return formKey(event)\" onkeypress=\"return formKey(event)\" onsubmit=\"return doPost(this)")
+      (and *JS "\" onkeydown=\"return formKey(event)\" onsubmit=\"return doPost(this)")
       "\" method=\"post\""
       (when (=T Attr)
          (off Attr)

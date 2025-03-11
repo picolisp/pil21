@@ -1,4 +1,4 @@
-# 27feb25 Software Lab. Alexander Burger
+# 08mar25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2456,7 +2456,7 @@ selectErr)
                   (ifn (== X Prv)
                      (let (Lst (val $Intern)  F NO)  # Search namespaces
                         (loop
-                           (? (atom Lst) # Transient
+                           (? (atom Lst)  # Transient
                               (call $Put (char "\""))
                               (let (P (push 0 Nm)  B (symByte P))  # [cnt name]
                                  (loop

@@ -1,3 +1,7 @@
+25.3.11
+   "onkeypress" is deprecated
+      lib/xhtml.l
+
 25.3.9
    Fix description of 'peek' (does not block, but returns only the next byte)
       doc/refP.html
