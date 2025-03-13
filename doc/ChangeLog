@@ -1,3 +1,7 @@
+25.3.13
+   KeyEvent 'keyCode' and 'charCode' are deprecated
+      lib/form.js
+
 25.3.11
    "onkeypress" is deprecated
       lib/xhtml.l
