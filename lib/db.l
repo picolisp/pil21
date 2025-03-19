@@ -1,4 +1,4 @@
-# 30oct23 Software Lab. Alexander Burger
+# 19mar25 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1806,7 +1806,7 @@
 # Create or update lots of objects
 (de create (Typ Key Vars . Prg)
    (prune 0)
-   (gc 200 200)
+   (gc 400 200)
    (setq Vars  # ((var fd lst cnt . cnt) ..)
       (mapcar
          '((Var)
@@ -1835,47 +1835,43 @@
    (commit)
    (prune 0)
    (let Lst
-      (mapcan
+      (extract
          '((V)
             (unless (atom V)
                (close (cadr V))
                (let (Var (car V)  File (tmp (pack "create-" Var)))
-                  (later (cons)
-                     (off Vars)
-                     (gc 0 100)
-                     (setq V
-                        (mapcar
-                           '((Key)
-                              (let F (tmp (pack "create-" (inc (0))))
-                                 (cons Key F
-                                    (or (open F) (quit "Too many files")) ) ) )
-                           (cons NIL (sort (caddr V))) ) )
-                     (in File
-                        (while (setq Key (rd))
-                           (out (cddr (rank Key V))
-                              (pr Key (rd)) ) ) )
-                     (%@ "unlink" NIL File)
-                     (let (Dbf (meta Typ Var 'dbf)  Tree (cons Var (new T)))
-                        (for R V
-                           (close (cddr R))
-                           (for X
-                              (sort
-                                 (make
-                                    (in (cadr R)
-                                       (while (rd)
-                                          (link (cons @ (rd))) ) ) ) )
-                              (store Tree (car X) (cdr X) Dbf)
-                              (at (0 . 1000) (prune 2)) )
-                           (commit)
-                           (prune 2)
-                           (%@ "unlink" NIL (cadr R)) )
+                  (off Vars)
+                  (setq V
+                     (mapcar
+                        '((Key)
+                           (let F (tmp (pack "create-" (inc (0))))
+                              (cons Key F
+                                 (or (open F) (quit "Too many files")) ) ) )
+                        (cons NIL (sort (caddr V))) ) )
+                  (in File
+                     (while (setq Key (rd))
+                        (out (cddr (rank Key V))
+                           (pr Key (rd)) ) ) )
+                  (%@ "unlink" NIL File)
+                  (let (Dbf (meta Typ Var 'dbf)  Tree (cons Var (new T)))
+                     (for R V
+                        (close (cddr R))
+                        (for X
+                           (sort
+                              (make
+                                 (in (cadr R)
+                                    (while (rd)
+                                       (link (cons @ (rd))) ) ) ) )
+                           (store Tree (car X) (cdr X) Dbf)
+                           (at (0 . 1000) (prune 2)) )
                         (commit)
-                        Tree ) ) ) ) )
+                        (prune 2)
+                        (%@ "unlink" NIL (cadr R)) )
+                     (commit)
+                     Tree ) ) ) )
          Vars )
       (off Vars)
       (prune)
-      (gc 0)
-      (wait NIL (full Lst))
       (for Tree Lst
          (let
             (Base (get *DB (meta Typ (car Tree) 'cls))

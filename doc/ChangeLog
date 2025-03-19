@@ -1,3 +1,7 @@
+25.3.19
+   Remove parallelization with 'later' from 'create'
+      lib/db.l
+
 25.3.13
    KeyEvent 'keyCode' and 'charCode' are deprecated
       lib/form.js
