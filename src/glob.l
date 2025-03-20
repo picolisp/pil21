@@ -1,4 +1,4 @@
-# 02mar25 Software Lab. Alexander Burger
+# 20mar25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -43,6 +43,7 @@
 (var $SeedL i64 0)                     # Random seed low
 (var $SeedH i64 0)                     # Random seed high
 (var $USec i64 0)                      # Startup microseconds
+(var $Rt i64 0)                        # Real/Runtime [microseconds]
 (var $Child i8* null)                  # Child array
 (var $Children i32 0)                  # Number of children
 (var $Slot i32 0)                      # Child index
@@ -522,6 +523,7 @@
    (NIL "date" _Date)
    (NIL "time" _Time)
    (NIL "usec" _Usec)
+   (NIL "rt" _Rt)
    (NIL "quit" _Quit)
    (NIL "sys" _Sys)
    (NIL "pwd" _Pwd)

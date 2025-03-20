@@ -1,4 +1,4 @@
-# 08mar25 Software Lab. Alexander Burger
+# 20mar25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2817,8 +2817,10 @@ selectErr)
 
 (de stdEval (Exe)
    (flushAll)
-   (let (At (save (val $At))  X (eval Exe))
-      (set $At3 (val $At2)  $At2 At  $At X)
+   (let
+      (At (save (val $At))
+         At2 (save (val $At2))
+         X (save (eval Exe)) )
       (outString ($ "-> "))
       (flushAll)
       (print X)
@@ -2832,7 +2834,7 @@ selectErr)
                E (link (ofs E 3)) )
             (evList E) ) )
       (newline)
-      X ) )
+      (set $At3 At2  $At2 At  $At X) ) )
 
 (de repl (Exe (i8* . Prmt) X)
    (if (and (symb? X) (== (firstByte X) (char "-")))

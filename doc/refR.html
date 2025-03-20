@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 08feb25 Software Lab. Alexander Burger
+# 20mar25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -828,6 +828,24 @@ and <code><a href="refF.html#format">format</a></code>.
 -> "12.35"
 : (format 123456 *Scl)  # Format with full precision
 -> "12.3456"
+</pre></dd>
+
+<dt><a id="rt"><code>(rt cnt . prg) -> any</code></a></dt>
+<dd>Real/Runtime measurement: Executes <code>prg</code>, then (destructively)
+adds the number of elapsed microseconds to the <code>cnt</code> parameter. Thus,
+<code>cnt</code> will finally contain the total number of microseconds spent in
+<code>prg</code>. See also <code><a href="refU.html#usec">usec</a></code>.
+
+<pre>
+: (de foo ()                        # Define function with empty loop
+   (rt 0 (do 999999999)) )
+-> foo
+: (foo)                             # Execute it
+-> NIL
+: (pp 'foo)
+(de foo NIL
+   (rt 2022324 (do 999999999)) )    # 'rt' incremented 'cnt' by 2022324
+-> foo
 </pre></dd>
 
 <dt><a id="rules"><code>(rules 'sym ..) -> sym</code></a></dt>

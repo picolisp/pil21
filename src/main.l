@@ -1,4 +1,4 @@
-# 09jul24 Software Lab. Alexander Burger
+# 20mar25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -720,6 +720,15 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (if (nil? (eval (cadr Exe)))
          (- (getUsec YES) (val $USec))
          (getUsec NO) ) ) )
+
+# (rt cnt . prg) -> any
+(de _Rt (Exe)
+   (let (X (cdr Exe)  Rt (val $Rt)  U (getUsec YES))
+      (prog1
+         (run (cdr X))
+         (let D (- (- (getUsec YES) U) (- (val $Rt) Rt))
+            (set $Rt (+ D (val $Rt)))
+            (set X (cnt (+ D (int (car X))))) ) ) ) )
 
 # Try to load dynamic library
 (local) sharedLib

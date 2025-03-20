@@ -1,3 +1,12 @@
+25.3.20
+   'stdEval' must preserve '$At2'
+      src/io.l
+   'rt' function
+      src/glob.l
+      src/main.l
+      doc/ref.html
+      doc/refR.html
+
 25.3.19
    Remove parallelization with 'later' from 'create'
       lib/db.l
