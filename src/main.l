@@ -1,4 +1,4 @@
-# 20mar25 Software Lab. Alexander Burger
+# 21mar25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -727,8 +727,9 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (prog1
          (run (cdr X))
          (let D (- (- (getUsec YES) U) (- (val $Rt) Rt))
-            (set $Rt (+ D (val $Rt)))
-            (set X (cnt (+ D (int (car X))))) ) ) ) )
+            (set
+               $Rt (+ D (val $Rt))
+               X (+ (car X) (shl D 4)) ) ) ) ) )
 
 # Try to load dynamic library
 (local) sharedLib

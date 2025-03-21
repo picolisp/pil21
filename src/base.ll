@@ -5916,25 +5916,21 @@ $4:
   %38 = sub i64 %37, %4
 ; # (- (- (getUsec YES) U) (- (val $Rt) Rt))
   %39 = sub i64 %36, %38
-; # (set $Rt (+ D (val $Rt)))
+; # (set $Rt (+ D (val $Rt)) X (+ (car X) (shl D 4)))
 ; # (val $Rt)
   %40 = load i64, i64* @$Rt
 ; # (+ D (val $Rt))
   %41 = add i64 %39, %40
   store i64 %41, i64* @$Rt
-; # (set X (cnt (+ D (int (car X)))))
 ; # (car X)
   %42 = inttoptr i64 %3 to i64*
   %43 = load i64, i64* %42
-; # (int (car X))
-  %44 = lshr i64 %43, 4
-; # (+ D (int (car X)))
-  %45 = add i64 %39, %44
-; # (cnt (+ D (int (car X))))
-  %46 = shl i64 %45, 4
-  %47 = or i64 %46, 2
-  %48 = inttoptr i64 %3 to i64*
-  store i64 %47, i64* %48
+; # (shl D 4)
+  %44 = shl i64 %39, 4
+; # (+ (car X) (shl D 4))
+  %45 = add i64 %43, %44
+  %46 = inttoptr i64 %3 to i64*
+  store i64 %45, i64* %46
   ret i64 %34
 }
 
