@@ -1,4 +1,4 @@
-# 19mar25 Software Lab. Alexander Burger
+# 24mar25 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1806,7 +1806,6 @@
 # Create or update lots of objects
 (de create (Typ Key Vars . Prg)
    (prune 0)
-   (gc 400 200)
    (setq Vars  # ((var fd lst cnt . cnt) ..)
       (mapcar
          '((Var)
@@ -1822,7 +1821,7 @@
          (let store '((Tree Key Val Dbf) (link Key))
             (mapc
                '((V Val)
-                  (when Val
+                  (when (or Val (fin Lst))
                      (if (atom V)
                         (put> Obj V Val)
                         (out (cadr V)
@@ -1839,12 +1838,14 @@
          '((V)
             (unless (atom V)
                (close (cadr V))
-               (let (Var (car V)  File (tmp (pack "create-" Var)))
-                  (off Vars)
+               (let
+                  (Var (car V)
+                     File (tmp (pack "create-" Var))
+                     N 0 )
                   (setq V
                      (mapcar
                         '((Key)
-                           (let F (tmp (pack "create-" (inc (0))))
+                           (let F (tmp (pack "create-" (inc 'N)))
                               (cons Key F
                                  (or (open F) (quit "Too many files")) ) ) )
                         (cons NIL (sort (caddr V))) ) )
@@ -1870,7 +1871,6 @@
                      (commit)
                      Tree ) ) ) )
          Vars )
-      (off Vars)
       (prune)
       (for Tree Lst
          (let
