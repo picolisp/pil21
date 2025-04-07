@@ -1,4 +1,4 @@
-# 09feb25 Software Lab. Alexander Burger
+# 07apr25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -805,7 +805,7 @@
                            (? (atom V) (setq R (& R -2)))
                            (set Y (car V))
                            (? (=0 (& (setq R (loop1 X)) 1)))
-                           (shift V) ) ) ) )
+                           (safe (shift V)) ) ) ) )
                (set Y (val P)  $Bind (val 3 P)) ) )
          ((atom (cdr Y))  # (for (sym2 . sym) 'lst ..)
             (let Sym2 (needChkVar Exe @)
@@ -821,7 +821,7 @@
                         (set Sym2 (car V))
                         (? (=0 (& (setq R (loop1 X)) 1)))
                         (set Y (+ (val Y) (hex "10")))
-                        (shift V) )
+                        (safe (shift V)) )
                      (set Sym2 (val Q)) )
                   (set Y (val P)  $Bind (val 3 P)) ) ) )
          ((atom (car Y))  # (for (sym ..) ..)

@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 09mar25 Software Lab. Alexander Burger
+# 07apr25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -860,8 +860,10 @@ href="refU.html#unify">unify</a></code>.
 Typically called repeatedly during bulk data imports. If <code>cnt</code> is
 <code>0</code>, the pruning process is initialized, and if it is
 <code>NIL</code>, further pruning will be disabled. Otherwise, all nodes which
-have not been accessed (with <code><a href="refF.html#fetch">fetch</a></code> or
-<code><a href="refS.html#store">store</a></code>) for <code>cnt</code> calls to
+have not been accessed (with <code><a href="refF.html#fetch">fetch</a></code>,
+<code><a href="refS.html#store">store</a></code>, <code><a
+href="refS.html#scan">scan</a></code> or <code><a
+href="refI.html#iter">iter</a></code>) for <code>cnt</code> calls to
 <code>prune</code> will be <code><a href="refW.html#wipe">wipe</a></code>d. See
 also <code><a href="refL.html#lieu">lieu</a></code>.
 

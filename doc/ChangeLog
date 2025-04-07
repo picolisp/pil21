@@ -1,3 +1,10 @@
+25.4.7
+   Support 'prune' also in 'scan' and 'iter'
+      lib/btree.l
+      doc/refP.html
+   Make 'for' on lists more gc-conservative
+      src/flow.l
+
 ####### 25.3 #######
 25.3.24
    Don't skip empty value in 'create' for updates

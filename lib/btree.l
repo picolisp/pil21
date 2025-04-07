@@ -1,4 +1,4 @@
-# 14oct20 Software Lab. Alexander Burger
+# 07apr25 Software Lab. Alexander Burger
 
 # *Prune
 
@@ -313,6 +313,7 @@
    (default Fun println)
    (or Beg End (on End))
    (let Node (cdr (root Tree))
+      (and *Prune (idx '*Prune Node T))
       ((if (>= End Beg) _scan _nacs) Node) ) )
 
 (de _scan (Node)
@@ -331,7 +332,8 @@
             (Fun
                (car X)
                (or (cddr X) (fin (car X))) ) )
-         (_scan (cadr X)) ) ) )
+         (_scan (cadr X)) )
+      (and *Prune (set (prop Node NIL) 0)) ) )
 
 (de _nacs (Node)
    (let? V (revNode Node)
@@ -349,13 +351,15 @@
             (Fun
                (car X)
                (or (cddr X) (fin (car X))) ) )
-         (_nacs (cadr X)) ) ) )
+         (_nacs (cadr X)) )
+      (and *Prune (set (prop Node NIL) 0)) ) )
 
 # Iterate tree values
 (de iter (Tree Fun Beg End Flg)
    (default Fun println)
    (or Beg End (on End))
    (let Node (cdr (root Tree))
+      (and *Prune (idx '*Prune Node T))
       ((if (>= End Beg) _iter _reti) Node) ) )
 
 (de _iter (Node)
@@ -372,7 +376,8 @@
          (T (> (car X) End))
          (unless (and Flg (flg? (fin (car X))))
             (Fun (or (cddr X) (fin (car X)))) )
-         (_iter (cadr X)) ) ) )
+         (_iter (cadr X)) )
+      (and *Prune (set (prop Node NIL) 0)) ) )
 
 (de _reti (Node)
    (let? V (revNode Node)
@@ -388,7 +393,8 @@
          (T (> End (car X)))
          (unless (and Flg (flg? (fin (car X))))
             (Fun (or (cddr X) (fin (car X)))) )
-         (_reti (cadr X)) ) ) )
+         (_reti (cadr X)) )
+      (and *Prune (set (prop Node NIL) 0)) ) )
 
 # UB-Trees
 (de ub>= (Dim End Val Beg)
