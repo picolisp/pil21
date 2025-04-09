@@ -1,4 +1,4 @@
-# 09feb25 Software Lab. Alexander Burger
+# 09apr25 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -494,7 +494,7 @@
                   (prtty2 X N Z) )
                (spPrt (++ X))
                (nlPrt1 (++ X) N) ) ) )
-      ((memq (car X) '(T NIL ! if ifn when unless case casq with catch throw push bind job in out err ctl))
+      ((memq (car X) '(T NIL ! if ifn when unless case casq with catch throw push bind job rt in out err ctl))
          (prtty3 X N) )
       (T (prtty0 X N)) ) )
 

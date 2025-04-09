@@ -1,4 +1,6 @@
 25.4.9
+   Add 'rt' to 'pretty'
+      lib.l
    Return 20 instead of 16 bits from 'hash'
       src/big.l
       test/src/big.l
