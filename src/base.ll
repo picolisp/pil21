@@ -1542,7 +1542,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 402,
   i64 66,
-  i64 114
+  i64 146
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -20759,7 +20759,6 @@ $2:
 
 define i64 @_Hash(i64) align 8 {
 $1:
-; # (let (N (initSeed (eval (cadr Exe))) C 64 R 0) (loop (when (& (x|...
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
@@ -20787,56 +20786,22 @@ $2:
   %13 = phi i64 [%5, %$4], [%11, %$6], [%12, %$5] ; # ->
 ; # (initSeed (eval (cadr Exe)))
   %14 = call i64 @initSeed(i64 %13)
-; # (loop (when (& (x| N R) 1) (setq R (x| R (hex "14002")))) (setq N...
-  br label %$7
-$7:
-  %15 = phi i64 [%14, %$2], [%32, %$10] ; # N
-  %16 = phi i64 [64, %$2], [%33, %$10] ; # C
-  %17 = phi i64 [0, %$2], [%34, %$10] ; # R
-; # (when (& (x| N R) 1) (setq R (x| R (hex "14002"))))
-; # (x| N R)
-  %18 = xor i64 %15, %17
-; # (& (x| N R) 1)
-  %19 = and i64 %18, 1
-  %20 = icmp ne i64 %19, 0
-  br i1 %20, label %$8, label %$9
-$8:
-  %21 = phi i64 [%15, %$7] ; # N
-  %22 = phi i64 [%16, %$7] ; # C
-  %23 = phi i64 [%17, %$7] ; # R
-; # (x| R (hex "14002"))
-  %24 = xor i64 %23, 81922
-  br label %$9
-$9:
-  %25 = phi i64 [%15, %$7], [%21, %$8] ; # N
-  %26 = phi i64 [%16, %$7], [%22, %$8] ; # C
-  %27 = phi i64 [%17, %$7], [%24, %$8] ; # R
-; # (shr N 1)
-  %28 = lshr i64 %25, 1
-; # (shr R 1)
-  %29 = lshr i64 %27, 1
-; # (? (=0 (dec 'C)))
-; # (dec 'C)
-  %30 = sub i64 %26, 1
-; # (=0 (dec 'C))
-  %31 = icmp eq i64 %30, 0
-  br i1 %31, label %$11, label %$10
-$10:
-  %32 = phi i64 [%28, %$9] ; # N
-  %33 = phi i64 [%30, %$9] ; # C
-  %34 = phi i64 [%29, %$9] ; # R
-  br label %$7
-$11:
-  %35 = phi i64 [%28, %$9] ; # N
-  %36 = phi i64 [%30, %$9] ; # C
-  %37 = phi i64 [%29, %$9] ; # R
-  %38 = phi i64 [0, %$9] ; # ->
-; # (inc R)
-  %39 = add i64 %37, 1
-; # (cnt (inc R))
-  %40 = shl i64 %39, 4
-  %41 = or i64 %40, 2
-  ret i64 %41
+; # (mul 6364136223846793005 (initSeed (eval (cadr Exe))))
+  %15 = zext i64 %14 to i128
+  %16 = mul i128 6364136223846793005, %15
+  %17 = lshr i128 %16, 64
+  %18 = trunc i128 %17 to i64
+  %19 = trunc i128 %16 to i64
+; # (- 44 4)
+; # (shr (mul 6364136223846793005 (initSeed (eval (cadr Exe)))) (- 44...
+  %20 = lshr i64 %19, 40
+; # (& (shr (mul 6364136223846793005 (initSeed (eval (cadr Exe)))) (-...
+  %21 = and i64 %20, -16
+; # (+ (& (shr (mul 6364136223846793005 (initSeed (eval (cadr Exe))))...
+  %22 = add i64 %21, 16
+; # (| (+ (& (shr (mul 6364136223846793005 (initSeed (eval (cadr Exe)...
+  %23 = or i64 %22, 2
+  ret i64 %23
 }
 
 define i64 @_Rand(i64) align 8 {

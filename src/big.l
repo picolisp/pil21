@@ -1,4 +1,4 @@
-# 20nov24 Software Lab. Alexander Burger
+# 09apr25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1493,7 +1493,7 @@
 ### Random generator ###
 (local) initSeed
 
-(de initSeed (X)
+(de i64 initSeed (X)
    (let C 0
       (while (pair X)
          (inc 'C (initSeed (++ X))) )
@@ -1519,13 +1519,15 @@
 
 # (hash 'any) -> cnt
 (de _Hash (Exe)
-   (let (N (initSeed (eval (cadr Exe)))  C 64  R 0)
-      (loop
-         (when (& (x| N R) 1)
-            (setq R (x| R (hex "14002"))) )  # CRC Polynom x**16 + x**15 + x**2 + 1
-         (setq N (shr N 1)  R (shr R 1))
-         (? (=0 (dec 'C))) )
-      (cnt (inc R)) ) )
+   (|
+      (+
+         (&
+            (shr
+               (mul 6364136223846793005 (initSeed (eval (cadr Exe))))
+               (- 44 4) )  # Get higher 20 bits
+            -16 )
+         16 )
+      2 ) )
 
 # (rand ['cnt1 'cnt2] | ['T]) -> cnt | flg
 (de _Rand (Exe)

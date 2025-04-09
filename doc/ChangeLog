@@ -1,3 +1,11 @@
+25.4.9
+   Return 20 instead of 16 bits from 'hash'
+      src/big.l
+      test/src/big.l
+      doc/refH.html
+   Hash 'idx' in 'search'
+      lib/db.l
+
 25.4.7
    Support 'prune' also in 'scan' and 'iter'
       lib/btree.l

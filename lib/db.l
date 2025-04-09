@@ -1,4 +1,4 @@
-# 24mar25 Software Lab. Alexander Burger
+# 09apr25 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1657,7 +1657,7 @@
       (for (P (cddr X)  P  (or (cdr P) (cddr X)))  # Next search result
          (NIL (setq Y ((cadar P) (caaar P))))
          (T
-            (unless (idx X Y T)
+            (unless (idx X (cons (hash Y) Y) T)
                (and
                   (fully
                      '((L) ((cddr L) Y (cdar L)))

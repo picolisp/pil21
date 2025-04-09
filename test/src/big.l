@@ -1,4 +1,4 @@
-# 06oct20 Software Lab. Alexander Burger
+# 09apr25 Software Lab. Alexander Burger
 
 ### format ###
 (scl 0)
@@ -193,6 +193,7 @@
 (test 5 (rand 3 9))
 (test 3 (rand 3 9))
 (test 1 (hash 0))
-(test 55682 (hash 1))
-(test 35970 (hash 7))
-(test 29691 (hash 1234567))
+(test 723519 (hash 1))
+(test 870326 (hash 7))
+(test 528545 (hash 1234567))
+(test 987436 (hash (1 "abc" X)))
