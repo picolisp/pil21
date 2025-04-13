@@ -1,4 +1,4 @@
-# 07apr25 Software Lab. Alexander Burger
+# 13apr25 Software Lab. Alexander Burger
 
 # *Prune
 
@@ -283,27 +283,32 @@
 
 (de step (Q Flg)
    (use (L F X)
-      (catch NIL
-         (loop
-            (until (cdar Q)
-               (or (cdr Q) (throw))
+      (loop
+         (T
+            (loop
+               (T (cdar Q))
+               (NIL (cdr Q) T)
                (set Q (cadr Q))
-               (con Q (cddr Q)) )
-            (setq
-               L (car Q)
-               F (>= (cdar L) (caar L))
-               X (pop (cdr L)) )
-            (or (cadr L) (con L (cddr L)))
+               (con Q (cddr Q)) ) )
+         (setq
+            L (car Q)
+            F (>= (cdar L) (caar L))
+            X (pop (cdr L)) )
+         (or (cadr L) (con L (cddr L)))
+         (T
             (if ((if F > <) (car X) (cdar L))
                (con (car Q))
-               (for (V (cadr X) ((if F val revNode) V) (car @))
+               (for
+                  (V (cadr X)
+                     ((if F val revNode) V)
+                     (car @) )
                   (con L (cons (cdr @) (cdr L))) )
                (unless (and Flg (flg? (fin (car X))))
-                  (when (cddr X)
-                     (setq @@ (car X))
-                     (throw NIL @) )
-                  (setq @@ (caar X))
-                  (throw NIL (fin (car X))) ) ) ) ) ) )
+                  (if (cddr X)
+                     (prog (setq @@ (car X)) @)
+                     (setq @@ (caar X))
+                     (fin (car X)) ) ) )
+            @ ) ) ) )
 
 (private) (_scan _nacs _iter _reti)
 (private) (Tree Fun Beg End Flg Node R X V)

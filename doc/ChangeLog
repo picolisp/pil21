@@ -1,3 +1,7 @@
+25.4.13
+   Avoid catch/throw in 'step'
+      lib/btree.l
+
 25.4.9
    Add 'rt' to 'pretty'
       lib.l
