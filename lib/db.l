@@ -1,4 +1,4 @@
-# 09apr25 Software Lab. Alexander Burger
+# 14apr25 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -681,6 +681,7 @@
    (extra Obj Val Hook) )
 
 (dm iter> (X Lst)
+   (on *Iter+)
    (super X Lst (not X)) )
 
 (dm match> (X Val Obj)
@@ -729,6 +730,7 @@
    (extra Obj Val Hook) )
 
 (dm iter> (X Lst)
+   (on *Iter+)
    (cons
       (list
          (list
@@ -837,6 +839,7 @@
    (extra Obj Val Hook) )
 
 (dm iter> (X Lst)
+   (on *Iter+)
    (super (fold X) Lst (not X)) )
 
 (dm match> (X Val Obj)
@@ -1657,69 +1660,81 @@
       (for (P (cddr X)  P  (or (cdr P) (cddr X)))  # Next search result
          (NIL (setq Y ((cadar P) (caaar P))))
          (T
-            (unless (idx X (cons (hash Y) Y) T)
-               (and
-                  (fully
-                     '((L) ((cddr L) Y (cdar L)))
-                     (cddr X) )
-                  ((cadr X) Y) ) )
+            (and
+               (nand
+                  (val X)
+                  (idx X (cons (hash Y) Y) T) )
+               (fully
+                  '((L) ((cddr L) Y (cdar L)))
+                  (cddr X) )
+               ((cadr X) Y) )
             (setq P
                (rot (cddr X) (offset P (cddr X))) )
             @ ) )
       # Init search
-      (make
-         (link NIL prog)  # idx and extract
-         (loop
-            (when (or X (nor (args) (cddr (made))))
-               (link  # ((Q . V) genFun . filterFun)
-                  (cons
-                     (cons
-                        (list
-                           (if (pair (caar Y))
-                              (cons ((car Y) X) (cddr Y))  # (init . step)
-                              (search1 X Y) ) )
-                        X )
-                     '((Q)  # Generator
-                        (use Obj
-                           (loop
-                              (T
-                                 (nor  # Done
-                                    (setq Obj ((cdaar Q) (caaar Q)))
-                                    (cdr Q) ) )
-                              (T (unless (cdar Q) Obj) Obj)  # Result
-                              (if Obj
-                                 (let L (cdar Q)
-                                    (con Q (cons (car Q) (cdr Q)))
-                                    (set Q (search1 Obj L)) )
-                                 (set Q (cadr Q))
-                                 (con Q (cddr Q)) ) ) ) )
-                     (let  # Filter
-                        (@Exe
-                           (if (pair (caar Y))
-                              (cons
-                                 (lit (car (shift 'Y)))
-                                 '(X V) )
-                              (list 'match>
-                                 (lit
-                                    (if (atom (cdar Y))
-                                       (with (meta X (cdar Y))  # +Joint
-                                          (meta (: type) (: slot)) )
-                                       (meta (cdar Y) (caar Y)) ) )  # +index
-                                 'V
-                                 (list '; 'X (caar Y))
-                                 'X ) )
-                           @Lst (flip (mapcar car (cdr Y))) )
-                        (curry (@Lst @Exe) (X V)
-                           (let L '@Lst
-                              (recur (X L)
-                                 (if L
-                                    (pick recurse
-                                       (fish ext? (get X (++ L)))
-                                       (circ L) )
-                                    @Exe ) ) ) ) ) ) ) )
-            (setq X (next))
-            (NIL (setq Y (next))
-               (and X (set (cdr (made)) @)) ) ) ) ) )
+      (let
+         (*Iter+ NIL
+            Lst
+            (make
+               (link prog)  # idx and extract
+               (loop
+                  (when (or X (nor (args) (cdr (made))))
+                     (link  # ((Q . V) genFun . filterFun)
+                        (cons
+                           (cons
+                              (list
+                                 (if (pair (caar Y))
+                                    (cons ((car Y) X) (cddr Y))  # (init . step)
+                                    (search1 X Y) ) )
+                              X )
+                           '((Q)  # Generator
+                              (use Obj
+                                 (loop
+                                    (T
+                                       (nor  # Done
+                                          (setq Obj ((cdaar Q) (caaar Q)))
+                                          (cdr Q) ) )
+                                    (T (unless (cdar Q) Obj) Obj)  # Result
+                                    (if Obj
+                                       (let L (cdar Q)
+                                          (con Q (cons (car Q) (cdr Q)))
+                                          (set Q (search1 Obj L)) )
+                                       (set Q (cadr Q))
+                                       (con Q (cddr Q)) ) ) ) )
+                           (let  # Filter
+                              (@Exe
+                                 (if (pair (caar Y))
+                                    (cons
+                                       (lit (car (shift 'Y)))
+                                       '(X V) )
+                                    (list 'match>
+                                       (lit
+                                          (if (atom (cdar Y))
+                                             (with (meta X (cdar Y))  # +Joint
+                                                (meta (: type) (: slot)) )
+                                             (meta (cdar Y) (caar Y)) ) )  # +index
+                                       'V
+                                       (list '; 'X (caar Y))
+                                       'X ) )
+                                 @Lst (flip (mapcar car (cdr Y))) )
+                              (curry (@Lst @Exe) (X V)
+                                 (let L '@Lst
+                                    (recur (X L)
+                                       (if L
+                                          (pick recurse
+                                             (fish ext? (get X (++ L)))
+                                             (circ L) )
+                                          @Exe ) ) ) ) ) ) ) )
+                  (setq X (next))
+                  (NIL (setq Y (next))
+                     (and X (set (made) @)) ) ) ) )
+         (cons
+            (bool
+               (or  # Maintain 'idx'
+                  *Iter+  # Multiple 'iter>' results
+                  (cddr Lst)  # More than one criterion
+                  (cdar (caaadr Lst)) ) )  # One or more associations
+            Lst ) ) ) )
 
 # Multiple indexes
 (de relQs (@Lst . @)
@@ -1748,19 +1763,22 @@
                '@V ) ) )
       (rest) ) )
 
-# Iterate all objects of given class
+# Iterate all objects of given class or search query
 (de forall (X . Prg)
-   (for
-      (This
-         (seq
-            (or
-               (and (pair X) (car @))
-               (; X Dbf 1)
-               (meta X 'Dbf 1)
-               1 ) )
-         This
-         (seq This) )
-      (and (isa (fin X) This) (run Prg 1)) ) )
+   (if (and (pair X) (pair (cdr X)))
+      (while (search X)
+         (with @ (run Prg 1)) )
+      (for
+         (This
+            (seq
+               (or
+                  (and (pair X) (++ X))
+                  (; X Dbf 1)
+                  (meta X 'Dbf 1)
+                  1 ) )
+            This
+            (seq This) )
+         (and (isa X This) (run Prg 1)) ) ) )
 
 # Define object variables as relations
 (de rel Lst

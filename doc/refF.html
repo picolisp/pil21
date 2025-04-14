@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 14apr25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -489,12 +489,16 @@ href="refR.html#range">range</a></code>.
 </pre></dd>
 
 <dt><a id="forall"><code>(forall 'cls . prg) -> any</code></a></dt>
+<dt><code>(forall 'lst . prg) -> any</code></dt>
 <dt><code>(forall '(cnt . cls) . prg) -> any</code></dt>
-<dd>Runs <code>prg</code> on all database objects of the class <code>cls</code>,
-as given by the <code><a href="refD.html#dbs">dbs</a></code> definition. In the
-second form, the <code>cnt</code>'th database file is used instead. The global
-variable <code><a href="refT.html#This">This</a></code> is bound to each object.
-See also <code><a href="refS.html#seq">seq</a></code> and <code><a
+<dd>Runs <code>prg</code> on all database objects of the class <code>cls</code>
+(as given by the <code><a href="refD.html#dbs">dbs</a></code> definition), or a
+<code>lst</code> query structure as returned by <code><a
+href="refS.html#search">search</a></code>. The third form corresponds to the
+first, using the <code>cnt</code>'th database file instead of the
+<code>dbs</code> default. In all cases, the global variable <code><a
+href="refT.html#This">This</a></code> is bound to each object. See also <code><a
+href="refS.html#seq">seq</a></code> and <code><a
 href="refC.html#collect">collect</a></code>.
 
 <pre>
@@ -505,6 +509,14 @@ href="refC.html#collect">collect</a></code>.
 4 "Enhancement Additive"
 5 "Metal Fittings"
 6 "Gadget Appliance"
+
+: (forall
+   (search
+      (1 . 4) '((nr +Item))
+      "pa" '((nm +Item)) )
+   (println (: nr) (: nm)) )
+1 "Main Part"
+2 "Spare Part"
 </pre></dd>
 
 <dt><a id="fork"><code>(fork) -> pid | NIL</code></a></dt>

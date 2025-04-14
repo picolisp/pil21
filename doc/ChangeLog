@@ -1,3 +1,10 @@
+25.4.14
+   'forall' also accepts a 'search' query structure
+      lib/db.l
+      doc/refF.html
+   'idx' in 'search' only if necessary
+      lib/db.l
+
 25.4.13
    Avoid catch/throw in 'step'
       lib/btree.l
