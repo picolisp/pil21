@@ -1,3 +1,7 @@
+25.4.17
+   Simplify 'body' and 'attr'
+      lib/xm.l
+
 25.4.14
    'forall' also accepts a 'search' query structure
       lib/db.l

@@ -1,4 +1,4 @@
-# 26may22 Software Lab. Alexander Burger
+# 17apr25 Software Lab. Alexander Burger
 
 (local) (xml? xml body attr)
 (private) (_xml xmlEsc escXml)
@@ -102,14 +102,10 @@
 
 
 # Access functions
-(de body (Lst . @)
-   (while (and (setq Lst (cddr Lst)) (args))
-      (setq Lst (asoq (next) Lst)) )
-   Lst )
+(de body @
+   (cdr (pass get)) )
 
 (de attr (Lst Key . @)
    (while (args)
-      (setq
-         Lst (asoq Key (cddr Lst))
-         Key (next) ) )
-   (get Lst 2 Key) )
+      (setq Lst (get Lst Key)  Key (next)) )
+   (get Lst 1 Key) )
