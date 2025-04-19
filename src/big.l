@@ -1,4 +1,4 @@
-# 09apr25 Software Lab. Alexander Burger
+# 19apr25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1499,7 +1499,10 @@
          (inc 'C (initSeed (++ X))) )
       (unless (nil? X)
          (unless (num? X)  # Need number
-            (setq X (name (& (val (tail X)) -9))) )
+            (setq X
+               (&
+                  (name (& (val (tail X)) -9))
+                  (hex "3FFFFFFFFFFFFFF7") ) ) )  # Mask status and extern bits
          (if (cnt? X)
             (inc 'C (shr X 3))  # Keep sign
             (when (sign? X)

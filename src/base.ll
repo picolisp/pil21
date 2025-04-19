@@ -1542,7 +1542,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 402,
   i64 66,
-  i64 274
+  i64 306
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -20589,14 +20589,14 @@ $3:
 $4:
   %13 = phi i64 [%1, %$2] ; # X
   %14 = phi i64 [%2, %$2] ; # C
-; # (unless (nil? X) (unless (num? X) (setq X (name (& (val (tail X))...
+; # (unless (nil? X) (unless (num? X) (setq X (& (name (& (val (tail ...
 ; # (nil? X)
   %15 = icmp eq i64 %13, ptrtoint (i8* getelementptr (i8, i8* bitcast ([888 x i64]* @SymTab to i8*), i32 8) to i64)
   br i1 %15, label %$6, label %$5
 $5:
   %16 = phi i64 [%13, %$4] ; # X
   %17 = phi i64 [%14, %$4] ; # C
-; # (unless (num? X) (setq X (name (& (val (tail X)) -9))))
+; # (unless (num? X) (setq X (& (name (& (val (tail X)) -9)) (hex "3F...
 ; # (num? X)
   %18 = and i64 %16, 6
   %19 = icmp ne i64 %18, 0
@@ -20626,86 +20626,88 @@ $10:
   br label %$9
 $11:
   %33 = phi i64 [%26, %$9] ; # Tail
+; # (& (name (& (val (tail X)) -9)) (hex "3FFFFFFFFFFFFFF7"))
+  %34 = and i64 %33, 4611686018427387895
   br label %$8
 $8:
-  %34 = phi i64 [%16, %$5], [%33, %$11] ; # X
-  %35 = phi i64 [%17, %$5], [%21, %$11] ; # C
+  %35 = phi i64 [%16, %$5], [%34, %$11] ; # X
+  %36 = phi i64 [%17, %$5], [%21, %$11] ; # C
 ; # (if (cnt? X) (inc 'C (shr X 3)) (when (sign? X) (inc 'C) (setq X ...
 ; # (cnt? X)
-  %36 = and i64 %34, 2
-  %37 = icmp ne i64 %36, 0
-  br i1 %37, label %$12, label %$13
+  %37 = and i64 %35, 2
+  %38 = icmp ne i64 %37, 0
+  br i1 %38, label %$12, label %$13
 $12:
-  %38 = phi i64 [%34, %$8] ; # X
-  %39 = phi i64 [%35, %$8] ; # C
+  %39 = phi i64 [%35, %$8] ; # X
+  %40 = phi i64 [%36, %$8] ; # C
 ; # (shr X 3)
-  %40 = lshr i64 %38, 3
+  %41 = lshr i64 %39, 3
 ; # (inc 'C (shr X 3))
-  %41 = add i64 %39, %40
+  %42 = add i64 %40, %41
   br label %$14
 $13:
-  %42 = phi i64 [%34, %$8] ; # X
-  %43 = phi i64 [%35, %$8] ; # C
+  %43 = phi i64 [%35, %$8] ; # X
+  %44 = phi i64 [%36, %$8] ; # C
 ; # (when (sign? X) (inc 'C) (setq X (pos X)))
 ; # (sign? X)
-  %44 = and i64 %42, 8
-  %45 = icmp ne i64 %44, 0
-  br i1 %45, label %$15, label %$16
+  %45 = and i64 %43, 8
+  %46 = icmp ne i64 %45, 0
+  br i1 %46, label %$15, label %$16
 $15:
-  %46 = phi i64 [%42, %$13] ; # X
-  %47 = phi i64 [%43, %$13] ; # C
+  %47 = phi i64 [%43, %$13] ; # X
+  %48 = phi i64 [%44, %$13] ; # C
 ; # (inc 'C)
-  %48 = add i64 %47, 1
+  %49 = add i64 %48, 1
 ; # (pos X)
-  %49 = and i64 %46, -9
+  %50 = and i64 %47, -9
   br label %$16
 $16:
-  %50 = phi i64 [%42, %$13], [%49, %$15] ; # X
-  %51 = phi i64 [%43, %$13], [%48, %$15] ; # C
+  %51 = phi i64 [%43, %$13], [%50, %$15] ; # X
+  %52 = phi i64 [%44, %$13], [%49, %$15] ; # C
 ; # (loop (inc 'C (val (dig X))) (? (cnt? (setq X (val (big X))))))
   br label %$17
 $17:
-  %52 = phi i64 [%50, %$16], [%63, %$18] ; # X
-  %53 = phi i64 [%51, %$16], [%64, %$18] ; # C
+  %53 = phi i64 [%51, %$16], [%64, %$18] ; # X
+  %54 = phi i64 [%52, %$16], [%65, %$18] ; # C
 ; # (dig X)
-  %54 = add i64 %52, -4
+  %55 = add i64 %53, -4
 ; # (val (dig X))
-  %55 = inttoptr i64 %54 to i64*
-  %56 = load i64, i64* %55
+  %56 = inttoptr i64 %55 to i64*
+  %57 = load i64, i64* %56
 ; # (inc 'C (val (dig X)))
-  %57 = add i64 %53, %56
+  %58 = add i64 %54, %57
 ; # (? (cnt? (setq X (val (big X)))))
 ; # (big X)
-  %58 = add i64 %52, 4
+  %59 = add i64 %53, 4
 ; # (val (big X))
-  %59 = inttoptr i64 %58 to i64*
-  %60 = load i64, i64* %59
+  %60 = inttoptr i64 %59 to i64*
+  %61 = load i64, i64* %60
 ; # (cnt? (setq X (val (big X))))
-  %61 = and i64 %60, 2
-  %62 = icmp ne i64 %61, 0
-  br i1 %62, label %$19, label %$18
+  %62 = and i64 %61, 2
+  %63 = icmp ne i64 %62, 0
+  br i1 %63, label %$19, label %$18
 $18:
-  %63 = phi i64 [%60, %$17] ; # X
-  %64 = phi i64 [%57, %$17] ; # C
+  %64 = phi i64 [%61, %$17] ; # X
+  %65 = phi i64 [%58, %$17] ; # C
   br label %$17
 $19:
-  %65 = phi i64 [%60, %$17] ; # X
-  %66 = phi i64 [%57, %$17] ; # C
-  %67 = phi i64 [0, %$17] ; # ->
+  %66 = phi i64 [%61, %$17] ; # X
+  %67 = phi i64 [%58, %$17] ; # C
+  %68 = phi i64 [0, %$17] ; # ->
 ; # (int X)
-  %68 = lshr i64 %65, 4
+  %69 = lshr i64 %66, 4
 ; # (inc 'C (int X))
-  %69 = add i64 %66, %68
+  %70 = add i64 %67, %69
   br label %$14
 $14:
-  %70 = phi i64 [%38, %$12], [%65, %$19] ; # X
-  %71 = phi i64 [%41, %$12], [%69, %$19] ; # C
-  %72 = phi i64 [%41, %$12], [%69, %$19] ; # ->
+  %71 = phi i64 [%39, %$12], [%66, %$19] ; # X
+  %72 = phi i64 [%42, %$12], [%70, %$19] ; # C
+  %73 = phi i64 [%42, %$12], [%70, %$19] ; # ->
   br label %$6
 $6:
-  %73 = phi i64 [%13, %$4], [%70, %$14] ; # X
-  %74 = phi i64 [%14, %$4], [%71, %$14] ; # C
-  ret i64 %74
+  %74 = phi i64 [%13, %$4], [%71, %$14] ; # X
+  %75 = phi i64 [%14, %$4], [%72, %$14] ; # C
+  ret i64 %75
 }
 
 define i64 @_Seed(i64) align 8 {

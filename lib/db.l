@@ -1,4 +1,4 @@
-# 14apr25 Software Lab. Alexander Burger
+# 18apr25 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1764,6 +1764,8 @@
       (rest) ) )
 
 # Iterate all objects of given class or search query
+(private) (X Prg)
+
 (de forall (X . Prg)
    (if (and (pair X) (pair (cdr X)))
       (while (search X)
