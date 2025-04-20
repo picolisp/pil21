@@ -1,4 +1,8 @@
 25.4.20
+   Return 21 instead of 20 bits from 'hash'
+      src/big.l
+      test/src/big.l
+      doc/refH.html
    'idx' in 'search' *after* filtering
       lib/db.l
 

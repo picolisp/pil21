@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 09apr25 Software Lab. Alexander Burger
+# 20apr25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -83,7 +83,7 @@ href="refD.html#dep">dep</a></code>.
 </pre></dd>
 
 <dt><a id="hash"><code>(hash 'any) -> cnt</code></a></dt>
-<dd>Generates a 20-bit number (1-1048576) from <code>any</code>, suitable as a
+<dd>Generates a 21-bit number (0-2097151) from <code>any</code>, suitable as a
 hash value for various purposes, like randomly balanced <code><a
 href="refI.html#idx">idx</a></code> structures. See also <code><a
 href="refC.html#cache">cache</a></code>, <code><a
@@ -93,11 +93,11 @@ href="refS.html#seed">seed</a></code>.
 
 <pre>
 : (hash 0)
--> 1
+-> 0
 : (hash 1)
--> 723519
+-> 1447037
 : (hash "abc")
--> 557424
+-> 1114846
 </pre></dd>
 
 <dt><a id="hax"><code>(hax 'num) -> sym</code></a></dt>

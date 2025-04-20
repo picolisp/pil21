@@ -20794,16 +20794,12 @@ $2:
   %17 = lshr i128 %16, 64
   %18 = trunc i128 %17 to i64
   %19 = trunc i128 %16 to i64
-; # (- 44 4)
-; # (shr (mul 6364136223846793005 (initSeed (eval (cadr Exe)))) (- 44...
-  %20 = lshr i64 %19, 40
-; # (& (shr (mul 6364136223846793005 (initSeed (eval (cadr Exe)))) (-...
-  %21 = and i64 %20, -16
-; # (+ (& (shr (mul 6364136223846793005 (initSeed (eval (cadr Exe))))...
-  %22 = add i64 %21, 16
-; # (| (+ (& (shr (mul 6364136223846793005 (initSeed (eval (cadr Exe)...
-  %23 = or i64 %22, 2
-  ret i64 %23
+; # (shr (mul 6364136223846793005 (initSeed (eval (cadr Exe)))) 43)
+  %20 = lshr i64 %19, 43
+; # (cnt (shr (mul 6364136223846793005 (initSeed (eval (cadr Exe)))) ...
+  %21 = shl i64 %20, 4
+  %22 = or i64 %21, 2
+  ret i64 %22
 }
 
 define i64 @_Rand(i64) align 8 {
