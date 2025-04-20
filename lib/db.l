@@ -1,4 +1,4 @@
-# 18apr25 Software Lab. Alexander Burger
+# 20apr25 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1661,13 +1661,13 @@
          (NIL (setq Y ((cadar P) (caaar P))))
          (T
             (and
-               (nand
-                  (val X)
-                  (idx X (cons (hash Y) Y) T) )
-               (fully
+               (fully  # Filter
                   '((L) ((cddr L) Y (cdar L)))
                   (cddr X) )
-               ((cadr X) Y) )
+               (nand  # Deduplicate
+                  (val X)
+                  (idx X (cons (hash Y) Y) T) )
+               ((cadr X) Y) )  # Extract
             (setq P
                (rot (cddr X) (offset P (cddr X))) )
             @ ) )
