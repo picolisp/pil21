@@ -1,4 +1,4 @@
-# 20apr25 Software Lab. Alexander Burger
+# 24apr25 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1767,20 +1767,25 @@
 (private) (X Prg)
 
 (de forall (X . Prg)
-   (if (and (pair X) (pair (cdr X)))
-      (while (search X)
-         (with @ (run Prg 1)) )
-      (for
-         (This
-            (seq
-               (or
-                  (and (pair X) (++ X))
-                  (; X Dbf 1)
-                  (meta X 'Dbf 1)
-                  1 ) )
-            This
-            (seq This) )
-         (and (isa X This) (run Prg 1)) ) ) )
+   (cond
+      ((or (atom X) (num? (car X)))  # 'seq'
+         (for
+            (This
+               (seq
+                  (or
+                     (and (pair X) (++ X))
+                     (; X Dbf 1)
+                     (meta X 'Dbf 1)
+                     1 ) )
+               This
+               (seq This) )
+            (and (isa X This) (run Prg 1)) ) )
+      ((flg? (car X))  # 'search'
+         (while (search X)
+            (with @ (run Prg 1)) ) )
+      (T  # 'init'
+         (while (step X)
+            (with @ (run Prg 1)) ) ) ) )
 
 # Define object variables as relations
 (de rel Lst

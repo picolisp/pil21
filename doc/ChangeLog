@@ -1,3 +1,8 @@
+25.4.24
+   'forall' also accepts an 'init' step structure
+      lib/db.l
+      doc/refF.html
+
 25.4.20
    Return 21 instead of 20 bits from 'hash'
       src/big.l
