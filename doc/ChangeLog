@@ -1,3 +1,8 @@
+25.5.5
+   New files
+      src/Makefile.openbsd
+      src/Makefile.macos
+
 25.4.24
    'forall' also accepts an 'init' step structure
       lib/db.l
