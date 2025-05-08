@@ -111257,7 +111257,7 @@ $4:
 
 define i64 @_Version(i64) align 8 {
 $1:
-; # (when (nil? (eval (cadr Exe))) (outWord (int (val $Y))) (call $Pu...
+; # (let (X (save (eval (cadr Exe))) V (cons (val $Y) (cons (val $M) ...
 ; # (cadr Exe)
   %1 = inttoptr i64 %0 to i64*
   %2 = getelementptr i64, i64* %1, i32 1
@@ -111283,57 +111283,96 @@ $5:
   br label %$2
 $2:
   %13 = phi i64 [%5, %$4], [%11, %$6], [%12, %$5] ; # ->
-; # (nil? (eval (cadr Exe)))
-  %14 = icmp eq i64 %13, ptrtoint (i8* getelementptr (i8, i8* bitcast ([888 x i64]* @SymTab to i8*), i32 8) to i64)
-  br i1 %14, label %$7, label %$8
-$7:
+; # (save (eval (cadr Exe)))
+  %14 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([25 x i64]* @env to i8*), i32 0) to i64) to i64*
+  %15 = load i64, i64* %14
+  %16 = alloca i64, i64 2, align 16
+  %17 = ptrtoint i64* %16 to i64
+  %18 = inttoptr i64 %17 to i64*
+  store i64 %13, i64* %18
+  %19 = add i64 %17, 8
+  %20 = inttoptr i64 %19 to i64*
+  store i64 %15, i64* %20
+  %21 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([25 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %17, i64* %21
 ; # (val $Y)
-  %15 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([3 x i64]* @$Version to i8*), i32 0) to i64) to i64*
-  %16 = load i64, i64* %15
-; # (int (val $Y))
-  %17 = lshr i64 %16, 4
-; # (outWord (int (val $Y)))
-  call void @outWord(i64 %17)
-; # (call $Put (char "."))
-  %18 = load void(i8)*, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([25 x i64]* @env to i8*), i32 88) to void(i8)**)
-  call void %18(i8 46)
+  %22 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([3 x i64]* @$Version to i8*), i32 0) to i64) to i64*
+  %23 = load i64, i64* %22
 ; # (val $M)
-  %19 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([3 x i64]* @$Version to i8*), i32 8) to i64) to i64*
-  %20 = load i64, i64* %19
-; # (int (val $M))
-  %21 = lshr i64 %20, 4
-; # (outWord (int (val $M)))
-  call void @outWord(i64 %21)
-; # (call $Put (char "."))
-  %22 = load void(i8)*, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([25 x i64]* @env to i8*), i32 88) to void(i8)**)
-  call void %22(i8 46)
+  %24 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([3 x i64]* @$Version to i8*), i32 8) to i64) to i64*
+  %25 = load i64, i64* %24
 ; # (val $D)
-  %23 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([3 x i64]* @$Version to i8*), i32 16) to i64) to i64*
-  %24 = load i64, i64* %23
+  %26 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([3 x i64]* @$Version to i8*), i32 16) to i64) to i64*
+  %27 = load i64, i64* %26
+; # (cons (val $D) $Nil)
+  %28 = call i64 @cons(i64 %27, i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([888 x i64]* @SymTab to i8*), i32 8) to i64))
+; # (cons (val $M) (cons (val $D) $Nil))
+  %29 = call i64 @cons(i64 %25, i64 %28)
+; # (cons (val $Y) (cons (val $M) (cons (val $D) $Nil)))
+  %30 = call i64 @cons(i64 %23, i64 %29)
+; # (cond ((nil? X) (outWord (int (val $Y))) (call $Put (char ".")) (...
+; # (nil? X)
+  %31 = icmp eq i64 %13, ptrtoint (i8* getelementptr (i8, i8* bitcast ([888 x i64]* @SymTab to i8*), i32 8) to i64)
+  br i1 %31, label %$9, label %$8
+$9:
+; # (val $Y)
+  %32 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([3 x i64]* @$Version to i8*), i32 0) to i64) to i64*
+  %33 = load i64, i64* %32
+; # (int (val $Y))
+  %34 = lshr i64 %33, 4
+; # (outWord (int (val $Y)))
+  call void @outWord(i64 %34)
+; # (call $Put (char "."))
+  %35 = load void(i8)*, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([25 x i64]* @env to i8*), i32 88) to void(i8)**)
+  call void %35(i8 46)
+; # (val $M)
+  %36 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([3 x i64]* @$Version to i8*), i32 8) to i64) to i64*
+  %37 = load i64, i64* %36
+; # (int (val $M))
+  %38 = lshr i64 %37, 4
+; # (outWord (int (val $M)))
+  call void @outWord(i64 %38)
+; # (call $Put (char "."))
+  %39 = load void(i8)*, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([25 x i64]* @env to i8*), i32 88) to void(i8)**)
+  call void %39(i8 46)
+; # (val $D)
+  %40 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([3 x i64]* @$Version to i8*), i32 16) to i64) to i64*
+  %41 = load i64, i64* %40
 ; # (int (val $D))
-  %25 = lshr i64 %24, 4
+  %42 = lshr i64 %41, 4
 ; # (outWord (int (val $D)))
-  call void @outWord(i64 %25)
+  call void @outWord(i64 %42)
 ; # (newline)
   call void @newline()
-  br label %$8
+  br label %$7
 $8:
-; # (val $Y)
-  %26 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([3 x i64]* @$Version to i8*), i32 0) to i64) to i64*
-  %27 = load i64, i64* %26
-; # (val $M)
-  %28 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([3 x i64]* @$Version to i8*), i32 8) to i64) to i64*
-  %29 = load i64, i64* %28
-; # (val $D)
-  %30 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([3 x i64]* @$Version to i8*), i32 16) to i64) to i64*
-  %31 = load i64, i64* %30
-; # (cons (val $D) $Nil)
-  %32 = call i64 @cons(i64 %31, i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([888 x i64]* @SymTab to i8*), i32 8) to i64))
-; # (cons (val $M) (cons (val $D) $Nil))
-  %33 = call i64 @cons(i64 %29, i64 %32)
-; # (cons (val $Y) (cons (val $M) (cons (val $D) $Nil)))
-  %34 = call i64 @cons(i64 %27, i64 %33)
-  ret i64 %34
+; # (pair X)
+  %43 = and i64 %13, 15
+  %44 = icmp eq i64 %43, 0
+  br i1 %44, label %$11, label %$10
+$11:
+; # (unless (ge0 (compare V X)) (err Exe V ($ "Inadequate PicoLisp ve...
+; # (compare V X)
+  %45 = call i64 @compare(i64 %30, i64 %13)
+; # (ge0 (compare V X))
+  %46 = icmp sge i64 %45, 0
+  br i1 %46, label %$13, label %$12
+$12:
+; # (err Exe V ($ "Inadequate PicoLisp version") null)
+  call void @err(i64 %0, i64 %30, i8* bitcast ([28 x i8]* @$95 to i8*), i8* null)
+  unreachable
+$13:
+  br label %$7
+$10:
+  br label %$7
+$7:
+; # (drop *Safe)
+  %47 = inttoptr i64 %17 to i64*
+  %48 = getelementptr i64, i64* %47, i32 1
+  %49 = load i64, i64* %48
+  %50 = inttoptr i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([25 x i64]* @env to i8*), i32 0) to i64) to i64*
+  store i64 %49, i64* %50
+  ret i64 %30
 }
 
 define i32 @main(i32, i8**) align 8 {
@@ -111357,7 +111396,7 @@ $1:
 ; # (val P)
   %7 = load i8*, i8** %6
 ; # (strcmp (val P) ($ "+"))
-  %8 = call i32 @strcmp(i8* %7, i8* bitcast ([2 x i8]* @$95 to i8*))
+  %8 = call i32 @strcmp(i8* %7, i8* bitcast ([2 x i8]* @$96 to i8*))
   %9 = icmp ne i32 %8, 0
   br i1 %9, label %$3, label %$2
 $2:
@@ -111450,7 +111489,7 @@ $7:
   %42 = phi i8** [%18, %$4], [%41, %$13] ; # Av
 ; # (when (getenv ($ "HOME")) (set $UsrHome @ $UsrLen (strlen @)))
 ; # (getenv ($ "HOME"))
-  %43 = call i8* @getenv(i8* bitcast ([5 x i8]* @$96 to i8*))
+  %43 = call i8* @getenv(i8* bitcast ([5 x i8]* @$97 to i8*))
   %44 = icmp ne i8* %43, null
   br i1 %44, label %$14, label %$15
 $14:
@@ -111752,7 +111791,7 @@ $29:
   %168 = phi i8** [%159, %$28], [%191, %$30] ; # Av
 ; # (let X (safe (stdRead ($ ": "))) (cond ((lt0 (val $Chr)) (bye 0))...
 ; # (stdRead ($ ": "))
-  %169 = call i64 @stdRead(i8* bitcast ([3 x i8]* @$97 to i8*))
+  %169 = call i64 @stdRead(i8* bitcast ([3 x i8]* @$98 to i8*))
 ; # (safe (stdRead ($ ": ")))
   %170 = inttoptr i64 %163 to i64*
   store i64 %169, i64* %170
@@ -111815,9 +111854,10 @@ $30:
   br label %$29
 }
 
-@$97 = private constant [3 x i8] c": \00"
-@$96 = private constant [5 x i8] c"HOME\00"
-@$95 = private constant [2 x i8] c"+\00"
+@$98 = private constant [3 x i8] c": \00"
+@$97 = private constant [5 x i8] c"HOME\00"
+@$96 = private constant [2 x i8] c"+\00"
+@$95 = private constant [28 x i8] c"Inadequate PicoLisp version\00"
 @$94 = private constant [19 x i8] c"Too many callbacks\00"
 @$93 = private constant [9 x i8] c"[DLL] %s\00"
 @$92 = private constant [8 x i8] c"Bad ffi\00"

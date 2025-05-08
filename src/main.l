@@ -1,4 +1,4 @@
-# 21mar25 Software Lab. Alexander Burger
+# 08may25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1810,17 +1810,26 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             Y ) ) ) )
 
 # (version ['flg]) -> lst
+# (version 'lst) -> lst
 (de _Version (Exe)
-   (when (nil? (eval (cadr Exe)))
-      (outWord (int (val $Y)))
-      (call $Put (char "."))
-      (outWord (int (val $M)))
-      (call $Put (char "."))
-      (outWord (int (val $D)))
-      (newline) )
-   (cons (val $Y)
-      (cons (val $M)
-         (cons (val $D) $Nil) ) ) )
+   (let
+      (X (save (eval (cadr Exe)))
+         V
+         (cons (val $Y)
+            (cons (val $M)
+               (cons (val $D) $Nil) ) ) )
+      (cond
+         ((nil? X)
+            (outWord (int (val $Y)))
+            (call $Put (char "."))
+            (outWord (int (val $M)))
+            (call $Put (char "."))
+            (outWord (int (val $D)))
+            (newline) )
+         ((pair X)
+            (unless (ge0 (compare V X))
+               (err Exe V ($ "Inadequate PicoLisp version") null) ) ) )
+      V ) )
 
 # Main entry point
 (local) (main sigChld)

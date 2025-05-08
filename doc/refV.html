@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 08may25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -100,18 +100,28 @@ href="ref_.html#::">::</a></code>.
 </pre></dd>
 
 <dt><a id="version"><code>(version ['flg]) -> lst</code></a></dt>
+<dt><code>(version 'lst) -> lst</code></dt>
 <dd>Prints the current version as a string of dot-separated numbers, and returns
-the current version as a list of numbers. The JVM- and C-versions print an
-additional "JVM" or "C", respectively, separated by a space. When
-<code>flg</code> is non-NIL, printing is suppressed. See also <code><a
-href="refC.html#*CPU">*CPU</a></code> and <code><a
+the current version as a list of numbers. When <code>flg</code> is non-NIL,
+printing is suppressed. The second form checks for the required version in
+<code>lst</code> and throws an error if the current version is too old. See also
+<code><a href="refC.html#*CPU">*CPU</a></code> and <code><a
 href="refO.html#*OS">*OS</a></code>.
 
 <pre>
 $ pil -version
-15.11.0
+25.5.8
+
 : (version T)
--> (15 11 0)
+-> (25 5 8)
+: (version)
+25.5.8
+-> (25 5 8)
+
+: (version (25 5 9))
+!? (version (25 5 9))
+(25 5 8) -- Inadequate PicoLisp version
+?
 </pre></dd>
 
 <dt><a id="vi"><code>(vi 'sym) -> sym | NIL</code></a></dt>

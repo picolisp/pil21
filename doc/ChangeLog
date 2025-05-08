@@ -1,4 +1,7 @@
 25.5.8
+   'version' can also check for a required version
+      src/main.l
+      doc/refV.html
    Optimize 'idx' in 'search' for (+Ref +Link) and '+Joint'
       lib/db.l
 
