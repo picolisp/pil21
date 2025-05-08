@@ -1,4 +1,4 @@
-# 24apr25 Software Lab. Alexander Burger
+# 08may25 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1640,10 +1640,10 @@
                      (or (isa '+Idx This) (isa '+IdxFold This)) ) ) ) ) ) ) )
 
 # Combined 'search' function
+(private) (*SX *SY search1)
+
 (de relQ (X Lst)
    (iter> (meta (cdr Lst) (car Lst)) X Lst) )
-
-(private) search1
 
 (de search1 (Val Lst)  # ((Q . stepFun) . lst)
    (let X (++ Lst)
@@ -1655,21 +1655,21 @@
             (T (cons (list (list X)) pop)) )
          Lst ) ) )
 
-(de search (X Y . @)
-   (ifn Y
-      (for (P (cddr X)  P  (or (cdr P) (cddr X)))  # Next search result
-         (NIL (setq Y ((cadar P) (caaar P))))
+(de search (*SX *SY . @)
+   (ifn *SY
+      (for (P (cddr *SX)  P  (or (cdr P) (cddr *SX)))  # Next search result
+         (NIL (setq *SY ((cadar P) (caaar P))))
          (T
             (and
                (fully  # Filter
-                  '((L) ((cddr L) Y (cdar L)))
-                  (cddr X) )
+                  '((L) ((cddr L) *SY (cdar L)))
+                  (cddr *SX) )
                (nand  # Deduplicate
-                  (val X)
-                  (idx X (cons (hash Y) Y) T) )
-               ((cadr X) Y) )  # Extract
+                  (val *SX)
+                  (idx *SX (cons (hash *SY) *SY) T) )
+               ((cadr *SX) *SY) )  # Extract
             (setq P
-               (rot (cddr X) (offset P (cddr X))) )
+               (rot (cddr *SX) (offset P (cddr *SX))) )
             @ ) )
       # Init search
       (let
@@ -1678,15 +1678,15 @@
             (make
                (link prog)  # idx and extract
                (loop
-                  (when (or X (nor (args) (cdr (made))))
+                  (when (or *SX (nor (args) (cdr (made))))
                      (link  # ((Q . V) genFun . filterFun)
                         (cons
                            (cons
                               (list
-                                 (if (pair (caar Y))
-                                    (cons ((car Y) X) (cddr Y))  # (init . step)
-                                    (search1 X Y) ) )
-                              X )
+                                 (if (pair (caar *SY))
+                                    (cons ((car *SY) *SX) (cddr *SY))  # (init . step)
+                                    (search1 *SX *SY) ) )
+                              *SX )
                            '((Q)  # Generator
                               (use Obj
                                  (loop
@@ -1698,25 +1698,34 @@
                                     (if Obj
                                        (let L (cdar Q)
                                           (con Q (cons (car Q) (cdr Q)))
+                                          (or
+                                             (val *SX)  # 'idx'
+                                             (not
+                                                (isa '+List
+                                                   (if (pair (cdar L))
+                                                      (meta @ (caar L))  # (+Ref +Link)
+                                                      (with (meta Obj (cdar L))  # +Joint
+                                                         (meta (: type) (: slot)) ) ) ) )
+                                             (set *SX T) )
                                           (set Q (search1 Obj L)) )
                                        (set Q (cadr Q))
                                        (con Q (cddr Q)) ) ) ) )
                            (let  # Filter
                               (@Exe
-                                 (if (pair (caar Y))
+                                 (if (pair (caar *SY))
                                     (cons
-                                       (lit (car (shift 'Y)))
+                                       (lit (car (shift '*SY)))
                                        '(X V) )
                                     (list 'match>
                                        (lit
-                                          (if (atom (cdar Y))
-                                             (with (meta X (cdar Y))  # +Joint
+                                          (if (atom (cdar *SY))
+                                             (with (meta *SX (cdar *SY))  # +Joint
                                                 (meta (: type) (: slot)) )
-                                             (meta (cdar Y) (caar Y)) ) )  # +index
+                                             (meta (cdar *SY) (caar *SY)) ) )  # +index
                                        'V
-                                       (list '; 'X (caar Y))
+                                       (list '; 'X (caar *SY))
                                        'X ) )
-                                 @Lst (flip (mapcar car (cdr Y))) )
+                                 @Lst (flip (mapcar car (cdr *SY))) )
                               (curry (@Lst @Exe) (X V)
                                  (let L '@Lst
                                     (recur (X L)
@@ -1725,15 +1734,11 @@
                                              (fish ext? (get X (++ L)))
                                              (circ L) )
                                           @Exe ) ) ) ) ) ) ) )
-                  (setq X (next))
-                  (NIL (setq Y (next))
-                     (and X (set (made) @)) ) ) ) )
+                  (setq *SX (next))
+                  (NIL (setq *SY (next))
+                     (and *SX (set (made) @)) ) ) ) )
          (cons
-            (bool
-               (or  # Maintain 'idx'
-                  *Iter+  # Multiple 'iter>' results
-                  (cddr Lst)  # More than one criterion
-                  (cdar (caaadr Lst)) ) )  # One or more associations
+            (or *Iter+ (bool (cddr Lst)))  # 'idx'
             Lst ) ) ) )
 
 # Multiple indexes

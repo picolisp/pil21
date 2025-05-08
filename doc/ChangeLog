@@ -1,3 +1,7 @@
+25.5.8
+   Optimize 'idx' in 'search' for (+Ref +Link) and '+Joint'
+      lib/db.l
+
 25.5.5
    New files
       src/Makefile.openbsd
