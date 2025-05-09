@@ -1,3 +1,7 @@
+25.5.9
+   Bug in 'attr'
+      lib/xm.l
+
 25.5.8
    'version' can also check for a required version
       src/main.l
