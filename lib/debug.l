@@ -425,7 +425,7 @@
          (run Prg 1)
          (out 2
             (when (>= (setq U (- (usec) U)) 60000000)
-               (prin (tim$ (/ U 1000000)) " h  ") )
+               (prin "[" (tim$ (/ U 1000000)) "] ") )
             (prinl (format (/ U 1000) 3) " sec") ) ) ) )
 
 # Backtrace
