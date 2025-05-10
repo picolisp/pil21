@@ -1,3 +1,8 @@
+25.5.10
+   Print times in 'bench' also as [hh:mm]
+      lib/debug.l
+      doc/refB.html
+
 25.5.9
    Bug in 'attr'
       lib/xm.l

@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 04dec23 Software Lab. Alexander Burger
+# 10may25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -175,7 +175,11 @@ href="refU.html#usec">usec</a></code>.
 
 <pre>
 : (bench (wait 2000))
-1.996 sec
+2.003 sec
+-> NIL
+
+: (bench (wait 123456))
+00:02 h  123.557 sec
 -> NIL
 </pre></dd>
 

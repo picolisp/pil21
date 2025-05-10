@@ -1,4 +1,4 @@
-# 04dec23 Software Lab. Alexander Burger
+# 10may25 Software Lab. Alexander Burger
 
 # Prompt
 (de *Prompt
@@ -424,9 +424,9 @@
       (prog1
          (run Prg 1)
          (out 2
-            (prinl
-               (format (*/ (- (usec) U) 1000) 3)
-               " sec" ) ) ) ) )
+            (when (>= (setq U (- (usec) U)) 60000000)
+               (prin (tim$ (/ U 1000000)) " h  ") )
+            (prinl (format (/ U 1000) 3) " sec") ) ) ) )
 
 # Backtrace
 (de bt (Flg)
