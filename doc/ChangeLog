@@ -1,4 +1,7 @@
 25.5.11
+   Auto-init in 'inc' and 'dec'
+      src/lib/llvm.l
+      src/big.l
    Revert to 20 instead of 21 bits from 'hash'
       src/big.l
       test/src/big.l

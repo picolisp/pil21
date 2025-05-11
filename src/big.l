@@ -1161,14 +1161,16 @@
                (when (and (sym? Y) (sym? (val (tail Y))))  # External
                   (dbTouch Exe Y) )
                (if (atom (shift X))
-                  (if (nil? (val Y))
-                     @
-                     (set Y (incs (needNum Exe @))) )
+                  (set Y
+                     (if (nil? (val Y))
+                        ONE
+                        (incs (needNum Exe @)) ) )
                   (let (D (save (eval (car X)))  N (val Y))
-                     (cond
-                        ((nil? N) N)
-                        ((nil? D) D)
-                        (T (set Y (adds (needNum Exe N) (needNum Exe D)))) ) ) ) ) ) ) ) )
+                     (if (nil? D)
+                        D
+                        (needNum Exe D)
+                        (set Y
+                           (if (nil? N) D (adds (needNum Exe N) D)) ) ) ) ) ) ) ) ) )
 
 # (dec 'num) -> num
 # (dec 'var ['num]) -> num
@@ -1182,14 +1184,18 @@
                (when (and (sym? Y) (sym? (val (tail Y))))  # External
                   (dbTouch Exe Y) )
                (if (atom (shift X))
-                  (if (nil? (val Y))
-                     @
-                     (set Y (decs (needNum Exe @))) )
+                  (set Y
+                     (if (nil? (val Y))
+                        -ONE
+                        (decs (needNum Exe @)) ) )
                   (let (D (save (eval (car X)))  N (val Y))
-                     (cond
-                        ((nil? N) N)
-                        ((nil? D) D)
-                        (T (set Y (subs (needNum Exe N) (needNum Exe D)))) ) ) ) ) ) ) ) )
+                     (if (nil? D)
+                        D
+                        (needNum Exe D)
+                        (set Y
+                           (if (nil? N)
+                              (- D)
+                              (subs (needNum Exe N) D) ) ) ) ) ) ) ) ) ) )
 
 # (* 'num ..) -> num
 (de _Mul (Exe)

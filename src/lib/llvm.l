@@ -1,12 +1,12 @@
-# 10jul24 Software Lab. Alexander Burger
+# 11may25 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
 
-(local) (@ @@ @@@ cross void null i1 i1* i1** i8 i8* i8** i8*** i16 i16* i16**
-i32 i32* i32** i64 i64* i64** any YES NO ZERO -ZERO ONE SymTab begin end $ ?
-short equ global var str const globals array table symTab inline tailcall define
-struct $Nil $T $Link drop)
+(local) (@ @@ @@@ cross void null i1 i1* i1** i8 i8* i8** i8*** i16 i16*
+i16** i32 i32* i32** i64 i64* i64** any YES NO ZERO -ZERO ONE -ONE
+SymTab begin end $ ? short equ global var str const globals array table
+symTab inline tailcall define struct $Nil $T $Link drop)
 
 (import pico llvm symbols local T NIL load use setq prog */ ** >> char hex)
 
@@ -52,6 +52,7 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
 (de ZERO . `(def "2" 'any))  # Short number '0'
 (de -ZERO . `(def "10" 'any))  # Placeholder '-0'
 (de ONE . `(def "18" 'any))  # Short number '1'
+(de -ONE . `(def "26" 'any))  # Short number '-1'
 
 # Generate LLVM-IR
 (de begin (Name Flg . pico~@)
