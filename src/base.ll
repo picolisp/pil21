@@ -1542,7 +1542,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 402,
   i64 82,
-  i64 162
+  i64 178
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -20794,12 +20794,14 @@ $2:
   %17 = lshr i128 %16, 64
   %18 = trunc i128 %17 to i64
   %19 = trunc i128 %16 to i64
-; # (shr (mul 6364136223846793005 (initSeed (eval (cadr Exe)))) 43)
-  %20 = lshr i64 %19, 43
-; # (cnt (shr (mul 6364136223846793005 (initSeed (eval (cadr Exe)))) ...
-  %21 = shl i64 %20, 4
-  %22 = or i64 %21, 2
-  ret i64 %22
+; # (shr (mul 6364136223846793005 (initSeed (eval (cadr Exe)))) 44)
+  %20 = lshr i64 %19, 44
+; # (inc (shr (mul 6364136223846793005 (initSeed (eval (cadr Exe)))) ...
+  %21 = add i64 %20, 1
+; # (cnt (inc (shr (mul 6364136223846793005 (initSeed (eval (cadr Exe...
+  %22 = shl i64 %21, 4
+  %23 = or i64 %22, 2
+  ret i64 %23
 }
 
 define i64 @_Rand(i64) align 8 {

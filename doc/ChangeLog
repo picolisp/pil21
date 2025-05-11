@@ -1,3 +1,9 @@
+25.5.11
+   Revert to 20 instead of 21 bits from 'hash'
+      src/big.l
+      test/src/big.l
+      doc/refH.html
+
 25.5.10
    Print times in 'bench' also as [hh:mm]
       lib/debug.l

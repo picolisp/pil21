@@ -1,4 +1,4 @@
-# 20apr25 Software Lab. Alexander Burger
+# 11may25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1523,9 +1523,10 @@
 # (hash 'any) -> cnt
 (de _Hash (Exe)
    (cnt
-      (shr  # Get higher 21 bits
-         (mul 6364136223846793005 (initSeed (eval (cadr Exe))))
-         43 ) ) )
+      (inc
+         (shr  # Get higher 20 bits
+            (mul 6364136223846793005 (initSeed (eval (cadr Exe))))
+            44 ) ) ) )
 
 # (rand ['cnt1 'cnt2] | ['T]) -> cnt | flg
 (de _Rand (Exe)
