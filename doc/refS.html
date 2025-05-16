@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 30mar25 Software Lab. Alexander Burger
+# 16may25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -1005,8 +1005,10 @@ Calls</a>.
 <dt><a id="sub?"><code>(sub? 'any1 'any2) -> any2 | NIL</code></a></dt>
 <dd>Returns <code>any2</code> when the string representation of
 <code>any1</code> is a substring of the string representation of
-<code>any2</code>. See also <code><a href="refP.html#pre?">pre?</a></code>,
-<code><a href="refO.html#offset">offset</a></code> and <code><a
+<code>any2</code>, and stores the substring position in the global variable
+<code><a href="ref_.html#@@">@@</a></code>. See also <code><a
+href="refP.html#pre?">pre?</a></code>, <code><a
+href="refO.html#offset">offset</a></code> and <code><a
 href="refI.html#index">index</a></code>.
 
 <pre>
@@ -1021,6 +1023,13 @@ href="refI.html#index">index</a></code>.
 -> "abcdefg"
 : (sub? '(d e f) "abcdefg")
 -> "abcdefg"
+
+: (sub? "" "abc") @@
+-> 0
+: (sub? "a" "abc") @@
+-> 1
+: (sub? "b" "abc") @@
+-> 2
 </pre></dd>
 
 <dt><a id="subr"><code>(subr 'sym) -> num</code></a></dt>

@@ -1,4 +1,4 @@
-# 04jun23 Software Lab. Alexander Burger
+# 16may25 Software Lab. Alexander Burger
 
 ### name ###
 (test "abc" (name 'abc))
@@ -134,6 +134,9 @@
 (test "abcdefg" (sub? "def" "abcdefg"))
 (test NIL (sub? "abb" "abcdefg"))
 (test "abcdefg" (sub? "" "abcdefg"))
+(test 0 (sub? "" "abc") @@)
+(test 1 (sub? "a" "abc") @@)
+(test 2 (sub? "b" "abc") @@)
 
 
 ### val ###

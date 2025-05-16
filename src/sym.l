@@ -1,4 +1,4 @@
-# 27feb25 Software Lab. Alexander Burger
+# 16may25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -821,16 +821,18 @@
          (? (=0 (setq C (symByte Q))) YES)
          (? (=0 (setq B (symByte P))) NO) ) ) )
 
-(de i1 subStr (X Y)
-   (or
-      (nil? X)
-      (== ZERO (setq X (xName X)))
-      (let (P (push 0 (xName Y))  B T)
-         (loop
-            (? (=0 (setq B (symByte P))) NO)
-            (let (Cnt (val P)  Nm (val 2 P))
-               (? (preStr X B P) YES)
-               (set P Cnt  2 P Nm) ) ) ) ) )
+(de i64 subStr (X Y)
+   (cond
+      ((nil? X) 0)
+      ((== ZERO (setq X (xName X))) 0)
+      (T
+         (let (P (push 0 (xName Y))  B T  N 1)
+            (loop
+               (? (=0 (setq B (symByte P))) -1)
+               (let (Cnt (val P)  Nm (val 2 P))
+                  (? (preStr X B P) N)
+                  (set P Cnt  2 P Nm) )
+               (inc 'N) ) ) ) ) )
 
 # (pre? 'any1 'any2) -> any2 | NIL
 (de _PreQ (Exe)
@@ -849,9 +851,10 @@
 # (sub? 'any1 'any2) -> any2 | NIL
 (de _SubQ (Exe)
    (let (X (cdr Exe)  Y (save (evSym X))  Z (evSym (shift X)))
-      (if (subStr Y Z)
-         Z
-         $Nil ) ) )
+      (if (lt0 (subStr Y Z))
+         $Nil
+         (set $At2 (cnt @))
+         Z ) ) )
 
 # (val 'var) -> any
 (de _Val (Exe)

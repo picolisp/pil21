@@ -1,3 +1,11 @@
+25.5.16
+   'sub?' stores substrig position in '@@'
+      src/dec.l
+      src/main.l
+      src/sym.l
+      test/src/sym.l
+      doc/refS.html
+
 25.5.11
    Auto-init in 'inc' and 'dec'
       src/lib/llvm.l
