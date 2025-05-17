@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 24apr25 Software Lab. Alexander Burger
+# 17may25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -497,9 +497,10 @@ using the <code>cnt</code>'th database file instead of the <code>dbs</code>
 default), or on a <code>lst</code> query structure as returned by <code><a
 href="refI.html#init">init</a></code> or <code><a
 href="refS.html#search">search</a></code>. In all cases, the global variable
-<code><a href="refT.html#This">This</a></code> is bound to each object. See also
-<code><a href="refS.html#seq">seq</a></code> and <code><a
-href="refC.html#collect">collect</a></code>.
+<code><a href="refT.html#This">This</a></code> is bound to each object (and
+<code><a href="ref_.html#@@">@@</a></code> is bound to the key in case of
+<code>init</code>). See also <code><a href="refS.html#seq">seq</a></code> and
+<code><a href="refC.html#collect">collect</a></code>.
 
 <pre>
 : (forall '+Item (println (: nr) (: nm)))
@@ -511,10 +512,10 @@ href="refC.html#collect">collect</a></code>.
 6 "Gadget Appliance"
 
 : (forall (init '(nr . +Item) 2 4)
-   (println (: nr) (: nm)) )
-2 "Spare Part"
-3 "Auxiliary Construction"
-4 "Enhancement Additive"
+   (println @@ (: nr) (: nm)) )
+2 2 "Spare Part"
+2 3 "Auxiliary Construction"
+2 4 "Enhancement Additive"
 
 : (forall
    (search

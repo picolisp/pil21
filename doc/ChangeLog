@@ -1,3 +1,7 @@
+25.5.17
+   Mention '@@' in the '@@' reference
+      doc/refF.html
+
 25.5.16
    'sub?' stores substrig position in '@@'
       src/dec.l
