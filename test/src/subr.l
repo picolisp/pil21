@@ -1,4 +1,4 @@
-# 20jul22 Software Lab. Alexander Burger
+# 21may25 Software Lab. Alexander Burger
 
 ### c[ad]*r ###
 (let L '(1 2 3 4 5)
@@ -328,11 +328,13 @@
 ### max ###
 (test 'z (max 2 'a 'z 9))
 (test (5) (max (5) (2 3) 'X))
+(test 4 (max (2 4 1 3)))
 
 
 ### min ###
 (test 2 (min 2 'a 'z 9))
 (test 'X (min (5) (2 3) 'X))
+(test 1 (min (2 4 1 3)))
 
 
 ### atom ###

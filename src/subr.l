@@ -1,4 +1,4 @@
-# 20nov24 Software Lab. Alexander Burger
+# 21may25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -800,23 +800,45 @@
             (? (lt0 (compare Y Z)) $Nil)
             (setq Y (safe Z)) ) ) ) )
 
-# (max 'any ..) -> any
+# (max 'any1 'any2 ..) -> any
+# (max 'lst) -> any
 (de _Max (Exe)
-   (let (X (cdr Exe)  R (save (eval (car X))))
-      (while (pair (shift X))
-         (let Z (eval (car X))
-            (when (gt0 (compare Z R))
-               (setq R (safe Z)) ) ) )
-      R ) )
+   (let (X (cdr Exe)  Y (eval (++ X)))
+      (cond
+         ((pair X)
+            (let R (save Y)
+               (loop
+                  (let Z (eval (car X))
+                     (when (gt0 (compare Z R))
+                        (setq R (safe Z)) ) )
+                  (? (atom (shift X)) R) ) ) )
+         ((pair Y)
+            (let R (car Y)
+               (while (pair (shift Y))
+                  (when (gt0 (compare (car Y) R))
+                     (setq R (car Y)) ) )
+               R ) )
+         (T Y) ) ) )
 
-# (min 'any ..) -> any
+# (min 'any1 'any2 ..) -> any
+# (min 'lst) -> any
 (de _Min (Exe)
-   (let (X (cdr Exe)  R (save (eval (car X))))
-      (while (pair (shift X))
-         (let Z (eval (car X))
-            (when (lt0 (compare Z R))
-               (setq R (safe Z)) ) ) )
-      R ) )
+   (let (X (cdr Exe)  Y (eval (++ X)))
+      (cond
+         ((pair X)
+            (let R (save Y)
+               (loop
+                  (let Z (eval (car X))
+                     (when (lt0 (compare Z R))
+                        (setq R (safe Z)) ) )
+                  (? (atom (shift X)) R) ) ) )
+         ((pair Y)
+            (let R (car Y)
+               (while (pair (shift Y))
+                  (when (lt0 (compare (car Y) R))
+                     (setq R (car Y)) ) )
+               R ) )
+         (T Y) ) ) )
 
 # (atom 'any) -> flg
 (de _Atom (Exe)

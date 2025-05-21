@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 04dec23 Software Lab. Alexander Burger
+# 21may25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -331,15 +331,19 @@ href="refF.html#fill">fill</a></code>.
 -> (h i)
 </pre></dd>
 
-<dt><a id="max"><code>(max 'any ..) -> any</code></a></dt>
-<dd>Returns the largest of all <code>any</code> arguments. See also <a
-href="refM.html#min">min</a> and <a href="ref.html#cmp">Comparing</a>.
+<dt><a id="max"><code>(max 'any1 'any2 ..) -> any</code></a></dt>
+<dt><code>(max 'lst) -> any</code></a></dt>
+<dd>Returns the largest of all <code>any</code> arguments, or of all elements in
+<code>lst</code>. See also <a href="refM.html#min">min</a> and <a
+href="ref.html#cmp">Comparing</a>.
 
 <pre>
 : (max 2 'a 'z 9)
 -> z
 : (max (5) (2 3) 'X)
 -> (5)
+: (max (2 4 1 3))
+-> 4
 </pre></dd>
 
 <dt><a id="maxKey"><code>(maxKey 'tree ['any1 ['any2]]) -> any</code></a></dt>
@@ -500,15 +504,19 @@ href="refC.html#can">can</a></code>.
 (ele> . +relation)
 </pre></dd>
 
-<dt><a id="min"><code>(min 'any ..) -> any</code></a></dt>
-<dd>Returns the smallest of all <code>any</code> arguments. See also <a
-href="refM.html#max">max</a> and <a href="ref.html#cmp">Comparing</a>.
+<dt><a id="min"><code>(min 'any1 'any2 ..) -> any</code></a></dt>
+<dt><code>(min 'lst) -> any</code></a></dt>
+<dd>Returns the smallest of all <code>any</code> arguments, or of all elements
+in <code>lst</code>. See also <a href="refM.html#max">max</a> and <a
+href="ref.html#cmp">Comparing</a>.
 
 <pre>
 : (min 2 'a 'z 9)
 -> 2
 : (min (5) (2 3) 'X)
 -> X
+: (min (2 4 1 3))
+-> 1
 </pre></dd>
 
 <dt><a id="minKey"><code>(minKey 'tree ['any1 ['any2]]) -> any</code></a></dt>
