@@ -1,4 +1,4 @@
-# 16may25 Software Lab. Alexander Burger
+# 22may25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1143,15 +1143,16 @@
             (T V) ) ) ) )
 
 # (enum 'var 'cnt ['cnt ..]) -> lst
-# (enum 'var) -> lst
+# (enum 'var ['flg]) -> lst
 (de _Enum (Exe)
    (let
       (X (cdr Exe)
          Var (save (needChkVar Exe (eval (++ X))))
-         Cnt T )
-      (if (pair X)
+         Arg (eval (car X))
+         Cnt 0 )
+      (if (num? Arg)
          (loop
-            (? (le0 (setq Cnt (evCnt Exe X))) $Nil)
+            (? (le0 (setq Cnt (xCnt Exe Arg))) $Nil)
             (let P (val Var)
                (loop
                   (let N (shr Cnt 1)
@@ -1183,8 +1184,8 @@
                                  (set 2 P (cons (setq P $Nil) $Nil)) ) )
                            (T (setq P (val (setq Var @)))) ) )
                      (setq Cnt N) ) ) )
-            (? (atom (shift X)) Var) )
-         (setq Cnt 0)
+            (? (atom (shift X)) Var)
+            (setq Arg (eval (car X)) ) )
          (let
             (Q (link (push NIL NIL))
                Tos (link (push -ZERO NIL))
@@ -1206,8 +1207,10 @@
                (loop
                   (unless (nil? (car P))
                      (set R
-                        (cons  # (cnt . any)
-                           (cons (cnt (| Cnt M)) @)
+                        (cons
+                           (if (nil? Arg)
+                              (cons (cnt (| Cnt M)) (car P))  # (cnt . any)
+                              (cons (car P) (cnt (| Cnt M))) )  # (any . cnt)
                            (val R) ) ) )
                   (let Y (cdr P)
                      (? (pair (car Y))  # Left subtree

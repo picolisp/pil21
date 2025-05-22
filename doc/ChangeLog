@@ -1,3 +1,9 @@
+25.5.22
+   Optionally return reversed key-value pairs from 'enum'
+      src/sym.l
+      doc/refE.html
+      test/src/sym.l
+
 25.5.21
    'min' and 'max' also accept a single list argument
       src/subr.l

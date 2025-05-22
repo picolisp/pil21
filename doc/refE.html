@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 04jan25 Software Lab. Alexander Burger
+# 22may25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -150,20 +150,23 @@ successfully completed. See also <code><a href="refF.html#from">from</a></code>.
 </pre></dd>
 
 <dt><a id="enum"><code>(enum 'var 'cnt ['cnt ..]) -> lst</code></a></dt>
-<dt><code>(enum 'var) -> lst</code></dt>
+<dt><code>(enum 'var ['flg]) -> lst</code></dt>
 <dd>Enumerates cells by maintaining a binary tree in <code>var</code>. The keys
 are implicit from the enumerated <code>cnt</code>s, and the resulting tree is
 balanced (independent from the insertion order). In the first form, the
 corresponding cell is returned. If it does not exist yet, it is (destructively)
 inserted into the tree. If more than one <code>cnt</code> argument is given, the
 returned cell is subsequently taken as the next tree to be processed. The second
-form returns an unsorted association list of all key-value pairs in the tree.
+form returns an unsorted association list of all key-value pairs (or value-key
+pairs if <code>flg</code> is non-<code>NIL</code>) in the tree.
 <code>enum</code> can be used to emulate (possibly sparse) arrays. See also
 <code><a href="refE.html#enum?">enum?</a></code>, <code><a
 href="refI.html#idx">idx</a></code> and <code><a
 href="refH.html#hash">hash</a></code>.
 
 <pre>
+: (off E)
+-> NIL
 : (for (I . S) '(a b c d e f g h i j k l m n o)
    (set (enum 'E I) S) )
 -> o
@@ -196,6 +199,8 @@ a
 -> l
 : (enum 'E)
 -> ((8 . h) (4 . d) (12 . l) (2 . b) (10 . j) (6 . f) (14 . n) (1 . a) (9 . i) (5 . e) (13 . m) (3 . c) (11 . k) (7 . g) (15 . o))
+: (enum 'E T)
+-> ((h . 8) (d . 4) (l . 12) (b . 2) (j . 10) (f . 6) (n . 14) (a . 1) (i . 9) (e . 5) (m . 13) (c . 3) (k . 11) (g . 7) (o . 15))
 
 : (let A NIL  # 2-dimensional array
    (for I 4

@@ -1,4 +1,4 @@
-# 16may25 Software Lab. Alexander Burger
+# 22may25 Software Lab. Alexander Burger
 
 ### name ###
 (test "abc" (name 'abc))
@@ -312,6 +312,8 @@
       (enum 'E 0) )
    (test '((8 . h) (4 . d) (12 . l) (2 . b) (10 . j) (6 . f) (14 . n) (1 . a) (9 . i) (5 . e) (13 . m) (3 . c) (11 . k) (7 . g) (15 . o))
       (enum 'E) )
+   (test '((h . 8) (d . 4) (l . 12) (b . 2) (j . 10) (f . 6) (n . 14) (a . 1) (i . 9) (e . 5) (m . 13) (c . 3) (k . 11) (g . 7) (o . 15))
+      (enum 'E T) )
    (test '(g . @) (enum? E 7))
    (test NIL (enum? E 16)) )
 
