@@ -1,4 +1,4 @@
-# 21feb25 Software Lab. Alexander Burger
+# 22may25 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -993,14 +993,15 @@ s-expr command vipA vipZ vi)
                                  (car
                                     (rot
                                        (setq *Complete
-                                          (uniq
-                                             (conc
-                                                (and (cdr L) (history))
-                                                (extract
-                                                   '((B)
-                                                      (when (head L B)
-                                                         (pack ((if (cdr L) cddr cdr) B)) ) )
-                                                   (: buffer text) ) ) ) ) ) ) ) ) )
+                                          (conc
+                                             (and (cdr L) (history))
+                                             (extract
+                                                '((B)
+                                                   (and
+                                                      (head L B)
+                                                      (cddddr B)
+                                                      (pack ((if (cdr L) cddr cdr) B)) ) )
+                                                (: buffer text) ) ) ) ) ) ) ) )
                         ((or Rpl (nor *Complete (setq S (pack (getWord T)))))
                            (setq S
                               (make
@@ -1019,8 +1020,8 @@ s-expr command vipA vipZ vi)
                                           (when (== This *CmdWin)
                                              (pick
                                                 '((P F) (and (head P L) F))
-                                                '`(mapcar chop '(":ta " ":tag " ":v " ":e " ":E " ":r " ":w "))
-                                                '(T T T 0 0 0 0) ) ) ) )
+                                                '`(mapcar chop '(":tag " ":v " ":e " ":E " ":r " ":w "))
+                                                '(T T 0 0 0 0) ) ) ) )
                                     (extract
                                        '((Cmd)
                                           (when (head (cdr L) (setq Cmd (chop Cmd)))

@@ -1,4 +1,6 @@
 25.5.22
+   Keep all command lines non-unique but longer than 3 in TAB-completion
+      lib/vip.l
    Optionally return reversed key-value pairs from 'enum'
       src/sym.l
       doc/refE.html
