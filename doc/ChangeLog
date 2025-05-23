@@ -1,3 +1,11 @@
+25.5.23
+   Optional index argument to 'accu'
+      lib.l
+      test/lib.l
+      doc/refA.html
+   Minor tuning in 'cache' and 'once'
+      lib.l
+
 25.5.22
    Keep all command lines non-unique but longer than 3 in TAB-completion
       lib/vip.l

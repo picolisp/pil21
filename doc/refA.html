@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 23may25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -152,10 +152,11 @@ href="refA.html#*Adr">*Adr</a></code>.
 -> 4
 </pre></dd>
 
-<dt><a id="accu"><code>(accu 'var 'any 'num)</code></a></dt>
+<dt><a id="accu"><code>(accu 'var 'any 'num ['var2])</code></a></dt>
 <dd>Accumulates <code>num</code> into a sum, using the key <code>any</code> in
-an association list stored in <code>var</code>. See also <code><a
-href="refA.html#assoc">assoc</a></code>.
+an association list stored in <code>var</code>. If <code>var2</code> is given,
+it is used as an <code><a href="refI.html#idx">idx</a></code> for faster
+lookups. See also <code><a href="refA.html#assoc">assoc</a></code>.
 
 <pre>
 : (off Sum)
@@ -165,7 +166,7 @@ href="refA.html#assoc">assoc</a></code>.
 : (accu 'Sum 'a 5)
 -> 6
 : (accu 'Sum 22 100)
--> (22 . 100)
+-> NIL
 : Sum
 -> ((22 . 100) (a . 6))
 </pre></dd>

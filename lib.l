@@ -1,4 +1,4 @@
-# 09apr25 Software Lab. Alexander Burger
+# 23may25 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -131,14 +131,14 @@
             (setq "Lst" (cdr "Lst")) ) ) ) )
 
 (de cache ("Var" "X" . "Prg")
-   (let "K" (cons (char (hash "X")) "X")
-      (nond
-         ("Prg" (caar (idx "Var" "K")))
-         ((setq "Var" (caar (idx "Var" "K" T)))
-            (set (car "K") (run "Prg" 1)) )
-         ((n== "Var" (val "Var"))
-            (set "Var" (run "Prg" 1)) )
-         (NIL (val "Var")) ) ) )
+   (setq "X" (cons (char (hash "X")) "X"))
+   (nond
+      ("Prg" (caar (idx "Var" "X")))
+      ((setq "Var" (caar (idx "Var" "X" T)))
+         (set (car "X") (run "Prg" 1)) )
+      ((n== "Var" (val "Var"))
+         (set "Var" (run "Prg" 1)) )
+      (NIL (val "Var")) ) )
 
 ### I/O ###
 (de tab (Lst . @)
@@ -162,7 +162,7 @@
    (load File) )
 
 (de once "Prg"
-   (unless (idx '*Once (file) T)
+   (unless (idx '*Once (file) 0)
       (run "Prg" 1) ) )
 
 (de finish Prg
@@ -379,11 +379,15 @@
       0 ) )
 
 # Accumulate
-(de accu ("Var" Key Val)
+(de accu ("Var" Key Val "Var2")
    (when Val
-      (if (assoc Key (val "Var"))
+      (if
+         (if "Var2"
+            (lup (val "Var2") Key)
+            (assoc Key (val "Var")) )
          (con @ (+ Val (cdr @)))
-         (push "Var" (cons Key Val)) ) ) )
+         (push "Var" (setq Val (cons Key Val)))
+         (and "Var2" (idx @ Val 0)) ) ) )
 
 ### REPL ###
 (de complete (S)

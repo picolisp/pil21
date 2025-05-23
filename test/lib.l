@@ -1,4 +1,4 @@
-# 01jun21 Software Lab. Alexander Burger
+# 23may25 Software Lab. Alexander Burger
 
 ### task ###
 (test (3 . 4)
@@ -106,10 +106,9 @@
 ### accu ###
 (off Sum)
 
-(test '(a . 1) (accu 'Sum 'a 1))
-(test 6 (accu 'Sum 'a 5))
-(test (22 . 100) (accu 'Sum 22 100))
-(test '((22 . 100) (a . 6)) Sum)
+(test '((a . 1)) (accu 'Sum 'a 1) Sum)
+(test '((a . 6)) (accu 'Sum 'a 5) Sum)
+(test '((22 . 100) (a . 6)) (accu 'Sum 22 100) Sum)
 
 (test '((b . 2) (a . 3))
    (let L NIL (accu 'L 'a 2) (accu 'L 'b 2) (accu 'L 'a 1) L) )
