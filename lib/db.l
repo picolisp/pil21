@@ -1,4 +1,4 @@
-# 08may25 Software Lab. Alexander Burger
+# 25may25 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1745,6 +1745,7 @@
 (de relQs (@Lst . @)
    (cons
       (curry (@Lst) (X)
+         (on *Iter+)
          (cons
             (list
                (mapcar '((Y) (relQ X Y)) '@Lst) )

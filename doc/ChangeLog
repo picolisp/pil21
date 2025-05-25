@@ -1,3 +1,7 @@
+25.5.25
+   'idx' in 'search' also for 'relQs'
+      lib/db.l
+
 25.5.23
    Optional index argument to 'accu'
       lib.l
