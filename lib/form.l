@@ -1,4 +1,4 @@
-# 08mar25 Software Lab. Alexander Burger
+# 30may25 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
 # *Lock *Spans *AlwaysAsk
@@ -671,18 +671,6 @@
 
 (de dbHint (Str Var Cls Hook)
    (hintQ Var (list (list Var Cls Hook)) Str) )
-
-(de queryHint (Var CL Str)  #! Will be deprecated (use hintQ instead)
-   (make
-      (for (Q (goal CL) (prove Q))
-         (for V
-            (fish
-               '((S) (and (atom S) (sub? (fold Str) (fold S))))
-               (get @ '@@ Var) )
-            (unless (member V (made))
-               (link V) ) )
-         (T (nth (made) 24)) ) ) )
-
 
 (class +DbHint +Hint)
 
@@ -2514,7 +2502,7 @@
    (query> This NIL) )
 
 
-# DB query chart
+# Pilog query chart
 (class +QueryChart +stepChart)
 
 (dm step> ()

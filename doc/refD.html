@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 05jul24 Software Lab. Alexander Burger
+# 30may25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -263,12 +263,13 @@ href="refS.html#strDat">strDat</a></code>.
 </pre></dd>
 
 <dt><a id="db"><code>(db 'sym 'cls ['hook] 'any ['sym 'any ..]) -> sym | NIL</code></a></dt>
-<dd>Returns a database object of class <code>cls</code>, where the values for
-the <code>sym</code> arguments correspond to the <code>any</code> arguments. If
-a matching object cannot be found, <code>NIL</code> is returned.
-<code>sym</code>, <code>cls</code> and <code>hook</code> should specify a
-<code><a href="refT.html#tree">tree</a></code> for <code>cls</code> or one of
-its superclasses. See also <code><a href="refA.html#aux">aux</a></code>,
+<dd>(Deprecated since version 25.5.30) Returns a database object of
+class <code>cls</code>, where the values for the <code>sym</code>
+arguments correspond to the <code>any</code> arguments. If a matching
+object cannot be found, <code>NIL</code> is returned. <code>sym</code>,
+<code>cls</code> and <code>hook</code> should specify a <code><a
+href="refT.html#tree">tree</a></code> for <code>cls</code> or one of its
+superclasses. See also <code><a href="refA.html#aux">aux</a></code>,
 <code><a href="refC.html#collect">collect</a></code>, <code><a
 href="refR.html#request">request</a></code>, <code><a
 href="refF.html#fetch">fetch</a></code>, <code><a
@@ -285,10 +286,11 @@ href="refS.html#step">step</a></code>.
 <dt><a id="db/3"><code>db/3</code></a></dt>
 <dt><a id="db/4"><code>db/4</code></a></dt>
 <dt><a id="db/5"><code>db/5</code></a></dt>
-<dd><a href="ref.html#pilog">Pilog</a> database predicate that returns objects
-matching the given key-value (and optional hook) relation. The relation should
-be of type <code><a href="refI.html#+index">+index</a></code>. For the key
-pattern applies:
+<dd>(Deprecated since version 25.5.30) <a
+href="ref.html#pilog">Pilog</a> database predicate that returns objects
+matching the given key-value (and optional hook) relation. The relation
+should be of type <code><a href="refI.html#+index">+index</a></code>.
+For the key pattern applies:
 
 <p><ul>
 <li>a symbol (string) returns all entries which start with that string

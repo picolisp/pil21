@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 20mar25 Software Lab. Alexander Burger
+# 30may25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -163,10 +163,11 @@ decrement <code>num1</code> (if it is greater than <code>num2</code>). See also
 </pre></dd>
 
 <dt><a id="range/3"><code>range/3</code></a></dt>
-<dd><a href="ref.html#pilog">Pilog</a> predicate that succeeds if the first
+<dd>(Deprecated since version 25.5.30) <a
+href="ref.html#pilog">Pilog</a> predicate that succeeds if the first
 argument is in the range of the result of applying the <code><a
-href="refG.html#get">get</a></code> algorithm to the following arguments.
-Typically used as filter predicate in <code><a
+href="refG.html#get">get</a></code> algorithm to the following
+arguments. Typically used as filter predicate in <code><a
 href="refS.html#select/3">select/3</a></code> database queries. See also
 <code><a href="ref.html#cmp">Comparing</a></code>, <code><a
 href="refI.html#isa/2">isa/2</a></code>, <code><a
@@ -471,13 +472,14 @@ information about that value.
 -> 739542  # 2024-12-16 739.542</pre></dd>
 
 <dt><a id="remote/2"><code>remote/2</code></a></dt>
-<dd><a href="ref.html#pilog">Pilog</a> predicate for remote database queries. It
-takes a list and an arbitrary number of clauses. The list should contain a Pilog
-variable for the result in the CAR, and a list of resources in the CDR. The
-clauses will be evaluated on remote machines according to these resources. Each
-resource must be a cons pair of two functions, an "out" function in the CAR, and
-an "in" function in the CDR. See also <code><a
-href="refE.html#*Ext">*Ext</a></code>, <code><a
+<dd>(Deprecated since version 25.5.30) <a
+href="ref.html#pilog">Pilog</a> predicate for remote database queries.
+It takes a list and an arbitrary number of clauses. The list should
+contain a Pilog variable for the result in the CAR, and a list of
+resources in the CDR. The clauses will be evaluated on remote machines
+according to these resources. Each resource must be a cons pair of two
+functions, an "out" function in the CAR, and an "in" function in the
+CDR. See also <code><a href="refE.html#*Ext">*Ext</a></code>, <code><a
 href="refR.html#revolve/2">revolve/2</a></code>, <code><a
 href="refS.html#select/3">select/3</a></code> and <code><a
 href="refD.html#db/3">db/3</a></code>.
@@ -739,12 +741,13 @@ Hello world
 </pre></dd>
 
 <dt><a id="revolve/2"><code>revolve/2</code></a></dt>
-<dd><a href="ref.html#pilog">Pilog</a> predicate for quasi-parallel evaluation
-of clauses. It takes a list and an arbitrary number of clauses. The list should
-contain a Pilog variable for the result in the CAR, another Pilog variable for
-passing the values in the CADR, and a list of values in the CDDR. The clauses
-will be evaluated in a round-robin fashion. See also <code><a
-href="refR.html#remote/2">remote/2</a></code>.
+<dd>(Deprecated since version 25.5.30) <a
+href="ref.html#pilog">Pilog</a> predicate for quasi-parallel evaluation
+of clauses. It takes a list and an arbitrary number of clauses. The list
+should contain a Pilog variable for the result in the CAR, another Pilog
+variable for passing the values in the CADR, and a list of values in the
+CDDR. The clauses will be evaluated in a round-robin fashion. See also
+<code><a href="refR.html#remote/2">remote/2</a></code>.
 
 <pre>
 : (solve

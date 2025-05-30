@@ -1542,7 +1542,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 402,
   i64 82,
-  i64 402
+  i64 482
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -2944,7 +2944,7 @@ $26:
   %97 = getelementptr i32, i32* @Sig, i32 10
   %98 = load i32, i32* %97
 ; # (fun sig)
-; # (i8* (def (pico~pack "@" (pico~car cross~Args)) (func (; cross~Ar...
+; # (i8* (def (pico~pack "@" (pico~car Args)) (func (; Args 1 cross~s...
   %99 = bitcast void(i32)* @sig to i8*
 ; # (iSignal (val SIGTSTP Sig) (fun sig))
   call void @iSignal(i32 %98, i8* %99)
@@ -56868,7 +56868,7 @@ $9:
   %98 = getelementptr i32, i32* @Sig, i32 1
   %99 = load i32, i32* %98
 ; # (fun sig)
-; # (i8* (def (pico~pack "@" (pico~car cross~Args)) (func (; cross~Ar...
+; # (i8* (def (pico~pack "@" (pico~car Args)) (func (; Args 1 cross~s...
   %100 = bitcast void(i32)* @sig to i8*
 ; # (iSignal (val SIGINT Sig) (fun sig))
   call void @iSignal(i32 %99, i8* %100)

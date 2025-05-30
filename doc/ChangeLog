@@ -1,3 +1,22 @@
+25.5.30
+   New file
+      lib/select.l
+   Deprecate 'db/x' and 'select/3' Pilog predicates, and move to "lib/select.l"
+      lib/pilog.l
+      doc/refB.html
+      doc/refD.html
+      doc/refF.html
+      doc/refH.html
+      doc/refI.html
+      doc/refP.html
+      doc/refR.html
+      doc/refS.html
+      doc/refT.html
+      doc/refV.html
+      doc/select.html
+   Deprecate Pilog GUI functions, and move to "lib/select.l"
+      lib/form.l
+
 25.5.25
    'idx' in 'search' also for 'relQs'
       lib/db.l
