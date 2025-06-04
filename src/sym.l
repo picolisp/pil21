@@ -1,4 +1,4 @@
-# 22may25 Software Lab. Alexander Burger
+# 04jun25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -821,18 +821,22 @@
          (? (=0 (setq C (symByte Q))) YES)
          (? (=0 (setq B (symByte P))) NO) ) ) )
 
-(de i64 subStr (X Y)
+(de i64 subStr (X Y (i64 . N))
    (cond
       ((nil? X) 0)
       ((== ZERO (setq X (xName X))) 0)
       (T
-         (let (P (push 0 (xName Y))  B T  N 1)
+         (let (P (push 0 (xName Y))  B T  R 1)
+            (while (gt0 (dec 'N))
+               (when (=0 (symByte P))
+                  (ret -1) )
+               (inc 'R) )
             (loop
                (? (=0 (setq B (symByte P))) -1)
                (let (Cnt (val P)  Nm (val 2 P))
-                  (? (preStr X B P) N)
+                  (? (preStr X B P) R)
                   (set P Cnt  2 P Nm) )
-               (inc 'N) ) ) ) ) )
+               (inc 'R) ) ) ) ) )
 
 # (pre? 'any1 'any2) -> any2 | NIL
 (de _PreQ (Exe)
@@ -848,10 +852,16 @@
                   ((preStr Y @ P) Z)
                   (T $Nil) ) ) ) ) ) )
 
-# (sub? 'any1 'any2) -> any2 | NIL
+# (sub? 'any1 'any2 ['cnt]) -> any2 | NIL
 (de _SubQ (Exe)
-   (let (X (cdr Exe)  Y (save (evSym X))  Z (evSym (shift X)))
-      (if (lt0 (subStr Y Z))
+   (let
+      (X (cdr Exe)
+         Y (save (evSym X))
+         Z (evSym (shift X)) )
+      (if
+         (lt0
+            (subStr Y Z
+               (if (pair (shift X)) (evCnt Exe X) 1) ) )
          $Nil
          (set $At2 (cnt @))
          Z ) ) )

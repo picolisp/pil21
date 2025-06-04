@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 30may25 Software Lab. Alexander Burger
+# 04jun25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -1004,13 +1004,14 @@ Calls</a>.
 -> NIL
 </pre></dd>
 
-<dt><a id="sub?"><code>(sub? 'any1 'any2) -> any2 | NIL</code></a></dt>
+<dt><a id="sub?"><code>(sub? 'any1 'any2 ['cnt]) -> any2 | NIL</code></a></dt>
 <dd>Returns <code>any2</code> when the string representation of
 <code>any1</code> is a substring of the string representation of
-<code>any2</code>, and stores the substring position in the global variable
-<code><a href="ref_.html#@@">@@</a></code>. See also <code><a
-href="refP.html#pre?">pre?</a></code>, <code><a
-href="refO.html#offset">offset</a></code> and <code><a
+<code>any2</code>, and stores the substring's byte position in the
+global variable <code><a href="ref_.html#@@">@@</a></code>. When
+<code>cnt</code> is given, the search starts at that byte position
+(default is 1). See also <code><a href="refP.html#pre?">pre?</a></code>,
+<code><a href="refO.html#offset">offset</a></code> and <code><a
 href="refI.html#index">index</a></code>.
 
 <pre>
@@ -1032,6 +1033,13 @@ href="refI.html#index">index</a></code>.
 -> 1
 : (sub? "b" "abc") @@
 -> 2
+
+: (sub? "bc" "abcXabc") @@
+-> 2
+: (sub? "bc" "abcXabc" 2) @@
+-> 2
+: (sub? "bc" "abcXabc" 3) @@
+-> 6
 </pre></dd>
 
 <dt><a id="subr"><code>(subr 'sym) -> num</code></a></dt>

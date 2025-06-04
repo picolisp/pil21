@@ -1,4 +1,10 @@
 25.6.4
+   Optional 'sub?' start byte position
+      src/dec.l
+      src/main.l
+      src/sym.l
+      test/src/sym.l
+      doc/refS.html
    'flg' argument to 'group' for pre-grouped lists
       src/subr.l
       doc/refG.html
@@ -53,7 +59,7 @@
       doc/refF.html
 
 25.5.16
-   'sub?' stores substrig position in '@@'
+   'sub?' stores substrig byte position in '@@'
       src/dec.l
       src/main.l
       src/sym.l

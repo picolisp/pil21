@@ -1,4 +1,4 @@
-# 16may25 Software Lab. Alexander Burger
+# 04jun25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -268,7 +268,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (let Tag (Ca: tag)
                      (when Tag
                         (while (pair Tag)
-                           (when (ge0 (subStr (car Tag) (val $Msg)))
+                           (when (ge0 (subStr (car Tag) (val $Msg) 1))
                               (unwind (Ca:))
                               (set $Ret
                                  (if (nil? (car Tag))

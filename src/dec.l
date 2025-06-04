@@ -1,4 +1,4 @@
-# 16may25 Software Lab. Alexander Burger
+# 04jun25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -343,7 +343,7 @@ socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (de mkStr (i8*))
 (de i8 firstByte (any))
 (de void pack (any i64*))
-(de i64 subStr (any any))
+(de i64 subStr (any any i64))
 
 # io.l
 (local) (flush flushAll newline space outWord outString print repl)
