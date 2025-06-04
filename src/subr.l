@@ -1,4 +1,4 @@
-# 21may25 Software Lab. Alexander Burger
+# 04jun25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1649,29 +1649,41 @@
                   (shift Penv) ) )
             X ) ) ) )
 
-# (group 'lst) -> lst
+# (group 'lst ['flg]) -> lst
 (de _Group (Exe)
-   (let X (save (eval (cadr Exe)))
-      (if (atom X)
+   (let (X (cdr Exe)  L (save (eval (++ X))))
+      (if (atom L)
          $Nil
-         (let Y (cons (cdar X) $Nil)
+         (let Y (cons (cdar L) $Nil)
             (setq Y
-               (cons (cons (caar X) (cons Y Y)) $Nil) )
+               (cons (cons (caar L) (cons Y Y)) $Nil) )
             (let R (save Y)
-               (while (pair (shift X))
-                  (let (L (car X)  K (car L))
-                     (setq Y (cons (cdr L) $Nil))
-                     (let Z R
-                        (loop
-                           (let V (car Z)
-                              (? (equal K (car V))
-                                 (set
-                                    (shift V)
-                                    (set 2 (car V) Y) ) )
-                              (? (atom (cdr Z))
-                                 (set 2 Z
-                                    (cons (cons K (cons Y Y)) $Nil) ) )
-                              (setq Z @) ) ) ) ) )
+               (if (nil? (eval (car X)))
+                  (while (pair (shift L))
+                     (let K (caar L)
+                        (setq Y (cons (cdar L) $Nil))
+                        (let Z R
+                           (loop
+                              (let V (car Z)
+                                 (? (equal K (car V))
+                                    (set
+                                       (shift V)
+                                       (set 2 (car V) Y) ) )
+                                 (? (atom (cdr Z))
+                                    (set 2 Z
+                                       (cons (cons K (cons Y Y)) $Nil) ) )
+                                 (setq Z @) ) ) ) ) )
+                  (let Z R
+                     (while (pair (shift L))
+                        (let (K (caar L)  V (car Z))
+                           (setq Y (cons (cdar L) $Nil))
+                           (if (equal K (car V))
+                              (set
+                                 (shift V)
+                                 (set 2 (car V) Y) )
+                              (set 2 Z
+                                 (cons (cons K (cons Y Y)) $Nil) )
+                              (shift Z) ) ) ) ) )
                (let Z R
                   (loop
                      (let V (car Z)

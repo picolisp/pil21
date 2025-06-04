@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 04jun25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -177,10 +177,11 @@ href="refF.html#fail">fail</a></code>.
 -> (((1 (0) NIL ((likes @X @Y)) NIL ((0 . @X) 1 . John) T)))
 </pre></dd>
 
-<dt><a id="group"><code>(group 'lst) -> lst</code></a></dt>
+<dt><a id="group"><code>(group 'lst ['flg]) -> lst</code></a></dt>
 <dd>Builds a list of lists, by grouping all elements of <code>lst</code> with
-the same CAR into a common sublist. See also <a
-href="ref.html#cmp">Comparing</a>, <code><a
+the same CAR into a common sublist. If the list is known to be pre-grouped, a
+non-<code>NIL</code> <code>flg</code> argument may be passed for faster
+execution. See also <a href="ref.html#cmp">Comparing</a>, <code><a
 href="refB.html#by">by</a></code>, <code><a
 href="refS.html#sort">sort</a></code> and <code><a
 href="refU.html#uniq">uniq</a></code>.

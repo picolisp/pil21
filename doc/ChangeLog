@@ -1,3 +1,8 @@
+25.6.4
+   'flg' argument to 'group' for pre-grouped lists
+      src/subr.l
+      doc/refG.html
+
 25.5.30
    New file
       lib/select.l
