@@ -1,3 +1,7 @@
+25.6.7
+   Skip comments
+      lib/xm.l
+
 25.6.4
    Optional 'sub?' start byte position
       src/dec.l

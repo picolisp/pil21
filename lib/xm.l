@@ -1,4 +1,4 @@
-# 09may25 Software Lab. Alexander Burger
+# 07jun25 Software Lab. Alexander Burger
 
 (local) (xml? xml body attr)
 (private) (_xml xmlEsc escXml)
@@ -41,10 +41,21 @@
       (skip)
       (unless (= "<" (char))
          (quit "Bad XML") )
-      (_xml (till " /<>" T)) ) )
+      (_xml) ) )
 
-(de _xml (Tok)
-   (use X
+(de _xml ()
+   (use (Tok X)
+      (loop
+         (NIL (= "!" (setq X (char))))
+         (NIL (= "-" (peek)))
+         (setq X "!-")
+         (char)
+         (NIL (= "-" (peek)))
+         (from "-->")
+         (NIL (skip) (quit "XML parse error"))
+         (unless (= "<" (char))
+            (quit "Bad XML") ) )
+      (setq Tok (pack X (till " /<>" T)))
       (make
          (link (intern Tok))
          (let L
@@ -69,7 +80,7 @@
                         (quit "Unbalanced XML" Tok) )
                      (char) )
                   (if (= "<" X)
-                     (and (_xml (till " /<>" T)) (link @))
+                     (and (_xml) (link @))
                      (link
                         (pack (xmlEsc (trim (cons X (till "\n<"))))) ) ) ) ) ) ) ) )
 
