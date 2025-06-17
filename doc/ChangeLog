@@ -1,3 +1,7 @@
+25.6.17
+  Increase '$GcCount' in 'gc' dynamically
+      src/gc.l
+
 25.6.7
    Skip comments
       lib/xm.l

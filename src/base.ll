@@ -1542,7 +1542,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 402,
   i64 98,
-  i64 114
+  i64 274
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -7621,33 +7621,56 @@ $121:
   %729 = phi i64 [0, %$119] ; # ->
 ; # (set $Avail Avail)
   store i64 %726, i64* @$Avail
-; # (while (ge0 Cnt) (heapAlloc) (dec 'Cnt CELLS))
-  br label %$122
+; # (when (gt0 Cnt) (set $GcCount (+ Cnt (val $GcCount))) (inc 'Cnt C...
+; # (gt0 Cnt)
+  %730 = icmp sgt i64 %728, 0
+  br i1 %730, label %$122, label %$123
 $122:
-  %730 = phi i64 [%726, %$121], [%734, %$123] ; # Avail
-  %731 = phi i64 [%727, %$121], [%735, %$123] ; # Heap
-  %732 = phi i64 [%728, %$121], [%737, %$123] ; # Cnt
-; # (ge0 Cnt)
-  %733 = icmp sge i64 %732, 0
-  br i1 %733, label %$123, label %$124
-$123:
-  %734 = phi i64 [%730, %$122] ; # Avail
-  %735 = phi i64 [%731, %$122] ; # Heap
-  %736 = phi i64 [%732, %$122] ; # Cnt
+  %731 = phi i64 [%726, %$121] ; # Avail
+  %732 = phi i64 [%727, %$121] ; # Heap
+  %733 = phi i64 [%728, %$121] ; # Cnt
+; # (set $GcCount (+ Cnt (val $GcCount)))
+; # (val $GcCount)
+  %734 = load i64, i64* @$GcCount
+; # (+ Cnt (val $GcCount))
+  %735 = add i64 %733, %734
+  store i64 %735, i64* @$GcCount
+; # (inc 'Cnt Cnt)
+  %736 = add i64 %733, %733
+; # (loop (heapAlloc) (? (le0 (dec 'Cnt CELLS))))
+  br label %$124
+$124:
+  %737 = phi i64 [%731, %$122], [%742, %$125] ; # Avail
+  %738 = phi i64 [%732, %$122], [%743, %$125] ; # Heap
+  %739 = phi i64 [%736, %$122], [%744, %$125] ; # Cnt
 ; # (heapAlloc)
   call void @heapAlloc()
+; # (? (le0 (dec 'Cnt CELLS)))
 ; # (dec 'Cnt CELLS)
-  %737 = sub i64 %736, 65536
-  br label %$122
-$124:
-  %738 = phi i64 [%730, %$122] ; # Avail
-  %739 = phi i64 [%731, %$122] ; # Heap
-  %740 = phi i64 [%732, %$122] ; # Cnt
+  %740 = sub i64 %739, 65536
+; # (le0 (dec 'Cnt CELLS))
+  %741 = icmp sle i64 %740, 0
+  br i1 %741, label %$126, label %$125
+$125:
+  %742 = phi i64 [%737, %$124] ; # Avail
+  %743 = phi i64 [%738, %$124] ; # Heap
+  %744 = phi i64 [%740, %$124] ; # Cnt
+  br label %$124
+$126:
+  %745 = phi i64 [%737, %$124] ; # Avail
+  %746 = phi i64 [%738, %$124] ; # Heap
+  %747 = phi i64 [%740, %$124] ; # Cnt
+  %748 = phi i64 [0, %$124] ; # ->
+  br label %$123
+$123:
+  %749 = phi i64 [%726, %$121], [%745, %$126] ; # Avail
+  %750 = phi i64 [%727, %$121], [%746, %$126] ; # Heap
+  %751 = phi i64 [%728, %$121], [%747, %$126] ; # Cnt
   br label %$102
 $102:
-  %741 = phi i64 [%677, %$113], [%738, %$124] ; # Avail
-  %742 = phi i64 [%678, %$113], [%739, %$124] ; # Heap
-  %743 = phi i64 [%679, %$113], [%740, %$124] ; # Cnt
+  %752 = phi i64 [%677, %$113], [%749, %$123] ; # Avail
+  %753 = phi i64 [%678, %$113], [%750, %$123] ; # Heap
+  %754 = phi i64 [%679, %$113], [%751, %$123] ; # Cnt
   ret void
 }
 

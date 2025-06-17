@@ -1,4 +1,4 @@
-# 20jun24 Software Lab. Alexander Burger
+# 17jun25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -259,9 +259,12 @@
                   (setq P (ofs P -2)) ) )  # Back one cell
             (? (=0 (setq Heap (val (inc HEAP) Heap)))) )
          (set $Avail Avail)
-         (while (ge0 Cnt)  # Ensure free cells
-            (heapAlloc)
-            (dec 'Cnt CELLS) ) ) ) )
+         (when (gt0 Cnt)  # Ensure enough free cells
+            (set $GcCount (+ Cnt (val $GcCount)))
+            (inc 'Cnt Cnt)
+            (loop
+               (heapAlloc)
+               (? (le0 (dec 'Cnt CELLS))) ) ) ) ) )
 
 (de void need3 ()
    (let P (val $Avail)
