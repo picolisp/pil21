@@ -1,4 +1,4 @@
-// 24apr22 Software Lab. Alexander Burger
+// 25jun25 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdint.h>
@@ -52,6 +52,11 @@ int main(void) {
 
    ttl("stdio");
    num("BUFSIZ", BUFSIZ);
+
+   ttl("stdlib");
+   num("RLIMIT_NOFILE", RLIMIT_NOFILE);
+   num("RLIMIT_NPROC", RLIMIT_NPROC);
+   num("RLIMIT_STACK", RLIMIT_STACK);
 
    ttl("unistd");
    num("PIPE_BUF", PIPE_BUF);

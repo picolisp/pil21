@@ -1,3 +1,7 @@
+25.6.25
+   Define RLIMIT_NOFILE, RLIMIT_NPROC and RLIMIT_STACK
+      src/sysdefs.c
+
 25.6.17
   Increase '$GcCount' in 'gc' dynamically
       src/gc.l
@@ -2527,7 +2531,7 @@
       lib/vip.l
 
 21.8.6
-   Add TIOCSWINSZ
+   Define TIOCSWINSZ
       src/sysdefs.c
    Set standard I/O to a PTY with (ctty)
       src/Makefile
