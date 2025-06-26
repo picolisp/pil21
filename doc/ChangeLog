@@ -1,5 +1,7 @@
-25.6.25
-   Define RLIMIT_NOFILE, RLIMIT_NPROC and RLIMIT_STACK
+25.6.26
+   New file
+      lib/ulimit.l
+   Define RLIMIT_STACK, RLIMIT_NOFILE and RLIMIT_NPROC
       src/sysdefs.c
 
 25.6.17
