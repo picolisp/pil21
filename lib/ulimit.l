@@ -2,25 +2,25 @@
 
 (symbols 'ulimit 'pico)
 
-(sysdefs "ulimit")
-
-(local) (stack files nproc)
+(local) (RLIMIT_STACK RLIMIT_NOFILE RLIMIT_NPROC stack files nproc)
 (private) (error rlimit)
+
+(sysdefs "ulimit")
 
 (de error ()
    (quit (%@ "strErrno" 'S) 'ulimit) )
 
-(de rlimit (Res Val Mul)
+(de rlimit (Res Val U)
    (use Lim
       (nond
          ((=0
                (%@ "getrlimit" 'I Res '(Lim (16 pico~P pico~P))) )
             (error) )
-         (Val (*/ (car Lim) Mul))
+         (Val (*/ (car Lim) U))
          ((=0
                (%@ "setrlimit" 'I Res
                   (list NIL (16)
-                     (cons (* Val Mul) 8)
+                     (cons (* Val U) 8)
                      (cons (cadr Lim) 8) ) ) )
             (error) )
          (NIL Val) ) ) )
