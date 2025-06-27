@@ -1,4 +1,4 @@
-# 26jun25 Software Lab. Alexander Burger
+# 27jun25 Software Lab. Alexander Burger
 
 (symbols 'ulimit 'pico)
 
@@ -16,7 +16,10 @@
          ((=0
                (%@ "getrlimit" 'I Res '(Lim (16 pico~P pico~P))) )
             (error) )
-         (Val (*/ (car Lim) U))
+         (Val
+            (cons
+               (*/ (car Lim) U)
+               (*/ (cadr Lim) U) ) )
          ((=0
                (%@ "setrlimit" 'I Res
                   (list NIL (16)
