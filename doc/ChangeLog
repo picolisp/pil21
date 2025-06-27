@@ -1,4 +1,6 @@
 25.6.27
+   'recur' signature analog to 'tco'
+      doc/refR.html
    Return cons pair with hard limit
       lib/ulimit.l
 
@@ -73,7 +75,7 @@
       doc/refM.html
 
 25.5.17
-   Mention '@@' in the '@@' reference
+   Mention '@@' in the 'forall' reference
       doc/refF.html
 
 25.5.16
