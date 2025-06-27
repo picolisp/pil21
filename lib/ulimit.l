@@ -14,7 +14,7 @@
    (use Lim
       (nond
          ((=0
-               (%@ "getrlimit" 'I Res '(Lim (16 pico~P pico~P))) )
+               (%@ "getrlimit" 'I Res '(Lim (16 P P))) )
             (error) )
          (Val
             (cons
@@ -28,11 +28,14 @@
             (error) )
          (NIL Val) ) ) )
 
+# (ulimit~stack ['cnt))
 (de stack (KiB)
    (rlimit RLIMIT_STACK KiB 1024) )
 
+# (ulimit~files ['cnt))
 (de files (N)
    (rlimit RLIMIT_NOFILE N 1) )
 
+# (ulimit~nproc ['cnt))
 (de nproc (N)
    (rlimit RLIMIT_NPROC N 1) )
