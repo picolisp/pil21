@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 23may25 Software Lab. Alexander Burger
+# 05jul25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -288,8 +288,8 @@ href="refA.html#allowed">allowed</a></code>.
 <code><a href="refA.html#*Allow">*Allow</a></code>. <code>lst</code> should
 consist of prefix strings (to be checked at runtime with <code><a
 href="refP.html#pre?">pre?</a></code>), and the <code>sym</code> arguments
-should specify the initially allowed items. See also <code><a
-href="refA.html#allow">allow</a></code>.
+should specify the initially allowed items. Must be called before any GUI
+libraries and/or <code><a href="refA.html#allow">allow</a></code> calls.
 
 <pre>
 : (allowed ("app/")  # allowed prefixes

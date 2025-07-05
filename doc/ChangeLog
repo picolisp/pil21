@@ -1,3 +1,7 @@
+25.7.5
+   'allowed' must be called before any GUI libs and/or 'allow' calls
+      doc/refA.html
+
 ####### 25.6 #######
 25.6.27
    'recur' signature analog to 'tco'
