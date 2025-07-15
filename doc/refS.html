@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 04jun25 Software Lab. Alexander Burger
+# 15jul25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -750,14 +750,13 @@ from <code>host</code>.
 <dt><a id="stack"><code>(stack ['cnt ['cnt]]) -> cnt | (.. (any . cnt) . cnt)</code></a></dt>
 <dd>Maintains the stack segment sizes for <a
 href="ref.html#coroutines">coroutines</a>. By default, coroutine sizes are 64 kB
-each, and the main stack segment size is 256 kB. These sizes can only be changed
-before starting any coroutine. If called with at least one argument and no
-coroutine running, the stack segment size is set to the first <code>cnt</code>
-argument, and optionally the main segment size is set to the second
-<code>cnt</code> argument. Otherwise, the current size in kilobytes is returned
-and - if there are running coroutines - pairs of their tags and unused stack
-spaces are <code><a href="refC.html#cons">cons</a></code>ed in front of the
-size. See also <code><a href="refH.html#heap">heap</a></code>.
+each, and the main stack segment size is 256 kB. If called with at least one
+argument and no coroutine running, the stack segment size is set to the first
+<code>cnt</code> argument, and optionally the main segment size is set to the
+second <code>cnt</code> argument. Otherwise, the current size in kilobytes is
+returned and - if there are running coroutines - pairs of their tags and unused
+stack spaces are <code><a href="refC.html#cons">cons</a></code>ed in front of
+the size. See also <code><a href="refH.html#heap">heap</a></code>.
 
 <pre>
 $ ulimit -s unlimited  &&  pil +  # Guarantee stack space

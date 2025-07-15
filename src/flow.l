@@ -1,4 +1,4 @@
-# 07apr25 Software Lab. Alexander Burger
+# 15jul25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1226,112 +1226,124 @@
             ((coroutine @) tag)
             $Nil )
          (let Tag (eval (++ X))
-            (let Crt (val $Current)
-               (loop
-                  (? (=0 Crt))
-                  (when (== Tag ((coroutine Crt) tag))  # Found coroutine
-                     (reentErr Exe Tag) )
-                  (setq Crt ((coroutine Crt) org)) ) )
             (cond
                ((nil? Tag) (tagErr Exe))
-               ((t? Tag) (reentErr Exe Tag))
-               ((pair X)  # 'prg'
-                  (unless (val $Coroutines)  # First call
-                     (let Main: (coroutine (alloc null (+ (val JmpBufSize) (coroutine T))))
-                        (Main: tag $T)  # Tag 'T'
-                        (Main: nxt null)
-                        (Main: org null)
-                        (Main: otg $Nil)
-                        (Main: prg $Nil)
-                        (let (Siz (val $StkSizeT)  Stk (stack))
-                           (memset
-                              (Main: lim (stack (ofs Stk (- Siz))))
-                              7 (- Siz 256) T )
-                           (stack Stk) )
-                        (Main: at 0)
-                        (set $Coroutines (set $Current (set $CrtLast (Main:)))) ) )
-                  (let (Src: (coroutine (val $Current))  Crt (val $Coroutines))
-                     (saveCoIO)
-                     (saveCoEnv (Src:))
-                     (cond
-                        ((not (symb? Tag))
-                           (loop
-                              (let Crt: (coroutine Crt)
-                                 (when (== Tag (Crt: tag))  # Found running coroutine
+               ((t? Tag)
+                  (when (pair X)  # 'prg'
+                     (reentErr Exe Tag) )
+                  (let Crt (val $Coroutines)
+                     (when Crt
+                        (while (setq Crt ((coroutine Crt) nxt))
+                           (when ((coroutine Crt) tag)
+                              (err Exe @ ($ "Running coroutine") null) ) )
+                        (free (val $Coroutines))
+                        (set $Coroutines (set $Current (set $CrtLast (set $CrtFree null)))) ) )
+                  $T )
+               (T
+                  (let Crt (val $Current)
+                     (loop
+                        (? (=0 Crt))
+                        (when (== Tag ((coroutine Crt) tag))  # Found coroutine
+                           (reentErr Exe Tag) )
+                        (setq Crt ((coroutine Crt) org)) ) )
+                  (cond
+                     ((pair X)  # 'prg'
+                        (unless (val $Coroutines)  # First call
+                           (let Main: (coroutine (alloc null (+ (val JmpBufSize) (coroutine T))))
+                              (Main: tag $T)  # Tag 'T'
+                              (Main: nxt null)
+                              (Main: org null)
+                              (Main: otg $Nil)
+                              (Main: prg $Nil)
+                              (let (Siz (val $StkSizeT)  Stk (stack))
+                                 (memset
+                                    (Main: lim (stack (ofs Stk (- Siz))))
+                                    7 (- Siz 256) T )
+                                 (stack Stk) )
+                              (Main: at 0)
+                              (set $Coroutines (set $Current (set $CrtLast (Main:)))) ) )
+                        (let (Src: (coroutine (val $Current))  Crt (val $Coroutines))
+                           (saveCoIO)
+                           (saveCoEnv (Src:))
+                           (cond
+                              ((not (symb? Tag))
+                                 (loop
+                                    (let Crt: (coroutine Crt)
+                                       (when (== Tag (Crt: tag))  # Found running coroutine
+                                          (when (setjmp (Src: (rst)))
+                                             (ret (loadCoEnv (Src:))) )
+                                          (set $Ret $Nil)
+                                          (Crt: org (Src:))
+                                          (Crt: otg (Src: tag))
+                                          (longjmp (Crt: (rst)) 1) )
+                                       (? (=0 (Crt: nxt)))
+                                       (setq Crt @) ) ) )
+                              ((cnt? (get Tag ZERO))  # Already running
+                                 (let Crt: (coroutine (i8* (& @ -3)))
+                                    (unless (== Tag (Crt: tag))
+                                       (coErr Exe Tag) )
                                     (when (setjmp (Src: (rst)))
                                        (ret (loadCoEnv (Src:))) )
                                     (set $Ret $Nil)
                                     (Crt: org (Src:))
                                     (Crt: otg (Src: tag))
-                                    (longjmp (Crt: (rst)) 1) )
-                                 (? (=0 (Crt: nxt)))
-                                 (setq Crt @) ) ) )
-                        ((cnt? (get Tag ZERO))  # Already running
-                           (let Crt: (coroutine (i8* (& @ -3)))
-                              (unless (== Tag (Crt: tag))
-                                 (coErr Exe Tag) )
-                              (when (setjmp (Src: (rst)))
-                                 (ret (loadCoEnv (Src:))) )
-                              (set $Ret $Nil)
-                              (Crt: org (Src:))
-                              (Crt: otg (Src: tag))
-                              (longjmp (Crt: (rst)) 1) ) ) )
-                     # Start new coroutine
-                     (when (setjmp (Src: (rst)))
-                        (ret (loadCoEnv (Src:))) )
-                     (let P (val $CrtFree)
-                        (if P
-                           (set $CrtFree ((coroutine (stack P)) lim))  # Use free slot
-                           (stack ((coroutine (setq Crt (val $CrtLast))) lim))  # Allocate new slot
-                           (set $CrtLast
-                              (setq P (b8+ (+ (val JmpBufSize) (coroutine T)))) )
-                           ((coroutine Crt) nxt P)
-                           ((coroutine P) nxt null) )
-                        (runCo Exe Tag (Src:) P X) ) ) )
-               ((val $Coroutines)  # Stop coroutine
-                  (let Crt @
-                     (if (symb? Tag)
-                        (when (cnt? (get Tag ZERO))
-                           (setq Crt (i8* (& @ -3)))
-                           (unless (== Tag ((coroutine Crt) tag))
-                              (coErr Exe Tag) )
-                           (: 1
-                              (let P ((coroutine Crt) (env $ErrFrames i8*))  # Close ErrFrames
-                                 (while P
-                                    (let Err: (ctFrame P)
-                                       (when (ge0 (Err: fd))
-                                          (close @) )
-                                       (setq P (Err: link)) ) ) )
-                              (let P ((coroutine Crt) (env $OutFrames i8*))  # Close OutFrames
-                                 (until (== P (val $Stdout))
-                                    (let Io: (ioFrame P)
-                                       (when (Io: file)
-                                          (let Out: (outFile @)
-                                             (flush (Out:))
-                                             (when (and (ge0 (Out: fd)) (Io: pid))
-                                                (close (Out: fd))
-                                                (closeOutFile (Out: fd))
-                                                (when (> (Io: pid) 1)
-                                                   (waitFile @) ) ) ) )
-                                       (setq P (Io: link)) ) ) )
-                              (let P ((coroutine Crt) (env $InFrames i8*))  # Close InFrames
-                                 (until (== P (val $Stdin))
-                                    (let Io: (ioFrame P)
-                                       (when (Io: file)
-                                          (let In: (inFile @)
-                                             (when (and (ge0 (In: fd)) (Io: pid))
-                                                (close (In: fd))
-                                                (closeInFile (In: fd))
-                                                (when (> (Io: pid) 1)
-                                                   (waitFile @) ) ) ) )
-                                       (setq P (Io: link)) ) ) )
-                              (stop Crt) ) )  # Stop it
-                        (loop
-                           (when (== Tag ((coroutine Crt) tag))  # Found coroutine
-                              (goto 1) )
-                           (? (=0 (setq Crt ((coroutine Crt) nxt)))) ) ) )
-                  Tag )
-               (T $Nil) ) ) ) ) )
+                                    (longjmp (Crt: (rst)) 1) ) ) )
+                           # Start new coroutine
+                           (when (setjmp (Src: (rst)))
+                              (ret (loadCoEnv (Src:))) )
+                           (let P (val $CrtFree)
+                              (if P
+                                 (set $CrtFree ((coroutine (stack P)) lim))  # Use free slot
+                                 (stack ((coroutine (setq Crt (val $CrtLast))) lim))  # Allocate new slot
+                                 (set $CrtLast
+                                    (setq P (b8+ (+ (val JmpBufSize) (coroutine T)))) )
+                                 ((coroutine Crt) nxt P)
+                                 ((coroutine P) nxt null) )
+                              (runCo Exe Tag (Src:) P X) ) ) )
+                     ((val $Coroutines)  # Stop coroutine
+                        (let Crt @
+                           (if (symb? Tag)
+                              (when (cnt? (get Tag ZERO))
+                                 (setq Crt (i8* (& @ -3)))
+                                 (unless (== Tag ((coroutine Crt) tag))
+                                    (coErr Exe Tag) )
+                                 (: 1
+                                    (let P ((coroutine Crt) (env $ErrFrames i8*))  # Close ErrFrames
+                                       (while P
+                                          (let Err: (ctFrame P)
+                                             (when (ge0 (Err: fd))
+                                                (close @) )
+                                             (setq P (Err: link)) ) ) )
+                                    (let P ((coroutine Crt) (env $OutFrames i8*))  # Close OutFrames
+                                       (until (== P (val $Stdout))
+                                          (let Io: (ioFrame P)
+                                             (when (Io: file)
+                                                (let Out: (outFile @)
+                                                   (flush (Out:))
+                                                   (when (and (ge0 (Out: fd)) (Io: pid))
+                                                      (close (Out: fd))
+                                                      (closeOutFile (Out: fd))
+                                                      (when (> (Io: pid) 1)
+                                                         (waitFile @) ) ) ) )
+                                             (setq P (Io: link)) ) ) )
+                                    (let P ((coroutine Crt) (env $InFrames i8*))  # Close InFrames
+                                       (until (== P (val $Stdin))
+                                          (let Io: (ioFrame P)
+                                             (when (Io: file)
+                                                (let In: (inFile @)
+                                                   (when (and (ge0 (In: fd)) (Io: pid))
+                                                      (close (In: fd))
+                                                      (closeInFile (In: fd))
+                                                      (when (> (Io: pid) 1)
+                                                         (waitFile @) ) ) ) )
+                                             (setq P (Io: link)) ) ) )
+                                    (stop Crt) ) )  # Stop it
+                              (loop  # Numeric tag
+                                 (when (== Tag ((coroutine Crt) tag))  # Found coroutine
+                                    (goto 1) )
+                                 (? (=0 (setq Crt ((coroutine Crt) nxt)))) ) ) )
+                        Tag )
+                     (T $Nil) ) ) ) ) ) ) )
 
 # (yield 'any ['any2]) -> any
 (de _Yield (Exe)

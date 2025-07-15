@@ -1,3 +1,8 @@
+25.7.15
+   Allow to stop main coroutine with (co T)
+      src/flow.l
+      doc/refS.html
+
 25.7.5
    'allowed' must be called before any GUI libs and/or 'allow' calls
       doc/refA.html
