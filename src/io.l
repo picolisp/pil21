@@ -1,4 +1,4 @@
-# 20mar25 Software Lab. Alexander Burger
+# 17jul25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2863,7 +2863,7 @@ selectErr)
             (until (nil? (stdRead Prmt))
                (let Y (set V @)
                   (setq X
-                     (if (and (=0 (val $Chr)) Prmt)
+                     (if (and Prmt (=0 (val $Chr)))
                         (stdEval Y)
                         (eval Y) ) ) ) )
             (until (nil? (read1 0))

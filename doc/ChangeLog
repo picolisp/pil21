@@ -1,3 +1,7 @@
+25.7.19
+   Remove 'saveCoIO'
+      src/flow.l
+
 25.7.15
    Allow to stop main coroutine with (co T)
       src/flow.l

@@ -1,4 +1,4 @@
-# 15jul25 Software Lab. Alexander Burger
+# 19jul25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1138,7 +1138,7 @@
          (set $Catch (Ca: link)) ) ) )
 
 # Coroutines
-(local) (coErr reentErr tagErr stkOverErr saveCoIO saveCoEnv loadCoEnv runCo)
+(local) (coErr reentErr tagErr stkOverErr saveCoEnv loadCoEnv runCo)
 
 (de NIL coErr (Exe Tag)
    (err Exe Tag ($ "Coroutine not found") null) )
@@ -1154,14 +1154,6 @@
    (err 0 Tag ($ "Stack overwritten") null) )
 
 # Switch coroutines
-(de void saveCoIO ()
-   ((ioFrame (val $OutFrames)) fun (val (i8** $Put)))
-   (let Io: (ioFrame (val $InFrames))
-      (Io: fun (val (i8** $Get)))
-      (if (Io: file)
-         ((inFile @) chr (val $Chr))
-         ((ioxFrame (Io:)) chr (val $Chr)) ) ) )
-
 (de void saveCoEnv ((i8* . Crt))
    (let Crt: (coroutine Crt)
       (unless (== (hex "0707070707070707") (val (i64* (Crt: lim))))
@@ -1263,7 +1255,6 @@
                               (Main: at 0)
                               (set $Coroutines (set $Current (set $CrtLast (Main:)))) ) )
                         (let (Src: (coroutine (val $Current))  Crt (val $Coroutines))
-                           (saveCoIO)
                            (saveCoEnv (Src:))
                            (cond
                               ((not (symb? Tag))
@@ -1388,7 +1379,6 @@
             Out (val $Stdout)
             Err (i8* null)
             Ctl (i8* null) )
-         (saveCoIO)
          (unless (t? (Src: tag))
             (let P (val $Link)  # Reverse Stack(s)
                (until (== P (Src: lnk))
