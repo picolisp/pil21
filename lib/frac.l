@@ -1,13 +1,12 @@
-# 22may20 Software Lab. Alexander Burger
+# 22jul25 Software Lab. Alexander Burger
 
 (symbols 'frac 'pico)
 
 (local) (gcd lcm f)
 
 (de gcd (A B)
-   (until (=0 B)
-      (let M (% A B)
-         (setq A B B M) ) )
+   (tco (A B)
+      (or (=0 B) (tc B (% A B))) )
    (abs A) )
 
 (de lcm (A B)

@@ -1,3 +1,7 @@
+25.7.22
+   Use 'tco' in 'gcd'
+      lib/frac.l
+
 25.7.19
    Remove 'saveCoIO'
       src/flow.l
