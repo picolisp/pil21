@@ -1,4 +1,4 @@
-# 23may25 Software Lab. Alexander Burger
+# 27jul25 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -233,15 +233,15 @@
             (need (>> 1 (+ X (length S))) S " ") ) ) ) )
 
 ### List ###
-(de less (X N)
+(de less (X N L)
    (default N 4)
    (cond
       ((atom X) X)
-      ((=0 N) '(..))
+      ((or (=0 N) (memq X L)) '(..))
       (T
          (cons
-            (less (++ X) N)
-            (less X (dec N)) ) ) ) )
+            (less (car X) N)
+            (less (cdr X) (dec N) (cons X L)) ) ) ) )
 
 (de uniq (Lst)
    (let R NIL
