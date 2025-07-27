@@ -1,4 +1,4 @@
-# 11may25 Software Lab. Alexander Burger
+# 27jul25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1441,6 +1441,27 @@
                   (? (nil? (eval (car X))) @)
                   (safe (needNum Exe @))
                   (set R (xoru (val R) (pos @))) ) ) ) ) ) )
+
+# (sq 'num1 ['num2]) -> num
+(de _Sq (Exe)
+   (let X (cdr Exe)
+      (if (nil? (eval (car X)))
+         @
+         (let Y (save (pos (needNum Exe @)))
+            (setq Y (mulu Y Y))
+            (if (atom (shift X))
+               Y
+               (safe Y)
+               (let N (eval (car X))
+                  (cond
+                     ((nil? N) N)
+                     ((== N ZERO) (divErr Exe))
+                     (T
+                        (let
+                           (Sign (sign? (needNum Exe N))
+                              Half (save (shru (setq N (save (pos N))))) )
+                           (setq N (divu (safe (addu Y Half)) N))
+                           (if Sign (neg N) N) ) ) ) ) ) ) ) ) )
 
 # (sqrt 'num ['flg|num]) -> num
 (de _Sqrt (Exe)

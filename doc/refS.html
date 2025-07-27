@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 15jul25 Software Lab. Alexander Burger
+# 27jul25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -713,6 +713,27 @@ href="refS.html#stem">stem</a></code>.
 : (mapcar pack (split (chop "The quick brown fox") " "))
 -> ("The" "quick" "brown" "fox")
 </pre></dd>
+
+<dt><a id="sq"><code>(sq 'num1 ['num2]) -> num</code></a></dt>
+<dd>Returns the square of <code>num1</code>. If <code>num2</code> is given, the
+result will be divided by it and rounded. <code>(sq 'num1 'num2)</code> is
+equivalent to <code>(*/ 'num1 'num1 'num2)</code>. See also <code><a
+href="ref_.html#*/">*/</a></code>.
+
+<pre>
+: (sq 6)
+-> 36
+: (sq -6 10)
+-> 4
+
+: (scl 6)
+-> 6  # 0.000006
+: (sqrt 2.0 1.0)
+-> 1414214  # 1.414214
+: (sq @ 1.0)
+-> 2000001  # 2.000001
+</pre></dd>
+
 
 <dt><a id="sqrt"><code>(sqrt 'num ['flg|num]) -> num</code></a></dt>
 <dd>Returns the square root of the <code>num</code> argument. If

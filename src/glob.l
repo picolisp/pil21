@@ -1,4 +1,4 @@
-# 20mar25 Software Lab. Alexander Burger
+# 27jul25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -175,6 +175,7 @@
    (NIL "&" _BitAnd)
    (NIL "|" _BitOr)
    (NIL "x|" _BitXor)
+   (NIL "sq" _Sq)
    (NIL "sqrt" _Sqrt)
    (NIL "seed" _Seed)
    (NIL "hash" _Hash)

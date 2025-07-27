@@ -1,4 +1,4 @@
-# 11may25 Software Lab. Alexander Burger
+# 27jul25 Software Lab. Alexander Burger
 
 ### format ###
 (scl 0)
@@ -170,6 +170,10 @@
 (test (hex "300000000000000000000")
    (x| (hex "100000000000000000000") (hex "200000000000000000000")) )
 
+
+### sq ###
+(test 36 (sq 6))
+(test 4 (sq -6 10))
 
 ### sqrt ###
 (test 8 (sqrt 64))
