@@ -1,6 +1,8 @@
-25.7.27
+25.7.28
    Handle circular lists in 'less'
       lib.l
+
+25.7.27
    'sq' function
       src/glob.l
       src/big.l
