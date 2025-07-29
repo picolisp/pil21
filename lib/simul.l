@@ -1,4 +1,4 @@
-# 22jan25 Software Lab. Alexander Burger
+# 29jul25 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -157,10 +157,10 @@
                (idx '*Next
                   (=: n (cons (+ Time *Time) This))
                   0 ) ) ) )
-      (run (yield)) ) )
+      (eval (yield)) ) )
 
 # Send event
-(de event (This . Prg)
+(de event (This Exe)
    (while (fifo (:: s))
       (with @
          (when (: n)
@@ -168,18 +168,18 @@
          (for S (: e)
             (rid (prop S 's) This) )
          (=: e NIL)
-         (fifo '*Ready (cons This Prg)) ) ) )
+         (fifo '*Ready (cons This Exe)) ) ) )
 
 # Wake up
-(de wake (This . Prg)
+(de wake (This Exe)
    (when (: n)
       (idx '*Next @ (=: n NIL)) )
    (for S (: e)
       (rid (prop S 's) This) )
    (=: e NIL)
    (if (asoq This *Ready)
-      (con @ Prg)
-      (fifo '*Ready (cons This Prg)) ) )
+      (con @ Exe)
+      (fifo '*Ready (cons This Exe)) ) )
 
 ### Grids ###
 (local) (grid west east south north)

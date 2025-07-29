@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 29nov23 Software Lab. Alexander Burger
+# 29jul25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -109,19 +109,19 @@ point in time after that number of time units. For symbolic arguments, the
 current coroutine is queued into those symbol's event queues. In any case,
 control is passed to the next coroutine.</dd>
 
-<dt><code>(event 'sym [. prg])</code></dt>
+<dt><code>(event 'sym 'exe)</code></dt>
 <dd>Sends the signal <code>sym</code> to all coroutines waiting in that symbol's
 event queue. As a result, these coroutines are removed from the queue and
-appended to the <code>*Ready</code> queue, with the optional <code>prg</code>
-body to be executed when resumed. The current coroutine continues to run.</dd>
+appended to the <code>*Ready</code> queue, with the optional <code>exe</code> to
+be evaluated when resumed. The current coroutine continues to run.</dd>
 
-<dt><code>(wake 'sym [. prg])</code></dt>
+<dt><code>(wake 'sym 'exe)</code></dt>
 <dd>Wakes up another coroutine <code>sym</code>, by appending it to the
-<code>*Ready</code> queue with the optional 'prg' body to be executed when
-resumed. This means that if <code>sym</code> is currently waiting for a point in
-time in <code>*Next</code>, it is removed from that index (i.e. the pause is
-aborted). Also, if <code>sym</code> is waiting for signals, it is removed from
-those event queues. The current coroutine continues to run.</dd>
+<code>*Ready</code> queue with the optional 'exe' to be evaluated when resumed.
+This means that if <code>sym</code> is currently waiting for a point in time in
+<code>*Next</code>, it is removed from that index (i.e. the pause is aborted).
+Also, if <code>sym</code> is waiting for signals, it is removed from those event
+queues. The current coroutine continues to run.</dd>
 
 </dl>
 
@@ -153,7 +153,7 @@ program may terminate.
 example to interrupt another coroutine and cause it to <a
 href="http://software-lab.de/doc/refT.html#throw">throw</a> into some other
 context, or have that coroutine's <code>pause</code> return a special value by
-running the <code>prg</code> argument.
+evaluating the <code>exe</code> argument.
 
 
 

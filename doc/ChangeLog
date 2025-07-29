@@ -1,3 +1,8 @@
+25.7.29
+   Pass 'exe' instead of 'prg' to 'event' and 'wake'
+      lib/simul.l
+      doc/des.html
+
 25.7.28
    Handle circular lists in 'less'
       lib.l
