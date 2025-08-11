@@ -5,9 +5,8 @@
       src/main.l
       src/io.l
    New files
-      src/lib/exec.l
+      src/lib/ex.l
       src/lib/so.l
-      src/soTest.l
 
 25.7.29
    Pass 'exe' instead of 'prg' to 'event' and 'wake'

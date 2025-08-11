@@ -1834,11 +1834,14 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 # Main entry point
 (local) (picolisp main sigChld)
 
-(de void picolisp ((i32 . Ac) (i8** . Av))
+(de i32 picolisp ((i32 . Siz) (i8* . Stk) (i32 . Ac) (i8** . Av))
    (set
       $AV0 (val Av)  # Save command
-      $AV (setq Av (ofs Av 1))  # and argument vector
-      $StkLimit (ulimStk) )
+      $AV (setq Av (ofs Av 1)) )  # and argument vector
+   (ifn Siz
+      (set $StkLimit (ulimStk))
+      (set $StkLimit (ofs Stk (- Siz)))
+      (stack Stk) )
    # Check debug mode
    (let P (ofs Av (- Ac 2))
       (unless (strcmp (val P) ($ "+"))
@@ -1907,10 +1910,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (loadAll 0) )  # Load arguments
    (unless (val $Repl)
       (set $Repl YES)
-      (iSignal (val SIGINT Sig) (fun sig)) ) )
-
-(de i32 main ((i32 . Ac) (i8** . Av))
-   (picolisp Ac Av)
+      (iSignal (val SIGINT Sig) (fun sig)) )
    (save -ZERO)
    (loop
       (let X (safe (stdRead ($ ": ")))
@@ -1920,5 +1920,8 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (unless (nil? X)
                   (stdEval X) ) )
             (T (eval X)) ) ) ) )
+
+(de i32 main ((i32 . Ac) (i8** . Av))
+   (ret (picolisp 0 null Ac Av)) )
 
 (end "base.map" "lib.c")
