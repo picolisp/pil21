@@ -1,4 +1,4 @@
-# 23dec24 Software Lab. Alexander Burger
+# 11aug25 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -25,6 +25,7 @@ INC = lib/llvm.l vers.l defs.l glob.l dec.l
 SRC = main.l gc.l big.l sym.l io.l db.l apply.l flow.l subr.l
 
 all: $(LIB)/sysdefs $(BIN)/picolisp $(LIB)/ext.so $(LIB)/ht.so $(BIN)/balance $(BIN)/ssl $(BIN)/httpGate
+so: $(LIB)/picolisp.so
 
 # System definitions
 $(LIB)/sysdefs: sysdefs.c
@@ -43,12 +44,31 @@ picolisp.bc: base.bc lib.bc
 base.bc: base.ll
 	$(ASM) -o base.bc base.ll
 
-base.ll: $(INC) $(SRC)
-	$(PIL) lib/llvm.l main.l -bye > base.ll
+base.ll: $(INC) $(SRC) lib/ex.l
+	$(PIL) lib/llvm.l lib/ex.l main.l -bye > base.ll
 	mv base.map $(LIB)/map
 
 lib.bc: pico.h lib.c
 	$(CC) -O3 -w -c -o lib.bc -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' `pkg-config --cflags libffi` -emit-llvm lib.c
+
+# Base system as shared library
+$(LIB)/picolisp.so: picolisp.so.bc
+	$(LLC) picolisp.so.bc -relocation-model=pic -o picolisp.so.s
+	$(CC) picolisp.so.s -o $(LIB)/picolisp.so $(SHARED) -lc -lutil -lm -ldl `pkg-config --libs readline libffi`
+	$(STRIP) $(LIB)/picolisp.so
+
+picolisp.so.bc: base.so.bc lib.so.bc
+	$(LINK) -o picolisp.so.bc base.so.bc lib.so.bc
+
+base.so.bc: base.so.ll
+	$(ASM) -o base.so.bc base.so.ll
+
+base.so.ll: $(INC) $(SRC) lib/so.l
+	$(PIL) lib/llvm.l lib/so.l main.l -bye > base.so.ll
+	rm base.map
+
+lib.so.bc: pico.h lib.c
+	$(CC) -O3 -w -c -fPIC -o lib.so.bc -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' `pkg-config --cflags libffi` -emit-llvm lib.c
 
 # Extension libraries
 $(LIB)/ext.so: ext.bc

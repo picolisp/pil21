@@ -1,3 +1,14 @@
+25.8.11
+   Optionally build as shared library
+      src/Makefile
+      src/lib/llvm.l
+      src/main.l
+      src/io.l
+   New files
+      src/lib/exec.l
+      src/lib/so.l
+      src/soTest.l
+
 25.7.29
    Pass 'exe' instead of 'prg' to 'event' and 'wake'
       lib/simul.l

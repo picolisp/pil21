@@ -1,4 +1,4 @@
-# 04jun25 Software Lab. Alexander Burger
+# 11aug25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1832,9 +1832,9 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       V ) )
 
 # Main entry point
-(local) (main sigChld)
+(local) (picolisp main sigChld)
 
-(de i32 main ((i32 . Ac) (i8** . Av))
+(de void picolisp ((i32 . Ac) (i8** . Av))
    (set
       $AV0 (val Av)  # Save command
       $AV (setq Av (ofs Av 1))  # and argument vector
@@ -1907,7 +1907,10 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (loadAll 0) )  # Load arguments
    (unless (val $Repl)
       (set $Repl YES)
-      (iSignal (val SIGINT Sig) (fun sig)) )
+      (iSignal (val SIGINT Sig) (fun sig)) ) )
+
+(de i32 main ((i32 . Ac) (i8** . Av))
+   (picolisp Ac Av)
    (save -ZERO)
    (loop
       (let X (safe (stdRead ($ ": ")))

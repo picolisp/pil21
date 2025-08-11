@@ -1,4 +1,4 @@
-# 11may25 Software Lab. Alexander Burger
+# 11aug25 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -16,10 +16,11 @@ symTab inline tailcall define struct $Nil $T $Link drop)
 
 (import any inc dec ++ shift)
 
-(local) (*Map *Map2 putMap *Shared *Strings *Ssa *Lbl *Log *Curr *Exit *Bind
-*Phi *Call *Ret log asm ssa phi +phi br label +lbl +bind type func ptr pointee
-store A B C I L M N P Q V X Y Exe Prg Typ Sym Ret Args Ext Table Body Var Val
-Lst Lbl Flg Skip True False Beg End Safe *Safe)
+(local) (*Shared *Exclude *Map *Map2 putMap *Strings *Ssa *Lbl *Log
+*Curr *Exit *Bind *Phi *Call *Ret log asm ssa phi +phi br label +lbl
++bind type func ptr pointee store A B C I L M N P Q V X Y Exe Prg Typ
+Sym Ret Args Ext Table Body Var Val Lst Lbl Flg Skip True False Beg End
+Safe *Safe)
 
 (off *Map *Map2)
 
@@ -544,90 +545,91 @@ Lst Lbl Flg Skip True False Beg End Safe *Safe)
       (run Prg) ) )
 
 (de define (Ext Ret Sym Args Body)
-   (and Body (prinl))
-   (setq *Ssa -1)
-   (off *Bind *Phi *Safe)
-   (bind (and Body (mapcar fin Args))
-      (with Sym
-         (setq *Ret
-            (if Ret
-               (type Ret)
-               (=: noreturn T)
-               void ) )
-         (cond
-            (Ext (prin "declare " *Ret " @" Sym "("))
-            (Body
-               (putMap Sym)
-               (prin "define " *Ret " @" Sym "(") ) )
-         (when
-            (=: args
-               (replace
-                  (ifn Body
-                     Args
-                     (mapcar
-                        '((A)
-                           (+bind Body (fin A))
-                           (set
-                              (set (fin A) (pack "%" (inc '*Ssa)))
-                              (if (atom A) 'any (car A)) ) )
-                        Args ) )
-                  'any 'i64 ) )
-            (=: sign (cons *Ret (: args)))
-            (when (or Ext Body)
-               (prin (car (: args)))
-               (for A (cdr (: args))
-                  (prin ", " A) ) ) )
-         (cond
-            (Ext (prinl ")"))
-            (Body (prinl ") align 8 {")) )
-         (def This
-            (list 'pico~@
-               (make
-                  (link 'let 'A
-                     (list 'mapcar
-                        ''((Typ) (pack Typ " " (next)))
-                        (lit (: args)) ) )
-                  (link '(log))
-                  (let L
-                     (list
-                        '*Call " " (lit *Ret) " @" (lit Sym)
-                        "(" '(glue ", " A) ")" )
-                     (link
+   (unless (member Sym *Exclude)
+      (and Body (prinl))
+      (setq *Ssa -1)
+      (off *Bind *Phi *Safe)
+      (bind (and Body (mapcar fin Args))
+         (with Sym
+            (setq *Ret
+               (if Ret
+                  (type Ret)
+                  (=: noreturn T)
+                  void ) )
+            (cond
+               (Ext (prin "declare " *Ret " @" Sym "("))
+               (Body
+                  (putMap Sym)
+                  (prin "define " *Ret " @" Sym "(") ) )
+            (when
+               (=: args
+                  (replace
+                     (ifn Body
+                        Args
+                        (mapcar
+                           '((A)
+                              (+bind Body (fin A))
+                              (set
+                                 (set (fin A) (pack "%" (inc '*Ssa)))
+                                 (if (atom A) 'any (car A)) ) )
+                           Args ) )
+                     'any 'i64 ) )
+               (=: sign (cons *Ret (: args)))
+               (when (or Ext Body)
+                  (prin (car (: args)))
+                  (for A (cdr (: args))
+                     (prin ", " A) ) ) )
+            (cond
+               (Ext (prinl ")"))
+               (Body (prinl ") align 8 {")) )
+            (def This
+               (list 'pico~@
+                  (make
+                     (link 'let 'A
+                        (list 'mapcar
+                           ''((Typ) (pack Typ " " (next)))
+                           (lit (: args)) ) )
+                     (link '(log))
+                     (let L
+                        (list
+                           '*Call " " (lit *Ret) " @" (lit Sym)
+                           "(" '(glue ", " A) ")" )
+                        (link
+                           (if (== void *Ret)
+                              (list 'link (cons 'pack L))
+                              (cons 'ssa '(inc '*Ssa) L) ) ) )
+                     (if (: noreturn)
+                        (link '(link "unreachable") NIL)
+                        (link
+                           (or
+                              (== void *Ret)
+                              (list 'def '(pack "%" *Ssa) (lit Ret)) ) ) ) ) ) ) )
+         (when Body
+            (let (*Lbl 1  *Log T)
+               (for X
+                  (make
+                     (label *Lbl)
+                     (let? R (run Body)
+                        (and *Safe (drop *Safe))
                         (if (== void *Ret)
-                           (list 'link (cons 'pack L))
-                           (cons 'ssa '(inc '*Ssa) L) ) ) )
-                  (if (: noreturn)
-                     (link '(link "unreachable") NIL)
-                     (link
-                        (or
-                           (== void *Ret)
-                           (list 'def '(pack "%" *Ssa) (lit Ret)) ) ) ) ) ) ) )
-      (when Body
-         (let (*Lbl 1  *Log T)
-            (for X
-               (make
-                  (label *Lbl)
-                  (let? R (run Body)
-                     (and *Safe (drop *Safe))
-                     (if (== void *Ret)
-                        (link "ret void")
-                        (link (pack "ret " *Ret " " R)) ) ) )
-               (cond
-                  ((num? X)
-                     (prinl "$" X ":")
-                     (for L (cdr (asoq X *Phi))
-                        (when (cadr L)
-                           (prin
-                              "  " (cadr L) " = phi "
-                              (type (val (cadr L)))
-                              " [" (cdaddr L) ", %$" (caaddr L) "]" )
-                           (for X (cdddr L)
-                              (prin ", [" (cdr X) ", %$" (car X) "]") )
-                           (prinl " ; # " (or (name (car L)) "->")) ) ) )
-                  ((atom X) (prinl "  " X))
-                  ((not (car X)) (prinl "; # " (cdr X)))
-                  (T (prinl "  " (car X) " = " (cdr X))) ) ) )
-         (prinl "}") ) ) )
+                           (link "ret void")
+                           (link (pack "ret " *Ret " " R)) ) ) )
+                  (cond
+                     ((num? X)
+                        (prinl "$" X ":")
+                        (for L (cdr (asoq X *Phi))
+                           (when (cadr L)
+                              (prin
+                                 "  " (cadr L) " = phi "
+                                 (type (val (cadr L)))
+                                 " [" (cdaddr L) ", %$" (caaddr L) "]" )
+                              (for X (cdddr L)
+                                 (prin ", [" (cdr X) ", %$" (car X) "]") )
+                              (prinl " ; # " (or (name (car L)) "->")) ) ) )
+                     ((atom X) (prinl "  " X))
+                     ((not (car X)) (prinl "; # " (cdr X)))
+                     (T (prinl "  " (car X) " = " (cdr X))) ) ) )
+            (prinl "}") ) ) ) )
 
 (de struct Lst
    (def (putMap (car Lst))
