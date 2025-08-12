@@ -1,4 +1,4 @@
-// 03apr24 Software Lab. Alexander Burger
+// 12aug25 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -492,6 +492,7 @@ int32_t getLock(int32_t fd, off_t n, off_t len) {
 // Catch and Throw
 const int64_t JmpBufSize = sizeof(jmp_buf);
 jmp_buf QuitRst;
+jmp_buf SoRst;
 
 // Lisp data access from C
 any name(any x) {

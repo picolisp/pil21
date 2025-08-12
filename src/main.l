@@ -1,4 +1,4 @@
-# 11aug25 Software Lab. Alexander Burger
+# 12aug25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1831,17 +1831,13 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (err Exe V ($ "Inadequate PicoLisp version") null) ) ) )
       V ) )
 
-# Main entry point
-(local) (picolisp main sigChld)
+# Main entry points
+(local) (init main picolisp sigChld evaluate)
 
-(de i32 picolisp ((i32 . Siz) (i8* . Stk) (i32 . Ac) (i8** . Av))
+(de void init ((i32 . Ac) (i8** . Av))
    (set
       $AV0 (val Av)  # Save command
       $AV (setq Av (ofs Av 1)) )  # and argument vector
-   (ifn Siz
-      (set $StkLimit (ulimStk))
-      (set $StkLimit (ofs Stk (- Siz)))
-      (stack Stk) )
    # Check debug mode
    (let P (ofs Av (- Ac 2))
       (unless (strcmp (val P) ($ "+"))
@@ -1879,6 +1875,11 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       $Pid (cnt (i64 (getpid)))
       (tail $Db1) DB1  # Name of external root symbol '{1}'
       $Extern (cons $Db1 $Nil) )  # External symbol tree root node
+   (set $USec (getUsec YES)) )
+
+(de i32 main ((i32 . Ac) (i8** . Av))
+   (set $StkLimit (ulimStk))
+   (init Ac Av)
    (pushOutFile (b8+ (ioFrame T)) (initOutFile 2) 0)  # Standard error
    (pushOutFile
       (set $Stdout (b8+ (ioFrame T)))
@@ -1905,7 +1906,6 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (signal (val SIGTTIN Sig) (val SigIgn))
    (signal (val SIGTTOU Sig) (val SigIgn))
    (initReadline)
-   (set $USec (getUsec YES))
    (unless (setjmp QuitRst)
       (loadAll 0) )  # Load arguments
    (unless (val $Repl)
@@ -1921,7 +1921,61 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (stdEval X) ) )
             (T (eval X)) ) ) ) )
 
-(de i32 main ((i32 . Ac) (i8** . Av))
-   (ret (picolisp 0 null Ac Av)) )
+(de void picolisp ((i8* . Stk) (i32 . Siz) (i32 . Ac) (i8** . Av))
+   (unless (setjmp SoRst)
+      (stack (ofs Stk Siz))
+      (set $StkLimit (ofs Stk 4096))
+      (init Ac Av)
+      (pushOutFile (b8+ (ioFrame T)) (initOutFile 2) 0)  # Standard error
+      (pushOutFile
+         (set $Stdout (b8+ (ioFrame T)))
+         (initOutFile 1)  # Standard output
+         0 )
+      (pushInFile
+         (set $Stdin (b8+ (ioFrame T)))
+         (initInFile 0 null)  # Standard input
+         0 )
+      (set Tio (=0 (tcgetattr 0 OrgTermio)))  # Save terminal I/O
+      (sigUnblock 0)  # Set all signals to unblocked
+      (iSignal (val SIGHUP Sig) (fun sig))
+      (iSignal (val SIGUSR1 Sig) (fun sig))
+      (iSignal (val SIGUSR2 Sig) (fun sig))
+      (iSignal (val SIGALRM Sig) (fun sig))
+      (iSignal (val SIGTERM Sig) (fun sig))
+      (iSignal (val SIGWINCH Sig) (fun sig))
+      (iSignal (val SIGIO Sig) (fun sig))
+      (when (== (signal (val SIGTSTP Sig) (val SigIgn)) (val SigDfl))
+         (iSignal (val SIGTSTP Sig) (fun sig)) )
+      (iSignal (val SIGINT Sig) (fun sigTerm))
+      (signal (val SIGCHLD Sig) (fun sigChld))
+      (signal (val SIGPIPE Sig) (val SigIgn))
+      (signal (val SIGTTIN Sig) (val SigIgn))
+      (signal (val SIGTTOU Sig) (val SigIgn))
+      (initReadline)
+      (set $Ret
+         (any
+            (case (setjmp QuitRst)
+               (0 (longjmp SoRst 1))
+               (1 ($ "ERR"))
+               (T
+                  (let P (i8* (val $Ret))
+                     (begString (push 4 NIL ZERO NIL NIL NIL))  # [cnt last name link fun ptr]
+                     (print
+                        (eval
+                           (safe
+                              (parse
+                                 (name (val (tail (save (mkStr P)))))
+                                 YES
+                                 (hex "20")  # Blank, EOF
+                                 1 ) ) ) )
+                     (let Nm (name (val (tail (endString))))
+                        (strdup (bufString Nm (b8 (bufSize Nm)))) ) ) ) ) ) )
+      (longjmp SoRst 1) ) )
+
+(de i8* evaluate ((i8* . P))
+   (if (setjmp SoRst)
+      (i8* (val $Ret))
+      (set $Ret (any P))
+      (longjmp QuitRst 2) ) )
 
 (end "base.map" "lib.c")

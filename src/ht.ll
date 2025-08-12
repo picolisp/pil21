@@ -225,6 +225,7 @@ declare i32 @unLock(i32, i64, i64)
 declare i32 @getLock(i32, i64, i64)
 @JmpBufSize = external global i64
 @QuitRst = external global i8
+@SoRst = external global i8
 declare i8* @dlOpen(i8*)
 declare i8* @ffiPrep(i8*, i8*, i64)
 declare i64 @ffiCall(i8*, i64)

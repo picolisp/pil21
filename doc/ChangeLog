@@ -1,8 +1,10 @@
-25.8.11
+25.8.12
    Optionally build as shared library
       src/Makefile
       src/lib/llvm.l
+      src/dec.l
       src/main.l
+      src/lib.c
       src/io.l
    New files
       src/lib/ex.l

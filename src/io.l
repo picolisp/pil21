@@ -1,4 +1,4 @@
-# 11aug25 Software Lab. Alexander Burger
+# 12aug25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2780,21 +2780,6 @@ selectErr)
          (T
             (save Y
                (parse (name Y) NO 0 (save (evSym X))) ) ) ) ) )
-
-(local) evaluate
-
-(de i8* evaluate ((i8* . P))
-   (begString (push 4 NIL ZERO NIL NIL NIL))  # [cnt last name link fun ptr]
-   (print
-      (eval
-         (safe
-            (parse
-               (name (val (tail (save (mkStr P)))))
-               YES
-               (hex "20")  # Blank, EOF
-               1 ) ) ) )
-   (let Nm (name (val (tail (endString))))
-      (strdup (bufString Nm (b8 (bufSize Nm)))) ) )
 
 (local) (stdRead stdEval repl loadAll)
 

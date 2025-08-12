@@ -1,4 +1,4 @@
-# 04jun25 Software Lab. Alexander Burger
+# 12aug25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -282,10 +282,11 @@ socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (de T i32 getLock (i32 i64 i64))
 
 # Catch and Throw
-(local) (JmpBufSize QuitRst)
+(local) (JmpBufSize QuitRst SoRst)
 
 (var JmpBufSize i64 NIL)  # sizeof(jmp_buf)
 (var QuitRst i8 NIL)
+(var SoRst i8 NIL)
 
 # Native lib.c
 (local) (dlOpen ffiPrep ffiCall)
