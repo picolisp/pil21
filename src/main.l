@@ -1952,11 +1952,12 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (signal (val SIGTTIN Sig) (val SigIgn))
       (signal (val SIGTTOU Sig) (val SigIgn))
       (initReadline)
+      (loadAll 0)
       (set $Ret
          (any
             (case (setjmp QuitRst)
                (0 (longjmp SoRst 1))
-               (1 ($ "ERR"))
+               (1 (strdup ($ "ERR")))
                (T
                   (let P (i8* (val $Ret))
                      (begString (push 4 NIL ZERO NIL NIL NIL))  # [cnt last name link fun ptr]
