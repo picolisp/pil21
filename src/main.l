@@ -1965,7 +1965,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (any
             (case (setjmp QuitRst)
                (0 (longjmp SoRst 1))
-               (1 (strdup ($ "ERR")))
+               (1 (strdup ($ "-ERR-")))
                (T
                   (begString (push 4 NIL ZERO NIL NIL NIL))  # [cnt last name link fun ptr]
                   (set $LinePtr (i8* (val $Ret)))
