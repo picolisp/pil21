@@ -1832,7 +1832,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       V ) )
 
 # Main entry points
-(local) (init main picolisp sigChld evaluate)
+(local) (init sigChld main getStrb picolisp evaluate)
 
 (de void init ((i32 . Ac) (i8** . Av))
    (set
@@ -1921,6 +1921,14 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (stdEval X) ) )
             (T (eval X)) ) ) ) )
 
+(de i32 getStrb ()
+   (let P (val $LinePtr)
+      (set $Chr
+         (ifn (val P)
+            -1
+            (set $LinePtr (inc P))
+            (i32 @) ) ) ) )
+
 (de void picolisp ((i8* . Stk) (i32 . Siz) (i32 . Ac) (i8** . Av))
    (unless (setjmp SoRst)
       (stack (ofs Stk Siz))
@@ -1959,18 +1967,17 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (0 (longjmp SoRst 1))
                (1 (strdup ($ "ERR")))
                (T
-                  (let P (i8* (val $Ret))
-                     (begString (push 4 NIL ZERO NIL NIL NIL))  # [cnt last name link fun ptr]
-                     (print
-                        (eval
-                           (safe
-                              (parse
-                                 (name (val (tail (save (mkStr P)))))
-                                 YES
-                                 (hex "20")  # Blank, EOF
-                                 1 ) ) ) )
-                     (let Nm (name (val (tail (endString))))
-                        (strdup (bufString Nm (b8 (bufSize Nm)))) ) ) ) ) ) )
+                  (begString (push 4 NIL ZERO NIL NIL NIL))  # [cnt last name link fun ptr]
+                  (set $LinePtr (i8* (val $Ret)))
+                  (let (Chr (val $Chr)  Get (val (i8** $Get)))
+                     (set $Chr 0  $Get (fun (i32) getStrb))
+                     (getStrb)
+                     (let E (read0 YES)
+                        (set (i8** $Get) Get  $Chr Chr)
+                        (set $LinePtr null)
+                        (save E (print (eval E))) ) )
+                  (let Nm (name (val (tail (endString))))
+                     (strdup (bufString Nm (b8 (bufSize Nm)))) ) ) ) ) )
       (longjmp SoRst 1) ) )
 
 (de i8* evaluate ((i8* . P))
