@@ -1,4 +1,4 @@
-# 12aug25 Software Lab. Alexander Burger
+# 13aug25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1832,7 +1832,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       V ) )
 
 # Main entry points
-(local) (init sigChld main getStrb picolisp evaluate)
+(local) (init sigChld main getStrb picolisp evaluate stoplisp)
 
 (de void init ((i32 . Ac) (i8** . Av))
    (set
@@ -1985,5 +1985,12 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (i8* (val $Ret))
       (set $Ret (any P))
       (longjmp QuitRst 2) ) )
+
+(de void stoplisp ()
+   (let P (val $Heaps)
+      (loop
+         (let Q (val (ofs P HEAP))
+            (free (i8* P))
+            (? (=0 (setq P Q)) ) ) ) ) )
 
 (end "base.map" "lib.c")

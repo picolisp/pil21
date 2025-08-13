@@ -1,6 +1,7 @@
-# 12aug25 Software Lab. Alexander Burger
+# 13aug25 Software Lab. Alexander Burger
 
 (de llvm~cross~*Exclude
    "getStrb"
    "picolisp"
-   "evaluate" )
+   "evaluate"
+   "stoplisp" )

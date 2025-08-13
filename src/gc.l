@@ -1,4 +1,4 @@
-# 17jun25 Software Lab. Alexander Burger
+# 13aug25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -51,8 +51,7 @@
                (set 2 P (| (cdr P) 1))  # Set mark bit
                (setq P (ofs P 2))  # Next cell
                (? (=0 (dec 'C))) ) )
-         (setq P (val P))  # Next heap
-         (? (=0 P)) ) )
+         (? (=0 (setq P (val P)))) ) )  # Next heap
    # Mark
    (let P (any (gcData))  # Globals
       (loop

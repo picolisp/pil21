@@ -1545,7 +1545,7 @@ declare void @llvm.stackrestore(i8*)
 @$Version = global [3 x i64] [
   i64 402,
   i64 130,
-  i64 194
+  i64 210
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,
@@ -6315,11 +6315,11 @@ $8:
   %31 = phi i64 [%26, %$6] ; # P
   %32 = phi i64 [%27, %$6] ; # C
   %33 = phi i64 [0, %$6] ; # ->
+; # (? (=0 (setq P (val P))))
 ; # (val P)
   %34 = inttoptr i64 %31 to i64*
   %35 = load i64, i64* %34
-; # (? (=0 P))
-; # (=0 P)
+; # (=0 (setq P (val P)))
   %36 = icmp eq i64 %35, 0
   br i1 %36, label %$10, label %$9
 $9:

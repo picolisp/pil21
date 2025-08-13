@@ -1,3 +1,7 @@
+25.8.13
+   'stoplisp' function
+      src/main.l
+
 25.8.12
    Optionally build as shared library
       src/Makefile
