@@ -1,4 +1,4 @@
-# 22may25 Software Lab. Alexander Burger
+# 15aug25 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -6,23 +6,24 @@
 
 (load "@lib/term.l")
 
-(local) (*Ns *Shell *CmdWin *StatNm *Chr *Complete *Repeat *Change *Count *Cnt
-*Search *Clip *TagStack *Spell *CmdMap *Keys *KeyMap *KeyMap-g *KeyMap-q *F7 *F8
-*F9 *F10 *F11 *F12 *@ *@@)
+(local) (*Ns *Shell *CmdWin *StatNm *Chr *Complete *Repeat *Change
+*Count *Cnt *Search *Clip *TagStack *Spell *CmdMap *Keys *KeyMap
+*KeyMap-g *KeyMap-q *F7 *F8 *F9 *F10 *F11 *F12 *@ *@@)
 
 (def '*Shell (or (sys "SHELL") "sh"))
 
 ### VIP Editor ###
-(local) (*Buffers +Buffer mkLoc fName prName rplFile fileBuffer rdLines delim
-delimNs markup min1 undo redo evCmd dirty> load> save> syms> view> status delwin
-cursor addLine chgLine unmark redraw repaint scLeft scRight goto chgwin eqwin
-getch getch2 reload scratch syms pushTag tag done change jmp@@ cnt@@ goCol
-goLeft goRight goUp goDown goAbs goFind word lword tword end lend getWord
-_forward goForward _backward goBackward goPFore goPBack shift shiftY indent cutX
-cutN paste join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe
-evRpt move chgRight jmpMark wordFun moveSearch patMatch parMatch spell pipeN
-nextBuf shell shFile prCmd cmd _map map+ map+g map+q reset posChar getText
-s-expr command vipA vipZ vi)
+(local) (*Buffers +Buffer mkLoc fName prName rplFile fileBuffer rdLines
+delim delimNs markup min1 undo redo evCmd dirty> load> save> syms> view>
+status delwin cursor addLine chgLine redraw repaint scLeft scRight goto
+chgwin eqwin getch getch2 reload scratch syms pushTag tag done change
+jmp@@ cnt@@ goCol goLeft goRight goUp goDown goAbs goFind word lword
+tword end lend getWord _forward goForward _backward goBackward goPFore
+goPBack shift shiftY indent cutX cutN paste join tglCase insChar incNum
+overwrite _bs insMode cmdMode cmdPipe evRpt move chgRight jmpMark
+wordFun moveSearch patMatch parMatch spell pipeN nextBuf shell shFile
+prCmd cmd _map map+ map+g map+q reset posChar getText s-expr command
+vipA vipZ vi)
 
 
 (class +Buffer)
@@ -355,11 +356,6 @@ s-expr command vipA vipZ vi)
    (addLine (- (: posY) (: winY) -1) L *Columns)
    (cursor) )
 
-(de unmark ()
-   (when (: mark)
-      (out @ (println (: posX) (: posY)))
-      (=: mark) ) )
-
 (de status ()
    (unless (== This *CmdWin)
       (cup (+ (: top) (: lines) 1) 1)
@@ -488,7 +484,6 @@ s-expr command vipA vipZ vi)
       (when File
          (let B (fileBuffer File)
             (unless (== B (: buffer))
-               (unmark)
                (=: last (: buffer))
                (=: buffer B) ) ) )
       (load> (: buffer) This)
@@ -506,7 +501,6 @@ s-expr command vipA vipZ vi)
          (markup
             (=: text Lst)
             (=: undo (=: redo (=: dirt))) ) )
-      (unmark)
       (=: last (: buffer))
       (put
          (=: buffer (new '(+Buffer) File Y))
@@ -535,7 +529,6 @@ s-expr command vipA vipZ vi)
    (and Flg
       (dirty> (: buffer) This)
       (save> (: buffer) This) )
-   (unmark)
    (nond
       ((; *CmdWin next next)
          (throw 'done Flg) )
@@ -1066,7 +1059,11 @@ s-expr command vipA vipZ vi)
 (de move @
    (let M (conc (rest) (1))
       (case *Change
-         (NIL (and (eval (rest)) (goto @ *@@ T)))
+         (NIL
+            (when (eval (rest))
+               (goto @ *@@ T)
+               (when (: mark)
+                  (out @ (println (: posX) (: posY))) ) ) )
          ("!" (eval (rest)) (cmdPipe (cnt@@)))  # External filter
          (">" (evRpt (list 'shiftY M T)))  # Shift right
          ("<" (evRpt (list 'shiftY M)))  # Shift left
@@ -1194,7 +1191,6 @@ s-expr command vipA vipZ vi)
                (if B
                   (or (prior M *Buffers) (tail 1 *Buffers))
                   (or (cdr M) *Buffers) ) ) ) )
-      (unmark)
       (unless (== B (: buffer))
          (=: last (: buffer))
          (=: buffer B)
@@ -1343,8 +1339,10 @@ s-expr command vipA vipZ vi)
                                        (chop (pack ":" I " " (prName (: file)))) ) ) ) ) )
                         ("key" (=: buffer key L) (reload))
                         ("m"
-                           (when (info (=: mark (path (rplFile L))))
-                              (in (: mark) (move 'goAbs (read) (read))) ) )
+                           (if L
+                              (when (info (=: mark (path (rplFile L))))
+                                 (in (: mark) (move 'goAbs (read) (read))) )
+                              (=: mark) ) )
                         ("n" (nextBuf))  # Next buffer
                         ("N" (nextBuf T))  # Previous buffer
                         ("tag" (apply tag (str L)))

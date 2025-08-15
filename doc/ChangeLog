@@ -1,3 +1,7 @@
+25.8.15
+   Save position mark on every move
+      lib/vip.l
+
 25.8.13
    'stoplisp' function
       src/main.l
