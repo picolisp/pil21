@@ -484,6 +484,7 @@ vipA vipZ vi)
       (when File
          (let B (fileBuffer File)
             (unless (== B (: buffer))
+               (=: mark)
                (=: last (: buffer))
                (=: buffer B) ) ) )
       (load> (: buffer) This)
@@ -501,6 +502,7 @@ vipA vipZ vi)
          (markup
             (=: text Lst)
             (=: undo (=: redo (=: dirt))) ) )
+      (=: mark)
       (=: last (: buffer))
       (put
          (=: buffer (new '(+Buffer) File Y))
@@ -529,6 +531,7 @@ vipA vipZ vi)
    (and Flg
       (dirty> (: buffer) This)
       (save> (: buffer) This) )
+   (=: mark)
    (nond
       ((; *CmdWin next next)
          (throw 'done Flg) )
@@ -1191,6 +1194,7 @@ vipA vipZ vi)
                (if B
                   (or (prior M *Buffers) (tail 1 *Buffers))
                   (or (cdr M) *Buffers) ) ) ) )
+      (=: mark)
       (unless (== B (: buffer))
          (=: last (: buffer))
          (=: buffer B)
