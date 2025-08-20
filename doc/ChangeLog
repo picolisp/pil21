@@ -1,3 +1,10 @@
+25.8.20
+   '!!' function
+      src/glob.l
+      src/flow.l
+      doc/ref.html
+      doc/ref_.html
+
 25.8.15
    Save position mark on every move
       lib/vip.l

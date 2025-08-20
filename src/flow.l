@@ -1,4 +1,4 @@
-# 19jul25 Software Lab. Alexander Burger
+# 20aug25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1534,6 +1534,16 @@
       (unless (nil? (val $Dbg))
          (setq X (brkLoad X)) )
       (eval X) ) )
+
+# (!! 'any . exe) -> any
+(de _BreakIf (Exe)
+   (let (X (cdr Exe)  Y (cdr X))
+      (unless
+         (or
+            (nil? (val $Dbg))
+            (nil? (eval (car X))) )
+         (setq Y (brkLoad Y)) )
+      (eval Y) ) )
 
 # (e . prg) -> any
 (de _E (Exe)

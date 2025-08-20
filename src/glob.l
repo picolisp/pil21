@@ -1,4 +1,4 @@
-# 27jul25 Software Lab. Alexander Burger
+# 20aug25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -152,10 +152,8 @@
    ($Dbg "*Dbg" $Nil)
    ($Complete "complete" $Nil)
    ($Remark "remark" $Nil)
-   # Garbage collection
    (NIL "gc" _Gc)
-   # Arithmetics
-   (NIL "format" _Format)
+   (NIL "format" _Format)     # Arithmetics
    (NIL "+" _Add)
    (NIL "-" _Sub)
    (NIL "inc" _Inc)
@@ -180,8 +178,7 @@
    (NIL "seed" _Seed)
    (NIL "hash" _Hash)
    (NIL "rand" _Rand)
-   # Symbol functions
-   (NIL "name" _Name)
+   (NIL "name" _Name)         # Symbol functions
    (NIL "nsp" _Nsp)
    (NIL "sp?" _SpQ)
    (NIL "pat?" _PatQ)
@@ -242,8 +239,7 @@
    (NIL "lowc" _Lowc)
    (NIL "uppc" _Uppc)
    (NIL "fold" _Fold)
-   # Input/Output
-   (NIL "path" _Path)
+   (NIL "path" _Path)         # Input/Output
    (NIL "wait" _Wait)
    (NIL "sync" _Sync)
    (NIL "hear" _Hear)
@@ -287,8 +283,7 @@
    (NIL "sym" _Sym)
    (NIL "str" _Str)
    (NIL "load" _Load)
-   # Database
-   (NIL "ext?" _ExtQ)
+   (NIL "ext?" _ExtQ)         # Database
    (NIL "rollback" _Rollback)
    (NIL "extern" _Extern)
    (NIL "pool" _Pool)
@@ -304,8 +299,7 @@
    (NIL "mark" _Mark)
    (NIL "free" _Free)
    (NIL "dbck" _Dbck)
-   # Mapping
-   (NIL "apply" _Apply)
+   (NIL "apply" _Apply)       # Mapping
    (NIL "pass" _Pass)
    (NIL "fun" _Fun)
    (NIL "maps" _Maps)
@@ -327,8 +321,7 @@
    (NIL "mini" _Mini)
    (NIL "fish" _Fish)
    (NIL "by" _By)
-   # Control flow
-   (NIL "as" _As)
+   (NIL "as" _As)             # Control flow
    (NIL "lit" _Lit)
    (NIL "eval" _Eval)
    (NIL "run" _Run)
@@ -388,6 +381,7 @@
    (NIL "co" _Co)
    (NIL "yield" _Yield)
    (NIL "!" _Break)
+   (NIL "!!" _BreakIf)
    (NIL "e" _E)
    (NIL "$" _Trace)
    (NIL "exec" _Exec)
@@ -398,8 +392,7 @@
    (NIL "fork" _Fork)
    (NIL "detach" _Detach)
    (NIL "bye" _Bye)
-   # List processing
-   (NIL "car" _Car)
+   (NIL "car" _Car)           # List processing
    (NIL "cdr" _Cdr)
    (NIL "caar" _Caar)
    (NIL "cadr" _Cadr)
@@ -509,8 +502,7 @@
    (NIL "unify" _Unify)
    (NIL "group" _Group)
    (NIL "sort" _Sort)
-   # System functions
-   (NIL "tty" _Tty)
+   (NIL "tty" _Tty)           # System functions
    (NIL "prompt" _Prompt)
    (NIL "raw" _Raw)
    (NIL "alarm" _Alarm)

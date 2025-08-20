@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 27jul25 Software Lab. Alexander Burger
+# 20aug25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -25,8 +25,9 @@ environment. An empty input line terminates the read-eval-print-loop, the
 environment and I/O channels are restored, and the result of <code>exe</code> is
 returned. <code>!</code> is normally inserted into existing programs with the
 <code><a href="refD.html#debug">debug</a></code> function. See also <code><a
-href="refE.html#e">e</a></code>, <code><a href="ref_.html#%5E">^</a></code> and
-<code><a href="refD.html#*Dbg">*Dbg</a></code>.
+href="ref_.html#!!">!!</a></code>, <code><a href="refE.html#e">e</a></code>,
+<code><a href="ref_.html#%5E">^</a></code> and <code><a
+href="refD.html#*Dbg">*Dbg</a></code>.
 
 <pre>
 : (de foo (N) (and (println 1) (! println N) (println 2)))
@@ -45,6 +46,27 @@ href="refE.html#e">e</a></code>, <code><a href="ref_.html#%5E">^</a></code> and
 7                 # Executed '(println N)'
 2                 # Executed '(println 2)'
 -> 2
+</pre></dd>
+
+<dt><a id="!!"><code>(!! 'any . exe) -> any</code></a></dt>
+<dd>Conditional low level breakpoint function. Behaves as <code><a
+href="ref_.html#X">!</a></code>, but stops only if <code>any</code> evaluates to
+non-<code>NIL</code>.
+
+<pre>
+: (for N 7 (!! (= 4 N) println N))
+1
+2
+3
+(println N)
+! N
+-> 4
+!
+4
+5
+6
+7
+-> 7
 </pre></dd>
 
 <dt><a id="$"><code>($ sym|lst lst . prg) -> any</code></a></dt>
