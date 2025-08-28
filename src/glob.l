@@ -1,4 +1,4 @@
-# 20aug25 Software Lab. Alexander Burger
+# 28aug25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -17,7 +17,8 @@
 (var $Current i8* null)                # Current coroutine
 (var $CrtLast i8* null)                # Last Coroutine
 (var $CrtFree i8* null)                # Coroutine free list link
-(var $StkLimit i8* null)               # Stack limit: StackN-Size+1024
+(var $SysStkLimit i8* null)            # System stack limit
+(var $StkLimit i8* null)               # Current stack limit
 (var $StkSizeT i64 (* 4 STACK))        # Coroutine main stack segment size
 (var $StkSize i64 STACK)               # Coroutine stack segment size
 (var $Stdin i8* null)                  # Stdin frame

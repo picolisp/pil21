@@ -1,4 +1,4 @@
-// 12aug25 Software Lab. Alexander Burger
+// 28aug25 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -355,12 +355,13 @@ int64_t getGmTime(void) {
 
 char *ulimStk(void) {
    struct rlimit stk;
+   extern char *$SysStkLimit;
 
    if (getrlimit(RLIMIT_STACK, &stk) < 0)
       return NULL;
    if (stk.rlim_cur == RLIM_INFINITY)
       return (char*)1;
-   return (char*)&stk - stk.rlim_cur + 16384;
+   return $SysStkLimit = (char*)&stk - stk.rlim_cur + (stk.rlim_cur >> 6);
 }
 
 int64_t fileInfo(int lnk, int loc, char *nm, int64_t *siz) {

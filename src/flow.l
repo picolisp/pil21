@@ -1,4 +1,4 @@
-# 20aug25 Software Lab. Alexander Burger
+# 28aug25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1164,7 +1164,7 @@
 (de loadCoEnv ((i8* . Crt))
    (let Crt: (coroutine (set $Current Crt))
       (memcpy (env) (Crt: (env)) (env T) T)
-      (set $StkLimit (+ (Crt: lim) 1024))
+      (set $StkLimit (ofs (Crt: lim) (shr (val $StkSize) 6)))
       (getCrtEnv (Crt:))
       (set $At (Crt: at))
       (Crt: at 0)  # Running
@@ -1197,7 +1197,7 @@
          $Make 0
          $Yoke 0
          $Current (Dst:)
-         $StkLimit (+ (Dst: lim) 1024) )
+         $StkLimit (ofs (Dst: lim) (shr (val $StkSize) 6)) )
       (when (symb? Tag)
          (put Tag ZERO (| (i64 (Dst:)) 2)) )
       (set $Ret (run X))
@@ -1229,7 +1229,8 @@
                            (when ((coroutine Crt) tag)
                               (err Exe @ ($ "Running coroutine") null) ) )
                         (free (val $Coroutines))
-                        (set $Coroutines (set $Current (set $CrtLast (set $CrtFree null)))) ) )
+                        (set $Coroutines (set $Current (set $CrtLast (set $CrtFree null))))
+                        (set $StkLimit (val $SysStkLimit)) ) )
                   $T )
                (T
                   (let Crt (val $Current)

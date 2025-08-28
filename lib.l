@@ -1,4 +1,4 @@
-# 28jul25 Software Lab. Alexander Burger
+# 27aug25 Software Lab. Alexander Burger
 
 (de task (Key . Prg)
    (nond
@@ -278,14 +278,16 @@
    (symbols (list (car (symbols)))
       (read) ) )
 
-(de export (Sym)
-   (symbols (list (or Sym (cadr (symbols))))
-      (read) ) )
-
 (de import Lst
    (for Sym Lst
       (unless (== Sym (intern Sym T))
          (quit "Import conflict" Sym) ) )
+   Lst )
+
+(de export Lst
+   (for Sym Lst
+      (unless (== Sym (intern Sym (cadr (symbols))))
+         (quit "Export conflict" Sym) ) )
    Lst )
 
 (de all* (S Flg)

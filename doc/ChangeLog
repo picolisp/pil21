@@ -1,3 +1,32 @@
+25.8.28
+   '$StkLimit' related to stack size
+      src/glob.l
+      src/main.l
+      src/flow.l
+   Call ulimStk() to set '$SysStkLimit'
+      src/lib.c
+      lib/ulimit.l
+   Quiche mode
+      src/lib/llvm.l
+      src/gc.l
+      src/sym.l
+      src/db.l
+      src/apply.l
+   'export' never worked!
+      lib.l
+      doc/refE.html
+
+25.8.22
+   'dlfun' instruction
+      src/lib/llvm.l
+      src/main.l
+
+25.8.21
+   'exclude' function
+      src/lib/llvm.l
+      src/lib/ex.l
+      src/lib/so.l
+
 25.8.20
    '!!' function
       src/glob.l

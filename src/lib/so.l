@@ -1,4 +1,6 @@
-# 11aug25 Software Lab. Alexander Burger
+# 21aug25 Software Lab. Alexander Burger
 
-(de llvm~cross~*Exclude
+(symbols '(llvm))
+
+(exclude
    "main" )

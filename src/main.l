@@ -1,4 +1,4 @@
-# 13aug25 Software Lab. Alexander Burger
+# 28aug25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -90,7 +90,7 @@ popCtlFiles)
                (unless (== Src Dst)
                   (stop Src)
                   (let Crt: (coroutine (set $Current Dst))
-                     (set $StkLimit (+ (Crt: lim) 1024))
+                     (set $StkLimit (ofs (Crt: lim) (shr (val $StkSize) 6)))
                      (set $At (Crt: at))
                      (Crt: at 0) ) ) )  # Running
             (getCaEnv (Ca:))
@@ -115,7 +115,7 @@ popCtlFiles)
          (unless (== Src Dst)
             (stop Src)
             (let Crt: (coroutine (set $Current Dst))
-               (set $StkLimit (+ (Crt: lim) 1024))
+               (set $StkLimit (ofs (Crt: lim) (shr (val $StkSize) 6)))
                (getCrtEnv (Crt:))
                (set $At (Crt: at))
                (Crt: at 0) ) ) ) ) )  # Running
@@ -269,6 +269,11 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                      (when Tag
                         (while (pair Tag)
                            (when (ge0 (subStr (car Tag) (val $Msg) 1))
+                              (unless (val $StkLimit)
+                                 (set $StkLimit
+                                    (if (val $Current)
+                                       (ofs ((coroutine @) lim) (shr (val $StkSize) 6))
+                                       (val $SysStkLimit) ) ) )
                               (unwind (Ca:))
                               (set $Ret
                                  (if (nil? (car Tag))
@@ -758,7 +763,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (dlOpen Q)
                   (dlsym @ (inc P))
                   (prog
-                     (set Sym (| (i64 @) 2))
+                     (set Sym (dlfun (i64 @)))
                      YES ) ) ) ) ) ) )
 
 (load "gc.l" "big.l" "sym.l")
@@ -1647,7 +1652,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de _Next (Exe)
    (let X (val $Next)
       (set $Next (car X))
-      (cdr X) ) )
+      (val 2 X) ) )
 
 # (arg 'cnt) -> any
 (de _Arg (Exe)
@@ -1656,16 +1661,16 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (let (N @  X (val $Next))
          (while (gt0 (dec 'N))
             (setq X (car X)) )
-         (cdr X) ) ) )
+         (val 2 X) ) ) )
 
 # (rest) -> lst
 (de _Rest (Exe)
    (let X (val $Next)
       (if (atom X)
          X
-         (let (Y (cons (cdr X) $Nil)  R (save Y))
+         (let (Y (cons (val 2 X) $Nil)  R (save Y))
             (while (pair (setq X (car X)))
-               (setq Y (set 2 Y (cons (cdr X) $Nil))) )
+               (setq Y (set 2 Y (cons (val 2 X) $Nil))) )
             R ) ) ) )
 
 # (adr 'var) -> num
@@ -1932,7 +1937,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de void picolisp ((i8* . Stk) (i32 . Siz) (i32 . Ac) (i8** . Av))
    (unless (setjmp SoRst)
       (stack (ofs Stk Siz))
-      (set $StkLimit (ofs Stk 4096))
+      (set $StkLimit (set $SysStkLimit (ofs Stk (shr Siz 6))))
       (init Ac Av)
       (pushOutFile (b8+ (ioFrame T)) (initOutFile 2) 0)  # Standard error
       (pushOutFile

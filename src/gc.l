@@ -1,4 +1,4 @@
-# 13aug25 Software Lab. Alexander Burger
+# 28aug25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -8,7 +8,7 @@
    (let Tos 0  # Clear
       (loop
          (until (cnt? E)
-            (let (P (any (& E -16))  Q (cdr P))  # Cell pointer
+            (let (P (any (& E -16))  Q (val 2 P))  # Cell pointer
                (? (=0 (& Q 1)))  # Already marked
                (set 2 P (setq Q (& Q -2)))  # Mark cell
                (? (big? E)
@@ -27,10 +27,10 @@
                (let Q (val P)  # Up pointer
                   (? (& Q 1)  # Second visit
                      (set P E)  # Restore CAR
-                     (setq E (cdr P))  # Get CDR
+                     (setq E (val 2 P))  # Get CDR
                      (set 2 P (& Q -2)) ) )  # Store up pointer
                (let X Tos
-                  (setq Tos (cdr P))  # TOS up
+                  (setq Tos (val 2 P))  # TOS up
                   (set 2 P E)  # Restore CDR
                   (setq E X) ) ) ) ) ) )  # Go up
 
@@ -48,7 +48,7 @@
       (loop
          (let C CELLS
             (loop
-               (set 2 P (| (cdr P) 1))  # Set mark bit
+               (set 2 P (| (val 2 P) 1))  # Set mark bit
                (setq P (ofs P 2))  # Next cell
                (? (=0 (dec 'C))) ) )
          (? (=0 (setq P (val P)))) ) )  # Next heap
@@ -61,7 +61,7 @@
    (let P (val $Link)  # Stack(s)
       (while P
          (mark (val P))  # Mark item
-         (shift P) ) )
+         (setq P (val 2 P)) ) )
    (let P (val $Bind)  # Bind frames
       (while P
          (mark (val P))  # Mark saved value
@@ -96,7 +96,7 @@
                   (let P (Crt: (env $Link any))  # Stack(s)
                      (while P
                         (mark (val P))  # Mark item
-                        (shift P) ) )
+                        (setq P (val 2 P)) ) )
                   (let P (Crt: (env $Bind any))  # Bind frames
                      (while P
                         (mark (val P))  # Mark saved value
@@ -118,9 +118,9 @@
    (let (Tos 0  P (val $Extern))  # Externals
       (loop
          (loop
-            (let X (any (& (cdr P) -2))
+            (let X (any (& (val 2 P) -2))
                (set 2 P X)  # Clear mark bit
-               (let Y (any (& (cdr X) -2))  # Right subtree
+               (let Y (any (& (val 2 X) -2))  # Right subtree
                   (set 2 X Y)  # Clear mark bit
                   (? (atom Y))
                   (let Z P  # Go right
@@ -133,13 +133,13 @@
                   (let Tail (val (tail S))
                      (unless (num? Tail)  # Has properties
                         (setq Tail (& Tail -10))  # Clear 'extern' tag and mark bit
-                        (until (num? (shift Tail))  # Skip property
+                        (until (num? (setq Tail (val 2 Tail)))  # Skip property
                            (setq Tail (& Tail -2)) ) )  # Clear mark bit
                      (add Tail Tail)  # Get carry
                      (when @@  # Dirty or deleted
                         (mark S) ) ) ) )
-            (let X (cdr P)  # Left subtree
-               (? (pair (car X))
+            (let X (val 2 P)  # Left subtree
+               (? (pair (val X))
                   (let Z P  # Go left
                      (setq P @)  # Invert tree
                      (set X Tos)
@@ -148,13 +148,13 @@
                (unless Tos
                   (goto 1) )
                (? (=0 (& Tos 8))  # Second visit
-                  (let (X Tos  Y (cdr X))  # Nodes
-                     (setq Tos (cdr Y))  # TOS on up link
+                  (let (X Tos  Y (val 2 X))  # Nodes
+                     (setq Tos (val 2 Y))  # TOS on up link
                      (set 2 Y P)
                      (setq P X) ) )
                (setq Tos (& Tos -9))  # Clear visit bit
-               (let (X Tos  Y (cdr X))  # Nodes
-                  (setq Tos (car Y))
+               (let (X Tos  Y (val 2 X))  # Nodes
+                  (setq Tos (val Y))
                   (set Y P)
                   (setq P X) ) ) ) ) )
    (: 1
@@ -168,8 +168,8 @@
       (: 2
          (loop
             (loop
-               (let X (cdr P)  # Right subtree
-                  (? (atom (cdr X)))
+               (let X (val 2 P)  # Right subtree
+                  (? (atom (val 2 X)))
                   (let Z P  # Go right
                      (setq P @)  # Invert tree
                      (set 2 X Tos)
@@ -177,37 +177,37 @@
             (loop
                (when (& (val (val P)) 1)  # External symbol not marked
                   (set $ExtCnt (- (val $ExtCnt) 1))  # Remove it
-                  (let X (cdr P)
+                  (let X (val 2 P)
                      (when (atom X)  # No subtrees
                         (set 2 P (| X 1))  # Set mark bit again
                         (setq P X)  # Use NIL
                         (goto 4) )  # Already traversed
-                     (when (atom (car X))  # No left branch
+                     (when (atom (val X))  # No left branch
                         (set 2 P (| X 1))  # Set mark bit again
-                        (setq P (cdr X))  # Use right branch
+                        (setq P (val 2 X))  # Use right branch
                         (set 2 X (| P 1))
                         (goto 4) )  # Already traversed
-                     (when (atom (cdr X))  # No right branch
+                     (when (atom (val 2 X))  # No right branch
                         (set 2 P (| X 1))  # Set mark bit again
-                        (setq P (car X))  # Use left branch
-                        (set 2 X (| (cdr X) 1))
+                        (setq P (val X))  # Use left branch
+                        (set 2 X (| (val 2 X) 1))
                         (goto 2) )
-                     (let Y (cdr (shift X))  # X on right branch
-                        (when (atom (car Y))  # No left sub-branches
+                     (let Y (val 2 (setq X (val 2 X)))  # X on right branch
+                        (when (atom (val Y))  # No left sub-branches
                            (set
-                              P (car X)  # Insert right sub-branch
-                              2 (cdr P) (cdr Y) )
+                              P (val X)  # Insert right sub-branch
+                              2 (val 2 P) (val 2 Y) )
                            (goto 3) )
-                        (setq Y (car Y))  # Left sub-branch
+                        (setq Y (val Y))  # Left sub-branch
                         (loop
-                           (? (atom (cadr Y))  # No more left branches
+                           (? (atom (val (val 2 Y)))  # No more left branches
                               (set  # Insert left sub-branch
-                                 P (car Y)
-                                 (cdr X) (cddr Y) ) )
+                                 P (val Y)
+                                 (val 2 X) (val 2 (val 2 Y)) ) )
                            (setq X Y  Y @) ) ) ) )  # Go down left
                (: 3
-                  (let X (cdr P)  # Left subtree
-                     (? (pair (car X))
+                  (let X (val 2 P)  # Left subtree
+                     (? (pair (val X))
                         (let Z P  # Go left
                            (setq P @)  # Invert tree
                            (set X Tos)
@@ -217,12 +217,12 @@
                      (unless Tos
                         (goto 5) )
                      (? (=0 (& Tos 8))  # Second visit
-                        (let (X Tos  Y (cdr X))  # Nodes
-                           (setq Tos (cdr Y))  # TOS on up link
+                        (let (X Tos  Y (val 2 X))  # Nodes
+                           (setq Tos (val 2 Y))  # TOS on up link
                            (set 2 Y P)
                            (setq P X) ) )
-                     (let (X (& Tos -9)  Y (cdr X))  # Clear visit bit
-                        (setq Tos (car Y))
+                     (let (X (& Tos -9)  Y (val 2 X))  # Clear visit bit
+                        (setq Tos (val Y))
                         (set Y P)
                         (setq P X) ) ) ) ) ) )
       (: 5 (set $Extern P)) )
@@ -234,7 +234,7 @@
                (let (A Avail  P (ofs Heap (- HEAP 2)))  # P on last cell in chunk
                   (setq Cnt CELLS)
                   (loop
-                     (when (& (cdr P) 1)  # Free cell
+                     (when (& (val 2 P) 1)  # Free cell
                         (set P Avail)  # Link avail
                         (setq Avail P)
                         (dec 'Cnt) )
@@ -250,7 +250,7 @@
          (loop
             (let P (ofs Heap (- HEAP 2))  # P on last cell in chunk
                (loop
-                  (when (& (cdr P) 1)  # Free cell
+                  (when (& (val 2 P) 1)  # Free cell
                      (set P Avail)  # Link avail
                      (setq Avail P)
                      (dec 'Cnt) )
@@ -267,7 +267,7 @@
 
 (de void need3 ()
    (let P (val $Avail)
-      (unless (and P (setq P (car P)) (car P))
+      (unless (and P (setq P (val P)) (val P))
          (gc) ) ) )
 
 # (gc ['cnt [cnt2]]) -> cnt | NIL
@@ -292,7 +292,7 @@
          (save2 Car Cdr
             (gc) )
          (setq P (val $Avail)) )
-      (set $Avail (car P))
+      (set $Avail (val P))
       (set P Car)
       (set 2 P Cdr)
       P ) )
@@ -302,7 +302,7 @@
       (when P
          (let Q (val P)
             (when Q
-               (set $Avail (car Q))
+               (set $Avail (val Q))
                (set P Car1)
                (set 2 P Cdr1)
                (set Q P)
@@ -312,7 +312,7 @@
       (save Cdr2
          (gc) ) )
    (let (P (val $Avail)  Q (val P))
-      (set $Avail (car Q))
+      (set $Avail (val Q))
       (set P Car1)
       (set 2 P Cdr1)
       (set Q P)
@@ -326,7 +326,7 @@
             (when Q
                (let R (val Q)
                   (when R
-                     (set $Avail (car R))
+                     (set $Avail (val R))
                      (set P Car1)
                      (set 2 P Cdr1)
                      (set Q Car2)
@@ -338,7 +338,7 @@
       (save2 Car2 Cdr2
          (gc) ) )
    (let (P (val $Avail)  Q (val P)  R (val Q))
-      (set $Avail (car R))
+      (set $Avail (val R))
       (set P Car1)
       (set 2 P Cdr1)
       (set Q Car2)
@@ -356,7 +356,7 @@
             (save Name
                (gc) ) )
          (setq P (val $Avail)) )
-      (set $Avail (car P))
+      (set $Avail (val P))
       (set P Name)
       (let S (sym P)
          (set S (if Val @ S))
@@ -376,7 +376,7 @@
       (unless P
          (gc)
          (setq P (val $Avail)) )
-      (set $Avail (car P))
+      (set $Avail (val P))
       (set P Dig)
       (set 2 P ZERO)
       (big P) ) )
@@ -387,7 +387,7 @@
          (save Big
             (gc) )
          (setq P (val $Avail)) )
-      (set $Avail (car P))
+      (set $Avail (val P))
       (set P Dig)
       (set 2 P Big)
       (big P) ) )

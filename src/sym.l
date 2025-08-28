@@ -1,4 +1,4 @@
-# 04jun25 Software Lab. Alexander Burger
+# 27aug25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -257,7 +257,7 @@
 # Is name interned?
 (de isIntern (Name Tree)
    (if (cnt? Name)  # Short name
-      (let X (car Tree)  # First tree
+      (let X (val Tree)  # First tree
          (loop
             (? (atom X) 0)  # Empty
             (let (S (car X)  Nm (name (val (tail S))))
@@ -267,7 +267,7 @@
                      (cddr X)
                      (cadr X) ) ) ) ) )
       # Long name
-      (let X (cdr Tree)  # Second tree
+      (let X (val 2 Tree)  # Second tree
          (loop
             (? (atom X) 0)  # Empty
             (let (S (car X)  Nm (name (val (tail S))))
@@ -328,7 +328,7 @@
 # Intern a symbol/name
 (de intern (Sym Val Name Tree More (i1 . Rpl))
    (if (cnt? Name)  # Short name
-      (let X (car Tree)  # First tree
+      (let X (val Tree)  # First tree
          (if (pair X)  # Not empty
             (loop
                (let (S (car X)  Nm (name (val (tail S))))
@@ -350,7 +350,7 @@
             # Empty
             (intern1 Sym Val Name Tree More) ) )
       # Long name
-      (let X (cdr Tree)  # Second tree
+      (let X (val 2 Tree)  # Second tree
          (if (pair X)  # Not empty
             (loop
                (let (S (car X)  Nm (name (val (tail S))))
@@ -614,7 +614,7 @@
                (loop
                   (let Z (cdar (++ Y))
                      (setq X
-                        (consTree (car Z) (consTree (cdr Z) X)) ) )
+                        (consTree (val Z) (consTree (val 2 Z) X)) ) )
                   (? (atom Y) X) ) ) )
          ((t? X)  # Transient symbols
             (consTree (val $Transient) (consTree (val 2 $Transient) $Nil)) )
@@ -623,7 +623,7 @@
          ((sym? X)  # Given namespace
             (let Y (cdar X)
                (if (pair Y)
-                  (consTree (car Y) (consTree (cdr Y) $Nil))
+                  (consTree (val Y) (consTree (val 2 Y) $Nil))
                   $Nil ) ) )
          ((nil? (car X))  # Direct internal tree
             (let Y (val (car (val $Intern)))
@@ -631,7 +631,7 @@
                   (val Y)
                   (val 2 Y) ) ) )
          ((t? (car X))  # Direct transient trees
-            (if (nil? (cdr X))
+            (if (nil? (val 2 X))
                (val $Transient)
                (val 2 $Transient) ) )
          (T (val $Extern)) ) ) ) # Direct external tree

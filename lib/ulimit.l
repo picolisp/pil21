@@ -1,4 +1,4 @@
-# 27jun25 Software Lab. Alexander Burger
+# 27aug25 Software Lab. Alexander Burger
 
 (symbols 'ulimit 'pico)
 
@@ -30,7 +30,9 @@
 
 # (ulimit~stack ['cnt))
 (de stack (KiB)
-   (rlimit RLIMIT_STACK KiB 1024) )
+   (prog1
+      (rlimit RLIMIT_STACK KiB 1024)
+      (%@ "ulimStk") ) )
 
 # (ulimit~files ['cnt))
 (de files (N)

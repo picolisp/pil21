@@ -1,4 +1,4 @@
-# 08aug23 Software Lab. Alexander Burger
+# 26aug25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -73,14 +73,14 @@
          (when (sym? (setq V (val (tail Sym))))
             (dbFetch Exe Sym)
             (setq V (& (val (tail Sym)) -9)) )
-         (set 4 (cdr E)
+         (set 4 (val 2 E)
             (if (pair V) (car V) V) )
          (set A V) )
       (when (pair (car A))
          (loop
             (setq R (evList E))
             (? (atom (set A (cdar A))))
-            (let (P (cdr E)  Q A)
+            (let (P (val 2 E)  Q A)
                (set 4 P (car @))
                (while (pair (shift P))
                   (set 4 P
@@ -104,7 +104,7 @@
                   (push NIL $Nil ZERO (eval (car X)) NIL) ) )
             (set P (link (ofs P 3))) ) )
       (loop
-         (let P (cdr E)
+         (let P (val 2 E)
             (? (atom (val 4 P)))
             (setq R (evList E))
             (loop
@@ -135,7 +135,7 @@
          (loop
             (setq R (evList E))
             (? (atom (set A (cdar A))))
-            (let (P (cdr E)  Q A)
+            (let (P (val 2 E)  Q A)
                (set 4 P (car @))
                (while (pair (shift P))
                   (set 4 P
@@ -160,7 +160,7 @@
                   (push NIL $Nil ZERO (eval (car X)) NIL) ) )
             (set P (link (ofs P 3))) ) )
       (loop
-         (let P (cdr E)
+         (let P (val 2 E)
             (? (atom (val 4 P)))
             (let Y (cons (evList E) $Nil)
                (setq L
@@ -200,7 +200,7 @@
                      (set 2 L Y)
                      (setq R (safe Y)) ) ) )
             (? (atom (set A (cdar A))))
-            (let (P (cdr E)  Q A)
+            (let (P (val 2 E)  Q A)
                (set 4 P (car @))
                (while (pair (shift P))
                   (set 4 P
@@ -225,7 +225,7 @@
                   (push NIL $Nil ZERO (eval (car X)) NIL) ) )
             (set P (link (ofs P 3))) ) )
       (loop
-         (let P (cdr E)
+         (let P (val 2 E)
             (? (atom (val 4 P)))
             (let Y (evList E)
                (when (pair Y)
@@ -273,7 +273,7 @@
                            (set 2 Z Y) )
                         (setq R (safe Y)) ) ) ) )
             (? (atom (set A (cdar A))))
-            (let (P (cdr E)  Q A)
+            (let (P (val 2 E)  Q A)
                (set 4 P (car @))
                (while (pair (shift P))
                   (set 4 P
@@ -311,7 +311,7 @@
                         (set 2 L Y)
                         (setq R (safe Y)) ) ) ) )
             (? (atom (set A (cdar A))))
-            (let (P (cdr E)  Q A)
+            (let (P (val 2 E)  Q A)
                (set 4 P (car @))
                (while (pair (shift P))
                   (set 4 P
@@ -349,7 +349,7 @@
                         (set 2 L Y)
                         (setq R (safe Y)) ) ) ) )
             (? (atom (set A (cdar A))))
-            (let (P (cdr E)  Q A)
+            (let (P (val 2 E)  Q A)
                (set 4 P (car @))
                (while (pair (shift P))
                   (set 4 P
@@ -372,7 +372,7 @@
                   (push NIL $Nil ZERO (eval (car X)) NIL) ) )
             (set P (link (ofs P 3))) ) )
       (loop
-         (let P (cdr E)
+         (let P (val 2 E)
             (? (atom (val 4 P)) $Nil)
             (? (not (nil? (evList E)))
                (set $At2 @)
@@ -406,7 +406,7 @@
                (set $At2 @)
                (caar A) )
             (? (atom (set A (cdar A))) $Nil)
-            (let (P (cdr E)  Q A)
+            (let (P (val 2 E)  Q A)
                (set 4 P (car @))
                (while (pair (shift P))
                   (set 4 P
@@ -437,7 +437,7 @@
          (loop
             (? (not (nil? (evList E))) @)
             (? (atom (set A (cdar A))) $Nil)
-            (let (P (cdr E)  Q A)
+            (let (P (val 2 E)  Q A)
                (set 4 P (car @))
                (while (pair (shift P))
                   (set 4 P
@@ -468,7 +468,7 @@
          (loop
             (? (nil? (evList E)) @)
             (? (atom (set A (cdar A))) $T)
-            (let (P (cdr E)  Q A)
+            (let (P (val 2 E)  Q A)
                (set 4 P (car @))
                (while (pair (shift P))
                   (set 4 P
@@ -500,7 +500,7 @@
             (unless (nil? (evList E))
                (inc 'R (hex "10")) )  # Increment count
             (? (atom (set A (cdar A))))
-            (let (P (cdr E)  Q A)
+            (let (P (val 2 E)  Q A)
                (set 4 P (car @))
                (while (pair (shift P))
                   (set 4 P
@@ -534,7 +534,7 @@
                (save @
                   (setq R (safe (adds R @))) ) )
             (? (atom (set A (cdar A))))
-            (let (P (cdr E)  Q A)
+            (let (P (val 2 E)  Q A)
                (set 4 P (car @))
                (while (pair (shift P))
                   (set 4 P
@@ -570,7 +570,7 @@
                   (setq R (caar A))
                   (setq R2 (safe Y)) ) )
             (? (atom (set A (cdar A))))
-            (let (P (cdr E)  Q A)
+            (let (P (val 2 E)  Q A)
                (set 4 P (car @))
                (while (pair (shift P))
                   (set 4 P
@@ -607,7 +607,7 @@
                   (setq R (caar A))
                   (setq R2 (safe Y)) ) )
             (? (atom (set A (cdar A))))
-            (let (P (cdr E)  Q A)
+            (let (P (val 2 E)  Q A)
                (set 4 P (car @))
                (while (pair (shift P))
                   (set 4 P
@@ -683,7 +683,7 @@
                      (set 2 L Y)
                      (setq R (safe Y)) ) ) )
             (? (atom (set A (cdar A))))
-            (let (P (cdr E)  Q A)
+            (let (P (val 2 E)  Q A)
                (set 4 P (car @))
                (while (pair (shift P))
                   (set 4 P
@@ -691,7 +691,7 @@
                         ((atom (car (shift Q))) @)
                         ((atom (set Q (cdr @))) @)
                         (T (car @)) ) ) ) ) )
-         (set 4 E Fun2  4 (cdr E) R)
+         (set 4 E Fun2  4 (val 2 E) R)
          (let Z (setq R (safe (evList E)))
             (loop
                (set Z (cdar Z))

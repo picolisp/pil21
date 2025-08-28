@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 22may25 Software Lab. Alexander Burger
+# 27aug25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -422,13 +422,10 @@ href="refL.html#locale">locale</a></code>.
 -> "49 1234 5678-0"
 </pre></dd>
 
-<dt><a id="export"><code>(export ['sym]) sym|lst</code></a></dt>
-<dd>Intern symbols explicitly in the second <a
-href="ref.html#namespaces">namespace</a> in the current search order, or
-in the given namespace if <code>sym</code> is given.
-<code>(export)</code> expects a single symbol or a list of symbols
-immediately following in the current input stream. See also <code><a
-href="refP.html#pico">pico</a></code>, <code><a
+<dt><a id="export"><code>(export . lst) -> lst</code></a></dt>
+<dd>Intern all symbols in <code>lst</code> explicitly in the second <a
+href="ref.html#namespaces">namespace</a> in the current search order. See also
+<code><a href="refP.html#pico">pico</a></code>, <code><a
 href="refS.html#symbols">symbols</a></code>, <code><a
 href="refP.html#private">private</a></code>, <code><a
 href="refL.html#local">local</a></code>, <code><a
@@ -438,7 +435,7 @@ href="refI.html#intern">intern</a></code>.
 <pre>
 : (symbols 'myLib 'pico)
 -> (pico)
-myLib: (export) (foo bar)  # Intern 'foo' and 'bar' in 'pico'
+myLib: (export foo bar)  # Intern 'foo' and 'bar' in 'pico'
 </pre></dd>
 
 <dt><a id="expr"><code>(expr 'sym) -> fun</code></a></dt>

@@ -1,26 +1,33 @@
-# 11aug25 Software Lab. Alexander Burger
+# 28aug25 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
 
-(local) (@ @@ @@@ cross void null i1 i1* i1** i8 i8* i8** i8*** i16 i16*
-i16** i32 i32* i32** i64 i64* i64** any YES NO ZERO -ZERO ONE -ONE
-SymTab begin end $ ? short equ global var str const globals array table
-symTab inline tailcall define struct $Nil $T $Link drop)
+(local) (*Quiche @ @@ @@@ quiche cross void null i1 i1* i1** i8 i8* i8**
+i8*** i16 i16* i16** i32 i32* i32** i64 i64* i64** any YES NO ZERO -ZERO
+ONE -ONE SymTab begin end $ ? short equ global var str const globals
+array table symTab inline tailcall define struct $Nil $T $Link drop)
 
 (import pico llvm symbols local T NIL load use setq prog */ ** >> char hex)
 
+(de quiche ()
+   (on *Quiche) )
+
+(export quiche)
 
 ### Cross-compiler private ###
 (symbols 'cross 'llvm 'pico)
 
 (import any inc dec ++ shift)
 
-(local) (*Shared *Exclude *Map *Map2 putMap *Strings *Ssa *Lbl *Log
-*Curr *Exit *Bind *Phi *Call *Ret log asm ssa phi +phi br label +lbl
-+bind type func ptr pointee store A B C I L M N P Q V X Y Exe Prg Typ
-Sym Ret Args Ext Table Body Var Val Lst Lbl Flg Skip True False Beg End
-Safe *Safe)
+(local) (*Shared *Exclude *JumpTab *Map *Map2 putMap *Strings *Ssa *Lbl
+*Log *Curr *Exit *Bind *Phi *Call *Ret log asm ssa phi +phi br label
++lbl type func ptr pointee store A B C I L M N P Q V X Y Exe Prg Typ Sym
+Ret Args Ext Table Body Var Val Lst Lbl Flg Skip True False Beg End Safe
+*Safe)
+
+(de llvm~exclude Lst
+   (setq *Exclude Lst) )
 
 (off *Map *Map2)
 
@@ -39,10 +46,12 @@ Safe *Safe)
          T ) )
    Sym )
 
-(local) de
+(local) (de DLMAX)
 
 (pico~de de Prg
    (def (putMap (car Prg)) (cdr Prg)) )
+
+(de DLMAX . 64)  # Max number of 'dlfun's
 
 # Constant primitives
 (de void . void)
@@ -160,7 +169,7 @@ Safe *Safe)
 (de br (A B C)
    (link
       (if B
-         (pack "br i1 " A ", label %$" (+phi B) ", label %$" (+phi C))
+         (text "br i1 @1, label %$@2, label %$@3" A (+phi B) (+phi C))
          (pack "br label %$" (+phi A)) ) ) )
 
 (de label (N)
@@ -197,32 +206,6 @@ Safe *Safe)
 (de +lbl ()
    (inc '*Lbl) )
 
-(de +bind (Lst Var)
-   (when
-      (fish
-         '((X)
-            (when (pair X)
-               (or
-                  (and
-                     (memq (car X) '(llvm~inc llvm~dec))
-                     (pair (cadr X))
-                     (== 'quote (caadr X))
-                     (== Var (cdadr X)) )
-                  (and
-                     (memq (car X) '(llvm~setq llvm~++ llvm~shift))
-                     (for (L (cdr X)  L  (cddr L))
-                        (T (== Var (car L)) T) ) )
-                  (and
-                     (== (car X) 'llvm~xchg)
-                     (or
-                        (and (== 'quote (caadr X)) (== Var (cdadr X)))
-                        (and (== 'quote (caaddr X)) (== Var (cdaddr X))) ) )
-                  (and
-                     (sym? (car X))
-                     (memq Var (; X 1 phi)) ) ) ) )
-         Lst )
-      (push '*Bind Var) ) )
-
 (de type (Typ)
    (cond
       ((== 'any Typ) 'i64)
@@ -256,24 +239,26 @@ Safe *Safe)
             (setq X (def (format X) (pointee (val P)))) )
          (ifn Ofs
             (link
-               (pack "store " (type (val X)) " " X ", "
+               (text "store @1 @2, @3@4 @5"
+                  (type (val X)) X
                   (type (val P)) (and (pair (val P)) "*")
-                  " " P ) )
+                  P ) )
             (ssa (inc '*Ssa) "getelementptr "
                (type (val X)) ", "
                (type (val P)) (and (pair (val P)) "*")
                " " P ", i32 " Ofs )
             (link
-               (pack "store " (type (val X)) " " X ", "
+               (text "store @1 @2, @3@4 %@5"
+                  (type (val X)) X
                   (type (val P)) (and (pair (val P)) "*")
-                  " %" *Ssa ) ) ) )
+                  *Ssa ) ) ) )
       ((pre? "@" P)
          (ssa (inc '*Ssa) "inttoptr i64 " P " to i64*")
          (when Ofs
             (ssa (inc '*Ssa) "getelementptr i64, i64* %" (dec *Ssa) ", i32 " Ofs) )
-         (link (pack "store i64 " X ", i64* %" *Ssa)) )
+         (link (text "store i64 @1, i64* %@2" X *Ssa)) )
       (NIL
-         (link (pack "store i64 " X ", i64* " P)) ) )
+         (link (text "store i64 @1, i64* @2" X P)) ) )
    X )
 
 (de $ (Str)
@@ -281,8 +266,8 @@ Safe *Safe)
       (cadr pico~@)
       (let
          (Sym (pack "@$" (inc (length *Strings)))
-            Arr (pack "[" (inc (size Str)) " x i8]")
-            Val (def (pack "bitcast (" Arr "* " Sym " to i8*)") 'i8*) )
+            Arr (text "[@1 x i8]" (inc (size Str)))
+            Val (def (text "bitcast (@1* @2 to i8*)" Arr Sym) 'i8*) )
          (push '*Strings
             (cons Str Val Sym
                (pack
@@ -337,9 +322,9 @@ Safe *Safe)
       (eval (car Lst)) ) )
 
 (de str Lst
-   (let ((Sym Val) Lst  Arr (pack "[" (inc (size Val)) " x i8]"))
+   (let ((Sym Val) Lst  Arr (text "[@1 x i8]" (inc (size Val))))
       (def (putMap Sym)
-         (def (pack "bitcast (" Arr "* @" Sym " to i8*)") 'i8*) )
+         (def (text "bitcast (@1* @@@2 to i8*)" Arr Sym) 'i8*) )
       (prin "@" Sym " = constant " Arr " c\"")
       (for C (chop Val)
          (if (or (> " " C) (sub? C "\"\\"))
@@ -347,15 +332,22 @@ Safe *Safe)
             (prin C) ) )
       (prinl "\\00\"") ) )
 
-(de const (Val)
+(de const (Val Var)
    (cond
       ((pre? "_" Val)
-         (prin
-            "  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast "
-            (if (pre? "__" Val) "(i64(i64,i64)*" "(i64(i64)*")
-            " @"
-            pico~@
-            " to i8*), i32 2) to i64)" ) )
+         (ifn Var
+            (prin
+               "  i64 ptrtoint (i8* getelementptr (i8, i8* bitcast "
+               (if (pre? "__" Val) "(i64(i64,i64)*" "(i64(i64)*")
+               " @"
+               Val
+               " to i8*), i32 2) to i64)" )
+            (prin "  i64 " (short (length (val Var))))
+            (push Var
+               (text
+                  "  i64 ptrtoint (i8* bitcast @1 @@@2 to i8*) to i64)"
+                  (if (pre? "__" Val) "(i64(i64,i64)*" "(i64(i64)*")
+                  Val ) ) ) )
       ((pre? "$" Val)
          (if (; Val offset)
             (prin
@@ -377,10 +369,8 @@ Safe *Safe)
          Len (if (pair Lst) (length Lst) (eval Lst)) )
       (def (putMap Sym)
          (def
-            (pack
-               "bitcast (["
-               Len " x " (setq Typ (type Typ))
-               "]* @" Sym " to " (ptr Typ) ")" )
+            (text "bitcast ([@1 x @2]* @@@3 to @4)"
+               Len (setq Typ (type Typ)) Sym (ptr Typ) )
             (ptr Typ) ) )
       (prin
          "@" Sym " = " (when *Shared "external ")
@@ -463,12 +453,8 @@ Safe *Safe)
             (put Sym 'offset (+ I (or (cadddr Lst) 8)))
             (def Sym
                (def
-                  (pack
-                     "ptrtoint (i8* getelementptr (i8, i8* bitcast ([" (; Table length) " x i64]* @"
-                     Table
-                     " to i8*), i32 "
-                     (; Sym offset)
-                     ") to i64)" )
+                  (text "ptrtoint (i8* getelementptr (i8, i8* bitcast ([@1 x i64]* @@@2 to i8*), i32 @3) to i64)"
+                     (; Table length) Table (; Sym offset) )
                   'any ) ) )
          (unless *Shared
             (let Name
@@ -502,7 +488,9 @@ Safe *Safe)
                         " to i8*), i32 "
                         (+ I 16 4)
                         ") to i64)," ) ) )
-               (const (caddr Lst))  # Value
+               (if *Quiche
+                  (const (caddr Lst) '*JumpTab)  # Value
+                  (const (caddr Lst)) )
                (and
                   (cadr Lst)
                   (pre? "_" (caddr Lst))
@@ -513,32 +501,36 @@ Safe *Safe)
                   (prinl "  i64 " (car Name) ",")
                   (prin "  i64 " (cadr Name)) ) )
             (prinl (unless (== Lst (last Args)) ",")) )
-         (inc 'I 16) ) )
-   (unless *Shared
-      (prinl "], align 16") ) )
+         (inc 'I 16) )
+      (unless *Shared
+         (prinl "], align 16")
+         (when *Quiche
+            (prinl "@$JumpIx = global i64 0")  # 0 .. 63
+            (prinl "@$JumpTab = " "global [" (+ (length *JumpTab) DLMAX) " x i64] [")
+            (for S (reverse *JumpTab)
+               (prinl S ",") )
+            (for I DLMAX  # Empty slots for 'dlfun'
+               (prinl
+                  "  i64 ptrtoint (i8* bitcast (i64(i64)* @_Nil to i8*) to i64)"
+                  (unless (== I DLMAX) ",")) )
+            (prinl "]") ) ) ) )
 
 (de inline Lst
    (let L (and (lst? (car Lst)) (++ Lst))
-      (put
-         (def (putMap (++ Lst))
-            (let ((@Args . @Body) Lst)
-               (bind
-                  (mapcar
-                     '((X) (cons X (name X)))
-                     @Args )
-                  (setq
-                     @Body (fill @Body @Args)
-                     @Args (mapcar val @Args) ) )
-               (fill
-                  '(@Args
-                     (log)
-                     (let *Log NIL
-                        (let *Bind NIL
-                           (for Var '@Args
-                              (+bind '@Body Var) )
-                           . @Body ) ) ) ) ) )
-         'phi
-         L ) ) )
+      (def (putMap (++ Lst))
+         (let ((@Args . @Body) Lst)
+            (bind
+               (mapcar
+                  '((X) (cons X (name X)))
+                  @Args )
+               (setq
+                  @Body (fill @Body @Args)
+                  @Args (mapcar val @Args) ) )
+            (fill
+               '(@Args
+                  (log)
+                  (let (*Bind '@Args  *Log)
+                     . @Body ) ) ) ) ) ) )
 
 (de tailcall Prg
    (let *Call "tail call"
@@ -568,7 +560,7 @@ Safe *Safe)
                         Args
                         (mapcar
                            '((A)
-                              (+bind Body (fin A))
+                              (push '*Bind (fin A))
                               (set
                                  (set (fin A) (pack "%" (inc '*Ssa)))
                                  (if (atom A) 'any (car A)) ) )
@@ -700,6 +692,37 @@ Safe *Safe)
          (T
             (let *Log NIL
                (llvm~n0 X) ) ) ) ) )
+
+# Quiche checks
+(de okVar (Val . Prg)
+   (ifn *Quiche
+      (run Prg)
+      (let (Var (box)  Beg *Curr  Ok (+lbl)  End (+lbl))
+         (ssa (inc '*Ssa) "and i64 " Val ", 6")  # Not a number
+         (ssa (inc '*Ssa) "icmp ne i64 %" (dec *Ssa) ", 0")
+         (set Var $Nil)
+         (phi End Var)
+         (br (pack "%" *Ssa) End Ok)
+         (label Ok)
+         (set Var (run Prg))
+         (phi End Var)
+         (br End)
+         (label End) ) ) )
+
+(de okCell (Val . Prg)
+   (ifn *Quiche
+      (run Prg)
+      (let (Var (box)  Beg *Curr  Ok (+lbl)  End (+lbl))
+         (ssa (inc '*Ssa) "and i64 " Val ", 15")  # Not a number or symbol
+         (ssa (inc '*Ssa) "icmp ne i64 %" (dec *Ssa) ", 0")
+         (set Var $Nil)
+         (phi End Var)
+         (br (pack "%" *Ssa) End Ok)
+         (label Ok)
+         (set Var (run Prg))
+         (phi End Var)
+         (br End)
+         (label End) ) ) )
 
 # Type casts
 (asm ()
@@ -920,8 +943,10 @@ Safe *Safe)
                         (let Typ (pointee V)
                            (if (num? Y)
                               (ssa (inc '*Ssa) "getelementptr " Typ ", " V " " X ", i32 " @Sgn Y)
-                              (ssa (inc '*Ssa) "ptrtoint " V " " X " to i64")
-                              (ssa (inc '*Ssa) "ptrtoint " (val Y) " " Y " to i64")
+                              (unless (== 'i64 V)
+                                 (ssa (inc '*Ssa) "ptrtoint " V " " X " to i64") )
+                              (unless (== 'i64 (val Y))
+                                 (ssa (inc '*Ssa) "ptrtoint " (val Y) " " Y " to i64") )
                               (ssa (inc '*Ssa) @Op2 " i64 %" (- *Ssa 2) ", %" (dec *Ssa))
                               (setq V 'i64) ) ) )
                      (T (quit "Bad type" V)) )
@@ -1041,7 +1066,7 @@ Safe *Safe)
       (if (=0 Y)
          X
          (casq (val X)
-            (any
+            ((i64 any)
                (if (num? Y)
                   (ssa (inc '*Ssa) "add i64 " X ", " (* 8 Y))
                   (if (== 'i64 (val Y))
@@ -1059,36 +1084,40 @@ Safe *Safe)
 
 (asm ()
    ((X)
-      (ssa (inc '*Ssa) "inttoptr i64 " X " to i64*")
-      (ssa (inc '*Ssa) "load i64, i64* %" (dec *Ssa))
-      (def (pack "%" *Ssa) 'any) )
+      (okVar X
+         (ssa (inc '*Ssa) "inttoptr i64 " X " to i64*")
+         (ssa (inc '*Ssa) "load i64, i64* %" (dec *Ssa))
+         (def (pack "%" *Ssa) 'any) ) )
    (llvm~car) )
 
 (asm ()
    ((X)
-      (ssa (inc '*Ssa) "inttoptr i64 " X " to i64*")
-      (ssa (inc '*Ssa) "getelementptr i64, i64* %" (dec *Ssa) ", i32 1")
-      (ssa (inc '*Ssa) "load i64, i64* %" (dec *Ssa))
-      (def (pack "%" *Ssa) 'any) )
+      (okCell X
+         (ssa (inc '*Ssa) "inttoptr i64 " X " to i64*")
+         (ssa (inc '*Ssa) "getelementptr i64, i64* %" (dec *Ssa) ", i32 1")
+         (ssa (inc '*Ssa) "load i64, i64* %" (dec *Ssa))
+         (def (pack "%" *Ssa) 'any) ) )
    (llvm~cdr) )
 
 (asm ()
    (Args
-      (ssa (inc '*Ssa) "inttoptr i64 " (val (car Args)) " to i64*")
-      (ssa (inc '*Ssa) "load i64, i64* %" (dec *Ssa))
-      (let P *Ssa
-         (ssa (inc '*Ssa) "getelementptr i64, i64* %" (- *Ssa 2) ", i32 1")
+      (okCell (val (car Args))
+         (ssa (inc '*Ssa) "inttoptr i64 " (val (car Args)) " to i64*")
+         (ssa (inc '*Ssa) "getelementptr i64, i64* %" (dec *Ssa) ", i32 1")
          (ssa (inc '*Ssa) "load i64, i64* %" (dec *Ssa))
          (set (car Args) (def (pack "%" *Ssa) 'any))
-         (def (pack "%" P) 'any) ) )
+         (ssa (inc '*Ssa) "load i64, i64* %" (- *Ssa 3))
+         (def (pack "%" *Ssa) 'any) ) )
    (llvm~++) )
 
 (asm ()
    (Args
-      (ssa (inc '*Ssa) "inttoptr i64 " (val (car Args)) " to i64*")
-      (ssa (inc '*Ssa) "getelementptr i64, i64* %" (dec *Ssa) ", i32 1")
-      (ssa (inc '*Ssa) "load i64, i64* %" (dec *Ssa))
-      (set (car Args) (def (pack "%" *Ssa) 'any)) )
+      (set (car Args)
+         (okCell (val (car Args))
+            (ssa (inc '*Ssa) "inttoptr i64 " (val (car Args)) " to i64*")
+            (ssa (inc '*Ssa) "getelementptr i64, i64* %" (dec *Ssa) ", i32 1")
+            (ssa (inc '*Ssa) "load i64, i64* %" (dec *Ssa))
+            (def (pack "%" *Ssa) 'any)) ) )
    (llvm~shift) )
 
 (asm ()
@@ -1097,7 +1126,7 @@ Safe *Safe)
          (when (num? X)
             (setq Ofs (dec X)  X (next)) )
          (casq (val X)
-            (any
+            ((i64 any)
                (if (pre? "@" X)
                   (ssa (inc '*Ssa) "load " "i64, i64* " X)
                   (ssa (inc '*Ssa) "inttoptr i64 " X " to i64*")
@@ -1147,23 +1176,15 @@ Safe *Safe)
 (asm ()
    ((X Y Z Flg)
       (link
-         (pack
-            "call void @llvm.memcpy.p0i8.p0i8.i64(i8* "
-            (and Flg "align 8 ") X
-            ", " 'i8* " " Y
-            ", i64 " Z
-            ", i1 0)" ) ) )
+         (text "call void @@llvm.memcpy.p0i8.p0i8.i64(i8* @1@2, i8* @3, i64 @4, i1 0)"
+            (and Flg "align 8 ") X Y Z ) ) )
    (llvm~memcpy) )
 
 (asm ()
    ((X Y Z Flg)
       (link
-         (pack
-            "call void @llvm.memset.p0i8.i64(i8* "
-            (and Flg "align 8 ") X
-            ", " 'i8 " " Y
-            ", i64 " Z
-            ", i1 0)" ) ) )
+         (text "call void @@llvm.memset.p0i8.i64(i8* @1@2, i8 @3, i64 @4, i1 0)"
+            (and Flg "align 8 ") X Y Z ) ) )
    (llvm~memset) )
 
 (asm ()
@@ -1174,12 +1195,12 @@ Safe *Safe)
                (if (pair X)
                   (recur ()
                      (let (Var (++ X)  Val (eval (++ X)))
-                        (and (atom Val) (+bind Lst Var))
+                        (push '*Bind Var)
                         (bind Var
                            (set Var Val)
                            (if X (recurse) (run Lst)) ) ) )
                   (let Val (eval (++ Lst))
-                     (and (atom Val) (+bind Lst X))
+                     (push '*Bind X)
                      (bind X
                         (set X Val)
                         (run Lst) ) ) )
@@ -1193,7 +1214,7 @@ Safe *Safe)
    ((P)
       (if P
          (prog
-            (link (pack "call void @llvm.stackrestore(i8* " P ")"))
+            (link (text "call void @@llvm.stackrestore(i8* @1)" P))
             P )
          (ssa (inc '*Ssa) "call i8* @llvm.stacksave()")
          (def (pack "%" *Ssa) 'i8*) ) )
@@ -1246,11 +1267,52 @@ Safe *Safe)
 # Flow
 (asm ()
    ((Fun X Y)
-      (ssa (inc '*Ssa) "and i64 " Fun ", -3")
-      (ssa (inc '*Ssa) "inttoptr i64 %" (dec *Ssa) " to i64(i64,i64)*")
-      (ssa (inc '*Ssa) "call i64 %" (dec *Ssa) "(i64 " X "," "i64 " Y ")")
-      (def (pack "%" *Ssa) 'any) )
+      (cond
+         (*Quiche
+            (let (Var (box)  Ok1 (+lbl)  Ok2 (+lbl)  End (+lbl))
+               (set Var $Nil)
+               (ssa (inc '*Ssa) "lshr i64 " Fun ", 4")
+               (ssa (inc '*Ssa) "icmp slt i64 %" (setq Fun (dec *Ssa)) ", 0")
+               (phi End Var)
+               (br (pack "%" *Ssa) End Ok1)
+               (label Ok1)
+               (ssa (inc '*Ssa) "icmp sgt i64 %" Fun ", " (+ (length *JumpTab) DLMAX))
+               (phi End Var)
+               (br (pack "%" *Ssa) End Ok2)
+               (label Ok2)
+               (ssa (inc '*Ssa) "getelementptr i64, i64* bitcast ([" (+ (length *JumpTab) DLMAX) " x i64]* @$JumpTab to i64*), i64 %" Fun)
+               (ssa (inc '*Ssa) "load i64, i64* %" (dec *Ssa))
+               (ssa (inc '*Ssa) "inttoptr i64 %" (dec *Ssa) " to i64(i64,i64)*")
+               (ssa (inc '*Ssa) "call i64 %" (dec *Ssa) "(i64 " X "," "i64 " Y ")")
+               (set Var (def (pack "%" *Ssa) 'any))
+               (phi End Var)
+               (br End)
+               (label End) ) )
+         (T
+            (ssa (inc '*Ssa) "and i64 " Fun ", -3")
+            (ssa (inc '*Ssa) "inttoptr i64 %" (dec *Ssa) " to i64(i64,i64)*")
+            (ssa (inc '*Ssa) "call i64 %" (dec *Ssa) "(i64 " X "," "i64 " Y ")")
+            (def (pack "%" *Ssa) 'any) ) ) )
    (llvm~subr) )
+
+(asm ()
+   ((Fun)
+      (cond
+         (*Quiche
+            (ssa (inc '*Ssa) "load i64, i64* @$JumpIx")
+            (ssa (inc '*Ssa) "add i64 %" (dec *Ssa) ", 1")
+            (ssa (inc '*Ssa) "and i64 %" (dec *Ssa) ", " (dec DLMAX))
+            (link (text "store i64 %@1, i64* @@$JumpIx" *Ssa))
+            (ssa (inc '*Ssa) "add i64 %" (- *Ssa 3) ", " (length *JumpTab))
+            (ssa (inc '*Ssa) "getelementptr i64, i64* bitcast ([" (+ (length *JumpTab) DLMAX) " x i64]* @$JumpTab to i64*), i64 %" (dec *Ssa))
+            (link (text "store i64 @1, i64* %@2" Fun *Ssa))
+            (ssa (inc '*Ssa) "shl i64 %" (- *Ssa 2) ", 4")
+            (ssa (inc '*Ssa) "or i64 %" (dec *Ssa) ", 2")
+            (def (pack "%" *Ssa) 'i64) )
+         (T
+            (ssa (inc '*Ssa) "or i64 " Fun ", 2")
+            (def (pack "%" *Ssa) 'i64) ) ) )
+   (llvm~dlfun) )
 
 (asm (@Val1 @Val2 @Lbl1 @Lbl2)
    (Prg
@@ -1354,9 +1416,8 @@ Safe *Safe)
             End (if Flg (+lbl) True)
             X (setq llvm~@ (eval (++ Lst))) )
          (link
-            (pack
-               "switch " (type (val X)) " " X
-               ", label %$" (+phi True) " [" ) )
+            (text "switch @1 @2, label %$@3 ["
+               (type (val X)) X (+phi True) ) )
          (let Lbl
             (extract
                '((Prg)
@@ -1365,9 +1426,8 @@ Safe *Safe)
                         (prog1
                            (+lbl)
                            (link
-                              (pack
-                                 "  " (type (val X)) " " Y
-                                 ", label %$" (+phi @) ) ) ) ) ) )
+                              (text "  @1 @2, label %$@3"
+                                 (type (val X)) Y (+phi @) ) ) ) ) ) )
                Lst )
             (link "]")
             (for Prg Lst
@@ -1498,15 +1558,15 @@ Safe *Safe)
          (prog1
             (pico~let *Log T
                (run pico~@) )
-            (set $Link (cdr P)) )
-         (set $Link (cdr P)) ) ) )
+            (set $Link (val 2 P)) )
+         (set $Link (val 2 P)) ) ) )
 
 (cross~de pop (P)
    (log)
    (pico~let *Log NIL
       (prog1
          (val P)
-         (set $Link (cdr P)) ) ) )
+         (set $Link (val 2 P)) ) ) )
 
 (cross~de save (X . Prg)
    (log)

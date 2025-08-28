@@ -1,4 +1,4 @@
-# 09jul24 Software Lab. Alexander Burger
+# 27aug25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -835,7 +835,7 @@
             (unless (t? (binRead))  # First property value
                (set Nm (cons @ (val Nm))) )  # Cons with key
             (until (nil? (binRead))  # Next property key
-               (set 2 Nm (cons @ (cdr Nm)))
+               (set 2 Nm (cons @ (val 2 Nm)))
                (shift Nm)
                (unless (t? (binRead))  # Next property value
                   (set Nm (cons @ (val Nm))) ) ) )  # Cons with key
