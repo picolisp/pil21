@@ -3,6 +3,7 @@
  */
 
 #include <stdio.h>
+#include <stdlib.h>
 
 void picolisp(char*, int, int, char**);
 char *evaluate(char*);
