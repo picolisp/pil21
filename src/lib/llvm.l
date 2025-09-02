@@ -1,4 +1,4 @@
-# 28aug25 Software Lab. Alexander Burger
+# 02sep25 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -20,14 +20,17 @@ array table symTab inline tailcall define struct $Nil $T $Link drop)
 
 (import any inc dec ++ shift)
 
-(local) (*Shared *Exclude *JumpTab *Map *Map2 putMap *Strings *Ssa *Lbl
-*Log *Curr *Exit *Bind *Phi *Call *Ret log asm ssa phi +phi br label
-+lbl type func ptr pointee store A B C I L M N P Q V X Y Exe Prg Typ Sym
-Ret Args Ext Table Body Var Val Lst Lbl Flg Skip True False Beg End Safe
-*Safe)
+(local) (*Shared *Exclude *Patch *JumpTab *Map *Map2 putMap *Strings
+*Ssa *Lbl *Log *Curr *Exit *Bind *Phi *Call *Ret log asm ssa phi +phi br
+label +lbl type func ptr pointee store A B C I L M N P Q V X Y Exe Prg
+Typ Sym Ret Args Ext Table Body Var Val Lst Lbl Flg Skip True False Beg
+End Safe *Safe)
 
 (de llvm~exclude Lst
    (setq *Exclude Lst) )
+
+(de llvm~patch Lst
+   (setq *Patch Lst) )
 
 (off *Map *Map2)
 
@@ -77,6 +80,7 @@ Ret Args Ext Table Body Var Val Lst Lbl Flg Skip True False Beg End Safe
    (prinl "declare void @llvm.memset.p0i8.i64(i8*, i8, i64, i1)")
    (prinl "declare i8* @llvm.stacksave()")
    (prinl "declare void @llvm.stackrestore(i8*)")
+   (prinl "declare void @llvm.donothing() nounwind readnone")
    (prinl)
    (let *Shared Flg
       (pass load) ) )
@@ -288,32 +292,33 @@ Ret Args Ext Table Body Var Val Lst Lbl Flg Skip True False Beg End Safe
       (set (putMap (++ Lst)) (eval (++ Lst))) ) )
 
 (de global (Sym Typ Val)
-   (prin
-      "@" Sym " = "
-      (unless (and Val (not *Shared)) "external ")
-      "global " (type Typ) )
-   (and Val (putMap Sym))
-   (cond
-      (*Shared)
-      ((pre? "_" Val) (prin " @" pico~@))
-      ((pre? "$" Val)
-         (if (; Val offset)
-            (prin
-               " ptrtoint (i8* getelementptr (i8, i8* bitcast (["
-               (; Val table length)
-               " x i64]* @"
-               (; Val table)
-               " to i8*), i32 "
-               pico~@
-               ") to i64)" )
-            (prin " ptrtoint ("
-               (if (== 'any Typ) 'i64 Typ)
-               "* @" pico~@ " to "
-               (if (== 'any Typ) 'i64 Typ)
-               ")" ) ) )
-      (Val (prin " " pico~@)) )
-   (prinl)
-   (def Sym (def (pack "@" Sym) (ptr Typ))) )
+   (unless (memq Sym *Exclude)
+      (prin
+         "@" Sym " = "
+         (unless (and Val (not *Shared)) "external ")
+         "global " (type Typ) )
+      (and Val (putMap Sym))
+      (cond
+         (*Shared)
+         ((pre? "_" Val) (prin " @" pico~@))
+         ((pre? "$" Val)
+            (if (; Val offset)
+               (prin
+                  " ptrtoint (i8* getelementptr (i8, i8* bitcast (["
+                  (; Val table length)
+                  " x i64]* @"
+                  (; Val table)
+                  " to i8*), i32 "
+                  pico~@
+                  ") to i64)" )
+               (prin " ptrtoint ("
+                  (if (== 'any Typ) 'i64 Typ)
+                  "* @" pico~@ " to "
+                  (if (== 'any Typ) 'i64 Typ)
+                  ")" ) ) )
+         (Val (prin " " pico~@)) )
+      (prinl)
+      (def Sym (def (pack "@" Sym) (ptr Typ))) ) )
 
 (de var Lst
    (global
@@ -323,14 +328,15 @@ Ret Args Ext Table Body Var Val Lst Lbl Flg Skip True False Beg End Safe
 
 (de str Lst
    (let ((Sym Val) Lst  Arr (text "[@1 x i8]" (inc (size Val))))
-      (def (putMap Sym)
-         (def (text "bitcast (@1* @@@2 to i8*)" Arr Sym) 'i8*) )
-      (prin "@" Sym " = constant " Arr " c\"")
-      (for C (chop Val)
-         (if (or (> " " C) (sub? C "\"\\"))
-            (prin "\\" (pad 2 (hex (char C))))
-            (prin C) ) )
-      (prinl "\\00\"") ) )
+      (unless (memq Sym *Exclude)
+         (def (putMap Sym)
+            (def (text "bitcast (@1* @@@2 to i8*)" Arr Sym) 'i8*) )
+         (prin "@" Sym " = constant " Arr " c\"")
+         (for C (chop Val)
+            (if (or (> " " C) (sub? C "\"\\"))
+               (prin "\\" (pad 2 (hex (char C))))
+               (prin C) ) )
+         (prinl "\\00\"") ) ) )
 
 (de const (Val Var)
    (cond
@@ -363,34 +369,42 @@ Ret Args Ext Table Body Var Val Lst Lbl Flg Skip True False Beg End Safe
          (prin "  i64 " (eval Val)) ) ) )
 
 (de array Lst
-   (let
-      (Sym (++ Lst)
-         Typ (++ Lst)
-         Len (if (pair Lst) (length Lst) (eval Lst)) )
-      (def (putMap Sym)
-         (def
-            (text "bitcast ([@1 x @2]* @@@3 to @4)"
-               Len (setq Typ (type Typ)) Sym (ptr Typ) )
-            (ptr Typ) ) )
-      (prin
-         "@" Sym " = " (when *Shared "external ")
-         "global [" Len " x " Typ "]" )
-      (cond
-         (*Shared (prinl))
-         ((atom Lst) (prinl " zeroinitializer"))
-         (T
-            (prinl *Shared " [")
-            (for (I . X) Lst
-               (prinl
-                  "  " Typ " " (eval X)
-                  (unless (== I Len) ",") ) )
-            (prinl "]") ) ) ) )
+   (let Sym (++ Lst)
+      (unless (memq Sym *Exclude)
+         (let
+            (Typ (++ Lst)
+               Len (if (pair Lst) (length Lst) (eval Lst)) )
+            (def (putMap Sym)
+               (def
+                  (text "bitcast ([@1 x @2]* @@@3 to @4)"
+                     Len (setq Typ (type Typ)) Sym (ptr Typ) )
+                  (ptr Typ) ) )
+            (prin
+               "@" Sym " = " (when *Shared "external ")
+               "global [" Len " x " Typ "]" )
+            (cond
+               (*Shared (prinl))
+               ((atom Lst) (prinl " zeroinitializer"))
+               (T
+                  (prinl *Shared " [")
+                  (for (I . X) Lst
+                     (prinl
+                        "  " Typ " " (eval X)
+                        (unless (== I Len) ",") ) )
+                  (prinl "]") ) ) ) ) ) )
 
 (de table Args
    (let
       (Table (++ Args)
          I 0
-         @N (* 8 (put Table 'length (length Args)))
+         @N
+         (* 8
+            (put Table 'length
+               (length
+                  (setq Args
+                     (filter
+                        '((L) (not (memq (car L) *Exclude)))
+                        Args ) ) ) ) )
          @S (caar Args) )
       (def (putMap Table)
          (curry (@N @S) A
@@ -443,7 +457,10 @@ Ret Args Ext Table Body Var Val Lst Lbl Flg Skip True False Beg End Safe
          (sum
             '((L)
                (if (> (length (cadr L)) 7) 4 2) )
-            Args ) )
+            (setq Args
+               (filter
+                  '((L) (not (memq (caddr L) *Exclude)))
+                  Args ) ) ) )
       (prinl
          "@" Table " = " (when *Shared "external ")
          "global [" (; Table length) " x i64]" (unless *Shared " [") )
@@ -516,29 +533,36 @@ Ret Args Ext Table Body Var Val Lst Lbl Flg Skip True False Beg End Safe
             (prinl "]") ) ) ) )
 
 (de inline Lst
-   (let L (and (lst? (car Lst)) (++ Lst))
-      (def (putMap (++ Lst))
-         (let ((@Args . @Body) Lst)
-            (bind
-               (mapcar
-                  '((X) (cons X (name X)))
-                  @Args )
-               (setq
-                  @Body (fill @Body @Args)
-                  @Args (mapcar val @Args) ) )
-            (fill
-               '(@Args
-                  (log)
-                  (let (*Bind '@Args  *Log)
-                     . @Body ) ) ) ) ) ) )
+   (let Sym (++ Lst)
+      (def (putMap Sym)
+         (if (memq Sym *Exclude)
+            '(() (link "call void @llvm.donothing()"))
+            (let ((@Args . @Body) Lst)
+               (bind
+                  (mapcar
+                     '((X) (cons X (name X)))
+                     @Args )
+                  (setq
+                     @Body (fill @Body @Args)
+                     @Args (mapcar val @Args) ) )
+               (fill
+                  '(@Args
+                     (log)
+                     (let (*Bind '@Args  *Log)
+                        . @Body ) ) ) ) ) ) ) )
 
 (de tailcall Prg
    (let *Call "tail call"
       (run Prg) ) )
 
 (de define (Ext Ret Sym Args Body)
-   (unless (member Sym *Exclude)
-      (and Body (prinl))
+   (if (memq Sym *Exclude)
+      (def Sym
+         '(() (link "call void @llvm.donothing()")) )
+      (when Body
+         (prinl)
+         (let? L (asoq Sym *Patch)
+            (pico~patch Body (cadr L) (caddr L)) ) )
       (setq *Ssa -1)
       (off *Bind *Phi *Safe)
       (bind (and Body (mapcar fin Args))

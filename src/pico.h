@@ -1,4 +1,4 @@
-// 09apr22 Software Lab. Alexander Burger
+// 02sep25 Software Lab. Alexander Burger
 
 #include <stdint.h>
 #include <string.h>
@@ -10,6 +10,7 @@
 #include <fcntl.h>
 #include <poll.h>
 #include <math.h>
+#include <time.h>
 #include <signal.h>
 #include <setjmp.h>
 #include <dirent.h>

@@ -8,6 +8,7 @@ declare void @llvm.memcpy.p0i8.p0i8.i64(i8*, i8*, i64, i1)
 declare void @llvm.memset.p0i8.i64(i8*, i8, i64, i1)
 declare i8* @llvm.stacksave()
 declare void @llvm.stackrestore(i8*)
+declare void @llvm.donothing() nounwind readnone
 
 @$AV0 = external global i8*
 @$AV = external global i8**

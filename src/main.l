@@ -1,4 +1,4 @@
-# 28aug25 Software Lab. Alexander Burger
+# 02sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1837,7 +1837,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       V ) )
 
 # Main entry points
-(local) (init sigChld main getStrb picolisp evaluate stoplisp)
+(local) (init signals sigChld main getStrb picolisp evaluate stoplisp)
 
 (de void init ((i32 . Ac) (i8** . Av))
    (set
@@ -1882,19 +1882,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       $Extern (cons $Db1 $Nil) )  # External symbol tree root node
    (set $USec (getUsec YES)) )
 
-(de i32 main ((i32 . Ac) (i8** . Av))
-   (set $StkLimit (ulimStk))
-   (init Ac Av)
-   (pushOutFile (b8+ (ioFrame T)) (initOutFile 2) 0)  # Standard error
-   (pushOutFile
-      (set $Stdout (b8+ (ioFrame T)))
-      (initOutFile 1)  # Standard output
-      0 )
-   (pushInFile
-      (set $Stdin (b8+ (ioFrame T)))
-      (initInFile 0 null)  # Standard input
-      0 )
-   (set Tio (=0 (tcgetattr 0 OrgTermio)))  # Save terminal I/O
+(de void signals ()
    (sigUnblock 0)  # Set all signals to unblocked
    (iSignal (val SIGHUP Sig) (fun sig))
    (iSignal (val SIGUSR1 Sig) (fun sig))
@@ -1909,7 +1897,22 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
    (signal (val SIGCHLD Sig) (fun sigChld))
    (signal (val SIGPIPE Sig) (val SigIgn))
    (signal (val SIGTTIN Sig) (val SigIgn))
-   (signal (val SIGTTOU Sig) (val SigIgn))
+   (signal (val SIGTTOU Sig) (val SigIgn)) )
+
+(de i32 main ((i32 . Ac) (i8** . Av))
+   (set $StkLimit (ulimStk))
+   (init Ac Av)
+   (pushOutFile (b8+ (ioFrame T)) (initOutFile 2) 0)  # Standard error
+   (pushOutFile
+      (set $Stdout (b8+ (ioFrame T)))
+      (initOutFile 1)  # Standard output
+      0 )
+   (pushInFile
+      (set $Stdin (b8+ (ioFrame T)))
+      (initInFile 0 null)  # Standard input
+      0 )
+   (set Tio (=0 (tcgetattr 0 OrgTermio)))  # Save terminal I/O
+   (signals)
    (initReadline)
    (unless (setjmp QuitRst)
       (loadAll 0) )  # Load arguments
@@ -1949,21 +1952,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (initInFile 0 null)  # Standard input
          0 )
       (set Tio (=0 (tcgetattr 0 OrgTermio)))  # Save terminal I/O
-      (sigUnblock 0)  # Set all signals to unblocked
-      (iSignal (val SIGHUP Sig) (fun sig))
-      (iSignal (val SIGUSR1 Sig) (fun sig))
-      (iSignal (val SIGUSR2 Sig) (fun sig))
-      (iSignal (val SIGALRM Sig) (fun sig))
-      (iSignal (val SIGTERM Sig) (fun sig))
-      (iSignal (val SIGWINCH Sig) (fun sig))
-      (iSignal (val SIGIO Sig) (fun sig))
-      (when (== (signal (val SIGTSTP Sig) (val SigIgn)) (val SigDfl))
-         (iSignal (val SIGTSTP Sig) (fun sig)) )
-      (iSignal (val SIGINT Sig) (fun sigTerm))
-      (signal (val SIGCHLD Sig) (fun sigChld))
-      (signal (val SIGPIPE Sig) (val SigIgn))
-      (signal (val SIGTTIN Sig) (val SigIgn))
-      (signal (val SIGTTOU Sig) (val SigIgn))
+      (signals)
       (initReadline)
       (loadAll 0)
       (set $Ret

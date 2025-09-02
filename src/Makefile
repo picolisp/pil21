@@ -1,4 +1,4 @@
-# 11aug25 Software Lab. Alexander Burger
+# 02sep25 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -54,7 +54,7 @@ lib.bc: pico.h lib.c
 # Base system as shared library
 $(LIB)/picolisp.so: picolisp.so.bc
 	$(LLC) picolisp.so.bc -relocation-model=pic -o picolisp.so.s
-	$(CC) picolisp.so.s -o $(LIB)/picolisp.so $(SHARED) -lc -lutil -lm -ldl `pkg-config --libs readline libffi`
+	$(CC) picolisp.so.s -o $(LIB)/picolisp.so $(SHARED)
 	$(STRIP) $(LIB)/picolisp.so
 
 picolisp.so.bc: base.so.bc lib.so.bc
@@ -64,11 +64,11 @@ base.so.bc: base.so.ll
 	$(ASM) -o base.so.bc base.so.ll
 
 base.so.ll: $(INC) $(SRC) lib/so.l
-	$(PIL) lib/llvm.l lib/so.l main.l -bye > base.so.ll
+	$(PIL) lib/llvm.l -quiche lib/so.l main.l -bye > base.so.ll
 	rm base.map
 
-lib.so.bc: pico.h lib.c
-	$(CC) -O3 -w -c -fPIC -o lib.so.bc -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' `pkg-config --cflags libffi` -emit-llvm lib.c
+lib.so.bc: pico.h lib.so.c
+	$(CC) -O3 -w -c -fPIC -o lib.so.bc -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' `pkg-config --cflags libffi` -emit-llvm lib.so.c
 
 # Extension libraries
 $(LIB)/ext.so: ext.bc

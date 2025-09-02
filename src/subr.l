@@ -1,13 +1,13 @@
-# 04jun25 Software Lab. Alexander Burger
+# 01sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
 (local) (chkA chkD makeErr)
 
-(inline (Exe) chkA (X)
+(inline chkA (X)
    (car (needVar Exe X)) )
 
-(inline (Exe) chkD (X)
+(inline chkD (X)
    (cdr (needLst Exe X)) )
 
 (de NIL makeErr (Exe)
@@ -1693,7 +1693,7 @@
 
 (local) cmpSort
 
-(inline (E A B) cmpSort (X Y)
+(inline cmpSort (X Y)
    (set 4 A X  4 B Y)
    (if (nil? (evList E)) 0 -1) )
 

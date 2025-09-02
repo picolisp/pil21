@@ -1,9 +1,9 @@
-# 21aug25 Software Lab. Alexander Burger
+# 01sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
 (exclude
-   "getStrb"
-   "picolisp"
-   "evaluate"
-   "stoplisp" )
+   getStrb
+   picolisp
+   evaluate
+   stoplisp )

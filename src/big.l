@@ -1,4 +1,4 @@
-# 27jul25 Software Lab. Alexander Burger
+# 01sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -572,7 +572,7 @@
                   (sign (zapZero R)) ) ) ) ) ) )
 
 # Multiply two (unsigned) numbers
-(inline (Lo Hi) mulAddHiLo (X Y P)
+(inline mulAddHiLo (X Y P)
    (let H Hi
       (setq
          Lo (add (mul X Y) (val (dig P)))

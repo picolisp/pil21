@@ -1,3 +1,20 @@
+25.9.2
+   New files
+      src/lib.so.c
+      soTest.c
+   'patch' function
+      src/lib/llvm.l
+      src/lib/so.l
+   'exclude' continued
+      src/Makefile
+      src/lib/llvm.l
+      src/lib/ex.l
+      src/lib/so.l
+      src/main.l
+      src/pico.h
+      src/big.l
+      src/subr.l
+
 25.8.28
    '$StkLimit' related to stack size
       src/glob.l
