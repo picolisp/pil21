@@ -1,4 +1,4 @@
-// 02sep25 Software Lab. Alexander Burger
+// 05sep25 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -374,30 +374,6 @@ int32_t getLock(int32_t fd, off_t n, off_t len) {
 const int64_t JmpBufSize = sizeof(jmp_buf);
 jmp_buf QuitRst;
 jmp_buf SoRst;
-
-// Lisp data access from C
-any name(any x) {
-   while (!num(x))
-      x = cdr(x);
-   return x;
-}
-
-any number(any x) {
-   any n = cnt(x)? x >> 4 : val(dig(x));
-   return sign(x)? -n : n;
-}
-
-any length(any x) {
-   int n = 0;
-
-   while (!atom(x))
-      ++n,  x = cdr(x);
-   return (int32_t)n;
-}
-
-any box64(any x) {
-   return x & 0xF000000000000000? boxNum(x) : x << 4 | 2;
-}
 
 #define _GNU_SOURCE
 #define __USE_GNU

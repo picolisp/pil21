@@ -1,4 +1,4 @@
-/* 02sep25 Software Lab. Alexander Burger
+/* 06sep25 Software Lab. Alexander Burger
  * $ cc -o soTest soTest.c lib/picolisp.so
  */
 
@@ -12,14 +12,24 @@ void stoplisp(void);
 int main(int ac, char *av[]) {
    static char *init[] = {"picolisp", "lib.l"};
    char stack[1000000];
+   char *line = NULL;
+   size_t len = 0;
+   char *res;
 
    picolisp(stack, sizeof(stack), (int)(sizeof(init)/sizeof(char*)), init);
    while (--ac) {
-      char *res = evaluate(*++av);
-
-      printf("-> %s\n", res);
+      printf("-> %s\n", res = evaluate(*++av));
       free(res);
    }
+   for (;;) {
+      printf(": ");
+      if (getline(&line, &len, stdin) < 0)
+         break;
+      printf("-> %s\n", res = evaluate(line));
+      free(res);
+   }
+   putchar('\n');
+   free(line);
    stoplisp();
    return 0;
 }

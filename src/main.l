@@ -1,9 +1,21 @@
-# 02sep25 Software Lab. Alexander Burger
+# 06sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
 (begin "base" NIL
    "vers.l" "defs.l" "glob.l" "dec.l" )
+
+(local) (put get popInFiles popOutFiles popErrFiles popCtlFiles
+_getStdin _putStdout)
+
+(de void put (any any any))
+(de any get (any any))
+(de void popInFiles ())
+(de void popOutFiles ())
+(de void popErrFiles ())
+(de void popCtlFiles ())
+(de i32 _getStdin ())
+(de void _putStdout (i8))
 
 (local) (execAt runAt wrnl dbg)
 
@@ -33,17 +45,6 @@
       (newline)
       (set (i8** $Put) Put  $OutFile Out) )
    X )
-
-
-(local) (put get popInFiles popOutFiles popErrFiles
-popCtlFiles)
-
-(de void put (any any any))
-(de any get (any any))
-(de void popInFiles ())
-(de void popOutFiles ())
-(de void popErrFiles ())
-(de void popCtlFiles ())
 
 (local) (stop unwind)
 

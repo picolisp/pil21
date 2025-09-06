@@ -1,8 +1,8 @@
-# 12aug25 Software Lab. Alexander Burger
+# 06sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
-(local) (inFile outFile ioFrame ctFrame dbFile)
+(local) (inFile outFile ioFrame ioxFrame ctFrame dbFile)
 
 # I/O
 (struct inFile
@@ -110,7 +110,7 @@
 setpgid execvp isatty openpty login_tty tcgetattr tcgetpgrp tcsetpgrp read write
 pread pwrite fread fwrite putc_unlocked getc_unlocked fopen fflush feof fclose
 fileno fsync pipe memcmp strlen strcpy strdup strcmp strchr strrchr dlsym
-dlerror dup dup2 close signal poll waitpid setjmp longjmp kill exit)
+dlerror dup dup2 close signal waitpid poll setjmp longjmp kill exit)
 
 (de T i8* malloc (i64))
 (de T i8* realloc (i8* i64))
@@ -205,7 +205,7 @@ socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (de T i32 fcntlCloExec (i32))
 (de T void fcntlSetFl (i32 i32))
 (de T i32 nonBlocking (i32))
-(de T void fcntlSetOwn(i32 i32))
+(de T void fcntlSetOwn (i32 i32))
 (de T i8* getDir (i8*))
 
 (local) (initReadline gReadline rlHide rlShow rlSigBeg rlSigEnd currentLine)
@@ -240,7 +240,7 @@ socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (de T i32 gErrno ())
 
 # Terminal
-(local) (Tio OrgTermio Termio setRaw setCooked reopenTty)
+(local) (Tio OrgTermio Termio stopTerm setRaw setCooked reopenTty)
 
 (var Tio i1 NIL)
 (var OrgTermio i8 NIL)

@@ -1,4 +1,4 @@
-# 02sep25 Software Lab. Alexander Burger
+# 06sep25 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -33,7 +33,7 @@ $(LIB)/sysdefs: sysdefs.c
 
 # Base system
 $(BIN)/picolisp: picolisp.bc
-	mkdir -p $(BIN) $(LIB)
+	mkdir -p $(BIN)
 	$(LLC) picolisp.bc -relocation-model=pic -o picolisp.s
 	$(CC) picolisp.s -o $(BIN)/picolisp -rdynamic -lc -lutil -lm -ldl `pkg-config --libs readline libffi`
 	$(STRIP) $(BIN)/picolisp
