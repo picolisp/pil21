@@ -1,4 +1,6 @@
 25.9.7
+   Add comment for "full" library
+      src/lib/so.l
    Use 'parse' in 'picolisp'
       src/main.l
 

@@ -1,6 +1,17 @@
-# 02sep25 Software Lab. Alexander Burger
+# 07sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
+
+#{
+   For the "full" library
+   -- In Makefile
+      * Remove the -quiche option
+      * Use lib.c instead of lib.so.c
+      * Link with -lm -ldl -lreadline -lffi
+   -- Below
+      * Exclude only 'main'
+      * Don't patch '_getStdin'
+}#
 
 (exclude
    # Signals
