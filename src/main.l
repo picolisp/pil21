@@ -1,4 +1,4 @@
-# 06sep25 Software Lab. Alexander Burger
+# 07sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1930,14 +1930,6 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (stdEval X) ) )
             (T (eval X)) ) ) ) )
 
-(de i32 getStrb ()
-   (let P (val $LinePtr)
-      (set $Chr
-         (ifn (val P)
-            -1
-            (set $LinePtr (inc P))
-            (i32 @) ) ) ) )
-
 (de void picolisp ((i8* . Stk) (i32 . Siz) (i32 . Ac) (i8** . Av))
    (unless (setjmp SoRst)
       (stack (ofs Stk Siz))
@@ -1963,14 +1955,12 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                (1 (strdup ($ "-ERR-")))
                (T
                   (begString (push 4 NIL ZERO NIL NIL NIL))  # [cnt last name link fun ptr]
-                  (set $LinePtr (i8* (val $Ret)))
-                  (let (Chr (val $Chr)  Get (val (i8** $Get)))
-                     (set $Chr 0  $Get (fun (i32) getStrb))
-                     (getStrb)
-                     (let E (read0 YES)
-                        (set (i8** $Get) Get  $Chr Chr)
-                        (set $LinePtr null)
-                        (save E (print (eval E))) ) )
+                  (let E
+                     (save
+                        (parse
+                           (name (val (tail (mkStr (i8* (val $Ret))))))
+                           YES (hex "20") 1 ) )  # Blank, EOF
+                     (print (eval E)) )
                   (let Nm (name (val (tail (endString))))
                      (strdup (bufString Nm (b8 (bufSize Nm)))) ) ) ) ) )
       (longjmp SoRst 1) ) )

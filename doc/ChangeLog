@@ -1,3 +1,7 @@
+25.9.7
+   Use 'parse' in 'picolisp'
+      src/main.l
+
 25.9.6
    Add interactive line input
       soTest.c
