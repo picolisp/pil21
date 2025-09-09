@@ -37,6 +37,7 @@ declare void @llvm.donothing() nounwind readnone
 @$ReplPrmt = external global i8*
 @$ContPrmt = external global i8*
 @$Ret = external global i64
+@$Ret2 = external global i64
 @$TtyPid = external global i32
 @$InFDs = external global i32
 @$InFiles = external global i8**

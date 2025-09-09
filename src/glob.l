@@ -29,6 +29,7 @@
 (var $ReplPrmt i8* null)               # REPL console prompt
 (var $ContPrmt i8* null)               # REPL continue prompt
 (var $Ret 0)                           # Secondary return value
+(var $Ret2 0)                          # Tertiary return value
 (var $TtyPid i32 0)                    # Terminal process ID
 (var $InFDs i32 0)                     # Number of input files
 (var $InFiles i8** null)               # Input files
