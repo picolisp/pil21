@@ -1,4 +1,4 @@
-# 07sep25 Software Lab. Alexander Burger
+# 09sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -17,7 +17,7 @@ _getStdin _putStdout)
 (de i32 _getStdin ())
 (de void _putStdout (i8))
 
-(local) (execAt runAt wrnl dbg)
+(local) (execAt runAt evExe wrnl dbg)
 
 (de execAt (Prg)
    (let At (save (val $At))
@@ -29,6 +29,19 @@ _getStdin _putStdout)
       (prog1
          (run Prg)
          (set $At At) ) ) )
+
+(de evExe (Fun Arg1 Arg2)
+   (let
+      (W (push NIL $Nil ZERO NIL NIL)  # [car cdr name arg link]
+         V (push NIL NIL ZERO NIL NIL)  # [car cdr name arg link]
+         E (push Fun V) )  # [fun cdr]
+      (set
+         4 W Arg2
+         W (link (ofs W 3) T)
+         2 V W
+         4 V Arg1
+         V (link (ofs V 3)) )
+      (evList E) ) )
 
 (de wrnl ()
    (write 1 ($ "\n") 1) )
@@ -1949,27 +1962,35 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (initReadline)
       (loadAll 0)
       (set $Ret
-         (any
-            (case (setjmp QuitRst)
-               (0 (longjmp SoRst 1))
-               (1 (strdup ($ "-ERR-")))
-               (T
-                  (begString (push 4 NIL ZERO NIL NIL NIL))  # [cnt last name link fun ptr]
-                  (let E
-                     (save
-                        (parse
-                           (name (val (tail (mkStr (i8* (val $Ret))))))
-                           YES (hex "20") 1 ) )  # Blank, EOF
-                     (print (eval E)) )
-                  (let Nm (name (val (tail (endString))))
-                     (strdup (bufString Nm (b8 (bufSize Nm)))) ) ) ) ) )
+         (case (setjmp QuitRst)
+            (0 (longjmp SoRst 1))
+            (1 (any (strdup ($ "-ERR-"))))
+            (2  # 2: evaluate
+               (begString (push 4 NIL ZERO NIL NIL NIL))  # [cnt last name link fun ptr]
+               (let E
+                  (save
+                     (parse
+                        (name (val (tail (mkStr (i8* (val $Ret))))))
+                        YES (hex "20") 1 ) )  # Blank, EOF
+                  (print (eval E)) )
+               (let Nm (name (val (tail (endString))))
+                  (any (strdup (bufString Nm (b8 (bufSize Nm))))) ) )
+            (T  # 3: reflect
+               (evExe $Reflect (car (val $Ret)) (cdr (val $Ret))) ) ) )
       (longjmp SoRst 1) ) )
 
-(de i8* evaluate ((i8* . P))
+(de i8* evaluate ((i8* . Str))
    (if (setjmp SoRst)
       (i8* (val $Ret))
-      (set $Ret (any P))
+      (set $Ret (any Str))
       (longjmp QuitRst 2) ) )
+
+(de void reflect ((i8* . Adr) (i8* . Str))
+   (unless (nil? (val $Reflect))
+      (unless (setjmp SoRst)
+         (let P (save (box64 (i64 Adr)))
+            (set $Ret (cons P (mkStr Str))) )
+         (longjmp QuitRst 3) ) ) )
 
 (de void stoplisp ()
    (let P (val $Heaps)

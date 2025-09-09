@@ -1,4 +1,4 @@
-# 26aug25 Software Lab. Alexander Burger
+# 09sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -702,20 +702,16 @@
 (local) tabComplete
 
 (de i8* tabComplete ((i8* . Text))
-   (if (nil? (val $Complete))
-      null
-      (let
-         (V (push NIL $Nil ZERO NIL NIL)  # [car cdr name arg link]
-            E (push NIL V ZERO @ NIL) )  # [car cdr name fun link]
-         (set 4 V
-            (nond
-               (Text $Nil)
-               ((val Text) $T)
-               (NIL (mkStr Text)) ) )
-         (set
-            V (link (ofs V 3) T)
-            E (link (ofs E 3)) )
-         (if (nil? (evList E))
-            null
-            (let Nm (name (val (tail (xSym @))))
-               (strdup (bufString Nm (b8 (bufSize Nm)))) ) ) ) ) )
+   (cond
+      ((nil? (val $Complete)) null)
+      ((nil?
+            (evExe $Complete
+               (nond
+                  (Text $Nil)
+                  ((val Text) $T)
+                  (NIL (mkStr Text)) )
+               $Nil ) )
+         null )
+      (T
+         (let Nm (name (val (tail (xSym @))))
+            (strdup (bufString Nm (b8 (bufSize Nm)))) ) ) ) )

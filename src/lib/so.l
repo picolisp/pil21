@@ -1,4 +1,4 @@
-# 07sep25 Software Lab. Alexander Burger
+# 09sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -17,7 +17,7 @@
    # Signals
    $Signal iSignal sigChk sig sigTerm sighandler signals
    # Readline
-   initReadline rlHide rlShow _History
+   initReadline rlHide rlShow _History tabComplete
    # Native FFI
    fetchChar natBuf natErr natRetFloat natRetDouble natRetBuf ffi _Nat _Native _Struct
    # Memory

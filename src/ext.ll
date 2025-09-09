@@ -84,7 +84,7 @@ declare void @llvm.donothing() nounwind readnone
 @$DbJnl = external global i8*
 @$DbLog = external global i8*
 @$Signal = external global [16 x i32]
-@SymTab = external global [892 x i64]
+@SymTab = external global [894 x i64]
 @gcData = external global [53 x i64]
 @cbFuns = external global [24 x i64]
 @env = external global [25 x i64]
@@ -486,7 +486,7 @@ $1:
 ; # (evSym X)
   %4 = call i64 @evSym(i64 %3)
 ; # (nil? (evSym X))
-  %5 = icmp eq i64 %4, ptrtoint (i8* getelementptr (i8, i8* bitcast ([892 x i64]* @SymTab to i8*), i32 8) to i64)
+  %5 = icmp eq i64 %4, ptrtoint (i8* getelementptr (i8, i8* bitcast ([894 x i64]* @SymTab to i8*), i32 8) to i64)
   br i1 %5, label %$2, label %$3
 $2:
   %6 = phi i64 [%0, %$1] ; # Exe
@@ -531,7 +531,7 @@ $8:
   %27 = phi i64* [%21, %$6] ; # P
   %28 = phi i32 [%23, %$6] ; # C
 ; # (ret $Nil)
-  ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([892 x i64]* @SymTab to i8*), i32 8) to i64)
+  ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([894 x i64]* @SymTab to i8*), i32 8) to i64)
 $9:
   %29 = phi i64 [%19, %$6] ; # Exe
   %30 = phi i64 [%20, %$6] ; # X
@@ -1057,7 +1057,7 @@ $17:
 ; # (set $Stat64 0)
   store i32 0, i32* @$Stat64
 ; # (ret $Nil)
-  ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([892 x i64]* @SymTab to i8*), i32 8) to i64)
+  ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([894 x i64]* @SymTab to i8*), i32 8) to i64)
 $18:
   %51 = phi i64 [%41, %$15] ; # Exe
   %52 = phi i64 [%42, %$15] ; # X
@@ -1196,7 +1196,7 @@ $12:
   %122 = phi i64 [%95, %$14], [%119, %$20] ; # Exe
   %123 = phi i64 [%96, %$14], [%120, %$20] ; # X
   %124 = phi i32 [%97, %$14], [%121, %$20] ; # C
-  %125 = phi i64 [%99, %$14], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([892 x i64]* @SymTab to i8*), i32 8) to i64), %$20] ; # ->
+  %125 = phi i64 [%99, %$14], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([894 x i64]* @SymTab to i8*), i32 8) to i64), %$20] ; # ->
   br label %$2
 $3:
   %126 = phi i64 [%0, %$1] ; # Exe
@@ -1229,7 +1229,7 @@ $23:
   %141 = phi i64 [%132, %$25], [%136, %$27], [%139, %$26] ; # X
   %142 = phi i64 [%132, %$25], [%138, %$27], [%140, %$26] ; # ->
 ; # (nil? (eval (car X)))
-  %143 = icmp eq i64 %142, ptrtoint (i8* getelementptr (i8, i8* bitcast ([892 x i64]* @SymTab to i8*), i32 8) to i64)
+  %143 = icmp eq i64 %142, ptrtoint (i8* getelementptr (i8, i8* bitcast ([894 x i64]* @SymTab to i8*), i32 8) to i64)
   br i1 %143, label %$29, label %$28
 $29:
   %144 = phi i64 [%126, %$23] ; # Exe
@@ -1283,7 +1283,7 @@ $30:
   %169 = phi i64 [%160, %$32], [%164, %$34], [%167, %$33] ; # X
   %170 = phi i64 [%160, %$32], [%166, %$34], [%168, %$33] ; # ->
 ; # (nil? (eval (car (shift X))))
-  %171 = icmp eq i64 %170, ptrtoint (i8* getelementptr (i8, i8* bitcast ([892 x i64]* @SymTab to i8*), i32 8) to i64)
+  %171 = icmp eq i64 %170, ptrtoint (i8* getelementptr (i8, i8* bitcast ([894 x i64]* @SymTab to i8*), i32 8) to i64)
   br i1 %171, label %$35, label %$36
 $35:
   %172 = phi i64 [%146, %$30] ; # Exe
@@ -1307,7 +1307,7 @@ $35:
   %181 = load void(i8)*, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([25 x i64]* @env to i8*), i32 88) to void(i8)**)
   call void %181(i8 61)
 ; # (ret $Nil)
-  ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([892 x i64]* @SymTab to i8*), i32 8) to i64)
+  ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([894 x i64]* @SymTab to i8*), i32 8) to i64)
 $36:
   %182 = phi i64 [%146, %$30] ; # Exe
   %183 = phi i64 [%155, %$30] ; # X
@@ -1362,7 +1362,7 @@ $37:
   %209 = phi i64 [%200, %$39], [%204, %$41], [%207, %$40] ; # X
   %210 = phi i64 [%200, %$39], [%206, %$41], [%208, %$40] ; # ->
 ; # (nil? (eval (cadr X)))
-  %211 = icmp eq i64 %210, ptrtoint (i8* getelementptr (i8, i8* bitcast ([892 x i64]* @SymTab to i8*), i32 8) to i64)
+  %211 = icmp eq i64 %210, ptrtoint (i8* getelementptr (i8, i8* bitcast ([894 x i64]* @SymTab to i8*), i32 8) to i64)
   br i1 %211, label %$42, label %$43
 $42:
   %212 = phi i64 [%182, %$37] ; # Exe
@@ -1384,7 +1384,7 @@ $42:
   %221 = load void(i8)*, void(i8)** bitcast (i8* getelementptr (i8, i8* bitcast ([25 x i64]* @env to i8*), i32 88) to void(i8)**)
   call void %221(i8 61)
 ; # (ret $Nil)
-  ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([892 x i64]* @SymTab to i8*), i32 8) to i64)
+  ret i64 ptrtoint (i8* getelementptr (i8, i8* bitcast ([894 x i64]* @SymTab to i8*), i32 8) to i64)
 $43:
   %222 = phi i64 [%182, %$37] ; # Exe
   %223 = phi i64 [%183, %$37] ; # X
@@ -1420,7 +1420,7 @@ $43:
 $2:
   %238 = phi i64 [%122, %$12], [%144, %$29], [%222, %$43] ; # Exe
   %239 = phi i64 [%123, %$12], [%145, %$29], [%223, %$43] ; # X
-  %240 = phi i64 [%125, %$12], [%142, %$29], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([892 x i64]* @SymTab to i8*), i32 280) to i64), %$43] ; # ->
+  %240 = phi i64 [%125, %$12], [%142, %$29], [ptrtoint (i8* getelementptr (i8, i8* bitcast ([894 x i64]* @SymTab to i8*), i32 280) to i64), %$43] ; # ->
   ret i64 %240
 }
 

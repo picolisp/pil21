@@ -1,4 +1,4 @@
-# 12aug25 Software Lab. Alexander Burger
+# 09sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2825,14 +2825,7 @@ selectErr)
       (flushAll)
       (print X)
       (unless (nil? (val $Remark))
-         (let
-            (V (push NIL $Nil ZERO NIL NIL)  # [car cdr name arg link]
-               E (push NIL V ZERO @ NIL) )  # [car cdr name fun link]
-            (set 4 V X)
-            (set
-               V (link (ofs V 3) T)
-               E (link (ofs E 3)) )
-            (evList E) ) )
+         (evExe $Remark X $Nil) )
       (newline)
       (set $At3 At2  $At2 At  $At X) ) )
 

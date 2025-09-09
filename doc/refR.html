@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 27jun25 Software Lab. Alexander Burger
+# 09sep25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -419,7 +419,14 @@ After 2
 -> 6
 : (+ "a" 'b '(c d e))
 -> "abcde"
+</pre></dd>
 
+<dt><a id="reflect"><code>(reflect 'cnt 'sym)</code></a></dt>
+<dd>Global variable holding a (possibly empty) function, which can be called
+from native code to supply information of native data structures to Lisp. See
+also <code><a href="refN.html#native">native</a></code>.
+
+<pre>
 </pre></dd>
 
 <dt><a id="rel"><code>(rel sym lst [any ..]) -> any</code></a></dt>

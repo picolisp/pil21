@@ -1,3 +1,16 @@
+25.9.9
+   reflect() function
+      src/lib/ex.l
+      src/lib/so.l
+      src/glob.l
+      src/main.l
+      doc/ref.html
+      doc/refR.html
+   evExe() function
+      src/main.l
+      src/io.l
+      src/apply.l
+
 25.9.7
    Add comment for "full" library
       src/lib/so.l

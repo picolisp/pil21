@@ -1,4 +1,4 @@
-# 28aug25 Software Lab. Alexander Burger
+# 09sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -151,8 +151,9 @@
    ($Fork "*Fork" $Nil)
    ($Bye "*Bye" $Nil)
    ($Dbg "*Dbg" $Nil)
-   ($Complete "complete" $Nil)
    ($Remark "remark" $Nil)
+   ($Complete "complete" $Nil)
+   ($Reflect "reflect" $Nil)
    (NIL "gc" _Gc)
    (NIL "format" _Format)     # Arithmetics
    (NIL "+" _Add)
