@@ -1963,6 +1963,24 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       2 $PicoT $Nil
       $PrivT $Nil
       2 $PrivT $Nil
+      $At $Nil
+      $At2 $Nil
+      $At3 $Nil
+      $This $Nil
+      $Run $Nil
+      $Hup $Nil
+      $Sig1 $Nil
+      $Sig2 $Nil
+      $Winch $Nil
+      $TStp1 $Nil
+      $TStp2 $Nil
+      $Term $Nil
+      $Err $Nil
+      $Uni $Nil
+      $Fork $Nil
+      $Bye $Nil
+      $Dbg $Nil
+      $Reflect $Nil
       $Intern $Pico1
       $Transient $Nil
       2 $Transient $Nil
