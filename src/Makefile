@@ -1,10 +1,10 @@
-# 06sep25 Software Lab. Alexander Burger
+# 13sep25 Software Lab. Alexander Burger
 
 .SILENT:
 
 CC = clang
-PIL = ../pil  # pil
-ASM = opt -O2  # llvm-as
+PIL = ../pil
+ASM = opt -O2
 LLC = llc
 LINK = llvm-link
 SHARED = -shared
@@ -49,7 +49,7 @@ base.ll: $(INC) $(SRC) lib/ex.l
 	mv base.map $(LIB)/map
 
 lib.bc: pico.h lib.c
-	$(CC) -O3 -w -c -o lib.bc -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' `pkg-config --cflags libffi` -emit-llvm lib.c
+	$(CC) -O3 -w -c -o lib.bc -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' -emit-llvm lib.c
 
 # Base system as shared library
 $(LIB)/picolisp.so: picolisp.so.bc
@@ -68,7 +68,7 @@ base.so.ll: $(INC) $(SRC) lib/so.l
 	rm base.map
 
 lib.so.bc: pico.h lib.so.c
-	$(CC) -O3 -w -c -fPIC -o lib.so.bc -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' `pkg-config --cflags libffi` -emit-llvm lib.so.c
+	$(CC) -O3 -w -c -fPIC -o lib.so.bc -D_OS='"$(OS)"' -D_CPU='"$(CPU)"' -emit-llvm lib.so.c
 
 # Extension libraries
 $(LIB)/ext.so: ext.bc

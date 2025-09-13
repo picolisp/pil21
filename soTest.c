@@ -1,11 +1,11 @@
-/* 09sep25 Software Lab. Alexander Burger
+/* 13sep25 Software Lab. Alexander Burger
  * $ cc -o soTest soTest.c lib/picolisp.so
  */
 
 #include <stdio.h>
 #include <stdlib.h>
 
-void picolisp(char*, int, int, char**);
+int picolisp(char*, int, int, char**);
 char *evaluate(char*);
 void reflect(void*, char*);
 void stoplisp(void);
@@ -17,7 +17,8 @@ int main(int ac, char *av[]) {
    size_t len = 0;
    char *res;
 
-   picolisp(stack, sizeof(stack), (int)(sizeof(init)/sizeof(char*)), init);
+   if (!picolisp(stack, sizeof(stack), (int)(sizeof(init)/sizeof(char*)), init))
+      return 1;
    while (--ac) {
       printf("-> %s\n", res = evaluate(*++av));
       free(res);

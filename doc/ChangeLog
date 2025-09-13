@@ -1,3 +1,9 @@
+25.9.13
+   Shared library continued
+      src/Makefile
+      src/main.l
+      soTest.c
+
 25.9.9
    reflect() function
       src/lib/ex.l

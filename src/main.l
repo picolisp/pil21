@@ -1,4 +1,4 @@
-# 09sep25 Software Lab. Alexander Burger
+# 13sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1851,7 +1851,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       V ) )
 
 # Main entry points
-(local) (init signals sigChld main getStrb picolisp evaluate stoplisp)
+(local) (init signals sigChld main stoplisp picolisp evaluate reflect)
 
 (de void init ((i32 . Ac) (i8** . Av))
    (set
@@ -1943,8 +1943,44 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (stdEval X) ) )
             (T (eval X)) ) ) ) )
 
-(de void picolisp ((i8* . Stk) (i32 . Siz) (i32 . Ac) (i8** . Av))
-   (unless (setjmp SoRst)
+(de void stoplisp ()
+   (let P (val $Heaps)
+      (loop
+         (let Q (val (ofs P HEAP))
+            (free (i8* P))
+            (? (=0 (setq P Q)) ) ) ) )
+   (set
+      $Heaps 0
+      $Avail 0
+      $Coroutines null
+      $Current null
+      $CrtLast null
+      $CrtFree null
+      $StkSizeT (* 4 STACK)
+      $StkSize STACK
+      $GcCount CELLS
+      $PicoT $Nil
+      2 $PicoT $Nil
+      $PrivT $Nil
+      2 $PrivT $Nil
+      $Intern $Pico1
+      $Transient $Nil
+      2 $Transient $Nil
+      $Link 0
+      $Bind 0
+      $Break 0
+      $NsLink 0
+      $Catch null
+      $InFrames null
+      $OutFrames null
+      $ErrFrames null
+      $CtlFrames null
+      $InFile null
+      $OutFile null ) )
+
+(de i1 picolisp ((i8* . Stk) (i32 . Siz) (i32 . Ac) (i8** . Av))
+   (if (setjmp SoRst)
+      YES
       (stack (ofs Stk Siz))
       (set $StkLimit (set $SysStkLimit (ofs Stk (shr Siz 6))))
       (init Ac Av)
@@ -1960,7 +1996,10 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       (set Tio (=0 (tcgetattr 0 OrgTermio)))  # Save terminal I/O
       (signals)
       (initReadline)
-      (loadAll 0)
+      (ifn (setjmp QuitRst)
+         (loadAll 0)
+         (stoplisp)
+         (ret NO) )
       (set $Ret
          (case (setjmp QuitRst)
             (0 (longjmp SoRst 1))
@@ -1991,12 +2030,5 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (save (set $Ret (box64 (i64 Adr)))
             (set $Ret2 (mkStr Str)) )
          (longjmp QuitRst 3) ) ) )
-
-(de void stoplisp ()
-   (let P (val $Heaps)
-      (loop
-         (let Q (val (ofs P HEAP))
-            (free (i8* P))
-            (? (=0 (setq P Q)) ) ) ) ) )
 
 (end "base.map" "lib.c")
