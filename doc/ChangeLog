@@ -1,3 +1,9 @@
+25.9.15
+   Re-arrange evaluation in 'picolisp' to preserve stdout
+      src/main.l
+   Recommend (load) for "full" library
+      src/lib/so.l
+
 25.9.13
    Shared library continued
       src/Makefile

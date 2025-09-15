@@ -1,4 +1,4 @@
-# 13sep25 Software Lab. Alexander Burger
+# 15sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2023,15 +2023,16 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (0 (longjmp SoRst 1))
             (1 (any (strdup ($ "-ERR-"))))
             (2  # 2: evaluate
-               (begString (push 4 NIL ZERO NIL NIL NIL))  # [cnt last name link fun ptr]
                (let E
                   (save
                      (parse
                         (name (val (tail (mkStr (i8* (val $Ret))))))
                         YES (hex "20") 1 ) )  # Blank, EOF
-                  (print (eval E)) )
-               (let Nm (name (val (tail (endString))))
-                  (any (strdup (bufString Nm (b8 (bufSize Nm))))) ) )
+                  (setq E (safe (eval E)))
+                  (begString (push 4 NIL ZERO NIL NIL NIL))  # [cnt last name link fun ptr]
+                  (print E)
+                  (let Nm (name (val (tail (endString))))
+                     (any (strdup (bufString Nm (b8 (bufSize Nm))))) ) ) )
             (T  # 3: reflect
                (evExe $Reflect (val $Ret) (val $Ret2)) ) ) )
       (longjmp SoRst 1) ) )

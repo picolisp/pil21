@@ -1,4 +1,4 @@
-# 09sep25 Software Lab. Alexander Burger
+# 15sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -11,6 +11,8 @@
    -- Below
       * Exclude only 'main'
       * Don't patch '_getStdin'
+   -- In the main C program
+      * evaluate("(load)") is possible
 }#
 
 (exclude
