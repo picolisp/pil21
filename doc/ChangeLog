@@ -1,3 +1,7 @@
+25.9.17
+   Fix comment for linked libraries
+      soTest.c
+
 25.9.16
    New file
       lib/reflect.l

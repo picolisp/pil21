@@ -1,5 +1,5 @@
-/* 13sep25 Software Lab. Alexander Burger
- * $ cc -o soTest soTest.c lib/picolisp.so
+/* 17sep25 Software Lab. Alexander Burger
+ * $ cc -o soTest soTest.c lib/picolisp.so lib/ext.so lib/ht.so
  */
 
 #include <stdio.h>
