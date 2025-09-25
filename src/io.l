@@ -1,4 +1,4 @@
-# 09sep25 Software Lab. Alexander Burger
+# 25sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -2609,11 +2609,7 @@ selectErr)
 (de _Plio (Exe)
    (let
       (X (cdr Exe)
-         P
-         (i8*
-            (if (cnt? (needNum Exe (eval (++ X))))
-               (int @)
-               (val (dig @)) ) ) )
+         P (i8* (xCnt64 Exe (eval (++ X)))) )
       (let (Ptr (val $Ptr)  End (val $End))
          (set
             $Extn (val $ExtN)  # Set external symbol offset

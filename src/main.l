@@ -1,4 +1,4 @@
-# 15sep25 Software Lab. Alexander Burger
+# 25sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -407,6 +407,11 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 
 (de i64 evCnt (Exe X)
    (xCnt Exe (eval (car X))) )
+
+(de i64 xCnt64 (Exe X)
+   (if (cnt? (needNum Exe X))
+      (int @)
+      (val (dig @)) ) )
 
 (de evLst (Exe)
    (let X (eval (car Exe))
@@ -1533,10 +1538,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de _Struct (Exe)
    (let
       (X (cdr Exe)
-         N  # Native value (pointer or scalar)
-         (if (cnt? (needNum Exe (eval (++ X))))
-            (int @)
-            (val (dig @)) )
+         N (xCnt64 Exe (eval (++ X)))  # Native value (pointer or scalar)
          P (i8* N)
          Y (save (eval (car X))) )  # Result specification
       (while (pair (shift X))
@@ -1699,11 +1701,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
 (de _Byte (Exe)
    (let
       (X (cdr Exe)
-         P
-         (i8*
-            (if (cnt? (needNum Exe (eval (++ X))))
-               (int @)
-               (val (dig @)) ) ) )
+         P (i8* (xCnt64 Exe (eval (++ X)))) )
       (if (atom X)
          (cnt (i64 (val P)))
          (let
