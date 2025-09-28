@@ -1,4 +1,4 @@
-# 09sep25 Software Lab. Alexander Burger
+# 27sep25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -118,13 +118,14 @@
    ($Meth "meth" __Meth)      # Method template
    ($Quote "quote" _Quote)    # 'quote' function
    ($T "T" $T)  ### Sync src/pico.h 'T' (17*2+1) ###
-   ($N "N" $Nil)
-   ($C "C" $Nil)
    ($S "S" $Nil)
-   ($B "B" $Nil)
-   ($I "I" $Nil)
    ($P "P" $Nil)
+   ($N "N" $Nil)
+   ($U "U" $Nil)
+   ($I "I" $Nil)
    ($W "W" $Nil)
+   ($C "C" $Nil)
+   ($B "B" $Nil)
    ($Db1 0 $Nil)              # Database root symbol '{1}'
    ($Solo "*Solo" ZERO)
    ($At "@" $Nil)

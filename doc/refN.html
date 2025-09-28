@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26feb25 Software Lab. Alexander Burger
+# 27sep25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -172,16 +172,17 @@ atoms
 
 <pre>
    NIL   void
-   B     byte     # Byte (unsigned 8 bit)
-   C     char     # Character (UTF-8, 1-4 bytes)
-   W     short    # Word (signed 16 bit)
-   I     int      # Integer (signed 32 bit)
-   N     long     # Number (signed 64 bit)
-   P     void*    # Pointer (unsigned 64 bit)
-   S     string   # String (UTF-8)
-  -1.0   float    # Scaled fixpoint number
-  +1.0   double   # Scaled fixpoint number
-   T              # Direct Lisp value
+   B     byte        # Byte (unsigned 8 bit)
+   C     char        # Character (UTF-8, 1-4 bytes)
+   W     short       # Word (signed 16 bit)
+   I     int         # Integer (signed 32 bit)
+   U     unsigned    # Unsigned integer (32 bit)
+   N     long        # Number (signed 64 bit)
+   P     void*       # Pointer (unsigned 64 bit)
+   S     string      # String (UTF-8)
+  -1.0   float       # Scaled fixpoint number
+  +1.0   double      # Scaled fixpoint number
+   T                 # Direct Lisp value
 </pre>
 
 <p>or nested lists of these atoms with size specifications to denote arrays and

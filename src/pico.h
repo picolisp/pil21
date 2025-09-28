@@ -1,4 +1,4 @@
-// 02sep25 Software Lab. Alexander Burger
+// 27sep25 Software Lab. Alexander Burger
 
 #include <stdint.h>
 #include <string.h>
@@ -50,13 +50,14 @@ extern uint64_t SymTab[];
 #define Nil (0+1)
 // Sync src/glob.l 'T'
 #define T (17*2+1)
-#define N (18*2+1)
-#define C (19*2+1)
-#define S (20*2+1)
-#define B (21*2+1)
+#define S (18*2+1)
+#define P (19*2+1)
+#define N (20*2+1)
+#define U (21*2+1)
 #define I (22*2+1)
-#define P (23*2+1)
-#define W (24*2+1)
+#define W (23*2+1)
+#define C (24*2+1)
+#define B (25*2+1)
 
 uint64_t boxNum(uint64_t);
 int32_t bufSize(uint64_t);

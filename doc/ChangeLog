@@ -1,3 +1,14 @@
+25.9.28
+   Import 'U'
+      lib/reflect.l
+
+25.9.27
+   Support 'U' unsigned integer result specification
+      src/glob.l
+      src/main.l
+      src/pico.h
+      doc/refN.html
+
 25.9.26
    Default scale 6
       lib/reflect.l
