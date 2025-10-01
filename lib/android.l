@@ -1,4 +1,4 @@
-# 19aug24 Software Lab. Alexander Burger
+# 01oct25 Software Lab. Alexander Burger
 
 (ifn (info "UUID")
    (off *Uuid)
@@ -119,7 +119,7 @@
       (=0
          (java  "androidx.core.content.ContextCompat"
             'checkSelfPermission
-            (; CONTEXT GUI)
+            (; CONTEXT)
             Str ) )
       (java  "androidx.core.app.ActivityCompat"
          'requestPermissions

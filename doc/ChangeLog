@@ -1,3 +1,7 @@
+25.10.1
+   Use just CONTEXT in 'permit'
+      lib/android.l
+
 ####### 25.9 #######
 25.9.28
    Import 'U'
