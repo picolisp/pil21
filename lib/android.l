@@ -119,7 +119,7 @@
       (=0
          (java  "androidx.core.content.ContextCompat"
             'checkSelfPermission
-            (; CONTEXT)
+            CONTEXT
             Str ) )
       (java  "androidx.core.app.ActivityCompat"
          'requestPermissions
