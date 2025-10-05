@@ -1,4 +1,4 @@
-# 27sep25 Software Lab. Alexander Burger
+# 05oct25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1389,7 +1389,7 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
       ((== Spec $U)  # 'U' Unsigned integer (32 bit)
          (let P (i32* (val Ptr))
             (set Ptr (i8* (inc P)))
-            (cnt (i64 (val P))) ) )
+            (cnt (i64u (val P))) ) )
       ((== Spec $W)  # 'W' Word (signed 16 bit)
          (if
             (ge0

@@ -1,4 +1,4 @@
-# 02sep25 Software Lab. Alexander Burger
+# 05oct25 Software Lab. Alexander Burger
 
 ### PicoLisp LLVM frontend ###
 (zap 'llvm) (symbols 'llvm 'pico)
@@ -797,6 +797,15 @@ End Safe *Safe)
                (T (quit "Bad type" V)) )
             (def (pack "%" *Ssa) 'i64) ) ) )
    (llvm~i64) )
+
+(asm ()
+   ((X)
+      (let V (val X)
+         (casq V
+            ((i8 i16 i32) (ssa (inc '*Ssa) "zext " V " " X " to i64"))
+            (T (quit "Bad type" V)) )
+         (def (pack "%" *Ssa) 'i64) ) )
+   (llvm~i64u) )
 
 (asm (@Typ)
    ((X)
