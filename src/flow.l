@@ -1,4 +1,4 @@
-# 28aug25 Software Lab. Alexander Burger
+# 08oct25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1161,13 +1161,14 @@
       (Crt: at (val $At))  # Not running
       (putCrtEnv (Crt:)) ) )
 
-(de loadCoEnv ((i8* . Crt))
+(de loadCoEnv ((i8* . Crt) Ret2)
    (let Crt: (coroutine (set $Current Crt))
       (memcpy (env) (Crt: (env)) (env T) T)
       (set $StkLimit (ofs (Crt: lim) (shr (val $StkSize) 6)))
       (getCrtEnv (Crt:))
       (set $At (Crt: at))
       (Crt: at 0)  # Running
+      (and Ret2 (run @))
       (val $Ret) ) )
 
 (de NIL runCo (Exe Tag (i8* . Src) (i8* . Dst) X)
@@ -1200,7 +1201,7 @@
          $StkLimit (ofs (Dst: lim) (shr (val $StkSize) 6)) )
       (when (symb? Tag)
          (put Tag ZERO (| (i64 (Dst:)) 2)) )
-      (set $Ret (run X))
+      (set $Ret (run X)  $Ret2 0)
       (unless (== (hex "0707070707070707") (val (i64* (Dst: lim))))
          (stkOverErr (Dst: tag)) )
       (set $This (val -3 (Dst: bnd)))
@@ -1263,8 +1264,8 @@
                                     (let Crt: (coroutine Crt)
                                        (when (== Tag (Crt: tag))  # Found running coroutine
                                           (when (setjmp (Src: (rst)))
-                                             (ret (loadCoEnv (Src:))) )
-                                          (set $Ret $Nil)
+                                             (ret (loadCoEnv (Src:) (val $Ret2))) )
+                                          (set $Ret $Nil  $Ret2 0)
                                           (Crt: org (Src:))
                                           (Crt: otg (Src: tag))
                                           (longjmp (Crt: (rst)) 1) )
@@ -1275,14 +1276,14 @@
                                     (unless (== Tag (Crt: tag))
                                        (coErr Exe Tag) )
                                     (when (setjmp (Src: (rst)))
-                                       (ret (loadCoEnv (Src:))) )
-                                    (set $Ret $Nil)
+                                       (ret (loadCoEnv (Src:) (val $Ret2))) )
+                                    (set $Ret $Nil  $Ret2 0)
                                     (Crt: org (Src:))
                                     (Crt: otg (Src: tag))
                                     (longjmp (Crt: (rst)) 1) ) ) )
                            # Start new coroutine
                            (when (setjmp (Src: (rst)))
-                              (ret (loadCoEnv (Src:))) )
+                              (ret (loadCoEnv (Src:) (val $Ret2))) )
                            (let P (val $CrtFree)
                               (if P
                                  (set $CrtFree ((coroutine (stack P)) lim))  # Use free slot
@@ -1337,7 +1338,7 @@
                         Tag )
                      (T $Nil) ) ) ) ) ) ) )
 
-# (yield 'any ['any2]) -> any
+# (yield 'any ['any2] [. prg]) -> any
 (de _Yield (Exe)
    (let
       (X (cdr Exe)
@@ -1433,14 +1434,16 @@
                (set $CtlFrames Ctl) ) )
          (saveCoEnv (Src:))
          (unless (setjmp (Src: (rst)))
-            (set $Ret Val)
+            (set
+               $Ret Val
+               $Ret2 (if (pair X) @ 0) )
             (longjmp (Dst: (rst)) 1) )
          (unless (t? (Src: tag))
             (unless
                (and
                   ((setq Org: (coroutine (Src: org))))
                   (== (Org: tag) (Src: otg)) )
-               (loadCoEnv (Src:))  # Originator terminated
+               (loadCoEnv (Src:) 0)  # Originator terminated
                (coErr Exe (Src: otg)) )
             (let P (Org: (env $CtlFrames i8*))  # Restore CtlFrames
                (Src: ctl P)
@@ -1499,7 +1502,7 @@
                      (set 2 Q P)
                      (setq P Q) ) )
                (Src: (env $Link any) P) ) )
-         (loadCoEnv (Src:)) ) ) )
+         (loadCoEnv (Src:) (val $Ret2)) ) ) )
 
 (de brkLoad (Exe)
    (when

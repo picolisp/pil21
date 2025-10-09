@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 09oct25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -16,15 +16,17 @@
 
 <dl>
 
-<dt><a id="yield"><code>(yield 'any ['any2]) -> any</code></a></dt>
+<dt><a id="yield"><code>(yield 'any ['any2] [. prg]) -> any</code></a></dt>
 <dd>Transfers control from the current <a
 href="ref.html#coroutines">coroutine</a> back to the caller (when the
-<code>any2</code> tag is not given), or to some other coroutine (specified by
-<code>any2</code>) to continue execution at the point where that coroutine had
-called <code>yield</code> before. In the first case, the value <code>any</code>
-will be returned from the corresponding <code><a
-href="refC.html#co">co</a></code> call, in the second case it will be the return
-value of that <code>yield</code> call. See also <code><a
+<code>any2</code> tag is not given), or to some other coroutine
+(specified by <code>any2</code>) to continue execution at the point
+where that coroutine had called <code>yield</code> before. In the first
+case, the value <code>any</code> will be returned from the corresponding
+<code><a href="refC.html#co">co</a></code> call, in the second case it
+will be the return value of that <code>yield</code> call. If
+<code>prg</code> is given, it is executed in the destination environment
+before the coroutine resumes execution. See also <code><a
 href="refS.html#stack">stack</a></code>, <code><a
 href="refC.html#catch">catch</a></code> and <code><a
 href="refT.html#throw">throw</a></code>.
@@ -39,6 +41,23 @@ href="refT.html#throw">throw</a></code>.
    (yield 2 "rt1") )                   # Send '2' to "rt1"
 2 in rt1 from rt2
 -> 7
+
+: (co 'a (let N 0 (loop (yield (inc 'N)))))  # Incrementing coroutine
+-> 1
+: (co 'a T)                            # Next value
+-> 2
+: (yield NIL 'a (println N))           # Print value, then increment
+2
+-> 3
+: (yield NIL 'a (println N))
+3
+-> 4
+: (yield NIL 'a (yield N))             # Immediately yield back
+-> 4                                   # Can be used to inspect a value
+: (yield NIL 'a (yield N))             # in another coroutine
+-> 4
+: (co 'a T)                            # Next value
+-> 5
 </pre></dd>
 
 <dt><a id="yoke"><code>(yoke 'any ..) -> any</code></a></dt>

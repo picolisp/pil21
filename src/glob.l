@@ -1,4 +1,4 @@
-# 27sep25 Software Lab. Alexander Burger
+# 08oct25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -28,8 +28,8 @@
 (var $LinePrmt i8* null)               # Console line prompt
 (var $ReplPrmt i8* null)               # REPL console prompt
 (var $ContPrmt i8* null)               # REPL continue prompt
-(var $Ret 0)                           # Secondary return value
-(var $Ret2 0)                          # Tertiary return value
+(var $Ret 0)                           # Secondary return values
+(var $Ret2 0)
 (var $TtyPid i32 0)                    # Terminal process ID
 (var $InFDs i32 0)                     # Number of input files
 (var $InFiles i8** null)               # Input files
