@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 09oct25 Software Lab. Alexander Burger
+# 10oct25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -58,6 +58,7 @@ href="refT.html#throw">throw</a></code>.
 -> 4
 : (co 'a T)                            # Next value
 -> 5
+: (yield NIL 'a (yield (env)))         # Return the whole environment
 </pre></dd>
 
 <dt><a id="yoke"><code>(yoke 'any ..) -> any</code></a></dt>

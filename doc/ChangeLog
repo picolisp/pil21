@@ -1,3 +1,7 @@
+25.10.10
+   Extend example for 'yield' with 'env' arg
+      doc/refY.html
+
 25.10.8
    Optional 'prg' argument to 'yield'
       src/flow.l
