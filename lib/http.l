@@ -1,4 +1,4 @@
-# 30dec24 Software Lab. Alexander Burger
+# 12oct25 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -176,9 +176,12 @@
       (off *Post *Port% *ContL *ContLen *Cookies "*Cookies" "*HtSet")
       (catch 'http
          (in *HtSock
-            (alarm 1200 (throw 'http))
             (finally (alarm 0)
-               (case (till " " T)
+               (case
+                  (prog2
+                     (alarm 2 (throw 'http))
+                     (till " " T)
+                     (alarm 1200 (throw 'http)) )
                   ("GET" (_htHead))
                   ("POST"
                      (on *Post)

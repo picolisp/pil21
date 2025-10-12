@@ -1,3 +1,7 @@
+25.10.12
+   Set initial alarm to 2 seconds
+      lib/http.l
+
 25.10.10
    Extend example for 'yield' with 'env' arg
       doc/refY.html
