@@ -1,3 +1,7 @@
+25.11.2
+   New file
+      lib/xxhash.l
+
 25.10.12
    Set initial alarm to 2 seconds
       lib/http.l
