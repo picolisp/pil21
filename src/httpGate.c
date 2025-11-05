@@ -1,4 +1,4 @@
-// 04jul23 Software Lab. Alexander Burger
+// 05nov25 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -390,8 +390,8 @@ int main(int ac, char *av[]) {
          ports[0] = readNames();
       }
       socklen_t len = sizeof(addr);
-      if ((CliSock = accept(sd, (struct sockaddr*)&addr, &len)) >= 0 && (n = fork()) >= 0) {
-         if (!n) {
+      if ((CliSock = accept(sd, (struct sockaddr*)&addr, &len)) >= 0) {
+         if (fork() == 0) {
             name *np;
             int fd, port, i;
             char buf[4096], buf2[64];
