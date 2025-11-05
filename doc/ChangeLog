@@ -1,3 +1,7 @@
+25.11.5
+   Add 'stat' output to 'proc'
+      lib/debug.l
+
 25.11.2
    New file
       lib/xxhash.l
