@@ -1,4 +1,6 @@
 25.11.5
+   Restore 'pkg-config --cflags libffi'
+      src/Makefile
    Avoid stale 'CliSock' if fork() fails
       src/httpGate.c
    Add 'stat' output to 'proc'
