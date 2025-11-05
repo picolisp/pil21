@@ -1,4 +1,6 @@
 25.11.5
+   Remove phone number
+      README
    Restore 'pkg-config --cflags libffi'
       src/Makefile
    Avoid stale 'CliSock' if fork() fails
