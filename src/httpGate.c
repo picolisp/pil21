@@ -1,4 +1,4 @@
-// 05nov25 Software Lab. Alexander Burger
+// 06nov25 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -336,7 +336,9 @@ static void iSignal(int n, void (*foo)(int)) {
 }
 
 int main(int ac, char *av[]) {
-   int cnt = ac>4? ac-3 : 1, ports[cnt], n, sd;
+   int cnt = ac>5? ac-4 : 1, ports[cnt];
+   int lsn = ac>4? atoi(av[4]) : 1;
+   int sd, n;
    struct sockaddr_in6 addr;
    char s[INET6_ADDRSTRLEN];
    char *p, *q, *gate;
@@ -344,7 +346,7 @@ int main(int ac, char *av[]) {
    SSL *ssl;
 
    if (ac < 3)
-      giveup("port dflt [pem [deny ..]]");
+      giveup("port dflt [pem [lsn [deny ..]]]");
    sd = gatePort(atoi(av[1]));  // e.g. 80 or 443
    ports[0] = (int)strtol(p = av[2], &q, 10);  // e.g. 8080
    if (q == p  ||  *q != '\0')
@@ -371,12 +373,18 @@ int main(int ac, char *av[]) {
       ssl = SSL_new(ctx),  gate = "X-Pil: *Gate=https\r\nX-Pil: *Adr=%s\r\n";
    }
    for (n = 1; n < cnt; ++n)
-      ports[n] = atoi(av[n+3]);
+      ports[n] = atoi(av[n+4]);
    signal(SIGCHLD, SIG_IGN);  /* Prevent zombies */
-   if ((n = fork()) < 0)
-      giveup("detach");
-   if (n)
-      return 0;
+   for (n = lsn;;) {
+      pid_t pid;
+
+      if ((pid = fork()) < 0)
+         giveup("detach");
+      if (pid == 0)
+         break;
+      if (--n == 0)
+         return 0;
+   }
    setsid();
    if (Config)
       iSignal(SIGHUP, doSigHup);
