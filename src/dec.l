@@ -1,4 +1,4 @@
-# 06sep25 Software Lab. Alexander Burger
+# 10nov25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -301,8 +301,8 @@ socketPair fcntlCloExec fcntlSetFl nonBlocking fcntlSetOwn getDir)
 (de T i64 boxFlt ())
 (de T i64 boxDouble (i64 i64))
 (de T i64 boxDbl ())
-(de T void bufFloat (i64 i64 i8*))
-(de T void bufDouble (i64 i64 i8*))
+(de T void bufFloat (i64 i64 i32*))
+(de T void bufDouble (i64 i64 i64*))
 
 # Util
 (local) chance

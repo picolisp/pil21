@@ -1,4 +1,4 @@
-// 28aug25 Software Lab. Alexander Burger
+// 10nov25 Software Lab. Alexander Burger
 
 #include "pico.h"
 
@@ -583,7 +583,7 @@ uint64_t boxDbl(void) {
    return 0;
 }
 
-void bufFloat(uint64_t value, int64_t scl, char *p) {
+void bufFloat(uint64_t value, int64_t scl, float *p) {
    float f, m;
    uint64_t x;
 
@@ -596,10 +596,10 @@ void bufFloat(uint64_t value, int64_t scl, char *p) {
       f += m * (float)(x >> 4);
    }
    f /= (float)scl;
-   *(float*)p = sign(value)? -f : f;
+   *p = sign(value)? -f : f;
 }
 
-void bufDouble(uint64_t value, int64_t scl, char *p) {
+void bufDouble(uint64_t value, int64_t scl, double *p) {
    double d, m;
    uint64_t x;
 
@@ -612,7 +612,7 @@ void bufDouble(uint64_t value, int64_t scl, char *p) {
       d += m * (double)(x >> 4);
    }
    d /= (double)scl;
-   *(double*)p = sign(value)? -d : d;
+   *p = sign(value)? -d : d;
 }
 
 #define _GNU_SOURCE
@@ -700,9 +700,9 @@ uint64_t ffiCall(ffi *p, uint64_t lst) {
          value[i] = cdr(x);
       else if (cnt(y = cdr(x))) {  // Fixpoint
          if (y & 8)
-            bufFloat(car(x), y >> 4, &value[i]);
+            bufFloat(car(x), y >> 4, (float*)&value[i]);
          else
-            bufDouble(car(x), y >> 4, &value[i]);
+            bufDouble(car(x), y >> 4, (double*)&value[i]);
       }
       else if (!atom(y)) {  // Structure
          int64_t d, n = car(car(y)) >> 4;
