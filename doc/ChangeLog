@@ -1,3 +1,7 @@
+25.11.14
+   "%" also matches braces "{" and "}"
+      lib/vip.l
+
 25.11.10
    Pointer casts for bufFloat() and bufDouble()
       src/dec.l

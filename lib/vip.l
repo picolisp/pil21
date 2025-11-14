@@ -1,4 +1,4 @@
-# 15aug25 Software Lab. Alexander Burger
+# 14nov25 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -21,9 +21,9 @@ jmp@@ cnt@@ goCol goLeft goRight goUp goDown goAbs goFind word lword
 tword end lend getWord _forward goForward _backward goBackward goPFore
 goPBack shift shiftY indent cutX cutN paste join tglCase insChar incNum
 overwrite _bs insMode cmdMode cmdPipe evRpt move chgRight jmpMark
-wordFun moveSearch patMatch parMatch spell pipeN nextBuf shell shFile
-prCmd cmd _map map+ map+g map+q reset posChar getText s-expr command
-vipA vipZ vi)
+wordFun moveSearch patMatch parMatch braces spell pipeN nextBuf shell
+shFile prCmd cmd _map map+ map+g map+q reset posChar getText s-expr
+command vipA vipZ vi)
 
 
 (class +Buffer)
@@ -1155,6 +1155,14 @@ vipA vipZ vi)
                            (= (setq Par (++ Sup)) 0 Sup) ) ) )
                   (setq Par @Par1  Sup @Sup1) ) ) ) ) ) )
 
+(de braces (Fun1 @ParO @ParC)
+   (moveSearch Fun1
+      (let Par 1
+         (curry (Par @ParO @ParC) (L C)
+            (case (car L)
+               (@ParO (nil (inc 'Par)))
+               (@ParC (or (not C) (=0 (dec 'Par)))) ) ) ) ) )
+
 (de *Spell
    "hunspell" "-l" "-d" "en_US,de_DE" )
 
@@ -1570,8 +1578,10 @@ vipA vipZ vi)
                                     (case (posChar)
                                        ("(" (parMatch 'goForward 1 0 "(" ")" "[" "]"))
                                        ("[" (parMatch 'goForward 0 (0 . 0) "(" ")" "[" "]"))
+                                       ("{" (braces 'goForward "{" "}"))
                                        (")" (parMatch 'goBackward 1 0 ")" "(" "]" "["))
                                        ("]" (parMatch 'goBackward 0 (0 . 0) ")" "(" "]" "["))
+                                       ("}" (braces 'goBackward "}" "{"))
                                        (T (beep)) ) )
                                  ("i"  # Insert
                                     (when (insMode)
