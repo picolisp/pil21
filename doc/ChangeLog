@@ -1,3 +1,9 @@
+25.11.20
+   Handle swap symbol replacement in '+Swap'
+      lib/db.l
+   (val> . +Swp) not needed
+      lib/form.l
+
 25.11.14
    "%" also matches braces "{" and "}"
       lib/vip.l

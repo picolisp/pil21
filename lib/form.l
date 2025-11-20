@@ -1,4 +1,4 @@
-# 30may25 Software Lab. Alexander Burger
+# 20nov25 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
 # *Lock *Spans *AlwaysAsk
@@ -2150,10 +2150,6 @@
    (extra
       (if (ext? Val) (val Val) Val)
       Dn ) )
-
-(dm val> ()
-   (let Val (extra)
-      (if (ext? Val) (val Val) Val) ) )
 
 
 (class +Swap/R +Swp +E/R)

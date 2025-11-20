@@ -1,4 +1,4 @@
-# 25may25 Software Lab. Alexander Burger
+# 20nov25 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1064,17 +1064,21 @@
       (extra Val (val X)) ) )
 
 (dm put> (Obj Old New)
-   (setq New
+   (let N
       (extra
          Obj
          (val Old)
-         (if (ext? New) (val @) New) ) )
-   (cond
-      ((ext? Old) (set @ New) @)
-      (New
-         (prog1
-            (new (or (: dbf 1) 1))
-            (set @ New) ) ) ) )
+         (if (ext? New) (val @) New) )
+      (cond
+         ((ext? Old)
+            (if (ext? New)
+               New
+               (set Old N)
+               Old ) )
+         (N
+            (prog1
+               (new (or (: dbf 1) 1))
+               (set @ N) ) ) ) ) )
 
 (dm del> (Obj Old Val)
    (ifn (ext? Old)
