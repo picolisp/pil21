@@ -1,4 +1,4 @@
-# 20nov25 Software Lab. Alexander Burger
+# 21nov25 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
 # *Lock *Spans *AlwaysAsk
@@ -2153,6 +2153,10 @@
 
 
 (class +Swap/R +Swp +E/R)
+
+(dm val> ()
+   (let Val (extra)
+      (if (ext? Val) (val Val) Val) ) )
 
 
 # Subobject relation
