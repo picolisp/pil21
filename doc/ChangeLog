@@ -1,3 +1,7 @@
+25.11.26
+   Pointer casts for bufFloat() and bufDouble()
+      src/main.l
+
 25.11.22
    Typo
       loc/RU.l

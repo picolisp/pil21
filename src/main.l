@@ -1,4 +1,4 @@
-# 05oct25 Software Lab. Alexander Burger
+# 26nov25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1334,11 +1334,11 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
             (let (N 0  Scl (int X))
                (if (sign? X)  # ([-]1.0 . lst)
                   (while (pair Val)
-                     (bufFloat (++ Val) Scl Ptr)
+                     (bufFloat (++ Val) Scl (i32* Ptr))
                      (inc 'N 4)
                      (setq Ptr (ofs Ptr 4)) )
                   (while (pair Val)
-                     (bufDouble (++ Val) Scl Ptr)
+                     (bufDouble (++ Val) Scl (i64* Ptr))
                      (inc 'N 8)
                      (setq Ptr (ofs Ptr 8)) ) )
                N ) ) ) ) )
