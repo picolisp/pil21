@@ -1,3 +1,7 @@
+25.11.29
+   Reinitialize resolver before getaddrinfo()
+      src/ssl.c
+
 25.11.26
    Pointer casts for bufFloat() and bufDouble()
       src/main.l
