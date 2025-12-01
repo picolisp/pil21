@@ -1,4 +1,4 @@
-# 12oct25 Software Lab. Alexander Burger
+# 30nov25 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -232,6 +232,9 @@
                      ((= "!" (car U))
                         (and *SesId (timeout *Timeout))
                         (apply (val (intern (ht:Pack (cdr U) T))) L) )
+                     ((head '("%" "2" "1") U)
+                        (and *SesId (timeout *Timeout))
+                        (apply (val (intern (ht:Pack (cdddr U) T))) L) )
                      ((tail '("." "l") U)
                         (and *SesId (timeout *Timeout))
                         (apply script L *Url) )
@@ -283,10 +286,8 @@
                   *MPartEnd (append *MPartLim '(- -)) )
                (line) ) )
          ("x-pil:"
-            (char)
-            (when (till "=\r\n")
-               (_htSet @ (ht:Pack (cdr (line)) T))
-               T ) )
+            (for (L (split (cdr (line)) "," "=")  L)
+               (_htSet (++ L) (ht:Pack (++ L) T)) ) )
          (T (if (eol) (char) (line T))) ) )
    (unless *Gate
       (and (member ":" *Host) (con (prior @ *Host))) ) )

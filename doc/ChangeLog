@@ -1,3 +1,7 @@
+25.11.30
+   Decode "%21", and handle multple header values (Mansur Mamkin)
+      lib/http.l
+
 25.11.29
    Reinitialize resolver before getaddrinfo()
       src/ssl.c
