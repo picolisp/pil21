@@ -1,4 +1,4 @@
-// 29nov25 Software Lab. Alexander Burger
+// 09nov22 Software Lab. Alexander Burger
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -9,7 +9,6 @@
 #include <string.h>
 #include <signal.h>
 #include <sys/stat.h>
-#include <resolv.h>
 #include <netdb.h>
 #include <arpa/inet.h>
 #include <netinet/in.h>
@@ -56,7 +55,6 @@ static int sslConnect(SSL *ssl, char *node, char *service) {
    memset(&hints, 0, sizeof(hints));
    hints.ai_family = AF_UNSPEC;
    hints.ai_socktype = SOCK_STREAM;
-   res_init();
    if (getaddrinfo(node, service, &hints, &lst) == 0) {
       for (p = lst; p; p = p->ai_next) {
          if ((sd = socket(p->ai_family, p->ai_socktype, 0)) >= 0) {

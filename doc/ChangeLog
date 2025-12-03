@@ -1,3 +1,7 @@
+25.12.1
+   Revert res_init() from 25.11.29
+      src/ssl.c
+
 25.11.30
    Decode "%21", and handle multple header values (Mansur Mamkin)
       lib/http.l
