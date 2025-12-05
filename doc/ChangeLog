@@ -1,3 +1,11 @@
+25.12.4
+   'delBuf' function
+      lib/vip.l
+
+25.12.3
+   Check for buffer-local key mappings
+      lib/vip.l
+
 25.12.1
    Revert res_init() from 25.11.29
       src/ssl.c

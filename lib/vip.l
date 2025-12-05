@@ -1,4 +1,4 @@
-# 14nov25 Software Lab. Alexander Burger
+# 04dec25 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -21,13 +21,13 @@ jmp@@ cnt@@ goCol goLeft goRight goUp goDown goAbs goFind word lword
 tword end lend getWord _forward goForward _backward goBackward goPFore
 goPBack shift shiftY indent cutX cutN paste join tglCase insChar incNum
 overwrite _bs insMode cmdMode cmdPipe evRpt move chgRight jmpMark
-wordFun moveSearch patMatch parMatch braces spell pipeN nextBuf shell
-shFile prCmd cmd _map map+ map+g map+q reset posChar getText s-expr
-command vipA vipZ vi)
+wordFun moveSearch patMatch parMatch braces spell pipeN nextBuf delBuf
+shell shFile prCmd cmd _map map+ map+g map+q reset posChar getText
+s-expr command vipA vipZ vi)
 
 
 (class +Buffer)
-# text file cmd symbols key undo redo dirt
+# text file cmd symbols key undo redo dirt keys
 # posX posY lastX lastY subd flat fmt syms <c>
 
 (dm T (File Y)
@@ -1211,6 +1211,17 @@ command vipA vipZ vi)
       (off *StatNm)
       (goto (: buffer posX) (: buffer posY)) ) )
 
+(de delBuf (Buf)
+   (for (This *CmdWin (setq This (: next)))
+      (cond
+         ((== Buf (: last))
+            (=: last) )
+         ((== Buf (: buffer))
+            (nextBuf (: last))
+            (=: last) ) ) )
+   (del Buf '*Buffers)
+   (=: last) )
+
 (de shell (S)
    (vipZ)
    (do *Columns (prin "#"))
@@ -1385,17 +1396,10 @@ command vipA vipZ vi)
                                  (xchg X @)
                                  (beep) ) ) )
                         ("bd"  # Buffer delete
-                           (when (cdr *Buffers)
-                              (let? Buf (if (=0 Cnt) (: buffer) (get *Buffers Cnt))
-                                 (for (This *CmdWin (setq This (: next)))
-                                    (cond
-                                       ((== Buf (: last))
-                                          (=: last) )
-                                       ((== Buf (: buffer))
-                                          (nextBuf (: last))
-                                          (=: last) ) ) )
-                                 (del Buf '*Buffers)
-                                 (=: last) ) ) )
+                           (and
+                              (cdr *Buffers)
+                              (if (=0 Cnt) (: buffer) (get *Buffers Cnt))
+                              (delBuf @) ) )
                         ("map"  # Add/remove key mappings
                            (++ Line)
                            (let C (++ Line)
@@ -1518,7 +1522,7 @@ command vipA vipZ vi)
                               (*Change (off *Change))
                               (T (setq *Change *Chr)) ) )
                         (T
-                           (if (assoc *Chr *KeyMap)
+                           (if (or (assoc *Chr *KeyMap) (assoc *Chr (: buffer keys)))
                               (run (cdr @))
                               (case *Chr
                                  ("\e")
