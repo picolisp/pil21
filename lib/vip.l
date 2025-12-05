@@ -1,4 +1,4 @@
-# 04dec25 Software Lab. Alexander Burger
+# 05dec25 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -14,16 +14,16 @@
 
 ### VIP Editor ###
 (local) (*Buffers +Buffer mkLoc fName prName rplFile fileBuffer rdLines
-delim delimNs markup min1 undo redo evCmd dirty> load> save> syms> view>
-status delwin cursor addLine chgLine redraw repaint scLeft scRight goto
-chgwin eqwin getch getch2 reload scratch syms pushTag tag done change
-jmp@@ cnt@@ goCol goLeft goRight goUp goDown goAbs goFind word lword
-tword end lend getWord _forward goForward _backward goBackward goPFore
-goPBack shift shiftY indent cutX cutN paste join tglCase insChar incNum
-overwrite _bs insMode cmdMode cmdPipe evRpt move chgRight jmpMark
-wordFun moveSearch patMatch parMatch braces spell pipeN nextBuf delBuf
-shell shFile prCmd cmd _map map+ map+g map+q reset posChar getText
-s-expr command vipA vipZ vi)
+delim delimNs markup min1 undo redo evCmd status> dirty> load> save>
+syms> view> status delwin cursor addLine chgLine redraw repaint scLeft
+scRight goto chgwin eqwin getch getch2 reload scratch syms pushTag tag
+done change jmp@@ cnt@@ goCol goLeft goRight goUp goDown goAbs goFind
+word lword tword end lend getWord _forward goForward _backward
+goBackward goPFore goPBack shift shiftY indent cutX cutN paste join
+tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe evRpt move
+chgRight jmpMark wordFun moveSearch patMatch parMatch braces spell pipeN
+nextBuf delBuf shell shFile prCmd cmd _map map+ map+g map+q reset
+posChar getText s-expr command vipA vipZ vi)
 
 
 (class +Buffer)
@@ -150,6 +150,14 @@ s-expr command vipA vipZ vi)
 
 (de min1 (A B)
    (max 1 (min A B)) )
+
+(dm status> (A F Z)
+   (let N (- *Columns (length (prin A)))
+      (cond
+         ((ge0 (- N (length F) (length Z)))
+            (prin F (need @ " ") Z) )
+         ((onOff *StatNm) (prin (tail N (chop F))))
+         (T (prin (need (- N (length Z)) " ") Z)) ) ) )
 
 (dm dirty> (Win)
    (<> (: undo) (: dirt)) )
@@ -359,15 +367,16 @@ s-expr command vipA vipZ vi)
 (de status ()
    (unless (== This *CmdWin)
       (cup (+ (: top) (: lines) 1) 1)
-      (let
-         (N (length (: buffer text))
-            A (pack
-               (index (: buffer) *Buffers)
-               "/"
-               (length *Buffers)
-               (if (dirty> (: buffer) This) " * " " ") )
-            F (or (: buffer cmd) (prName (: buffer file)))
-            Z (pack
+      (attr REVERS)
+      (status> (: buffer)
+         (pack
+            (index (: buffer) *Buffers)
+            "/"
+            (length *Buffers)
+            (if (dirty> (: buffer) This) " * " " ") )
+         (or (: buffer cmd) (prName (: buffer file)))
+         (let N (length (: buffer text))
+            (pack
                (and (: mark) (cons @ " "))
                (casq (: buffer symbols 1)
                   (pico)
@@ -376,16 +385,9 @@ s-expr command vipA vipZ vi)
                (if (gt0 (dec N))
                   (*/ 100 (dec (: posY)) @)
                   0 )
-               "%" ) )
-         (attr REVERS)
-         (let N (- *Columns (length (prin A)))
-            (cond
-               ((ge0 (- N (length F) (length Z)))
-                  (prin F (need @ " ") Z) )
-               ((onOff *StatNm) (prin (tail N (chop F))))
-               (T (prin (need (- N (length Z)) " ") Z)) ) )
-         (attr)
-         (flush) ) ) )
+               "%" ) ) )
+      (attr)
+      (flush) ) )
 
 (de redraw ()
    (hideCsr)

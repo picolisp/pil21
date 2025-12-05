@@ -1,3 +1,7 @@
+25.12.5
+   'status>' method for '+Buffer'
+      lib/vip.l
+
 25.12.4
    'delBuf' function
       lib/vip.l
