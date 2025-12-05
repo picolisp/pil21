@@ -14,8 +14,8 @@
 
 ### VIP Editor ###
 (local) (*Buffers +Buffer mkLoc fName prName rplFile fileBuffer rdLines
-delim delimNs markup min1 undo redo evCmd status> dirty> load> save>
-syms> view> status delwin cursor addLine chgLine redraw repaint scLeft
+delim delimNs markup min1 undo redo evCmd dirty> load> save> syms> view>
+status> status delwin cursor addLine chgLine redraw repaint scLeft
 scRight goto chgwin eqwin getch getch2 reload scratch syms pushTag tag
 done change jmp@@ cnt@@ goCol goLeft goRight goUp goDown goAbs goFind
 word lword tword end lend getWord _forward goForward _backward
@@ -150,14 +150,6 @@ posChar getText s-expr command vipA vipZ vi)
 
 (de min1 (A B)
    (max 1 (min A B)) )
-
-(dm status> (A F Z)
-   (let N (- *Columns (length (prin A)))
-      (cond
-         ((ge0 (- N (length F) (length Z)))
-            (prin F (need @ " ") Z) )
-         ((onOff *StatNm) (prin (tail N (chop F))))
-         (T (prin (need (- N (length Z)) " ") Z)) ) ) )
 
 (dm dirty> (Win)
    (<> (: undo) (: dirt)) )
@@ -323,6 +315,14 @@ posChar getText s-expr command vipA vipZ vi)
 (dm view> ()
    (view> (: buffer) This) )
 
+(dm status> (A F Z)
+   (let N (- *Columns (length (prin A)))
+      (cond
+         ((ge0 (- N (length F) (length Z)))
+            (prin F (need @ " ") Z) )
+         ((onOff *StatNm) (prin (tail N (chop F))))
+         (T (prin (need (- N (length Z)) " ") Z)) ) ) )
+
 (de delwin ()
    (when (=: prev next (: next))
       (=: next prev (: prev)) ) )
@@ -368,7 +368,7 @@ posChar getText s-expr command vipA vipZ vi)
    (unless (== This *CmdWin)
       (cup (+ (: top) (: lines) 1) 1)
       (attr REVERS)
-      (status> (: buffer)
+      (status> This
          (pack
             (index (: buffer) *Buffers)
             "/"
