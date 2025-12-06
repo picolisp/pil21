@@ -1,4 +1,4 @@
-# 05dec25 Software Lab. Alexander Burger
+# 06dec25 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -15,14 +15,14 @@
 ### VIP Editor ###
 (local) (*Buffers +Buffer mkLoc fName prName rplFile fileBuffer rdLines
 delim delimNs markup min1 undo redo evCmd dirty> load> save> syms> view>
-status> status delwin cursor addLine chgLine redraw repaint scLeft
-scRight goto chgwin eqwin getch getch2 reload scratch syms pushTag tag
-done change jmp@@ cnt@@ goCol goLeft goRight goUp goDown goAbs goFind
-word lword tword end lend getWord _forward goForward _backward
-goBackward goPFore goPBack shift shiftY indent cutX cutN paste join
-tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe evRpt move
-chgRight jmpMark wordFun moveSearch patMatch parMatch braces spell pipeN
-nextBuf delBuf shell shFile prCmd cmd _map map+ map+g map+q reset
+status> status delwin cursor addLine chgLine drawin redraw repaint
+scLeft scRight goto chgwin eqwin getch getch2 reload scratch syms
+pushTag tag done change jmp@@ cnt@@ goCol goLeft goRight goUp goDown
+goAbs goFind word lword tword end lend getWord _forward goForward
+_backward goBackward goPFore goPBack shift shiftY indent cutX cutN paste
+join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe evRpt
+move chgRight jmpMark wordFun moveSearch patMatch parMatch braces spell
+pipeN nextBuf delBuf shell shFile prCmd cmd _map map+ map+g map+q reset
 posChar getText s-expr command vipA vipZ vi)
 
 
@@ -316,12 +316,15 @@ posChar getText s-expr command vipA vipZ vi)
    (view> (: buffer) This) )
 
 (dm status> (A F Z)
+   (cup (+ (: top) (: lines) 1) 1)
+   (attr REVERS)
    (let N (- *Columns (length (prin A)))
       (cond
          ((ge0 (- N (length F) (length Z)))
             (prin F (need @ " ") Z) )
          ((onOff *StatNm) (prin (tail N (chop F))))
-         (T (prin (need (- N (length Z)) " ") Z)) ) ) )
+         (T (prin (need (- N (length Z)) " ") Z)) ) )
+   (attr) )
 
 (de delwin ()
    (when (=: prev next (: next))
@@ -366,8 +369,6 @@ posChar getText s-expr command vipA vipZ vi)
 
 (de status ()
    (unless (== This *CmdWin)
-      (cup (+ (: top) (: lines) 1) 1)
-      (attr REVERS)
       (status> This
          (pack
             (index (: buffer) *Buffers)
@@ -386,14 +387,16 @@ posChar getText s-expr command vipA vipZ vi)
                   (*/ 100 (dec (: posY)) @)
                   0 )
                "%" ) ) )
-      (attr)
       (flush) ) )
+
+(de drawin ()
+   (let L (nth (: buffer text) (: winY))
+      (for Y (: lines)
+         (addLine Y (++ L) *Columns) ) ) )
 
 (de redraw ()
    (hideCsr)
-   (let L (nth (: buffer text) (: winY))
-      (for Y (: lines)
-         (addLine Y (++ L) *Columns) ) )
+   (drawin)
    (showCsr)
    (status) )
 
@@ -1741,7 +1744,7 @@ posChar getText s-expr command vipA vipZ vi)
                                              (unless (== This *CmdWin)
                                                 (let (Old (inc (: lines))  New (/ Old 2))
                                                    (with
-                                                      (new '(+Window) (: buffer)
+                                                      (new (val This) (: buffer)
                                                          (+ (: top) New) (- Old New 1)
                                                          (: winX) (: winY)
                                                          (: posX) (: posY)

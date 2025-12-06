@@ -1,4 +1,13 @@
+25.12.6
+   Inherit window methods when split
+   'status>' continued
+   'drawin' function
+      lib/vip.l
+
 25.12.5
+   Fix 'any1' and 'any2' for 'init', 'iter' and 'scan'
+      doc/refI.html
+      doc/refS.html
    'status>' method for '+Window'
       lib/vip.l
 
