@@ -1,3 +1,7 @@
+25.12.7
+   Check for buffer-local command mappings
+      lib/vip.l
+
 25.12.6
    Inherit window methods when split
    'status>' continued

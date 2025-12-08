@@ -1,4 +1,4 @@
-# 06dec25 Software Lab. Alexander Burger
+# 07dec25 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -27,7 +27,7 @@ posChar getText s-expr command vipA vipZ vi)
 
 
 (class +Buffer)
-# text file cmd symbols key undo redo dirt keys
+# text file cmd symbols key undo redo dirt cmds keys
 # posX posY lastX lastY subd flat fmt syms <c>
 
 (dm T (File Y)
@@ -1325,7 +1325,7 @@ posChar getText s-expr command vipA vipZ vi)
                   (until (sp? (car Line))
                      (setq C (pack C (++ Line))) ) )
                (let L (pack (clip Line))
-                  (if (assoc C *CmdMap)
+                  (if (or (assoc C (: buffer cmds)) (assoc C *CmdMap))
                      ((cdr @) L Line Cnt)
                      (case C
                         (" "  # Eval
@@ -1527,7 +1527,7 @@ posChar getText s-expr command vipA vipZ vi)
                               (*Change (off *Change))
                               (T (setq *Change *Chr)) ) )
                         (T
-                           (if (or (assoc *Chr *KeyMap) (assoc *Chr (: buffer keys)))
+                           (if (or (assoc *Chr (: buffer keys)) (assoc *Chr *KeyMap))
                               (run (cdr @))
                               (case *Chr
                                  ("\e")
