@@ -1,3 +1,7 @@
+25.12.8
+   Support initial key sequence in "# VIP " header
+      lib/vip.l
+
 25.12.7
    Check for buffer-local command mappings
       lib/vip.l

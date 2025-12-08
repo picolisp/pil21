@@ -1,4 +1,4 @@
-# 07dec25 Software Lab. Alexander Burger
+# 08dec25 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -218,12 +218,14 @@ posChar getText s-expr command vipA vipZ vi)
          7 )
       (evCmd
          (symbols '(vip pico)
-            (if (= "(" (car L))
-               (run (str (pack L)))
-               (setq L (split L " "))
-               (apply script
-                  (str (glue " " (cdr L)))
-                  (path (car L)) ) ) ) ) ) )
+            (case (car L)
+               ("\"" (setq *Keys (chop (any L))))
+               ("(" (run (str (pack L))))
+               (T
+                  (setq L (split L " "))
+                  (apply script
+                     (str (glue " " (cdr L)))
+                     (path (car L)) ) ) ) ) ) ) )
 
 (dm save> (Win)
    (when (: file)
