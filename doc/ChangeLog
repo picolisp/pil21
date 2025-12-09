@@ -1,4 +1,6 @@
 25.12.9
+   Refactor 'patMatch' to (search> . +Buffer)
+      lib/vip.l
    'this' function
       src/glob.l
       src/flow.l

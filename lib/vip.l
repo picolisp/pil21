@@ -290,6 +290,34 @@ reset posChar getText s-expr command vipA vipZ vi)
          (println '(=======))
          (prinl) ) ) )
 
+(dm search> (Win @Pat)
+   (ifn (= "\\" (car @Pat))
+      (let @Lst 'L
+         (when (= "~" (car @Pat))
+            (setq
+               @Pat (mapcar lowc (cdr @Pat))
+               @Lst '(mapcar lowc L) ) )
+         (if
+            (nor
+               (= "\^" (car @Pat))
+               (= "$" (last @Pat))
+               (find pat? @Pat) )
+            (curry (@Pat @Lst) (L)
+               (head '@Pat @Lst) )
+            (setq @Pat
+               (if (= "$" (last @Pat))
+                  (head -1 @Pat)
+                  (append @Pat '(@)) ) )
+            (ifn (= "\^" (car @Pat))
+               (curry (@Pat @Lst) (L)
+                  (match '@Pat @Lst) )
+               (++ @Pat)
+               (curry (@Pat @Lst) (L C)
+                  (unless C (match '@Pat @Lst)) ) ) ) )
+      (++ @Pat)
+      (curry (@Pat) (L)
+         (head '@Pat L) ) ) )
+
 (dm view> (Win)
    (beep) )
 
@@ -1116,35 +1144,8 @@ reset posChar getText s-expr command vipA vipZ vi)
 (de moveSearch (Fun1 Fun2)
    (move Fun1 (lit Fun2) *Cnt) )
 
-(de patMatch (Fun @Pat)
-   (moveSearch Fun
-      (setq *Search
-         (ifn (= "\\" (car @Pat))
-            (let @Lst 'L
-               (when (= "~" (car @Pat))
-                  (setq
-                     @Pat (mapcar lowc (cdr @Pat))
-                     @Lst '(mapcar lowc L) ) )
-               (if
-                  (nor
-                     (= "\^" (car @Pat))
-                     (= "$" (last @Pat))
-                     (find pat? @Pat) )
-                  (curry (@Pat @Lst) (L)
-                     (head '@Pat @Lst) )
-                  (setq @Pat
-                     (if (= "$" (last @Pat))
-                        (head -1 @Pat)
-                        (append @Pat '(@)) ) )
-                  (ifn (= "\^" (car @Pat))
-                     (curry (@Pat @Lst) (L)
-                        (match '@Pat @Lst) )
-                     (++ @Pat)
-                     (curry (@Pat @Lst) (L C)
-                        (unless C (match '@Pat @Lst)) ) ) ) )
-            (++ @Pat)
-            (curry (@Pat) (L)
-               (head '@Pat L) ) ) ) ) )
+(de patMatch (Fun Pat)
+   (moveSearch Fun (setq *Search (search> (: buffer) This Pat))) )
 
 (de parMatch (Fun1 @Par1 @Sup1 @ParO @ParC @SupO @SupC)
    (moveSearch Fun1
