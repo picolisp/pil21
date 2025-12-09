@@ -1,4 +1,5 @@
 25.12.9
+   Rename 'shift' to 'shiftN'
    Refactor 'patMatch' to (search> . +Buffer)
       lib/vip.l
    'this' function

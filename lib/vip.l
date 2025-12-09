@@ -19,7 +19,7 @@ search> view> status> status delwin cursor addLine chgLine drawin redraw
 repaint scLeft scRight goto chgwin eqwin getch getch2 reload scratch
 syms pushTag tag done change jmp@@ cnt@@ goCol goLeft goRight goUp
 goDown goAbs goFind word lword tword end lend getWord _forward goForward
-_backward goBackward goPFore goPBack shift shiftY indent cutX cutN paste
+_backward goBackward goPFore goPBack shiftN shiftY indent cutX cutN paste
 join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe evRpt
 move chgRight jmpMark wordFun moveSearch patMatch parMatch braces spell
 pipeN nextBuf delBuf shell shFile prCmd cmd keys _map map+ map+g map+q
@@ -788,10 +788,10 @@ reset posChar getText s-expr command vipA vipZ vi)
       (jmp@@ Y)
       1 ) )
 
-(de shift (N Flg)
+(de shiftN (Cnt Flg)
    (change
       (let? P Pos
-         (do N
+         (do Cnt
             (when (car P)
                (if Flg
                   (do 3 (push P (name " ")))
@@ -803,7 +803,7 @@ reset posChar getText s-expr command vipA vipZ vi)
          (=: posX 1) ) ) )
 
 (de shiftY (X Flg)
-   (shift (cnt@@) Flg) )
+   (shiftN (cnt@@) Flg) )
 
 (de indent ()
    (change
@@ -1521,8 +1521,8 @@ reset posChar getText s-expr command vipA vipZ vi)
                               ((= *Chr *Change)
                                  (case *Chr
                                     ("!" (cmdPipe *Cnt))  # [!!] External filter
-                                    (">" (evRpt (list 'shift *Cnt T)))  # [>>] Shift line(s) right
-                                    ("<" (evRpt (list 'shift *Cnt)))  # [<<] Shift line(s) left
+                                    (">" (evRpt (list 'shiftN *Cnt T)))  # [>>] Shift line(s) right
+                                    ("<" (evRpt (list 'shiftN *Cnt)))  # [<<] Shift line(s) left
                                     ("c" (=: posX 1) (chgRight T))  # [cc] Change whole line
                                     ("d" (evRpt (list 'cutN *Cnt)))  # [dd] Delete line(s)
                                     ("y"  # [yy] Yank line(s)
