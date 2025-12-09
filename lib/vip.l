@@ -1,4 +1,4 @@
-# 08dec25 Software Lab. Alexander Burger
+# 09dec25 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -22,8 +22,8 @@ goAbs goFind word lword tword end lend getWord _forward goForward
 _backward goBackward goPFore goPBack shift shiftY indent cutX cutN paste
 join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe evRpt
 move chgRight jmpMark wordFun moveSearch patMatch parMatch braces spell
-pipeN nextBuf delBuf shell shFile prCmd cmd _map map+ map+g map+q reset
-posChar getText s-expr command vipA vipZ vi)
+pipeN nextBuf delBuf shell shFile prCmd cmd keys _map map+ map+g map+q
+reset posChar getText s-expr command vipA vipZ vi)
 
 
 (class +Buffer)
@@ -219,7 +219,7 @@ posChar getText s-expr command vipA vipZ vi)
       (evCmd
          (symbols '(vip pico)
             (case (car L)
-               ("\"" (setq *Keys (chop (any L))))
+               ("\"" (keys (chop (any L))))
                ("(" (run (str (pack L))))
                (T
                   (setq L (split L " "))
@@ -1269,9 +1269,12 @@ posChar getText s-expr command vipA vipZ vi)
       (con @ Fun)
       (push '*CmdMap (cons Cmd Fun)) ) )
 
+(de keys (Lst)
+   (setq *Keys Lst) )
+
 (de _map (@Map @C @S)
    (macro
-      (push1 '@Map '(@C (setq *Keys (chop @S)))) ) )
+      (push1 '@Map '(@C (keys (chop @S)))) ) )
 
 (de map+ (C . X)
    (if (str? (car X))
@@ -1415,7 +1418,7 @@ posChar getText s-expr command vipA vipZ vi)
                               (if Line
                                  (push '*KeyMap
                                     (list C
-                                       (list 'setq '*Keys
+                                       (list 'keys
                                           (lit (mapcar name (cdr Line))) ) ) )
                                  (del (assoc C *KeyMap) '*KeyMap) ) ) )
                         (T
