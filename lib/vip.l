@@ -14,11 +14,11 @@
 
 ### VIP Editor ###
 (local) (*Buffers +Buffer mkLoc fName prName rplFile fileBuffer rdLines
-delim delimNs markup min1 undo redo evCmd dirty> load> save> syms> view>
-status> status delwin cursor addLine chgLine drawin redraw repaint
-scLeft scRight goto chgwin eqwin getch getch2 reload scratch syms
-pushTag tag done change jmp@@ cnt@@ goCol goLeft goRight goUp goDown
-goAbs goFind word lword tword end lend getWord _forward goForward
+delim delimNs markup min1 undo redo evCmd dirty> load> save> syms>
+search> view> status> status delwin cursor addLine chgLine drawin redraw
+repaint scLeft scRight goto chgwin eqwin getch getch2 reload scratch
+syms pushTag tag done change jmp@@ cnt@@ goCol goLeft goRight goUp
+goDown goAbs goFind word lword tword end lend getWord _forward goForward
 _backward goBackward goPFore goPBack shift shiftY indent cutX cutN paste
 join tglCase insChar incNum overwrite _bs insMode cmdMode cmdPipe evRpt
 move chgRight jmpMark wordFun moveSearch patMatch parMatch braces spell
