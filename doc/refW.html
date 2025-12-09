@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 09dec25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -176,14 +176,17 @@ A NIL
 -> A
 </pre></dd>
 
-<dt><a id="with"><code>(with 'var . prg) -> any</code></a></dt>
-<dd>Saves the current object <code>This</code> and sets it to the new value
-<code>var</code>. Then <code>prg</code> is executed, and <code>This</code> is
-restored to its previous value. The return value is the result of
-<code>prg</code>. Used typically to access the local data of <code>var</code> in
-the same manner as inside a method body. <code>prg</code> is not executed (and
-<code>NIL</code> is returned) when <code>var</code> is <code>NIL</code>.
-<code>(with 'X . prg)</code> is equivalent to <code>(let? This 'X . prg)</code>.
+<dt><a id="with"><code>(with 'any . prg) -> any</code></a></dt>
+<dd>Saves the current object <code><a
+href="refT.html#This">This</a></code> and sets it to the new value
+<code>any</code>. Then <code>prg</code> is executed, and
+<code>This</code> is restored to its previous value. The return value is
+the result of <code>prg</code>. Used typically to access the local data
+of <code>var</code> in the same manner as inside a method body.
+<code>prg</code> is not executed (and <code>NIL</code> is returned) when
+<code>var</code> is <code>NIL</code>. <code>(with 'X . prg)</code> is
+equivalent to <code>(let? This 'X . prg)</code>. See also <code><a
+href="refT.html#this">this</a></code>.
 
 <pre>
 : (put 'X 'a 1)

@@ -1,4 +1,4 @@
-# 08oct25 Software Lab. Alexander Burger
+# 09dec25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -370,6 +370,7 @@
    (NIL "do" _Do)
    (NIL "loop" _Loop)
    (NIL "for" _For)
+   (NIL "this" _This)
    (NIL "with" _With)
    (NIL "bind" _Bind)
    (NIL "job" _Job)

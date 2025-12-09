@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 30may25 Software Lab. Alexander Burger
+# 09dec25 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -100,7 +100,9 @@ however, it can be used in normal bindings anywhere. See also <code><a
 href="refI.html#isa">isa</a></code>, <code><a href="ref_.html#:">:</a></code>,
 <code><a href="ref_.html#=:">=:</a></code>, <code><a
 href="ref_.html#::">::</a></code> and <code><a
-href="refV.html#var:">var:</a></code>.
+href="refV.html#var:">var:</a></code>. See also
+<code><a href="refW.html#with">with</a></code> and
+<code><a href="refT.html#this">this</a></code>.
 
 <pre>
 : (with 'X (println 'This 'is This))
@@ -366,6 +368,19 @@ href="refG.html#glue">glue</a></code>.
 -> "abc XYZ def 123"
 : (text "a@@bc.@1" "de")
 -> "a@bc.de"
+</pre></dd>
+
+<dt><a id="this"><code>(this 'any) -> any</code></a></dt>
+<dd>Sets the current object <code><a
+href="refT.html#This">This</a></code> to the new value <code>any</code>.
+<code>(this 'any)</code> is equivalent to <code>(setq This 'any)</code>.
+See also <code><a href="refW.html#with">with</a></code>.
+
+<pre>
+: (this 'X)
+-> X
+: This
+-> X
 </pre></dd>
 
 <dt><a id="throw"><code>(throw 'sym 'any)</code></a></dt>

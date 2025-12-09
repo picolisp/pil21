@@ -1,4 +1,13 @@
 25.12.9
+   'this' function
+      src/glob.l
+      src/flow.l
+      doc/ref.html
+      doc/refT.html
+      doc/refW.html
+      lib/sq.l
+      lib/vip.l
+      lib/simul.l
    'keys' function
       lib/vip.l
 

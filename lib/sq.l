@@ -1,4 +1,4 @@
-# 04dec23 Software Lab. Alexander Burger
+# 09dec25 Software Lab. Alexander Burger
 
 # (select [var ..] cls [hook] [var val ..])
 (de select Lst
@@ -40,7 +40,7 @@
                      (NIL Lst) ) ) )
             (search Q) )
          (T
-            (when (setq This (isa Cls @))
+            (when (this (isa Cls @))
                (ifn Vars
                   (show This)
                   (for X Vars

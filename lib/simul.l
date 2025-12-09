@@ -1,4 +1,4 @@
-# 29jul25 Software Lab. Alexander Burger
+# 09dec25 Software Lab. Alexander Burger
 
 (symbols 'simul 'pico)
 
@@ -139,7 +139,7 @@
             (=: e NIL)
             (yield 0 This)
             (NIL (setq X (lup *Next Time)))
-            (setq This (cdr X)) ) ) ) )
+            (this (cdr X)) ) ) ) )
 
 # Wait for time and/or events
 (de pause @

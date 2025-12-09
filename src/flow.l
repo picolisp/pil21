@@ -1,4 +1,4 @@
-# 08oct25 Software Lab. Alexander Burger
+# 09dec25 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -865,7 +865,11 @@
                   (set Y (val P)  $Bind (val 3 P)) ) ) ) )
       R ) )
 
-# (with 'var . prg) -> any
+# (this 'any) -> any
+(de _This (Exe)
+   (set $This (eval (cadr Exe))) )
+
+# (with 'any . prg) -> any
 (de _With (Exe)
    (let (X (cdr Exe)  Y (needVar Exe (eval (++ X))))
       (if (nil? Y)
