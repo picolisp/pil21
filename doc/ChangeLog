@@ -1,3 +1,7 @@
+25.12.11
+   'scratch' returns buffer
+      lib/vip.l
+
 25.12.9
    Rename 'shift' to 'shiftN'
    Refactor 'patMatch' to (search> . +Buffer)

@@ -1,4 +1,4 @@
-# 09dec25 Software Lab. Alexander Burger
+# 11dec25 Software Lab. Alexander Burger
 
 (symbols 'vip 'pico)
 
@@ -532,20 +532,21 @@ reset posChar getText s-expr command vipA vipZ vi)
 (de scratch (File Lst Y)
    (out (setq File (fName File))
       (mapc prinl Lst) )
-   (if (find '((This) (= File (: file))) *Buffers)
-      (with @
-         (markup
-            (=: text Lst)
-            (=: undo (=: redo (=: dirt))) ) )
-      (=: mark)
-      (=: last (: buffer))
-      (put
-         (=: buffer (new '(+Buffer) File Y))
-         'text
-         Lst )
-      (markup (: buffer text))
-      (goto 1 (: buffer posY)) )
-   (repaint) )
+   (prog1
+      (if (find '((This) (= File (: file))) *Buffers)
+         (with @
+            (markup
+               (=: text Lst)
+               (=: undo (=: redo (=: dirt))) )
+            This )
+         (=: mark)
+         (=: last (: buffer))
+         (prog1
+            (=: buffer (new '(+Buffer) File Y))
+            (put @ 'text Lst)
+            (markup (: buffer text))
+            (goto 1 (: buffer posY)) ) )
+      (repaint) ) )
 
 (de pushTag (File)
    (push '*TagStack (: posX) (: posY) File (symbols)) )
