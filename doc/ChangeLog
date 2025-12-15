@@ -1,3 +1,7 @@
+25.12.14
+   Namespace specification "ap~" not needed
+      doc/search.html
+
 25.12.11
    'scratch' returns buffer
       lib/vip.l
