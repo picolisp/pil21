@@ -1,5 +1,8 @@
-# 05mar24 Software Lab. Alexander Burger
+# 21dec25 Software Lab. Alexander Burger
 # Copy to ~/.pil/viprc
+
+## Uncomment to enable the ":cal" (calendar) command
+## (load "@lib/vip/cal.rc.l")
 
 (map+q "d" ":bd\r")
 
