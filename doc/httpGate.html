@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 26oct23 Software Lab. Alexander Burger
+# 03jan26 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -73,10 +73,10 @@ for "app", then also the following request is accepted:
 <p>In that case, the "app" server process is started automatically (if it is not
 already running) listening on port 12345, and the request is forwarded as above.
 
-<p>Only GET and POST requests will be forwarded, and only to ports &gt;= 1024.
-The main httpGate process then forks two child processes, one for each
-direction. These child processes terminate automatically if the connection is
-idle for more than 7 minutes.
+<p>Only requests to ports &gt;= 1024 will be forwarded. The main httpGate
+process then forks two child processes, one for each direction. These child
+processes terminate automatically if the connection is idle for more than 7
+minutes.
 
 <h2><a id="running">Running httpGate</a></h2>
 
