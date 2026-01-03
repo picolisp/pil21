@@ -1,4 +1,4 @@
-# 02jun24 Software Lab. Alexander Burger
+# 01jan26 Software Lab. Alexander Burger
 
 # *Allow
 
@@ -348,7 +348,7 @@
    (glue "/"
       (prog1
          (trim (split (chop F) "/"))
-         (set (tail 1 @)) ) ) )
+         (and @ (set (tail 1 @))) ) ) )
 
 (de basename (F)
    (pack (last (trim (split (chop F) "/")))) )

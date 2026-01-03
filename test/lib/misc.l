@@ -1,4 +1,4 @@
-# 26may22 Software Lab. Alexander Burger
+# 01jan26 Software Lab. Alexander Burger
 
 ### locale ###
 (locale "DE" "de")
@@ -211,3 +211,5 @@
 (test "a/b/c/" (dirname "a/b/c/d/"))
 (test "d" (basename "a/b/c/d"))
 (test "d" (basename "a/b/c/d/"))
+(test NIL (dirname "/"))
+(test NIL (basename "/"))
