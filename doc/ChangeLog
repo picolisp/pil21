@@ -1,3 +1,8 @@
+26.1.12
+   Define PROT_READ, PROT_WRITE, MAP_SHARED and MAP_FAILED
+   Define "domainSock" (AF_UNIX domain sockets)
+      src/sysdefs.c
+
 26.1.3
    GET and POST restriction was removed jul23
       doc/httpGate.html
