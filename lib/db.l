@@ -1,4 +1,4 @@
-# 20nov25 Software Lab. Alexander Burger
+# 13jan26 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1023,6 +1023,10 @@
       (extra Obj Val Hook)
       (for V Val
          (extra Obj V Hook) ) ) )
+
+(dm iter> (X Lst)
+   (on *Iter+)
+   (extra X Lst (not X)) )
 
 (dm match> (X Val Obj)
    (pick '((Y) (extra X Y Obj)) Val) )

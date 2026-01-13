@@ -1,4 +1,6 @@
 26.1.13
+   'iter>' for '+List' to set '*Iter+'
+      lib/db.l
    Remove "lib/android.l" from distribution (is kept in PilBox)
 
 26.1.12
