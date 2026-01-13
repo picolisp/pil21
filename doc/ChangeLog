@@ -1,3 +1,6 @@
+26.1.13
+   Remove "lib/android.l" from distribution (is kept in PilBox)
+
 26.1.12
    Define PROT_READ, PROT_WRITE, MAP_SHARED and MAP_FAILED
    Define "domainSock" (AF_UNIX domain sockets)
@@ -1887,7 +1890,7 @@
       src/io.l
       src/db.l
       doc/refT.html
-   Remove @lib/boss.l from distribution
+   Remove "lib/boss.l" from distribution
 
 22.10.21
    Use 'delete' instead of 'replace'
