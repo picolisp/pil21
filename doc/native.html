@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 07nov24 Software Lab. Alexander Burger
+# 19jan26 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -661,6 +661,33 @@ prints a floating point number in scientific notation:
 : (prf (exp 12.3))
 2.196960e+05
 </pre>
+
+<p>As we know that the format string <code>"%e\n"</code> will be converted from
+a Lisp symbol to a C string on each call to <code>prf</code>, we might as well
+perform a little optimization and delegate this conversion to the program load
+time:
+
+<pre>
+: (de prf (Flt)
+   (%@ "printf" NIL `(%@ "strdup" 'P "%e\n") (cons Flt 1.0)) )
+-> prf
+
+: (prf (exp 12.3))
+2.196960e+05
+</pre>
+
+<p>If we look at the <code>prf</code> function, we see that it now contains the
+pointer to the allocated string memory:
+
+<pre>
+: (pp 'prf)
+(de prf (Flt)
+   (%@ "printf" NIL 24662032 (cons Flt 1000000)) )
+-> prf
+</pre>
+
+<p>This pointer will be used by <code>printf</code> directly, without any
+further conversion or memory management.
 
 
 <p><hr>
