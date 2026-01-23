@@ -1,6 +1,8 @@
-# 23dec24 Software Lab. Alexander Burger
+# 23jan26
 
-CC = clang-19
+HOMEBREW_PREFIX ?= /opt/homebrew
+CC ?= clang
+
 PIL = ../pil  # pil
 ASM = opt -O2  # llvm-as
 LLC = llc

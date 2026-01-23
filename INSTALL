@@ -1,4 +1,4 @@
-# 09jun24 Software Lab. Alexander Burger
+# 23jan26 Software Lab. Alexander Burger
 
 
          PicoLisp Installation
@@ -21,7 +21,7 @@ global installation, and invoke them explicitly as desired.
       ------------------
 
 The following instructions work on Debian Linux. They should be similar
-on other systems.
+on other systems (for e.g. MacOS see src/Makefile.macos).
 
 1. Install required packages
 

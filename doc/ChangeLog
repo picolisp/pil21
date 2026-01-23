@@ -1,3 +1,8 @@
+26.1.23
+   Fix MacOS build (Mike Pechkin, Andreas Hauser)
+      INSTALL
+      src/Makefile.macos
+
 26.1.19
    Restore "Constant Data" section from 22.5.29
       doc/native.html
