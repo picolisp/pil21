@@ -1,3 +1,7 @@
+26.2.20
+   Remove '+Init' from radio button in 'bagBag'
+      lib/form.l
+
 26.1.23
    Fix MacOS build (Mike Pechkin, Andreas Hauser)
       INSTALL

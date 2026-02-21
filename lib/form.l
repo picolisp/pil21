@@ -1,4 +1,4 @@
-# 21nov25 Software Lab. Alexander Burger
+# 20feb26 Software Lab. Alexander Burger
 
 # *PRG *Top *Gui *Btn *Get *Got *Form *FormIx *FormLst *Evt
 # *Lock *Spans *AlwaysAsk
@@ -2574,7 +2574,7 @@
                            '(=: chart 1 radio NIL) )
                         (gui (+ 2 Len) '(+BubbleButton) '(=: chart 1 radio NIL))
                         (if (=0 R)
-                           (gui '(+Rid +Init +Var +Radio) "0" (:: radio) NIL "0")
+                           (gui '(+Rid +Var +Radio) (:: radio) NIL "0")
                            (gui '(+Rid +Radio) (* R (- -3 Len)) (format R)) ) ) ) )
                (<row> NIL (scroll Rows T) - -) ) )
          (run Sep)
