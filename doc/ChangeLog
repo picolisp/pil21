@@ -1,3 +1,7 @@
+26.2.28
+   Show terminating "." after content
+      lib/vip/cal.rc.l
+
 26.2.20
    Remove '+Init' from radio button in 'bagBag'
       lib/form.l
