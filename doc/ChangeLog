@@ -1,3 +1,7 @@
+26.3.13
+   Force 'touch *.ll' if bootstrapping
+      src/Makefile
+
 26.2.28
    Show terminating "." after content
       lib/vip/cal.rc.l

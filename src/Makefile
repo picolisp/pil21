@@ -1,4 +1,4 @@
-# 05nov25 Software Lab. Alexander Burger
+# 13mar26 Software Lab. Alexander Burger
 
 .SILENT:
 
@@ -9,6 +9,8 @@ LLC = llc
 LINK = llvm-link
 SHARED = -shared
 STRIP = strip
+
+$(shell $(PIL) -bye 2>/dev/null || touch *.ll)
 
 LLVM = $(shell llvm-config --version | cut -d. -f1)
 ifeq ($(shell test $(LLVM) -ge 15 -a $(LLVM) -lt 17; echo $$?), 0)
