@@ -36,7 +36,7 @@
 (var $OutFiles i8** null)              # Output files
 (var $IoCnt i32 0)                     # 'output' count
 (var $IoIx i64 0)                      # 'output' index
-(var $InChar i64 0)                    # 'input' har
+(var $InChar i64 0)                    # 'input' char
 (var $OutChar i64 0)                   # 'output' char
 (var $PutBin (void i8) null)           # Binary output function
 (var $GetBin (i32) null)               # Binary input function
