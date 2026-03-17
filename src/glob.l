@@ -1,4 +1,4 @@
-# 09dec25 Software Lab. Alexander Burger
+# 17mar26 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -36,7 +36,8 @@
 (var $OutFiles i8** null)              # Output files
 (var $IoCnt i32 0)                     # 'output' count
 (var $IoIx i64 0)                      # 'output' index
-(var $IoChar i64 0)                    # 'input' and 'output' char
+(var $InChar i64 0)                    # 'input' har
+(var $OutChar i64 0)                   # 'output' char
 (var $PutBin (void i8) null)           # Binary output function
 (var $GetBin (i32) null)               # Binary input function
 (var $OutFDs i32 0)                    # Number of ourput files

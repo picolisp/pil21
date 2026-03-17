@@ -1,3 +1,8 @@
+26.3.17
+   Use separate '$InChar' and '$OutChar' instead of '$IoChar'
+      src/glob.l
+      src/io.l
+
 26.3.13
    Force 'touch *.ll' if bootstrapping
       src/Makefile

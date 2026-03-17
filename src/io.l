@@ -1,4 +1,4 @@
-# 25sep25 Software Lab. Alexander Burger
+# 17mar26 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -578,8 +578,8 @@ selectErr)
 (de i32 getIn ()
    (set $Chr
       (cond
-         ((val $IoChar)
-            (set $IoChar (shr @ 8))
+         ((val $InChar)
+            (set $InChar (shr @ 8))
             (i32 (i8 @)) )
          ((nil?
                (let (Iox: (ioxFrame (val $InFrames))  At (save (val $At)))
@@ -603,7 +603,7 @@ selectErr)
                      (not (cnt? (setq V (name V)))) )
                   (charErr 0 S)
                   (let C (int V)
-                     (set $IoChar (shr C 8))
+                     (set $InChar (shr C 8))
                      (i32 (i8 C)) ) ) ) )
          (T (symErr 0 @)) ) ) )
 
@@ -629,26 +629,26 @@ selectErr)
 (de void putOut ((i8 . B))
    (nond
       ((& B (hex "80"))  # Single byte
-         (set $IoChar (i64 B)) )
+         (set $OutChar (i64 B)) )
       ((& B (hex "40"))  # Following byte
-         (set $IoChar
+         (set $OutChar
             (|
-               (val $IoChar)
+               (val $OutChar)
                (shl
                   (i64 B)
                   (set $IoIx (+ (val $IoIx) 8)) ) ) )
          (when (set $IoCnt (dec (val $IoCnt)))
             (ret) ) )
       ((& B (hex "20"))
-         (set $IoCnt 1  $IoIx 0  $IoChar (i64 B))
+         (set $IoCnt 1  $IoIx 0  $OutChar (i64 B))
          (ret) )
       ((& B (hex "10"))
-         (set $IoCnt 2  $IoIx 0  $IoChar (i64 B))
+         (set $IoCnt 2  $IoIx 0  $OutChar (i64 B))
          (ret) )
       (NIL
-         (set $IoCnt 3  $IoIx 0  $IoChar (i64 B))
+         (set $IoCnt 3  $IoIx 0  $OutChar (i64 B))
          (ret) ) )
-   (let (Iox: (ioxFrame (val $OutFrames))  C (i32 (val $IoChar)))
+   (let (Iox: (ioxFrame (val $OutFrames))  C (i32 (val $OutChar)))
       (when (Iox: chr)
          (put1 (Iox:) @ C) )
       (Iox: chr C) ) )
@@ -2003,7 +2003,7 @@ selectErr)
       (set
          $InFrames (Iox:)
          $Get (fun (i32) getIn)
-         $IoChar 0
+         $InChar 0
          $Chr 0 ) ) )
 
 (de void pushOutput ((i8* . Iox) Exe)

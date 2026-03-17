@@ -44,7 +44,8 @@ declare void @llvm.donothing() nounwind readnone
 @$OutFiles = external global i8**
 @$IoCnt = external global i32
 @$IoIx = external global i64
-@$IoChar = external global i64
+@$InChar = external global i64
+@$OutChar = external global i64
 @$PutBin = external global void(i8)*
 @$GetBin = external global i32()*
 @$OutFDs = external global i32
