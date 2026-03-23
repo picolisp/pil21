@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 30may25 Software Lab. Alexander Burger
+# 21mar26 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -397,13 +397,13 @@ href="refT.html#tolr/3">tolr/3</a></code>.
 -> NIL
 </pre></dd>
 
-<dt><a id="for"><code>(for sym 'num ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code></a></dt>
+<dt><a id="for"><code>(for sym 'cnt ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code></a></dt>
 <dt><code>(for sym|(sym2 . sym) 'lst ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code></dt>
 <dt><code>(for (sym|(sym2 . sym) 'any1 'any2 [. prg]) ['any | (NIL 'any . prg) | (T 'any . prg) ..]) -> any</code></dt>
 <dd>Conditional loop with local variable(s) and multiple conditional exits:<br>
 In the first form, the value of <code>sym</code> is saved, <code>sym</code> is
 bound to <code>1</code>, and the body is executed with increasing values up to
-(and including) <code>num</code>.<br>
+(and including) <code>cnt</code>.<br>
 
 In the second form, the value of <code>sym</code> is saved, <code>sym</code> is
 subsequently bound to the elements of <code>lst</code>, and the body is executed

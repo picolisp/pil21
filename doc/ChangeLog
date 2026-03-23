@@ -1,3 +1,7 @@
+26.3.21
+   'for' takes 'cnt', not 'num'
+      doc/refF.html
+
 26.3.17
    Use separate '$InChar' and '$OutChar' instead of '$IoChar'
       src/glob.l
