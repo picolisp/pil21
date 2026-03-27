@@ -1,3 +1,8 @@
+####### 26.3 #######
+26.3.26
+   Remove "." after content and show whole week
+      lib/vip/cal.rc.l
+
 26.3.21
    'for' takes 'cnt', not 'num'
       doc/refF.html

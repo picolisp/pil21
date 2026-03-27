@@ -1,4 +1,4 @@
-# 28feb26 Software Lab. Alexander Burger
+# 26mar26 Software Lab. Alexander Burger
 
 (symbols '(pico)
    (load "@lib/misc.l") )
@@ -62,7 +62,7 @@
                (patFile @@) ) ) ) )
    (let *Class This
       (dm status> (A F Z)
-         (let Dat
+         (let? Dat
             (get
                (: buffer text)
                (: posY)
@@ -70,13 +70,18 @@
                'cal )
             (when (and (: buffer mon) (member NIL (: buffer text)))
                (con @
-                  (and
-                     Dat
-                     (info (calFile @))
-                     (in @@
-                        (conc
-                           (rdLines)
-                           '((".")) ) ) ) )
+                  (make
+                     (for I 7
+                        (let D (+ Dat I -1)
+                           (link
+                              (conc
+                                 (chop (day D *Day))
+                                 (list " ")
+                                 (chop (datSym D)) ) )
+                           (when (info (calFile D))
+                              (for L (in @@ (rdLines))
+                                 (link (append '(" " " " " ") L)) ) )
+                           (link NIL) ) ) ) )
                (drawin)
                (setq F (day Dat)  Z (dat$ Dat "-")) ) )
          (super A F Z) ) ) )
@@ -126,7 +131,7 @@
             (make
                (link
                   (chop (pack "              " (get *Mon Mon) " " Year))
-                  (chop "     Mo  Tu  We  Th  Fr  Sa  Su") )
+                  (chop "    Mon Tue Wed Thu Fri Sat Sun") )
                (loop
                   (link
                      (make
@@ -230,8 +235,8 @@ text) are marked with a "·" character. The "W" (move long word forward)
 and "B" (move long word backward) commands move to the next or previous
 non-empty day.
 
-When you move the cursor to a non-empty day, its text content is
-displayed below the calendar.
+When you move the cursor to a day, the text contents of the following
+week are displayed below the calendar.
 
 If you enter a new search pattern using the "/" or "?" command, the
 initial search for "today" is replaced by a search through the daily

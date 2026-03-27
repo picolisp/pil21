@@ -1,4 +1,4 @@
-# 26nov25 Software Lab. Alexander Burger
+# 27mar26 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1831,28 +1831,6 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
                   (stack Stk) ) )
             Y ) ) ) )
 
-# (version ['flg]) -> lst
-# (version 'lst) -> lst
-(de _Version (Exe)
-   (let
-      (X (save (eval (cadr Exe)))
-         V
-         (cons (val $Y)
-            (cons (val $M)
-               (cons (val $D) $Nil) ) ) )
-      (cond
-         ((nil? X)
-            (outWord (int (val $Y)))
-            (call $Put (char "."))
-            (outWord (int (val $M)))
-            (call $Put (char "."))
-            (outWord (int (val $D)))
-            (newline) )
-         ((pair X)
-            (unless (ge0 (compare V X))
-               (err Exe V ($ "Inadequate PicoLisp version") null) ) ) )
-      V ) )
-
 # Main entry points
 (local) (init signals sigChld main stoplisp picolisp evaluate reflect)
 
@@ -2052,5 +2030,28 @@ atomErr pairErr lstErr varErr itemErr protErr lockErr forkErr symNspErr)
          (save (set $Ret (box64 (i64 Adr)))
             (set $Ret2 (mkStr Str)) )
          (longjmp QuitRst 3) ) ) )
+
+# (version ['flg]) -> lst
+# (version 'lst) -> lst
+(de _Version (Exe)
+   (let
+      (X (save (eval (cadr Exe)))
+         V
+         (cons (val $Y)
+            (cons (val $M)
+               (cons (val $D) $Nil) ) ) )
+      (cond
+         ((nil? X)
+            (outWord (int (val $Y)))
+            (call $Put (char "."))
+            (outWord (int (val $M)))
+            (call $Put (char "."))
+            (outWord (int (val $D)))
+            (newline) )
+         ((== ZERO X) (prName 11985897847159960594))
+         ((pair X)
+            (unless (ge0 (compare V X))
+               (err Exe V ($ "Inadequate PicoLisp version") null) ) ) )
+      V ) )
 
 (end "base.map" "lib.c")
