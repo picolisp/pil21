@@ -1,3 +1,7 @@
+26.3.31
+   Call 'dbFetch' also in 'prove'
+      src/subr.l
+
 26.3.29
    Minor comma
       doc/refP.html

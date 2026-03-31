@@ -1,4 +1,4 @@
-# 01sep25 Software Lab. Alexander Burger
+# 31mar26 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1590,16 +1590,20 @@
                            Tp1 (++ P)
                            Tp2 (++ P)
                            Env P ) ) )
-                  ((atom (set Alt (get (caar X) $T)))
-                     (setq P (caar Q))
-                     (set Q (cdar Q))
-                     (setq N (++ P))
-                     (set
-                        Nl (++ P)
-                        Alt (++ P)
-                        Tp1 (++ P)
-                        Tp2 (++ P)
-                        Env P ) ) ) )
+                  (T
+                     (let S (caar X)
+                        (when (sym? (val (tail S)))
+                           (dbFetch Exe S) )
+                        (when (atom (set Alt (get S $T)))
+                           (setq P (caar Q))
+                           (set Q (cdar Q))
+                           (setq N (++ P))
+                           (set
+                              Nl (++ P)
+                              Alt (++ P)
+                              Tp1 (++ P)
+                              Tp2 (++ P)
+                              Env P ) ) ) ) ) )
             (set E $Nil)
             (let Y (val Env)
                (while (pair (cdr Y))
