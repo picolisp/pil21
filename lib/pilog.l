@@ -1,4 +1,4 @@
-# 30may25 Software Lab. Alexander Burger
+# 05apr26 Software Lab. Alexander Burger
 
 (private) (CL Q R L Prg)
 
@@ -102,7 +102,7 @@
 
 (be true)
 
-(be not @P (1 @P) T (fail))
+(be not @P (2 @P) T (fail))
 (be not @P)
 
 (be call @P (2 (cons @P)))
