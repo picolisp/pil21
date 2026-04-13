@@ -1,4 +1,4 @@
-# 13jan26 Software Lab. Alexander Burger
+# 12apr26 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -1605,10 +1605,10 @@
 # (aux 'var 'cls ['hook] 'any ..) -> sym
 (de aux (Var Cls . @)
    (with (treeRel Var Cls)
-      (let Key (if (: ub) (ubZval (rest)) (rest))
+      (use Key
          (step
             (init (tree (: var) (: cls) (and (: hook) (next)))
-               Key
+               (setq Key (if (: ub) (ubZval (rest)) (rest)))
                (append Key T) ) ) ) ) )
 
 # (collect 'var 'cls ['hook] ['any|beg ['end [var ..]]]) -> lst

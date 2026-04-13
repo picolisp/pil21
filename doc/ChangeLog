@@ -1,3 +1,7 @@
+26.4.12
+   Bug in 'aux' for hooks (Andreas Rüegger)
+      lib/db.l
+
 26.4.5
    Use level 2 in 'not' rule
       lib/pilog.l
