@@ -1,5 +1,5 @@
 #!/usr/bin/picolisp /usr/lib/picolisp/lib.l
-# 26feb25abu
+# 24apr26abu
 
 (unless *Dbg
    (load "@lib/vip.l") )
@@ -15,15 +15,13 @@
                   (cond
                      ((pre? "+" S)
                         (link
-                           (ifn (get (any (cdr L)) '*Dbg 1)
-                              (cons
-                                 (cond
-                                    ((= "+" S) T)
-                                    ((format S) @)
-                                    (T (cdr L)) )
-                                 (opt) )
-                              (symbols (cddr @))
-                              (cons (car @) (cadr @)) ) ) )
+                           (cond
+                              ((format S) (cons @ (opt)))
+                              ((= "+" S) (cons T (opt)))
+                              ((get (intern (cdr L)) '*Dbg 1)
+                                 (symbols (cddr @))
+                                 (cons (car @) (cadr @)) )
+                              (T (cons (cdr L) (opt))) ) ) )
                      ((pre? "-" S) (load S))
                      (T (link S)) ) ) ) ) )
       0
