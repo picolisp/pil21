@@ -1,3 +1,7 @@
+26.4.30
+   Re-introduce 'any' (for '+<ns~sym>' arguments)
+      bin/vip
+
 26.4.24
    Check 'format' before 'get' (Bruno)
       bin/vip
