@@ -1,4 +1,4 @@
-# 31mar26 Software Lab. Alexander Burger
+# 04may26 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1013,6 +1013,7 @@
                      (loop
                         (set Y (& (car Y) -2))
                         (? (== X (shift Y))) )
+                     (set $At2 C)
                      $T )  # Infinite
                   (inc 'C (hex "10")) ) ) )
          ((nil? X) ZERO)

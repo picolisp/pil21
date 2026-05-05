@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 02dec24 Software Lab. Alexander Burger
+# 04may26 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -100,7 +100,8 @@ href="refS.html#step">step</a></code>.
 <dd>Returns the "length" of <code>any</code>. For numbers this is the number of
 decimal digits in the value (plus 1 for negative values), for symbols it is the
 number of characters in the name, and for lists it is the number of cells (or
-<code>T</code> for circular lists). See also <code><a
+<code>T</code> for circular lists, with the number of cells stored in the global
+variable <code><a href="ref_.html#@@">@@</a></code>). See also <code><a
 href="refS.html#size">size</a></code> and <code><a
 href="refB.html#bytes">bytes</a></code>.
 
@@ -115,6 +116,8 @@ href="refB.html#bytes">bytes</a></code>.
 -> 3
 : (length (1 2 3 .))
 -> T
+: (length (1 2 3 .)) @@
+-> 3
 </pre></dd>
 
 <dt><a id="less"><code>(less 'any ['cnt]) -> any</code></a></dt>

@@ -1,3 +1,8 @@
+26.5.4
+   'length' stores the number of cells for circular lists in '@@'
+      src/subr.l
+      doc/refL.html
+
 26.4.30
    Re-introduce 'any' (for '+<ns~sym>' arguments)
       bin/vip
