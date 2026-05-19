@@ -1,3 +1,15 @@
+26.5.16
+   AI chat continued
+      lib/ai.l
+      lib/vip/ai.rc.l
+
+26.5.11
+   Vip ":ai" (chat with AI) command
+      doc/viprc.sample
+   New files (OpenAI API)
+      lib/vip/ai.rc.l
+      lib/ai.l
+
 26.5.4
    'length' stores the number of cells for circular lists in '@@'
       src/subr.l

@@ -1,8 +1,11 @@
-# 21dec25 Software Lab. Alexander Burger
+# 11may26 Software Lab. Alexander Burger
 # Copy to ~/.pil/viprc
 
 ## Uncomment to enable the ":cal" (calendar) command
 ## (load "@lib/vip/cal.rc.l")
+
+## Uncomment to enable the ":ai" (chat with AI) command
+## (load "@lib/vip/ai.rc.l")
 
 (map+q "d" ":bd\r")
 
