@@ -1,9 +1,9 @@
-# 13may26 Software Lab. Alexander Burger
+# 20may26 Software Lab. Alexander Burger
 
 (symbols 'ai 'pico)
 
 # https://developers.openai.com/api/reference/overview
-# https://platform.deutschlandgpt.de/docs
+# https://dialog.deutschlandgpt.de/platform-api
 
 (local) (*ApiUrl *ApiKey *Max *Result curl result res api models completions)
 
