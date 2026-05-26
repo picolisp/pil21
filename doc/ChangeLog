@@ -1,3 +1,9 @@
+26.5.26
+   'ubZval' speedup
+      lib/db.l
+   'ext:Zval' function
+      src/ext.l
+
 26.5.20
    Fix comment for DeGPT platform link
       lib/ai.l

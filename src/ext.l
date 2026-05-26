@@ -1,4 +1,4 @@
-# 09jul24 Software Lab. Alexander Burger
+# 26may26 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -8,16 +8,24 @@
 (local) (SNXBASE SNXSIZE Snx FD)
 
 # External declarations
-(local) (xCnt evCnt evSym xName symChar charSym initInFile initOutFile)
+(local) (stkErr cntErr xCnt evCnt evSym xName symChar charSym)
 
+(de T NIL stkErr (any))
+(de T NIL cntErr (any any))
 (de T i64 xCnt (any any))
 (de T i64 evCnt (any any))
 (de T evSym (any))
 (de T xName (any))
 (de T i32 symChar (i64*))
 (de T void charSym (i32 i64*))
+
+(local) (initInFile initOutFile)
 (de T i8* initInFile (i32 i8*))
 (de T i8* initOutFile (i32))
+
+(local) twice
+(de T twice (any))
+
 
 # Soundex Algorithm
 (array $SnxTab i8
@@ -176,5 +184,30 @@
                            (| (shl (& M 15) 2) (shr N 6)) ) ) )
                   (call $Put (val (ofs $Chr64 (& N 63))))
                   $T ) ) ) ) ) )
+
+# Z-Order
+# (ext:Zval 'lst) -> num
+(de Zval (Exe)
+   (let (Lst (eval (cadr Exe))  Len 0)
+      (let L Lst
+         (while (pair L)
+            (needCnt Exe (++ L))
+            (inc 'Len) ) )
+      (let Arr (b64 Len)
+         (stkChk Exe)
+         (let I 0
+            (loop
+               (set (ofs Arr I) (int (++ Lst)))
+               (? (== Len (inc 'I))) ) )
+         (let (Res (save ZERO)  Bit (hex "800000000000000"))
+            (loop
+               (let I Len
+                  (while (ge0 (dec 'I))
+                     (setq Res (safe (twice Res)))
+                     (when (& (val (ofs Arr I)) Bit)
+                        (if (cnt? Res)
+                           (setq Res (safe (| Res ONE)))
+                           (set (dig Res) (| (val (dig Res)) 1)) ) ) ) )
+               (? (=0 (setq Bit (shr Bit 1))) Res) ) ) ) ) )
 
 (end)

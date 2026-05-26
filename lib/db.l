@@ -1,4 +1,4 @@
-# 12apr26 Software Lab. Alexander Burger
+# 26may26 Software Lab. Alexander Burger
 
 # *Jnl *Blob
 
@@ -27,16 +27,7 @@
    Str )
 
 (de ubZval (Lst X)
-   (let (Res 0  P 1  Q 1)
-      (while (find '((N) (>= N Q)) Lst)
-         (for N Lst
-            (and
-               N
-               (bit? Q N)
-               (setq Res (| Res P)) )
-            (setq P (>> -1 P)) )
-         (setq Q (>> -1 Q)) )
-      (cons Res X) ) )
+   (cons (ext:Zval Lst) X) )
 
 
 ### Relations ###
