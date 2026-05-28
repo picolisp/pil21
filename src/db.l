@@ -1,4 +1,4 @@
-# 27aug25 Software Lab. Alexander Burger
+# 28may26 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -755,6 +755,7 @@
 # (lieu 'any) -> sym | NIL
 (de _Lieu (Exe)
    (let X (eval (cadr Exe))
+      (set $At2 $Nil)
       (nond
          ((symb? X) $Nil)
          ((sym? (val (tail X))) $Nil)
@@ -763,6 +764,7 @@
                (setq Nm (add Nm Nm))
                (cond
                   (@@  # Dirty
+                     (set $At2 X)
                      (setq Nm (add Nm Nm))
                      (if @@ $Nil X) )  # Deleted
                   (T

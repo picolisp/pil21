@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 04may26 Software Lab. Alexander Burger
+# 28may26 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -205,8 +205,11 @@ A 1
 </pre></dd>
 
 <dt><a id="lieu"><code>(lieu 'any) -> sym | NIL</code></a></dt>
-<dd>Returns the argument <code>any</code> when it is an external symbol and
-currently manifest in heap space, otherwise <code>NIL</code>. See also <code><a
+<dd>Returns the argument <code>any</code> when it is an external symbol
+and currently manifest in heap space, otherwise <code>NIL</code>. The
+global variable <code><a href="ref_.html#@@">@@</a></code> is also set
+to that symbol if it was modified or deleted ("dirty"), otherwise to
+<code>NIL</code>. See also <code><a
 href="refE.html#ext?">ext?</a></code>.
 
 <pre>
