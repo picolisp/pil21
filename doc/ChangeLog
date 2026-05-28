@@ -1,4 +1,7 @@
 26.5.28
+   Support "e" notation for fixpoint number input
+      src/big.l
+      doc/ref.html
    'lieu' stores dirty-flag in '@@'
       src/db.l
       doc/refL.html

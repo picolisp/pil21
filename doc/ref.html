@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 04apr26 Software Lab. Alexander Burger
+# 28may26 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -718,12 +718,22 @@ appropriately:
 : 456.78
 -> 457
 
-: (setq *Scl 3)
--> 3
+: (scl 3)
+-> 3  # 0.003
 : 123.45
--> 123450
+-> 123450  # 123.450
 : 456.78
--> 456780
+-> 456780  # 456.780
+</pre>
+
+<p>The number may be followed by a decimal exponent in the range -255
+through +255:
+
+<pre>
+: 1e2
+-> 100000  # 100.000
+: 456.78e-2
+-> 4568  # 4.568
 </pre>
 
 <p>Thus, fixpoint input simply scales the number to an integer value

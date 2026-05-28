@@ -1,4 +1,4 @@
-# 01sep25 Software Lab. Alexander Burger
+# 28may26 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -921,14 +921,25 @@
          (ret 0) )
       (set (link Num T) (cnt (i64 B)))
       (while (setq B (symByte P))
-         (? (and Frac (=0 Scl))
-            (when (> (dec 'B (char "0")) 9)
-               (ret 0) )
-            (when (>= B 5)  # Round
-               (set Num (addu (val Num) ONE)) )
-            (while (setq B (symByte P))
-               (when (> (dec 'B (char "0")) 9)
-                  (ret 0) ) ) )
+         (? (== B (char "e"))
+            (setq Frac YES)
+               (let (E (i8 0)  S NO)
+                  (cond
+                     ((== (setq B (symByte P)) (char "+"))
+                        (goto 2) )
+                     ((== B (char "-"))
+                        (setq S YES)
+                        (: 2
+                           (unless (setq B (symByte P))
+                              (ret 0) ) ) ) )
+                  (loop
+                     (when (> (dec 'B (char "0")) 9)
+                        (ret 0) )
+                     (setq E (+ B (* E (i8 10))))
+                     (? (=0 (setq B (symByte P)))) )
+                  (if S
+                     (dec 'Scl (i64 E))
+                     (inc 'Scl (i64 E)) ) ) )
          (cond
             ((== B Sep)
                (when Frac
@@ -944,8 +955,18 @@
                (when Frac
                   (dec 'Scl) ) ) ) )
       (when Frac
-         (while (ge0 (dec 'Scl))
-            (set Num (tenfold (val Num))) ) )
+         (cond
+            ((gt0 Scl)
+               (loop
+                  (set Num (tenfold (val Num)))
+                  (? (=0 (dec 'Scl))) ) )
+            ((lt0 Scl)
+               (loop
+                  (when (== -1 Scl)
+                     (set Num (addu (val Num) (hex "52"))) )  # Round
+                  (when (== ZERO (set Num (divu (val Num) (hex "A2"))))  # 10
+                     (ret ZERO) )
+                  (? (=0 (inc 'Scl))) ) ) ) )
       (setq Num (val Num))
       (if Sign (neg Num) Num) ) )
 
