@@ -1,4 +1,4 @@
-# 28may26 Software Lab. Alexander Burger
+# 29may26 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1069,6 +1069,7 @@
                            (byteSym (+ (i8 (/ N D)) (char "0")) P)
                            (setq N (% N D))
                            (? (== 1 (setq D (/ D 10)))) )
+                        (dec 'Scl)
                         (byteSym (+ (i8 N) (char "0")) P) ) )
                   0 )
                ((== Scl -1)  # Calculate length
