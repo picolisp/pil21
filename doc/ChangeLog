@@ -1,4 +1,5 @@
 26.5.29
+   Support also "E" for fixpoint input
    Bug in 'fmtNum' for fixpoint numbers >= 36 digits
       src/big.l
 

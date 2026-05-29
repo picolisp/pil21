@@ -921,7 +921,7 @@
          (ret 0) )
       (set (link Num T) (cnt (i64 B)))
       (while (setq B (symByte P))
-         (? (== B (char "e"))
+         (? (== (char "E") (& B (hex "DF")))
             (setq Frac YES)
                (let (E (i8 0)  S NO)
                   (cond
