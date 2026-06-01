@@ -1,3 +1,7 @@
+26.6.1
+   Limit buffer 'fmt' to 72
+      lib/vip/ai.rc.l
+
 26.5.29
    Support also "E" for fixpoint input
    Bug in 'fmtNum' for fixpoint numbers >= 36 digits

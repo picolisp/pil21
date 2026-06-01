@@ -1,4 +1,4 @@
-# 16may26 Software Lab. Alexander Burger
+# 01jun26 Software Lab. Alexander Burger
 
 (symbols '(pico)
    (load "@lib/json.l" "@lib/ai.l") )
@@ -74,7 +74,7 @@
                            (res 'usage 'total_tokens)
                            (res 'choices 'finish_reason) ) ) ) )
                1 )
-            (=: buffer fmt *Columns) ) ) ) )
+            (=: buffer fmt (min 72 *Columns)) ) ) ) )
 
 (cmd "ai?" (L Lst Cnt)
    (symbols '(ai vip pico)
