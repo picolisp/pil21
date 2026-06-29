@@ -1,4 +1,4 @@
-# 14jun26 Software Lab. Alexander Burger
+# 28jun26 Software Lab. Alexander Burger
 
 (symbols '(pico)
    (load "@lib/misc.l") )
@@ -148,10 +148,10 @@
                                  (let L
                                     (chop
                                        (pack
-                                          (and (info (calFile Dat)) "·")
-                                          (if (= (date) Dat) "==" Day) ) )
-                                    (or (cdr L) (link (name " ")))
-                                    (or (cddr L) (link (name " ")))
+                                          (if (info (calFile Dat)) "·" " ")
+                                          (if (== (date) Dat) "==" Day) ) )
+                                    (unless (cddr L)
+                                       (push 'L (name " ")) )
                                     (mapc put (chain L) 'cal Dat) )
                                  (setq Dat (date Year Mon (inc 'Day)))) ) ) ) )
                   (NIL Dat) )
