@@ -1,4 +1,4 @@
-# 28jun26 Software Lab. Alexander Burger
+# 24jul26 Software Lab. Alexander Burger
 
 (symbols '(pico)
    (load "@lib/misc.l") )
@@ -77,12 +77,12 @@
                            (link
                               (conc
                                  (chop (day D *Day))
-                                 (list " ")
+                                 (list (name " "))
                                  (chop (datSym D)) ) )
                            (when (info (calFile D))
                               (for L (in @@ (rdLines))
                                  (inc 'N)
-                                 (link (append '(" " " " " ") L)) ) )
+                                 (link (conc (chop "   ") L)) ) )
                            (inc 'N)
                            (link NIL) ) ) ) )
                (drawin)
