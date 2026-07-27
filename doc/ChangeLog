@@ -1,3 +1,8 @@
+26.7.27
+   Increase exponent size to 32 bits for "e" notation
+   Minor fix indentation
+      src/big.l
+
 26.7.24
    Protect character constants
       lib/vip/cal.rc.l

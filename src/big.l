@@ -1,4 +1,4 @@
-# 29may26 Software Lab. Alexander Burger
+# 27jul26 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -923,23 +923,23 @@
       (while (setq B (symByte P))
          (? (== (char "E") (& B (hex "DF")))
             (setq Frac YES)
-               (let (E (i8 0)  S NO)
-                  (cond
-                     ((== (setq B (symByte P)) (char "+"))
-                        (goto 2) )
-                     ((== B (char "-"))
-                        (setq S YES)
-                        (: 2
-                           (unless (setq B (symByte P))
-                              (ret 0) ) ) ) )
-                  (loop
-                     (when (> (dec 'B (char "0")) 9)
-                        (ret 0) )
-                     (setq E (+ B (* E (i8 10))))
-                     (? (=0 (setq B (symByte P)))) )
-                  (if S
-                     (dec 'Scl (i64 E))
-                     (inc 'Scl (i64 E)) ) ) )
+            (let (E (i32 0)  S NO)
+               (cond
+                  ((== (setq B (symByte P)) (char "+"))
+                     (goto 2) )
+                  ((== B (char "-"))
+                     (setq S YES)
+                     (: 2
+                        (unless (setq B (symByte P))
+                           (ret 0) ) ) ) )
+               (loop
+                  (when (> (dec 'B (char "0")) 9)
+                     (ret 0) )
+                  (setq E (+ (i32 B) (* E (i32 10))))
+                  (? (=0 (setq B (symByte P)))) )
+               (if S
+                  (dec 'Scl (i64 E))
+                  (inc 'Scl (i64 E)) ) ) )
          (cond
             ((== B Sep)
                (when Frac
