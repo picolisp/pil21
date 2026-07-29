@@ -1,4 +1,4 @@
-# 24jul26 Software Lab. Alexander Burger
+# 28jul26 Software Lab. Alexander Burger
 
 (symbols '(pico)
    (load "@lib/misc.l") )
@@ -53,7 +53,8 @@
                (drawCal (dec (: buffer mon)) (: buffer year)) ) ) ) )
    (let *Class (: buffer)
       (dm search> (Win Pat)
-         (setq *Pat (append '(@) Pat '(@)))
+         (setq *Pat
+            (append '(@) (mapcar lowc Pat) '(@)) )
          '((L)
             (and
                (= "·" (car L))
@@ -100,7 +101,7 @@
 
 (de patFile (F)
    (find
-      '((L) (match *Pat L))
+      '((L) (match *Pat (mapcar lowc L)))
       (in F (rdLines)) ) )
 
 (de findCal (Fun1 . Fun2)
