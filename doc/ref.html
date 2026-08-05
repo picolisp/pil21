@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 28may26 Software Lab. Alexander Burger
+# 05aug26 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -417,9 +417,9 @@ its CAR and for its CDR
 <h5><a id="internal">Internal Symbols</a></h5>
 
 <p>Internal symbols are all those "normal" symbols, as they are used for
-function definitions and variable names. They are "interned" into an index
-structure, so that it is possible to find an internal symbol by searching for
-its name.
+function definitions and variable names. They are "interned" into a namespace
+(an index structure), so that it is possible to find an internal symbol by
+searching for its name.
 
 <p>There cannot be two different symbols with the same name in the same
 <a href="ref.html#namespaces">namespace</a>.
@@ -430,10 +430,10 @@ its name.
 <p><hr>
 <h5><a id="transient">Transient Symbols</a></h5>
 
-<p>Transient symbols are only interned into an index structure for a certain
-time (e.g. while reading the current source file), and are released after that.
-That means, a transient symbol cannot be accessed then by its name, and there
-may be several transient symbols in the system having the same name.
+<p>Transient symbols are only interned into their namespace for a certain time
+(e.g. while reading the current source file), and are released after that. That
+means, a transient symbol cannot be accessed then by its name, and there may be
+several transient symbols in the system having the same name.
 
 <p>Transient symbols are used
 
@@ -469,9 +469,9 @@ href="refC.html#commit">commit</a></code>).
 bit in the tail structure.
 
 <p>There cannot be two different external symbols with the same name. External
-symbols are maintained in index structures while they are loaded into memory,
-and have their external location (disk file and block offset) directly coded
-into their names (more details <a href="#external-io">here</a>).
+symbols are maintained in their namespace while they are loaded into memory, and
+have their external location (disk file and block offset) directly coded into
+their names (more details <a href="#external-io">here</a>).
 
 <p>Initially, a new external symbol's VAL is <code>NIL</code>, unless otherwise
 specified at creation time.
@@ -873,7 +873,7 @@ indentation.
 -> "x y z"
 </pre>
 
-<p>The index for transient symbols is local when <code><a
+<p>The namespace for transient symbols is local when <code><a
 href="refL.html#load">load</a></code>ing a source file. With that mechanism, it
 is possible to create symbols with a local access scope, not accessible from
 other parts of the program.

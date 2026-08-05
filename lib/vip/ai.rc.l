@@ -1,4 +1,4 @@
-# 01jun26 Software Lab. Alexander Burger
+# 04aug26 Software Lab. Alexander Burger
 
 (symbols '(pico)
    (load "@lib/json.l" "@lib/ai.l") )
@@ -16,9 +16,14 @@
 
 (cmd "ai" (L Lst Cnt)
    (symbols '(ai vip pico)
-      (api "~/.ai")
-      (let
-         (Lst
+      (let Dflt (api "~/.ai")
+         (unless
+            (find
+               '((L) (head '("+" "+" "+") L))
+               (: buffer text) )
+            (move 'goAbs 1 1)
+            (paste (list (chop Dflt) NIL (chop "+++") NIL)) )
+         (let Lst
             (split
                (make
                   (for L (: buffer text)
@@ -32,49 +37,49 @@
                         (link 0) )
                      (link L) ) )
                0 )
-            L (split (caar Lst) " ") )
-         (setq
-            *Model (pack (car L))
-            *Max (format (cadr L)) )
-         (let? R
-            (or
-               (mapcan
-                  '((S) (split (chop S) "\n"))
-                  (apply completions
-                     (mapcan
-                        '((L)
-                           (let? S (glue "\n" (cdr L))
-                              (cond
-                                 ((head '("+" "+" "+") (setq L (car L)))
-                                    (list "user" S (format (cadr (split L " ")))) )
-                                 ((head '("=" "=" "=") L)
-                                    (list  "assistant" S NIL) )
-                                 (T (list  "system" S NIL)) ) ) )
-                        Lst )
-                     *Model ) )
-               (mapcar
-                  '((X) (chop (cdr X)))
-                  (fish
-                     '((X)
-                        (and
-                           (pair X)
-                           (memq (car X) '(error message))
-                           (str? (cdr X)) ) )
-                     *Result ) ) )
-            (move 'goAbs 1 T)
-            (paste
-               (make
-                  (link T (chop (if (res 'error) "???" "===")))
-                  (chain R)
-                  (unless (res 'error)
-                     (and (last R) (link NIL))
-                     (link (chop "+++") NIL)
-                     (evCmd
-                        (cons
-                           (res 'usage 'total_tokens)
-                           (res 'choices 'finish_reason) ) ) ) )
-               1 )
-            (=: buffer fmt (min 72 *Columns)) ) ) ) )
+            (let L (split (caar Lst) " ")
+               (setq
+                  *Model (pack (car L))
+                  *Max (format (cadr L)) ) )
+            (let? R
+               (or
+                  (mapcan
+                     '((S) (split (chop S) "\n"))
+                     (apply completions
+                        (mapcan
+                           '((L)
+                              (let? S (glue "\n" (cdr L))
+                                 (cond
+                                    ((head '("+" "+" "+") (setq L (car L)))
+                                       (list "user" S (format (cadr (split L " ")))) )
+                                    ((head '("=" "=" "=") L)
+                                       (list  "assistant" S NIL) )
+                                    (T (list  "system" S NIL)) ) ) )
+                           Lst )
+                        *Model ) )
+                  (mapcar
+                     '((X) (chop (cdr X)))
+                     (fish
+                        '((X)
+                           (and
+                              (pair X)
+                              (memq (car X) '(error message))
+                              (str? (cdr X)) ) )
+                        *Result ) ) )
+               (move 'goAbs 1 T)
+               (paste
+                  (make
+                     (link T (chop (if (res 'error) "???" "===")))
+                     (chain R)
+                     (unless (res 'error)
+                        (and (last R) (link NIL))
+                        (link (chop "+++") NIL)
+                        (evCmd
+                           (cons
+                              (res 'usage 'total_tokens)
+                              (res 'choices 'finish_reason) ) ) ) )
+                  1 )
+               (=: buffer fmt (min 72 *Columns)) ) ) ) ) )
 
 (cmd "ai?" (L Lst Cnt)
    (symbols '(ai vip pico)
