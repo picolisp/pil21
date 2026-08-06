@@ -1,9 +1,12 @@
 26.8.6
+   Support "e" notation also in 'parse' / 'token'
+      src/io.l
+      lib/json.l
    Extetend "Not Implemented" message
       lib/http.l
 
 26.8.4
-   Default model to the return value of (api)
+   Default model to the return value of 'api'
       lib/vip/ai.rc.l
 
 26.7.28

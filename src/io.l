@@ -1,4 +1,4 @@
-# 17mar26 Software Lab. Alexander Burger
+# 06aug26 Software Lab. Alexander Burger
 
 (symbols '(llvm))
 
@@ -1655,10 +1655,7 @@ selectErr)
                (link (ofs P 2) T)
                (loop
                   (byteSym (i8 C) P)
-                  (?
-                     (and
-                        (<> (setq C (call $Get)) (char "."))
-                        (or (> (char "0") C) (> C (char "9"))) ) ) )
+                  (? (=0 (strchr ($ "-.0123456789Ee") (setq C (call $Get))))) )
                (symToNum
                   (val 3 P)
                   (int (val $Scl))

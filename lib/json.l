@@ -1,4 +1,4 @@
-# 01feb25 Software Lab. Alexander Burger
+# 06aug26 Software Lab. Alexander Burger
 
 (de checkJson (X Item)
    (unless (= X Item)
@@ -57,9 +57,6 @@
                ((pair X) (pack X))
                ((and (= "-" X) (format (peek)))
                   (- (read)) )
-               ((and (num? X) (sub? (peek) "Ee"))
-                  (when (format (cdr (till ",}")))
-                     ((if (lt0 @) */ *) X (** 10 (abs @))) ) )
                (T X) ) ) ) ) )
 
 (de packJson (Item F)
