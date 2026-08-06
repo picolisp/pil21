@@ -1,4 +1,4 @@
-# 30nov25 Software Lab. Alexander Burger
+# 06aug26 Software Lab. Alexander Burger
 
 # *HPorts *Home *Gate *Host *Port *Port1 *Port% *Http1 *Chunked
 # *Sock *Agent *ContL *ContLen *MPartLim *MPartEnd "*HtSet"
@@ -201,7 +201,9 @@
                                           (%@ "unlink" NIL (tmp S)) ) ) ) ) ) )
                         (T (throw 'http)) ) )
                   (T
-                     (and @ (out *HtSock (httpStat 501 "Not Implemented")))
+                     (when @
+                        (out *HtSock
+                           (httpStat 501 (text "HTTP @1: Not Implemented" @)) ) )
                      (task (close *HtSock))
                      (off *HtSock)
                      (throw 'http) ) ) )

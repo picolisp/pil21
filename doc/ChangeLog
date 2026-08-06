@@ -1,3 +1,7 @@
+26.8.6
+   Extetend "Not Implemented" message
+      lib/http.l
+
 26.8.4
    Default model to the return value of (api)
       lib/vip/ai.rc.l
