@@ -1,4 +1,4 @@
-# 04aug26 Software Lab. Alexander Burger
+# 25aug26 Software Lab. Alexander Burger
 
 (symbols '(pico)
    (load "@lib/json.l" "@lib/ai.l") )
@@ -84,3 +84,21 @@
 (cmd "ai?" (L Lst Cnt)
    (symbols '(ai vip pico)
       (evCmd (pretty *Result)) ) )
+
+(cmd "web" (L Lst Cnt)
+   (symbols '(ai vip pico)
+      (api "~/.ai")
+      (move 'goAbs 1 T)
+      (paste
+         (cons NIL
+            (mapcan
+               '((R)
+                  (cons (chop "===")
+                     (mapcan
+                        '((S)
+                           (conc
+                              (split (chop S) "\n")
+                              (list NIL) ) )
+                        R ) ) )
+               (search (glue "\n" (: buffer text))) ) ) )
+      (=: buffer fmt (min 72 *Columns)) ) )

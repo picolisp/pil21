@@ -1,11 +1,11 @@
-# 20may26 Software Lab. Alexander Burger
+# 25aug26 Software Lab. Alexander Burger
 
 (symbols 'ai 'pico)
 
 # https://developers.openai.com/api/reference/overview
 # https://dialog.deutschlandgpt.de/platform-api
 
-(local) (*ApiUrl *ApiKey *Max *Result curl result res api models completions)
+(local) (*ApiUrl *ApiKey *Max *Result curl result res api models completions search)
 
 (de curl (Res . @)
    (pass list
@@ -39,7 +39,7 @@
    (in (curl "models")
       (result 'data 'id) ) )
 
-# (completions 'model 'role 'text 'temp ['role 'text 'temp ..]
+# (completions 'model 'role 'text 'temp ['role 'text 'temp ..])
 (de completions (Model . @)
    (pipe
       (out (curl "chat/completions" "--json" "@-")
@@ -57,3 +57,20 @@
                            (and (next) (link (cons 'temperature @)))
                            (and *Max (link (cons 'max_tokens @))) ) ) ) ) ) ) )
       (result 'choices 'message 'content) ) )
+
+# (search 'text ['cnt 'ctry 'lang 'model])
+(de search (Txt Cnt Ctry Lang Model)
+   (pipe
+      (out (curl "search" "--json" "@-")
+         (printJson
+            (make
+               (link (cons 'query Txt))
+               (and Cnt (link (cons 'count @)))
+               (when (or Ctry *Ctry)
+                  (link (cons 'country @)) )
+               (when (or Lang *Lang)
+                  (link (cons 'search_lang @)) )
+               (and Model (link (cons 'model @))) ) ) )
+      (mapcar
+         '((R) (mapcar cdr R))
+         (result 'data) ) ) )

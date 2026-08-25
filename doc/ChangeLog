@@ -1,3 +1,9 @@
+26.8.25
+   Vip ":web" (web search) command
+      lib/vip/ai.rc.l
+   AI web 'search' function
+      lib/ai.l
+
 26.8.6
    Support "e" notation also in 'parse' / 'token'
       src/io.l
