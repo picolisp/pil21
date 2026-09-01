@@ -1,11 +1,10 @@
-# 25aug26 Software Lab. Alexander Burger
+# 01sep26 Software Lab. Alexander Burger
+# https://developers.openai.com/api/reference/overview
 
 (symbols 'ai 'pico)
 
-# https://developers.openai.com/api/reference/overview
-# https://dialog.deutschlandgpt.de/platform-api
-
-(local) (*ApiUrl *ApiKey *Max *Result curl result res api models completions search)
+(local) (*ApiUrl *ApiKey *Result curl result res api models completions
+chat agent search)
 
 (de curl (Res . @)
    (pass list
@@ -39,24 +38,71 @@
    (in (curl "models")
       (result 'data 'id) ) )
 
-# (completions 'model 'role 'text 'temp ['role 'text 'temp ..])
-(de completions (Model . @)
+# (completions 'res 'model 'lst ['lst ..])
+(de completions (Res Model . @)
    (pipe
       (out (curl "chat/completions" "--json" "@-")
          (printJson
-            (list
+            (cons
                (cons 'model Model)
                (make
-                  (link 'messages T)
                   (while (args)
-                     (link
-                        (make
-                           (link
-                              (cons 'role (next))
-                              (cons 'content (next)) )
-                           (and (next) (link (cons 'temperature @)))
-                           (and *Max (link (cons 'max_tokens @))) ) ) ) ) ) ) )
-      (result 'choices 'message 'content) ) )
+                     (and (next) (link @)) ) ) ) ) )
+      (apply result Res) ) )
+
+# (chat 'model 'max 'role 'text ['role 'text ..])
+(de chat (Model Max . @)
+   (completions '(choices message content) Model
+      (and Max (cons 'max_completion_tokens @))
+      (make
+         (link 'messages T)
+         (while (args)
+            (link
+               (list
+                  (cons 'role (next))
+                  (cons 'content (next)) ) ) ) ) ) )
+
+# (agent 'model 'text 'fun 'args 'text ..)
+(de agent (Model Text . @)
+   (let
+      (Msg
+         (list 'messages T
+            (list '(role . "user") (cons 'content Text)) )
+         Allowed )
+      (completions NIL Model Msg
+         (make
+            (link 'tools T)
+            (while (args)
+               (link
+                  (list
+                     '(type . "function")
+                     (list 'function
+                        (cons 'name (name (push 'Allowed (next))))
+                        (list 'parameters
+                           (cons 'type "object")
+                           (cons 'properties (next)) )
+                        (cons 'description (next)) ) ) ) ) ) )
+      (while (get (res 'choices 'message) 1 'tool_calls)
+         (completions NIL Model
+            (let Lst @
+               (conc Msg
+                  (list
+                     (list '(role . "assistant") (cons 'tool_calls T Lst)) )
+                  (mapcar
+                     '((L)
+                        (let Fun (intern (get L 'function 'name))
+                           (unless (memq Fun Allowed)
+                              (quit "Bad tool call" Fun) )
+                           (list
+                              '(role . "tool")
+                              (cons 'tool_call_id (get L 'id))
+                              (cons 'content
+                                 (let R
+                                    (apply Fun
+                                       (mapcar cdr (parseJson (get L 'function 'arguments))) )
+                                    (or (str? R) (sym R)) ) ) ) ) )
+                     Lst ) ) ) ) )
+      (res 'choices 'message 'content) ) )
 
 # (search 'text ['cnt 'ctry 'lang 'model])
 (de search (Txt Cnt Ctry Lang Model)

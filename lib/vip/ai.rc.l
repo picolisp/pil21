@@ -1,4 +1,4 @@
-# 25aug26 Software Lab. Alexander Burger
+# 01sep26 Software Lab. Alexander Burger
 
 (symbols '(pico)
    (load "@lib/json.l" "@lib/ai.l") )
@@ -17,46 +17,38 @@
 (cmd "ai" (L Lst Cnt)
    (symbols '(ai vip pico)
       (let Dflt (api "~/.ai")
-         (unless
-            (find
-               '((L) (head '("+" "+" "+") L))
-               (: buffer text) )
+         (unless (member '("+" "+" "+") (: buffer text))
             (move 'goAbs 1 1)
             (paste (list (chop Dflt) NIL (chop "+++") NIL)) )
-         (let Lst
-            (split
-               (make
-                  (for L (: buffer text)
-                     (when
-                        (or
-                           (= '("+" "+" "+") L)
-                           (and
-                              (head '("+" "+" "+" " ") L)
-                              (format (cadr (split L " "))) )
-                           (= '("=" "=" "=") L) )
-                        (link 0) )
-                     (link L) ) )
-               0 )
-            (let L (split (caar Lst) " ")
-               (setq
-                  *Model (pack (car L))
-                  *Max (format (cadr L)) ) )
+         (let
+            (Lst
+               (split
+                  (make
+                     (for L (: buffer text)
+                        (when (member L '(("+" "+" "+") ("=" "=" "=")))
+                           (link 0) )
+                        (link L) ) )
+                  0 )
+               L (split (caar Lst) " ")
+               Model (pack (car L))
+               Max (format (cadr L)) )
             (let? R
                (or
                   (mapcan
                      '((S) (split (chop S) "\n"))
-                     (apply completions
+                     (apply chat
                         (mapcan
                            '((L)
                               (let? S (glue "\n" (cdr L))
-                                 (cond
-                                    ((head '("+" "+" "+") (setq L (car L)))
-                                       (list "user" S (format (cadr (split L " ")))) )
-                                    ((head '("=" "=" "=") L)
-                                       (list  "assistant" S NIL) )
-                                    (T (list  "system" S NIL)) ) ) )
+                                 (list
+                                    (cond
+                                       ((= '("+" "+" "+") (car L)) "user")
+                                       ((= '("=" "=" "=") (car L)) "assistant")
+                                       (T "system") )
+                                    S ) ) )
                            Lst )
-                        *Model ) )
+                        Model
+                        Max ) )
                   (mapcar
                      '((X) (chop (cdr X)))
                      (fish

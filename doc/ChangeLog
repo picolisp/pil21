@@ -1,3 +1,14 @@
+26.9.1
+   'agent' (tool calls) function
+      lib/ai.l
+   Refactor 'completions' into 'chat'
+      lib/ai.l
+      lib/vip/ai.rc.l
+
+26.8.30
+   Use 'max_completion_tokens' instead of 'max_tokens'
+      lib/ai.l
+
 26.8.25
    Vip ":web" (web search) command
       lib/vip/ai.rc.l
