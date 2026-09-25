@@ -1,3 +1,7 @@
+26.9.25
+   Show "==" also in the day list
+      lib/vip/cal.rc.l
+
 26.9.1
    'agent' (tool calls) function
       lib/ai.l

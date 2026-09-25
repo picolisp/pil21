@@ -1,4 +1,4 @@
-# 28jul26 Software Lab. Alexander Burger
+# 25sep26 Software Lab. Alexander Burger
 
 (symbols '(pico)
    (load "@lib/misc.l") )
@@ -79,7 +79,9 @@
                               (conc
                                  (chop (day D *Day))
                                  (list (name " "))
-                                 (chop (datSym D)) ) )
+                                 (chop (datSym D))
+                                 (when (== D (date))
+                                    (chop " ==") ) ) )
                            (when (info (calFile D))
                               (for L (in @@ (rdLines))
                                  (inc 'N)
@@ -240,7 +242,7 @@ and "B" (move long word backward) commands move to the next or previous
 non-empty day.
 
 When you move the cursor to a day, the text contents of the following
-week are displayed below the calendar.
+days are displayed below the calendar.
 
 If you enter a new search pattern using the "/" or "?" command, the
 initial search for "today" is replaced by a search through the daily
