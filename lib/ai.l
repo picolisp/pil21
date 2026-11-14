@@ -1,4 +1,4 @@
-# 01sep26 Software Lab. Alexander Burger
+# 14nov26 Software Lab. Alexander Burger
 # https://developers.openai.com/api/reference/overview
 
 (symbols 'ai 'pico)
@@ -73,15 +73,20 @@ chat agent search)
          (make
             (link 'tools T)
             (while (args)
-               (link
-                  (list
-                     '(type . "function")
-                     (list 'function
-                        (cons 'name (name (push 'Allowed (next))))
-                        (list 'parameters
-                           (cons 'type "object")
-                           (cons 'properties (next)) )
-                        (cons 'description (next)) ) ) ) ) ) )
+               (let L (next)
+                  (link
+                     (list
+                        '(type . "function")
+                        (list 'function
+                           (cons 'name (name (push 'Allowed (++ L))))
+                           (list 'parameters
+                              (cons 'type "object")
+                              (cons 'properties
+                                 (mapcar
+                                    '(((Var . Typ))
+                                       (list Var (cons 'type Typ)) )
+                                    (++ L) ) ) )
+                           (cons 'description (glue "\n" (++ L))) ) ) ) ) ) ) )
       (while (get (res 'choices 'message) 1 'tool_calls)
          (completions NIL Model
             (let Lst @

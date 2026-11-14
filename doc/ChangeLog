@@ -1,3 +1,11 @@
+26.11.14
+   Combine 'agent' argument triples into single lists
+      lib/ai.l
+
+26.10.28
+   Simplify 'type' syntax in 'agent' parameters
+      lib/ai.l
+
 ####### 26.9 #######
 26.9.25
    Show "==" also in the day list
