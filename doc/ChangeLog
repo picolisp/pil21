@@ -1,3 +1,7 @@
+26.11.15
+   Return a list of lines from 'here' if the argument is 'T'
+      lib/misc.l
+
 26.11.14
    Combine 'agent' argument triples into single lists
       lib/ai.l

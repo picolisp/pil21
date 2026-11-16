@@ -1,4 +1,4 @@
-# 01jan26 Software Lab. Alexander Burger
+# 15nov26 Software Lab. Alexander Burger
 
 # *Allow
 
@@ -375,7 +375,9 @@
 # Echo here-documents
 (de here (S)
    (skip)
-   (echo S) )
+   (if (=T S)
+      (make (while (line T) (link @)))
+      (echo S) ) )
 
 # Print or eval
 (de prEval ("Prg" "Ofs")

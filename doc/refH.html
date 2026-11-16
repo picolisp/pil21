@@ -1,6 +1,6 @@
 <!--
 # VIP @lib/vip/html.l
-# 30may25 Software Lab. Alexander Burger
+# 15nov26 Software Lab. Alexander Burger
 -->
 
 <!DOCTYPE html>
@@ -246,11 +246,20 @@ it is a list. See also cdr and c..r.
 -> car
 </pre></dd>
 
-<dt><a id="here"><code>(here ['sym]) -> sym</code></a></dt>
-<dd>Echoes the current input stream until <code>sym</code> is encountered, or
-until end of file. See also <code><a href="refE.html#echo">echo</a></code>.
+<dt><a id="here"><code>(here ['sym]) -> lst|sym</code></a></dt>
+<dd>If <code>sym</code> is <code>T</code>, all lines in the current input stream
+until an empty line or end of file is encountered, are returned as a list.
+Otherwise, the current input stream is echoed until <code>sym</code> is
+encountered, or until end of file. See also <code><a
+href="refE.html#echo">echo</a></code>.
 
 <pre>
+: (here T)
+abc
+def
+
+-> ("abc" "def")
+
 $ cat hello.l
 (html 0 "Hello" "lib.css" NIL
    (&lt;h2&gt; NIL "Hello")
