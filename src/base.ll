@@ -1561,7 +1561,7 @@ declare void @llvm.donothing() nounwind readnone
 @$Version = global [3 x i64] [
   i64 418,
   i64 178,
-  i64 242
+  i64 370
 ], align 8
 @$TBuf = global [2 x i8] [
   i8 5,

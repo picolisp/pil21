@@ -1,4 +1,4 @@
-# 14nov26 Software Lab. Alexander Burger
+# 23nov26 Software Lab. Alexander Burger
 # https://developers.openai.com/api/reference/overview
 
 (symbols 'ai 'pico)
@@ -107,7 +107,9 @@ chat agent search)
                                        (mapcar cdr (parseJson (get L 'function 'arguments))) )
                                     (or (str? R) (sym R)) ) ) ) ) )
                      Lst ) ) ) ) )
-      (res 'choices 'message 'content) ) )
+      (cons
+         (res 'usage 'total_tokens)
+         (res 'choices 'message 'content) ) ) )
 
 # (search 'text ['cnt 'ctry 'lang 'model])
 (de search (Txt Cnt Ctry Lang Model)

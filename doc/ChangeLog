@@ -1,3 +1,7 @@
+26.11.23
+   Cons 'total_tokens' into 'agent' return value
+      lib/ai.l
+
 26.11.15
    Return a list of lines from 'here' if the argument is 'T'
       lib/misc.l
